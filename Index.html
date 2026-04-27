@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>WorkTimeline</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;900&display=swap');
+body{font-family:'Nunito',sans-serif;margin:0;background:#f0f2f5;display:flex;justify-content:center}
+.app{width:100%;max-width:450px;background:#fff;min-height:100vh;box-shadow:0 0 20px rgba(0,0,0,0.1)}
+header{background:#2c3e50;color:#fff;padding:20px;text-align:center;font-weight:900;letter-spacing:1px}
+.p{padding:20px}
+.card{border:2px solid #008080;border-radius:15px;padding:15px;margin-bottom:20px}
+textarea{width:100%;border:1px solid #ccc;border-radius:8px;padding:10px;box-sizing:border-box;font-family:'Nunito'}
+.btn{width:100%;padding:15px;background:#008080;color:#fff;border:none;border-radius:10px;font-weight:900;font-size:16px;cursor:pointer}
+.hide{display:none}
+</style>
+</head>
+<body>
+<div class="app">
+<header>WORKTIMELINE</header>
+<div class="p" id="ui">
+<div class="card">
+<h3 style="margin-top:0">Incident Evidence</h3>
+<textarea id="msg" rows="5" placeholder="Enter chronology..."></textarea>
+<input type="text" id="wit" placeholder="Witness name" style="width:100%;margin-top:10px;padding:10px;border-radius:8px;border:1px solid #ccc;box-sizing:border-box">
+</div>
+<button class="btn" onclick="go()">🔒 LOCK & SEND TO CLIO</button>
+</div>
+<div id="done" class="hide" style="padding:40px;text-align:center">
+<h1 style="font-size:50px">✅</h1>
+<h2>Transmitted</h2>
+<p>Evidence sent to Clio Grow.</p>
+</div>
+</div>
+<script>
+const ID='y2pM4wXq62P_46R1XN8yF6-Lg6uO7q6_4O';
+const URI=window.location.origin+window.location.pathname;
+async function go(){
+const v=Array.from(crypto.getRandomValues(new Uint8Array(32))).map(b=>b.toString(16).padStart(2,'0')).join('');
+sessionStorage.setItem('cv',v);
+const encoder
