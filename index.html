@@ -1,1 +1,26 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>WorkTimeline</title><style>body{margin:0;font-family:sans-serif;background:linear-gradient(165deg,#424242,#008080);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:15px}.v{width:100%;max-width:360px;background:#fff;border-radius:12px;border-top:10px solid #222;padding:25px;box-sizing:border-box;text-align:center}.c{width:48px;height:34px;border:3px solid #3c6e71;border-radius:5px;margin:0 auto 10px;position:relative}.c::before{content:'';position:absolute;top:-9px;left:50%;transform:translateX(-50%);width:16px;height:6px;border:3px solid #3c6e71;border-bottom:none;border-radius:4px 4px 0 0}textarea,input{width:100%;border:1px solid #ddd;padding:12px;border-radius:8px;font-size:16px;box-sizing:border-box;margin-bottom:15px}button{width:100%;padding:16px;background:#1d1d1f;color:#fff;border:none;border-radius:8px;font-weight:700;font-size:15px}</style></head><body><div class="v"><div class="c"></div><h2 style="color:#3c6e71;margin:0;letter-spacing:2px">WORKTIMELINE™</h2><p style="font-size:10px;color:#888;margin-bottom:20px">CANADIAN ENGINE</p><textarea id="m" rows="5" placeholder="Timeline chronology..."></textarea><input type="text" id="w" placeholder="Witness"><button onclick="lk()">🔒 LOCK & SEND TO CLIO</button></div><script>async function lk(){const I='Btscu9WmPHYelIZtZA9sIQfynBAQudwjaR7pEDdq';const U='https://worktimeline-app.vercel.app';const m=document.getElementById('m').value;if(!m)return alert('Empty');sessionStorage.setItem('pm',m);sessionStorage.setItem('pw',document.getElementById('w').value);const v=Array.from(crypto.getRandomValues(new Uint8Array(32))).map(b=>b.toString(16).padStart(2,'0')).join('');sessionStorage.setItem('cv',v);const h=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(v));const ch=btoa(String.fromCharCode(...new Uint8Array(h))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');window.location.href=`https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=${I}&redirect_uri=${encodeURIComponent(U)}&code_challenge=${ch}&code_challenge_method=S256&scope=read_leads%20write_leads`}window.onload=async()=>{const p=new URLSearchParams(window.location.search);if(p.get('code')){const r=await fetch('https://ca.app.clio.com/oauth/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({client_id:I,grant_type:'authorization_code',code:p.get('code'),redirect_uri:U,code_verifier:sessionStorage.getItem('cv')})});const t=await r.json();if(t.access_token){await fetch('https://ca.grow.clio.com/inbox_leads',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${t.access_token}`},body:JSON.stringify({inbox_lead:{from_first:"WorkTimeline",from_last:"Evidence",from_message:`Witness: ${sessionStorage.getItem('pw')}\n\n${sessionStorage.getItem('pm')}`}})});alert('EVIDENCE SECURED');}};</script></body></html>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>WorkTimeline - Transmission Demo</title>
+  <style>
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #1c1c1e; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 15px; }
+    .v { background: #ffffff; width: 100%; max-width: 400px; padding: 35px 25px; border-radius: 20px; text-align: center; box-shadow: 0 24px 48px rgba(0,0,0,0.4); box-sizing: border-box; }
+    .logo-container { margin-bottom: 15px; }
+    h2 { color: #1d1d1f; margin: 0 0 5px 0; letter-spacing: -0.5px; font-weight: 800; font-size: 22px; }
+    p.sub { font-size: 12px; color: #86868b; margin-top: 0; margin-bottom: 25px; font-weight: 600; letter-spacing: 0.5px; }
+    .warning { background: #fff2f2; color: #cc0000; padding: 14px; font-size: 13px; text-align: left; margin-bottom: 20px; border-radius: 12px; line-height: 1.5; font-weight: 500; border: 1px solid #ffcccc; }
+    .warning strong { color: #b30000; font-weight: 700; }
+    textarea, input { width: 100%; margin-bottom: 15px; padding: 14px; border: 1px solid #d2d2d7; border-radius: 12px; box-sizing: border-box; font-size: 15px; background: #f5f5f7; font-family: inherit; transition: all 0.2s ease; outline: none; }
+    textarea:focus, input:focus { border-color: #3c6e71; box-shadow: 0 0 0 3px rgba(60, 110, 113, 0.2); background: #ffffff; }
+    textarea[readonly] { color: #1d1d1f; cursor: not-allowed; border-left: 4px solid #3c6e71; background: #f5f5f7; font-weight: 500; }
+    button { width: 100%; padding: 16px; background: #3c6e71; color: #ffffff; border: none; border-radius: 14px; font-weight: 700; font-size: 16px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; transition: transform 0.1s ease; }
+    button:active { transform: scale(0.98); }
+    .lock-icon { fill: #ffffff; width: 18px; height: 18px; }
+  </style>
+</head>
+<body>
+  <div class="v">
+    <div class="logo-container">
+      <svg viewBox="0 0 100 80" width="75" height="60" xmlns="
