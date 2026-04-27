@@ -1,10 +1,66 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>WorkTimeline</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;900&display=swap');
-body{font-family:'Nunito',sans-serif;margin:0;background:#f0f2f5;display:flex;justify-content:center}
-.app{width:100%;max-width:450px;background:#fff;min-height:100vh;box-shadow:0 0 2
+  body { margin:0; font-family: sans-serif; background: #1a2a3a; color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; text-align: center; }
+    .box { background: white; color: #333; padding: 30px; border-radius: 15px; width: 90%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+      h2 { color: #008080; margin: 0 0 10px 0; font-size: 24px; letter-spacing: 1px; }
+        textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; margin: 10px 0; box-sizing: border-box; font-size: 16px; }
+          input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+            .btn { width: 100%; padding: 15px; background: #008080; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 18px; margin-top: 20px; cursor: pointer; }
+            </style>
+            </head>
+            <body>
+            <div class="box">
+              <h2>WORKTIMELINE</h2>
+                <p style="margin-bottom:20px; color:#666;">Evidence Management System</p>
+                  <textarea id="msg" rows="4" placeholder="Describe incident chronology..."></textarea>
+                    <input type="text" id="wit" placeholder="Witness name (e.g. Murdick)">
+                      <button class="btn" onclick="go()">🔒 LOCK & SEND TO CLIO</button>
+                      </div>
+                      <script>
+                      const ID='y2pM4wXq62P_46R1XN8yF6-Lg6uO7q6_4O';
+                      const URI=window.location.origin+window.location.pathname;
+                      async function go(){
+                        const v=Array.from(crypto.getRandomValues(new Uint8Array(32))).map(b=>b.toString(16).padStart(2,'0')).join('');
+                          sessionStorage.setItem('cv',v);
+                            const encoder=new TextEncoder();
+                              const hash=await crypto.subtle.digest('SHA-256',encoder.encode(v));
+                                const c=btoa(String.fromCharCode(...new Uint8Array(hash))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+                                  sessionStorage.setItem('pm',document.getElementById('msg').value);
+                                    sessionStorage.setItem('pw',document.getElementById('wit').value);
+                                      window.location.href=`https://app.clio.com/oauth/authorize?response_type=code&client_id=${ID}&redirect_uri=${encodeURIComponent(URI)}&code_challenge=${c}&code_challenge_method=S256&scope=read_leads%20write_leads`;
+                                      }
+                                      window.onload=async()=>{
+                                        const p=new URLSearchParams(window.location.search);
+                                          const code=p.get('code');
+                                            if(code){
+                                                const v=sessionStorage.getItem('cv');
+                                                    const r=await fetch('https://app.clio.com/oauth/token',{
+                                                          method:'POST',
+                                                                headers:{'Content-Type':'application/x-www-form-urlencoded'},
+                                                                      body:new URLSearchParams({client_id:ID,grant_type:'authorization_code',code:code,redirect_uri:URI,code_verifier:v})
+                                                                          });
+                                                                              const t=await r.json();
+                                                                                  if(t.access_token){
+                                                                                        const res=await fetch('https://grow.clio.com/inbox_leads',{
+                                                                                                method:'POST',
+                                                                                                        headers:{'Content-Type':'application/json','Authorization':`Bearer ${t.access_token}`},
+                                                                                                                body:JSON.stringify({inbox_lead:{from_first:"WorkTimeline",from_last:"Evidence",from_message:`Witness: ${sessionStorage.getItem('pw')}\n\n${sessionStorage.getItem('pm')}`}})
+                                                                                                                      });
+                                                                                                                            if(res.ok){document.body.innerHTML='<div class="box"><h1>✅</h1><h2>SUCCESS</h2><p>Evidence transmitted to Clio.</p></div>';}
+                                                                                                                                }
+                                                                                                                                  }
+                                                                                                                                  };
+                                                                                                                                  </script>
+                                                                                                                                  </body>
+                                                                                                                                  </html>
+                                                                                                                                  
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>WorkTimeline</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;900&display=swap
