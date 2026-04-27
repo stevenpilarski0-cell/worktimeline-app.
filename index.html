@@ -2,67 +2,131 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>WorkTimeline | Structural Evidence</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
+<title>WorkTimeline | Evidence</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');
-  :root { --ind-gray: #4a4a4a; --clio-teal: #008080; --line-blue: #5d9cec; --ai-yellow: #ffd700; --red: #ff3b30; }
+  :root { --ind-gray: #424242; --clio-teal: #008080; --line-blue: #5d9cec; --ai-yellow: #ffd700; --red: #ff3b30; }
 
-  body { margin: 0; font-family: 'Inter', sans-serif; background: linear-gradient(165deg, var(--ind-gray) 0%, var(--clio-teal) 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px 0; }
+  body { margin: 0; font-family: 'Inter', -apple-system, sans-serif; background: linear-gradient(165deg, var(--ind-gray) 0%, var(--clio-teal) 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 15px; }
   
-  .vault { width: 94%; max-width: 400px; background: white; border-radius: 15px; box-shadow: 0 40px 80px rgba(0,0,0,0.6); overflow: hidden; border-top: 10px solid #222; display: flex; flex-direction: column; }
+  .vault { width: 100%; max-width: 400px; background: white; border-radius: 12px; box-shadow: 0 40px 80px rgba(0,0,0,0.6); overflow: hidden; border-top: 12px solid #222; display: flex; flex-direction: column; }
 
-  header { padding: 20px; text-align: center; border-bottom: 1px solid #f0f0f0; }
+  header { padding: 25px 15px; text-align: center; border-bottom: 1px solid #f0f0f0; }
 
-  /* THE LOGO */
+  /* THE LOGO: Briefcase + Timeline */
   .logo-box { display: flex; flex-direction: column; align-items: center; }
-  .briefcase-icon {
-    width: 45px; height: 34px; border: 3.5px solid #3c6e71; border-radius: 5px;
-    position: relative; display: flex; align-items: center;
-  }
-  .timeline-line {
-    width: 140%; height: 4px; background: var(--line-blue); position: absolute;
-    left: -20%; display: flex; justify-content: space-around; align-items: center;
-  }
+  .case { width: 48px; height: 35px; border: 3.5px solid #3c6e71; border-radius: 5px; position: relative; display: flex; align-items: center; }
+  .t-line { width: 140%; height: 4px; background: var(--line-blue); position: absolute; left: -20%; display: flex; justify-content: space-around; align-items: center; }
   .node { width: 7px; height: 7px; background: white; border: 2px solid var(--line-blue); border-radius: 50%; }
-  .logo-text { font-weight: 900; letter-spacing: 4px; font-size: 18px; color: #3c6e71; margin-top: 10px; }
-  .quote { font-size: 10px; color: #8e8e93; font-style: italic; margin-top: 4px; }
+  .logo-t { font-weight: 900; letter-spacing: 4px; font-size: 19px; color: #3c6e71; margin-top: 12px; }
+  .phi { font-size: 10px; color: #8e8e93; font-style: italic; margin-top: 4px; }
 
-  /* MAC SOLID ICONS */
-  .icon-tray { display: flex; justify-content: center; gap: 40px; padding: 15px; background: #f5f5f7; border-bottom: 1px solid #d2d2d7; }
-  .s-icon { width: 20px; height: 20px; fill: #4a4a4c; }
+  /* SOLID MAC-STYLE ICONS */
+  .tray { display: flex; justify-content: center; gap: 40px; padding: 18px; background: #f5f5f7; border-bottom: 1px solid #d2d2d7; }
+  .s-icon { width: 22px; height: 22px; fill: #4a4a4c; }
 
   .app-body { padding: 20px; flex-grow: 1; }
-  .ai-banner { background: rgba(255, 215, 0, 0.15); border: 1px solid var(--ai-yellow); padding: 8px; border-radius: 6px; font-size: 9px; font-weight: 900; color: #7a6600; text-align: center; margin-bottom: 15px; }
+  .ai-bar { background: rgba(255, 215, 0, 0.15); border: 1px solid var(--ai-yellow); padding: 8px; border-radius: 6px; font-size: 9px; font-weight: 900; color: #7a6600; text-align: center; margin-bottom: 15px; text-transform: uppercase; }
 
-  /* THE GHOST LOG (Visible List) */
-  .ghost-container { background: #fafafa; border: 1px solid #eee; border-radius: 8px; padding: 10px; margin-bottom: 15px; max-height: 120px; overflow-y: auto; }
-  .ghost-entry { font-size: 11px; font-family: monospace; color: #666; border-bottom: 1px solid #eee; padding: 5px 0; margin-bottom: 5px; }
-  .ghost-entry:last-child { border: none; color: var(--clio-teal); font-weight: bold; }
+  /* THE GHOST LOG (The Visible Timeline) */
+  .ghost-box { background: #f9f9fb; border: 1px solid #eee; border-radius: 8px; padding: 12px; margin-bottom: 15px; max-height: 140px; overflow-y: auto; text-align: left; }
+  .entry { font-size: 11px; font-family: monospace; color: #666; border-left: 2px solid var(--line-blue); padding-left: 10px; margin-bottom: 8px; }
 
-  textarea { width: 100%; border: 1px solid #d2d2d7; padding: 12px; border-radius: 8px; font-size: 15px; box-sizing: border-box; transition: 0.3s; resize: none; }
-  .red-alert { border: 2px solid var(--red) !important; color: var(--red); background: #fff5f5; }
+  textarea { width: 100%; border: 1px solid #d2d2d7; padding: 14px; border-radius: 10px; font-size: 16px; box-sizing: border-box; transition: 0.3s; resize: none; font-family: inherit; }
+  .integrity-fail { border: 2.5px solid var(--red) !important; color: var(--red); background: #fff5f5; }
 
   .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-  .btn { padding: 14px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 13px; }
-  .btn-sub { background: #e5e5ea; color: #1d1d1f; border: 1px solid #d2d2d7; }
-  .btn-lock { background: #1d1d1f; color: white; grid-column: span 2; margin-top: 5px; letter-spacing: 1px; }
-  .alert-btn { background: var(--red) !important; }
+  .btn { padding: 16px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 14px; }
+  .btn-s { background: #e5e5ea; color: #1d1d1f; }
+  .btn-l { background: #1d1d1f; color: white; grid-column: span 2; margin-top: 10px; letter-spacing: 1px; }
+  .btn-red { background: var(--red) !important; }
 
-  .hide { display: none; }
+  .hidden { display: none; }
 </style>
 </head>
 <body>
 <div class="vault">
   <header>
     <div class="logo-box">
-      <div class="briefcase-icon">
-        <div class="timeline-line"><div class="node"></div><div class="node"></div><div class="node"></div></div>
-      </div>
-      <div class="logo-text">WORKTIMELINE™</div>
-      <div class="quote">"The truth is not a moment, but a sequence."</div>
+      <div class="case"><div class="t-line"><div class="node"></div><div class="node"></div><div class="node"></div></div></div>
+      <div class="logo-t">WORKTIMELINE™</div>
+      <div class="phi">"The truth is not a moment, but a sequence."</div>
     </div>
   </header>
-  <div class="icon-tray">
+  <div class="tray">
     <svg class="s-icon" viewBox="0 0 24 24"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
-    <svg class="s-icon" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3
+    <svg class="s-icon" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+    <svg class="s-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+  </div>
+  <div class="app-body" id="main">
+    <div class="ai-bar">✧ AI PATTERN RECOGNITION: ACTIVE ✧</div>
+    <div class="ghost-box" id="ghost">
+      <div class="entry" style="border:none; color:#bbb;">Awaiting structural chronology...</div>
+    </div>
+    <textarea id="msg" rows="4" placeholder="Enter timeline point..." oninput="check()"></textarea>
+    <div class="controls">
+      <button class="btn btn-s" onclick="add()">SUBMIT</button>
+      <input type="text" id="wit" placeholder="Witness" style="padding:10px; border:1px solid #d2d2d7; border-radius:8px; font-size:14px;">
+      <button class="btn btn-l" id="l-btn" onclick="lock()">SUBMIT LOCK</button>
+    </div>
+  </div>
+  <div id="done" class="hidden" style="padding:60px 20px; text-align:center;">
+    <div style="font-size:40px;">🛡️</div>
+    <h2 style="color:var(--clio-teal)">TIMELINE SEALED</h2>
+    <button onclick="location.reload()" style="margin-top:20px; border:1px solid #ddd; padding:10px 20px; background:white; border-radius:8px;">NEW ENTRY</button>
+  </div>
+</div>
+<script>
+const ID='y2pM4wXq62P_46R1XN8yF6-Lg6uO7q6_4O';
+const URI=window.location.origin+window.location.pathname;
+let logs=[]; let locked=false;
+
+function add(){
+  const v=document.getElementById('msg').value;
+  if(v){ 
+    logs.push(v); 
+    const g=document.getElementById('ghost');
+    if(logs.length===1) g.innerHTML='';
+    const e=document.createElement('div'); e.className='entry';
+    e.innerText=`[${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}] ${v}`;
+    g.appendChild(e); g.scrollTop=g.scrollHeight;
+    document.getElementById('msg').value='';
+  }
+}
+
+function check(){
+  if(locked){
+    document.getElementById('msg').classList.add('integrity-fail');
+    document.getElementById('l-btn').classList.add('btn-red');
+    document.getElementById('l-btn').innerText="ALTERATION DETECTED";
+  }
+}
+
+async function lock(){
+  if(!locked){
+    locked=true; const final=logs.join("\n\n")+"\n\nLAST ENTRY: "+document.getElementById('msg').value;
+    const v=Array.from(crypto.getRandomValues(new Uint8Array(32))).map(b=>b.toString(16).padStart(2,'0')).join('');
+    sessionStorage.setItem('cv',v);
+    const hash=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(v));
+    const c=btoa(String.fromCharCode(...new Uint8Array(hash))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+    sessionStorage.setItem('pm',final); sessionStorage.setItem('pw',document.getElementById('wit').value);
+    window.location.href=`https://app.clio.com/oauth/authorize?response_type=code&client_id=${ID}&redirect_uri=${encodeURIComponent(URI)}&code_challenge=${c}&code_challenge_method=S256&scope=read_leads%20write_leads`;
+  }
+}
+
+window.onload=async()=>{
+  const p=new URLSearchParams(window.location.search);
+  if(p.get('code')){
+    const v=sessionStorage.getItem('cv');
+    const r=await fetch('https://app.clio.com/oauth/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({client_id:ID,grant_type:'authorization_code',code:p.get('code'),redirect_uri:URI,code_verifier:v})});
+    const t=await r.json();
+    if(t.access_token){
+      await fetch('https://grow.clio.com/inbox_leads',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${t.access_token}`},body:JSON.stringify({inbox_lead:{from_first:"WorkTimeline",from_last:"Evidence",from_message:`Witness: ${sessionStorage.getItem('pw')}\n\n${sessionStorage.getItem('pm')}`}})});
+      document.getElementById('main').classList.add('hidden'); document.getElementById('done').classList.remove('hidden');
+    }
+  }
+};
+</script>
+</body>
+</html>
