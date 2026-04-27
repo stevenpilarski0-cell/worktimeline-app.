@@ -1,40 +1,132 @@
-<!DOCTYPE html>
+                            <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>WorkTimeline | Evidence Manager</title>
+<title>WorkTimeline | Structural Evidence</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-    body { margin: 0; font-family: 'Inter', sans-serif; background: #f0f2f5; color: #1a2a3a; display: flex; justify-content: center; min-height: 100vh; }
-      .app-container { width: 100%; max-width: 480px; background: white; display: flex; flex-direction: column; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
-        
-          /* The "Briefcase" Header */
-            header { background: #1a2a3a; color: white; padding: 25px 20px; text-align: center; border-bottom: 5px solid #008080; }
-              .logo-icon { font-size: 32px; margin-bottom: 10px; display: block; }
-                header h1 { margin: 0; font-size: 18px; letter-spacing: 3px; font-weight: 900; }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;900&display=swap');
+  
+  :root { --industrial-gray: #4a4a4a; --clio-teal: #008080; --ai-yellow: #ffd700; --alert-red: #d9534f; }
 
-                  .content { padding: 25px; flex-grow: 1; }
-                    .timeline-card { border-left: 4px solid #008080; padding-left: 20px; margin-bottom: 30px; position: relative; }
-                      .timeline-card::before { content: '●'; position: absolute; left: -9px; top: 0; color: #008080; background: white; font-size: 14px; }
-                        
-                          label { display: block; font-weight: 700; font-size: 12px; text-transform: uppercase; color: #666; margin-bottom: 8px; }
-                            textarea, input { width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 20px; box-sizing: border-box; font-family: inherit; font-size: 16px; }
-                              textarea:focus, input:focus { border-color: #008080; outline: none; box-shadow: 0 0 0 3px rgba(0,128,128,0.1); }
+  body { margin: 0; font-family: 'Inter', sans-serif; background: linear-gradient(135deg, var(--industrial-gray), var(--clio-teal)); min-height: 100vh; display: flex; justify-content: center; align-items: center; color: #333; }
+  
+  .briefcase { width: 95%; max-width: 420px; background: #fff; border-radius: 4px; box-shadow: 0 30px 60px rgba(0,0,0,0.4); border-top: 15px solid #222; position: relative; overflow: hidden; }
+  
+  /* The Handle */
+  .briefcase::before { content: ''; position: absolute; top: -25px; left: 50%; transform: translateX(-50%); width: 80px; height: 10px; background: #222; border-radius: 5px 5px 0 0; }
 
-                                .btn { width: 100%; padding: 18px; background: #008080; color: white; border: none; border-radius: 12px; font-weight: 900; font-size: 16px; cursor: pointer; transition: transform 0.1s; display: flex; align-items: center; justify-content: center; gap: 10px; }
-                                  .btn:active { transform: scale(0.98); }
-                                    
-                                      footer { padding: 20px; text-align: center; font-size: 11px; color: #999; border-top: 1px solid #eee; }
-                                        .hidden { display: none; }
-                                        </style>
-                                        </head>
-                                        <body>
+  header { padding: 30px 20px; text-align: center; border-bottom: 1px solid #eee; }
+  .logo-area { font-size: 28px; font-weight: 900; letter-spacing: 4px; color: #1a2a3a; margin-bottom: 5px; }
+  .philosophy { font-style: italic; font-size: 11px; color: #888; font-weight: 300; }
 
-                                        <div class="app-container">
-                                          <header>
-                                              <span class="logo-icon">💼</span>
-                                                  <h1>WORKTIMELINE</h1>
+  .icon-bar { display: flex; justify-content: space-around; padding: 15px; background: #f9f9f9; border-bottom: 1px solid #eee; }
+  .icon { font-size: 20px; filter: grayscale(100%); opacity: 0.6; }
+
+  .timeline-body { padding: 25px; }
+  .ai-layer { background: rgba(255, 215, 0, 0.1); border: 1px dashed var(--ai-yellow); padding: 10px; border-radius: 4px; font-size: 10px; margin-bottom: 15px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; color: #8a7300; }
+
+  textarea { width: 100%; border: 1px solid #ddd; padding: 15px; border-radius: 4px; font-family: inherit; font-size: 16px; box-sizing: border-box; transition: all 0.3s; }
+  .red-alert { border-color: var(--alert-red) !important; color: var(--alert-red); }
+
+  .action-area { padding: 20px; text-align: center; }
+  .btn-submit { width: 100%; padding: 20px; background: #1a2a3a; color: white; border: none; font-weight: 900; letter-spacing: 2px; cursor: pointer; border-radius: 4px; transition: background 0.5s; }
+  .btn-submit:hover { background: var(--clio-teal); }
+
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+
+<div class="briefcase">
+  <header>
+    <div class="logo-area">WORKTIMELINE</div>
+    <div class="philosophy">"The truth is not a moment, but a sequence."</div>
+  </header>
+
+  <div class="icon-bar">
+    <span class="icon">📷</span><span class="icon">🎤</span><span class="icon">📄</span>
+  </div>
+
+  <div class="timeline-body" id="app-content">
+    <div class="ai-layer">✧ AI Pattern Recognition Active: Analyzing Structural Chronology</div>
+    
+    <label style="font-size: 10px; font-weight: 900; color: #999;">CHRONOLOGICAL LOG</label>
+    <textarea id="msg" rows="6" placeholder="Describe the sequence of events..." oninput="detectChange()"></textarea>
+    
+    <input type="text" id="wit" placeholder="Witness Identity" style="width:100%; padding:12px; margin-top:10px; border:1px solid #ddd; box-sizing:border-box;">
+    
+    <div class="action-area">
+      <button class="btn-submit" id="main-btn" onclick="go()">SUBMIT LOCK</button>
+    </div>
+  </div>
+
+  <div id="success" class="hidden" style="padding: 60px 20px; text-align: center;">
+    <h2 style="color: var(--clio-teal);">LOCK ENGAGED</h2>
+    <p style="font-size: 14px; color: #666;">Transmission to Clio complete. Timeline sealed.</p>
+    <button onclick="location.reload()" style="background:none; border:1px solid #ccc; padding:10px 20px; cursor:pointer;">New Entry</button>
+  </div>
+</div>
+
+<script>
+const ID='y2pM4wXq62P_46R1XN8yF6-Lg6uO7q6_4O';
+const URI=window.location.origin+window.location.pathname;
+let isLocked = false;
+
+function detectChange() {
+  if(isLocked) {
+    document.getElementById('msg').classList.add('red-alert');
+    document.getElementById('main-btn').style.background = '#d9534f';
+    document.getElementById('main-btn').innerText = "ALTERATION DETECTED";
+  }
+}
+
+async function go(){
+  if(!isLocked) {
+    isLocked = true;
+    document.getElementById('main-btn').innerText = "AUTHORIZING CLIO...";
+    
+    const v=Array.from(crypto.getRandomValues(new Uint8Array(32))).map(b=>b.toString(16).padStart(2,'0')).join('');
+    sessionStorage.setItem('cv',v);
+    const encoder=new TextEncoder();
+    const hash=await crypto.subtle.digest('SHA-256',encoder.encode(v));
+    const c=btoa(String.fromCharCode(...new Uint8Array(hash))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+    
+    sessionStorage.setItem('pm',document.getElementById('msg').value);
+    sessionStorage.setItem('pw',document.getElementById('wit').value);
+    
+    window.location.href=`https://app.clio.com/oauth/authorize?response_type=code&client_id=${ID}&redirect_uri=${encodeURIComponent(URI)}&code_challenge=${c}&code_challenge_method=S256&scope=read_leads%20write_leads`;
+  }
+}
+
+window.onload=async()=>{
+  const p=new URLSearchParams(window.location.search);
+  const code=p.get('code');
+  if(code){
+    const v=sessionStorage.getItem('cv');
+    const r=await fetch('https://app.clio.com/oauth/token',{
+      method:'POST',
+      headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body:new URLSearchParams({client_id:ID,grant_type:'authorization_code',code:code,redirect_uri:URI,code_verifier:v})
+    });
+    const t=await r.json();
+    if(t.access_token){
+      const res=await fetch('https://grow.clio.com/inbox_leads',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':`Bearer ${t.access_token}`},
+        body:JSON.stringify({inbox_lead:{from_first:"WorkTimeline",from_last:"Evidence",from_message:`Witness: ${sessionStorage.getItem('pw')}\n\n${sessionStorage.getItem('pm')}`}})
+      });
+      if(res.ok){
+        document.getElementById('app-content').classList.add('hidden');
+        document.getElementById('success').classList.remove('hidden');
+      }
+    }
+  }
+};
+</script>
+</body>
+</html>
+                      <h1>WORKTIMELINE</h1>
                                                     </header>
 
                                                       <div class="content" id="main-ui">
