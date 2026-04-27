@@ -3,58 +3,112 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>WorkTimeline</title>
+<title>WorkTimeline | Evidence Manager</title>
 <style>
-  body { margin:0; font-family: sans-serif; background: #1a2a3a; color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-    .box { background: white; color: #333; padding: 30px; border-radius: 15px; width: 90%; max-width: 400px; text-align: center; }
-      h2 { color: #008080; margin: 0 0 10px 0; }
-        textarea, input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; margin: 10px 0; box-sizing: border-box; }
-          .btn { width: 100%; padding: 15px; background: #008080; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
-          </style>
-          </head>
-          <body>
-          <div class="box">
-            <h2>WORKTIMELINE</h2>
-              <p style="color:#666">Secure Evidence System</p>
-                <textarea id="msg" rows="4" placeholder="Enter chronology..."></textarea>
-                  <input type="text" id="wit" placeholder="Witness (e.g. Murdick)">
-                    <button class="btn" onclick="go()">🔒 LOCK & SEND TO CLIO</button>
-                    </div>
-                    <script>
-                    const ID='y2pM4wXq62P_46R1XN8yF6-Lg6uO7q6_4O';
-                    const URI=window.location.origin+window.location.pathname;
-                    async function go(){
-                      const v=Array.from(crypto.getRandomValues(new Uint8Array(32))).map(b=>b.toString(16).padStart(2,'0')).join('');
-                        sessionStorage.setItem('cv',v);
-                          const encoder=new TextEncoder();
-                            const hash=await crypto.subtle.digest('SHA-256',encoder.encode(v));
-                              const c=btoa(String.fromCharCode(...new Uint8Array(hash))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
-                                sessionStorage.setItem('pm',document.getElementById('msg').value);
-                                  sessionStorage.setItem('pw',document.getElementById('wit').value);
-                                    window.location.href=`https://app.clio.com/oauth/authorize?response_type=code&client_id=${ID}&redirect_uri=${encodeURIComponent(URI)}&code_challenge=${c}&code_challenge_method=S256&scope=read_leads%20write_leads`;
-                                    }
-                                    window.onload=async()=>{
-                                      const p=new URLSearchParams(window.location.search);
-                                        const code=p.get('code');
-                                          if(code){
-                                              const v=sessionStorage.getItem('cv');
-                                                  const r=await fetch('https://app.clio.com/oauth/token',{
-                                                        method:'POST',
-                                                              headers:{'Content-Type':'application/x-www-form-urlencoded'},
-                                                                    body:new URLSearchParams({client_id:ID,grant_type:'authorization_code',code:code,redirect_uri:URI,code_verifier:v})
-                                                                        });
-                                                                            const t=await r.json();
-                                                                                if(t.access_token){
-                                                                                      const res=await fetch('https://grow.clio.com/inbox_leads',{
-                                                                                              method:'POST',
-                                                                                                      headers:{'Content-Type':'application/json','Authorization':`Bearer ${t.access_token}`},
-                                                                                                              body:JSON.stringify({inbox_lead:{from_first:"WorkTimeline",from_last:"Evidence",from_message:`Witness: ${sessionStorage.getItem('pw')}\n\n${sessionStorage.getItem('pm')}`}})
-                                                                                                                    });
-                                                                                                                          if(res.ok){document.body.innerHTML='<div class="box"><h1>✅</h1><h2>SUCCESS</h2><p>Evidence transmitted.</p></div>';}
-                                                                                                                              }
-                                                                                                                                }
-                                                                                                                                };
-                                                                                                                                </script>
-                                                                                                                                </body>
-                                                                                                                                </html>
-                                                                                                                                
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+    body { margin: 0; font-family: 'Inter', sans-serif; background: #f0f2f5; color: #1a2a3a; display: flex; justify-content: center; min-height: 100vh; }
+      .app-container { width: 100%; max-width: 480px; background: white; display: flex; flex-direction: column; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        
+          /* The "Briefcase" Header */
+            header { background: #1a2a3a; color: white; padding: 25px 20px; text-align: center; border-bottom: 5px solid #008080; }
+              .logo-icon { font-size: 32px; margin-bottom: 10px; display: block; }
+                header h1 { margin: 0; font-size: 18px; letter-spacing: 3px; font-weight: 900; }
+
+                  .content { padding: 25px; flex-grow: 1; }
+                    .timeline-card { border-left: 4px solid #008080; padding-left: 20px; margin-bottom: 30px; position: relative; }
+                      .timeline-card::before { content: '●'; position: absolute; left: -9px; top: 0; color: #008080; background: white; font-size: 14px; }
+                        
+                          label { display: block; font-weight: 700; font-size: 12px; text-transform: uppercase; color: #666; margin-bottom: 8px; }
+                            textarea, input { width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 20px; box-sizing: border-box; font-family: inherit; font-size: 16px; }
+                              textarea:focus, input:focus { border-color: #008080; outline: none; box-shadow: 0 0 0 3px rgba(0,128,128,0.1); }
+
+                                .btn { width: 100%; padding: 18px; background: #008080; color: white; border: none; border-radius: 12px; font-weight: 900; font-size: 16px; cursor: pointer; transition: transform 0.1s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+                                  .btn:active { transform: scale(0.98); }
+                                    
+                                      footer { padding: 20px; text-align: center; font-size: 11px; color: #999; border-top: 1px solid #eee; }
+                                        .hidden { display: none; }
+                                        </style>
+                                        </head>
+                                        <body>
+
+                                        <div class="app-container">
+                                          <header>
+                                              <span class="logo-icon">💼</span>
+                                                  <h1>WORKTIMELINE</h1>
+                                                    </header>
+
+                                                      <div class="content" id="main-ui">
+                                                          <div class="timeline-card">
+                                                                <label>Step 1: Incident Chronology</label>
+                                                                      <textarea id="msg" rows="5" placeholder="Record the specific details of the incident or safety violation..."></textarea>
+                                                                          </div>
+
+                                                                              <div class="timeline-card">
+                                                                                    <label>Step 2: Structural Evidence</label>
+                                                                                          <input type="text" id="wit" placeholder="Witness Name (e.g. Murdick)">
+                                                                                              </div>
+
+                                                                                                  <button class="btn" onclick="go()">
+                                                                                                        <span>🔒</span> LOCK & TRANSMIT TO CLIO
+                                                                                                            </button>
+                                                                                                              </div>
+
+                                                                                                                <div class="content hidden" id="success-ui" style="text-align:center; padding-top:50px;">
+                                                                                                                    <div style="font-size:64px; margin-bottom:20px;">🛡️</div>
+                                                                                                                        <h2 style="color:#008080">Evidence Sealed</h2>
+                                                                                                                            <p>Your timeline has been cryptographically secured and transmitted to the legal intake system.</p>
+                                                                                                                                <button class="btn" style="background:#1a2a3a; margin-top:30px;" onclick="location.reload()">CREATE NEW LOG</button>
+                                                                                                                                  </div>
+
+                                                                                                                                    <footer>
+                                                                                                                                        TIMELINE EVIDENCE MANAGEMENT © 2026<br>
+                                                                                                                                            BRITISH COLUMBIA, CANADA
+                                                                                                                                              </footer>
+                                                                                                                                              </div>
+
+                                                                                                                                              <script>
+                                                                                                                                              const ID='y2pM4wXq62P_46R1XN8yF6-Lg6uO7q6_4O';
+                                                                                                                                              const URI=window.location.origin+window.location.pathname;
+
+                                                                                                                                              async function go(){
+                                                                                                                                                const v=Array.from(crypto.getRandomValues(new Uint8Array(32))).map(b=>b.toString(16).padStart(2,'0')).join('');
+                                                                                                                                                  sessionStorage.setItem('cv',v);
+                                                                                                                                                    const encoder=new TextEncoder();
+                                                                                                                                                      const hash=await crypto.subtle.digest('SHA-256',encoder.encode(v));
+                                                                                                                                                        const c=btoa(String.fromCharCode(...new Uint8Array(hash))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+                                                                                                                                                          
+                                                                                                                                                            sessionStorage.setItem('pm',document.getElementById('msg').value);
+                                                                                                                                                              sessionStorage.setItem('pw',document.getElementById('wit').value);
+                                                                                                                                                                
+                                                                                                                                                                  window.location.href=`https://app.clio.com/oauth/authorize?response_type=code&client_id=${ID}&redirect_uri=${encodeURIComponent(URI)}&code_challenge=${c}&code_challenge_method=S256&scope=read_leads%20write_leads`;
+                                                                                                                                                                  }
+
+                                                                                                                                                                  window.onload=async()=>{
+                                                                                                                                                                    const p=new URLSearchParams(window.location.search);
+                                                                                                                                                                      const code=p.get('code');
+                                                                                                                                                                        if(code){
+                                                                                                                                                                            document.getElementById('main-ui').innerHTML = "<div style='text-align:center; padding-top:40px;'>Securing Transmission...</div>";
+                                                                                                                                                                                const v=sessionStorage.getItem('cv');
+                                                                                                                                                                                    const r=await fetch('https://app.clio.com/oauth/token',{
+                                                                                                                                                                                          method:'POST',
+                                                                                                                                                                                                headers:{'Content-Type':'application/x-www-form-urlencoded'},
+                                                                                                                                                                                                      body:new URLSearchParams({client_id:ID,grant_type:'authorization_code',code:code,redirect_uri:URI,code_verifier:v})
+                                                                                                                                                                                                          });
+                                                                                                                                                                                                              const t=await r.json();
+                                                                                                                                                                                                                  if(t.access_token){
+                                                                                                                                                                                                                        const res=await fetch('https://grow.clio.com/inbox_leads',{
+                                                                                                                                                                                                                                method:'POST',
+                                                                                                                                                                                                                                        headers:{'Content-Type':'application/json','Authorization':`Bearer ${t.access_token}`},
+                                                                                                                                                                                                                                                body:JSON.stringify({inbox_lead:{from_first:"WorkTimeline",from_last:"Evidence",from_message:`Witness: ${sessionStorage.getItem('pw')}\n\nTimeline Details:\n${sessionStorage.getItem('pm')}`}})
+                                                                                                                                                                                                                                                      });
+                                                                                                                                                                                                                                                            if(res.ok){
+                                                                                                                                                                                                                                                                    document.getElementById('main-ui').classList.add('hidden');
+                                                                                                                                                                                                                                                                            document.getElementById('success-ui').classList.remove('hidden');
+                                                                                                                                                                                                                                                                                  }
+                                                                                                                                                                                                                                                                                      }
+                                                                                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                                                                                        };
+                                                                                                                                                                                                                                                                                        </script>
+                                                                                                                                                                                                                                                                                        </body>
+                                                                                                                                                                                                                                                                                        </html>
+                                                                                                                                                                                                                                                                                        
