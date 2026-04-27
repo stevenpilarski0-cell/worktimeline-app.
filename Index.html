@@ -1,42 +1,128 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>WorkTimeline</title>
+<title>WorkTimeline | Structural Evidence</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;900&display=swap');
-body{font-family:'Nunito',sans-serif;margin:0;background:#f0f2f5;display:flex;justify-content:center}
-.app{width:100%;max-width:450px;background:#fff;min-height:100vh;box-shadow:0 0 20px rgba(0,0,0,0.1)}
-header{background:#2c3e50;color:#fff;padding:20px;text-align:center;font-weight:900;letter-spacing:1px}
-.p{padding:20px}
-.card{border:2px solid #008080;border-radius:15px;padding:15px;margin-bottom:20px}
-textarea{width:100%;border:1px solid #ccc;border-radius:8px;padding:10px;box-sizing:border-box;font-family:'Nunito'}
-.btn{width:100%;padding:15px;background:#008080;color:#fff;border:none;border-radius:10px;font-weight:900;font-size:16px;cursor:pointer}
-.hide{display:none}
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');
+  :root { --ind-gray: #4a4a4a; --clio-teal: #008080; --line-blue: #5d9cec; --ai-yellow: #ffd700; --red: #ff3b30; }
+
+  body { margin: 0; font-family: 'Inter', sans-serif; background: linear-gradient(165deg, var(--ind-gray) 0%, var(--clio-teal) 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; }
+  
+  .vault { width: 94%; max-width: 400px; background: white; border-radius: 15px; box-shadow: 0 40px 80px rgba(0,0,0,0.6); overflow: hidden; border-top: 10px solid #222; }
+
+  header { padding: 25px; text-align: center; border-bottom: 1px solid #f0f0f0; }
+
+  /* THE LOGO (From your photo) */
+  .logo-box { display: flex; flex-direction: column; align-items: center; }
+  .briefcase-icon {
+    width: 50px; height: 38px; border: 4px solid #3c6e71; border-radius: 6px;
+    position: relative; display: flex; align-items: center;
+  }
+  .timeline-line {
+    width: 140%; height: 4px; background: var(--line-blue); position: absolute;
+    left: -20%; display: flex; justify-content: space-around; align-items: center;
+  }
+  .node { width: 8px; height: 8px; background: white; border: 2.5px solid var(--line-blue); border-radius: 50%; }
+  
+  .logo-text { font-weight: 900; letter-spacing: 4px; font-size: 20px; color: #3c6e71; margin-top: 12px; }
+  .quote { font-size: 10px; color: #8e8e93; font-style: italic; margin-top: 4px; }
+
+  /* MAC SOLID ICONS */
+  .icon-tray { display: flex; justify-content: center; gap: 40px; padding: 18px; background: #f5f5f7; border-bottom: 1px solid #d2d2d7; }
+  .s-icon { width: 22px; height: 22px; fill: #4a4a4c; }
+
+  .app-body { padding: 20px; }
+  .ai-banner { background: rgba(255, 215, 0, 0.15); border: 1px solid var(--ai-yellow); padding: 10px; border-radius: 6px; font-size: 9px; font-weight: 900; color: #7a6600; text-align: center; margin-bottom: 15px; }
+  .ghost-log { font-size: 10px; font-family: monospace; color: #bbb; margin-bottom: 10px; min-height: 12px; }
+
+  textarea { width: 100%; border: 1px solid #d2d2d7; padding: 15px; border-radius: 10px; font-size: 16px; box-sizing: border-box; transition: 0.3s; }
+  .red-alert { border: 2.5px solid var(--red) !important; color: var(--red); background: #fff5f5; }
+
+  .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+  .btn { padding: 16px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+  .btn-sub { background: #e5e5ea; color: #1d1d1f; }
+  .btn-lock { background: #1d1d1f; color: white; grid-column: span 2; margin-top: 10px; }
+  .alert-btn { background: var(--red) !important; }
+
+  .hide { display: none; }
 </style>
 </head>
 <body>
-<div class="app">
-<header>WORKTIMELINE</header>
-<div class="p" id="ui">
-<div class="card">
-<h3 style="margin-top:0">Incident Evidence</h3>
-<textarea id="msg" rows="5" placeholder="Enter chronology..."></textarea>
-<input type="text" id="wit" placeholder="Witness name" style="width:100%;margin-top:10px;padding:10px;border-radius:8px;border:1px solid #ccc;box-sizing:border-box">
-</div>
-<button class="btn" onclick="go()">🔒 LOCK & SEND TO CLIO</button>
-</div>
-<div id="done" class="hide" style="padding:40px;text-align:center">
-<h1 style="font-size:50px">✅</h1>
-<h2>Transmitted</h2>
-<p>Evidence sent to Clio Grow.</p>
-</div>
+<div class="vault">
+  <header>
+    <div class="logo-box">
+      <div class="briefcase-icon">
+        <div class="timeline-line"><div class="node"></div><div class="node"></div><div class="node"></div></div>
+      </div>
+      <div class="logo-text">WORKTIMELINE™</div>
+      <div class="quote">"The truth is not a moment, but a sequence."</div>
+    </div>
+  </header>
+  <div class="icon-tray">
+    <svg class="s-icon" viewBox="0 0 24 24"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
+    <svg class="s-icon" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+    <svg class="s-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+  </div>
+  <div class="app-body" id="ui">
+    <div class="ai-banner">✧ AI PATTERN RECOGNITION: ACTIVE ✧</div>
+    <div class="ghost-log" id="ghost">GHOST LOG: Standing by...</div>
+    <textarea id="msg" rows="5" placeholder="Enter timeline point..." oninput="integrity()"></textarea>
+    <div class="controls">
+      <button class="btn btn-sub" onclick="add()">SUBMIT</button>
+      <input type="text" id="wit" placeholder="Witness" style="padding:12px; border:1px solid #d2d2d7; border-radius:8px;">
+      <button class="btn btn-lock" id="l-btn" onclick="lock()">SUBMIT LOCK</button>
+    </div>
+  </div>
+  <div id="done" class="hide" style="padding:60px 20px; text-align:center;">
+    <h1 style="font-size:40px;">🛡️</h1>
+    <h2 style="color:var(--clio-teal)">TIMELINE SEALED</h2>
+    <button onclick="location.reload()" style="margin-top:20px; border:1px solid #ddd; padding:10px 20px; background:white; border-radius:8px;">NEW LOG</button>
+  </div>
 </div>
 <script>
 const ID='y2pM4wXq62P_46R1XN8yF6-Lg6uO7q6_4O';
 const URI=window.location.origin+window.location.pathname;
-async function go(){
-const v=Array.from(crypto.getRandomValues(new Uint8Array(32))).map(b=>b.toString(16).padStart(2,'0')).join('');
-sessionStorage.setItem('cv',v);
-const encoder
+let logs=[]; let locked=false;
+
+function add(){
+  const v=document.getElementById('msg').value;
+  if(v){ logs.push(v); document.getElementById('ghost').innerText=`GHOST LOG: Point ${logs.length} captured.`; document.getElementById('msg').value=''; }
+}
+
+function integrity(){
+  if(locked){
+    document.getElementById('msg').classList.add('red-alert');
+    document.getElementById('l-btn').classList.add('alert-btn');
+    document.getElementById('l-btn').innerText="ALTERATION DETECTED";
+  }
+}
+
+async function lock(){
+  if(!locked){
+    locked=true; const final=logs.join("\n\n")+"\n\nLAST ENTRY: "+document.getElementById('msg').value;
+    const v=Array.from(crypto.getRandomValues(new Uint8Array(32))).map(b=>b.toString(16).padStart(2,'0')).join('');
+    sessionStorage.setItem('cv',v);
+    const hash=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(v));
+    const c=btoa(String.fromCharCode(...new Uint8Array(hash))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+    sessionStorage.setItem('pm',final); sessionStorage.setItem('pw',document.getElementById('wit').value);
+    window.location.href=`https://app.clio.com/oauth/authorize?response_type=code&client_id=${ID}&redirect_uri=${encodeURIComponent(URI)}&code_challenge=${c}&code_challenge_method=S256&scope=read_leads%20write_leads`;
+  }
+}
+
+window.onload=async()=>{
+  const p=new URLSearchParams(window.location.search);
+  if(p.get('code')){
+    const v=sessionStorage.getItem('cv');
+    const r=await fetch('https://app.clio.com/oauth/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({client_id:ID,grant_type:'authorization_code',code:p.get('code'),redirect_uri:URI,code_verifier:v})});
+    const t=await r.json();
+    if(t.access_token){
+      await fetch('https://grow.clio.com/inbox_leads',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${t.access_token}`},body:JSON.stringify({inbox_lead:{from_first:"WorkTimeline",from_last:"Evidence",from_message:`Witness: ${sessionStorage.getItem('pw')}\n\n${sessionStorage.getItem('pm')}`}})});
+      document.getElementById('ui').classList.add('hide'); document.getElementById('done').classList.remove('hide');
+    }
+  }
+};
+</script>
+</body>
+</html>
