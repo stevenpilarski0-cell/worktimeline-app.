@@ -6,59 +6,63 @@
 <title>WorkTimeline | Structural Evidence</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');
-  :root { --gray: #4a4a4a; --teal: #008080; --blue: #5d9cec; --red: #ff3b30; --yellow: #ffd700; }
-  body { margin:0; font-family:'Inter',sans-serif; background: linear-gradient(165deg, var(--gray) 0%, var(--teal) 100%); min-height:100vh; display:flex; justify-content:center; align-items:center; }
-  .vault { width:92%; max-width:400px; background:white; border-radius:15px; box-shadow:0 40px 80px rgba(0,0,0,0.5); overflow:hidden; border-top:12px solid #222; }
-  header { padding:25px; text-align:center; border-bottom:1px solid #eee; }
+  :root { --ind-gray: #4a4a4a; --clio-teal: #008080; --line-blue: #5d9cec; --ai-yellow: #ffd700; --red: #ff3b30; }
+
+  body { margin: 0; font-family: 'Inter', sans-serif; background: linear-gradient(165deg, var(--ind-gray) 0%, var(--clio-teal) 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px 0; }
   
-  /* THE LOGO: Briefcase + Timeline */
-  .logo-wrap { display:flex; flex-direction:column; align-items:center; }
-  .logo-case { width:45px; height:32px; border:3px solid #3c6e71; border-radius:4px; position:relative; display:flex; align-items:center; }
-  .logo-line { width:140%; height:3px; background:var(--blue); position:absolute; left:-20%; display:flex; justify-content:space-around; align-items:center; }
-  .node { width:7px; height:7px; background:white; border:2px solid var(--blue); border-radius:50%; }
-  
-  .logo-text { font-weight:900; letter-spacing:4px; font-size:20px; color:#3c6e71; margin-top:12px; }
-  .quote { font-size:10px; color:#8e8e93; font-style:italic; margin-top:4px; }
+  .vault { width: 94%; max-width: 400px; background: white; border-radius: 15px; box-shadow: 0 40px 80px rgba(0,0,0,0.6); overflow: hidden; border-top: 10px solid #222; display: flex; flex-direction: column; }
+
+  header { padding: 20px; text-align: center; border-bottom: 1px solid #f0f0f0; }
+
+  /* THE LOGO */
+  .logo-box { display: flex; flex-direction: column; align-items: center; }
+  .briefcase-icon {
+    width: 45px; height: 34px; border: 3.5px solid #3c6e71; border-radius: 5px;
+    position: relative; display: flex; align-items: center;
+  }
+  .timeline-line {
+    width: 140%; height: 4px; background: var(--line-blue); position: absolute;
+    left: -20%; display: flex; justify-content: space-around; align-items: center;
+  }
+  .node { width: 7px; height: 7px; background: white; border: 2px solid var(--line-blue); border-radius: 50%; }
+  .logo-text { font-weight: 900; letter-spacing: 4px; font-size: 18px; color: #3c6e71; margin-top: 10px; }
+  .quote { font-size: 10px; color: #8e8e93; font-style: italic; margin-top: 4px; }
 
   /* MAC SOLID ICONS */
-  .tray { display:flex; justify-content:center; gap:40px; padding:15px; background:#f5f5f7; border-bottom:1px solid #d2d2d7; }
-  .s-icon { width:20px; height:20px; fill:#4a4a4c; }
+  .icon-tray { display: flex; justify-content: center; gap: 40px; padding: 15px; background: #f5f5f7; border-bottom: 1px solid #d2d2d7; }
+  .s-icon { width: 20px; height: 20px; fill: #4a4a4c; }
 
-  .body { padding:20px; }
-  .ai-tag { background:rgba(255,215,0,0.15); border:1px solid var(--yellow); padding:8px; border-radius:6px; font-size:9px; font-weight:900; color:#7a6600; text-align:center; margin-bottom:15px; }
-  .ghost { font-size:10px; font-family:monospace; color:#bbb; margin-bottom:10px; text-align:left; min-height:12px; }
+  .app-body { padding: 20px; flex-grow: 1; }
+  .ai-banner { background: rgba(255, 215, 0, 0.15); border: 1px solid var(--ai-yellow); padding: 8px; border-radius: 6px; font-size: 9px; font-weight: 900; color: #7a6600; text-align: center; margin-bottom: 15px; }
 
-  textarea { width:100%; border:1px solid #d2d2d7; padding:15px; border-radius:10px; font-size:16px; box-sizing:border-box; transition:0.3s; }
-  .red-alert { border:2px solid var(--red) !important; color:var(--red); background:#fff5f5; }
+  /* THE GHOST LOG (Visible List) */
+  .ghost-container { background: #fafafa; border: 1px solid #eee; border-radius: 8px; padding: 10px; margin-bottom: 15px; max-height: 120px; overflow-y: auto; }
+  .ghost-entry { font-size: 11px; font-family: monospace; color: #666; border-bottom: 1px solid #eee; padding: 5px 0; margin-bottom: 5px; }
+  .ghost-entry:last-child { border: none; color: var(--clio-teal); font-weight: bold; }
 
-  .grid { display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:15px; }
-  .btn { padding:16px; border:none; border-radius:8px; font-weight:700; cursor:pointer; }
-  .btn-s { background:#e5e5ea; color:#1d1d1f; }
-  .btn-l { background:#1d1d1f; color:white; grid-column: span 2; margin-top:10px; }
-  .btn-red { background:var(--red) !important; }
+  textarea { width: 100%; border: 1px solid #d2d2d7; padding: 12px; border-radius: 8px; font-size: 15px; box-sizing: border-box; transition: 0.3s; resize: none; }
+  .red-alert { border: 2px solid var(--red) !important; color: var(--red); background: #fff5f5; }
 
-  .hide { display:none; }
+  .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+  .btn { padding: 14px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 13px; }
+  .btn-sub { background: #e5e5ea; color: #1d1d1f; border: 1px solid #d2d2d7; }
+  .btn-lock { background: #1d1d1f; color: white; grid-column: span 2; margin-top: 5px; letter-spacing: 1px; }
+  .alert-btn { background: var(--red) !important; }
+
+  .hide { display: none; }
 </style>
 </head>
 <body>
 <div class="vault">
   <header>
-    <div class="logo-wrap">
-      <div class="logo-case"><div class="logo-line"><div class="node"></div><div class="node"></div><div class="node"></div></div></div>
+    <div class="logo-box">
+      <div class="briefcase-icon">
+        <div class="timeline-line"><div class="node"></div><div class="node"></div><div class="node"></div></div>
+      </div>
       <div class="logo-text">WORKTIMELINE™</div>
       <div class="quote">"The truth is not a moment, but a sequence."</div>
     </div>
   </header>
-  <div class="tray">
+  <div class="icon-tray">
     <svg class="s-icon" viewBox="0 0 24 24"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
-    <svg class="s-icon" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-    <svg class="s-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-  </div>
-  <div class="body" id="ui">
-    <div class="ai-tag">✧ AI PATTERN RECOGNITION ACTIVE ✧</div>
-    <div class="ghost" id="ghost">LOG: System Init...</div>
-    <textarea id="msg" rows="5" placeholder="Enter point in timeline..." oninput="check()"></textarea>
-    <div class="grid">
-      <button class="btn btn-s" onclick="add()">SUBMIT</button>
-      <input type="text" id="wit" placeholder="Witness" style="padding:12px; border:1px solid #d2d2d7; border-radius:8px;">
-      <button class
+    <svg class="s-icon" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3
