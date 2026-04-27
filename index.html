@@ -1,37 +1,101 @@
-                            <!DOCTYPE html>
+                                                                                                                                        TIMELINE EVIDENCE MANAGEMENT © 2026<br>
+        <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>WorkTimeline | Structural Evidence</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');
   
-  :root { --industrial-gray: #4a4a4a; --clio-teal: #008080; --ai-yellow: #ffd700; --alert-red: #d9534f; }
+  :root { 
+    --industrial-gray: #424242; 
+    --clio-teal: #008080; 
+    --ai-yellow: #ffd700; 
+    --alert-red: #ff3b30; 
+    --mac-bg: #f5f5f7;
+  }
 
-  body { margin: 0; font-family: 'Inter', sans-serif; background: linear-gradient(135deg, var(--industrial-gray), var(--clio-teal)); min-height: 100vh; display: flex; justify-content: center; align-items: center; color: #333; }
+  body { 
+    margin: 0; 
+    font-family: 'Inter', -apple-system, sans-serif; 
+    background: linear-gradient(160deg, var(--industrial-gray) 0%, var(--clio-teal) 100%); 
+    min-height: 100vh; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    color: #1d1d1f; 
+  }
   
-  .briefcase { width: 95%; max-width: 420px; background: #fff; border-radius: 4px; box-shadow: 0 30px 60px rgba(0,0,0,0.4); border-top: 15px solid #222; position: relative; overflow: hidden; }
-  
+  /* The Structural Briefcase */
+  .briefcase { 
+    width: 92%; 
+    max-width: 400px; 
+    background: white; 
+    border-radius: 12px; 
+    box-shadow: 0 40px 100px rgba(0,0,0,0.5); 
+    position: relative; 
+    overflow: hidden;
+  }
+
   /* The Handle */
-  .briefcase::before { content: ''; position: absolute; top: -25px; left: 50%; transform: translateX(-50%); width: 80px; height: 10px; background: #222; border-radius: 5px 5px 0 0; }
+  .briefcase-handle {
+    width: 70px; height: 10px; background: #222; margin: 0 auto;
+    border-radius: 5px 5px 0 0; margin-top: -5px;
+  }
 
-  header { padding: 30px 20px; text-align: center; border-bottom: 1px solid #eee; }
-  .logo-area { font-size: 28px; font-weight: 900; letter-spacing: 4px; color: #1a2a3a; margin-bottom: 5px; }
-  .philosophy { font-style: italic; font-size: 11px; color: #888; font-weight: 300; }
+  header { 
+    padding: 25px 20px; 
+    text-align: center; 
+    border-bottom: 1px solid #f0f0f0; 
+  }
 
-  .icon-bar { display: flex; justify-content: space-around; padding: 15px; background: #f9f9f9; border-bottom: 1px solid #eee; }
-  .icon { font-size: 20px; filter: grayscale(100%); opacity: 0.6; }
+  /* The Logo: Briefcase with Timeline */
+  .logo-wrapper { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .logo-briefcase {
+    width: 40px; height: 30px; border: 3px solid var(--industrial-gray); 
+    border-radius: 4px; position: relative; display: flex; align-items: center; justify-content: center;
+  }
+  .timeline-dash { width: 100%; height: 2px; background: var(--clio-teal); position: absolute; border-radius: 2px; }
 
-  .timeline-body { padding: 25px; }
-  .ai-layer { background: rgba(255, 215, 0, 0.1); border: 1px dashed var(--ai-yellow); padding: 10px; border-radius: 4px; font-size: 10px; margin-bottom: 15px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; color: #8a7300; }
+  .logo-text { font-weight: 900; letter-spacing: 5px; font-size: 18px; color: var(--industrial-gray); }
+  .quote { font-size: 10px; color: #86868b; font-style: italic; font-weight: 300; margin-top: 5px; }
 
-  textarea { width: 100%; border: 1px solid #ddd; padding: 15px; border-radius: 4px; font-family: inherit; font-size: 16px; box-sizing: border-box; transition: all 0.3s; }
-  .red-alert { border-color: var(--alert-red) !important; color: var(--alert-red); }
+  /* Mac-Style Solid Icons */
+  .icon-bar { 
+    display: flex; justify-content: center; gap: 40px; padding: 20px; 
+    background: var(--mac-bg); border-bottom: 1px solid #e5e5e7;
+  }
+  .mac-icon { width: 22px; height: 22px; fill: #515154; transition: 0.3s; }
 
-  .action-area { padding: 20px; text-align: center; }
-  .btn-submit { width: 100%; padding: 20px; background: #1a2a3a; color: white; border: none; font-weight: 900; letter-spacing: 2px; cursor: pointer; border-radius: 4px; transition: background 0.5s; }
-  .btn-submit:hover { background: var(--clio-teal); }
+  .app-body { padding: 20px; }
+  
+  /* AI Pattern Recognition */
+  .ai-status { 
+    background: rgba(255, 215, 0, 0.08); border: 1px solid var(--ai-yellow); 
+    padding: 8px; border-radius: 6px; font-size: 9px; font-weight: 700; 
+    color: #8a7300; text-align: center; text-transform: uppercase; margin-bottom: 20px;
+    letter-spacing: 0.5px;
+  }
+
+  textarea { 
+    width: 100%; border: 1px solid #d2d2d7; padding: 16px; border-radius: 10px; 
+    font-family: inherit; font-size: 16px; box-sizing: border-box; resize: none;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  textarea:focus { border-color: var(--clio-teal); outline: none; }
+
+  /* Red Alert State */
+  .integrity-fail { border: 2px solid var(--alert-red) !important; color: var(--alert-red); background: #fff1f0; }
+
+  .btn-submit { 
+    width: 100%; padding: 18px; background: #1d1d1f; color: white; border: none; 
+    border-radius: 10px; font-weight: 700; font-size: 16px; letter-spacing: 1px; 
+    margin-top: 20px; cursor: pointer; transition: 0.3s;
+  }
+  
+  .alert-btn { background: var(--alert-red) !important; }
 
   .hidden { display: none; }
 </style>
@@ -39,52 +103,53 @@
 <body>
 
 <div class="briefcase">
+  <div class="briefcase-handle"></div>
   <header>
-    <div class="logo-area">WORKTIMELINE</div>
-    <div class="philosophy">"The truth is not a moment, but a sequence."</div>
+    <div class="logo-wrapper">
+      <div class="logo-briefcase"><div class="timeline-dash"></div></div>
+      <div class="logo-text">WORKTIMELINE</div>
+      <div class="quote">"The truth is not a moment, but a sequence."</div>
+    </div>
   </header>
 
   <div class="icon-bar">
-    <span class="icon">📷</span><span class="icon">🎤</span><span class="icon">📄</span>
+    <svg class="mac-icon" viewBox="0 0 24 24"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
+    <svg class="mac-icon" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+    <svg class="mac-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
   </div>
 
-  <div class="timeline-body" id="app-content">
-    <div class="ai-layer">✧ AI Pattern Recognition Active: Analyzing Structural Chronology</div>
-    
-    <label style="font-size: 10px; font-weight: 900; color: #999;">CHRONOLOGICAL LOG</label>
-    <textarea id="msg" rows="6" placeholder="Describe the sequence of events..." oninput="detectChange()"></textarea>
-    
-    <input type="text" id="wit" placeholder="Witness Identity" style="width:100%; padding:12px; margin-top:10px; border:1px solid #ddd; box-sizing:border-box;">
-    
-    <div class="action-area">
-      <button class="btn-submit" id="main-btn" onclick="go()">SUBMIT LOCK</button>
-    </div>
+  <div class="app-body" id="ui">
+    <div class="ai-status">✧ AI Pattern Recognition Active: Validating Structural Logic</div>
+    <textarea id="msg" rows="6" placeholder="Enter chronology of events..." oninput="integrityCheck()"></textarea>
+    <input type="text" id="wit" placeholder="Witness Identity" style="width:100%; padding:12px; margin-top:10px; border:1px solid #d2d2d7; border-radius:8px; box-sizing:border-box;">
+    <button class="btn-submit" id="main-btn" onclick="submitLock()">SUBMIT LOCK</button>
   </div>
 
   <div id="success" class="hidden" style="padding: 60px 20px; text-align: center;">
-    <h2 style="color: var(--clio-teal);">LOCK ENGAGED</h2>
-    <p style="font-size: 14px; color: #666;">Transmission to Clio complete. Timeline sealed.</p>
-    <button onclick="location.reload()" style="background:none; border:1px solid #ccc; padding:10px 20px; cursor:pointer;">New Entry</button>
+    <div style="font-size: 40px; margin-bottom: 10px;">🛡️</div>
+    <h2 style="color: var(--clio-teal); margin-bottom: 5px;">TIMELINE SEALED</h2>
+    <p style="font-size: 13px; color: #86868b;">Securely transmitted to Clio Grow.</p>
+    <button onclick="location.reload()" style="margin-top:20px; background:none; border:1px solid #d2d2d7; padding:8px 20px; border-radius:6px; cursor:pointer;">New Sequence</button>
   </div>
 </div>
 
 <script>
 const ID='y2pM4wXq62P_46R1XN8yF6-Lg6uO7q6_4O';
 const URI=window.location.origin+window.location.pathname;
-let isLocked = false;
+let locked = false;
 
-function detectChange() {
-  if(isLocked) {
-    document.getElementById('msg').classList.add('red-alert');
-    document.getElementById('main-btn').style.background = '#d9534f';
+function integrityCheck() {
+  if(locked) {
+    document.getElementById('msg').classList.add('integrity-fail');
+    document.getElementById('main-btn').classList.add('alert-btn');
     document.getElementById('main-btn').innerText = "ALTERATION DETECTED";
   }
 }
 
-async function go(){
-  if(!isLocked) {
-    isLocked = true;
-    document.getElementById('main-btn').innerText = "AUTHORIZING CLIO...";
+async function submitLock() {
+  if(!locked) {
+    locked = true;
+    document.getElementById('main-btn').innerText = "LOCKING & AUTHORIZING...";
     
     const v=Array.from(crypto.getRandomValues(new Uint8Array(32))).map(b=>b.toString(16).padStart(2,'0')).join('');
     sessionStorage.setItem('cv',v);
@@ -111,50 +176,20 @@ window.onload=async()=>{
     });
     const t=await r.json();
     if(t.access_token){
-      const res=await fetch('https://grow.clio.com/inbox_leads',{
+      await fetch('https://grow.clio.com/inbox_leads',{
         method:'POST',
         headers:{'Content-Type':'application/json','Authorization':`Bearer ${t.access_token}`},
         body:JSON.stringify({inbox_lead:{from_first:"WorkTimeline",from_last:"Evidence",from_message:`Witness: ${sessionStorage.getItem('pw')}\n\n${sessionStorage.getItem('pm')}`}})
       });
-      if(res.ok){
-        document.getElementById('app-content').classList.add('hidden');
-        document.getElementById('success').classList.remove('hidden');
-      }
+      document.getElementById('ui').classList.add('hidden');
+      document.getElementById('success').classList.remove('hidden');
     }
   }
 };
 </script>
 </body>
 </html>
-                      <h1>WORKTIMELINE</h1>
-                                                    </header>
-
-                                                      <div class="content" id="main-ui">
-                                                          <div class="timeline-card">
-                                                                <label>Step 1: Incident Chronology</label>
-                                                                      <textarea id="msg" rows="5" placeholder="Record the specific details of the incident or safety violation..."></textarea>
-                                                                          </div>
-
-                                                                              <div class="timeline-card">
-                                                                                    <label>Step 2: Structural Evidence</label>
-                                                                                          <input type="text" id="wit" placeholder="Witness Name (e.g. Murdick)">
-                                                                                              </div>
-
-                                                                                                  <button class="btn" onclick="go()">
-                                                                                                        <span>🔒</span> LOCK & TRANSMIT TO CLIO
-                                                                                                            </button>
-                                                                                                              </div>
-
-                                                                                                                <div class="content hidden" id="success-ui" style="text-align:center; padding-top:50px;">
-                                                                                                                    <div style="font-size:64px; margin-bottom:20px;">🛡️</div>
-                                                                                                                        <h2 style="color:#008080">Evidence Sealed</h2>
-                                                                                                                            <p>Your timeline has been cryptographically secured and transmitted to the legal intake system.</p>
-                                                                                                                                <button class="btn" style="background:#1a2a3a; margin-top:30px;" onclick="location.reload()">CREATE NEW LOG</button>
-                                                                                                                                  </div>
-
-                                                                                                                                    <footer>
-                                                                                                                                        TIMELINE EVIDENCE MANAGEMENT © 2026<br>
-                                                                                                                                            BRITISH COLUMBIA, CANADA
+                                                                                                                                    BRITISH COLUMBIA, CANADA
                                                                                                                                               </footer>
                                                                                                                                               </div>
 
