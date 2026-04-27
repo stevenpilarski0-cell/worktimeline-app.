@@ -1,155 +1,154 @@
-                                                                                                                                        TIMELINE EVIDENCE MANAGEMENT © 2026<br>
-        <!DOCTYPE html>
+                                                                                                                                                                                                              const t=await r.json();
+                         <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>WorkTimeline | Structural Evidence</title>
+<title>WorkTimeline | Evidence Vault</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');
   
   :root { 
-    --industrial-gray: #424242; 
-    --clio-teal: #008080; 
-    --ai-yellow: #ffd700; 
-    --alert-red: #ff3b30; 
-    --mac-bg: #f5f5f7;
+    --ind-gray: #4a4a4a; --clio-teal: #008080; --timeline-blue: #5d9cec;
+    --ai-yellow: #ffd700; --alert-red: #ff3b30; --mac-silver: #f5f5f7;
   }
 
   body { 
-    margin: 0; 
-    font-family: 'Inter', -apple-system, sans-serif; 
-    background: linear-gradient(160deg, var(--industrial-gray) 0%, var(--clio-teal) 100%); 
-    min-height: 100vh; 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    color: #1d1d1f; 
+    margin: 0; font-family: 'Inter', -apple-system, sans-serif; 
+    background: linear-gradient(165deg, var(--ind-gray) 0%, var(--clio-teal) 100%); 
+    min-height: 100vh; display: flex; justify-content: center; align-items: center; color: #1d1d1f; 
   }
   
-  /* The Structural Briefcase */
-  .briefcase { 
-    width: 92%; 
-    max-width: 400px; 
-    background: white; 
-    border-radius: 12px; 
-    box-shadow: 0 40px 100px rgba(0,0,0,0.5); 
-    position: relative; 
-    overflow: hidden;
+  .vault-container { 
+    width: 94%; max-width: 410px; background: white; border-radius: 14px; 
+    box-shadow: 0 50px 100px rgba(0,0,0,0.6); position: relative; overflow: hidden;
   }
 
-  /* The Handle */
-  .briefcase-handle {
-    width: 70px; height: 10px; background: #222; margin: 0 auto;
-    border-radius: 5px 5px 0 0; margin-top: -5px;
-  }
+  /* Structural Briefcase Handle */
+  .handle { width: 80px; height: 12px; background: #222; margin: 0 auto; border-radius: 6px 6px 0 0; margin-top: -6px; }
 
-  header { 
-    padding: 25px 20px; 
-    text-align: center; 
-    border-bottom: 1px solid #f0f0f0; 
-  }
+  header { padding: 30px 20px; text-align: center; border-bottom: 1px solid #f0f0f0; }
 
-  /* The Logo: Briefcase with Timeline */
-  .logo-wrapper { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  /* THE LOGO RECONSTRUCTION */
+  .logo-box { display: flex; flex-direction: column; align-items: center; margin-bottom: 10px; }
   .logo-briefcase {
-    width: 40px; height: 30px; border: 3px solid var(--industrial-gray); 
-    border-radius: 4px; position: relative; display: flex; align-items: center; justify-content: center;
+    width: 46px; height: 34px; border: 3.5px solid #3c6e71; border-radius: 5px;
+    position: relative; display: flex; align-items: center;
   }
-  .timeline-dash { width: 100%; height: 2px; background: var(--clio-teal); position: absolute; border-radius: 2px; }
-
-  .logo-text { font-weight: 900; letter-spacing: 5px; font-size: 18px; color: var(--industrial-gray); }
-  .quote { font-size: 10px; color: #86868b; font-style: italic; font-weight: 300; margin-top: 5px; }
-
-  /* Mac-Style Solid Icons */
-  .icon-bar { 
-    display: flex; justify-content: center; gap: 40px; padding: 20px; 
-    background: var(--mac-bg); border-bottom: 1px solid #e5e5e7;
+  .logo-timeline {
+    width: 130%; height: 4px; background: var(--timeline-blue); position: absolute;
+    left: -15%; display: flex; justify-content: space-around; align-items: center;
   }
-  .mac-icon { width: 22px; height: 22px; fill: #515154; transition: 0.3s; }
-
-  .app-body { padding: 20px; }
+  .t-node { width: 8px; height: 8px; background: white; border: 2px solid var(--timeline-blue); border-radius: 50%; }
   
-  /* AI Pattern Recognition */
-  .ai-status { 
-    background: rgba(255, 215, 0, 0.08); border: 1px solid var(--ai-yellow); 
-    padding: 8px; border-radius: 6px; font-size: 9px; font-weight: 700; 
-    color: #8a7300; text-align: center; text-transform: uppercase; margin-bottom: 20px;
-    letter-spacing: 0.5px;
+  .logo-text { font-weight: 900; letter-spacing: 4px; font-size: 20px; color: #3c6e71; margin-top: 10px; }
+  .quote { font-size: 10px; color: #8e8e93; font-style: italic; font-weight: 300; margin-top: 4px; }
+
+  /* SOLID MAC ICONS */
+  .icon-tray { display: flex; justify-content: center; gap: 45px; padding: 18px; background: var(--mac-silver); border-bottom: 1px solid #d2d2d7; }
+  .s-icon { width: 22px; height: 22px; fill: #4a4a4c; }
+
+  .app-content { padding: 20px; }
+  
+  /* AI LAYER */
+  .ai-banner { 
+    background: rgba(255, 215, 0, 0.12); border: 1px solid var(--ai-yellow); 
+    padding: 10px; border-radius: 6px; font-size: 9px; font-weight: 900; 
+    color: #7a6600; text-align: center; text-transform: uppercase; margin-bottom: 15px;
   }
+
+  .ghost-log { font-size: 10px; font-family: monospace; color: #bbb; margin-bottom: 10px; text-align: left; }
 
   textarea { 
     width: 100%; border: 1px solid #d2d2d7; padding: 16px; border-radius: 10px; 
     font-family: inherit; font-size: 16px; box-sizing: border-box; resize: none;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: 0.3s;
   }
   
-  textarea:focus { border-color: var(--clio-teal); outline: none; }
+  .integrity-violation { border: 2.5px solid var(--alert-red) !important; color: var(--alert-red); background: #fff5f5; }
 
-  /* Red Alert State */
-  .integrity-fail { border: 2px solid var(--alert-red) !important; color: var(--alert-red); background: #fff1f0; }
-
-  .btn-submit { 
-    width: 100%; padding: 18px; background: #1d1d1f; color: white; border: none; 
-    border-radius: 10px; font-weight: 700; font-size: 16px; letter-spacing: 1px; 
-    margin-top: 20px; cursor: pointer; transition: 0.3s;
-  }
+  .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
   
-  .alert-btn { background: var(--alert-red) !important; }
+  .btn { padding: 16px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 14px; }
+  .btn-sub { background: #e5e5ea; color: #1d1d1f; }
+  .btn-lock { background: #1d1d1f; color: white; grid-column: span 2; margin-top: 10px; letter-spacing: 1px; }
+  
+  .red-btn { background: var(--alert-red) !important; color: white; }
 
   .hidden { display: none; }
 </style>
 </head>
 <body>
 
-<div class="briefcase">
-  <div class="briefcase-handle"></div>
+<div class="vault-container">
+  <div class="handle"></div>
   <header>
-    <div class="logo-wrapper">
-      <div class="logo-briefcase"><div class="timeline-dash"></div></div>
-      <div class="logo-text">WORKTIMELINE</div>
+    <div class="logo-box">
+      <div class="logo-briefcase">
+        <div class="logo-timeline">
+          <div class="t-node"></div><div class="t-node"></div><div class="t-node"></div>
+        </div>
+      </div>
+      <div class="logo-text">WORKTIMELINE™</div>
       <div class="quote">"The truth is not a moment, but a sequence."</div>
     </div>
   </header>
 
-  <div class="icon-bar">
-    <svg class="mac-icon" viewBox="0 0 24 24"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
-    <svg class="mac-icon" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-    <svg class="mac-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+  <div class="icon-tray">
+    <svg class="s-icon" viewBox="0 0 24 24"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
+    <svg class="s-icon" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+    <svg class="s-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
   </div>
 
-  <div class="app-body" id="ui">
-    <div class="ai-status">✧ AI Pattern Recognition Active: Validating Structural Logic</div>
-    <textarea id="msg" rows="6" placeholder="Enter chronology of events..." oninput="integrityCheck()"></textarea>
-    <input type="text" id="wit" placeholder="Witness Identity" style="width:100%; padding:12px; margin-top:10px; border:1px solid #d2d2d7; border-radius:8px; box-sizing:border-box;">
-    <button class="btn-submit" id="main-btn" onclick="submitLock()">SUBMIT LOCK</button>
+  <div class="app-body" id="main-interface">
+    <div class="ai-banner">✧ AI PATTERN RECOGNITION: ANALYZING CHRONOLOGY ✧</div>
+    <div class="ghost-log" id="ghost">LOG: System Ready...</div>
+    
+    <textarea id="msg" rows="5" placeholder="Enter point in timeline..." oninput="checkIntegrity()"></textarea>
+    
+    <div class="controls">
+      <button class="btn btn-sub" onclick="addPoint()">SUBMIT</button>
+      <input type="text" id="wit" placeholder="Witness Identity" style="padding:12px; border:1px solid #d2d2d7; border-radius:8px; font-size:14px;">
+      <button class="btn btn-lock" id="lock-btn" onclick="finalLock()">SUBMIT LOCK</button>
+    </div>
   </div>
 
-  <div id="success" class="hidden" style="padding: 60px 20px; text-align: center;">
+  <div id="finalized" class="hidden" style="padding: 60px 20px; text-align: center;">
     <div style="font-size: 40px; margin-bottom: 10px;">🛡️</div>
-    <h2 style="color: var(--clio-teal); margin-bottom: 5px;">TIMELINE SEALED</h2>
-    <p style="font-size: 13px; color: #86868b;">Securely transmitted to Clio Grow.</p>
-    <button onclick="location.reload()" style="margin-top:20px; background:none; border:1px solid #d2d2d7; padding:8px 20px; border-radius:6px; cursor:pointer;">New Sequence</button>
+    <h2 style="color: var(--clio-teal);">CHRONOLOGY SEALED</h2>
+    <p style="font-size: 13px; color: #8e8e93;">Evidence transmitted to Clio Grow servers.</p>
+    <button onclick="location.reload()" style="margin-top:20px; border:1px solid #d2d2d7; padding:10px 25px; border-radius:8px; background:white; cursor:pointer;">NEW LOG</button>
   </div>
 </div>
 
 <script>
 const ID='y2pM4wXq62P_46R1XN8yF6-Lg6uO7q6_4O';
 const URI=window.location.origin+window.location.pathname;
-let locked = false;
+let points = [];
+let isLocked = false;
 
-function integrityCheck() {
-  if(locked) {
-    document.getElementById('msg').classList.add('integrity-fail');
-    document.getElementById('main-btn').classList.add('alert-btn');
-    document.getElementById('main-btn').innerText = "ALTERATION DETECTED";
+function addPoint() {
+  const val = document.getElementById('msg').value;
+  if(val) {
+    points.push(val);
+    document.getElementById('ghost').innerText = `LOG: Point Added (${points.length})...`;
+    document.getElementById('msg').value = '';
+    document.getElementById('msg').placeholder = "Enter next sequence point...";
   }
 }
 
-async function submitLock() {
-  if(!locked) {
-    locked = true;
-    document.getElementById('main-btn').innerText = "LOCKING & AUTHORIZING...";
+function checkIntegrity() {
+  if(isLocked) {
+    document.getElementById('msg').classList.add('integrity-violation');
+    document.getElementById('lock-btn').classList.add('red-btn');
+    document.getElementById('lock-btn').innerText = "ALTERATION DETECTED";
+  }
+}
+
+async function finalLock() {
+  if(!isLocked) {
+    isLocked = true;
+    const finalMsg = points.join("\n\n") + "\n\nFINAL ENTRY: " + document.getElementById('msg').value;
     
     const v=Array.from(crypto.getRandomValues(new Uint8Array(32))).map(b=>b.toString(16).padStart(2,'0')).join('');
     sessionStorage.setItem('cv',v);
@@ -157,8 +156,8 @@ async function submitLock() {
     const hash=await crypto.subtle.digest('SHA-256',encoder.encode(v));
     const c=btoa(String.fromCharCode(...new Uint8Array(hash))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
     
-    sessionStorage.setItem('pm',document.getElementById('msg').value);
-    sessionStorage.setItem('pw',document.getElementById('wit').value);
+    sessionStorage.setItem('pm', finalMsg);
+    sessionStorage.setItem('pw', document.getElementById('wit').value);
     
     window.location.href=`https://app.clio.com/oauth/authorize?response_type=code&client_id=${ID}&redirect_uri=${encodeURIComponent(URI)}&code_challenge=${c}&code_challenge_method=S256&scope=read_leads%20write_leads`;
   }
@@ -181,48 +180,15 @@ window.onload=async()=>{
         headers:{'Content-Type':'application/json','Authorization':`Bearer ${t.access_token}`},
         body:JSON.stringify({inbox_lead:{from_first:"WorkTimeline",from_last:"Evidence",from_message:`Witness: ${sessionStorage.getItem('pw')}\n\n${sessionStorage.getItem('pm')}`}})
       });
-      document.getElementById('ui').classList.add('hidden');
-      document.getElementById('success').classList.remove('hidden');
+      document.getElementById('main-interface').classList.add('hidden');
+      document.getElementById('finalized').classList.remove('hidden');
     }
   }
 };
 </script>
 </body>
 </html>
-                                                                                                                                    BRITISH COLUMBIA, CANADA
-                                                                                                                                              </footer>
-                                                                                                                                              </div>
-
-                                                                                                                                              <script>
-                                                                                                                                              const ID='y2pM4wXq62P_46R1XN8yF6-Lg6uO7q6_4O';
-                                                                                                                                              const URI=window.location.origin+window.location.pathname;
-
-                                                                                                                                              async function go(){
-                                                                                                                                                const v=Array.from(crypto.getRandomValues(new Uint8Array(32))).map(b=>b.toString(16).padStart(2,'0')).join('');
-                                                                                                                                                  sessionStorage.setItem('cv',v);
-                                                                                                                                                    const encoder=new TextEncoder();
-                                                                                                                                                      const hash=await crypto.subtle.digest('SHA-256',encoder.encode(v));
-                                                                                                                                                        const c=btoa(String.fromCharCode(...new Uint8Array(hash))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
-                                                                                                                                                          
-                                                                                                                                                            sessionStorage.setItem('pm',document.getElementById('msg').value);
-                                                                                                                                                              sessionStorage.setItem('pw',document.getElementById('wit').value);
-                                                                                                                                                                
-                                                                                                                                                                  window.location.href=`https://app.clio.com/oauth/authorize?response_type=code&client_id=${ID}&redirect_uri=${encodeURIComponent(URI)}&code_challenge=${c}&code_challenge_method=S256&scope=read_leads%20write_leads`;
-                                                                                                                                                                  }
-
-                                                                                                                                                                  window.onload=async()=>{
-                                                                                                                                                                    const p=new URLSearchParams(window.location.search);
-                                                                                                                                                                      const code=p.get('code');
-                                                                                                                                                                        if(code){
-                                                                                                                                                                            document.getElementById('main-ui').innerHTML = "<div style='text-align:center; padding-top:40px;'>Securing Transmission...</div>";
-                                                                                                                                                                                const v=sessionStorage.getItem('cv');
-                                                                                                                                                                                    const r=await fetch('https://app.clio.com/oauth/token',{
-                                                                                                                                                                                          method:'POST',
-                                                                                                                                                                                                headers:{'Content-Type':'application/x-www-form-urlencoded'},
-                                                                                                                                                                                                      body:new URLSearchParams({client_id:ID,grant_type:'authorization_code',code:code,redirect_uri:URI,code_verifier:v})
-                                                                                                                                                                                                          });
-                                                                                                                                                                                                              const t=await r.json();
-                                                                                                                                                                                                                  if(t.access_token){
+                                                                                                                                                                                         if(t.access_token){
                                                                                                                                                                                                                         const res=await fetch('https://grow.clio.com/inbox_leads',{
                                                                                                                                                                                                                                 method:'POST',
                                                                                                                                                                                                                                         headers:{'Content-Type':'application/json','Authorization':`Bearer ${t.access_token}`},
