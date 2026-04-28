@@ -3,66 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeLine™</title>
+    <title>WorkTimeLine™ | The Industrial Conscience</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
+        :root { --main-bg: #0f172a; --accent: #008080; --clio: #2d9cdb; }
         body {
+            font-family: 'Inter', sans-serif;
             margin: 0;
-            padding: 20px;
             background: #0f172a;
+            background: radial-gradient(circle at top right, #1e293b, #0f172a);
             color: white;
-            font-family: sans-serif;
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             min-height: 100vh;
+            text-align: center;
         }
         .container {
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            background: rgba(255,255,255,0.05);
-            padding: 30px;
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
+            padding: 40px 25px;
+            width: 90%;
+            max-width: 450px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
         }
-        .brand { font-size: 24px; font-weight: 900; margin: 10px 0; letter-spacing: 2px; }
-        .tagline { color: #008080; font-size: 10px; text-transform: uppercase; letter-spacing: 3px; }
-        h1 { font-size: 18px; margin: 20px 0; opacity: 0.9; }
-        textarea {
+        .tagline { color: var(--accent); font-weight: 700; letter-spacing: 3px; font-size: 10px; text-transform: uppercase; margin-bottom: 8px; display: block; }
+        .brand { font-size: 28px; font-weight: 900; letter-spacing: -1px; margin: 0; background: linear-gradient(to bottom, #ffffff, #cbd5e1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        h1 { font-size: 18px; margin: 20px 0 10px; color: #f1f5f9; font-weight: 700; }
+        
+        #evidence-input {
             width: 100%;
-            height: 150px;
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 10px;
+            height: 140px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
             color: white;
-            padding: 10px;
-            margin-bottom: 20px;
-            box-sizing: border-box;
-        }
-        .btn {
-            background: #2d9cdb;
-            color: white;
-            border: none;
             padding: 15px;
-            width: 100%;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
+            box-sizing: border-box;
+            font-family: inherit;
+            resize: none;
+            margin-bottom: 20px;
+            font-size: 15px;
+            outline: none;
         }
+        #evidence-input:focus { border-color: var(--clio); }
+
+        .btn {
+            display: block;
+            width: 100%;
+            background: var(--clio);
+            color: white;
+            padding: 16px 0;
+            font-weight: 700;
+            border-radius: 12px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn:disabled { background: #475569; cursor: not-allowed; opacity: 0.7; }
+        
+        #verification-badge {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            background: rgba(0, 128, 128, 0.1);
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .footer { position: absolute; bottom: 20px; font-size: 9px; color: #475569; letter-spacing: 1px; font-weight: 600; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="tagline">The Conscience</div>
-    <div class="brand">WORKTIMELINE</div>
-    
+    <span class="tagline">The Conscience</span>
+    <h2 class="brand">WORKTIMELINE</h2>
+
     <h1>Industrial Evidence Integrity</h1>
     
-    <textarea id="evidence-input" placeholder="Enter incident details..."></textarea>
+    <textarea id="evidence-input" placeholder="Type incident details to lock into the vault..."></textarea>
     
-    <button class="btn">SUBMIT & LOCK LOG</button>
+    <button id="lock-button" class="btn">SUBMIT & LOCK LOG</button>
+
+    <div id="verification-badge" id="badge">
+        <span style="color: var(--accent); font-weight: 900; font-size: 14px;">🛡️ INTEGRITY SECURED</span>
+        <div id="hash-display" style="font-size: 9px; margin-top: 8px; font-family: monospace; opacity: 0.7; word-break: break-all; color: #94a3b8;"></div>
+    </div>
 </div>
+
+<div class="footer">
+    CLIO CA ID: 348046 • PIPEDA COMPLIANT
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+    // --- PASTE YOUR ACTUAL KEYS HERE ---
+    const SUPABASE_URL = ; https://your-id.supabase.co';
+    const SUPABASE_KEY = '';
+    // -----------------------sb_publishable_g6Edf46eHFuH8rbUaxq3Og_TiPSJHVs-----------
+
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    document.getElementById('lock-button').addEventListener('click', async () => {
+        const input = document.getElementById('evidence-input');
+        const btn = document.getElementById('lock-button');
+        const badge = document.getElementById('verification-badge');
+        const hashDisplay = document.getElementById('hash-display');
+        const content = input.value.trim();
+
+        if (!content) {
+            alert("The vault requires data to lock. Please enter evidence.");
+            return;
+        }
+
+        // UI State: Locking
+        btn.disabled = true;
+        btn.innerText = "GENERATING HASH...";
+
+        try {
+            // 1. Create Digital Fingerprint (SHA-256 Hash)
+            const msgBuffer = new TextEncoder().encode(content);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+            // 2. Insert into Supabase Oregon Database
+            const { error } = await supabaseClient
+                .from('work_timelines')
+                .insert([{ 
+                    log_entry: { description: content }, 
+                    integrity_hash: hashHex,
+                    matter_id: "CLIENT_POC_01" 
+                }]);
+
+            if (error) throw error;
+
+            // 3. Finalize UI (Immutable State)
+            input.readOnly = true;
+            btn.style.display = "none";
+            badge.style.display = "block";
+            hashDisplay.innerText = "SHA-256: " + hashHex;
+
+        } catch (err) {
+            console.error(err);
+            alert("Connection Error. Verify your Supabase Keys.");
+            btn.disabled = false;
+            btn.innerText = "SUBMIT & LOCK LOG";
+        }
+    });
+</script>
 
 </body>
 </html>
