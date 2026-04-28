@@ -4,58 +4,105 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WorkTimeline™ | The Industrial Conscience</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        /* Base Styles from your CodePen Template */
-        :root { --main-bg: #121212; --accent: #008080; --clio: #2d9cdb; }
-        body { font-family: -apple-system, system-ui, sans-serif; margin: 0; background: var(--main-bg); color: white; display: flex; flex-direction: column; min-height: 100vh; align-items: center; justify-content: center; text-align: center; }
+        :root { 
+            --main-bg: #0f172a; 
+            --accent: #008080; 
+            --clio: #2d9cdb; 
+            --glass: rgba(255, 255, 255, 0.03);
+        }
         
-        .container { padding: 40px 20px; max-width: 600px; width: 90%; }
-        
-        /* Branding */
-        .logo-box { margin-bottom: 20px; }
-        .brand { font-size: 32px; font-weight: 900; letter-spacing: -1px; margin: 0; }
-        .tagline { color: var(--accent); font-weight: bold; letter-spacing: 2px; font-size: 12px; text-transform: uppercase; }
+        body { 
+            font-family: 'Inter', -apple-system, sans-serif; 
+            margin: 0; 
+            background: radial-gradient(circle at top right, #1e293b, #0f172a); 
+            color: white; 
+            display: flex; 
+            flex-direction: column; 
+            min-height: 100vh; 
+            align-items: center; 
+            justify-content: center; 
+        }
 
-        /* The Hero Message */
-        h1 { font-size: 40px; margin: 20px 0; line-height: 1.1; }
-        p { font-size: 18px; opacity: 0.8; margin-bottom: 40px; }
+        .container { 
+            padding: 60px 30px; 
+            max-width: 500px; 
+            width: 85%; 
+            background: var(--glass);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
 
-        /* THE LIVE LINK BUTTON */
+        .brand { 
+            font-size: 38px; 
+            font-weight: 900; 
+            letter-spacing: -2px; 
+            margin: 0; 
+            background: linear-gradient(to bottom, #ffffff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tagline { 
+            color: var(--accent); 
+            font-weight: 700; 
+            letter-spacing: 3px; 
+            font-size: 11px; 
+            text-transform: uppercase; 
+            margin-top: 5px;
+            display: block;
+        }
+
+        h1 { font-size: 24px; margin: 40px 0 15px; font-weight: 700; color: #f1f5f9; }
+        p { font-size: 16px; line-height: 1.6; color: #94a3b8; margin-bottom: 40px; }
+
         .btn { 
             display: inline-block; 
             background: var(--clio); 
             color: white !important; 
-            padding: 22px 50px; 
+            padding: 20px 0; 
+            width: 100%;
             text-decoration: none; 
-            font-weight: bold; 
-            border-radius: 15px; 
-            font-size: 22px;
-            border: 3px solid white;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            font-weight: 700; 
+            border-radius: 16px; 
+            font-size: 18px;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 15px -3px rgba(45, 156, 219, 0.3);
         }
-        .btn:active { transform: scale(0.98); }
 
-        /* Compliance Footer */
-        .footer { margin-top: 50px; font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 1px; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 20px 25px -5px rgba(45, 156, 219, 0.4); }
+        .btn:active { transform: scale(0.97); }
+
+        .footer { 
+            position: absolute; 
+            bottom: 30px; 
+            font-size: 10px; 
+            color: #475569; 
+            text-transform: uppercase; 
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="logo-box">
-            <h2 class="brand">WORKTIMELINE</h2>
-            <span class="tagline">The Industrial Conscience™</span>
-        </div>
+        <h2 class="brand">WORKTIMELINE</h2>
+        <span class="tagline">The Conscience™</span>
 
-        <h1>Secure. Immutable. Defensible.</h1>
-        <p>Providing the Canadian workforce with cryptographically sealed evidence integrity.</p>
+        <h1>Industrial Evidence Integrity</h1>
+        <p>A secure, immutable bridge between workplace incidents and legal counsel.</p>
 
         <a href="/timeline.html" class="btn">LAUNCH PORTAL</a>
+    </div>
 
-        <div class="footer">
-            Clio CA App ID: 348846 | PIPEDA/PIPA Compliant | BC-West Node
-        </div>
+    <div class="footer">
+        Clio CA ID: 348846 • PIPEDA COMPLIANT
     </div>
 
 </body>
