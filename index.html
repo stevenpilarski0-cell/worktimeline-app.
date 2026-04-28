@@ -3,68 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeLine™ | Total Integrity</title>
+    <title>WorkTimeLine™ | Industrial Integrity</title>
     <style>
-        :root { --teal: #008080; --dark: #004d4d; --gold: #ffd700; --light: #f8fafc; --alert: #dc2626; }
-        body { margin: 0; padding: 0; font-family: -apple-system, sans-serif; background: var(--light); color: #333; display: flex; flex-direction: column; min-height: 100vh; align-items: center; }
-        
-        header { width: 100%; padding: 15px 0; text-align: center; background: #fff; border-bottom: 1px solid #ddd; }
-        .logo-box { position: relative; display: inline-block; }
-        .logo-img { width: 45px; }
-        .timeline-bar { position: absolute; top: 60%; left: -10px; right: -10px; height: 2px; background: var(--teal); }
-        .brand { font-weight: 900; letter-spacing: 2px; color: var(--dark); font-size: 16px; margin-top: 5px; text-transform: uppercase; }
+        /* CODEPEN INDUSTRIAL AESTHETIC */
+        :root {
+            --teal: #008080;
+            --glow: #00ffcc;
+            --bg: #050a0a;
+            --panel: rgba(0, 128, 128, 0.08);
+            --gold: #ffd700;
+        }
 
-        .main-container { width: 90%; max-width: 400px; padding: 20px 0 100px 0; }
-        
-        /* THE VISUAL TIMELINE */
-        #live-timeline { border-left: 3px solid var(--teal); margin: 25px 10px; padding: 0; min-height: 20px; transition: 0.3s; }
-        .stealth-active { filter: blur(12px); opacity: 0.2; pointer-events: none; }
-        .point { position: relative; margin-bottom: 25px; padding-left: 25px; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
-        .point::before { content: ''; position: absolute; left: -11px; top: 5px; width: 15px; height: 15px; background: #fff; border: 3px solid var(--teal); border-radius: 50%; box-shadow: 0 0 5px var(--teal); }
+        body {
+            background-color: var(--bg);
+            background-image: 
+                linear-gradient(rgba(0, 128, 128, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 128, 128, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            color: #e2e8f0;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
 
-        /* INPUTS */
-        .box { background: #fff; padding: 15px; border-radius: 15px; border: 1px solid #ddd; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        textarea { width: 100%; border: 1px solid #eee; padding: 12px; box-sizing: border-box; border-radius: 8px; font-size: 15px; outline: none; resize: none; }
-        .btn-add { background: var(--teal); color: #fff; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        /* THE CONTAINER FRAME */
+        .vault-frame {
+            width: 90%;
+            max-width: 450px;
+            padding: 40px 30px;
+            background: var(--panel);
+            border: 1px solid var(--teal);
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 128, 128, 0.2);
+        }
 
-        /* THE SOLID PADLOCK BUTTON */
-        .lock-container { text-align: center; margin-top: 30px; display: none; }
-        .padlock-btn { background: none; border: none; cursor: pointer; transition: transform 0.2s; }
-        .padlock-btn:active { transform: scale(0.9); }
-        .padlock-svg { width: 60px; height: 60px; fill: var(--teal); }
-        .lock-text { display: block; font-size: 10px; font-weight: 900; color: var(--teal); margin-top: 5px; letter-spacing: 1px; }
+        /* CORNER BRACKETS */
+        .vault-frame::before { content: ''; position: absolute; top: -2px; left: -2px; width: 30px; height: 30px; border-top: 3px solid var(--glow); border-left: 3px solid var(--glow); }
+        .vault-frame::after { content: ''; position: absolute; bottom: -2px; right: -2px; width: 30px; height: 30px; border-bottom: 3px solid var(--glow); border-right: 3px solid var(--glow); }
 
-        /* WARNING OVERLAY */
-        #warning-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; }
-        .modal-content { background: #fff; padding: 25px; border-radius: 15px; text-align: center; max-width: 350px; border-top: 5px solid var(--alert); }
-        .alert-title { color: var(--alert); font-weight: 900; margin-bottom: 15px; }
-        .alert-body { font-size: 13px; line-height: 1.5; color: #333; margin-bottom: 20px; }
-        .modal-btns { display: flex; gap: 10px; }
-        .confirm-btn { background: var(--dark); color: #fff; flex: 1; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; }
-        .cancel-btn { background: #eee; color: #666; flex: 1; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; }
+        /* HEADER & LOGO */
+        .header-section { text-align: center; margin-bottom: 30px; }
+        .logo-img { width: 50px; filter: drop-shadow(0 0 5px var(--glow)); }
+        .brand { font-size: 24px; font-weight: bold; letter-spacing: 5px; color: var(--glow); margin: 10px 0 0 0; text-transform: uppercase; }
 
-        /* STEALTH */
-        .pattern-msg { background: #000; color: var(--gold); padding: 10px; font-size: 10px; font-family: monospace; text-align: center; border-radius: 5px; margin-bottom: 15px; border: 1px solid var(--gold); }
-        .stealth-ui { background: #f1f5f9; padding: 12px; text-align: center; border-radius: 10px; margin-bottom: 20px; border: 1px dashed var(--teal); }
-        
-        .entry-data { font-size: 15px; font-weight: 500; color: #1e293b; }
-        .entry-time { font-size: 10px; color: var(--teal); font-weight: bold; }
-    </style>
-</head>
-<body>
-
-<header>
-    <div class="logo-box">
-        <img src="https://img.icons8.com/ios-filled/100/008080/briefcase.png" class="logo-img">
-        <div class="timeline-bar"></div>
-    </div>
-    <div class="brand">WORKTIMELINE</div>
-</header>
-
-<div class="main-container">
-    <div class="pattern-msg">[ PATTERN RECOGNITION ACTIVE • MONITORING ANOMALIES ]</div>
-    
-    <div id="stealth-ui" class="stealth-ui">
-        <span style="font-size: 11px; color: #64748b; font-weight: bold;">STEALTH: ACTIVE</span>
-        <input type="password" id="pin-entry" placeholder="PIN
+        /* WARNING BANNER */
+        .pattern-warning {
+            background: #000;
+            color: var(--gold);
+            border: 1px solid var(--gold);
+            padding: 10px;
+            font-size: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            animation: flicker 2s infinite;
+        }
+        @keyframes flicker { 0%, 100% { opacity: 1; } 50%
