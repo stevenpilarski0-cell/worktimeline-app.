@@ -3,74 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeLine™ | Professional Suite</title>
+    <title>WorkTimeLine™ | Stealth Suite</title>
     <style>
-        :root { --teal: #008080; --dark: #0a0f0f; --light: #f8fafc; }
-        body { margin: 0; padding: 0; font-family: sans-serif; background: var(--light); color: #333; height: 100vh; overflow: hidden; }
+        :root { --teal: #008080; --dark: #0a0f0f; --light: #f8fafc; --warning: #ffcc00; }
+        body { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; background: var(--light); color: #333; height: 100vh; display: flex; flex-direction: column; }
         
-        /* HEADER */
-        header { padding: 20px; text-align: center; background: white; border-bottom: 1px solid #eee; }
+        header { padding: 15px; text-align: center; background: white; border-bottom: 1px solid #ddd; }
         .logo-box { position: relative; display: inline-block; }
-        .logo-img { width: 50px; }
+        .logo-img { width: 45px; }
         .timeline-line { position: absolute; top: 60%; left: -10px; right: -10px; height: 2px; background: var(--teal); }
 
-        /* TAB SYSTEM */
-        .tab-content { display: none; padding: 20px; height: calc(100vh - 180px); overflow-y: auto; }
+        .tab-content { display: none; padding: 20px; flex: 1; overflow-y: auto; }
         .active-tab { display: block; }
 
-        /* VAULT STYLE */
-        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        textarea { width: 100%; height: 120px; border: 1px solid #ddd; border-radius: 10px; padding: 12px; font-size: 16px; box-sizing: border-box; margin-bottom: 15px; }
-        .btn { background: var(--teal); color: white; border: none; width: 100%; padding: 15px; border-radius: 10px; font-weight: bold; }
+        /* VAULT CARD */
+        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eee; }
+        textarea { width: 100%; height: 120px; border: 1px solid #ddd; border-radius: 10px; padding: 12px; font-size: 16px; box-sizing: border-box; margin-bottom: 15px; outline: none; }
+        .btn { background: var(--teal); color: white; border: none; width: 100%; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; }
 
-        /* STEALTH MODE OVERRIDE */
-        .stealth-mode { background: var(--dark) !important; color: var(--teal) !important; }
-        .stealth-mode .card { background: #111; border: 1px solid var(--teal); color: white; }
+        /* TIMELINE & STEALTH BLUR */
+        .log-entry { padding: 15px; border-bottom: 1px solid #eee; background: white; margin-bottom: 10px; border-radius: 8px; position: relative; }
+        .stealth-blur { filter: blur(8px); pointer-events: none; user-select: none; opacity: 0.3; }
+        
+        /* WARNING BOX */
+        .pattern-warning { background: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; font-size: 11px; margin-bottom: 15px; border: 1px solid #ffeeba; }
 
-        /* NAVIGATION BAR */
-        nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; border-top: 1px solid #eee; padding: 10px 0; }
-        nav button { flex: 1; border: none; background: none; font-size: 10px; color: #666; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
-        nav button.active { color: var(--teal); font-weight: bold; }
+        /* STEALTH OVERLAY */
+        #stealth-lock { padding: 20px; text-align: center; background: #eee; border-radius: 10px; margin-bottom: 20px; }
+        #stealth-lock input { padding: 10px; border-radius: 5px; border: 1px solid #ccc; width: 100px; text-align: center; }
+
+        /* NAV */
+        nav { background: white; display: flex; border-top: 1px solid #eee; padding: 10px 0; }
+        nav button { flex: 1; border: none; background: none; font-size: 11px; color: #888; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        nav button.active { color: var(--teal); }
     </style>
 </head>
 <body>
 
-<header id="app-header">
+<header>
     <div class="logo-box">
         <img src="https://img.icons8.com/ios-filled/100/008080/briefcase.png" class="logo-img">
         <div class="timeline-line"></div>
     </div>
-    <div style="font-weight: 900; letter-spacing: 2px; color: #004d4d;">WORKTIMELINE</div>
+    <div style="font-weight: 900; color: #004d4d; font-size: 18px;">WORKTIMELINE</div>
 </header>
 
 <div id="tab-vault" class="tab-content active-tab">
     <div class="card">
-        <div style="font-style: italic; font-size: 12px; margin-bottom: 15px; border-left: 3px solid var(--teal); padding-left: 10px;">"The truth is not what we want it to be; it is what it is..."</div>
-        <textarea id="vault-input" placeholder="Enter incident details..."></textarea>
-        <button class="btn" onclick="lockVault()">SUBMIT & LOCK</button>
-        <div id="badge" style="display:none; margin-top:15px; color:var(--teal); font-weight:bold;">🛡️ INTEGRITY SECURED</div>
+        <div style="font-size: 12px; margin-bottom: 10px; color: var(--teal); font-weight: bold;">INDUSTRIAL EVIDENCE INPUT</div>
+        <textarea id="vault-input" placeholder="Enter incident details to lock..."></textarea>
+        <button id="lock-btn" class="btn" onclick="saveToVault()">SUBMIT & LOCK</button>
+        <div id="success-msg" style="display:none; margin-top:15px; color: green; font-size: 13px; font-weight: bold;">🛡️ RECORD ENCRYPTED & SENT TO TIMELINE</div>
     </div>
 </div>
 
 <div id="tab-timeline" class="tab-content">
-    <h3 style="color: var(--teal);">History Log</h3>
-    <div id="log-list" style="font-size: 12px;">
-        <div style="padding:10px; border-bottom:1px solid #eee;">[ No Entries in Session ]</div>
+    <div class="pattern-warning">
+        ⚠️ <strong>PATTERN RECOGNITION ACTIVE:</strong> System is monitoring for recurring industrial discrepancies.
     </div>
-</div>
 
-<div id="tab-stealth" class="tab-content">
-    <div class="card" style="text-align: center; padding: 40px 20px;">
-        <h3>STEALTH PROTOCOL</h3>
-        <p style="font-size: 12px;">Industrial interface active. All data encrypted via Oregon Vault 01.</p>
-        <button class="btn" onclick="toggleStealth()" style="background:#333; border: 1px solid var(--teal);">TOGGLE THEME</button>
+    <div id="stealth-lock">
+        <div style="font-size: 12px; margin-bottom: 8px;">STEALTH MODE ACTIVE</div>
+        <input type="password" id="passcode" placeholder="PIN">
+        <button onclick="unlockStealth()" style="background:var(--teal); color:white; border:none; padding:8px 12px; border-radius:5px; cursor:pointer;">UNLOCK</button>
+    </div>
+
+    <div id="timeline-container" class="stealth-blur">
+        <div style="text-align:center; padding:20px; color:#999;">No records found.</div>
     </div>
 </div>
 
 <nav>
     <button onclick="showTab('tab-vault', this)" class="active">Vault</button>
     <button onclick="showTab('tab-timeline', this)">Timeline</button>
-    <button onclick="showTab('tab-stealth', this)">Stealth</button>
 </nav>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -84,26 +89,56 @@
         btn.classList.add('active');
     }
 
-    function toggleStealth() {
-        document.body.classList.toggle('stealth-mode');
+    function unlockStealth() {
+        const pin = document.getElementById('passcode').value;
+        if(pin === "1234") {
+            document.getElementById('timeline-container').classList.remove('stealth-blur');
+            document.getElementById('stealth-lock').style.display = "none";
+        } else {
+            alert("ACCESS DENIED");
+        }
     }
 
-    async function lockVault() {
+    async function saveToVault() {
         const val = document.getElementById('vault-input').value.trim();
-        if(!val) return alert("Enter data");
+        const btn = document.getElementById('lock-btn');
+        if(!val) return alert("Empty input");
 
-        // Simple Hash for Demo
-        const hash = "SHA256-" + Math.random().toString(16).slice(2, 10).toUpperCase();
-        
+        btn.innerText = "CRYPTO-LOCKING...";
+        btn.disabled = true;
+
+        // Generate Hash
+        const msg = new TextEncoder().encode(val);
+        const hashBuf = await crypto.subtle.digest('SHA-256', msg);
+        const hashHex = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
+
         const { error } = await client.from('work_timelines').insert([{ 
-            log_entry: { description: val }, integrity_hash: hash 
+            log_entry: { description: val }, 
+            integrity_hash: hashHex,
+            matter_id: "STEALTH_DEMO" 
         }]);
 
         if(!error) {
-            document.getElementById('badge').style.display = "block";
-            // Add to Timeline Tab visually
-            const entry = `<div style="padding:10px; border-bottom:1px solid #eee;"><strong>LOCKED:</strong> ${val.substring(0,20)}... <br><span style="font-size:8px;">${hash}</span></div>`;
-            document.getElementById('log-list').innerHTML = entry + document.getElementById('log-list').innerHTML;
+            document.getElementById('success-msg').style.display = "block";
+            // Update Timeline View
+            const entryHtml = `
+                <div class="log-entry">
+                    <div style="font-weight:bold; font-size:14px;">${val}</div>
+                    <div style="font-size:9px; color:var(--teal); margin-top:5px; font-family:monospace;">HASH: ${hashHex}</div>
+                    <div style="font-size:9px; color:#aaa; margin-top:3px;">STORED: ${new Date().toLocaleString()}</div>
+                </div>`;
+            
+            const container = document.getElementById('timeline-container');
+            if(container.innerText === "No records found.") container.innerHTML = "";
+            container.innerHTML = entryHtml + container.innerHTML;
+
+            // Reset Vault
+            document.getElementById('vault-input').value = "";
+            btn.disabled = false;
+            btn.innerText = "SUBMIT & LOCK";
+        } else {
+            alert("VAULT ERROR");
+            btn.disabled = false;
         }
     }
 </script>
