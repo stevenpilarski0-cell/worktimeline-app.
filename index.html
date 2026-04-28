@@ -3,176 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeLine™ | Industrial Evidence Vault</title>
-    
+    <title>WorkTimeLine™ | Professional Vault</title>
     <style>
-        /* THE CODEPEN INDUSTRIAL STYLING */
-        :root {
-            --teal-glow: #008080;
-            --dark-bg: #0a0f0f;
-            --text: #c4d1d1;
-        }
-
         body {
-            background-color: var(--dark-bg);
-            /* The CodePen Grid Pattern */
-            background-image: 
-                linear-gradient(rgba(0, 128, 128, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 128, 128, 0.05) 1px, transparent 1px);
-            background-size: 30px 30px;
-            color: var(--text);
-            font-family: 'Share Tech Mono', 'Courier New', monospace;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8fafc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
-            padding: 20px;
         }
 
-        .main-frame {
-            position: relative;
+        .container {
             width: 100%;
-            max-width: 450px;
-            background: rgba(0, 20, 20, 0.8);
-            border: 1px solid var(--teal-glow);
-            padding: 40px 30px;
-            box-shadow: 0 0 30px rgba(0, 128, 128, 0.2);
-            border-radius: 4px;
-        }
-
-        /* The CodePen "Corner Brackets" */
-        .main-frame::before {
-            content: "";
-            position: absolute;
-            top: -2px; left: -2px;
-            width: 30px; height: 30px;
-            border-top: 3px solid var(--teal-glow);
-            border-left: 3px solid var(--teal-glow);
-        }
-        .main-frame::after {
-            content: "";
-            position: absolute;
-            bottom: -2px; right: -2px;
-            width: 30px; height: 30px;
-            border-bottom: 3px solid var(--teal-glow);
-            border-right: 3px solid var(--teal-glow);
-        }
-
-        .header-section {
+            max-width: 400px;
+            background: #ffffff;
+            padding: 40px 25px;
+            border-radius: 24px;
             text-align: center;
-            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0;
+            position: relative;
         }
 
-        .brand-title {
-            font-size: 32px;
-            font-weight: 900;
-            letter-spacing: 6px;
-            color: var(--teal-glow);
-            text-shadow: 0 0 10px var(--teal-glow);
-            margin: 0;
+        /* LOGO: BRIEFCASE WITH TIMELINE SYMBOL */
+        .logo-box {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        .logo-img { width: 70px; }
+        .timeline-line {
+            position: absolute;
+            top: 60%;
+            left: -10px;
+            right: -10px;
+            height: 2px;
+            background: #008080;
+            opacity: 0.6;
         }
 
-        .sub-brand {
-            font-size: 10px;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            opacity: 0.7;
+        .brand { 
+            font-size: 26px; 
+            font-weight: 900; 
+            letter-spacing: 1px; 
+            margin: 0; 
+            color: #004d4d; 
         }
 
-        .quote-container {
+        .tagline { 
+            font-size: 10px; 
+            text-transform: uppercase; 
+            letter-spacing: 3px; 
+            color: #008080; 
+            display: block; 
+            margin-bottom: 20px; 
+            font-weight: bold; 
+        }
+        
+        .quote-box {
+            font-style: italic;
             font-size: 13px;
             line-height: 1.6;
-            margin: 25px 0;
+            margin-bottom: 25px;
             padding: 15px;
-            background: rgba(0, 128, 128, 0.05);
-            border-left: 2px solid var(--teal-glow);
-            color: #8899a6;
-            font-style: italic;
+            background: #f1f5f9;
+            border-left: 4px solid #008080;
+            text-align: left;
+            color: #475569;
         }
 
-        /* The Input Area */
-        #evidence-box {
+        textarea {
             width: 100%;
-            height: 160px;
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(0, 128, 128, 0.3);
-            border-radius: 0;
-            color: #00ffcc;
+            height: 140px;
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
             padding: 15px;
-            font-family: inherit;
-            font-size: 15px;
-            resize: none;
-            outline: none;
+            font-size: 16px;
+            color: #1e293b;
+            margin-bottom: 20px;
             box-sizing: border-box;
-            transition: 0.3s;
+            outline: none;
         }
-        #evidence-box:focus {
-            border-color: var(--teal-glow);
-            box-shadow: 0 0 15px rgba(0, 128, 128, 0.2);
-        }
+        textarea:focus { border-color: #008080; }
 
-        .action-btn {
+        .btn {
+            background: #008080;
+            color: white;
+            border: none;
             width: 100%;
-            margin-top: 20px;
             padding: 18px;
-            background: transparent;
-            border: 1px solid var(--teal-glow);
-            color: var(--teal-glow);
-            font-family: inherit;
+            border-radius: 12px;
             font-weight: bold;
             font-size: 16px;
-            letter-spacing: 2px;
             cursor: pointer;
-            transition: 0.4s;
         }
-        .action-btn:hover {
-            background: var(--teal-glow);
-            color: var(--dark-bg);
-            box-shadow: 0 0 25px var(--teal-glow);
+        
+        #badge { 
+            display: none; 
+            margin-top: 25px; 
+            padding: 20px; 
+            background: #f0fdfa; 
+            border: 1px solid #5eead4; 
+            border-radius: 15px; 
+            color: #0f766e; 
         }
-        .action-btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-
-        /* Locked State */
-        #integrity-seal {
-            display: none;
-            margin-top: 25px;
-            padding: 20px;
-            border: 1px dashed var(--teal-glow);
-            background: rgba(0, 128, 128, 0.1);
-            text-align: center;
-            animation: flicker 0.2s infinite alternate;
-        }
-        @keyframes flicker {
-            from { opacity: 0.9; }
-            to { opacity: 1; }
-        }
-
-        .hash-data {
-            font-size: 9px;
-            word-break: break-all;
-            margin-top: 12px;
-            color: #00ffcc;
-            font-family: monospace;
-        }
-
-        .status-text {
-            font-weight: bold;
-            font-size: 14px;
-            letter-spacing: 1px;
+        
+        #hash-display { 
+            font-size: 9px; 
+            font-family: monospace; 
+            word-break: break-all; 
+            margin-top: 10px; 
         }
     </style>
 </head>
 <body>
 
-    <div class="main-frame">
-        <div class="header-section">
-            <h1 class="brand-title">WORKTIMELINE</h1>
-            <div class="sub-brand">THE CONSCIENCE • INDUSTRIAL INTEGRITY</div>
-        </div>
+<div class="container">
+    <div class="logo-box">
+        <img src="https://img.icons8.com/ios-filled/100/008080/briefcase.png" class="logo-img" alt="Vault">
+        <div class="timeline-line"></div>
+    </div>
+    
+    <div class="brand">WORKTIMELINE</div>
+    <span class="tagline">The Conscience</span>
+    
+    <div class="quote-box">
+        "The truth is not what we want it to be; it is what it is, and we must bend to its power or be broken by its silence."
+    </div>
 
-        <div class="quote-container">
-            "The truth is not what we want it to be; it is what it is, and we must bend to its power
+    <textarea id="evidence-input" placeholder="Type incident details..."></textarea>
+    
+    <button id="lock-button" class="btn">SUBMIT & LOCK TO VAULT</button>
+
+    <div id="badge">
+        <span style="font-weight: 900;">🛡️ INTEGRITY SECURED</span>
+        <div id="hash-display"></div>
+        <div style="font-size: 9px; margin-top: 10px; opacity: 0.7;">DATA PERMANENTLY STORED IN OREGON VAULT</div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+    const SUPABASE_URL = 'https://lbpvtrmfjivlisserdfr.supabase.co'; 
+    const SUPABASE_KEY = 'sb_publishable_g6Edf46eHFuH8rbUaxq3Og_TiPSJHVs';
+    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    document.getElementById('lock-button').onclick = async () => {
+        const input = document.getElementById('evidence-input');
+        const btn
