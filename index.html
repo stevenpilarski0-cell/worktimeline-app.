@@ -3,60 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeline™ Portal</title>
+    <title>WorkTimeline™ | The Industrial Conscience</title>
     <style>
-        body { 
-            background-color: #1a1a1a; 
-            color: #ffffff; 
-            font-family: -apple-system, sans-serif; 
-            margin: 0; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            height: 100vh; 
-            text-align: center; 
-        }
-        .container { 
-            border: 2px solid #008080; 
-            padding: 40px 20px; 
-            border-radius: 24px; 
-            background: #222; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-            max-width: 90%;
-        }
-        h1 { font-size: 28px; margin: 0; letter-spacing: -1px; }
-        .tagline { color: #008080; font-weight: bold; font-size: 12px; margin-bottom: 30px; display: block; }
+        /* Base Styles from your CodePen Template */
+        :root { --main-bg: #121212; --accent: #008080; --clio: #2d9cdb; }
+        body { font-family: -apple-system, system-ui, sans-serif; margin: 0; background: var(--main-bg); color: white; display: flex; flex-direction: column; min-height: 100vh; align-items: center; justify-content: center; text-align: center; }
+        
+        .container { padding: 40px 20px; max-width: 600px; width: 90%; }
+        
+        /* Branding */
+        .logo-box { margin-bottom: 20px; }
+        .brand { font-size: 32px; font-weight: 900; letter-spacing: -1px; margin: 0; }
+        .tagline { color: var(--accent); font-weight: bold; letter-spacing: 2px; font-size: 12px; text-transform: uppercase; }
+
+        /* The Hero Message */
+        h1 { font-size: 40px; margin: 20px 0; line-height: 1.1; }
+        p { font-size: 18px; opacity: 0.8; margin-bottom: 40px; }
+
+        /* THE LIVE LINK BUTTON */
         .btn { 
-            background: #2d9cdb; 
+            display: inline-block; 
+            background: var(--clio); 
             color: white !important; 
+            padding: 22px 50px; 
             text-decoration: none; 
-            padding: 20px 40px; 
-            border-radius: 12px; 
-            font-weight: 900; 
-            font-size: 20px; 
-            display: inline-block;
-            border: 3px solid #ffffff;
+            font-weight: bold; 
+            border-radius: 15px; 
+            font-size: 22px;
+            border: 3px solid white;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        .footer-info { margin-top: 40px; font-size: 10px; color: #555; letter-spacing: 1px; }
+        .btn:active { transform: scale(0.98); }
+
+        /* Compliance Footer */
+        .footer { margin-top: 50px; font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 1px; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>WORKTIMELINE™</h1>
-        <span class="tagline">THE CONSCIENCE</span>
-        
-        <p style="font-size: 14px; opacity: 0.8; margin-bottom: 30px;">
-            Industrial Evidence Integrity Portal<br>
-            Regional Node: BC-West (pdx1)
-        </p>
+        <div class="logo-box">
+            <h2 class="brand">WORKTIMELINE</h2>
+            <span class="tagline">The Industrial Conscience™</span>
+        </div>
+
+        <h1>Secure. Immutable. Defensible.</h1>
+        <p>Providing the Canadian workforce with cryptographically sealed evidence integrity.</p>
 
         <a href="/timeline.html" class="btn">LAUNCH PORTAL</a>
-    </div>
 
-    <div class="footer-info">
-        CLIO CA APP ID: 348846 | PIPEDA COMPLIANT
+        <div class="footer">
+            Clio CA App ID: 348846 | PIPEDA/PIPA Compliant | BC-West Node
+        </div>
     </div>
 
 </body>
