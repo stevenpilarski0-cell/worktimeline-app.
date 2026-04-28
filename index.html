@@ -3,42 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeLine™ | Industrial</title>
+    <title>WorkTimeLine™ | Industrial Integrity</title>
     <style>
-        /* INDUSTRIAL THEME */
+        /* CODEPEN INDUSTRIAL AESTHETIC */
         :root {
             --teal: #008080;
             --glow: #00ffcc;
             --bg: #050a0a;
+            --panel: rgba(0, 128, 128, 0.08);
             --gold: #ffd700;
-            --alert: #dc2626;
         }
 
         body {
             background-color: var(--bg);
-            background-image: radial-gradient(rgba(0, 128, 128, 0.15) 1px, transparent 0);
+            background-image: 
+                linear-gradient(rgba(0, 128, 128, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 128, 128, 0.05) 1px, transparent 1px);
             background-size: 30px 30px;
             color: #e2e8f0;
             font-family: 'Courier New', Courier, monospace;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            padding: 20px;
+            overflow-x: hidden;
         }
 
+        /* THE CONTAINER FRAME */
+        .vault-frame {
+            width: 90%;
+            max-width: 450px;
+            padding: 40px 30px;
+            background: var(--panel);
+            border: 1px solid var(--teal);
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 128, 128, 0.2);
+        }
+
+        /* CORNER BRACKETS */
+        .vault-frame::before { content: ''; position: absolute; top: -2px; left: -2px; width: 30px; height: 30px; border-top: 3px solid var(--glow); border-left: 3px solid var(--glow); }
+        .vault-frame::after { content: ''; position: absolute; bottom: -2px; right: -2px; width: 30px; height: 30px; border-bottom: 3px solid var(--glow); border-right: 3px solid var(--glow); }
+
         /* HEADER & LOGO */
-        header { text-align: center; margin-bottom: 20px; width: 100%; }
-        .logo-box { position: relative; display: inline-block; margin-bottom: 5px; }
-        .logo-img { width: 50px; filter: drop-shadow(0 0 5px var(--teal)); }
-        .timeline-bar { position: absolute; top: 60%; left: -15px; right: -15px; height: 2px; background: var(--teal); }
-        .brand { font-size: 20px; font-weight: bold; letter-spacing: 4px; color: var(--glow); margin-top: 10px; }
+        .header-section { text-align: center; margin-bottom: 30px; }
+        .logo-img { width: 50px; filter: drop-shadow(0 0 5px var(--glow)); }
+        .brand { font-size: 24px; font-weight: bold; letter-spacing: 5px; color: var(--glow); margin: 10px 0 0 0; text-transform: uppercase; }
 
-        .main-container { width: 100%; max-width: 400px; }
-
-        /* WARNING BOX */
-        .warning-banner {
+        /* WARNING BANNER */
+        .pattern-warning {
             background: #000;
             color: var(--gold);
             border: 1px solid var(--gold);
@@ -47,68 +60,39 @@
             text-align: center;
             margin-bottom: 20px;
             text-transform: uppercase;
+            animation: flicker 2s infinite;
         }
+        @keyframes flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
 
-        /* STEALTH CONTROLS */
-        .stealth-box {
-            background: rgba(0, 128, 128, 0.05);
-            border: 1px dashed var(--teal);
-            padding: 15px;
-            text-align: center;
-            margin-bottom: 20px;
-            border-radius: 8px;
-        }
-        input[type="password"] {
-            background: #000;
-            border: 1px solid var(--teal);
-            color: var(--glow);
-            text-align: center;
-            padding: 5px;
-            width: 60px;
-            outline: none;
-        }
-
-        /* INPUTS */
-        .input-panel { background: rgba(0, 0, 0, 0.4); padding: 15px; border: 1px solid var(--teal); border-radius: 4px; }
+        /* INPUT AREA */
+        .input-container { margin-bottom: 20px; }
         textarea {
             width: 100%;
-            height: 100px;
-            background: transparent;
-            border: none;
+            height: 120px;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid var(--teal);
             color: var(--glow);
+            padding: 15px;
+            box-sizing: border-box;
             font-family: inherit;
             resize: none;
             outline: none;
-            font-size: 14px;
-        }
-        .btn-add {
-            width: 100%;
-            background: var(--teal);
-            color: white;
-            border: none;
-            padding: 12px;
-            margin-top: 10px;
-            font-weight: bold;
-            cursor: pointer;
         }
 
-        /* THE LIVE VISUAL LINE */
+        /* TIMELINE VISUALS */
         #live-timeline {
             border-left: 2px solid var(--teal);
-            margin: 30px 0 30px 30px;
-            transition: 0.3s;
+            margin: 20px 0 30px 15px;
+            transition: 0.5s;
         }
-        .stealth-blur { filter: blur(15px); opacity: 0.1; pointer-events: none; }
+        .stealth-blur { filter: blur(12px); opacity: 0.1; pointer-events: none; }
         
         .point {
             position: relative;
             padding-left: 25px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             font-size: 13px;
-            animation: slideIn 0.3s ease-out;
         }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
-        
         .point::before {
             content: '';
             position: absolute;
@@ -122,79 +106,105 @@
             box-shadow: 0 0 8px var(--glow);
         }
 
-        /* THE SOLID PADLOCK SEAL */
-        #lock-trigger { display: none; text-align: center; margin-top: 30px; }
-        .padlock-btn { background: none; border: none; cursor: pointer; display: inline-flex; flex-direction: column; align-items: center; }
-        .padlock-svg { width: 60px; height: 60px; fill: var(--teal); }
-        .lock-label { display: block; font-size: 10px; color: var(--teal); margin-top: 10px; font-weight: bold; letter-spacing: 2px; }
+        /* STEALTH CONTROLS */
+        .stealth-ctrl {
+            background: rgba(0,0,0,0.4);
+            padding: 15px;
+            border: 1px dashed var(--teal);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        input[type="password"] {
+            background: transparent;
+            border: 1px solid var(--teal);
+            color: var(--glow);
+            text-align: center;
+            padding: 5px;
+            width: 60px;
+        }
 
-        /* WARNING OVERLAY */
-        #warning-modal {
+        /* BUTTONS */
+        .btn-add {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            border: 1px solid var(--teal);
+            color: var(--teal);
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .btn-add:hover { background: var(--teal); color: var(--bg); }
+
+        /* THE SOLID PADLOCK SEAL (CLIO SEND) */
+        #lock-trigger {
+            display: none;
+            text-align: center;
+            margin-top: 30px;
+            cursor: pointer;
+        }
+        .padlock-svg { width: 60px; fill: var(--glow); filter: drop-shadow(0 0 10px var(--glow)); }
+        .lock-label { display: block; font-size: 10px; color: var(--glow); margin-top: 10px; font-weight: bold; letter-spacing: 2px; }
+
+        /* MODAL */
+        #modal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.9);
-            z-index: 1000;
             justify-content: center;
             align-items: center;
-            padding: 20px;
-            box-sizing: border-box;
+            z-index: 9999;
         }
-        .modal-content {
+        .modal-box {
             background: #000;
-            border: 1px solid var(--alert);
+            border: 1px solid red;
             padding: 30px;
-            max-width: 340px;
+            max-width: 300px;
             text-align: center;
         }
-        .btn-confirm { background: var(--alert); color: white; border: none; padding: 12px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 20px; }
-        .btn-cancel { background: transparent; color: #666; border: none; margin-top: 10px; cursor: pointer; }
+        .red-alert { color: #ff3333; font-weight: bold; margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo-box">
-            <img src="https://img.icons8.com/ios-filled/100/008080/briefcase.png" class="logo-img">
-            <div class="timeline-bar"></div>
-        </div>
-        <div class="brand">WORKTIMELINE</div>
-    </header>
-
-    <div class="main-container">
-        <div class="warning-banner">
-            [ PATTERN RECOGNITION ACTIVE • MONITORING ]
+    <div class="vault-frame">
+        <div class="header-section">
+            <img src="https://img.icons8.com/ios-filled/100/00ffcc/briefcase.png" class="logo-img">
+            <h1 class="brand">WORKTIMELINE</h1>
         </div>
 
-        <div id="stealth-ui" class="stealth-box">
-            <div style="font-size: 10px; margin-bottom: 10px; opacity: 0.7;">STEALTH MODE: ACTIVE</div>
+        <div class="pattern-warning">
+            [ PATTERN RECOGNITION ACTIVE • SYSTEM MONITORING ]
+        </div>
+
+        <div id="stealth-ui" class="stealth-ctrl">
+            <span style="font-size: 10px; opacity: 0.7;">STEALTH MODE: ACTIVE</span><br><br>
             <input type="password" id="pin" placeholder="PIN">
-            <button onclick="unlock()" style="background:var(--teal); color:white; border:none; padding:5px 10px; font-size:10px; margin-left:5px;">VIEW</button>
+            <button onclick="unlock()" style="background:var(--teal); border:none; color:white; padding:5px 10px; font-size:10px; cursor:pointer;">UNBLUR</button>
         </div>
 
-        <div class="input-panel">
+        <div class="input-container">
             <textarea id="entry-input" placeholder="[ ENTER EVIDENCE DATA ]"></textarea>
             <button class="btn-add" onclick="addPoint()">+ APPEND TO TIMELINE</button>
         </div>
 
         <div id="live-timeline" class="stealth-blur"></div>
 
-        <div id="lock-trigger">
-            <button class="padlock-btn" onclick="showWarning()">
-                <svg class="padlock-svg" viewBox="0 0 24 24">
-                    <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
-                </svg>
-                <span class="lock-label">SEAL & SEND TO CLIO</span>
-            </button>
+        <div id="lock-trigger" onclick="showWarning()">
+            <svg class="padlock-svg" viewBox="0 0 24 24">
+                <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+            </svg>
+            <span class="lock-label">SEAL & SEND TO CLIO</span>
         </div>
     </div>
 
-    <div id="warning-modal">
-        <div class="modal-content">
-            <div style="color:var(--alert); font-weight:bold; margin-bottom: 15px;">⚠️ INTEGRITY WARNING</div>
-            <p style="font-size: 13px; line-height: 1.5;">You are about to seal this record. Any changes made after this point will alert <span style="color:var(--alert)">RED</span> and be considered tampered.</p>
-            <button class="btn-confirm" onclick="sealAndSend()">YES, SEAL & SEND</button>
-            <button class="btn-cancel" onclick="hideWarning()">CANCEL</button>
+    <div id="modal">
+        <div class="modal-box">
+            <div class="red-alert">⚠️ INTEGRITY WARNING</div>
+            <p style="font-size: 12px; line-height: 1.5;">Sealing this record now. Any progress or changes made after this point will alert <span style="color:red">RED</span> and be considered tampered.</p>
+            <button onclick="sealAndSend()" style="background:red; color:white; border:none; padding:10px; width:100%; font-weight:bold; cursor:pointer;">YES, SEAL & SEND</button>
+            <button onclick="hideWarning()" style="background:transparent; color:#666; border:none; margin-top:10px; cursor:pointer;">CANCEL</button>
         </div>
     </div>
 
@@ -207,7 +217,7 @@
             if(document.getElementById('pin').value === "1234") {
                 document.getElementById('live-timeline').classList.remove('stealth-blur');
                 document.getElementById('stealth-ui').style.display = "none";
-            } else { alert("DENIED"); }
+            } else { alert("ACCESS DENIED"); }
         }
 
         function addPoint() {
@@ -218,12 +228,40 @@
             currentTimeline.push(val);
             const p = document.createElement('div');
             p.className = 'point';
-            p.innerHTML = `<span style="color:var(--glow); font-size:10px;">[ ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} ]</span><br>${val}`;
+            p.innerHTML = `<span style="color:var(--glow); font-size:10px;">[ ${new Date().toLocaleTimeString()} ]</span><br>${val}`;
             
             document.getElementById('live-timeline').appendChild(p);
             input.value = "";
             document.getElementById('lock-trigger').style.display = "block";
         }
 
-        function showWarning() { document.getElementById('warning-modal').style.display = 'flex'; }
-        function hideWarning()
+        function showWarning() { document.getElementById('modal').style.display = 'flex'; }
+        function hideWarning() { document.getElementById('modal').style.display = 'none'; }
+
+        async function sealAndSend() {
+            const btn = document.querySelector('.lock-label');
+            btn.innerText = "EXECUTING ENCRYPTION...";
+            hideWarning();
+
+            const combinedText = currentTimeline.join(' | ');
+            const msgBuffer = new TextEncoder().encode(combinedText);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashHex = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+
+            const { error } = await client.from('work_timelines').insert([{ 
+                log_entry: { timeline: currentTimeline }, 
+                integrity_hash: hashHex,
+                matter_id: "INDUSTRIAL_CLIO_MASTER" 
+            }]);
+
+            if(!error) {
+                alert("TIMELINE SEALED. RECORD TRANSMITTED TO CLIO VAULT.");
+                location.reload();
+            } else {
+                alert("VAULT ERROR");
+                btn.innerText = "SEAL & SEND TO CLIO";
+            }
+        }
+    </script>
+</body>
+</html>
