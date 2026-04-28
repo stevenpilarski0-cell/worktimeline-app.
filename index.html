@@ -3,115 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeLine™ | Professional Vault</title>
+    <title>WorkTimeLine™</title>
     <style>
-        /* 1. CLEAN WHITE PROFESSIONAL THEME */
-        body {
-            margin: 0;
-            padding: 20px;
-            background-color: #f8fafc;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 400px;
-            background: #ffffff;
-            padding: 40px 25px;
-            border-radius: 24px;
-            text-align: center;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
-            border: 1px solid #e2e8f0;
-        }
-
-        /* 2. THE BRIEFCASE LOGO WITH TIMELINE SYMBOL */
-        .logo-box {
-            position: relative;
-            display: inline-block;
-            margin-bottom: 10px;
-        }
-        .logo-img { width: 70px; }
-        .timeline-line {
-            position: absolute;
-            top: 60%;
-            left: -15px;
-            right: -15px;
-            height: 2.5px;
-            background: #008080;
-            opacity: 0.6;
-        }
-
-        .brand { 
-            font-size: 26px; 
-            font-weight: 900; 
-            letter-spacing: 1px; 
-            margin: 0; 
-            color: #004d4d; 
-        }
-
-        .tagline { 
-            font-size: 10px; 
-            text-transform: uppercase; 
-            letter-spacing: 3px; 
-            color: #008080; 
-            display: block; 
-            margin-bottom: 20px; 
-            font-weight: bold; 
-        }
+        body { margin: 0; padding: 20px; background-color: #f0f4f4; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .vault-card { width: 100%; max-width: 380px; background: white; padding: 30px 20px; border-radius: 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #ddd; }
         
-        /* 3. THE PHILOSOPHICAL QUOTE */
-        .quote-box {
-            font-style: italic;
-            font-size: 13px;
-            line-height: 1.6;
-            margin-bottom: 25px;
-            padding: 15px;
-            background: #f1f5f9;
-            border-left: 4px solid #008080;
-            text-align: left;
-            color: #475569;
-        }
+        /* LOGO BOX */
+        .logo-box { position: relative; display: inline-block; margin-bottom: 10px; }
+        .logo-img { width: 60px; height: auto; }
+        .timeline-line { position: absolute; top: 60%; left: -10px; right: -10px; height: 3px; background: #008080; border-radius: 2px; }
 
-        /* 4. THE INPUT VAULT */
-        textarea {
-            width: 100%;
-            height: 140px;
-            background: #ffffff;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 15px;
-            font-size: 16px;
-            color: #1e293b;
-            margin-bottom: 20px;
-            box-sizing: border-box;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-        textarea:focus { border-color: #008080; }
-
-        /* 5. THE SUBMIT BUTTON */
-        .btn {
-            background: #008080;
-            color: white;
-            border: none;
-            width: 100%;
-            padding: 18px;
-            border-radius: 12px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        .btn:disabled { background: #cbd5e1; cursor: not-allowed; }
+        .brand { font-size: 24px; font-weight: bold; color: #004d4d; margin: 0; letter-spacing: 1px; }
+        .tagline { font-size: 10px; text-transform: uppercase; letter-spacing: 3px; color: #008080; display: block; margin-bottom: 20px; }
+        .quote { font-style: italic; font-size: 12px; background: #f8fafc; padding: 12px; border-left: 4px solid #008080; text-align: left; margin-bottom: 20px; color: #444; line-height: 1.4; }
         
-        /* 6. THE INTEGRITY BADGE (LOCKED STATE) */
-        #badge { 
-            display: none; 
-            margin-top: 25px; 
-            padding: 20px; 
-            background: #f0fdfa; 
-            border: 1px solid
+        textarea { width: 100%; height: 120px; border: 1px solid #ccc; border-radius: 10px; padding: 12px; font-size: 16px; box-sizing: border-box; margin-bottom: 20px; }
+        .btn { background: #008080; color: white; border: none; width: 100%; padding: 16px; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; }
+        
+        #badge { display: none; margin-top: 20px; padding: 15px; background: #e6fffa; border: 1px solid #38b2ac; border-radius: 10px; color: #004d4d; }
+    </style>
+</head>
+<body>
+
+<div class="vault-card">
+    <div class="logo-box">
+        <img src="https://img.icons8.com/ios-filled/100/008080/briefcase.png" class="logo-img" alt="Vault">
+        <div class="timeline-line"></div>
+    </div>
+    
+    <div class="brand">WORKTIMELINE</div>
+    <span class="tagline">The Conscience</span>
+    
+    <div class="quote">"The truth is not what we want it to be; it is what it is, and we must bend to its power or be broken by its silence."</div>
+
+    <textarea id="text-input" placeholder="Type incident details..."></textarea>
+    <button id="submit-btn" class="btn">SUBMIT & LOCK LOG</button>
+
+    <div id="badge">
+        <strong>🛡️ INTEGRITY SECURED</strong>
+        <div id="hash-val" style="font-size: 8px; word-break: break-all; margin-top: 10px; font-family: monospace;"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+    const client = supabase.createClient('https://lbpvtrmfjivlisserdfr.supabase.co', 'sb_publishable_g6Edf46eHFuH8rbUaxq3Og_TiPSJHVs');
+
+    document.getElementById('submit-btn').onclick = async function() {
+        const val = document.getElementById('text-input').value.trim();
+        const btn = document.getElementById('submit-btn');
+        if(!val) return alert("Enter details.");
+
+        btn.innerText = "LOCKING...";
+        btn.disabled = true;
+
+        try {
+            const msg = new TextEncoder().encode(val);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msg);
+            const hashHex = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+
+            const { error } = await client.from('work_timelines').insert([{ 
+                log_entry: { description: val }, 
+                integrity_hash: hashHex,
+                matter_id: "STABLE_WHITE_VAULT" 
+            }]);
+
+            if (error) throw error;
+
+            btn.style.display = "none";
+            document.getElementById('badge').style.display = "block";
+            document.getElementById('hash-val').innerText = "SHA-256: " + hashHex;
+        } catch (e) {
+            alert("Error saving.");
+            btn.disabled = false;
+            btn.innerText = "SUBMIT & LOCK LOG";
+        }
+    };
+</script>
+
+</body>
+</html>
