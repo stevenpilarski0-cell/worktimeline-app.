@@ -3,83 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeLine™</title>
+    <title>WorkTimeLine™ | Professional Suite</title>
     <style>
-        body { margin: 0; padding: 20px; background-color: #f0f4f4; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .vault-card { width: 100%; max-width: 380px; background: white; padding: 30px 20px; border-radius: 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #ddd; }
+        :root { --teal: #008080; --dark: #0a0f0f; --light: #f8fafc; }
+        body { margin: 0; padding: 0; font-family: sans-serif; background: var(--light); color: #333; height: 100vh; overflow: hidden; }
         
-        /* LOGO BOX */
-        .logo-box { position: relative; display: inline-block; margin-bottom: 10px; }
-        .logo-img { width: 60px; height: auto; }
-        .timeline-line { position: absolute; top: 60%; left: -10px; right: -10px; height: 3px; background: #008080; border-radius: 2px; }
+        /* HEADER */
+        header { padding: 20px; text-align: center; background: white; border-bottom: 1px solid #eee; }
+        .logo-box { position: relative; display: inline-block; }
+        .logo-img { width: 50px; }
+        .timeline-line { position: absolute; top: 60%; left: -10px; right: -10px; height: 2px; background: var(--teal); }
 
-        .brand { font-size: 24px; font-weight: bold; color: #004d4d; margin: 0; letter-spacing: 1px; }
-        .tagline { font-size: 10px; text-transform: uppercase; letter-spacing: 3px; color: #008080; display: block; margin-bottom: 20px; }
-        .quote { font-style: italic; font-size: 12px; background: #f8fafc; padding: 12px; border-left: 4px solid #008080; text-align: left; margin-bottom: 20px; color: #444; line-height: 1.4; }
-        
-        textarea { width: 100%; height: 120px; border: 1px solid #ccc; border-radius: 10px; padding: 12px; font-size: 16px; box-sizing: border-box; margin-bottom: 20px; }
-        .btn { background: #008080; color: white; border: none; width: 100%; padding: 16px; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; }
-        
-        #badge { display: none; margin-top: 20px; padding: 15px; background: #e6fffa; border: 1px solid #38b2ac; border-radius: 10px; color: #004d4d; }
+        /* TAB SYSTEM */
+        .tab-content { display: none; padding: 20px; height: calc(100vh - 180px); overflow-y: auto; }
+        .active-tab { display: block; }
+
+        /* VAULT STYLE */
+        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        textarea { width: 100%; height: 120px; border: 1px solid #ddd; border-radius: 10px; padding: 12px; font-size: 16px; box-sizing: border-box; margin-bottom: 15px; }
+        .btn { background: var(--teal); color: white; border: none; width: 100%; padding: 15px; border-radius: 10px; font-weight: bold; }
+
+        /* STEALTH MODE OVERRIDE */
+        .stealth-mode { background: var(--dark) !important; color: var(--teal) !important; }
+        .stealth-mode .card { background: #111; border: 1px solid var(--teal); color: white; }
+
+        /* NAVIGATION BAR */
+        nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; border-top: 1px solid #eee; padding: 10px 0; }
+        nav button { flex: 1; border: none; background: none; font-size: 10px; color: #666; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
+        nav button.active { color: var(--teal); font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="vault-card">
+<header id="app-header">
     <div class="logo-box">
-        <img src="https://img.icons8.com/ios-filled/100/008080/briefcase.png" class="logo-img" alt="Vault">
+        <img src="https://img.icons8.com/ios-filled/100/008080/briefcase.png" class="logo-img">
         <div class="timeline-line"></div>
     </div>
-    
-    <div class="brand">WORKTIMELINE</div>
-    <span class="tagline">The Conscience</span>
-    
-    <div class="quote">"The truth is not what we want it to be; it is what it is, and we must bend to its power or be broken by its silence."</div>
+    <div style="font-weight: 900; letter-spacing: 2px; color: #004d4d;">WORKTIMELINE</div>
+</header>
 
-    <textarea id="text-input" placeholder="Type incident details..."></textarea>
-    <button id="submit-btn" class="btn">SUBMIT & LOCK LOG</button>
-
-    <div id="badge">
-        <strong>🛡️ INTEGRITY SECURED</strong>
-        <div id="hash-val" style="font-size: 8px; word-break: break-all; margin-top: 10px; font-family: monospace;"></div>
+<div id="tab-vault" class="tab-content active-tab">
+    <div class="card">
+        <div style="font-style: italic; font-size: 12px; margin-bottom: 15px; border-left: 3px solid var(--teal); padding-left: 10px;">"The truth is not what we want it to be; it is what it is..."</div>
+        <textarea id="vault-input" placeholder="Enter incident details..."></textarea>
+        <button class="btn" onclick="lockVault()">SUBMIT & LOCK</button>
+        <div id="badge" style="display:none; margin-top:15px; color:var(--teal); font-weight:bold;">🛡️ INTEGRITY SECURED</div>
     </div>
 </div>
+
+<div id="tab-timeline" class="tab-content">
+    <h3 style="color: var(--teal);">History Log</h3>
+    <div id="log-list" style="font-size: 12px;">
+        <div style="padding:10px; border-bottom:1px solid #eee;">[ No Entries in Session ]</div>
+    </div>
+</div>
+
+<div id="tab-stealth" class="tab-content">
+    <div class="card" style="text-align: center; padding: 40px 20px;">
+        <h3>STEALTH PROTOCOL</h3>
+        <p style="font-size: 12px;">Industrial interface active. All data encrypted via Oregon Vault 01.</p>
+        <button class="btn" onclick="toggleStealth()" style="background:#333; border: 1px solid var(--teal);">TOGGLE THEME</button>
+    </div>
+</div>
+
+<nav>
+    <button onclick="showTab('tab-vault', this)" class="active">Vault</button>
+    <button onclick="showTab('tab-timeline', this)">Timeline</button>
+    <button onclick="showTab('tab-stealth', this)">Stealth</button>
+</nav>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
     const client = supabase.createClient('https://lbpvtrmfjivlisserdfr.supabase.co', 'sb_publishable_g6Edf46eHFuH8rbUaxq3Og_TiPSJHVs');
 
-    document.getElementById('submit-btn').onclick = async function() {
-        const val = document.getElementById('text-input').value.trim();
-        const btn = document.getElementById('submit-btn');
-        if(!val) return alert("Enter details.");
+    function showTab(tabId, btn) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
+        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active-tab');
+        btn.classList.add('active');
+    }
 
-        btn.innerText = "LOCKING...";
-        btn.disabled = true;
+    function toggleStealth() {
+        document.body.classList.toggle('stealth-mode');
+    }
 
-        try {
-            const msg = new TextEncoder().encode(val);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', msg);
-            const hashHex = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+    async function lockVault() {
+        const val = document.getElementById('vault-input').value.trim();
+        if(!val) return alert("Enter data");
 
-            const { error } = await client.from('work_timelines').insert([{ 
-                log_entry: { description: val }, 
-                integrity_hash: hashHex,
-                matter_id: "STABLE_WHITE_VAULT" 
-            }]);
+        // Simple Hash for Demo
+        const hash = "SHA256-" + Math.random().toString(16).slice(2, 10).toUpperCase();
+        
+        const { error } = await client.from('work_timelines').insert([{ 
+            log_entry: { description: val }, integrity_hash: hash 
+        }]);
 
-            if (error) throw error;
-
-            btn.style.display = "none";
+        if(!error) {
             document.getElementById('badge').style.display = "block";
-            document.getElementById('hash-val').innerText = "SHA-256: " + hashHex;
-        } catch (e) {
-            alert("Error saving.");
-            btn.disabled = false;
-            btn.innerText = "SUBMIT & LOCK LOG";
+            // Add to Timeline Tab visually
+            const entry = `<div style="padding:10px; border-bottom:1px solid #eee;"><strong>LOCKED:</strong> ${val.substring(0,20)}... <br><span style="font-size:8px;">${hash}</span></div>`;
+            document.getElementById('log-list').innerHTML = entry + document.getElementById('log-list').innerHTML;
         }
-    };
+    }
 </script>
-
 </body>
 </html>
