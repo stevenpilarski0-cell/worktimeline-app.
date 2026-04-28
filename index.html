@@ -1,64 +1,66 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeLine™ | The Industrial Conscience</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>WorkTimeLine™</title>
     <style>
-        :root { --main-bg: #0f172a; --accent: #008080; --clio: #2d9cdb; }
-        body {
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            background: #0f172a;
-            background: radial-gradient(circle at top right, #1e293b, #0f172a);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            text-align: center;
-        }
-        .container {
-            padding: 40px 25px;
-            width: 90%;
-            max-width: 450px;
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-        }
-        .tagline { color: var(--accent); font-weight: 700; letter-spacing: 3px; font-size: 10px; text-transform: uppercase; margin-bottom: 8px; display: block; }
-        .brand { font-size: 28px; font-weight: 900; letter-spacing: -1px; margin: 0; background: linear-gradient(to bottom, #ffffff, #cbd5e1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        h1 { font-size: 18px; margin: 20px 0 10px; color: #f1f5f9; font-weight: 700; }
+        body { background: #0f172a; color: white; font-family: sans-serif; text-align: center; padding: 40px 20px; }
+        .card { background: #1e293b; padding: 30px; border-radius: 20px; border: 1px solid #334155; max-width: 400px; margin: auto; }
+        textarea { width: 100%; height: 120px; border-radius: 10px; margin-bottom: 20px; padding: 10px; box-sizing: border-box; }
+        .btn { background: #2d9cdb; color: white; border: none; width: 100%; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        #badge { display: none; margin-top: 20px; color: #008080; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div style="letter-spacing: 3px; font-size: 10px; color: #008080;">THE CONSCIENCE</div>
+        <h2 style="margin: 10px 0;">WORKTIMELINE</h2>
+        <p style="font-size: 14px; opacity: 0.7;">Industrial Evidence Integrity</p>
         
-        #evidence-input {
-            width: 100%;
-            height: 140px;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            color: white;
-            padding: 15px;
-            box-sizing: border-box;
-            font-family: inherit;
-            resize: none;
-            margin-bottom: 20px;
-            font-size: 15px;
-            outline: none;
-        }
-        #evidence-input:focus { border-color: var(--clio); }
+        <textarea id="evidence-input" placeholder="Type incident details..."></textarea>
+        <button id="lock-button" class="btn">SUBMIT & LOCK LOG</button>
 
-        .btn {
-            display: block;
-            width: 100%;
-            background: var(--clio);
-            color: white;
-            padding: 16px 0;
-            font-weight: 700;
-            border-radius: 12px;
-            font-size: 16px;
-            border: none;
-            cursor:
+        <div id="badge">
+            🛡️ INTEGRITY SECURED
+            <div id="hash" style="font-size: 8px; color: #94a3b8; margin-top: 10px; word-break: break-all;"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://lbpvtrmfjivlisserdfr.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_g6Edf46eHFuH8rbUaxq3Og_TiPSJHVs';
+        const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        document.getElementById('lock-button').onclick = async () => {
+            const val = document.getElementById('evidence-input').value;
+            const btn = document.getElementById('lock-button');
+            if(!val) return alert("Enter data");
+
+            btn.innerText = "LOCKING...";
+            btn.disabled = true;
+
+            const msg = new TextEncoder().encode(val);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msg);
+            const hashHex = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+
+            const { error } = await client.from('work_timelines').insert([{ 
+                log_entry: { description: val }, 
+                integrity_hash: hashHex,
+                matter_id: "MOBILE_TEST" 
+            }]);
+
+            if (error) {
+                alert("Error. check table name.");
+                btn.disabled = false;
+                btn.innerText = "SUBMIT & LOCK LOG";
+            } else {
+                btn.style.display = "none";
+                document.getElementById('badge').style.display = "block";
+                document.getElementById('hash').innerText = hashHex;
+            }
+        };
+    </script>
+</body>
+</html>
