@@ -3,41 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeLine™ | Secure Vault</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>WorkTimeLine™ | The Industrial Conscience</title>
     <style>
-        :root { 
-            --teal-deep: #004d4d; 
-            --teal-bright: #008080; 
-            --soft-white: #f8fafc;
-        }
         body {
-            font-family: 'Inter', sans-serif;
             margin: 0;
-            background: linear-gradient(135deg, #004d4d 0%, #008080 100%);
-            color: var(--soft-white);
+            padding: 20px;
+            background: linear-gradient(135deg, #004d4d, #008080);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             min-height: 100vh;
-            text-align: center;
+            color: white;
         }
         .container {
-            padding: 30px 25px;
-            width: 90%;
-            max-width: 420px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 100%;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.12);
+            padding: 35px 25px;
             border-radius: 30px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
-        /* LOGO STYLING */
-        .logo-img {
-            height: 80px;
-            width: auto;
-            margin-bottom: 15px;
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+        .logo-img { height: 75px; margin-bottom: 10px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2)); }
+        .brand { font-size: 26px; font-weight: 900; letter-spacing: 2px; margin: 0; }
+        .tagline { font-size: 10px; text-transform: uppercase; letter-spacing: 4px; opacity: 0.8; display: block; margin-bottom: 15px; }
+        
+        /* THE PHILOSOPHICAL QUOTE SECTION */
+        .quote-box {
+            font-style: italic;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 25px;
+            padding: 0 10px;
+            color: rgba(255, 255, 255, 0.9);
+            border-left: 2px solid white;
+            margin-left: 10px;
+            text-align: left;
         }
-        .brand { font-size: 26px; font-weight: 900; letter
+
+        textarea {
+            width: 100%;
+            height: 140px;
+            background: white;
+            border: none;
+            border-radius: 15px;
+            padding: 15px;
+            font-size: 16px;
+            color: #1e293b;
+            margin-bottom: 20px;
+            box-sizing: border-box
