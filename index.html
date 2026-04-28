@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WorkTimeLine™ | Professional Vault</title>
     <style>
+        /* 1. CLEAN WHITE PROFESSIONAL THEME */
         body {
             margin: 0;
             padding: 20px;
@@ -25,10 +26,9 @@
             text-align: center;
             box-shadow: 0 10px 40px rgba(0,0,0,0.08);
             border: 1px solid #e2e8f0;
-            position: relative;
         }
 
-        /* LOGO: BRIEFCASE WITH TIMELINE SYMBOL */
+        /* 2. THE BRIEFCASE LOGO WITH TIMELINE SYMBOL */
         .logo-box {
             position: relative;
             display: inline-block;
@@ -38,9 +38,9 @@
         .timeline-line {
             position: absolute;
             top: 60%;
-            left: -10px;
-            right: -10px;
-            height: 2px;
+            left: -15px;
+            right: -15px;
+            height: 2.5px;
             background: #008080;
             opacity: 0.6;
         }
@@ -63,6 +63,7 @@
             font-weight: bold; 
         }
         
+        /* 3. THE PHILOSOPHICAL QUOTE */
         .quote-box {
             font-style: italic;
             font-size: 13px;
@@ -75,6 +76,7 @@
             color: #475569;
         }
 
+        /* 4. THE INPUT VAULT */
         textarea {
             width: 100%;
             height: 140px;
@@ -87,9 +89,11 @@
             margin-bottom: 20px;
             box-sizing: border-box;
             outline: none;
+            transition: border-color 0.3s;
         }
         textarea:focus { border-color: #008080; }
 
+        /* 5. THE SUBMIT BUTTON */
         .btn {
             background: #008080;
             color: white;
@@ -100,58 +104,14 @@
             font-weight: bold;
             font-size: 16px;
             cursor: pointer;
+            transition: background 0.3s;
         }
+        .btn:disabled { background: #cbd5e1; cursor: not-allowed; }
         
+        /* 6. THE INTEGRITY BADGE (LOCKED STATE) */
         #badge { 
             display: none; 
             margin-top: 25px; 
             padding: 20px; 
             background: #f0fdfa; 
-            border: 1px solid #5eead4; 
-            border-radius: 15px; 
-            color: #0f766e; 
-        }
-        
-        #hash-display { 
-            font-size: 9px; 
-            font-family: monospace; 
-            word-break: break-all; 
-            margin-top: 10px; 
-        }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <div class="logo-box">
-        <img src="https://img.icons8.com/ios-filled/100/008080/briefcase.png" class="logo-img" alt="Vault">
-        <div class="timeline-line"></div>
-    </div>
-    
-    <div class="brand">WORKTIMELINE</div>
-    <span class="tagline">The Conscience</span>
-    
-    <div class="quote-box">
-        "The truth is not what we want it to be; it is what it is, and we must bend to its power or be broken by its silence."
-    </div>
-
-    <textarea id="evidence-input" placeholder="Type incident details..."></textarea>
-    
-    <button id="lock-button" class="btn">SUBMIT & LOCK TO VAULT</button>
-
-    <div id="badge">
-        <span style="font-weight: 900;">🛡️ INTEGRITY SECURED</span>
-        <div id="hash-display"></div>
-        <div style="font-size: 9px; margin-top: 10px; opacity: 0.7;">DATA PERMANENTLY STORED IN OREGON VAULT</div>
-    </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-    const SUPABASE_URL = 'https://lbpvtrmfjivlisserdfr.supabase.co'; 
-    const SUPABASE_KEY = 'sb_publishable_g6Edf46eHFuH8rbUaxq3Og_TiPSJHVs';
-    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    document.getElementById('lock-button').onclick = async () => {
-        const input = document.getElementById('evidence-input');
-        const btn
+            border: 1px solid
