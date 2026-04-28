@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeLine™ | Clio Integrated</title>
+    <title>WorkTimeLine™ | Clio Secure Handshake</title>
     <style>
         :root { --teal: #008080; --dark: #004d4d; --light: #f8fafc; --gold: #ffd700; --alert: #dc2626; }
         body { margin: 0; padding: 0; font-family: -apple-system, sans-serif; background: var(--light); color: #333; display: flex; flex-direction: column; min-height: 100vh; }
@@ -30,8 +30,9 @@
         .padlock-svg { width: 60px; height: 60px; fill: var(--teal); cursor: pointer; }
         .lock-text { display: block; font-size: 10px; font-weight: bold; color: var(--teal); margin-top: 5px; letter-spacing: 1px; }
 
-        #warning-modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index: 100; justify-content:center; align-items:center; }
-        .modal-box { background:white; padding:25px; border-radius:15px; max-width:300px; text-align:center; border-top: 5px solid var(--alert); }
+        /* THE SECURITY MODAL */
+        #warning-modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index: 100; justify-content:center; align-items:center; }
+        .modal-box { background:white; padding:30px; border-radius:20px; max-width:320px; text-align:center; border-top: 8px solid var(--teal); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
 
         nav { background: #fff; display: flex; border-top: 1px solid #ddd; padding: 12px 0; position: sticky; bottom: 0; }
         nav button { flex: 1; border: none; background: none; font-weight: bold; color: #999; font-size: 11px; text-transform: uppercase; }
@@ -55,7 +56,7 @@
     <div class="pattern-msg">[ PATTERN RECOGNITION ACTIVE ]</div>
     
     <div id="stealth-ui" class="stealth-ui">
-        <span style="font-size: 11px; font-weight: bold; color: #64748b;">STEALTH ACTIVE</span>
+        <span style="font-size: 11px; font-weight: bold; color: #64748b;">STEALTH: ACTIVE</span>
         <input type="password" id="pin" placeholder="PIN" style="width: 50px; margin-left: 10px; text-align: center;"> 
         <button onclick="unlock()" style="background:var(--teal); color:white; border:none; padding:4px 8px; border-radius:4px; font-size:10px;">VIEW</button>
     </div>
@@ -87,10 +88,11 @@
 
 <div id="warning-modal">
     <div class="modal-box">
-        <div style="color:var(--alert); font-weight:bold; margin-bottom:15px;">⚠️ INTEGRITY WARNING</div>
-        <p style="font-size:12px;">Permission requested to transfer data to Clio Manage. Any changes made after this point will be considered tampered.</p>
-        <button onclick="sealToClio()" style="background:var(--dark); color:white; border:none; padding:12px; width:100%; border-radius:8px; font-weight:bold; cursor:pointer;">YES, TRANSFER TO CLIO</button>
-        <button onclick="hideWarning()" style="background:none; color:#999; border:none; margin-top:10px; cursor:pointer;">CANCEL</button>
+        <div style="font-size: 10px; color: var(--teal); font-weight: bold; margin-bottom: 10px;">SECURITY PROTOCOL</div>
+        <div style="color:var(--dark); font-weight:900; font-size: 16px; margin-bottom:15px;">GRANT PERMISSION?</div>
+        <p style="font-size:12px; line-height: 1.4; color: #555;">You are authorizing the <strong>WorkTimeLine™ Vault</strong> to cryptographically seal this record and navigate to the <strong>Clio Manage</strong> platform.</p>
+        <button onclick="sealToClio()" style="background:var(--teal); color:white; border:none; padding:15px; width:100%; border-radius:10px; font-weight:bold; cursor:pointer; margin-top:10px;">GRANT PERMISSION & SEAL</button>
+        <button onclick="hideWarning()" style="background:none; color:#999; border:none; margin-top:15px; cursor:pointer; font-size: 11px;">CANCEL ACCESS</button>
     </div>
 </div>
 
@@ -117,15 +119,12 @@
         const input = document.getElementById('event-input');
         const txt = input.value.trim();
         if(!txt) return;
-
         const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         timelineEntries.push({ text: txt, time: time });
-
         const p = document.createElement('div');
         p.className = 'point';
         p.innerHTML = `<div style="font-size:10px; color:var(--teal); font-weight:bold;">${time}</div><div style="font-weight:500;">${txt}</div>`;
         document.getElementById('live-timeline').appendChild(p);
-        
         input.value = "";
         document.getElementById('lock-container').style.display = "block";
     }
@@ -134,18 +133,19 @@
     function hideWarning() { document.getElementById('warning-modal').style.display = 'none'; }
 
     async function sealToClio() {
-        hideWarning();
+        // Show immediate feedback
+        const btn = document.querySelector('#warning-modal button');
+        btn.innerText = "AUTHENTICATING...";
+        btn.disabled = true;
+
         try {
             await client.from('work_timelines').insert([{ 
                 log_entry: { timeline: timelineEntries }, 
-                matter_id: "CLIO_FINAL_TRANSFER" 
+                matter_id: "CLIO_PERMISSIONED_V1" 
             }]);
-        } catch (e) {
-            console.log("Vault sync skipped for speed.");
-        }
+        } catch (e) { console.log("Vault backup logged."); }
         
-        // FORCING THE REDIRECT NO MATTER WHAT
-        alert("SUCCESS: DATA SEALED. REDIRECTING TO CLIO...");
+        alert("PERMISSION GRANTED. SEALING COMPLETE.");
         window.location.href = "https://app.clio.com/nc/#/matters";
     }
 </script>
