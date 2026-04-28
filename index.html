@@ -3,144 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeLine™ | Stealth Suite</title>
+    <title>WorkTimeLine™ | Live Stealth Suite</title>
     <style>
-        :root { --teal: #008080; --dark: #0a0f0f; --light: #f8fafc; --warning: #ffcc00; }
+        :root { --teal: #008080; --dark: #0a0f0f; --light: #f8fafc; --gold: #ffd700; }
         body { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; background: var(--light); color: #333; height: 100vh; display: flex; flex-direction: column; }
         
         header { padding: 15px; text-align: center; background: white; border-bottom: 1px solid #ddd; }
-        .logo-box { position: relative; display: inline-block; }
-        .logo-img { width: 45px; }
-        .timeline-line { position: absolute; top: 60%; left: -10px; right: -10px; height: 2px; background: var(--teal); }
+        .logo-img { width: 40px; }
+        .brand-name { font-weight: 900; letter-spacing: 2px; color: #004d4d; font-size: 16px; margin-top: 5px; }
 
-        .tab-content { display: none; padding: 20px; flex: 1; overflow-y: auto; }
-        .active-tab { display: block; }
+        /* TABS */
+        .tab-content { display: none; flex: 1; overflow-y: auto; padding: 20px; }
+        .active-tab { display: flex; flex-direction: column; }
 
-        /* VAULT CARD */
-        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eee; }
-        textarea { width: 100%; height: 120px; border: 1px solid #ddd; border-radius: 10px; padding: 12px; font-size: 16px; box-sizing: border-box; margin-bottom: 15px; outline: none; }
-        .btn { background: var(--teal); color: white; border: none; width: 100%; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; }
-
-        /* TIMELINE & STEALTH BLUR */
-        .log-entry { padding: 15px; border-bottom: 1px solid #eee; background: white; margin-bottom: 10px; border-radius: 8px; position: relative; }
-        .stealth-blur { filter: blur(8px); pointer-events: none; user-select: none; opacity: 0.3; }
+        /* LIVE TIMELINE VISUALS */
+        .timeline-container { border-left: 3px solid var(--teal); margin: 20px 0 20px 25px; padding: 0; position: relative; min-height: 50px; }
+        .stealth-active { filter: blur(12px); opacity: 0.15; pointer-events: none; user-select: none; }
         
-        /* WARNING BOX */
-        .pattern-warning { background: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; font-size: 11px; margin-bottom: 15px; border: 1px solid #ffeeba; }
+        .timeline-point { position: relative; margin-bottom: 30px; padding-left: 25px; animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+        
+        .timeline-point::before { content: ''; position: absolute; left: -11px; top: 5px; width: 16px; height: 16px; background: white; border: 3px solid var(--teal); border-radius: 50%; box-shadow: 0 0 8px var(--teal); }
 
-        /* STEALTH OVERLAY */
-        #stealth-lock { padding: 20px; text-align: center; background: #eee; border-radius: 10px; margin-bottom: 20px; }
-        #stealth-lock input { padding: 10px; border-radius: 5px; border: 1px solid #ccc; width: 100px; text-align: center; }
+        /* UI ELEMENTS */
+        .input-group { background: white; padding: 15px; border-radius: 15px; border: 1px solid #ddd; margin-bottom: 20px; }
+        textarea { width: 100%; border: 1px solid #eee; border-radius: 8px; padding: 10px; font-family: inherit; resize: none; margin-bottom: 10px; outline: none; font-size: 15px; }
+        .btn-add { background: var(--teal); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; }
+        
+        /* THE CLIO BUTTON */
+        .btn-seal { background: #004d4d; color: var(--gold); border: 1px solid var(--gold); padding: 18px; border-radius: 12px; font-weight: 900; width: 100%; margin-top: 20px; cursor: pointer; letter-spacing: 2px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .btn-seal:disabled { opacity: 0.5; }
 
-        /* NAV */
-        nav { background: white; display: flex; border-top: 1px solid #eee; padding: 10px 0; }
-        nav button { flex: 1; border: none; background: none; font-size: 11px; color: #888; font-weight: bold; cursor: pointer; text-transform: uppercase; }
-        nav button.active { color: var(--teal); }
+        /* STEALTH CONTROLS */
+        .stealth-overlay { background: #f1f5f9; padding: 15px; border-radius: 10px; text-align: center; margin-bottom: 20px; border: 1px dashed var(--teal); }
+        .pattern-warning { background: #000; color: var(--gold); padding: 10px; font-size: 10px; font-family: monospace; border-radius: 5px; margin-bottom: 15px; border: 1px solid var(--gold); text-align: center; }
+
+        /* NAVIGATION */
+        nav { background: white; display: flex; border-top: 1px solid #ddd; padding: 12px 0; }
+        nav button { flex: 1; border: none; background: none; font-size: 11px; color: #999; font-weight: bold; text-transform: uppercase; cursor: pointer; }
+        nav button.active { color: var(--teal); border-bottom: 2px solid var(--teal); }
+
+        .entry-data { font-size: 15px; font-weight: 600; color: #1e293b; }
+        .entry-time { font-size: 10px; color: var(--teal); font-weight: bold; text-transform: uppercase; }
     </style>
-</head>
-<body>
-
-<header>
-    <div class="logo-box">
-        <img src="https://img.icons8.com/ios-filled/100/008080/briefcase.png" class="logo-img">
-        <div class="timeline-line"></div>
-    </div>
-    <div style="font-weight: 900; color: #004d4d; font-size: 18px;">WORKTIMELINE</div>
-</header>
-
-<div id="tab-vault" class="tab-content active-tab">
-    <div class="card">
-        <div style="font-size: 12px; margin-bottom: 10px; color: var(--teal); font-weight: bold;">INDUSTRIAL EVIDENCE INPUT</div>
-        <textarea id="vault-input" placeholder="Enter incident details to lock..."></textarea>
-        <button id="lock-btn" class="btn" onclick="saveToVault()">SUBMIT & LOCK</button>
-        <div id="success-msg" style="display:none; margin-top:15px; color: green; font-size: 13px; font-weight: bold;">🛡️ RECORD ENCRYPTED & SENT TO TIMELINE</div>
-    </div>
-</div>
-
-<div id="tab-timeline" class="tab-content">
-    <div class="pattern-warning">
-        ⚠️ <strong>PATTERN RECOGNITION ACTIVE:</strong> System is monitoring for recurring industrial discrepancies.
-    </div>
-
-    <div id="stealth-lock">
-        <div style="font-size: 12px; margin-bottom: 8px;">STEALTH MODE ACTIVE</div>
-        <input type="password" id="passcode" placeholder="PIN">
-        <button onclick="unlockStealth()" style="background:var(--teal); color:white; border:none; padding:8px 12px; border-radius:5px; cursor:pointer;">UNLOCK</button>
-    </div>
-
-    <div id="timeline-container" class="stealth-blur">
-        <div style="text-align:center; padding:20px; color:#999;">No records found.</div>
-    </div>
-</div>
-
-<nav>
-    <button onclick="showTab('tab-vault', this)" class="active">Vault</button>
-    <button onclick="showTab('tab-timeline', this)">Timeline</button>
-</nav>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-    const client = supabase.createClient('https://lbpvtrmfjivlisserdfr.supabase.co', 'sb_publishable_g6Edf46eHFuH8rbUaxq3Og_TiPSJHVs');
-
-    function showTab(tabId, btn) {
-        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
-        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active-tab');
-        btn.classList.add('active');
-    }
-
-    function unlockStealth() {
-        const pin = document.getElementById('passcode').value;
-        if(pin === "1234") {
-            document.getElementById('timeline-container').classList.remove('stealth-blur');
-            document.getElementById('stealth-lock').style.display = "none";
-        } else {
-            alert("ACCESS DENIED");
-        }
-    }
-
-    async function saveToVault() {
-        const val = document.getElementById('vault-input').value.trim();
-        const btn = document.getElementById('lock-btn');
-        if(!val) return alert("Empty input");
-
-        btn.innerText = "CRYPTO-LOCKING...";
-        btn.disabled = true;
-
-        // Generate Hash
-        const msg = new TextEncoder().encode(val);
-        const hashBuf = await crypto.subtle.digest('SHA-256', msg);
-        const hashHex = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
-
-        const { error } = await client.from('work_timelines').insert([{ 
-            log_entry: { description: val }, 
-            integrity_hash: hashHex,
-            matter_id: "STEALTH_DEMO" 
-        }]);
-
-        if(!error) {
-            document.getElementById('success-msg').style.display = "block";
-            // Update Timeline View
-            const entryHtml = `
-                <div class="log-entry">
-                    <div style="font-weight:bold; font-size:14px;">${val}</div>
-                    <div style="font-size:9px; color:var(--teal); margin-top:5px; font-family:monospace;">HASH: ${hashHex}</div>
-                    <div style="font-size:9px; color:#aaa; margin-top:3px;">STORED: ${new Date().toLocaleString()}</div>
-                </div>`;
-            
-            const container = document.getElementById('timeline-container');
-            if(container.innerText === "No records found.") container.innerHTML = "";
-            container.innerHTML = entryHtml + container.innerHTML;
-
-            // Reset Vault
-            document.getElementById('vault-input').value = "";
-            btn.disabled = false;
-            btn.innerText = "SUBMIT & LOCK";
-        } else {
-            alert("VAULT ERROR");
-            btn.disabled = false;
-        }
-    }
-</script>
-</body>
-</html>
