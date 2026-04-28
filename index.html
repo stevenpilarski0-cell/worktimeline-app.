@@ -3,85 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeline™ | The Industrial Conscience</title>
+    <title>WorkTimeline™ Portal</title>
     <style>
-        body { font-family: -apple-system, system-ui, sans-serif; margin: 0; background: #ffffff; color: #1a1a1a; }
-        
-        /* Header */
-        nav { 
-            padding: 15px 25px; 
-            border-bottom: 2px solid #008080; 
-            display: flex; 
-            align-items: center; 
-            background: #fff;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-        .logo-img { height: 40px; margin-right: 12px; }
-        .logo-text { line-height: 1.1; }
-        .brand { font-weight: 900; font-size: 20px; display: block; color: #111; }
-        .tagline { font-size: 10px; font-weight: bold; color: #008080; letter-spacing: 1px; }
-
-        /* Main Section */
-        .hero { 
-            background: #1a1a1a; 
+        body { 
+            background-color: #1a1a1a; 
             color: #ffffff; 
-            padding: 80px 25px; 
-            text-align: center;
-            min-height: 400px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            font-family: -apple-system, sans-serif; 
+            margin: 0; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+            text-align: center; 
         }
-        h1 { font-size: 36px; margin: 0 0 20px 0; }
-        p { font-size: 18px; opacity: 0.9; max-width: 500px; margin: 0 auto 40px; }
-
-        /* THE BUTTON - This makes it work */
+        .container { 
+            border: 2px solid #008080; 
+            padding: 40px 20px; 
+            border-radius: 24px; 
+            background: #222; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            max-width: 90%;
+        }
+        h1 { font-size: 28px; margin: 0; letter-spacing: -1px; }
+        .tagline { color: #008080; font-weight: bold; font-size: 12px; margin-bottom: 30px; display: block; }
         .btn { 
-            display: inline-block; 
             background: #2d9cdb; 
-            color: #ffffff !important; 
-            padding: 22px 50px; 
+            color: white !important; 
             text-decoration: none; 
-            font-weight: bold; 
+            padding: 20px 40px; 
             border-radius: 12px; 
-            font-size: 22px;
+            font-weight: 900; 
+            font-size: 20px; 
+            display: inline-block;
             border: 3px solid #ffffff;
-            transition: 0.2s;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            cursor: pointer;
         }
-        .btn:active { transform: scale(0.95); }
-
-        /* Status Footer */
-        .footer { padding: 30px; background: #f4f4f4; text-align: center; border-top: 1px solid #ddd; }
-        .details { font-size: 11px; color: #666; letter-spacing: 1px; line-height: 2; }
+        .footer-info { margin-top: 40px; font-size: 10px; color: #555; letter-spacing: 1px; }
     </style>
 </head>
 <body>
 
-<nav>
-    <img src="/logo.png" alt="💼" class="logo-img">
-    <div class="logo-text">
-        <span class="brand">WORKTIMELINE</span>
-        <span class="tagline">THE CONSCIENCE™</span>
-    </div>
-</nav>
+    <div class="container">
+        <h1>WORKTIMELINE™</h1>
+        <span class="tagline">THE CONSCIENCE</span>
+        
+        <p style="font-size: 14px; opacity: 0.8; margin-bottom: 30px;">
+            Industrial Evidence Integrity Portal<br>
+            Regional Node: BC-West (pdx1)
+        </p>
 
-<div class="hero">
-    <h1>The Industrial Conscience</h1>
-    <p>Secure evidence management for the Canadian workforce. Integrated with Clio Canada.</p>
-    
-    <a href="/timeline.html" class="btn">LAUNCH PORTAL</a>
-</div>
-
-<div class="footer">
-    <div class="details">
-        REGION: CLIO CANADA (CA) | APP ID: 348846<br>
-        SECURITY: SHA-256 HASHED | COMPLIANCE: PIPEDA/PIPA
+        <a href="/timeline.html" class="btn">LAUNCH PORTAL</a>
     </div>
-</div>
+
+    <div class="footer-info">
+        CLIO CA APP ID: 348846 | PIPEDA COMPLIANT
+    </div>
 
 </body>
 </html>
