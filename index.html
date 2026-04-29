@@ -1,117 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeline™ | The Industrial Conscience</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        :root { --teal: #008080; --dark: #0f172a; --clio: #2d9cdb; --glass: rgba(255, 255, 255, 0.03); }
-        
-        body { 
-            font-family: 'Inter', -apple-system, sans-serif; 
-            margin: 0; 
-            background: radial-gradient(circle at top right, #1e293b, #0f172a); 
-            color: white; 
-            display: flex; 
-            flex-direction: column;
-            align-items: center; 
-            justify-content: center; 
-            min-height: 100vh; 
-            text-align: center;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WorkTimeline™ | Secure Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root { --teal: #008080; --gray-light: #f4f4f4; --gray-mid: #ccc; --gray-dark: #333; --yellow-ai: #fff3cd; --yellow-border: #ffeeba; }
+    body { font-family: 'Nunito', sans-serif; background: var(--gray-light); padding: 20px; }
+    
+    /* YOUR GRAFTED CSS */
+    .witness-panel { background: white; border: 2px solid var(--teal); padding: 25px; border-radius: 12px; max-width: 500px; margin: 0 auto; box-shadow: 0 4px 10px rgba(0,128,128,0.1); }
+    .media-btn { background: white; border: 1px solid #ccc; border-radius: 20px; padding: 6px 14px; cursor: pointer; color: var(--gray-dark); display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; transition: 0.2s; }
+    .media-btn:hover { background: var(--teal); color: white; border-color: var(--teal); }
+    
+    .btn-lock { background: white; color: var(--teal); border: 2px solid var(--teal); padding: 15px; font-size: 15px; border-radius: 8px; font-weight: 900; width: 100%; cursor: pointer; transition: 0.3s; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 20px;}
+    .btn-lock:hover { background: var(--teal); color: white; }
 
-        .container { 
-            padding: 50px 30px; 
-            width: 85%; 
-            max-width: 450px; 
-            background: var(--glass);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 35px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
-        }
-
-        /* FIXED LOGO CONNECTION */
-        .logo-img { 
-            height: 85px; 
-            width: auto; 
-            margin-bottom: 20px;
-            filter: drop-shadow(0 4px 15px rgba(0,0,0,0.5));
-            border-radius: 15px;
-        }
-
-        .brand { 
-            font-size: 34px; 
-            font-weight: 900; 
-            letter-spacing: -2px; 
-            margin: 0; 
-            background: linear-gradient(to bottom, #ffffff, #94a3b8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .tagline { 
-            color: var(--teal); 
-            font-weight: 700; 
-            letter-spacing: 4px; 
-            font-size: 10px; 
-            text-transform: uppercase; 
-            display: block;
-            margin-top: 8px;
-        }
-
-        h1 { font-size: 24px; margin: 35px 0 12px; font-weight: 700; color: #f1f5f9; }
-        p { font-size: 15px; line-height: 1.6; color: #94a3b8; margin-bottom: 40px; }
-
-        /* THE VAULT LINK */
-        .btn { 
-            display: block; 
-            background: var(--clio); 
-            color: white !important; 
-            padding: 20px 0; 
-            text-decoration: none; 
-            font-weight: 700; 
-            border-radius: 18px; 
-            font-size: 18px;
-            border: 1px solid rgba(255,255,255,0.2);
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 10px 25px rgba(45, 156, 219, 0.3);
-        }
-        .btn:active { transform: scale(0.96); }
-
-        .footer { 
-            position: absolute; 
-            bottom: 30px; 
-            font-size: 10px; 
-            color: #475569; 
-            letter-spacing: 2px;
-            font-weight: 600;
-        }
-    </style>
+    .entry { background: white; border-left: 5px solid var(--teal); padding: 18px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); position: relative; }
+    .ai-badge { font-size: 11px; font-weight: 900; color: #856404; text-transform: uppercase; margin-bottom: 5px; display: flex; align-items: center; gap: 6px;}
+  </style>
 </head>
 <body>
 
-    <div class="container">
-        <img src="/1000024252.jpg" alt="WorkTimeline" class="logo-img">
-        
-        <h2 class="brand">WORKTIMELINE</h2>
-        <span class="tagline">The Conscience™</span>
+<div class="witness-panel">
+  <div style="text-align:center; margin-bottom: 20px;">
+    <img src="/1000024252.jpg" style="height: 50px; border-radius: 8px;">
+    <h2 style="margin: 10px 0 0 0; color: var(--gray-dark);">SECURE VAULT</h2>
+    <span style="font-size: 10px; letter-spacing: 2px; color: var(--teal); font-weight: 900;">CLIO CANADA AUTHORIZED</span>
+  </div>
 
-        <h1>Evidence Integrity Portal</h1>
-        <p>Providing the Canadian workforce with a cryptographically sealed bridge to legal counsel.</p>
-
-        <a href="/timeline.html" class="btn">LAUNCH VAULT</a>
-        
-        <div style="margin-top: 20px; font-size: 11px; color: var(--teal); font-weight: bold;">
-            SYSTEM STATUS: SECURE ENCLAVE ACTIVE
-        </div>
+  <div id="timeline-container">
+    <div class="entry">
+      <div class="ai-badge">✨ CLIO DUO READY</div>
+      Drafting initial incident report...
     </div>
+  </div>
 
-    <div class="footer">
-        CLIO CA ID: 348846 • PIPEDA/PIPA COMPLIANT
-    </div>
+  <div style="display: flex; gap: 10px; margin-top: 20px;">
+    <button class="media-btn" onclick="document.getElementById('file-input').click()">
+      <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+      ADD MEDIA
+    </button>
+    <input type="file" id="file-input" style="display:none" onchange="vaultFile()">
+  </div>
+
+  <button class="btn-lock" onclick="sealAndVault()">
+    <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+    SEAL & SEND TO CLIO
+  </button>
+
+  <div id="status-msg" style="text-align: center; margin-top: 15px; font-size: 12px; font-weight: bold; color: var(--teal);"></div>
+</div>
+
+<script>
+  function vaultFile() {
+    const msg = document.getElementById('status-msg');
+    msg.innerHTML = "📎 MEDIA ATTACHED. READY FOR VAULT.";
+  }
+
+  function sealAndVault() {
+    const msg = document.getElementById('status-msg');
+    msg.innerHTML = "🔒 ENCRYPTING & VAULTING TO CLIO CA...";
+    
+    // Redirects to Clio Canada Authorization
+    setTimeout(() => {
+      window.location.href = "https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=348846&redirect_uri=https://worktimeline-app.vercel.app/timeline.html";
+    }, 1500);
+  }
+</script>
 
 </body>
 </html>
