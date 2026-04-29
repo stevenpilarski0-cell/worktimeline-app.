@@ -3,39 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeLine™ | Clio Integrated</title>
+    <title>WorkTimeLine™ | Integrity</title>
     <style>
-        :root { --teal: #008080; --dark: #004d4d; --light: #ffffff; --alert: #dc2626; }
-        body { margin: 0; padding: 0; font-family: -apple-system, sans-serif; background: var(--light); color: #333; }
-        .corner-brand { position: absolute; top: 20px; left: 20px; font-weight: 900; letter-spacing: 1px; color: var(--dark); font-size: 14px; }
-        .container { padding: 80px 20px 20px 20px; max-width: 500px; margin: 0 auto; }
-        .card { background: #f9fbfb; padding: 20px; border-radius: 15px; border: 1px solid #eee; margin-bottom: 20px; }
-        textarea { width: 100%; border: 1px solid #ddd; padding: 12px; border-radius: 8px; font-size: 16px; outline: none; resize: none; box-sizing: border-box; }
-        .btn { border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
+        :root { --teal: #008080; --dark: #004d4d; --glass: rgba(220, 38, 38, 0.85); }
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #ffffff; color: #333; overflow-x: hidden; transition: 0.5s; }
+        
+        /* MAC-LIKE FROSTED RED ALERT */
+        #tamper-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--glass); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            z-index: 9999; color: white; justify-content: center; align-items: center; text-align: center;
+            flex-direction: column; animation: fadeIn 0.4s ease;
+        }
+
+        .corner-brand { position: absolute; top: 20px; left: 20px; font-weight: 900; letter-spacing: 1px; color: var(--dark); font-size: 14px; opacity: 0.8; }
+        .container { padding: 80px 20px; max-width: 450px; margin: 0 auto; transition: filter 0.5s; }
+        .card { background: #f8fafb; padding: 25px; border-radius: 20px; border: 1px solid #edf2f7; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        textarea { width: 100%; border: 1px solid #e2e8f0; padding: 15px; border-radius: 12px; font-size: 16px; outline: none; resize: none; box-sizing: border-box; background: #fff; }
+        
+        .btn { border: none; padding: 18px; border-radius: 14px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 12px; font-size: 15px; transition: 0.2s; }
         .btn-teal { background: var(--teal); color: white; }
-        #live-timeline { border-left: 2px solid var(--teal); margin: 20px 10px; min-height: 20px; }
-        .point { position: relative; margin-bottom: 20px; padding-left: 20px; font-size: 15px; }
-        .point::before { content: ''; position: absolute; left: -9px; top: 5px; width: 14px; height: 14px; background: white; border: 2px solid var(--teal); border-radius: 50%; }
-        .hash-display { font-family: monospace; font-size: 9px; margin-top: 15px; opacity: 0.6; word-break: break-all; }
-        body.tampered { background: var(--alert) !important; color: white !important; }
+        .btn-teal:active { transform: scale(0.98); }
+
+        #live-timeline { border-left: 2px solid var(--teal); margin: 30px 10px; }
+        .point { position: relative; margin-bottom: 25px; padding-left: 25px; animation: slideIn 0.3s ease; }
+        .point::before { content: ''; position: absolute; left: -10px; top: 6px; width: 16px; height: 16px; background: white; border: 3px solid var(--teal); border-radius: 50%; }
+
+        #lock-area { display: none; text-align: center; padding-top: 20px; }
+        .hash-tag { font-family: 'SF Mono', monospace; font-size: 10px; color: #a0aec0; margin-top: 15px; word-break: break-all; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
     </style>
 </head>
 <body>
 
+<div id="tamper-overlay">
+    <div style="font-size: 60px; margin-bottom: 20px;">⚠️</div>
+    <h1 style="font-weight: 900; letter-spacing: 2px; margin: 0;">CRITICAL ALERT</h1>
+    <p style="font-size: 18px; opacity: 0.9; max-width: 280px;">Digital Seal Compromised. Data Integrity is Void.</p>
+    <button onclick="location.reload()" style="background:white; color:red; border:none; padding:12px 25px; border-radius:30px; font-weight:bold; margin-top:30px; cursor:pointer;">SYSTEM RESET</button>
+</div>
+
 <div class="corner-brand">WORKTIMELINE™</div>
 
-<div class="container">
+<div class="container" id="main-ui">
     <div class="card">
-        <textarea id="text-in" placeholder="Enter incident report..."></textarea>
+        <textarea id="text-in" placeholder="Document incident details..." rows="3"></textarea>
         <button class="btn btn-teal" onclick="logEntry()">+ LOG TO TIMELINE</button>
     </div>
 
     <div id="live-timeline"></div>
 
-    <div id="lock-area" style="display:none; text-align:center;">
-        <button id="main-seal-btn" class="btn btn-teal" style="background:var(--dark);" onclick="sealAndSendToClio()">SEAL & SEND TO CLIO</button>
-        <div id="hash-out" class="hash-display"></div>
-        <button onclick="simulateTamper()" style="margin-top:50px; opacity: 0.05; background:none; border:none; cursor:pointer;">[Admin]</button>
+    <div id="lock-area">
+        <button id="seal-btn" class="btn btn-teal" style="background:var(--dark);" onclick="sealAndSend()">SEAL & SYNC TO CLIO</button>
+        <div id="hash-out" class="hash-tag"></div>
+        <div onclick="triggerTamper()" style="margin-top:80px; opacity: 0.05; cursor:pointer; font-size: 10px;">[Internal Test]</div>
     </div>
 </div>
 
@@ -54,32 +77,26 @@
         if(!val) return;
         logs.push(val);
         const p = document.createElement('div'); p.className = 'point';
-        p.innerHTML = `<div>${val}</div>`;
+        p.innerHTML = `<div style="font-size:11px; color:var(--teal); font-weight:bold;">${new Date().toLocaleTimeString()}</div><div>${val}</div>`;
         document.getElementById('live-timeline').appendChild(p);
         document.getElementById('text-in').value = "";
         document.getElementById('lock-area').style.display = "block";
     }
 
-    async function sealAndSendToClio() {
-        const btn = document.getElementById('main-seal-btn');
+    async function sealAndSend() {
         const combined = logs.join("|");
         sealedHash = await generateHash(combined);
-        btn.innerText = "CONNECTING TO CLIO CA...";
+        document.getElementById('hash-out').innerText = "SHA-256 SEAL: " + sealedHash;
+        document.getElementById('seal-btn').innerText = "AUTHENTICATING CLIO CA...";
         
-        // YOUR REAL CLIENT ID FROM PORTAL
-        const clientID = "18C4aBAD8"; 
-        const redirectURI = encodeURIComponent("https://worktimeline-app.vercel.app");
-        
-        // The Official Clio Platform Redirect
-        const clioUrl = `https://developers.api.clio.com/oauth/authorize?response_type=code&client_id=${clientID}&redirect_uri=${redirectURI}`;
-        
-        setTimeout(() => { window.location.href = clioUrl; }, 1000);
+        setTimeout(() => {
+            window.location.href = "https://ca.app.clio.com/nc/#/matters";
+        }, 1500);
     }
 
-    async function simulateTamper() {
-        logs[0] += " ";
-        document.body.classList.add('tampered');
-        alert("CRITICAL: INTEGRITY HASH MISMATCH DETECTED");
+    function triggerTamper() {
+        document.getElementById('main-ui').style.filter = "blur(10px)";
+        document.getElementById('tamper-overlay').style.display = "flex";
     }
 </script>
 </body>
