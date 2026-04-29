@@ -1,18 +1,86 @@
-async function sealAndSendToClio() {
-    const btn = document.getElementById('main-seal-btn');
-    const combinedData = logs.join("|");
-    sealedHash = await generateHash(combinedData);
-    
-    btn.innerText = "CONNECTING TO CLIO PLATFORM CA...";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkTimeLine™ | Clio Integrated</title>
+    <style>
+        :root { --teal: #008080; --dark: #004d4d; --light: #ffffff; --alert: #dc2626; }
+        body { margin: 0; padding: 0; font-family: -apple-system, sans-serif; background: var(--light); color: #333; }
+        .corner-brand { position: absolute; top: 20px; left: 20px; font-weight: 900; letter-spacing: 1px; color: var(--dark); font-size: 14px; }
+        .container { padding: 80px 20px 20px 20px; max-width: 500px; margin: 0 auto; }
+        .card { background: #f9fbfb; padding: 20px; border-radius: 15px; border: 1px solid #eee; margin-bottom: 20px; }
+        textarea { width: 100%; border: 1px solid #ddd; padding: 12px; border-radius: 8px; font-size: 16px; outline: none; resize: none; box-sizing: border-box; }
+        .btn { border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
+        .btn-teal { background: var(--teal); color: white; }
+        #live-timeline { border-left: 2px solid var(--teal); margin: 20px 10px; min-height: 20px; }
+        .point { position: relative; margin-bottom: 20px; padding-left: 20px; font-size: 15px; }
+        .point::before { content: ''; position: absolute; left: -9px; top: 5px; width: 14px; height: 14px; background: white; border: 2px solid var(--teal); border-radius: 50%; }
+        .hash-display { font-family: monospace; font-size: 9px; margin-top: 15px; opacity: 0.6; word-break: break-all; }
+        body.tampered { background: var(--alert) !important; color: white !important; }
+    </style>
+</head>
+<body>
 
-    // YOUR REAL CLIENT ID FROM THE SCREENSHOT
-    const clientID = "18C4aBAD8"; // Ensure you copy the full string from your portal
-    const redirectURI = encodeURIComponent("https://worktimeline-app.vercel.app");
+<div class="corner-brand">WORKTIMELINE™</div>
 
-    // The New Clio Platform Authorization URL
-    const clioAuthUrl = `https://developers.api.clio.com/oauth/authorize?response_type=code&client_id=${clientID}&redirect_uri=${redirectURI}`;
+<div class="container">
+    <div class="card">
+        <textarea id="text-in" placeholder="Enter incident report..."></textarea>
+        <button class="btn btn-teal" onclick="logEntry()">+ LOG TO TIMELINE</button>
+    </div>
 
-    setTimeout(() => {
-        window.location.href = clioAuthUrl;
-    }, 1000);
-}
+    <div id="live-timeline"></div>
+
+    <div id="lock-area" style="display:none; text-align:center;">
+        <button id="main-seal-btn" class="btn btn-teal" style="background:var(--dark);" onclick="sealAndSendToClio()">SEAL & SEND TO CLIO</button>
+        <div id="hash-out" class="hash-display"></div>
+        <button onclick="simulateTamper()" style="margin-top:50px; opacity: 0.05; background:none; border:none; cursor:pointer;">[Admin]</button>
+    </div>
+</div>
+
+<script>
+    let logs = [];
+    let sealedHash = "";
+
+    async function generateHash(text) {
+        const msgUint8 = new TextEncoder().encode(text);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+        return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    function logEntry() {
+        const val = document.getElementById('text-in').value.trim();
+        if(!val) return;
+        logs.push(val);
+        const p = document.createElement('div'); p.className = 'point';
+        p.innerHTML = `<div>${val}</div>`;
+        document.getElementById('live-timeline').appendChild(p);
+        document.getElementById('text-in').value = "";
+        document.getElementById('lock-area').style.display = "block";
+    }
+
+    async function sealAndSendToClio() {
+        const btn = document.getElementById('main-seal-btn');
+        const combined = logs.join("|");
+        sealedHash = await generateHash(combined);
+        btn.innerText = "CONNECTING TO CLIO CA...";
+        
+        // YOUR REAL CLIENT ID FROM PORTAL
+        const clientID = "18C4aBAD8"; 
+        const redirectURI = encodeURIComponent("https://worktimeline-app.vercel.app");
+        
+        // The Official Clio Platform Redirect
+        const clioUrl = `https://developers.api.clio.com/oauth/authorize?response_type=code&client_id=${clientID}&redirect_uri=${redirectURI}`;
+        
+        setTimeout(() => { window.location.href = clioUrl; }, 1000);
+    }
+
+    async function simulateTamper() {
+        logs[0] += " ";
+        document.body.classList.add('tampered');
+        alert("CRITICAL: INTEGRITY HASH MISMATCH DETECTED");
+    }
+</script>
+</body>
+</html>
