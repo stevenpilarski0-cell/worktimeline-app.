@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeLine™ | Absolute Integrity</title>
+    <title>WorkTimeLine™ | Retrospective AI</title>
     <style>
         :root { --teal: #008080; --dark: #004d4d; --gold: #f59e0b; --yellow-bg: rgba(254, 240, 138, 0.4); --yellow-border: #ca8a04; --red-bg: rgba(220, 38, 38, 0.15); --red-border: #dc2626; }
-        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #fff; color: #1a202c; padding-bottom: 100px; overflow-x: hidden; }
+        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #fff; color: #1a202c; padding-bottom: 120px; overflow-x: hidden; }
         
         /* HEADER & QUOTE */
         header { padding: 40px 20px 10px; position: relative; min-height: 80px; }
-        .quote-box { position: absolute; top: 40px; right: 20px; width: 150px; text-align: right; }
+        .quote-box { position: absolute; top: 40px; right: 20px; width: 160px; text-align: right; }
         .quote-box p { font-size: 8px; font-style: italic; color: #94a3b8; line-height: 1.3; margin: 0; text-transform: uppercase; letter-spacing: 0.5px; }
 
         .logo-box { position: relative; width: 60px; }
@@ -26,13 +26,126 @@
         .container { padding: 0 20px; max-width: 450px; margin: 0 auto; }
         .stealth-blur { filter: blur(25px); opacity: 0.05; transition: 0.6s ease; pointer-events: none; }
 
-        /* INPUT CARD */
         .card { background: #f8fafc; padding: 25px; border-radius: 24px; border: 1px solid #f1f5f9; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); }
         textarea { width: 100%; border: 1px solid #e2e8f0; padding: 15px; border-radius: 14px; font-size: 16px; outline: none; box-sizing: border-box; font-family: inherit; }
         
         .evidence-bar { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 15px 0; }
         .ev-btn { background: #fff; border: 1px solid #e2e8f0; border-radius: 15px; padding: 15px 5px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; }
-        .ev-btn svg { width: 22px; fill: var(--teal); height: 22px; }
+        .ev-btn svg { width: 22px; height: 22px; fill: var(--teal); }
         .ev-btn span { font-size: 9px; font-weight: 800; color: var(--dark); }
 
         .main-btn { background: var(--teal); color: #fff; border: none; padding: 20px; border-radius: 18px; font-weight: 800; width: 100%; font-size: 15px; box-shadow: 0 5px 15px rgba(0,128,128,0.25); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+
+        #timeline { border-left: 2px solid var(--teal); margin: 35px 10px; padding-left: 25px; min-height: 50px; }
+        .entry { position: relative; margin-bottom: 25px; padding: 18px; border-radius: 18px; background: #fff; border: 1px solid #f1f5f9; transition: 0.5s; }
+        .entry::before { content: ''; position: absolute; left: -34px; top: 22px; width: 16px; height: 16px; background: #fff; border: 3px solid var(--teal); border-radius: 50%; z-index: 2; }
+        
+        .yellow-alert { background: var(--yellow-bg) !important; border: 1px solid var(--yellow-border) !important; }
+        .yellow-alert::after { content: '✨ CLIO DUO AI: RETROSPECTIVE PATTERN MATCH'; font-size: 9px; font-weight: 900; color: #854d0e; display: block; margin-top: 10px; }
+        .yellow-alert::before { border-color: var(--yellow-border) !important; }
+
+        .red-alert { background: var(--red-bg) !important; border: 2.5px solid var(--red-border) !important; color: var(--red-border) !important; animation: shake 0.4s ease; }
+        .red-alert::after { content: '⚠️ INTEGRITY VOID: POST-LOCK TAMPER'; font-size: 9px; font-weight: 900; display: block; margin-top: 10px; }
+        .red-alert::before { border-color: var(--red-border) !important; }
+
+        .stealth-footer { position: fixed; bottom: 0; left: 0; width: 100%; background: #f8fafc; border-top: 1px solid #e2e8f0; padding: 20px 25px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; z-index: 1000; }
+        .stealth-label { font-size: 11px; font-weight: 800; color: #64748b; letter-spacing: 1px; }
+        
+        .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #ccc; }
+        input:not(:checked) + .slider { background-color: var(--teal); }
+        input:not(:checked) + .slider:before { transform: translateX(24px); }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo-box">
+        <div class="briefcase-icon"></div>
+        <div class="logo-line"></div>
+    </div>
+    <span class="brand">WorkTimeLine™</span>
+    <div class="quote-box">
+        <p>"Law is the Conscience of the community, where Truth is the architect of Freedom."</p>
+    </div>
+</header>
+
+<div class="ai-banner">
+    <div class="dot"></div>
+    <span>AI Pattern Recognition Active: CLIO DUO AI</span>
+</div>
+
+<div class="container">
+    <div class="card">
+        <textarea id="text-in" placeholder="Enter professional incident log..." rows="3"></textarea>
+        <div class="evidence-bar">
+            <label class="ev-btn"><input type="file" accept="image/*" capture="environment" style="display:none;"><svg viewBox="0 0 24 24"><path d="M12 12m-3.2 0a3.2 3.2 0 1 0 6.4 0a3.2 3.2 0 1 0 -6.4 0M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9z"/></svg><span>CAMERA</span></label>
+            <label class="ev-btn"><input type="file" accept="audio/*" capture="microphone" style="display:none;"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg><span>RECORD</span></label>
+            <label class="ev-btn"><input type="file" style="display:none;"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg><span>FILES</span></label>
+        </div>
+        <button class="main-btn" onclick="addEntry()">+ LOG TO TIMELINE</button>
+    </div>
+
+    <div id="timeline" class="stealth-blur"></div>
+
+    <div id="seal-area" style="display:none; text-align:center; padding-top:30px;">
+        <button id="seal-btn" class="main-btn" style="background:var(--dark);" onclick="bridgeToClio()">SEAL & BRIDGE TO CLIO</button>
+    </div>
+</div>
+
+<div class="stealth-footer">
+    <div class="stealth-label">STEALTH MODE <span id="status-text">ON</span></div>
+    <label class="switch">
+        <input type="checkbox" id="stealthToggle" checked onchange="handleStealthToggle()">
+        <span class="slider"></span>
+    </label>
+</div>
+
+<script>
+    let entries = parseInt(localStorage.getItem('demoCount')) || 0;
+    let locked = localStorage.getItem('vaultLocked') === 'true';
+
+    window.onload = () => {
+        if(entries > 0) {
+            document.getElementById('seal-area').style.display = "block";
+            // Re-render yellow if we already reached 5
+            if(entries >= 5 && !locked) { applyYellowToPast(); }
+        }
+        if(locked) applyLockVisuals();
+    };
+
+    function handleStealthToggle() {
+        const toggle = document.getElementById('stealthToggle');
+        const statusText = document.getElementById('status-text');
+        if(!toggle.checked) {
+            const pin = prompt("Enter PIN to disable Stealth Mode:");
+            if(pin === "1234") {
+                document.getElementById('timeline').classList.remove('stealth-blur');
+                statusText.innerText = "OFF";
+            } else {
+                alert("Incorrect PIN");
+                toggle.checked = true;
+            }
+        } else {
+            document.getElementById('timeline').classList.add('stealth-blur');
+            statusText.innerText = "ON";
+        }
+    }
+
+    function addEntry() {
+        const val = document.getElementById('text-in').value.trim();
+        if(!val) return;
+        entries++;
+        localStorage.setItem('demoCount', entries);
+        
+        const div = document.createElement('div');
+        div.className = 'entry';
+        div.setAttribute('data-index', entries);
+
+        if(locked) div.classList.add('red-alert
