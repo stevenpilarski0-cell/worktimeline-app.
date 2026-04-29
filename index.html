@@ -1,66 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeLine™</title>
-    <style>
-        :root { --teal: #008080; --dark: #004d4d; --light: #ffffff; }
-        body { margin: 0; padding: 0; font-family: -apple-system, sans-serif; background: var(--light); color: #333; }
-        
-        /* BRAND IN CORNER */
-        .corner-brand { position: absolute; top: 20px; left: 20px; font-weight: 900; letter-spacing: 1px; color: var(--dark); font-size: 14px; }
-        
-        .container { padding: 80px 20px 20px 20px; max-width: 500px; margin: 0 auto; }
-        
-        /* STEALTH & TIMELINE */
-        .stealth-blur { filter: blur(12px); opacity: 0.15; pointer-events: none; }
-        #live-timeline { border-left: 2px solid var(--teal); margin: 20px 10px; padding: 0; }
-        .point { position: relative; margin-bottom: 25px; padding-left: 20px; font-size: 15px; }
-        .point::before { content: ''; position: absolute; left: -9px; top: 5px; width: 14px; height: 14px; background: white; border: 2px solid var(--teal); border-radius: 50%; }
-        
-        /* INPUT AREA */
-        .input-card { background: #f9fbfb; padding: 20px; border-radius: 15px; border: 1px solid #eee; margin-bottom: 30px; }
-        textarea { width: 100%; border: 1px solid #ddd; padding: 12px; border-radius: 8px; font-size: 16px; outline: none; resize: none; box-sizing: border-box; margin-bottom: 15px; }
-        
-        .btn-row { display: flex; gap: 10px; }
-        .btn { flex: 1; border: none; padding: 14px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-add { background: var(--teal); color: white; }
-        .btn-cam { background: white; color: var(--teal); border: 1px solid var(--teal); }
-        
-        .preview-img { width: 100%; max-width: 200px; border-radius: 10px; margin-top: 10px; border: 1px solid var(--teal); }
-
-        /* LOCK */
-        #lock-btn { display: none; text-align: center; margin-top: 40px; cursor: pointer; }
-        .padlock { width: 50px; fill: var(--teal); }
-
-        /* MODAL */
-        #modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; justify-content:center; align-items:center; }
-        .modal-box { background:white; padding:30px; border-radius:20px; text-align:center; max-width:300px; }
-        
-        #stealth-gate { text-align: center; margin-bottom: 20px; font-size: 12px; color: #888; }
-    </style>
+  <meta charset="UTF-8">
+  <title>WorkTimeline | Secure Vault</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 50px; background: #0f172a; color: white; }
+    .container { background: white; color: #333; padding: 40px; border-radius: 12px; display: inline-block; }
+    .btn-vault { background: #008080; color: white; border: none; padding: 15px 30px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+  </style>
 </head>
 <body>
 
-<div class="corner-brand">WORKTIMELINE™</div>
-
 <div class="container">
-    <div id="stealth-gate">
-        [ STEALTH ACTIVE ] <input type="password" id="pin" placeholder="PIN" style="width:40px; border:1px solid #ddd; padding:3px; text-align:center;">
-        <button onclick="unlock()" style="border:none; background:var(--teal); color:white; padding:4px 8px; border-radius:4px; font-size:10px;">VIEW</button>
-    </div>
+  <h1>WorkTimeline CA</h1>
+  <p>Canadian Secure Evidence Vault</p>
+  <button class="btn-vault" onclick="startSecureAuth()">SEAL & SEND TO CLIO</button>
+  <div id="status" style="margin-top:20px; color: #008080;"></div>
+</div>
 
-    <div class="input-card">
-        <textarea id="text-in" placeholder="Describe incident..."></textarea>
-        <div class="btn-row">
-            <button class="btn btn-cam" onclick="document.getElementById('camera').click()">📷 EVIDENCE</button>
-            <button class="btn btn-add" onclick="logEntry()">+ LOG</button>
-        </div>
-        <input type="file" id="camera" accept="image/*" capture="environment" style="display:none;" onchange="preview(this)">
-    </div>
+<script>
+  // PKCE Helper: Generates the high-security "Challenge" Clio is asking for
+  async function generateCodeChallenge(codeVerifier) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(codeVerifier);
+    const digest = await window.crypto.subtle.digest('SHA-256', data);
+    return btoa(String.fromCharCode(...new Uint8Array(digest)))
+      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
 
-    <div id="live-timeline" class="stealth-blur"></div>
+  async function startSecureAuth() {
+    document.getElementById('status').innerText = "Generating Security Challenge...";
+    
+    // YOUR ACTUAL CREDENTIALS FROM SCREENSHOT
+    const clientID = "18C4aBAD8YTLBSCAmuSXSTnbZ7LRBefMZR-0s";
+    const redirectURI = "https://worktimeline-app.vercel.app/index.html";
+    
+    // Create and save verifier for the return trip
+    const verifier = Array.from(window.crypto.getRandomValues(new Uint8Array(32)))
+      .map(b => ('0' + b.toString(16)).slice(-2)).join('');
+    sessionStorage.setItem('code_verifier', verifier);
 
-    <div id="lock-btn" onclick="openHandshake()">
-        <svg class="padlock" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1
+    const challenge = await generateCodeChallenge(verifier);
+
+    // The full URL that satisfies the "Public Client / PKCE" requirement
+    const authUrl = `https://ca.app.clio.com/oauth/authorize?` +
+                    `response_type=code&` +
+                    `client_id=${clientID}&` +
+                    `redirect_uri=${encodeURIComponent(redirectURI)}&` +
+                    `code_challenge=${challenge}&` +
+                    `code_challenge_method=S256`;
+
+    window.location.href = authUrl;
+  }
+</script>
+
+</body>
+</html>
