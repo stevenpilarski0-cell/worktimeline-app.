@@ -1,26 +1,18 @@
-<script>
-    async function sealAndSendToClio() {
-        const btn = document.getElementById('main-seal-btn');
-        const combinedData = logs.join("|");
-        sealedHash = await generateHash(combinedData);
-        
-        btn.innerText = "CONNECTING TO CLIO CANADA...";
-        btn.style.opacity = "0.7";
-        
-        // 1. Sync to the Montreal Vault (Supabase)
-        try {
-            await client.from('work_timelines').insert([{ 
-                log_entry: { timeline: logs }, 
-                integrity_hash: sealedHash,
-                matter_id: "CA_LEGAL_HANDSHAKE" 
-            }]);
-        } catch (e) { console.log("Local backup active."); }
+async function sealAndSendToClio() {
+    const btn = document.getElementById('main-seal-btn');
+    const combinedData = logs.join("|");
+    sealedHash = await generateHash(combinedData);
+    
+    btn.innerText = "CONNECTING TO CLIO PLATFORM CA...";
 
-        // 2. THE FIX: Explicitly forcing the CA (Canada) endpoint
-        // This stops the "Change Region" error.
-        setTimeout(() => {
-            const clioUrl = "https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=YOUR_CLIENT_ID&redirect_uri=https://worktimeline-app.vercel.app";
-            window.location.href = clioUrl;
-        }, 1000);
-    }
-</script>
+    // YOUR REAL CLIENT ID FROM THE SCREENSHOT
+    const clientID = "18C4aBAD8"; // Ensure you copy the full string from your portal
+    const redirectURI = encodeURIComponent("https://worktimeline-app.vercel.app");
+
+    // The New Clio Platform Authorization URL
+    const clioAuthUrl = `https://developers.api.clio.com/oauth/authorize?response_type=code&client_id=${clientID}&redirect_uri=${redirectURI}`;
+
+    setTimeout(() => {
+        window.location.href = clioAuthUrl;
+    }, 1000);
+}
