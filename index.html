@@ -3,62 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeLine™ | Privacy Suite</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <title>WorkTimeLine™ | Teal Sky</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { 
-            --teal: #008080; --dark: #004d4d; --gold: #f59e0b; 
-            --yellow-glass: rgba(254, 240, 138, 0.7); 
-            --red-glass: rgba(220, 38, 38, 0.18); 
-            --mac-font: 'Inter', -apple-system, sans-serif;
-        }
-        body { margin: 0; font-family: var(--mac-font); background: #fff; color: #1a202c; padding-bottom: 120px; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+        :root { --teal: #008080; --dark: #004d4d; --gold: #f59e0b; --yellow-glass: rgba(254, 240, 138, 0.8); --red-glass: rgba(220, 38, 38, 0.18); }
+        body { margin: 0; font-family: 'Inter', sans-serif; background: #fff; padding-bottom: 120px; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
         
-        /* HEADER & QUOTE */
-        header { padding: 45px 25px 15px; position: relative; min-height: 80px; }
+        header { padding: 45px 25px 15px; position: relative; }
         .quote-box { position: absolute; top: 45px; right: 25px; width: 160px; text-align: right; }
         .quote-box p { font-size: 8px; font-style: italic; color: #94a3b8; line-height: 1.4; margin: 0; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600;}
 
-        /* LOGO */
         .logo-box { position: relative; width: 60px; }
         .briefcase { width: 42px; height: 32px; border: 3px solid var(--teal); border-radius: 8px; position: relative; }
         .briefcase::before { content: ''; position: absolute; top: -10px; left: 11px; width: 14px; height: 7px; border: 3px solid var(--teal); border-bottom: none; border-radius: 4px 4px 0 0; }
         .logo-line { position: absolute; top: 16px; left: -10px; width: 55px; height: 4px; background: var(--teal); border-radius: 10px; box-shadow: 0 2px 10px rgba(0,128,128,0.3); }
-        .brand { font-weight: 900; letter-spacing: 2px; color: var(--dark); font-size: 15px; text-transform: uppercase; margin-top: 15px; display: block; }
+        .brand { font-weight: 900; letter-spacing: 2px; color: var(--dark); font-size: 14px; text-transform: uppercase; margin-top: 15px; display: block; }
 
         .ai-banner { background: #fefce8; border: 1px solid #fef08a; padding: 14px 18px; border-radius: 16px; margin: 15px 20px; display: flex; align-items: center; gap: 10px; }
         .ai-banner span { font-size: 10px; font-weight: 700; color: #854d0e; text-transform: uppercase; }
         .dot { width: 8px; height: 8px; background: var(--gold); border-radius: 50%; animation: blink 2s infinite; }
 
-        /* INPUT AREA */
         .container { padding: 0 20px; max-width: 450px; margin: 0 auto; }
         .card { background: #f8fafc; padding: 25px; border-radius: 24px; border: 1px solid #f1f5f9; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.03); }
-        textarea { width: 100%; border: 1px solid #e2e8f0; padding: 16px; border-radius: 16px; font-size: 16px; outline: none; box-sizing: border-box; font-family: inherit; background: #fff; }
+        textarea { width: 100%; border: 1px solid #e2e8f0; padding: 16px; border-radius: 16px; font-size: 16px; outline: none; box-sizing: border-box; font-family: inherit; }
         
-        .evidence-bar { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 15px 0; }
-        .ev-btn { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 15px 5px; cursor: pointer; text-align: center; font-size: 9px; font-weight: 700; color: var(--dark); }
+        .main-btn { background: var(--teal); color: #fff; border: none; padding: 20px; border-radius: 18px; font-weight: 700; width: 100%; font-size: 15px; cursor: pointer; }
 
-        .main-btn { background: var(--teal); color: #fff; border: none; padding: 20px; border-radius: 18px; font-weight: 700; width: 100%; font-size: 15px; box-shadow: 0 5px 15px rgba(0,128,128,0.2); cursor: pointer; transition: 0.3s; }
-
-        /* TIMELINE */
-        #timeline { border-left: 2px solid var(--teal); margin: 35px 10px; padding-left: 25px; min-height: 50px; }
+        #timeline { border-left: 2px solid var(--teal); margin: 35px 10px; padding-left: 25px; }
         .entry { position: relative; margin-bottom: 25px; padding: 18px; border-radius: 18px; background: #fff; border: 1px solid #f1f5f9; transition: 0.6s cubic-bezier(0.2, 1, 0.2, 1); font-size: 15px; line-height: 1.4; }
         .entry::before { content: ''; position: absolute; left: -34px; top: 22px; width: 16px; height: 16px; background: #fff; border: 3px solid var(--teal); border-radius: 50%; z-index: 2; }
         
-        /* PRIVACY BLUR */
-        body.privacy-on .entry { filter: blur(20px); opacity: 0.1; pointer-events: none; }
+        body.privacy-on .entry { filter: blur(22px); opacity: 0.1; pointer-events: none; }
 
-        /* ALERTS */
         .yellow-alert { background: var(--yellow-glass) !important; border: 1px solid #fef08a !important; backdrop-filter: blur(8px); }
-        .yellow-alert::after { content: '✨ CLIO DUO AI: RETROSPECTIVE PATTERN MATCH'; font-size: 9px; font-weight: 800; display: block; margin-top: 10px; color: #854d0e; }
+        .yellow-alert::after { content: '✨ CLIO DUO AI: PATTERN DETECTED'; font-size: 9px; font-weight: 800; display: block; margin-top: 10px; color: #854d0e; }
 
         .red-alert { background: var(--red-glass) !important; border: 2.5px solid #dc2626 !important; color: #dc2626 !important; animation: shake 0.5s; }
-        .red-alert::after { content: '⚠️ INTEGRITY VOID: POST-LOCK TAMPER DETECTED'; font-size: 9px; font-weight: 900; display: block; margin-top: 10px; }
+        .red-alert::after { content: '⚠️ INTEGRITY VOID: POST-LOCK TAMPER'; font-size: 9px; font-weight: 900; display: block; margin-top: 10px; }
 
-        /* PRIVACY TOGGLE */
         .footer { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; border-top: 1px solid #edf2f7; padding: 20px 25px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; z-index: 1000; }
-        .footer-label { font-size: 11px; font-weight: 700; color: #718096; letter-spacing: 1px; }
-        
         .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
@@ -78,98 +61,73 @@
     <div class="quote-box"><p>"Law is the Conscience of the community, where Truth is the architect of Freedom."</p></div>
 </header>
 
-<div class="ai-banner"><div class="dot"></div><span>AI Pattern Recognition Active: CLIO DUO AI</span></div>
+<div id="ai-status" class="ai-banner"><div class="dot"></div><span>AI Pattern Recognition Active: CLIO DUO</span></div>
 
 <div class="container">
     <div class="card">
-        <textarea id="textIn" placeholder="Enter professional incident log..." rows="3"></textarea>
-        <div class="evidence-bar">
-            <div class="ev-btn" onclick="alert('Camera Active')">📷<br>CAMERA</div>
-            <div class="ev-btn" onclick="alert('Mic Active')">🎤<br>RECORD</div>
-            <div class="ev-btn" onclick="alert('Files Active')">📁<br>FILES</div>
-        </div>
-        <button class="main-btn" onclick="addEntry()">+ LOG TO TIMELINE</button>
+        <textarea id="textIn" placeholder="Enter incident report..." rows="3"></textarea>
+        <button class="main-btn" onclick="addEntry()" style="margin-top:15px;">+ LOG TO TIMELINE</button>
     </div>
     <div id="timeline"></div>
     <div id="seal-area" style="display:none; text-align:center; padding-top:30px;">
-        <button id="lockBtn" class="main-btn" style="background:var(--dark);" onclick="bridgeToClio()">SEAL & BRIDGE TO CLIO</button>
+        <button id="lockBtn" class="main-btn" style="background:var(--dark);" onclick="sealVault()">SEAL & BRIDGE TO CLIO</button>
     </div>
 </div>
 
 <div class="footer">
-    <div class="footer-label">PRIVACY MODE <span id="status-text">ON</span></div>
-    <label class="switch">
-        <input type="checkbox" id="privacyToggle" checked onchange="handlePrivacy()">
-        <span class="slider"></span>
-    </label>
+    <div class="footer-label" style="font-size:11px; font-weight:700; color:#718096;">PRIVACY MODE</div>
+    <label class="switch"><input type="checkbox" id="privacyToggle" checked onchange="togglePrivacy()"><span class="slider"></span></label>
 </div>
 
 <script>
     var count = 0;
-    var isVaultLocked = localStorage.getItem('demoLocked') === 'true';
+    var isLocked = localStorage.getItem('vLocked') === 'true';
 
     window.onload = function() {
-        if (isVaultLocked) {
-            document.getElementById('seal-area').style.display = "block";
-            applyVisualLock();
-        }
+        if(isLocked) applyLock();
     };
 
-    function handlePrivacy() {
+    function togglePrivacy() {
         var t = document.getElementById('privacyToggle');
-        var s = document.getElementById('status-text');
-        if (!t.checked) {
-            var pin = prompt("PRIVACY ACTIVE: Enter PIN to Reveal Timeline");
-            if (pin === "1234") {
-                document.body.classList.remove('privacy-on');
-                s.innerText = "OFF";
-            } else {
-                alert("ACCESS DENIED");
-                t.checked = true;
-            }
-        } else {
-            document.body.classList.add('privacy-on');
-            s.innerText = "ON";
-        }
+        if(!t.checked) {
+            if(prompt("Enter PIN:") === "1234") { document.body.classList.remove('privacy-on'); } 
+            else { t.checked = true; }
+        } else { document.body.classList.add('privacy-on'); }
     }
 
     function addEntry() {
-        var val = document.getElementById('textIn').value.trim();
-        if (!val) return;
+        var val = document.getElementById('textIn').value;
+        if(!val) return;
         count++;
-        
         var div = document.createElement('div');
         div.className = 'entry';
-        div.id = 'entry-' + count;
-        if (isVaultLocked) div.classList.add('red-alert');
-
-        var now = new Date();
-        div.innerHTML = '<div style="font-size:10px; font-weight:800; color:var(--teal);">📅 ' + now.toLocaleDateString() + ' | 🕒 ' + now.toLocaleTimeString() + '</div>' + val;
+        div.id = 'e' + count;
+        if(isLocked) {
+            div.classList.add('red-alert');
+            document.getElementById('ai-status').innerHTML = '<div class="dot" style="background:red"></div><span style="color:red">INTEGRITY BREACH: THE TRUTH IS ARCHITECTED, NOT ALTERED.</span>';
+        }
+        div.innerHTML = '<div style="font-size:10px; font-weight:800; color:var(--teal);">📅 ' + new Date().toLocaleDateString() + '</div>' + val;
         document.getElementById('timeline').appendChild(div);
 
-        // RETROSPECTIVE: On Entry 6, items 4, 5, 6 turn yellow
-        if (count === 6 && !isVaultLocked) {
-            for (var i = 4; i <= 6; i++) {
-                var el = document.getElementById('entry-' + i);
-                if (el) el.classList.add('yellow-alert');
-            }
+        if(count === 6 && !isLocked) {
+            for(var i=4; i<=6; i++) document.getElementById('e'+i).classList.add('yellow-alert');
         }
         document.getElementById('textIn').value = "";
         document.getElementById('seal-area').style.display = "block";
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        window.scrollTo(0, document.body.scrollHeight);
     }
 
-    function bridgeToClio() {
-        isVaultLocked = true;
-        localStorage.setItem('demoLocked', 'true');
-        applyVisualLock();
-        setTimeout(function() { window.location.href = "https://ca.app.clio.com/nc/#/matters"; }, 1500);
+    function sealVault() {
+        isLocked = true;
+        localStorage.setItem('vLocked', 'true');
+        applyLock();
+        setTimeout(() => { window.location.href = "https://ca.app.clio.com/nc/#/matters"; }, 1500);
     }
 
-    function applyVisualLock() {
-        var btn = document.getElementById('lockBtn');
-        btn.innerHTML = "🔒 VAULT LOCKED & SEALED";
-        btn.style.background = "#004d4d";
+    function applyLock() {
+        document.getElementById('lockBtn').innerHTML = "🔒 VAULT SEALED";
+        document.getElementById('lockBtn').style.background = "#004d4d";
+        document.getElementById('seal-area').style.display = "block";
     }
 </script>
 </body>
