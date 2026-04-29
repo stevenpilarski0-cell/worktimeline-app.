@@ -12,7 +12,6 @@
       --gray-mid: #ccc; 
       --gray-dark: #333; 
       --yellow-ai: #fff3cd; 
-      --yellow-border: #ffeeba; 
     }
     
     body { 
@@ -38,7 +37,6 @@
     }
 
     .brand-header { text-align: center; margin-bottom: 25px; }
-    /* Updated logo path to ensure it pulls correctly */
     .brand-header img { height: 60px; border-radius: 12px; margin-bottom: 10px; }
     
     .entry { 
@@ -71,9 +69,7 @@
       display: flex; 
       align-items: center; 
       gap: 8px; 
-      transition: 0.2s;
     }
-    .media-btn:hover { background: var(--teal); color: white; }
 
     .btn-lock { 
       background: var(--teal); 
@@ -91,7 +87,6 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
-      box-shadow: 0 4px 12px rgba(0, 128, 128, 0.3);
     }
 
     #status-msg { 
@@ -100,7 +95,6 @@
       text-align: center; 
       font-weight: bold; 
       color: var(--teal); 
-      min-height: 20px;
     }
   </style>
 </head>
@@ -114,16 +108,16 @@
   </div>
 
   <div class="entry">
-    <div class="ai-badge">✨ CLIO DUO ENHANCED</div>
-    <div style="font-weight: bold;">Worksite Incident Record</div>
-    <div style="font-size: 13px; color: #666;">Waiting for secure vaulting...</div>
+    <div class="ai-badge">✨ CLIO DUO READY</div>
+    <div style="font-weight: bold;">Verified Evidence Stream</div>
+    <div style="font-size: 13px; color: #666;">Securing data for Canadian Counsel...</div>
   </div>
 
   <div style="display: flex; gap: 10px; justify-content: center;">
-    <button class="media-btn" onclick="triggerUpload()">
+    <button class="media-btn" onclick="document.getElementById('file-input').click()">
       ADD EVIDENCE 📷
     </button>
-    <input type="file" id="file-input" style="display:none" onchange="updateStatus()">
+    <input type="file" id="file-input" style="display:none" onchange="document.getElementById('status-msg').innerHTML='📎 MEDIA STAGED.'">
   </div>
 
   <button class="btn-lock" onclick="startClioVault()">
@@ -135,29 +129,20 @@
 </div>
 
 <script>
-  function triggerUpload() { document.getElementById('file-input').click(); }
-  
-  function updateStatus() { 
-    document.getElementById('status-msg').innerHTML = "📎 MEDIA ATTACHED. ENCRYPTION READY."; 
-  }
-
   function startClioVault() {
     const status = document.getElementById('status-msg');
-    status.innerHTML = "🔒 CONTACTING CLIO CANADA SECURE SERVER...";
+    status.innerHTML = "🔒 REDIRECTING TO CLIO CANADA...";
     
-    // MATCH THESE EXACTLY TO YOUR CLIO DEVELOPER PORTAL (CA REGION)
     const clientID = "348846"; 
     const redirectURI = "https://worktimeline-app.vercel.app/index.html";
     
-    // Building the link carefully to avoid any "Invalid Request" errors
+    // No warnings, no interruptions—just the straight handshake
     const authUrl = "https://ca.app.clio.com/oauth/authorize" +
                     "?response_type=code" +
                     "&client_id=" + clientID +
                     "&redirect_uri=" + encodeURIComponent(redirectURI);
     
-    setTimeout(() => {
-      window.location.href = authUrl;
-    }, 1200);
+    window.location.href = authUrl;
   }
 </script>
 
