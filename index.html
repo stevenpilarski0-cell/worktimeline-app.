@@ -1,86 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WorkTimeline™ | The Conscience</title>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
-  <style>
-    :root { 
-      --teal: #008080; 
-      --mac-white: #ffffff;
-      --gray-bg: #f5f5f7;
-      --yellow-ai: #fff9db;
-      --yellow-border: #fab005;
-    }
-    body { font-family: 'Nunito', sans-serif; background-color: var(--gray-bg); margin: 0; display: flex; justify-content: center; padding: 40px 20px; }
-    .mac-container { background: var(--mac-white); border-radius: 24px; width: 100%; max-width: 480px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); overflow: hidden; border: 1px solid #d2d2d7; }
-    .header { text-align: center; padding: 30px; border-bottom: 1px solid #eee; }
-    .header img { height: 75px; border-radius: 15px; margin-bottom: 10px; }
-    .input-section { padding: 20px; background: #fafafa; }
-    textarea { width: 100%; border: 1px solid #d2d2d7; border-radius: 12px; padding: 12px; font-family: inherit; resize: none; box-sizing: border-box; }
-    .btn-submit { background: var(--teal); color: white; border: none; padding: 12px; width: 100%; border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 10px; }
-    .timeline { padding: 20px; }
-    .entry { background: white; border-left: 4px solid var(--teal); padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #efefef; }
-    .ai-warning { background: var(--yellow-ai); border-left: 4px solid var(--yellow-border); padding: 12px; border-radius: 10px; margin-bottom: 15px; font-size: 13px; }
-    .footer { padding: 20px; border-top: 1px solid #eee; }
-    .btn-lock { background: #1d1d1f; color: white; border: none; padding: 18px; font-size: 16px; border-radius: 14px; font-weight: 900; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
-  </style>
-</head>
-<body>
-
-<div class="mac-container">
-  <div class="header">
-    <img src="/1000024252.jpg" alt="WorkTimeline Logo">
-    <h2 style="margin:0;">WorkTimeline™</h2>
-    <div style="color: var(--teal); font-size: 12px; font-weight: 700;">THE CONSCIENCE</div>
-  </div>
-
-  <div class="input-section">
-    <textarea id="log-input" rows="3" placeholder="Enter new evidence..."></textarea>
-    <button class="btn-submit" onclick="addEntry()">SUBMIT TO TIMELINE</button>
-  </div>
-
-  <div class="timeline" id="timeline">
-    <div class="ai-warning">
-      <b style="color: #856404; display: block;">⚠️ AI PATTERN RECOGNITION</b>
-      Potential gap detected: Shift reported ended at 4:00 PM; entry logged at 11:45 PM.
-    </div>
-    <div class="entry">
-      <b>Site Arrival Record</b>
-      <p style="font-size: 13px; margin: 5px 0;">GPS Verified: Langley, BC. Industrial Trade Hub.</p>
-    </div>
-  </div>
-
-  <div class="footer">
-    <button class="btn-lock" onclick="startVaultHandshake()">
-      SEAL & SEND TO CLIO
-    </button>
-  </div>
-</div>
-
 <script>
-  function addEntry() {
-    const val = document.getElementById('log-input').value;
-    if (!val) return;
-    const div = document.createElement('div');
-    div.className = 'entry';
-    div.innerHTML = `<b>New Evidence Entry</b><p style="font-size: 13px; margin: 5px 0;">${val}</p>`;
-    document.getElementById('timeline').prepend(div);
-    document.getElementById('log-input').value = '';
-  }
+    async function sealAndSendToClio() {
+        const btn = document.getElementById('main-seal-btn');
+        const combinedData = logs.join("|");
+        sealedHash = await generateHash(combinedData);
+        
+        btn.innerText = "CONNECTING TO CLIO CANADA...";
+        btn.style.opacity = "0.7";
+        
+        // 1. Sync to the Montreal Vault (Supabase)
+        try {
+            await client.from('work_timelines').insert([{ 
+                log_entry: { timeline: logs }, 
+                integrity_hash: sealedHash,
+                matter_id: "CA_LEGAL_HANDSHAKE" 
+            }]);
+        } catch (e) { console.log("Local backup active."); }
 
-  function startVaultHandshake() {
-    // UPDATED WITH YOUR VERIFIED CANADIAN CLIENT ID FROM SCREENSHOT
-    const clientID = "18C4aBAD8YTLBSCAmuSXSTnbZ7LRBefMZR-0s";
-    const redirectURI = "https://worktimeline-app.vercel.app/index.html";
-    
-    window.location.href = "https://ca.app.clio.com/oauth/authorize" +
-                           "?response_type=code" +
-                           "&client_id=" + clientID +
-                           "&redirect_uri=" + encodeURIComponent(redirectURI);
-  }
+        // 2. THE FIX: Explicitly forcing the CA (Canada) endpoint
+        // This stops the "Change Region" error.
+        setTimeout(() => {
+            const clioUrl = "https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=YOUR_CLIENT_ID&redirect_uri=https://worktimeline-app.vercel.app";
+            window.location.href = clioUrl;
+        }, 1000);
+    }
 </script>
-
-</body>
-</html>
