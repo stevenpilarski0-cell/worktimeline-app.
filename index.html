@@ -10,14 +10,14 @@
             --teal: #008080; 
             --dark: #004d4d; 
             --gold: #f59e0b; 
-            --yellow-glass: rgba(254, 240, 138, 0.5);
-            --red-glass: rgba(220, 38, 38, 0.15);
+            --yellow-glass: rgba(254, 240, 138, 0.6);
+            --red-glass: rgba(220, 38, 38, 0.18);
             --mac-font: 'Inter', -apple-system, sans-serif;
         }
         
         body { margin: 0; font-family: var(--mac-font); background: #fff; color: #1a202c; padding-bottom: 120px; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
         
-        header { padding: 45px 25px 15px; position: relative; }
+        header { padding: 45px 25px 15px; position: relative; min-height: 80px; }
         .quote-box { position: absolute; top: 45px; right: 25px; width: 160px; text-align: right; }
         .quote-box p { font-size: 8px; font-style: italic; color: #94a3b8; line-height: 1.4; margin: 0; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600;}
 
@@ -33,16 +33,6 @@
 
         .container { padding: 0 20px; max-width: 450px; margin: 0 auto; }
         
+        /* CARD & INPUTS */
         .card { background: #f8fafc; padding: 25px; border-radius: 24px; border: 1px solid #f1f5f9; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.03); }
-        textarea { width: 100%; border: 1px solid #e2e8f0; padding: 16px; border-radius: 16px; font-size: 16px; outline: none; box-sizing: border-box; font-family: var(--mac-font); }
-        
-        .evidence-bar { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 15px 0; }
-        .ev-btn { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 15px 5px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; }
-        .ev-btn svg { width: 22px; height: 22px; fill: var(--teal); }
-        .ev-btn span { font-size: 9px; font-weight: 700; color: var(--dark); }
-
-        .main-btn { background: var(--teal); color: #fff; border: none; padding: 20px; border-radius: 18px; font-weight: 700; width: 100%; font-size: 15px; box-shadow: 0 5px 15px rgba(0,128,128,0.2); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
-
-        /* THE VISUAL TIMELINE */
-        #timeline { border-left: 2px solid var(--teal); margin: 35px 10px; padding-left: 25px; min-height: 50px; }
-        .entry { position: relative; margin-bottom: 25px; padding: 18px; border-radius: 18px; background: #fff; border: 1px solid #f1f5f9; transition:
+        textarea { width: 100%; border: 1px solid #e2e8f0; padding: 16px; border-radius: 16px; font-size: 16px; outline: none; box-sizing
