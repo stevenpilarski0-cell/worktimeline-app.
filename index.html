@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeLine™ Elite | Demo Mode</title>
+    <title>WorkTimeLine™ Elite</title>
     <style>
-        :root { --teal: #008080; --dark: #004d4d; --gold: #f59e0b; --yellow-bg: rgba(254, 240, 138, 0.4); --yellow-border: #ca8a04; --red-bg: rgba(254, 226, 226, 0.3); --red-border: #dc2626; }
+        :root { --teal: #008080; --dark: #004d4d; --gold: #f59e0b; --yellow-bg: rgba(254, 240, 138, 0.4); --yellow-border: #ca8a04; --red-bg: rgba(220, 38, 38, 0.2); --red-border: #dc2626; }
         body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background: #fff; color: #1a202c; padding-bottom: 80px; }
         
-        /* MAC SYMBOL LOGO */
+        /* LOGO */
         header { padding: 40px 25px 10px; }
         .logo-box { position: relative; width: 60px; }
         .briefcase-icon { width: 45px; height: 35px; border: 3px solid var(--teal); border-radius: 6px; position: relative; }
@@ -16,5 +16,113 @@
         .logo-line { position: absolute; top: 18px; left: -10px; width: 60px; height: 4px; background: var(--teal); border-radius: 10px; box-shadow: 0 2px 10px rgba(0,128,128,0.3); }
         .brand { font-weight: 900; letter-spacing: 2px; color: var(--dark); font-size: 14px; text-transform: uppercase; margin-top: 15px; display: block; }
 
-        /* AI YELLOW BANNER */
-        .ai-banner { background: #fefce8;
+        .ai-banner { background: #fefce8; border: 1px solid #fef08a; padding: 12px 18px; border-radius: 14px; margin: 15px 20px; display: flex; align-items: center; gap: 10px; }
+        .ai-banner span { font-size: 10px; font-weight: 800; color: #854d0e; text-transform: uppercase; }
+        .dot { width: 8px; height: 8px; background: var(--gold); border-radius: 50%; animation: blink 2s infinite; }
+
+        .container { padding: 0 20px; max-width: 450px; margin: 0 auto; }
+        .stealth-blur { filter: blur(25px); opacity: 0.02; transition: 0.8s ease; }
+
+        /* INPUT */
+        .card { background: #f8fafc; padding: 25px; border-radius: 24px; border: 1px solid #f1f5f9; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); }
+        textarea { width: 100%; border: 1px solid #e2e8f0; padding: 15px; border-radius: 14px; font-size: 16px; outline: none; box-sizing: border-box; }
+        
+        .evidence-bar { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 15px 0; }
+        .ev-btn { background: #fff; border: 1px solid #e2e8f0; border-radius: 15px; padding: 15px 5px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .ev-btn svg { width: 22px; fill: var(--teal); }
+        .ev-btn span { font-size: 9px; font-weight: 800; color: var(--dark); }
+
+        .main-btn { background: var(--teal); color: #fff; border: none; padding: 20px; border-radius: 18px; font-weight: 800; width: 100%; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+
+        /* TIMELINE */
+        #timeline { border-left: 2px solid var(--teal); margin: 35px 10px; padding-left: 25px; }
+        .entry { position: relative; margin-bottom: 25px; padding: 18px; border-radius: 18px; background: #fff; border: 1px solid #f1f5f9; transition: 0.5s; }
+        .entry::before { content: ''; position: absolute; left: -34px; top: 22px; width: 16px; height: 16px; background: #fff; border: 3px solid var(--teal); border-radius: 50%; z-index: 2; }
+        
+        .yellow-alert { background: var(--yellow-bg) !important; border: 1px solid var(--yellow-border) !important; }
+        .yellow-alert::after { content: '✨ CLIO DUO: PATTERN DETECTED'; font-size: 9px; font-weight: 900; color: #854d0e; display: block; margin-top: 10px; }
+
+        .red-alert { background: var(--red-bg) !important; border: 2px solid var(--red-border) !important; color: var(--red-border) !important; animation: shake 0.4s ease; }
+        .red-alert::after { content: '⚠️ INTEGRITY VOID: POST-LOCK TAMPER'; font-size: 9px; font-weight: 900; display: block; margin-top: 10px; }
+
+        #unlock-trigger { position: fixed; top: 25px; right: 25px; background: var(--dark); color: white; border: none; padding: 10px 20px; border-radius: 30px; font-size: 11px; font-weight: 800; z-index: 100; }
+        input[type="file"] { display: none; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+    </style>
+</head>
+<body>
+
+<button id="unlock-trigger" onclick="unlock()">🔓 UNLOCK STEALTH</button>
+
+<header>
+    <div class="logo-box">
+        <div class="briefcase-icon"></div>
+        <div class="logo-line"></div>
+    </div>
+    <span class="brand">WorkTimeLine™</span>
+</header>
+
+<div class="ai-banner">
+    <div class="dot"></div>
+    <span>AI Pattern Recognition Active: CLIO DUO AI</span>
+</div>
+
+<div class="container">
+    <div class="card">
+        <textarea id="text-in" placeholder="Enter incident report..." rows="3"></textarea>
+        <div class="evidence-bar">
+            <label class="ev-btn"><input type="file" accept="image/*" capture="environment"><svg viewBox="0 0 24 24"><path d="M12 12m-3.2 0a3.2 3.2 0 1 0 6.4 0a3.2 3.2 0 1 0 -6.4 0M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9z"/></svg><span>CAMERA</span></label>
+            <label class="ev-btn"><input type="file" accept="audio/*" capture="microphone"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg><span>RECORD</span></label>
+            <label class="ev-btn"><input type="file"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg><span>FILES</span></label>
+        </div>
+        <button class="main-btn" onclick="addEntry()">+ LOG TO TIMELINE</button>
+    </div>
+    <div id="timeline" class="stealth-blur"></div>
+    <div id="seal-area" style="display:none; text-align:center; padding-top:30px;">
+        <button id="seal-btn" class="main-btn" style="background:var(--dark);" onclick="bridgeToClio()">SEAL & BRIDGE TO CLIO</button>
+    </div>
+</div>
+
+<script>
+    let entries = parseInt(localStorage.getItem('demoCount')) || 0;
+    window.onload = () => { if(entries > 0) document.getElementById('seal-area').style.display = "block"; if(entries >= 7) lockVaultVisual(); };
+
+    function unlock() {
+        const pin = prompt("STEALTH MODE: Enter PIN");
+        if(pin === "1234") { document.getElementById('timeline').classList.remove('stealth-blur'); document.getElementById('unlock-trigger').style.display = 'none'; }
+    }
+
+    function addEntry() {
+        const val = document.getElementById('text-in').value.trim();
+        if(!val) return;
+        entries++;
+        localStorage.setItem('demoCount', entries);
+        const div = document.createElement('div');
+        div.className = 'entry';
+        if(entries >= 5 && entries <= 7) div.classList.add('yellow-alert');
+        else if(entries >= 8) div.classList.add('red-alert');
+        if(entries === 7) lockVaultVisual();
+
+        const now = new Date();
+        const dStr = now.toLocaleDateString('en-CA', { year:'numeric', month:'short', day:'numeric' });
+        const tStr = now.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+        div.innerHTML = `<div style="font-size:10px; font-weight:900; color:var(--teal); margin-bottom:8px;">📅 ${dStr} | 🕒 ${tStr}</div><div>${val}</div>`;
+        document.getElementById('timeline').appendChild(div);
+        document.getElementById('text-in').value = "";
+        document.getElementById('seal-area').style.display = "block";
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    function lockVaultVisual() {
+        const btn = document.getElementById('seal-btn');
+        btn.innerHTML = `<svg style="width:18px; fill:white;" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg> VAULT LOCKED & SEALED`;
+    }
+
+    function bridgeToClio() {
+        document.getElementById('seal-btn').innerText = "SEALING...";
+        setTimeout(() => { window.location.href = "https://ca.app.clio.com/nc/#/matters"; }, 1500);
+    }
+</script>
+</body>
+</html>
