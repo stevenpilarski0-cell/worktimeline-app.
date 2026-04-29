@@ -157,4 +157,16 @@
 
     function sealVault() { 
         isLocked = true; 
-        localStorage.
+        localStorage.setItem('vLocked', 'true'); 
+        applyLock(); 
+        setTimeout(() => { window.location.href = "https://ca.app.clio.com/nc/#/matters"; }, 1500); 
+    }
+    
+    function applyLock() {
+        document.getElementById('lockBtn').innerHTML = "🔒 CONSCIENCE SYNCED";
+        document.getElementById('lockBtn').style.background = "#004d4d";
+        document.getElementById('seal-area').style.display = "block";
+    }
+</script>
+</body>
+</html>
