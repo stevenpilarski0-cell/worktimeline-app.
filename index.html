@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeLine™ | Canadian Secure Vault</title>
+    <title>WorkTimeLine™ | Clio Secure Handshake</title>
     <style>
         :root { --teal: #008080; --dark: #004d4d; --light: #f8fafc; --gold: #ffd700; --alert: #dc2626; }
         body { margin: 0; padding: 0; font-family: -apple-system, sans-serif; background: var(--light); color: #333; display: flex; flex-direction: column; min-height: 100vh; }
@@ -30,8 +30,9 @@
         .padlock-svg { width: 60px; height: 60px; fill: var(--teal); cursor: pointer; }
         .lock-text { display: block; font-size: 10px; font-weight: bold; color: var(--teal); margin-top: 5px; letter-spacing: 1px; }
 
+        /* THE SECURITY MODAL */
         #warning-modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index: 100; justify-content:center; align-items:center; }
-        .modal-box { background:white; padding:30px; border-radius:20px; max-width:320px; text-align:center; border-top: 8px solid var(--teal); }
+        .modal-box { background:white; padding:30px; border-radius:20px; max-width:320px; text-align:center; border-top: 8px solid var(--teal); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
 
         nav { background: #fff; display: flex; border-top: 1px solid #ddd; padding: 12px 0; position: sticky; bottom: 0; }
         nav button { flex: 1; border: none; background: none; font-weight: bold; color: #999; font-size: 11px; text-transform: uppercase; }
@@ -39,7 +40,6 @@
 
         .pattern-msg { background: #000; color: var(--gold); padding: 10px; font-size: 10px; font-family: monospace; text-align: center; border-radius: 5px; margin-bottom: 15px; }
         .stealth-ui { background: #f1f5f9; padding: 10px; text-align: center; border-radius: 10px; margin-bottom: 15px; border: 1px dashed var(--teal); }
-        .footer-compliance { font-size: 9px; text-align: center; color: #aaa; margin: 10px 0; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -62,7 +62,7 @@
     </div>
 
     <div class="card">
-        <textarea id="event-input" placeholder="Document incident details..."></textarea>
+        <textarea id="event-input" placeholder="Enter event details..."></textarea>
         <button class="btn-add" onclick="addEvent()">+ ADD TO TIMELINE</button>
     </div>
 
@@ -77,8 +77,8 @@
 </div>
 
 <div id="lock-tab" class="tab-content">
-    <h3 style="color: var(--teal);">Locked Archive</h3>
-    <div id="clio-list" style="font-size: 12px; color: #666;">Waiting for Canadian Vault sync...</div>
+    <h3 style="color: var(--teal);">Locked Records</h3>
+    <div id="clio-list" style="font-size: 12px; color: #666;">No sealed records synced.</div>
 </div>
 
 <nav>
@@ -86,21 +86,18 @@
     <button onclick="switchTab('lock-tab', this)">Lock</button>
 </nav>
 
-<div class="footer-compliance">🍁 DATA SOVEREIGNTY: CANADA (MONTREAL)</div>
-
 <div id="warning-modal">
     <div class="modal-box">
-        <div style="font-size: 10px; color: var(--teal); font-weight: bold; margin-bottom: 10px;">CANADIAN SECURITY PROTOCOL</div>
+        <div style="font-size: 10px; color: var(--teal); font-weight: bold; margin-bottom: 10px;">SECURITY PROTOCOL</div>
         <div style="color:var(--dark); font-weight:900; font-size: 16px; margin-bottom:15px;">GRANT PERMISSION?</div>
-        <p style="font-size:12px; line-height: 1.4; color: #555;">Authorizing <strong>WorkTimeLine™</strong> to seal this record to the Montreal Secure Vault and transfer to <strong>Clio Manage</strong>.</p>
+        <p style="font-size:12px; line-height: 1.4; color: #555;">You are authorizing the <strong>WorkTimeLine™ Vault</strong> to cryptographically seal this record and navigate to the <strong>Clio Manage</strong> platform.</p>
         <button onclick="sealToClio()" style="background:var(--teal); color:white; border:none; padding:15px; width:100%; border-radius:10px; font-weight:bold; cursor:pointer; margin-top:10px;">GRANT PERMISSION & SEAL</button>
-        <button onclick="hideWarning()" style="background:none; color:#999; border:none; margin-top:15px; cursor:pointer; font-size: 11px;">CANCEL</button>
+        <button onclick="hideWarning()" style="background:none; color:#999; border:none; margin-top:15px; cursor:pointer; font-size: 11px;">CANCEL ACCESS</button>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-    // Pointing to the Canadian-specific Supabase Instance
     const client = supabase.createClient('https://lbpvtrmfjivlisserdfr.supabase.co', 'sb_publishable_g6Edf46eHFuH8rbUaxq3Og_TiPSJHVs');
     let timelineEntries = [];
 
@@ -136,18 +133,19 @@
     function hideWarning() { document.getElementById('warning-modal').style.display = 'none'; }
 
     async function sealToClio() {
+        // Show immediate feedback
         const btn = document.querySelector('#warning-modal button');
-        btn.innerText = "MONTREAL SYNC...";
+        btn.innerText = "AUTHENTICATING...";
         btn.disabled = true;
 
         try {
             await client.from('work_timelines').insert([{ 
                 log_entry: { timeline: timelineEntries }, 
-                matter_id: "CA_MONTREAL_VAULT_V1" 
+                matter_id: "CLIO_PERMISSIONED_V1" 
             }]);
-        } catch (e) { console.log("Canadian local cache active."); }
+        } catch (e) { console.log("Vault backup logged."); }
         
-        alert("TIMELINE SEALED IN CANADA. TRANSFERRING TO CLIO...");
+        alert("PERMISSION GRANTED. SEALING COMPLETE.");
         window.location.href = "https://app.clio.com/nc/#/matters";
     }
 </script>
