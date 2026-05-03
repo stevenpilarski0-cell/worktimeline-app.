@@ -74,14 +74,13 @@
             <button id="lockBtn" class="lock-footer" onclick="sealVault()">LOCK & SEND TO CLIO</button>
         </div>
     </div>
-    <script>
+      <script>
         let hazardCount = 0; 
         let isLocked = false; 
         let entryCount = 0; 
         let isPrivate = false;
         const colorScale = ['#dcdcdc', '#a6c8c8', '#66b2b2', '#339999', '#008080'];
 
-        // On Load: Check if we were already locked before the redirect
         window.onload = function() {
             if (localStorage.getItem('timelineLocked') === 'true') {
                 isLocked = true;
@@ -101,7 +100,7 @@
         }
 
         function triggerMedia(id) { 
-            if(isLocked) { addTamperEntry("Hardware access attempted."); return; } 
+            if(isLocked) { addTamperEntry("Media access attempted."); return; } 
             document.getElementById(id).click(); 
         }
 
@@ -109,9 +108,8 @@
             const box = document.getElementById('statusBox'); const text = box.value.trim();
             if(!text) return; 
             
-            // If locked (either now or from memory), trigger Tamper Alert
             if(isLocked || localStorage.getItem('timelineLocked') === 'true') { 
-                isLocked = true; // Sync state
+                isLocked = true; 
                 addTamperEntry(text); 
                 box.value=""; 
                 return; 
@@ -139,21 +137,22 @@
             const div = document.createElement('div'); div.className = 'entry tamper-heavy';
             const now = new Date();
             const stamp = now.toLocaleDateString() + " | " + now.toLocaleTimeString();
-            div.innerHTML = `<div style="color:red; font-weight:900;">⚠️ TAMPER ALERT</div><strong>Attempted at: ${stamp}</strong><br>${text}<div class="info-bubble bubble-danger"><strong>Integrity Lock:</strong> File is sealed and transmitted. Submission blocked.</div>`;
+            div.innerHTML = `<div style="color:red; font-weight:900;">⚠️ TAMPER ALERT</div><strong>Attempted at: ${stamp}</strong><br>${text}<div class="info-bubble bubble-danger"><strong>Integrity Lock:</strong> File is sealed. Submission blocked and logged.</div>`;
             document.getElementById('timeline').prepend(div);
         }
 
         function sealVault() { 
             if(isLocked) return; 
-            if(window.confirm("Finalize timeline and transfer to Clio?")) {
+            if(window.confirm("Lock timeline and transmit to Clio?")) {
                 isLocked = true; 
-                // Set Persistent Memory
-                localStorage.setItem('timelineLocked', 'true');
+                localStorage.setItem('timelineLocked', 'true'); // Keeps it locked even if you hit Back
                 
                 document.getElementById('lockBtn').innerHTML = '🔒 SECURED... REDIRECTING'; 
-                window.location.replace("https://ca.app.clio.com/oauth/authorize");
+                // Changed to .href so the browser "remembers" the app in history
+                window.location.href = "https://ca.app.clio.com/oauth/authorize";
             }
         }
     </script>
 </body>
 </html>
+
