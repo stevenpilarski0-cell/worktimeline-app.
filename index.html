@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™ | Clio Duo Integrated</title>
+    <title>WorkTimeline™ | Proactive Prep</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
         :root {
@@ -12,7 +12,32 @@
             --red-heavy: #ffcccc; --red-heavy-border: #ff0000;
             --timeline-active-color: #dcdcdc; 
         }
-        body { font-family: 'Nunito', sans-serif; background-color: #e9ecef; margin: 0; padding: 20px; display: flex; justify-content: center
+        body { font-family: 'Nunito', sans-serif; background-color: #e9ecef; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .app-container { width: 100%; max-width: 800px; background: white; border-radius: 12px; min-height: 85vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+        .privacy-blur { filter: blur(15px); pointer-events: none; transition: filter 0.3s ease; }
+        .header-container { text-align: center; padding: 30px 10px; border-bottom: 2px solid var(--gray-light); }
+        
+        /* Template Chip Styles */
+        .template-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 10px; scrollbar-width: none; }
+        .template-chip { background: white; border: 1px solid var(--teal); color: var(--teal); padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; cursor: pointer; transition: 0.2s; }
+        .template-chip:hover { background: var(--teal); color: white; }
+
+        .lawyer-link-box { background: #e0f2f1; padding: 12px; border-radius: 8px; margin-bottom: 15px; border: 1px solid var(--teal); }
+        .lawyer-label { font-size: 11px; font-weight: 900; color: var(--teal); text-transform: uppercase; display: block; margin-bottom: 5px; }
+        #lawyerSelect { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--teal); font-family: inherit; font-weight: 700; color: var(--gray-dark); }
+
+        #statusBox { width:100%; height:100px; border-radius: 8px; border:1px solid #ccc; padding: 12px; font-family: inherit; box-sizing: border-box; margin-bottom: 12px; font-size: 16px; resize: none; }
+        .media-toolbar { display: flex; gap: 12px; margin-bottom: 15px; }
+        .media-btn { background: var(--teal); color: white; border: none; border-radius: 12px; padding: 12px; cursor: pointer; transition: 0.2s; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
+        .media-btn svg { width: 28px; height: 28px; fill: white; }
+        .media-btn span { font-size: 11px; font-weight: 700; text-transform: uppercase; }
+        .submit-main { width: 100%; background: var(--teal); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 900; cursor: pointer; margin-bottom: 10px; }
+        .timeline { border-left: 5px solid var(--timeline-active-color); margin-left: 10px; padding-left: 20px; }
+        .entry { background: white; border-left: 6px solid var(--timeline-active-color); padding: 18px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .lock-footer { background: var(--gray-dark); color: white; border: none; border-radius: 12px; padding: 18px; width: 100%; margin-top: 30px; cursor: pointer; font-weight: 900; text-transform: uppercase; }
+        .reset-link { font-size: 10px; color: #cc0000; cursor: pointer; margin-top: 15px; text-align: center; font-weight: bold; text-decoration: underline; }
+    </style>
+</head>
 <body>
     <div class="app-container">
         <header class="header-container">
@@ -31,12 +56,25 @@
 
         <div style="padding: 20px;">
             <div style="background: var(--gray-light); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--gray-mid);">
-                <textarea id="statusBox" placeholder="Enter incident details for the timeline..."></textarea>
                 
-                <input type="file" id="cameraTrigger" accept="image/*" capture="environment" style="display:none">
-                <input type="file" id="micTrigger" accept="audio/*" capture="microphone" style="display:none">
-                <input type="file" id="docTrigger" style="display:none">
+                <div class="lawyer-link-box">
+                    <label class="lawyer-label">Attending Professional:</label>
+                    <select id="lawyerSelect">
+                        <option value="none">-- Select Professional --</option>
+                        <option value="L1">Marcus Thorne, Esq.</option>
+                        <option value="L2">Sarah Jenkins, JD</option>
+                    </select>
+                </div>
 
+                <label class="lawyer-label">Quick-Start Templates:</label>
+                <div class="template-row">
+                    <div class="template-chip" onclick="applyTemplate('site')">Site Inspection</div>
+                    <div class="template-chip" onclick="applyTemplate('witness')">Witness Statement</div>
+                    <div class="template-chip" onclick="applyTemplate('accident')">Incident Report</div>
+                </div>
+
+                <textarea id="statusBox" placeholder="Start typing or select a template above..."></textarea>
+                
                 <div class="media-toolbar">
                     <button class="media-btn" onclick="triggerMedia('cameraTrigger')">
                         <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
@@ -51,21 +89,36 @@
                         <span>Doc</span>
                     </button>
                 </div>
+                
+                <input type="file" id="cameraTrigger" accept="image/*" capture="environment" style="display:none">
+                <input type="file" id="micTrigger" accept="audio/*" capture="microphone" style="display:none">
+                <input type="file" id="docTrigger" style="display:none">
+
                 <button class="submit-main" onclick="submitEntry()">SUBMIT TO TIMELINE</button>
             </div>
+            
             <div id="timelineContainer"><div id="timeline" class="timeline"></div></div>
+            
             <button id="lockBtn" class="lock-footer" onclick="sealVault()">LOCK & SEND TO CLIO</button>
             <div class="reset-link" onclick="resetSystem()">[RESET SYSTEM MEMORY]</div>
         </div>
     </div>
     <script>
-        let hazardCount = 0; 
-        let isLocked = false; 
-        let entryCount = 0; 
-        let isPrivate = false;
+        let hazardCount = 0; let isLocked = false; let entryCount = 0; let isPrivate = false;
         const colorScale = ['#dcdcdc', '#a6c8c8', '#66b2b2', '#339999', '#008080'];
 
-        // Persistent Lock Check
+        const templates = {
+            site: "[SITE INSPECTION]\nLocation: \nWeather Conditions: \nPersonnel Present: \nPrimary Observations: ",
+            witness: "[WITNESS STATEMENT]\nName: \nContact: \nRelationship to Event: \nStatement Detail: ",
+            accident: "[INCIDENT REPORT]\nNature of Incident: \nHazard Identified: \nImmediate Actions Taken: \nInjuries Reported: "
+        };
+
+        function applyTemplate(key) {
+            if(isLocked) return;
+            document.getElementById('statusBox').value = templates[key];
+            document.getElementById('statusBox').focus();
+        }
+
         window.onload = function() {
             if (localStorage.getItem('timelineLocked') === 'true') {
                 isLocked = true;
@@ -73,11 +126,12 @@
                 btn.innerHTML = '🔒 SECURED & SENT TO CLIO';
                 btn.style.opacity = "0.5";
                 btn.style.cursor = "not-allowed";
+                document.getElementById('lawyerSelect').disabled = true;
             }
         };
 
         function resetSystem() {
-            if(confirm("Wipe system memory and start a new timeline?")) {
+            if(confirm("Clear timeline and reset system?")) {
                 localStorage.removeItem('timelineLocked');
                 location.reload();
             }
@@ -92,7 +146,7 @@
         }
 
         function triggerMedia(id) { 
-            if(isLocked) { addTamperEntry("Media access attempted."); return; } 
+            if(isLocked) { addTamperEntry("Hardware blocked."); return; } 
             document.getElementById(id).click(); 
         }
 
@@ -119,9 +173,8 @@
             const now = new Date();
             const datePart = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
             const timePart = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-            const stamp = datePart + " | " + timePart;
-            div.innerHTML = `<strong>${stamp}</strong> — ${text}`;
-            if(isAI) div.innerHTML += `<div class="info-bubble"><strong>AI Pattern Recognition:</strong> System detected "Hazard" 3+ times. Prepared for Duo Analysis.</div>`;
+            div.innerHTML = `<strong>${datePart} | ${timePart}</strong> — ${text.replace(/\n/g, '<br>')}`;
+            if(isAI) div.innerHTML += `<div class="info-bubble"><strong>Duo Analytics:</strong> Potential liability patterns identified.</div>`;
             document.getElementById('timeline').prepend(div);
         }
 
@@ -129,17 +182,19 @@
             const div = document.createElement('div'); div.className = 'entry tamper-heavy';
             const now = new Date();
             const stamp = now.toLocaleDateString() + " | " + now.toLocaleTimeString();
-            div.innerHTML = `<div style="color:red; font-weight:900;">⚠️ TAMPER ALERT</div><strong>Attempted: ${stamp}</strong><br>${text}<div class="info-bubble bubble-danger"><strong>Integrity Lock:</strong> File is sealed. Entry blocked and logged.</div>`;
+            div.innerHTML = `<div style="color:red; font-weight:900;">⚠️ TAMPER ALERT</div><strong>Attempted: ${stamp}</strong><br>${text}<div class="info-bubble bubble-danger"><strong>Lock:</strong> Entry blocked.</div>`;
             document.getElementById('timeline').prepend(div);
         }
 
         function sealVault() { 
             if(isLocked) return; 
-            if(window.confirm("Finalize timeline and sync with Clio Duo? This action is immutable.")) {
+            if(document.getElementById('lawyerSelect').value === "none") {
+                alert("Please select a Professional."); return;
+            }
+            if(window.confirm("Finalize and sync with Clio Duo?")) {
                 isLocked = true; 
                 localStorage.setItem('timelineLocked', 'true');
-                document.getElementById('lockBtn').innerHTML = '🔒 SYNCING WITH CLIO DUO...'; 
-                // Using .href to maintain history so Back button works for Tamper Testing
+                document.getElementById('lockBtn').innerHTML = '🔒 TRANSMITTING TO CLIO...'; 
                 window.location.href = "https://ca.app.clio.com/oauth/authorize";
             }
         }
