@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™ | Secured Evidence</title>
+    <title>WorkTimeline™ | Clio Duo Integrated</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
         :root {
@@ -12,27 +12,7 @@
             --red-heavy: #ffcccc; --red-heavy-border: #ff0000;
             --timeline-active-color: #dcdcdc; 
         }
-        body { font-family: 'Nunito', sans-serif; background-color: #e9ecef; margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .app-container { width: 100%; max-width: 800px; background: white; border-radius: 12px; min-height: 85vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
-        .privacy-blur { filter: blur(15px); pointer-events: none; transition: filter 0.3s ease; }
-        .header-container { text-align: center; padding: 30px 10px; border-bottom: 2px solid var(--gray-light); }
-        .quote-box { font-style: italic; color: var(--gray-dark); margin: 15px auto; max-width: 80%; line-height: 1.4; }
-        .quote-box span { display: block; font-weight: 900; color: var(--teal); margin-top: 5px; }
-        #statusBox { width:100%; height:80px; border-radius: 8px; border:1px solid #ccc; padding: 12px; font-family: inherit; box-sizing: border-box; margin-bottom: 12px; font-size: 16px; resize: none; }
-        .media-toolbar { display: flex; gap: 12px; margin-bottom: 15px; }
-        .media-btn { background: var(--teal); color: white; border: none; border-radius: 12px; padding: 12px; cursor: pointer; transition: 0.2s; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
-        .media-btn svg { width: 28px; height: 28px; fill: white; }
-        .media-btn span { font-size: 11px; font-weight: 700; text-transform: uppercase; }
-        .submit-main { width: 100%; background: var(--teal); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 900; cursor: pointer; margin-bottom: 10px; }
-        .timeline { border-left: 5px solid var(--timeline-active-color); margin-left: 10px; padding-left: 20px; transition: border-color 0.5s ease; }
-        .entry { background: white; border-left: 6px solid var(--timeline-active-color); padding: 18px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .info-bubble { background: #f0f7ff; border-left: 4px solid #007bff; padding: 12px; border-radius: 6px; font-size: 13px; margin-top: 10px; }
-        .ai-flagged { background: var(--yellow-ai) !important; border-left-color: var(--yellow-border) !important; }
-        .tamper-heavy { background: var(--red-heavy) !important; border-left-color: var(--red-heavy-border) !important; }
-        .lock-footer { background: var(--gray-dark); color: white; border: none; border-radius: 12px; padding: 18px; width: 100%; margin-top: 30px; cursor: pointer; font-weight: 900; text-transform: uppercase; }
-        .reset-link { font-size: 10px; color: #cc0000; cursor: pointer; margin-top: 15px; text-align: center; font-weight: bold; text-decoration: underline; }
-    </style>
-</head>
+        body { font-family: 'Nunito', sans-serif; background-color: #e9ecef; margin: 0; padding: 20px; display: flex; justify-content: center
 <body>
     <div class="app-container">
         <header class="header-container">
@@ -51,10 +31,12 @@
 
         <div style="padding: 20px;">
             <div style="background: var(--gray-light); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--gray-mid);">
-                <textarea id="statusBox" placeholder="Enter incident details..."></textarea>
+                <textarea id="statusBox" placeholder="Enter incident details for the timeline..."></textarea>
+                
                 <input type="file" id="cameraTrigger" accept="image/*" capture="environment" style="display:none">
                 <input type="file" id="micTrigger" accept="audio/*" capture="microphone" style="display:none">
                 <input type="file" id="docTrigger" style="display:none">
+
                 <div class="media-toolbar">
                     <button class="media-btn" onclick="triggerMedia('cameraTrigger')">
                         <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
@@ -83,6 +65,7 @@
         let isPrivate = false;
         const colorScale = ['#dcdcdc', '#a6c8c8', '#66b2b2', '#339999', '#008080'];
 
+        // Persistent Lock Check
         window.onload = function() {
             if (localStorage.getItem('timelineLocked') === 'true') {
                 isLocked = true;
@@ -93,9 +76,8 @@
             }
         };
 
-        // NEW: Function to clear the lock so you can test again
         function resetSystem() {
-            if(confirm("Are you sure? This will clear the permanent lock and reset your timeline for a new test.")) {
+            if(confirm("Wipe system memory and start a new timeline?")) {
                 localStorage.removeItem('timelineLocked');
                 location.reload();
             }
@@ -117,14 +99,12 @@
         function submitEntry() {
             const box = document.getElementById('statusBox'); const text = box.value.trim();
             if(!text) return; 
-            
             if(isLocked || localStorage.getItem('timelineLocked') === 'true') { 
-                isLocked = true; 
+                isLocked = true;
                 addTamperEntry(text); 
                 box.value=""; 
                 return; 
             }
-
             const matches = text.match(/\bhazard\b/gi); if(matches) hazardCount += matches.length;
             entryCount++; updateTimelineColor(); addStandardEntry(text, hazardCount >= 3); box.value = "";
         }
@@ -137,9 +117,11 @@
         function addStandardEntry(text, isAI) {
             const div = document.createElement('div'); div.className = `entry ${isAI ? 'ai-flagged' : ''}`;
             const now = new Date();
-            const stamp = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + " | " + now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            const datePart = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            const timePart = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            const stamp = datePart + " | " + timePart;
             div.innerHTML = `<strong>${stamp}</strong> — ${text}`;
-            if(isAI) div.innerHTML += `<div class="info-bubble"><strong>AI Pattern Recognition:</strong> System detected "Hazard" 3+ times.</div>`;
+            if(isAI) div.innerHTML += `<div class="info-bubble"><strong>AI Pattern Recognition:</strong> System detected "Hazard" 3+ times. Prepared for Duo Analysis.</div>`;
             document.getElementById('timeline').prepend(div);
         }
 
@@ -147,16 +129,17 @@
             const div = document.createElement('div'); div.className = 'entry tamper-heavy';
             const now = new Date();
             const stamp = now.toLocaleDateString() + " | " + now.toLocaleTimeString();
-            div.innerHTML = `<div style="color:red; font-weight:900;">⚠️ TAMPER ALERT</div><strong>Attempted at: ${stamp}</strong><br>${text}<div class="info-bubble bubble-danger"><strong>Integrity Lock:</strong> File is sealed. Submission blocked and logged.</div>`;
+            div.innerHTML = `<div style="color:red; font-weight:900;">⚠️ TAMPER ALERT</div><strong>Attempted: ${stamp}</strong><br>${text}<div class="info-bubble bubble-danger"><strong>Integrity Lock:</strong> File is sealed. Entry blocked and logged.</div>`;
             document.getElementById('timeline').prepend(div);
         }
 
         function sealVault() { 
             if(isLocked) return; 
-            if(window.confirm("Lock timeline and transmit to Clio?")) {
+            if(window.confirm("Finalize timeline and sync with Clio Duo? This action is immutable.")) {
                 isLocked = true; 
                 localStorage.setItem('timelineLocked', 'true');
-                document.getElementById('lockBtn').innerHTML = '🔒 SECURED... REDIRECTING'; 
+                document.getElementById('lockBtn').innerHTML = '🔒 SYNCING WITH CLIO DUO...'; 
+                // Using .href to maintain history so Back button works for Tamper Testing
                 window.location.href = "https://ca.app.clio.com/oauth/authorize";
             }
         }
