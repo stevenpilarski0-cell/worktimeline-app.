@@ -3,41 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™ | Secured</title>
+    <title>WorkTimeline™ Secured</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
-
         :root {
             --teal: #008080; --gray-light: #f2f4f5; --gray-mid: #dcdcdc; --gray-dark: #2c3e50;
             --yellow-ai: #fff3cd; --yellow-border: #ffc107;
             --red-heavy: #ffcccc; --red-heavy-border: #ff0000;
             --timeline-active-color: #dcdcdc; 
         }
-
         body { font-family: 'Nunito', sans-serif; background-color: #e9ecef; margin: 0; padding: 20px; display: flex; justify-content: center; }
         .app-container { width: 100%; max-width: 800px; background: white; border-radius: 12px; min-height: 85vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
-
         .privacy-blur { filter: blur(15px); pointer-events: none; transition: filter 0.3s ease; }
         .header-container { text-align: center; padding: 30px 10px; border-bottom: 2px solid var(--gray-light); }
-        .quote-box { font-style: italic; color: var(--gray-dark); margin: 15px auto; max-width: 80%; line-height: 1.4; }
-        .quote-box span { display: block; font-weight: 900; color: var(--teal); margin-top: 5px; font-size: 0.9em; }
-
+        .quote-box { font-style: italic; color: var(--gray-dark); margin: 15px auto; max-width: 80%; }
+        .quote-box span { display: block; font-weight: 900; color: var(--teal); margin-top: 5px; }
         #statusBox { width:100%; height:80px; border-radius: 8px; border:1px solid #ccc; padding: 12px; font-family: inherit; box-sizing: border-box; margin-bottom: 12px; font-size: 16px; resize: none; }
-
         .media-toolbar { display: flex; gap: 12px; margin-bottom: 15px; }
-        .media-btn { background: var(--teal); color: white; border: none; border-radius: 12px; padding: 12px 18px; cursor: pointer; font-weight: 700; transition: 0.2s; font-size: 14px; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        .media-btn:active { transform: scale(0.95); }
-        .submit-main { width: 100%; background: var(--teal); margin-bottom: 10px; font-size: 16px; font-weight: 900; display: block; }
-
-        .timeline { border-left: 5px solid var(--timeline-active-color); margin-left: 10px; padding-left: 20px; transition: border-color 0.5s ease; }
+        .media-btn { background: var(--teal); color: white; border: none; border-radius: 12px; padding: 12px; cursor: pointer; transition: 0.2s; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
+        .media-btn svg { width: 28px; height: 28px; fill: white; }
+        .media-btn span { font-size: 11px; font-weight: 700; text-transform: uppercase; }
+        .submit-main { width: 100%; background: var(--teal); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 900; cursor: pointer; margin-bottom: 10px; }
+        .timeline { border-left: 5px solid var(--timeline-active-color); margin-left: 10px; padding-left: 20px; }
         .entry { background: white; border-left: 6px solid var(--timeline-active-color); padding: 18px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-
-        .info-bubble { background: #f0f7ff; border-left: 4px solid #007bff; padding: 12px; border-radius: 6px; font-size: 13px; margin-top: 10px; color: #333; }
-        .bubble-danger { background: #ffeeee; border-color: var(--red-heavy-border); color: #900; }
-
+        .info-bubble { background: #f0f7ff; border-left: 4px solid #007bff; padding: 12px; border-radius: 6px; font-size: 13px; margin-top: 10px; }
         .ai-flagged { background: var(--yellow-ai) !important; border-left-color: var(--yellow-border) !important; }
         .tamper-heavy { background: var(--red-heavy) !important; border-left-color: var(--red-heavy-border) !important; }
-        .lock-footer { background: var(--gray-dark); color: white; border: none; border-radius: 12px; padding: 18px; width: 100%; margin-top: 30px; cursor: pointer; font-weight: 900; text-transform: uppercase; }
+        .lock-footer { background: var(--gray-dark); color: white; border: none; border-radius: 12px; padding: 18px; width: 100%; margin-top: 30px; cursor: pointer; font-weight: 900; }
     </style>
 </head>
 <body>
@@ -52,16 +44,12 @@
                 <circle cx="48" cy="36" r="4" fill="#F2F4F5" stroke="#3498DB" stroke-width="2"/>
             </svg>
             <h1 style="color: var(--teal); margin: 10px 0 0 0; font-weight: 900;">WORKTIMELINE&trade;</h1>
-            <div class="quote-box">"Integrity is doing the right thing, even when no one is watching." <span>— C.S. Lewis</span></div>
-            
-            <button id="privacyBtn" class="media-btn" style="background: var(--gray-dark); max-width: 250px; margin: 0 auto; flex-direction: row;" onclick="togglePrivacy()">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-                Privacy Switch: OFF
-            </button>
+            <div class="quote-box">"Justice is truth in action." <span>— Benjamin Disraeli</span></div>
+            <button id="privacyBtn" class="media-btn" style="background: var(--gray-dark); flex-direction: row; height: 40px; max-width: 200px; margin: 0 auto;" onclick="togglePrivacy()">Privacy: OFF</button>
         </header>
 
         <div style="padding: 20px;">
-            <div style="background: var(--gray-light); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--gray-mid);">
+            <div style="background: var(--gray-light); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
                 <textarea id="statusBox" placeholder="Enter incident details..."></textarea>
                 
                 <input type="file" id="cameraTrigger" accept="image/*" capture="environment" style="display:none">
@@ -70,110 +58,58 @@
 
                 <div class="media-toolbar">
                     <button class="media-btn" onclick="triggerMedia('cameraTrigger')">
-                        <svg viewBox="0 0 24 24" width="24" height="24" fill="white"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
                         <span>Camera</span>
                     </button>
                     <button class="media-btn" onclick="triggerMedia('micTrigger')">
-                        <svg viewBox="0 0 24 24" width="24" height="24" fill="white"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                        <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
                         <span>Mic</span>
                     </button>
                     <button class="media-btn" onclick="triggerMedia('docTrigger')">
-                        <svg viewBox="0 0 24 24" width="24" height="24" fill="white"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
                         <span>Doc</span>
                     </button>
                 </div>
-                <button class="media-btn submit-main" onclick="submitEntry()">SUBMIT ENTRY</button>
+                <button class="submit-main" onclick="submitEntry()">SUBMIT ENTRY</button>
             </div>
-
-            <div id="timelineContainer">
-                <div id="timeline" class="timeline"></div>
-            </div>
-
+            <div id="timelineContainer"><div id="timeline" class="timeline"></div></div>
             <button id="lockBtn" class="lock-footer" onclick="sealVault()">LOCK & SEND TO CLIO</button>
         </div>
     </div>
     <script>
-        let hazardCount = 0;
-        let isLocked = false;
-        let entryCount = 0;
-        let isPrivate = false;
+        let hazardCount = 0; let isLocked = false; let entryCount = 0; let isPrivate = false;
         const colorScale = ['#dcdcdc', '#a6c8c8', '#66b2b2', '#339999', '#008080'];
-
         function togglePrivacy() {
             isPrivate = !isPrivate;
-            const timeline = document.getElementById('timelineContainer');
+            document.getElementById('timelineContainer').classList.toggle('privacy-blur', isPrivate);
             const btn = document.getElementById('privacyBtn');
-            timeline.classList.toggle('privacy-blur', isPrivate);
-            btn.innerHTML = isPrivate ? 
-                `<svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.82l2.92 2.92c1.51-1.26 2.7-2.89 3.44-4.74-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.73 10.03 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.34-1.07l1.83 1.83c-.1-.03-.2-.06-.31-.06-1.66 0-3 1.34-3 3 0 .11.03.21.06.31l-1.83-1.83c.33-.67.53-1.41.53-2.2 0-2.76 2.24-5 5-5 .79 0 1.53.2 2.2.53l-1.83 1.83c-.21-.05-.43-.08-.65-.08z"/></svg> Privacy: ON` : 
-                `<svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg> Privacy: OFF`;
+            btn.innerText = isPrivate ? "Privacy: ON" : "Privacy: OFF";
             btn.style.background = isPrivate ? "var(--teal)" : "var(--gray-dark)";
         }
-
-        function triggerMedia(inputId) {
-            if (isLocked) {
-                addTamperEntry(`Hardware access blocked.`);
-                return;
-            }
-            document.getElementById(inputId).click();
-        }
-
+        function triggerMedia(id) { if(isLocked) { addTamperEntry("Media Access Blocked"); return; } document.getElementById(id).click(); }
         function submitEntry() {
-            const statusBox = document.getElementById('statusBox');
-            const text = statusBox.value.trim();
-            if (!text) return;
-            if (isLocked) {
-                addTamperEntry(text);
-                statusBox.value = "";
-                return;
-            }
-
-            const hazardRegex = /\bhazard\b/gi;
-            const matches = text.match(hazardRegex);
-            if (matches) hazardCount += matches.length;
-
-            entryCount++;
-            updateTimelineColor();
-            addStandardEntry(text, hazardCount >= 3);
-            statusBox.value = "";
+            const box = document.getElementById('statusBox'); const text = box.value.trim();
+            if(!text) return; if(isLocked) { addTamperEntry(text); box.value=""; return; }
+            const matches = text.match(/\bhazard\b/gi); if(matches) hazardCount += matches.length;
+            entryCount++; updateTimelineColor(); addStandardEntry(text, hazardCount >= 3); box.value = "";
         }
-
         function updateTimelineColor() {
-            let colorIndex = Math.min(entryCount, colorScale.length - 1);
-            document.documentElement.style.setProperty('--timeline-active-color', colorScale[colorIndex]);
+            let idx = Math.min(entryCount, colorScale.length - 1);
+            document.documentElement.style.setProperty('--timeline-active-color', colorScale[idx]);
         }
-
         function addStandardEntry(text, isAI) {
-            const timeline = document.getElementById('timeline');
-            const div = document.createElement('div');
-            div.className = `entry ${isAI ? 'ai-flagged' : ''}`;
-            const timeString = new Date().toLocaleString([], { hour: '2-digit', minute: '2-digit', month: 'short', day: 'numeric' });
-            
-            let html = `<strong>${timeString}</strong> — ${text}`;
-            if (isAI) {
-                html += `<div class="info-bubble"><strong>AI Pattern Recognition:</strong> Potential recurring safety risk detected based on phrase triggers.</div>`;
-            }
-            div.innerHTML = html;
-            timeline.prepend(div);
+            const div = document.createElement('div'); div.className = `entry ${isAI ? 'ai-flagged' : ''}`;
+            const time = new Date().toLocaleString([], { hour: '2-digit', minute: '2-digit' });
+            div.innerHTML = `<strong>${time}</strong> — ${text}`;
+            if(isAI) div.innerHTML += `<div class="info-bubble"><strong>AI Pattern Recognition:</strong> System detected "Hazard" 3+ times.</div>`;
+            document.getElementById('timeline').prepend(div);
         }
-
         function addTamperEntry(text) {
-            const timeline = document.getElementById('timeline');
-            const div = document.createElement('div');
-            div.className = 'entry tamper-heavy';
-            div.innerHTML = `<div style="color:red; font-weight:900;">⚠️ TAMPER ALERT</div><strong>Attempted entry:</strong> ${text}<div class="info-bubble bubble-danger"><strong>Integrity Lock:</strong> File is sealed. Entry blocked and logged.</div>`;
-            timeline.prepend(div);
+            const div = document.createElement('div'); div.className = 'entry tamper-heavy';
+            div.innerHTML = `<div style="color:red; font-weight:900;">⚠️ TAMPER ALERT</div><strong>Attempt:</strong> ${text}<div class="info-bubble"><strong>Locked:</strong> File is sealed.</div>`;
+            document.getElementById('timeline').prepend(div);
         }
-
-        function sealVault() {
-            if (isLocked) return;
-            if (confirm("Lock and transmit to Clio? This cannot be undone.")) {
-                isLocked = true;
-                const btn = document.getElementById('lockBtn');
-                btn.innerHTML = '🔒 SECURED & SENT TO CLIO';
-                btn.style.opacity = "0.5";
-            }
-        }
+        function sealVault() { if(isLocked) return; isLocked = true; const btn = document.getElementById('lockBtn'); btn.innerHTML = '🔒 SECURED & SENT TO CLIO'; btn.style.opacity = "0.5"; }
     </script>
 </body>
 </html>
