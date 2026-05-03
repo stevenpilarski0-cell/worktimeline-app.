@@ -1,140 +1,264 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeLine™ | Functional Build</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        :root { --teal: #008080; --dark: #004d4d; --gold: #f59e0b; --yellow-glass: rgba(254, 240, 138, 0.85); --red-glass: rgba(220, 38, 38, 0.2); }
-        body { margin: 0; font-family: 'Inter', sans-serif; background: #fff; padding-bottom: 120px; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
-        header { padding: 45px 25px 15px; position: relative; display: flex; align-items: flex-start; justify-content: flex-start; flex-direction: column; }
-        .quote-box { position: absolute; top: 45px; right: 25px; width: 160px; text-align: right; }
-        .quote-box p { font-size: 8px; font-style: italic; color: #94a3b8; line-height: 1.4; margin: 0; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600;}
-        .logo-box { position: relative; width: 60px; margin-bottom: 10px; }
-        .briefcase { width: 42px; height: 32px; border: 3px solid var(--teal); border-radius: 8px; position: relative; }
-        .briefcase::before { content: ''; position: absolute; top: -10px; left: 11px; width: 14px; height: 7px; border: 3px solid var(--teal); border-bottom: none; border-radius: 4px 4px 0 0; }
-        .logo-line { position: absolute; top: 16px; left: -10px; width: 55px; height: 4px; background: var(--teal); border-radius: 10px; }
-        .brand { font-weight: 900; letter-spacing: 2px; color: var(--dark); font-size: 14px; text-transform: uppercase; }
-        .ai-banner { background: #fefce8; border: 1px solid #fef08a; padding: 14px 18px; border-radius: 16px; margin: 15px 20px; display: flex; align-items: center; gap: 10px; transition: 0.5s; }
-        .ai-banner span { font-size: 10px; font-weight: 700; color: #854d0e; text-transform: uppercase; }
-        .dot { width: 8px; height: 8px; background: var(--gold); border-radius: 50%; animation: blink 2s infinite; }
-        .container { padding: 0 20px; max-width: 450px; margin: 0 auto; }
-        .card { background: #f8fafc; padding: 25px; border-radius: 24px; border: 1px solid #f1f5f9; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-        textarea { width: 100%; border: 1px solid #e2e8f0; padding: 16px; border-radius: 16px; font-size: 12px; font-weight: 700; outline: none; box-sizing: border-box; font-family: 'Courier New', monospace; background: #1a202c; color: #4fd1c5; resize: none; text-align: center; letter-spacing: 1px; }
-        .icon-bar { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin: 20px 0; }
-        .mac-btn { background: var(--teal); color: #fff; border: none; padding: 18px; border-radius: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,128,128,0.2); }
-        .mac-btn svg { width: 22px; height: 22px; fill: white; }
-        .main-btn { background: var(--teal); color: #fff; border: none; padding: 20px; border-radius: 18px; font-weight: 700; width: 100%; font-size: 15px; cursor: pointer; transition: 0.2s; }
-        #timeline { border-left: 2px solid var(--teal); margin: 35px 10px; padding-left: 25px; }
-        .entry { position: relative; margin-bottom: 25px; padding: 18px; border-radius: 18px; background: #fff; border: 1px solid #f1f5f9; transition: 0.6s cubic-bezier(0.2, 1, 0.2, 1); font-size: 15px; font-weight: 600; line-height: 1.4; }
-        .entry::before { content: ''; position: absolute; left: -34px; top: 22px; width: 16px; height: 16px; background: #fff; border: 3px solid var(--teal); border-radius: 50%; z-index: 2; }
-        body.privacy-on .entry { filter: blur(35px); opacity: 0; transform: scale(0.95); }
-        .yellow-alert { background: var(--yellow-glass) !important; border: 1px solid #fef08a !important; }
-        .red-alert { background: var(--red-glass) !important; border: 2.5px solid #dc2626 !important; animation: shake 0.6s; color: #dc2626; }
-        .footer { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; border-top: 1px solid #edf2f7; padding: 20px 25px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; z-index: 1000; }
-        .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--teal); }
-        input:checked + .slider:before { transform: translateX(24px); }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 15% { transform: translateX(-12px); } 30% { transform: translateX(12px); } 45% { transform: translateX(-12px); } 60% { transform: translateX(12px); } 75% { transform: translateX(-12px); } }
-    </style>
-</head>
-<body class="privacy-on">
+ 
 
-<input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none">
-<input type="file" id="micInput" accept="audio/*" capture="user" style="display:none">
-<input type="file" id="docInput" style="display:none">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;0,900;1,400&display=swap');
 
-<header>
-    <div class="logo-box"><div class="briefcase"></div><div class="logo-line"></div></div>
-    <span class="brand">WorkTimeLine™</span>
-    <div class="quote-box"><p>"Law is the Conscience of the community, where Truth is the architect of Freedom."</p></div>
-</header>
-<div id="ai-status" class="ai-banner"><div class="dot"></div><span>AI RECOGNITION: AUTHENTICITY ACTIVE</span></div>
-<div class="container">
-    <div class="card">
-        <textarea id="statusBox" readonly>[SYSTEM IDLE: AWAITING TRUTH]</textarea>
-        <div class="icon-bar">
-            <div class="mac-btn" onclick="document.getElementById('cameraInput').click()"><svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg></div>
-            <div class="mac-btn" onclick="document.getElementById('micInput').click()"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zM17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg></div>
-            <div class="mac-btn" onclick="document.getElementById('docInput').click()"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg></div>
+  :root {
+    --teal: #008080; --gray-light: #f2f4f5; --gray-mid: #dcdcdc; --gray-dark: #2c3e50;
+    --yellow-ai: #fff3cd; --yellow-border: #ffc107; --red-light: #ffe6e6;
+    --red-light-border: #ff9999; --red-heavy: #ffcccc; --red-heavy-border: #ff0000;
+  }
+
+  body { font-family: 'Nunito', sans-serif; background-color: #e9ecef; margin: 0; padding: 10px; display: flex; justify-content: center; }
+  .app-container { width: 100%; max-width: 800px; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); overflow: hidden; min-height: 85vh; display: flex; flex-direction: column; }
+  
+  .top-nav { display: flex; background: var(--gray-dark); padding: 0; overflow-x: auto; white-space: nowrap; }
+  .tab-btn { background: transparent; color: #888; border: none; padding: 15px 20px; font-size: 13px; font-weight: 700; cursor: pointer; text-transform: uppercase; flex-shrink: 0; transition: all 0.2s ease; font-family: 'Nunito', sans-serif; }
+  .tab-btn:hover { color: white; background: rgba(255,255,255,0.05); }
+  .tab-btn.active { color: white; border-bottom: 4px solid var(--teal); background: rgba(0, 128, 128, 0.1); }
+
+  .page { display: none; padding: 30px; flex-grow: 1; }
+  .page.active { display: block; }
+
+  .splash-container { text-align: center; padding-top: 80px; }
+  .quote-box { margin: 40px auto; font-style: italic; color: var(--gray-dark); font-size: 18px; max-width: 80%; }
+  .quote-box span { font-weight: 900; font-style: normal; font-size: 15px; display: block; margin-top: 15px; color: var(--teal);}
+
+  .workspace-grid { display: flex; gap: 30px; }
+  .main-timeline-area { flex: 3; }
+  .side-panel { flex: 1; border-left: 2px solid var(--gray-light); padding-left: 20px; display: flex; flex-direction: column; gap: 20px; }
+
+  .draft-box { background: var(--gray-light); border: 2px dashed var(--gray-mid); padding: 15px; border-radius: 8px; margin-bottom: 30px; }
+  .text-input { width: 95%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 10px; color: var(--gray-dark); background: white; font-family: 'Nunito', sans-serif; font-size: 15px; }
+  .btn-submit { background: var(--gray-dark); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 700; cursor: pointer; transition: 0.2s; font-family: 'Nunito', sans-serif; font-size: 15px;}
+  .btn-submit:hover { background: #1a252f; }
+
+  .media-toolbar { display: flex; gap: 10px; margin-bottom: 15px; }
+  .media-btn { background: white; border: 1px solid #ccc; border-radius: 20px; padding: 6px 14px; cursor: pointer; color: var(--gray-dark); display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; transition: 0.2s; font-family: 'Nunito', sans-serif;}
+  .media-btn svg { width: 16px; height: 16px; fill: currentColor; }
+  .media-btn:hover { background: var(--teal); color: white; border-color: var(--teal); }
+
+  .attachment-box { margin-top: 10px; padding: 10px; background: var(--gray-light); border-radius: 8px; border: 1px solid var(--gray-mid); font-size: 13px; display: flex; align-items: center; gap: 8px; }
+  .attachment-box svg { width: 16px; height: 16px; fill: var(--gray-dark); }
+  .audio-waveform { height: 20px; width: 100px; background: linear-gradient(90deg, var(--teal) 40%, #ccc 40%); border-radius: 10px; }
+
+  .witness-panel { background: white; border: 2px solid var(--teal); padding: 25px; border-radius: 12px; max-width: 500px; margin: 0 auto; box-shadow: 0 4px 10px rgba(0,128,128,0.1); }
+  .btn-witness { background: var(--teal); color: white; border: none; padding: 12px; font-size: 15px; border-radius: 8px; font-weight: 900; width: 100%; cursor: pointer; margin-top: 10px; font-family: 'Nunito', sans-serif;}
+
+  .btn-lock { background: white; color: var(--teal); border: 2px solid var(--teal); padding: 15px; font-size: 15px; border-radius: 8px; font-weight: 900; width: 100%; cursor: pointer; transition: 0.3s; text-transform: uppercase; font-family: 'Nunito', sans-serif; display: flex; align-items: center; justify-content: center; gap: 8px;}
+  .btn-lock svg { width: 18px; height: 18px; fill: currentColor; }
+  .btn-lock:hover { background: var(--teal); color: white; }
+
+  .timeline { border-left: 4px solid var(--gray-light); margin-left: 10px; padding-left: 20px; }
+  .entry { background: white; border-left: 5px solid var(--teal); padding: 18px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); position: relative; font-size: 15px; line-height: 1.5; }
+  .drag-icon { float: right; color: var(--gray-mid); font-size: 20px; cursor: grab; }
+
+  /* GHOST LOG */
+  .ghost-log-container { border-left: 5px solid var(--gray-dark); background: #fdfdfd; min-height: 80px;}
+  .blurred-content { filter: blur(6px); opacity: 0.4; user-select: none; transition: filter 0.4s ease, opacity 0.4s ease; }
+  .blurred-content.unlocked { filter: blur(0); opacity: 1; user-select: auto; }
+  .pin-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; flex-direction: column; background: rgba(255,255,255,0.7); border-radius: 8px; transition: opacity 0.3s ease; }
+  .pin-overlay span { font-weight: 900; color: white; margin-bottom: 8px; background: var(--gray-dark); padding: 4px 12px; border-radius: 20px; font-size: 12px; letter-spacing: 1px; display: flex; align-items: center; gap: 6px;}
+  .pin-overlay span svg { width: 12px; height: 12px; fill: white; }
+  .pin-input-group { display: flex; gap: 8px; margin-top: 5px; }
+  .pin-input { width: 70px; padding: 6px; text-align: center; border: 2px solid var(--gray-dark); border-radius: 6px; font-family: 'Nunito', sans-serif; font-weight: bold; }
+  .btn-unlock { background: var(--teal); color: white; border: none; border-radius: 6px; padding: 0 15px; font-weight: 900; font-family: 'Nunito', sans-serif; cursor: pointer; transition: 0.2s;}
+  .btn-unlock:hover { background: #006666; }
+
+  /* FLAGS */
+  .ai-flagged { background: var(--yellow-ai); border-left: 5px solid var(--yellow-border); }
+  .ai-badge { font-size: 12px; font-weight: 900; color: #856404; text-transform: uppercase; margin-bottom: 5px; display: flex; align-items: center; gap: 6px;}
+  .ai-badge svg { width: 14px; height: 14px; fill: currentColor; }
+  .locked-timeline { border-left-color: var(--gray-dark); }
+  .locked-entry { border-left: 5px solid var(--gray-dark); background: #f8f9fa; color: #555; }
+  .tamper-light { background: var(--red-light); border-left: 5px solid var(--red-light-border); }
+  .tamper-heavy { background: var(--red-heavy); border-left: 5px solid var(--red-heavy-border); color: #900; }
+  .tamper-badge { font-size: 12px; font-weight: 900; color: var(--red-heavy-border); text-transform: uppercase; margin-bottom: 5px; display: flex; align-items: center; gap: 6px;}
+  .tamper-badge svg { width: 14px; height: 14px; fill: currentColor; }
+
+  /* LEGAL LOCK MODAL STYLES */
+  .lock-page-container { max-width: 600px; margin: 0 auto; padding-top: 20px; }
+  .legal-warning-box { border: 2px solid var(--red-heavy-border); background: var(--red-light); padding: 30px; border-radius: 12px; text-align: center; display: none; }
+  .success-box { border: 2px solid var(--teal); background: #e6f2f2; padding: 40px 30px; border-radius: 12px; text-align: center; display: none; }
+  .btn-danger { background: #cc0000; color: white; border: none; padding: 15px 25px; border-radius: 8px; font-weight: 900; cursor: pointer; font-family: 'Nunito', sans-serif; font-size: 16px; width: 100%; margin-top: 15px;}
+  .btn-danger:hover { background: #990000; }
+  .btn-cancel { background: transparent; color: var(--gray-dark); border: 2px solid var(--gray-dark); padding: 15px 25px; border-radius: 8px; font-weight: 900; cursor: pointer; font-family: 'Nunito', sans-serif; font-size: 16px; width: 100%; margin-top: 15px;}
+</style>
+
+<div class="app-container">
+  
+  <nav class="top-nav">
+    <button class="tab-btn active" onclick="switchTab('page1', this)">Splash</button>
+    <button class="tab-btn" onclick="switchTab('page2', this)">Workspace</button>
+    <button class="tab-btn" onclick="switchTab('page3', this)">Media</button>
+    <button class="tab-btn" onclick="switchTab('page4', this)">Witness</button>
+    <button class="tab-btn" onclick="switchTab('page5', this)" style="color: var(--teal);">Lock & Send</button>
+    <button class="tab-btn" onclick="switchTab('page6', this)">AI</button>
+    <button class="tab-btn" onclick="switchTab('page7', this)">Tamper Review</button>
+  </nav>
+
+  <div id="page1" class="page active splash-container">
+    <svg viewBox="0 0 64 64" width="150" height="150">
+        <path d="M 22 20 L 22 14 C 22 10.686 24.686 8 28 8 L 36 8 C 39.314 8 42 10.686 42 14 L 42 20" fill="none" stroke="#008080" stroke-width="3" stroke-linecap="round"/>
+        <rect x="8" y="20" width="48" height="32" rx="4" fill="none" stroke="#008080" stroke-width="3"/>
+        <line x1="0" y1="36" x2="64" y2="36" stroke="#3498DB" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="16" cy="36" r="4" fill="#F2F4F5" stroke="#3498DB" stroke-width="3"/>
+        <circle cx="32" cy="36" r="4" fill="#F2F4F5" stroke="#3498DB" stroke-width="3"/>
+        <circle cx="48" cy="36" r="4" fill="#F2F4F5" stroke="#3498DB" stroke-width="3"/>
+    </svg>
+    <h1 style="color: #008080; font-weight: 900; letter-spacing: 2px;">WORKTIMELINE&trade;</h1>
+    <div class="quote-box">"Truth is the daughter of time, not of authority."<span>— Francis Bacon</span></div>
+  </div>
+
+  <div id="page2" class="page">
+    <div class="workspace-grid">
+      <div class="main-timeline-area">
+        <div class="draft-box">
+          <p style="margin-top: 0; font-size: 13px; color: #666; font-weight: 900; text-transform: uppercase;">New Entry (Draft Mode)</p>
+          <input type="text" placeholder="Type incident details..." class="text-input">
+          <div class="media-toolbar">
+            <button class="media-btn"><svg viewBox="0 0 24 24"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm8 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10z"/></svg> Camera</button>
+            <button class="media-btn"><svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2zM8 18h8v2H8v-2z"/></svg> Audio</button>
+            <button class="media-btn"><svg viewBox="0 0 24 24"><path d="M6 2c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6H6zm7 7V3.5L18.5 9H13z"/></svg> File</button>
+          </div>
+          <button class="btn-submit">Submit Entry</button>
         </div>
-        <button class="main-btn" onclick="nextStep()" id="actionBtn">+ LOG TO TIMELINE</button>
+
+        <div class="timeline">
+          <div class="entry draggable"><strong>Oct 12, 9:00 AM</strong> - Verbal warning from supervisor.<span class="drag-icon">☰</span></div>
+          <div class="entry ghost-log-container draggable">
+            <div id="ghost-text" class="blurred-content"><strong>Oct 14, 2:30 PM</strong> - Supervisor raised voice in breakroom. HR was not present.</div>
+            <div id="ghost-overlay" class="pin-overlay">
+              <span><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg> GHOST MODE ACTIVE</span>
+              <p style="font-size: 11px; margin: 0; color: var(--gray-dark); font-weight: bold;">Enter PIN to decrypt</p>
+              <div class="pin-input-group">
+                <input type="password" id="ghost-pin" class="pin-input" placeholder="PIN">
+                <button class="btn-unlock" onclick="unlockGhost()">Unlock</button>
+              </div>
+            </div>
+            <span class="drag-icon" style="position: absolute; right: 15px; top: 15px; z-index: 10;">☰</span>
+          </div>
+        </div>
+      </div>
+      <div class="side-panel">
+        <div class="lock-panel">
+          <p style="font-size: 14px; color: #666; margin-top: 0;">Once entries are in chronological order, secure the file and transmit to legal.</p>
+          <button class="btn-lock" onclick="document.querySelector('[data-target=\'page5\']').click()">
+            <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg> Lock & Send to Clio
+          </button>
+        </div>
+      </div>
     </div>
-    <div id="timeline"></div>
-    <div id="seal-area" style="display:none; text-align:center; padding-top:30px;">
-        <button id="lockBtn" class="main-btn" style="background:var(--dark);" onclick="sealVault()">SEAL & SYNC CONSCIENCE</button>
+  </div>
+
+  <div id="page3" class="page">
+    <h2 style="color: var(--teal); margin-top: 0;">Media Attached</h2>
+    <div class="timeline">
+      <div class="entry">
+        <strong>Nov 2, 11:15 AM</strong> - Photographed damaged safety equipment.
+        <div class="attachment-box"><svg viewBox="0 0 24 24"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm8 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10z"/></svg> <strong>Photo_001.jpg</strong></div>
+      </div>
     </div>
+  </div>
+
+  <div id="page4" class="page">
+    <div class="witness-panel">
+      <h2 style="color: var(--teal); margin-top: 0; text-align: center;">Witness Request</h2>
+      <label style="font-size: 13px; font-weight: 900; color: var(--gray-dark);">Witness Name</label>
+      <input type="text" value="Murdick" class="text-input" style="width: 100%; box-sizing: border-box; margin-bottom: 15px;">
+      <button class="btn-witness" onclick="alert('Secure Link Generated and Sent to Murdick.')">Generate Link</button>
+    </div>
+  </div>
+
+  <div id="page5" class="page">
+    <div class="lock-page-container">
+      <div id="lock-state-initial" style="text-align: center; padding: 40px 20px;">
+        <h2 style="color: var(--gray-dark); font-weight: 900; font-size: 24px;">Finalize Evidence File</h2>
+        <p style="color: #666; font-size: 16px; margin-bottom: 30px;">Your timeline is currently in draft mode. Click below to initiate the transmission to your legal team.</p>
+        <button class="btn-lock" style="padding: 20px; font-size: 18px;" onclick="showWarning()">
+          <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+          Lock and Send to Clio
+        </button>
+      </div>
+
+      <div id="lock-state-warning" class="legal-warning-box">
+        <svg viewBox="0 0 24 24" style="width: 40px; height: 40px; fill: #cc0000; margin-bottom: 10px;"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+        <h2 style="color: #cc0000; margin-top: 0; font-weight: 900;">ARE YOU SURE YOU ARE DONE?</h2>
+        <p style="font-size: 16px; color: #444; line-height: 1.6; font-weight: bold;">WARNING: Once you lock this timeline, the structure becomes cryptographically immutable.</p>
+        <p style="font-size: 15px; color: #666; line-height: 1.5;">Anything you change, edit, or add after this point will be permanently noted, tracked as metadata, and turned <strong style="color: red;">RED</strong> for legal review.</p>
+        <div style="display: flex; gap: 15px; margin-top: 20px;">
+          <button class="btn-cancel" onclick="cancelLock()">No, Go Back</button>
+          <button class="btn-danger" onclick="confirmLock()">Yes, Lock & Send</button>
+        </div>
+      </div>
+
+      <div id="lock-state-success" class="success-box">
+        <svg viewBox="0 0 24 24" style="width: 50px; height: 50px; fill: var(--teal); margin-bottom: 15px;"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+        <h2 style="color: var(--teal); margin-top: 0; font-weight: 900;">Locked & Transmitted</h2>
+        <p style="font-size: 16px; color: var(--gray-dark); font-weight: bold;">Your evidence chronology has been sealed and successfully sent to the firm's Clio system.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="page6" class="page">
+    <h2 style="color: var(--teal); margin-top: 0;">Cross-Reference Scan</h2>
+    <div class="timeline">
+      <div class="entry ai-flagged">
+        <div class="ai-badge"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg> Systemic Pattern Detected</div>
+        <strong>Nov 4, 3:30 PM</strong> - Supervisor bypassed lockout/tagout.
+      </div>
+    </div>
+  </div>
+
+  <div id="page7" class="page">
+    <h2 style="color: var(--gray-dark); margin-top: 0;">Cryptographic Review</h2>
+    <div class="timeline locked-timeline">
+      <div class="entry tamper-heavy">
+        <div class="tamper-badge"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg> Critical Tampering (Deep Red Flag)</div>
+        <strong>Altered Entry:</strong> User attempted to change the timestamp after the file was sealed to Clio.
+      </div>
+    </div>
+  </div>
+
 </div>
-<div class="footer">
-    <div class="footer-label" style="font-size:11px; font-weight:700; color:#718096;">PRIVACY MODE</div>
-    <label class="switch"><input type="checkbox" id="privacyToggle" checked onchange="togglePrivacy()"><span class="slider"></span></label>
-</div>
+
 <script>
-    var step = 0;
-    var isLocked = false;
-    localStorage.removeItem('vLocked'); // Forces clear state on every manual refresh
+  // Simplified Tab Switcher that bypasses mobile security blocks
+  function switchTab(pageId, buttonElement) {
+    var i;
+    var pages = document.getElementsByClassName("page");
+    for (i = 0; i < pages.length; i++) { pages[i].style.display = "none"; }
     
-    const lines = [
-        "I bet you they think I'm invisible, but I'm not. I'm just trapped. This is your prison within a prison. But I'm done. I won't be a prisoner anymore.",
-        "Law is not above me; it is the ground I stand on.",
-        "Lawyers want to work with me because my truth is organized.",
-        "Being organized is how I take my power back.",
-        "Using my tools to architect my own freedom.",
-        "Structure is the path to freedom.",
-        "But what if I look back, should I cave? Should I be scared? I won't allow myself to backtrack neither will work timeline because when the clients supposed to be kept at Center because sometimes the only way to keep the client centered is by putting him ahead, the truth is built, not changed." 
-    ];
-
-    window.onload = function() { addEntry(lines[0]); };
+    var tabs = document.getElementsByClassName("tab-btn");
+    for (i = 0; i < tabs.length; i++) { tabs[i].className = tabs[i].className.replace(" active", ""); }
     
-    function togglePrivacy() {
-        var t = document.getElementById('privacyToggle');
-        if(!t.checked) {
-            document.body.classList.remove('privacy-on'); 
-            document.getElementById('statusBox').innerText = '[TEARING DOWN THE WALL...]';
-        } else { document.body.classList.add('privacy-on'); }
-    }
+    document.getElementById(pageId).style.display = "block";
+    buttonElement.className += " active";
+  }
 
-    function nextStep() {
-        step++; if (step < 7) { addEntry(lines[step]); updateStatus(step); }
-        // THE NATURAL RESET: After the Red Alert is shown (Step 6), reset 4 seconds later.
-        if (step === 6) {
-            setTimeout(() => { location.reload(); }, 6000); 
-        }
+  // Ghost Mode Unlock
+  function unlockGhost() {
+    if (document.getElementById('ghost-pin').value === '1234') {
+      document.getElementById('ghost-text').style.filter = 'blur(0)';
+      document.getElementById('ghost-text').style.opacity = '1';
+      document.getElementById('ghost-overlay').style.display = 'none';
+    } else {
+      alert('Incorrect PIN. Please try 1234 for the demo.');
     }
+  }
 
-    function updateStatus(s) {
-        let b = document.getElementById('statusBox');
-        if(s < 3) b.innerText = '[ANALYZING MANIFESTO DATA...]';
-        else if(s < 6) b.innerText = '[PATTERN RECOGNITION: ACTIVE]';
-        else if(s == 6) b.innerText = '[INTEGRITY BREACH DETECTED]';
-    }
-
-    function addEntry(text) {
-        var div = document.createElement('div'); div.className = 'entry';
-        var entriesCount = document.querySelectorAll('.entry').length; div.id = 'e' + entriesCount;
-        if(isLocked || text === lines[6]) {
-            div.classList.add('red-alert');
-            document.getElementById('ai-status').innerHTML = '<div class="dot" style="background:red"></div><span style="color:red">CLIENT IS CENTERED. AUTO-RESTARTING...</span>';
-        }
-        const now = new Date();
-        div.innerHTML = '<div style="font-size:10px; font-weight:800; color:var(--teal); margin-bottom:5px;">📅 ' + now.toLocaleDateString() + ' | 🕒 ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + '</div>' + text;
-        document.getElementById('timeline').appendChild(div);
-        if(entriesCount === 6 && !isLocked) { document.getElementById('e4').classList.add('yellow-alert'); document.getElementById('e5').classList.add('yellow-alert'); document.getElementById('e6').classList.add('yellow-alert'); }
-        document.getElementById('seal-area').style.display = "block";
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-    }
-
-    function sealVault() { 
-        isLocked = true; 
-        document.getElementById('lockBtn').innerHTML = "🔒 CONSCIENCE SYNCED"; 
-        document.getElementById('lockBtn').style.background = "#004d4d"; 
-        document.getElementById('statusBox').innerText = '[CONSCIENCE VAULT: LOCKED]';
-        setTimeout(() => { window.location.href = "https://ca.app.clio.com/nc/#/matters"; }, 1500); 
-    }
+  // Lock Flow
+  function showWarning() {
+    document.getElementById('lock-state-initial').style.display = 'none';
+    document.getElementById('lock-state-warning').style.display = 'block';
+  }
+  function cancelLock() {
+    document.getElementById('lock-state-warning').style.display = 'none';
+    document.getElementById('lock-state-initial').style.display = 'block';
+  }
+  function confirmLock() {
+    document.getElementById('lock-state-warning').style.display = 'none';
+    document.getElementById('lock-state-success').style.display = 'block';
+  }
 </script>
-</body>
-</html>
+
