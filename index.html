@@ -45,18 +45,15 @@
             </svg>
             <h1 style="color: var(--teal); margin: 10px 0 0 0; font-weight: 900;">WORKTIMELINE&trade;</h1>
             <div class="quote-box">"Integrity is doing the right thing, even when no one is watching." <span>— C.S. Lewis</span></div>
-            
             <button id="privacyBtn" class="media-btn" style="background: var(--gray-dark); flex-direction: row; height: 45px; max-width: 200px; margin: 0 auto;" onclick="togglePrivacy()">Privacy: OFF</button>
         </header>
 
         <div style="padding: 20px;">
             <div style="background: var(--gray-light); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--gray-mid);">
                 <textarea id="statusBox" placeholder="Enter incident details..."></textarea>
-                
                 <input type="file" id="cameraTrigger" accept="image/*" capture="environment" style="display:none">
                 <input type="file" id="micTrigger" accept="audio/*" capture="microphone" style="display:none">
                 <input type="file" id="docTrigger" style="display:none">
-
                 <div class="media-toolbar">
                     <button class="media-btn" onclick="triggerMedia('cameraTrigger')">
                         <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
@@ -78,8 +75,22 @@
         </div>
     </div>
     <script>
-        let hazardCount = 0; let isLocked = false; let entryCount = 0; let isPrivate = false;
+        let hazardCount = 0; 
+        let isLocked = false; 
+        let entryCount = 0; 
+        let isPrivate = false;
         const colorScale = ['#dcdcdc', '#a6c8c8', '#66b2b2', '#339999', '#008080'];
+
+        // On Load: Check if we were already locked before the redirect
+        window.onload = function() {
+            if (localStorage.getItem('timelineLocked') === 'true') {
+                isLocked = true;
+                const btn = document.getElementById('lockBtn');
+                btn.innerHTML = '🔒 SECURED & SENT TO CLIO';
+                btn.style.opacity = "0.5";
+                btn.style.cursor = "not-allowed";
+            }
+        };
 
         function togglePrivacy() {
             isPrivate = !isPrivate;
@@ -90,13 +101,22 @@
         }
 
         function triggerMedia(id) { 
-            if(isLocked) { addTamperEntry("Media access attempted."); return; } 
+            if(isLocked) { addTamperEntry("Hardware access attempted."); return; } 
             document.getElementById(id).click(); 
         }
 
         function submitEntry() {
             const box = document.getElementById('statusBox'); const text = box.value.trim();
-            if(!text) return; if(isLocked) { addTamperEntry(text); box.value=""; return; }
+            if(!text) return; 
+            
+            // If locked (either now or from memory), trigger Tamper Alert
+            if(isLocked || localStorage.getItem('timelineLocked') === 'true') { 
+                isLocked = true; // Sync state
+                addTamperEntry(text); 
+                box.value=""; 
+                return; 
+            }
+
             const matches = text.match(/\bhazard\b/gi); if(matches) hazardCount += matches.length;
             entryCount++; updateTimelineColor(); addStandardEntry(text, hazardCount >= 3); box.value = "";
         }
@@ -108,15 +128,10 @@
 
         function addStandardEntry(text, isAI) {
             const div = document.createElement('div'); div.className = `entry ${isAI ? 'ai-flagged' : ''}`;
-            
-            // FULL DATE AND TIME STAMP
             const now = new Date();
-            const fullDate = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-            const fullTime = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-            const stamp = fullDate + " | " + fullTime;
-
+            const stamp = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + " | " + now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
             div.innerHTML = `<strong>${stamp}</strong> — ${text}`;
-            if(isAI) div.innerHTML += `<div class="info-bubble"><strong>AI Pattern Recognition:</strong> Multiple "Hazard" triggers detected.</div>`;
+            if(isAI) div.innerHTML += `<div class="info-bubble"><strong>AI Pattern Recognition:</strong> System detected "Hazard" 3+ times.</div>`;
             document.getElementById('timeline').prepend(div);
         }
 
@@ -124,7 +139,7 @@
             const div = document.createElement('div'); div.className = 'entry tamper-heavy';
             const now = new Date();
             const stamp = now.toLocaleDateString() + " | " + now.toLocaleTimeString();
-            div.innerHTML = `<div style="color:red; font-weight:900;">⚠️ TAMPER ALERT</div><strong>Attempted: ${stamp}</strong><br>${text}<div class="info-bubble"><strong>Locked:</strong> Timeline sealed & sent to Clio.</div>`;
+            div.innerHTML = `<div style="color:red; font-weight:900;">⚠️ TAMPER ALERT</div><strong>Attempted at: ${stamp}</strong><br>${text}<div class="info-bubble bubble-danger"><strong>Integrity Lock:</strong> File is sealed and transmitted. Submission blocked.</div>`;
             document.getElementById('timeline').prepend(div);
         }
 
@@ -132,8 +147,10 @@
             if(isLocked) return; 
             if(window.confirm("Finalize timeline and transfer to Clio?")) {
                 isLocked = true; 
+                // Set Persistent Memory
+                localStorage.setItem('timelineLocked', 'true');
+                
                 document.getElementById('lockBtn').innerHTML = '🔒 SECURED... REDIRECTING'; 
-                // Redirects directly to the Clio authorization site
                 window.location.replace("https://ca.app.clio.com/oauth/authorize");
             }
         }
