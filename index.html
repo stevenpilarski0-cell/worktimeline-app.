@@ -22,7 +22,6 @@
     .container { padding: 0 20px; max-width: 450px; margin: 0 auto; }
     .card { background: #f8fafc; padding: 25px; border-radius: 24px; border: 1px solid #f1f5f9; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
     
-    /* Changed from original: removed text-align:center so typing feels natural */
     textarea { width: 100%; border: 1px solid #e2e8f0; padding: 16px; border-radius: 16px; font-size: 12px; font-weight: 700; outline: none; box-sizing: border-box; font-family: 'Courier New', monospace; background: #1a202c; color: #4fd1c5; resize: none; text-align: left; letter-spacing: 1px; min-height: 80px;}
     
     .icon-bar { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin: 20px 0; }
@@ -33,4 +32,169 @@
     .entry { position: relative; margin-bottom: 25px; padding: 18px; border-radius: 18px; background: #fff; border: 1px solid #f1f5f9; transition: 0.6s cubic-bezier(0.2, 1, 0.2, 1); font-size: 15px; font-weight: 600; line-height: 1.4; word-wrap: break-word; }
     .entry::before { content: ''; position: absolute; left: -34px; top: 22px; width: 16px; height: 16px; background: #fff; border: 3px solid var(--teal); border-radius: 50%; z-index: 2; }
     body.privacy-on .entry { filter: blur(35px); opacity: 0; transform: scale(0.95); }
-    .yellow-alert { background: var(--yellow-glass) !important; border: 1px solid #fef08a !important
+    .yellow-alert { background: var(--yellow-glass) !important; border: 1px solid #fef08a !important; }
+    .red-alert { background: var(--red-glass) !important; border: 2px solid #dc2626 !important; animation: shake 0.6s; color: #dc2626; }
+    .footer { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; border-top: 1px solid #edf2f7; padding: 20px 25px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; z-index: 1000; }
+    .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+    .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+    input:checked + .slider { background-color: var(--teal); }
+    input:checked + .slider:before { transform: translateX(24px); }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 15% { transform: translateX(-12px); } 30% { transform: translateX(12px); } 45% { transform: translateX(-12px); } 60% { transform: translateX(12px); } 75% { transform: translateX(-12px); } }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+</style>
+</head>
+<body class="privacy-on">
+
+<input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none">
+<input type="file" id="micInput" accept="audio/*" capture="user" style="display:none">
+<input type="file" id="docInput" style="display:none">
+
+<header>
+    <div class="logo-box"><div class="briefcase"></div><div class="logo-line"></div></div>
+    <span class="brand">WorkTimeline</span>
+    <div class="quote-box"><p>"Law is the Conscience of the community, where Truth is the architect of Freedom."</p></div>
+</header>
+
+<div id="ai-status" class="ai-banner">
+    <div class="dot" id="ai-dot"></div>
+    <span id="ai-text">AI RECOGNITION: AUTHENTICITY ACTIVE</span>
+</div>
+
+<div class="container">
+    <div class="card">
+        <textarea id="statusBox" placeholder="Type timeline entry here..."></textarea>
+        
+        <div class="icon-bar">
+            <div class="mac-btn" onclick="document.getElementById('cameraInput').click()"><svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg></div>
+            <div class="mac-btn" onclick="document.getElementById('micInput').click()"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg></div>
+            <div class="mac-btn" onclick="document.getElementById('docInput').click()"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg></div>
+        </div>
+        
+        <button class="main-btn" onclick="submitEntry()" id="actionBtn">LOG TO TIMELINE</button>
+    </div>
+    
+    <div id="timeline"></div>
+    
+    <div id="seal-area" style="display:none; text-align:center; padding-top:30px;">
+        <button id="lockBtn" class="main-btn" style="background:var(--dark);" onclick="sealVault()">SEAL & SYNC CONSCIENCE</button>
+        <p style="font-size: 10px; color: #dc2626; cursor: pointer; margin-top: 15px; font-weight: bold;" onclick="resetSystem()">[RESET SYSTEM]</p>
+    </div>
+</div>
+
+<div class="footer">
+    <div class="footer-label" style="font-size:11px; font-weight:700; color:#718096;">PRIVACY MODE</div>
+    <label class="switch">
+        <input type="checkbox" id="privacyToggle" checked onchange="togglePrivacy()">
+        <span class="slider"></span>
+    </label>
+</div>
+
+<script>
+    let hazardCount = 0;
+    let isLocked = false;
+
+    window.onload = function() {
+        if(localStorage.getItem('vLocked') === 'true') {
+            isLocked = true;
+            document.getElementById('lockBtn').innerHTML = '🔒 CONSCIENCE SYNCED';
+            document.getElementById('lockBtn').style.background = '#004d4d';
+            document.getElementById('seal-area').style.display = "block";
+        }
+    };
+
+    function togglePrivacy() {
+        var t = document.getElementById('privacyToggle');
+        if(!t.checked) {
+            document.body.classList.remove('privacy-on');
+        } else {
+            document.body.classList.add('privacy-on');
+        }
+    }
+
+    function submitEntry() {
+        const statusBox = document.getElementById('statusBox');
+        const text = statusBox.value.trim();
+        
+        if (text === "") return; 
+
+        if (isLocked) {
+            addEntry("INTEGRITY BREACH DETECTED: UNAUTHORIZED ENTRY ATTEMPT AFTER SEAL.", true);
+            statusBox.value = ""; 
+            triggerRedAlertUI();
+            return;
+        }
+
+        const hazardRegex = /\bhazard\b/i; 
+        if (hazardRegex.test(text)) {
+            hazardCount++;
+        }
+
+        addEntry(text, false);
+        statusBox.value = ""; 
+
+        if (hazardCount === 3) {
+            triggerPatternRecognition();
+        }
+    }
+
+    function addEntry(text, isTampering) {
+        var div = document.createElement('div');
+        div.className = 'entry';
+        
+        if(isTampering) {
+            div.classList.add('red-alert');
+        }
+
+        const now = new Date();
+        const timeString = now.toLocaleDateString() + ' | ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        
+        div.innerHTML = '<div style="font-size:10px; font-weight:800; color:var(--teal); margin-bottom:5px;">📅 ' + timeString + '</div>' + text;
+        
+        document.getElementById('timeline').appendChild(div);
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    function triggerPatternRecognition() {
+        const aiBanner = document.getElementById('ai-status');
+        const aiText = document.getElementById('ai-text');
+        
+        aiBanner.style.background = 'var(--yellow-glass)';
+        aiBanner.style.borderColor = '#fef08a';
+        aiText.innerText = 'PATTERN RECOGNITION: HAZARD PROTOCOL TRIGGERED';
+        aiText.style.color = '#b45309';
+        
+        document.getElementById('seal-area').style.display = "block";
+    }
+
+    function triggerRedAlertUI() {
+        const aiBanner = document.getElementById('ai-status');
+        const aiText = document.getElementById('ai-text');
+        const aiDot = document.getElementById('ai-dot');
+        
+        aiBanner.classList.add('red-alert');
+        aiText.innerText = 'TAMPERING DETECTED: SYSTEM LOCKED';
+        aiText.style.color = '#dc2626';
+        aiDot.style.background = 'red';
+    }
+
+    function sealVault() {
+        isLocked = true;
+        localStorage.setItem('vLocked', 'true'); 
+        
+        document.getElementById('lockBtn').innerHTML = '🔒 CONSCIENCE SYNCED';
+        document.getElementById('lockBtn').style.background = '#004d4d';
+        
+        setTimeout(() => {
+            window.location.href = "https://ca.app.clio.com/nc/#/matters"; 
+        }, 800);
+    }
+
+    function resetSystem() {
+        localStorage.removeItem('vLocked');
+        location.reload();
+    }
+</script>
+</body>
+</html>
