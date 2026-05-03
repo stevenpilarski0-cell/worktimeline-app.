@@ -1,177 +1,150 @@
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;0,900;1,400&display=swap');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WorkTimeline™ | Secured</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
 
-  :root {
-    --teal: #008080; --gray-light: #f2f4f5; --gray-mid: #dcdcdc; --gray-dark: #2c3e50;
-    --yellow-ai: #fff3cd; --yellow-border: #ffc107;
-    --red-heavy: #ffcccc; --red-heavy-border: #ff0000;
-    --timeline-active-color: #dcdcdc; /* Starts gray, moves to teal */
-  }
+        :root {
+            --teal: #008080; --gray-light: #f2f4f5; --gray-mid: #dcdcdc; --gray-dark: #2c3e50;
+            --yellow-ai: #fff3cd; --yellow-border: #ffc107;
+            --red-heavy: #ffcccc; --red-heavy-border: #ff0000;
+            --timeline-active-color: #dcdcdc; 
+        }
 
-  body { font-family: 'Nunito', sans-serif; background-color: #e9ecef; margin: 0; padding: 20px; display: flex; justify-content: center; }
-  .app-container { width: 100%; max-width: 800px; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); min-height: 85vh; display: flex; flex-direction: column; overflow: hidden; }
-  
-  /* Privacy Blur Toggle */
-  .privacy-blur { filter: blur(12px); pointer-events: none; user-select: none; }
+        body { font-family: 'Nunito', sans-serif; background-color: #e9ecef; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .app-container { width: 100%; max-width: 800px; background: white; border-radius: 12px; min-height: 85vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
 
-  .header-container { text-align: center; padding: 30px 10px; border-bottom: 2px solid var(--gray-light); }
-  .quote-box { font-style: italic; color: var(--gray-dark); font-size: 16px; margin: 15px auto; max-width: 80%; }
-  .quote-box span { display: block; font-weight: 900; color: var(--teal); margin-top: 5px; }
+        /* Privacy Switch Blur */
+        .privacy-blur { filter: blur(15px); pointer-events: none; transition: filter 0.3s ease; }
+        
+        .header-container { text-align: center; padding: 30px 10px; border-bottom: 2px solid var(--gray-light); }
+        .quote-box { font-style: italic; color: var(--gray-dark); margin: 15px auto; max-width: 80%; line-height: 1.4; }
+        .quote-box span { display: block; font-weight: 900; color: var(--teal); margin-top: 5px; font-size: 0.9em; }
 
-  /* Mac-Style Teal Icons */
-  .media-toolbar { display: flex; gap: 12px; margin-bottom: 15px; }
-  .media-btn { background: var(--teal); color: white; border: none; border-radius: 10px; padding: 10px 16px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 700; transition: 0.2s; }
-  .media-btn svg { width: 18px; height: 18px; fill: white; }
+        #statusBox { width:100%; height:80px; border-radius: 8px; border:1px solid #ccc; padding: 12px; font-family: inherit; box-sizing: border-box; margin-bottom: 12px; font-size: 16px; resize: none; }
+<body>
+    <div class="app-container">
+        <header class="header-container">
+            <svg viewBox="0 0 64 64" width="80" height="80">
+                <path d="M 22 20 L 22 14 C 22 10.686 24.686 8 28 8 L 36 8 C 39.314 8 42 10.686 42 14 L 42 20" fill="none" stroke="#008080" stroke-width="3"/>
+                <rect x="8" y="20" width="48" height="32" rx="4" fill="none" stroke="#008080" stroke-width="3"/>
+                <line x1="0" y1="36" x2="64" y2="36" stroke="#3498DB" stroke-width="4"/>
+                <circle cx="16" cy="36" r="4" fill="#F2F4F5" stroke="#3498DB" stroke-width="2"/>
+                <circle cx="32" cy="36" r="4" fill="#F2F4F5" stroke="#3498DB" stroke-width="2"/>
+                <circle cx="48" cy="36" r="4" fill="#F2F4F5" stroke="#3498DB" stroke-width="2"/>
+            </svg>
+            <h1 style="color: var(--teal); margin: 10px 0 0 0; font-weight: 900;">WORKTIMELINE&trade;</h1>
+            <div class="quote-box">"Integrity is doing the right thing, even when no one is watching." <span>— C.S. Lewis</span></div>
+            
+            <button id="privacyBtn" class="media-btn" style="background: var(--gray-dark); max-width: 250px; margin: 0 auto;" onclick="togglePrivacy()">Privacy Switch: OFF</button>
+        </header>
 
-  /* Dynamic Timeline */
-  .timeline { border-left: 4px solid var(--timeline-active-color); margin-left: 10px; padding-left: 20px; transition: border-color 0.5s ease; }
-  .entry { background: white; border-left: 5px solid var(--timeline-active-color); padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); position: relative; transition: all 0.5s ease; }
-  
-  /* Bubbles */
-  .info-bubble { background: #f0f7ff; border-left: 4px solid #007bff; padding: 10px; border-radius: 6px; font-size: 13px; margin-top: 10px; display: flex; flex-direction: column; gap: 5px; }
-  .bubble-danger { background: #ffeeee; border-color: var(--red-heavy-border); }
-</style>
-<div class="app-container">
-  <div class="header-container">
-    <svg viewBox="0 0 64 64" width="80" height="80">
-        <path d="M 22 20 L 22 14 C 22 10.686 24.686 8 28 8 L 36 8 C 39.314 8 42 10.686 42 14 L 42 20" fill="none" stroke="#008080" stroke-width="3"/>
-        <rect x="8" y="20" width="48" height="32" rx="4" fill="none" stroke="#008080" stroke-width="3"/>
-        <line x1="0" y1="36" x2="64" y2="36" stroke="#3498DB" stroke-width="4"/>
-        <circle cx="16" cy="36" r="4" fill="#F2F4F5" stroke="#3498DB" stroke-width="2"/>
-        <circle cx="32" cy="36" r="4" fill="#F2F4F5" stroke="#3498DB" stroke-width="2"/>
-        <circle cx="48" cy="36" r="4" fill="#F2F4F5" stroke="#3498DB" stroke-width="2"/>
-    </svg>
-    <h1 style="color: var(--teal); margin: 10px 0 0 0;">WORKTIMELINE&trade;</h1>
-    <div class="quote-box">"Justice is truth in action." <span>— Benjamin Disraeli</span></div>
-    
-    <div style="margin-top: 10px;">
-      <button id="privacyBtn" class="media-btn" style="background: var(--gray-dark); margin: 0 auto;" onclick="togglePrivacy()">Privacy Switch: OFF</button>
+        <div style="padding: 20px;">
+            <div style="background: var(--gray-light); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--gray-mid);">
+                <textarea id="statusBox" placeholder="Enter incident details for the timeline..."></textarea>
+                
+                <input type="file" id="cameraTrigger" accept="image/*" capture="environment" style="display:none">
+                <input type="file" id="micTrigger" accept="audio/*" capture="microphone" style="display:none">
+                <input type="file" id="docTrigger" style="display:none">
+
+                <div class="media-toolbar">
+                    <button class="media-btn" onclick="triggerMedia('cameraTrigger')">Camera</button>
+                    <button class="media-btn" onclick="triggerMedia('micTrigger')">Mic</button>
+                    <button class="media-btn" onclick="triggerMedia('docTrigger')">Doc</button>
+                </div>
+                <button class="media-btn submit-main" onclick="submitEntry()">SUBMIT ENTRY</button>
+            </div>
+
+            <div id="timelineContainer">
+                <div id="timeline" class="timeline"></div>
+            </div>
+
+            <button id="lockBtn" class="lock-footer" onclick="sealVault()">LOCK & SEND TO CLIO</button>
+        </div>
     </div>
-  </div>
+    <script>
+        let hazardCount = 0;
+        let isLocked = false;
+        let entryCount = 0;
+        let isPrivate = false;
+        const colorScale = ['#dcdcdc', '#a6c8c8', '#66b2b2', '#339999', '#008080'];
 
-  <div class="page" style="display: block; padding: 20px;">
-    <div class="draft-box" style="background: var(--gray-light); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
-      <textarea id="statusBox" class="text-input" placeholder="Type incident details..." style="width:100%; height:80px; border-radius: 8px; border:1px solid #ccc; padding: 10px; font-family: inherit; box-sizing: border-box;"></textarea>
-      
-      <div class="media-toolbar" style="margin-top: 10px;">
-        <button class="media-btn"><svg viewBox="0 0 24 24"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm8 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10z"/></svg> Camera</button>
-        <button class="media-btn"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg> Mic</button>
-        <button class="media-btn"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6h-8z"/></svg> Doc</button>
-      </div>
-      
-      <button class="btn-submit" onclick="submitEntry()" style="background: var(--teal); color: white; border: none; padding: 12px 20px; border-radius: 8px; width: 100%; font-weight: 900; cursor: pointer;">Submit to Timeline</button>
-    </div>
+        function togglePrivacy() {
+            isPrivate = !isPrivate;
+            const timeline = document.getElementById('timelineContainer');
+            const btn = document.getElementById('privacyBtn');
+            timeline.classList.toggle('privacy-blur', isPrivate);
+            btn.innerText = isPrivate ? "Privacy Switch: ON (Blurred)" : "Privacy Switch: OFF";
+            btn.style.background = isPrivate ? "var(--teal)" : "var(--gray-dark)";
+        }
 
-    <div id="timelineContainer">
-      <div id="timeline" class="timeline"></div>
-    </div>
+        function triggerMedia(inputId) {
+            if (isLocked) {
+                addTamperEntry(`Unauthorized access attempt: Device Hardware (${inputId.replace('Trigger', '')})`);
+                return;
+            }
+            document.getElementById(inputId).click();
+        }
 
-    <button id="lockBtn" class="media-btn" style="width: 100%; justify-content: center; margin-top: 30px; background: var(--gray-dark);" onclick="sealVault()">
-      LOCK & SEND TO CLIO
-    </button>
-  </div>
-</div>
-<script>
-  let hazardCount = 0;
-  let isLocked = false;
-  let entryCount = 0;
-  let isPrivate = false;
+        function submitEntry() {
+            const statusBox = document.getElementById('statusBox');
+            const text = statusBox.value.trim();
+            if (!text) return;
+            if (isLocked) {
+                addTamperEntry(text);
+                statusBox.value = "";
+                return;
+            }
 
-  const colorScale = ['#dcdcdc', '#a6c8c8', '#66b2b2', '#339999', '#008080'];
+            // AI Pattern: Count occurrences of "hazard"
+            const hazardRegex = /\bhazard\b/gi;
+            const matches = text.match(hazardRegex);
+            if (matches) hazardCount += matches.length;
 
-  function togglePrivacy() {
-    isPrivate = !isPrivate;
-    const timeline = document.getElementById('timelineContainer');
-    const btn = document.getElementById('privacyBtn');
-    if (isPrivate) {
-      timeline.classList.add('privacy-blur');
-      btn.innerText = "Privacy Switch: ON (Blurred)";
-      btn.style.background = "var(--teal)";
-    } else {
-      timeline.classList.remove('privacy-blur');
-      btn.innerText = "Privacy Switch: OFF";
-      btn.style.background = "var(--gray-dark)";
-    }
-  }
+            entryCount++;
+            updateTimelineColor();
+            addStandardEntry(text, hazardCount >= 3);
+            statusBox.value = "";
+        }
 
-  function submitEntry() {
-    const statusBox = document.getElementById('statusBox');
-    const text = statusBox.value.trim();
-    if (text === "") return;
+        function updateTimelineColor() {
+            let colorIndex = Math.min(entryCount, colorScale.length - 1);
+            document.documentElement.style.setProperty('--timeline-active-color', colorScale[colorIndex]);
+        }
 
-    if (isLocked) {
-      addTamperEntry(text);
-      statusBox.value = "";
-      return;
-    }
+        function addStandardEntry(text, isAI) {
+            const timeline = document.getElementById('timeline');
+            const div = document.createElement('div');
+            div.className = `entry ${isAI ? 'ai-flagged' : ''}`;
+            const timeString = new Date().toLocaleString([], { hour: '2-digit', minute: '2-digit', month: 'short', day: 'numeric' });
+            
+            let html = `<strong>${timeString}</strong> — ${text}`;
+            if (isAI) {
+                html += `<div class="info-bubble"><strong>AI Pattern Recognition:</strong> System detected word "Hazard" 3+ times across logs. Analysis suggested for legal review.</div>`;
+            }
+            div.insertAdjacentHTML('afterbegin', html);
+            timeline.prepend(div); // Newest entries at the top
+        }
 
-    // AI Recognition Logic
-    const hazardRegex = /\bhazard\b/gi;
-    let triggeredPattern = false;
-    const matches = text.match(hazardRegex);
-    if (matches) {
-      hazardCount += matches.length;
-      if (hazardCount >= 3) triggeredPattern = true;
-    }
+        function addTamperEntry(text) {
+            const timeline = document.getElementById('timeline');
+            const div = document.createElement('div');
+            div.className = 'entry tamper-heavy';
+            div.innerHTML = `<div style="color:red; font-weight:900; font-size: 12px; margin-bottom: 5px;">⚠️ TAMPER ALERT</div><strong>Logged Attempt:</strong> ${text}<div class="info-bubble bubble-danger"><strong>Integrity Protocol:</strong> This timeline is cryptographically sealed. New submissions are blocked and permanently logged as tamper attempts.</div>`;
+            timeline.prepend(div);
+        }
 
-    entryCount++;
-    updateTimelineColor();
-    addStandardEntry(text, triggeredPattern);
-    statusBox.value = "";
-  }
-
-  function updateTimelineColor() {
-    let colorIndex = Math.min(entryCount, colorScale.length - 1);
-    let newColor = colorScale[colorIndex];
-    document.documentElement.style.setProperty('--timeline-active-color', newColor);
-  }
-
-  function addStandardEntry(text, isAI) {
-    const timeline = document.getElementById('timeline');
-    const div = document.createElement('div');
-    div.className = 'entry' + (isAI ? ' ai-flagged' : '');
-    
-    const now = new Date();
-    const timeString = now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-
-    let html = `<strong>${timeString}</strong> — ${text}`;
-    
-    if (isAI) {
-      html += `
-        <div class="info-bubble">
-          <strong>AI Pattern Recognition:</strong> The word "Hazard" has appeared 3+ times. 
-          Pattern analysis suggests recurring safety risk detected.
-        </div>`;
-    }
-
-    div.innerHTML = html;
-    timeline.appendChild(div);
-  }
-
-  function addTamperEntry(text) {
-    const timeline = document.getElementById('timeline');
-    const div = document.createElement('div');
-    div.className = 'entry tamper-heavy';
-    
-    const now = new Date();
-    const timeString = now.toLocaleTimeString();
-
-    div.innerHTML = `
-      <div style="color: red; font-weight: 900;">TAMPER ALERT</div>
-      <strong>Attempted Entry at ${timeString}:</strong> ${text}
-      <div class="info-bubble bubble-danger">
-        <strong>Explanation:</strong> You attempted to add to a locked timeline. This action is blocked to preserve legal integrity and has been logged as a tamper attempt.
-      </div>`;
-    
-    timeline.appendChild(div);
-  }
-
-  function sealVault() {
-    if (isLocked) return;
-    isLocked = true;
-    const btn = document.getElementById('lockBtn');
-    btn.innerHTML = '🔒 TRANSMITTED TO CLIO';
-    btn.style.opacity = "0.6";
-    btn.onclick = null;
-  }
-</script>
+        function sealVault() {
+            if (isLocked || !confirm("Finalize and send to Clio? This action is immutable.")) return;
+            isLocked = true;
+            const btn = document.getElementById('lockBtn');
+            btn.innerHTML = '🔒 SECURED & SENT TO CLIO';
+            btn.style.opacity = "0.5";
+            btn.style.cursor = "not-allowed";
+        }
+    </script>
+</body>
+</html>
