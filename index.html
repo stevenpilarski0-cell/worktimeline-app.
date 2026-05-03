@@ -30,6 +30,7 @@
         .ai-flagged { background: var(--yellow-ai) !important; border-left-color: var(--yellow-border) !important; }
         .tamper-heavy { background: var(--red-heavy) !important; border-left-color: var(--red-heavy-border) !important; }
         .lock-footer { background: var(--gray-dark); color: white; border: none; border-radius: 12px; padding: 18px; width: 100%; margin-top: 30px; cursor: pointer; font-weight: 900; text-transform: uppercase; }
+        .reset-link { font-size: 10px; color: #cc0000; cursor: pointer; margin-top: 15px; text-align: center; font-weight: bold; text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -72,9 +73,10 @@
             </div>
             <div id="timelineContainer"><div id="timeline" class="timeline"></div></div>
             <button id="lockBtn" class="lock-footer" onclick="sealVault()">LOCK & SEND TO CLIO</button>
+            <div class="reset-link" onclick="resetSystem()">[RESET SYSTEM MEMORY]</div>
         </div>
     </div>
-      <script>
+    <script>
         let hazardCount = 0; 
         let isLocked = false; 
         let entryCount = 0; 
@@ -90,6 +92,14 @@
                 btn.style.cursor = "not-allowed";
             }
         };
+
+        // NEW: Function to clear the lock so you can test again
+        function resetSystem() {
+            if(confirm("Are you sure? This will clear the permanent lock and reset your timeline for a new test.")) {
+                localStorage.removeItem('timelineLocked');
+                location.reload();
+            }
+        }
 
         function togglePrivacy() {
             isPrivate = !isPrivate;
@@ -145,14 +155,11 @@
             if(isLocked) return; 
             if(window.confirm("Lock timeline and transmit to Clio?")) {
                 isLocked = true; 
-                localStorage.setItem('timelineLocked', 'true'); // Keeps it locked even if you hit Back
-                
+                localStorage.setItem('timelineLocked', 'true');
                 document.getElementById('lockBtn').innerHTML = '🔒 SECURED... REDIRECTING'; 
-                // Changed to .href so the browser "remembers" the app in history
                 window.location.href = "https://ca.app.clio.com/oauth/authorize";
             }
         }
     </script>
 </body>
 </html>
-
