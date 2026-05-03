@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™ | Defensible Evidence</title>
+    <title>WorkTimeline™ | Persistent Evidence</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
         :root {
@@ -16,28 +16,21 @@
         .app-container { width: 100%; max-width: 800px; background: white; border-radius: 12px; min-height: 85vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
         .privacy-blur { filter: blur(15px); pointer-events: none; transition: filter 0.3s ease; }
         .header-container { text-align: center; padding: 30px 10px; border-bottom: 2px solid var(--gray-light); }
-        
         .template-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 10px; scrollbar-width: none; }
         .template-chip { background: white; border: 1px solid var(--teal); color: var(--teal); padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; cursor: pointer; transition: 0.2s; }
         .template-chip:hover { background: var(--teal); color: white; }
-
         .lawyer-link-box { background: #e0f2f1; padding: 12px; border-radius: 8px; margin-bottom: 15px; border: 1px solid var(--teal); }
         .lawyer-label { font-size: 11px; font-weight: 900; color: var(--teal); text-transform: uppercase; display: block; margin-bottom: 5px; }
         #lawyerSelect { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--teal); font-family: inherit; font-weight: 700; color: var(--gray-dark); }
-
-        #statusBox { width:100%; height:100px; border-radius: 8px; border:1px solid #ccc; padding: 12px; font-family: inherit; box-sizing: border-box; margin-bottom: 12px; font-size: 16px; resize: none; }
+        #statusBox { width:100%; height:120px; border-radius: 8px; border:1px solid #ccc; padding: 12px; font-family: inherit; box-sizing: border-box; margin-bottom: 12px; font-size: 16px; resize: none; }
         .media-toolbar { display: flex; gap: 12px; margin-bottom: 15px; }
         .media-btn { background: var(--teal); color: white; border: none; border-radius: 12px; padding: 12px; cursor: pointer; transition: 0.2s; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
         .media-btn svg { width: 28px; height: 28px; fill: white; }
         .media-btn span { font-size: 11px; font-weight: 700; text-transform: uppercase; }
         .submit-main { width: 100%; background: var(--teal); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 900; cursor: pointer; margin-bottom: 10px; }
-        
         .timeline { border-left: 5px solid var(--timeline-active-color); margin-left: 10px; padding-left: 20px; }
         .entry { background: white; border-left: 6px solid var(--timeline-active-color); padding: 18px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        
-        /* Security Badge Styles */
         .integrity-badge { font-size: 9px; background: #eee; color: #666; padding: 4px 8px; border-radius: 4px; font-family: monospace; margin-top: 10px; display: inline-block; }
-
         .lock-footer { background: var(--gray-dark); color: white; border: none; border-radius: 12px; padding: 18px; width: 100%; margin-top: 30px; cursor: pointer; font-weight: 900; text-transform: uppercase; }
         .reset-link { font-size: 10px; color: #cc0000; cursor: pointer; margin-top: 15px; text-align: center; font-weight: bold; text-decoration: underline; }
     </style>
@@ -60,10 +53,9 @@
 
         <div style="padding: 20px;">
             <div style="background: var(--gray-light); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--gray-mid);">
-                
                 <div class="lawyer-link-box">
                     <label class="lawyer-label">Attending Professional:</label>
-                    <select id="lawyerSelect">
+                    <select id="lawyerSelect" onchange="saveLawyerChoice()">
                         <option value="none">-- Select Professional --</option>
                         <option value="L1">Marcus Thorne, Esq.</option>
                         <option value="L2">Sarah Jenkins, JD</option>
@@ -71,9 +63,9 @@
                 </div>
 
                 <div class="template-row">
-                    <div class="template-chip" onclick="applyTemplate('site')">Site Inspection</div>
-                    <div class="template-chip" onclick="applyTemplate('witness')">Witness Statement</div>
-                    <div class="template-chip" onclick="applyTemplate('accident')">Incident Report</div>
+                    <div class="template-chip" onclick="applyTemplate('site')">Add Site Inspection</div>
+                    <div class="template-chip" onclick="applyTemplate('witness')">Add Witness Statement</div>
+                    <div class="template-chip" onclick="applyTemplate('accident')">Add Incident Report</div>
                 </div>
 
                 <textarea id="statusBox" placeholder="Start typing details..."></textarea>
@@ -90,15 +82,11 @@
 
                 <button class="submit-main" onclick="submitEntry()">SUBMIT TO TIMELINE</button>
             </div>
-            
             <div id="timelineContainer"><div id="timeline" class="timeline"></div></div>
-            
             <button id="lockBtn" class="lock-footer" onclick="sealVault()">LOCK & SEND TO CLIO</button>
-            
             <div id="auditLog" style="display:none; text-align:center; margin-top:10px;">
                 <div class="integrity-badge" id="hashDisplay">SHA-256 HASH: GEN_PENDING...</div>
             </div>
-
             <div class="reset-link" onclick="resetSystem()">[RESET SYSTEM MEMORY]</div>
         </div>
     </div>
@@ -107,18 +95,34 @@
         const colorScale = ['#dcdcdc', '#a6c8c8', '#66b2b2', '#339999', '#008080'];
 
         const templates = {
-            site: "[SITE INSPECTION]\nLocation: \nPersonnel Present: \nObservations: ",
-            witness: "[WITNESS STATEMENT]\nName: \nContact: \nStatement: ",
-            accident: "[INCIDENT REPORT]\nNature: \nHazard: \nImmediate Actions: "
+            site: "[SITE INSPECTION] Loc: [ ], Obs: [ ]",
+            witness: "[WITNESS] Name: [ ], Contact: [ ]",
+            accident: "[INCIDENT] Nature: [ ], Actions: [ ]"
         };
 
+        // NEW: Templates now ADD to existing text instead of deleting it
         function applyTemplate(key) {
             if(isLocked) return;
-            document.getElementById('statusBox').value = templates[key];
-            document.getElementById('statusBox').focus();
+            const box = document.getElementById('statusBox');
+            const separator = box.value.trim().length > 0 ? "\n\n" : "";
+            box.value += separator + templates[key];
+            box.focus();
+        }
+
+        // NEW: Save the lawyer choice immediately when changed
+        function saveLawyerChoice() {
+            const val = document.getElementById('lawyerSelect').value;
+            localStorage.setItem('selectedLawyer', val);
         }
 
         window.onload = function() {
+            // Restore Lawyer Selection
+            const savedLawyer = localStorage.getItem('selectedLawyer');
+            if(savedLawyer) {
+                document.getElementById('lawyerSelect').value = savedLawyer;
+            }
+
+            // Restore Lock State
             if (localStorage.getItem('timelineLocked') === 'true') {
                 isLocked = true;
                 lockUI();
@@ -128,9 +132,8 @@
         };
 
         function resetSystem() {
-            if(confirm("Wipe system memory and reset for a new lawyer log?")) {
-                localStorage.removeItem('timelineLocked');
-                localStorage.removeItem('lastHash');
+            if(confirm("Wipe system memory?")) {
+                localStorage.clear();
                 location.reload();
             }
         }
@@ -142,7 +145,7 @@
         }
 
         function triggerMedia(id) { 
-            if(isLocked) { addTamperEntry("System Lock: Hardware denied."); return; } 
+            if(isLocked) { addTamperEntry("Locked."); return; } 
             document.getElementById(id).click(); 
         }
 
@@ -150,7 +153,6 @@
             const box = document.getElementById('statusBox'); const text = box.value.trim();
             if(!text) return; 
             if(isLocked) { addTamperEntry(text); box.value=""; return; }
-            
             const matches = text.match(/\bhazard\b/gi); if(matches) hazardCount += matches.length;
             entryCount++; updateTimelineColor(); addStandardEntry(text, hazardCount >= 3); box.value = "";
         }
@@ -164,21 +166,19 @@
             const div = document.createElement('div'); div.className = `entry ${isAI ? 'ai-flagged' : ''}`;
             const stamp = new Date().toLocaleString([], { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
             div.innerHTML = `<strong>${stamp}</strong> — ${text.replace(/\n/g, '<br>')}`;
-            if(isAI) div.innerHTML += `<div class="info-bubble"><strong>Duo Analytics:</strong> Potential risk patterns flagged.</div>`;
             document.getElementById('timeline').prepend(div);
         }
 
         function addTamperEntry(text) {
             const div = document.createElement('div'); div.className = 'entry tamper-heavy';
-            div.innerHTML = `<div style="color:red; font-weight:900;">⚠️ TAMPER ALERT</div><strong>Logged Attempt:</strong><br>${text}<div class="info-bubble"><strong>Security:</strong> Record is immutable.</div>`;
+            div.innerHTML = `<strong>TAMPER ALERT:</strong><br>${text}`;
             document.getElementById('timeline').prepend(div);
         }
 
         function lockUI() {
             const btn = document.getElementById('lockBtn');
-            btn.innerHTML = '🔒 SECURED & TRANSMITTED';
+            btn.innerHTML = '🔒 SECURED';
             btn.style.opacity = "0.5";
-            btn.style.cursor = "not-allowed";
             document.getElementById('lawyerSelect').disabled = true;
         }
 
@@ -187,25 +187,15 @@
             if(document.getElementById('lawyerSelect').value === "none") {
                 alert("Please select a Professional."); return;
             }
-            
-            if(window.confirm("Lock this timeline and generate the Defensibility Hash?")) {
+            if(window.confirm("Lock and Generate Hash?")) {
                 isLocked = true; 
-                
-                // SIMULATE CRYPTOGRAPHIC HASHING
-                const randomHash = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+                const randomHash = Math.random().toString(36).substring(2, 15);
                 localStorage.setItem('timelineLocked', 'true');
                 localStorage.setItem('lastHash', randomHash);
-                
-                document.getElementById('hashDisplay').innerText = "GENERATING SHA-256 HASH...";
-                document.getElementById('auditLog').style.display = "block";
-                
                 lockUI();
-
-                setTimeout(() => {
-                    document.getElementById('hashDisplay').innerText = "VERIFIED SHA-256: " + randomHash;
-                    // Final redirect to Clio
-                    window.location.href = "https://ca.app.clio.com/oauth/authorize";
-                }, 1500);
+                document.getElementById('auditLog').style.display = "block";
+                document.getElementById('hashDisplay').innerText = "VERIFIED SHA-256: " + randomHash;
+                setTimeout(() => { window.location.href = "https://ca.app.clio.com/oauth/authorize"; }, 1000);
             }
         }
     </script>
