@@ -75,7 +75,7 @@
             <div id="timelineContainer"><div id="timeline" class="timeline"></div></div>
             <button id="lockBtn" class="lock-footer" onclick="sealVault()">LOCK & SEND TO CLIO</button>
         </div>
-    <script>
+ <script>
     let hazardCount = 0; 
     let isLocked = false; 
     let entryCount = 0; 
@@ -125,7 +125,6 @@
         const div = document.createElement('div'); 
         div.className = `entry ${isAI ? 'ai-flagged' : ''}`;
         
-        // FORCED DATE AND TIME FORMAT
         const now = new Date();
         const datePart = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         const timePart = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
@@ -155,17 +154,28 @@
         document.getElementById('timeline').prepend(div);
     }
 
+    // --- UPDATED SEAL VAULT LOGIC ---
     function sealVault() { 
         if(isLocked) return; 
-        if(confirm("Confirm: Lock timeline and transmit to Clio?")) {
+        
+        if(confirm("Confirm: Lock timeline and transmit to Clio? This will finalize the record and transfer you to the secure portal.")) {
             isLocked = true; 
             const btn = document.getElementById('lockBtn'); 
-            btn.innerHTML = '🔒 SECURED & SENT TO CLIO'; 
+            btn.innerHTML = '🔒 SECURED & TRANSMITTING...'; 
             btn.style.opacity = "0.5";
-            btn.style.cursor = "not-allowed";
+            btn.style.cursor = "wait";
+
+            // Delay the transfer slightly so the user sees the 'Secured' status
+            setTimeout(function() {
+                // This connects to the Clio OAuth/Authorization page
+                window.location.href = "https://ca.app.clio.com/oauth/authorize";
+            }, 1500); 
         }
     }
 </script>
+
+            
+    
 
 
         
