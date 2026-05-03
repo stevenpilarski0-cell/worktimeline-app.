@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™ | Persistent Evidence</title>
+    <title>WorkTimeline™ | Verified Access</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
         :root {
@@ -14,25 +14,53 @@
         }
         body { font-family: 'Nunito', sans-serif; background-color: #e9ecef; margin: 0; padding: 20px; display: flex; justify-content: center; }
         .app-container { width: 100%; max-width: 800px; background: white; border-radius: 12px; min-height: 85vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
-        .privacy-blur { filter: blur(15px); pointer-events: none; transition: filter 0.3s ease; }
+        
+        /* Privacy Blur Logic - ensuring it doesn't block interaction when OFF */
+        .privacy-blur { filter: blur(15px); pointer-events: none; }
+        
         .header-container { text-align: center; padding: 30px 10px; border-bottom: 2px solid var(--gray-light); }
-        .template-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 10px; scrollbar-width: none; }
-        .template-chip { background: white; border: 1px solid var(--teal); color: var(--teal); padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; cursor: pointer; transition: 0.2s; }
-        .template-chip:hover { background: var(--teal); color: white; }
-        .lawyer-link-box { background: #e0f2f1; padding: 12px; border-radius: 8px; margin-bottom: 15px; border: 1px solid var(--teal); }
+        .quote-box { font-style: italic; color: var(--gray-dark); margin: 15px auto; max-width: 80%; line-height: 1.4; }
+        .quote-box span { display: block; font-weight: 900; color: var(--teal); margin-top: 5px; }
+
+        /* FIXED: Added relative positioning and z-index to ensure clickability */
+        .lawyer-link-box { 
+            background: #e0f2f1; 
+            padding: 12px; 
+            border-radius: 8px; 
+            margin-bottom: 15px; 
+            border: 1px solid var(--teal); 
+            position: relative; 
+            z-index: 10; 
+        }
         .lawyer-label { font-size: 11px; font-weight: 900; color: var(--teal); text-transform: uppercase; display: block; margin-bottom: 5px; }
-        #lawyerSelect { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--teal); font-family: inherit; font-weight: 700; color: var(--gray-dark); }
+        #lawyerSelect { 
+            width: 100%; 
+            padding: 12px; 
+            border-radius: 6px; 
+            border: 1px solid var(--teal); 
+            font-family: inherit; 
+            font-weight: 700; 
+            color: var(--gray-dark); 
+            background: white;
+            cursor: pointer;
+            -webkit-appearance: menulist; /* Ensures the arrow shows on all browsers */
+        }
+
+        .template-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 10px; }
+        .template-chip { background: white; border: 1px solid var(--teal); color: var(--teal); padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; cursor: pointer; }
+        
         #statusBox { width:100%; height:120px; border-radius: 8px; border:1px solid #ccc; padding: 12px; font-family: inherit; box-sizing: border-box; margin-bottom: 12px; font-size: 16px; resize: none; }
         .media-toolbar { display: flex; gap: 12px; margin-bottom: 15px; }
-        .media-btn { background: var(--teal); color: white; border: none; border-radius: 12px; padding: 12px; cursor: pointer; transition: 0.2s; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
-        .media-btn svg { width: 28px; height: 28px; fill: white; }
-        .media-btn span { font-size: 11px; font-weight: 700; text-transform: uppercase; }
+        .media-btn { background: var(--teal); color: white; border: none; border-radius: 12px; padding: 12px; cursor: pointer; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
+        .media-btn svg { width: 24px; height: 24px; fill: white; }
+        .media-btn span { font-size: 10px; font-weight: 700; text-transform: uppercase; }
+        
         .submit-main { width: 100%; background: var(--teal); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 900; cursor: pointer; margin-bottom: 10px; }
         .timeline { border-left: 5px solid var(--timeline-active-color); margin-left: 10px; padding-left: 20px; }
         .entry { background: white; border-left: 6px solid var(--timeline-active-color); padding: 18px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         .integrity-badge { font-size: 9px; background: #eee; color: #666; padding: 4px 8px; border-radius: 4px; font-family: monospace; margin-top: 10px; display: inline-block; }
         .lock-footer { background: var(--gray-dark); color: white; border: none; border-radius: 12px; padding: 18px; width: 100%; margin-top: 30px; cursor: pointer; font-weight: 900; text-transform: uppercase; }
-        .reset-link { font-size: 10px; color: #cc0000; cursor: pointer; margin-top: 15px; text-align: center; font-weight: bold; text-decoration: underline; }
+        .reset-link { font-size: 10px; color: #cc0000; cursor: pointer; margin-top: 25px; text-align: center; font-weight: bold; text-decoration: underline; display: block; }
     </style>
 </head>
 <body>
@@ -48,24 +76,26 @@
             </svg>
             <h1 style="color: var(--teal); margin: 10px 0 0 0; font-weight: 900;">WORKTIMELINE&trade;</h1>
             <div class="quote-box">"Justice is truth in action." <span>— Benjamin Disraeli</span></div>
-            <button id="privacyBtn" class="media-btn" style="background: var(--gray-dark); flex-direction: row; height: 45px; max-width: 200px; margin: 0 auto;" onclick="togglePrivacy()">Privacy: OFF</button>
+            <button id="privacyBtn" class="media-btn" style="background: var(--gray-dark); flex-direction: row; height: 40px; max-width: 200px; margin: 0 auto;" onclick="togglePrivacy()">Privacy: OFF</button>
         </header>
 
         <div style="padding: 20px;">
-            <div style="background: var(--gray-light); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--gray-mid);">
+            <div id="mainInputArea" style="background: var(--gray-light); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--gray-mid);">
+                
                 <div class="lawyer-link-box">
                     <label class="lawyer-label">Attending Professional:</label>
                     <select id="lawyerSelect" onchange="saveLawyerChoice()">
-                        <option value="none">-- Select Professional --</option>
+                        <option value="none">-- Tap to Select Lawyer --</option>
                         <option value="L1">Marcus Thorne, Esq.</option>
                         <option value="L2">Sarah Jenkins, JD</option>
+                        <option value="L3">Elena Rodriguez, LLM</option>
                     </select>
                 </div>
 
                 <div class="template-row">
-                    <div class="template-chip" onclick="applyTemplate('site')">Add Site Inspection</div>
-                    <div class="template-chip" onclick="applyTemplate('witness')">Add Witness Statement</div>
-                    <div class="template-chip" onclick="applyTemplate('accident')">Add Incident Report</div>
+                    <div class="template-chip" onclick="applyTemplate('site')">+ Site Inspection</div>
+                    <div class="template-chip" onclick="applyTemplate('witness')">+ Witness</div>
+                    <div class="template-chip" onclick="applyTemplate('accident')">+ Incident</div>
                 </div>
 
                 <textarea id="statusBox" placeholder="Start typing details..."></textarea>
@@ -82,11 +112,17 @@
 
                 <button class="submit-main" onclick="submitEntry()">SUBMIT TO TIMELINE</button>
             </div>
-            <div id="timelineContainer"><div id="timeline" class="timeline"></div></div>
+
+            <div id="timelineContainer">
+                <div id="timeline" class="timeline"></div>
+            </div>
+
             <button id="lockBtn" class="lock-footer" onclick="sealVault()">LOCK & SEND TO CLIO</button>
+            
             <div id="auditLog" style="display:none; text-align:center; margin-top:10px;">
                 <div class="integrity-badge" id="hashDisplay">SHA-256 HASH: GEN_PENDING...</div>
             </div>
+
             <div class="reset-link" onclick="resetSystem()">[RESET SYSTEM MEMORY]</div>
         </div>
     </div>
@@ -100,29 +136,25 @@
             accident: "[INCIDENT] Nature: [ ], Actions: [ ]"
         };
 
-        // NEW: Templates now ADD to existing text instead of deleting it
         function applyTemplate(key) {
             if(isLocked) return;
             const box = document.getElementById('statusBox');
-            const separator = box.value.trim().length > 0 ? "\n\n" : "";
-            box.value += separator + templates[key];
+            const sep = box.value.trim().length > 0 ? "\n\n" : "";
+            box.value += sep + templates[key];
             box.focus();
         }
 
-        // NEW: Save the lawyer choice immediately when changed
         function saveLawyerChoice() {
             const val = document.getElementById('lawyerSelect').value;
             localStorage.setItem('selectedLawyer', val);
         }
 
         window.onload = function() {
-            // Restore Lawyer Selection
+            // Restore selection
             const savedLawyer = localStorage.getItem('selectedLawyer');
-            if(savedLawyer) {
-                document.getElementById('lawyerSelect').value = savedLawyer;
-            }
+            if(savedLawyer) document.getElementById('lawyerSelect').value = savedLawyer;
 
-            // Restore Lock State
+            // Restore Lock
             if (localStorage.getItem('timelineLocked') === 'true') {
                 isLocked = true;
                 lockUI();
@@ -132,27 +164,27 @@
         };
 
         function resetSystem() {
-            if(confirm("Wipe system memory?")) {
-                localStorage.clear();
-                location.reload();
-            }
+            if(confirm("Wipe memory?")) { localStorage.clear(); location.reload(); }
         }
 
         function togglePrivacy() {
             isPrivate = !isPrivate;
-            document.getElementById('timelineContainer').classList.toggle('privacy-blur', isPrivate);
+            const container = document.getElementById('timelineContainer');
+            const inputArea = document.getElementById('mainInputArea');
+            container.classList.toggle('privacy-blur', isPrivate);
+            inputArea.classList.toggle('privacy-blur', isPrivate);
             document.getElementById('privacyBtn').innerText = isPrivate ? "Privacy: ON" : "Privacy: OFF";
         }
 
         function triggerMedia(id) { 
-            if(isLocked) { addTamperEntry("Locked."); return; } 
+            if(isLocked) return; 
             document.getElementById(id).click(); 
         }
 
         function submitEntry() {
             const box = document.getElementById('statusBox'); const text = box.value.trim();
             if(!text) return; 
-            if(isLocked) { addTamperEntry(text); box.value=""; return; }
+            if(isLocked) { box.value=""; return; }
             const matches = text.match(/\bhazard\b/gi); if(matches) hazardCount += matches.length;
             entryCount++; updateTimelineColor(); addStandardEntry(text, hazardCount >= 3); box.value = "";
         }
@@ -169,33 +201,26 @@
             document.getElementById('timeline').prepend(div);
         }
 
-        function addTamperEntry(text) {
-            const div = document.createElement('div'); div.className = 'entry tamper-heavy';
-            div.innerHTML = `<strong>TAMPER ALERT:</strong><br>${text}`;
-            document.getElementById('timeline').prepend(div);
-        }
-
         function lockUI() {
             const btn = document.getElementById('lockBtn');
-            btn.innerHTML = '🔒 SECURED';
-            btn.style.opacity = "0.5";
+            btn.innerHTML = '🔒 SECURED'; btn.style.opacity = "0.5";
             document.getElementById('lawyerSelect').disabled = true;
         }
 
         function sealVault() { 
             if(isLocked) return; 
             if(document.getElementById('lawyerSelect').value === "none") {
-                alert("Please select a Professional."); return;
+                alert("Please select a Lawyer first."); return;
             }
-            if(window.confirm("Lock and Generate Hash?")) {
+            if(window.confirm("Lock and Generate Evidence Hash?")) {
                 isLocked = true; 
-                const randomHash = Math.random().toString(36).substring(2, 15);
+                const randomHash = Math.random().toString(36).substring(2, 15).toUpperCase();
                 localStorage.setItem('timelineLocked', 'true');
                 localStorage.setItem('lastHash', randomHash);
                 lockUI();
                 document.getElementById('auditLog').style.display = "block";
                 document.getElementById('hashDisplay').innerText = "VERIFIED SHA-256: " + randomHash;
-                setTimeout(() => { window.location.href = "https://ca.app.clio.com/oauth/authorize"; }, 1000);
+                setTimeout(() => { window.location.href = "https://ca.app.clio.com/oauth/authorize"; }, 1200);
             }
         }
     </script>
