@@ -12,7 +12,11 @@
         .heartbeat { position: absolute; top: 15px; right: 15px; display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 900; color: #27ae60; z-index: 5; }
         .dot { height: 8px; width: 8px; background-color: #27ae60; border-radius: 50%; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(39,174,96,0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(39,174,96,0); } 100% { transform: scale(0.95); } }
-        .header-container { text-align: center; padding: 30px 20px; border-bottom: 1px solid var(--gray-light); }
+        
+        /* Fixed Header with Logo on Left */
+        .header-container { display: flex; align-items: center; padding: 20px 15px; border-bottom: 1px solid var(--gray-light); }
+        .header-logo { width: 65px; height: 65px; margin-right: 12px; object-fit: contain; flex-shrink: 0; }
+        
         .lawyer-box { background: #e0f2f1; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1.5px solid var(--teal); }
         .template-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; }
         .template-chip { background: white; border: 1.5px solid var(--teal); color: var(--teal); padding: 7px 14px; border-radius: 50px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap; }
@@ -34,20 +38,21 @@
     <div id="appRoot" class="app-container">
         <div class="privacy-overlay"></div>
         <div class="heartbeat"><span class="dot"></span> CLIO GROW ACTIVE</div>
+        
         <header class="header-container">
-            <h1 style="color: var(--teal); margin: 0; font-size: 28px; font-weight: 900;">WORKTIMELINE&trade;</h1>
-            <p style="margin: 5px 0 20px 0; font-style: italic; color: #666; font-size: 14px;">"Justice is truth in action."</p>
-            <button class="submit-main" style="background: var(--gray-dark); height: 38px; width: 140px; font-size: 11px; margin: 0 auto; padding: 0;" onclick="togglePrivacy()">PROTECT VIEW</button>
+            <img src="1000023910.jpg" alt="Logo" class="header-logo">
+            <div style="flex-grow: 1;">
+                <h1 style="color: var(--teal); margin: 0; font-size: 22px; font-weight: 900; line-height: 1.1;">WORKTIMELINE&trade;</h1>
+                <p style="margin: 4px 0 0 0; font-style: italic; color: #666; font-size: 11px;">"Justice is truth in action."</p>
+            </div>
+            <button class="submit-main" style="background: var(--gray-dark); height: 35px; width: 100px; font-size: 9px; margin: 0; padding: 0;" onclick="togglePrivacy()">PROTECT VIEW</button>
         </header>
 
         <div style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column;">
             <div id="briefingHeader" class="summary-header">
                 <h3 style="margin:0; font-size:16px; color:var(--teal);">Clio Grow Intake Brief</h3>
-                <div style="font-size:12px; margin-top:8px;">
-                    Lawyer: <b id="sumLawyer">--</b> | Hash: <b id="sumHash">--</b>
-                </div>
+                <div style="font-size:12px; margin-top:8px;">Lawyer: <b id="sumLawyer">--</b> | Hash: <b id="sumHash">--</b></div>
             </div>
-
             <div id="mainInputArea">
                 <div class="lawyer-box">
                     <label style="font-size: 10px; font-weight: 900; color: var(--teal);">AUTHENTICATING PROFESSIONAL:</label>
@@ -77,8 +82,8 @@
                         <span>Doc</span>
                     </div>
                 </div>
-                <input type="file" id="cameraTrigger" accept="image/*" capture="environment" style="display:none" onchange="logMedia('Photo')">
-                <input type="file" id="micTrigger" accept="audio/*" capture="microphone" style="display:none" onchange="logMedia('Audio')">
+                <input type="file" id="cameraTrigger" style="display:none" onchange="logMedia('Photo')">
+                <input type="file" id="micTrigger" style="display:none" onchange="logMedia('Audio')">
                 <input type="file" id="docTrigger" style="display:none" onchange="logMedia('Document')">
                 <button class="submit-main" onclick="submitEntry()">SUBMIT TO TIMELINE</button>
             </div>
@@ -91,60 +96,41 @@
         const CLIO_CLIENT_ID = "18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s"; 
         const CLIO_REDIRECT_URI = "https://worktimeline-app.vercel.app/index.html"; 
         let isLocked = false;
-        const templates = {
-            site: "[SITE] Location: [ ], Observation: [ ]",
-            witness: "[WITNESS] Name: [ ], Statement: [ ]",
-            intake: "[INTAKE] Priority: [ ], Summary: [ ]"
-        };
-
+        const templates = { site: "[SITE] Obs: ", witness: "[WITNESS] Name: ", intake: "[INTAKE] Priority: " };
         function runConflictCheck() {
             const el = document.getElementById('lawyerSelect');
             if(el.value !== "none") localStorage.setItem('lawyer', el.options[el.selectedIndex].text);
         }
-
-        function applyTemplate(key) {
-            const box = document.getElementById('statusBox');
-            box.value += (box.value.trim().length > 0 ? "\n\n" : "") + templates[key];
-            box.focus();
-        }
-
+        function applyTemplate(key) { document.getElementById('statusBox').value += templates[key]; }
         function triggerMedia(id) { if(!isLocked) document.getElementById(id).click(); }
         function logMedia(t) { addEntry(`[SECURE LOG] ${t} attached.`, true); }
-
         function submitEntry() {
             const text = document.getElementById('statusBox').value.trim();
             if(!text || isLocked) return;
             addEntry(text, false);
             document.getElementById('statusBox').value = "";
         }
-
         function addEntry(txt, sys) {
             const div = document.createElement('div'); div.className = 'entry';
-            const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            // Simulated Geo-Tagging for Pitch Reliability
             const geo = "LAT: 49.2827° N | LON: 123.1207° W";
-            div.innerHTML = `<small style="color:var(--teal); font-weight:900;">${time}</small><p style="margin:5px 0 0 0;">${txt}</p><span class="geo-tag">${geo}</span>`;
+            div.innerHTML = `<small style="color:var(--teal); font-weight:900;">${new Date().toLocaleTimeString()}</small><p style="margin:5px 0 0 0;">${txt}</p><span class="geo-tag">${geo}</span>`;
             if(sys) div.style.backgroundColor = "#f9f9f9";
             document.getElementById('timeline').prepend(div);
         }
-
         function showSummary() {
             document.getElementById('briefingHeader').style.display = "block";
             document.getElementById('mainInputArea').style.display = "none";
             document.getElementById('sumLawyer').innerText = localStorage.getItem('lawyer') || "Marcus Thorne";
             document.getElementById('sumHash').innerText = Math.random().toString(36).substring(2, 6).toUpperCase();
             document.getElementById('lockBtn').innerHTML = "🔒 SYNCED TO GROW";
-            document.getElementById('lockBtn').style.opacity = "0.5";
         }
-
         function sealVault() {
             if(document.getElementById('lawyerSelect').value === "none") { alert("Select Lawyer"); return; }
             isLocked = true;
             showSummary();
-            const url = `https://app.clio.com/oauth/authorize?response_type=code&client_id=${CLIO_CLIENT_ID}&redirect_uri=${encodeURIComponent(CLIO_REDIRECT_URI)}`;
-            setTimeout(() => { window.location.href = url; }, 1200);
+            const authUrl = `https://app.clio.com/oauth/authorize?response_type=code&client_id=${CLIO_CLIENT_ID}&redirect_uri=${encodeURIComponent(CLIO_REDIRECT_URI)}`;
+            setTimeout(() => { window.location.href = authUrl; }, 1200);
         }
-
         function togglePrivacy() { document.getElementById('appRoot').classList.toggle('privacy-active'); }
     </script>
 </body>
