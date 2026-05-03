@@ -3,45 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeLine™ | Truth Architect</title>
+    <title>WorkTimeLine™ Official</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Playfair+Display:italic,wght@600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --teal: #115e59;
-            --soft-bg: #f8fafc;
-            --alert-red: #dc2626;
-            --ai-yellow: #fef9c3;
-            --ai-border: #facc15;
-        }
-
-        body {
-            margin: 0; font-family: 'Inter', sans-serif; background: #fff; color: #0f172a;
-            padding-bottom: 140px; overflow-x: hidden;
-        }
-
-        /* Philosophical Header */
-        header {
-            padding: 25px; border-bottom: 1px solid #e2e8f0;
-            background: #fff; position: sticky; top: 0; z-index: 100;
-        }
+        :root { --teal: #115e59; --soft-bg: #f8fafc; --alert-red: #dc2626; --ai-yellow: #fef9c3; --ai-border: #fde047; }
+        body { margin: 0; font-family: 'Inter', sans-serif; background: #fff; color: #0f172a; padding-bottom: 120px; overflow-x: hidden; }
         
+        /* Header & Philosophy */
+        header { padding: 25px 20px; border-bottom: 1px solid #e2e8f0; background: #fff; }
         .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
-        .logo-group { display: flex; align-items: center; gap: 12px; }
-        .logo-svg { width: 42px; }
-        .brand-name { font-weight: 900; font-size: 14px; color: var(--teal); letter-spacing: 1.5px; }
+        .logo-group { display: flex; align-items: center; gap: 10px; }
+        .logo-svg { width: 45px; height: auto; }
+        .brand-name { font-weight: 900; font-size: 14px; color: var(--teal); letter-spacing: 1px; }
+        
+        .quote-box { font-family: 'Playfair Display', serif; font-size: 13px; color: #475569; border-left: 3px solid var(--teal); padding-left: 15px; line-height: 1.5; min-height: 40px; margin-bottom: 15px; }
 
-        .philosophy-quote {
-            font-family: 'Playfair Display', serif; font-size: 13px;
-            color: #334155; border-left: 3px solid var(--teal);
-            padding-left: 15px; line-height: 1.5; font-style: italic;
-        }
-
-        .privacy-row { display: flex; align-items: center; gap: 10px; font-size: 10px; font-weight: 800; color: #64748b; text-transform: uppercase; margin-top: 15px; }
-        .switch { position: relative; width: 36px; height: 18px; }
+        .privacy-row { display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 700; color: #64748b; }
+        .switch { position: relative; width: 38px; height: 20px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .4s; border-radius: 20px; }
-        .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--teal); }
         input:checked + .slider:before { transform: translateX(18px); }
 
-        /* AI
+        /* AI Notification */
+        #ai-banner { background: var(--ai-yellow); margin: 10px 20px; padding: 12px; border-radius: 12px; display: none; align-items: center; gap: 10px; font-size: 11px; font-weight: 800; border: 1px solid var(--ai-border); }
+
+        /* Action Grid */
+        .action-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 20px; }
+        .action-card { background: var(--soft-bg); border-radius: 18px; padding: 18px; display: flex; flex-direction: column; align-items: center; border: 1px solid #e2e8f0; }
+        .action-card svg { width: 28px; height: 28px; fill: var(--teal); margin-bottom: 8px; }
+        .action-card span { font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--teal); }
+
+        /* Input area */
+        .input-wrap { padding: 0 20px; }
+        #truthBox { width: 100%; height: 80px; border: 2px solid var(--soft-bg); padding: 15px; border-radius: 16px; font-size: 14px; outline: none; box-sizing: border-box; font-family: inherit; resize: none; }
+        .btn-arch { width: 100%; background: #0f172a; color: white; border: none; padding: 16px; border-radius: 15px; font-weight: 800; cursor: pointer; margin-top: 10px; }
+
+        /* Timeline */
+        .tl-view { padding: 30px 20px; position: relative; }
+        .v-line { position: absolute; left: 35px; top: 0; bottom: 0; width: 2px; background: #e2e8f0; }
+        .entry { background: #fff; margin: 0 0 20px 30px; padding: 18px; border-radius: 20px; border: 1px solid #f1f5f9; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); position: relative; transition: 0.3s; }
+        .entry::before { content: ''; position: absolute; left: -21px; top: 22px; width: 12px; height: 12px; background: var(--teal); border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 1px var(--teal); }
+
+        /* Highlighting */
+        .hazard-hit { background: var(--ai-yellow) !important; border: 1px solid var(--ai-border) !important; }
+        body.privacy-on .entry { filter: blur(15px); }
+        .tampered { background: #fef2f2 !important; border: 2px solid var(--alert-red) !important; color: var(--alert-red); }
+
+        /* Footer */
+        .footer-lock { position: fixed; bottom: 0; width: 100%; padding: 20px; background: #fff; border-top: 1px solid #e2e8f0; box-sizing: border-box; }
+        .btn-seal { width: 100%; background: var(--teal); color: white; border: none; padding: 18px; border-radius: 15px; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="logo-group">
+            <svg class="logo-svg" viewBox="0 0 100 100">
+                <rect x="15" y="35" width="70" height="45" rx="10" fill="none" stroke="#115e59" stroke-width="6"/>
+                <path d="M35 35 V25 Q35 18 50 18 Q65 18 65 25 V35" fill="none" stroke="#115e59" stroke-width="6"/>
+                <circle cx="35" cy="58" r="6" fill="#60a5fa"/><circle cx="50" cy="58" r="6" fill="#60a5fa"/><circle cx="65" cy="58" r="6" fill="#3b82f6"/>
+            </svg>
+            <span class="brand-name">WORKTIMELINE™</span>
+        </div>
+        <div class="privacy-row">
+            <span>Privacy Switch</span>
+            <label class="switch"><input type="checkbox" id="pTog" onchange="toggleP()"><span class="slider"></span></label>
+        </div>
+    </div>
+    <div class="quote-box" id="qOut">"The architecture of truth is the path to justice."</div>
+</header>
+
+<div id="ai-banner">⚠️ AI PATTERN RECOGNITION: HAZARD / BEHAVIORAL RISK DETECTED</div>
+
+<div class="action-grid">
+    <div class="action-card"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg><span>Camera</span></div>
+    <div class="action-card"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg><span>Recorder</span></div>
+    <div class="action-card"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6z"/></svg><span>Docs</span></div>
+</div>
+
+<div class="input-wrap">
+    <textarea id="truthBox" placeholder="Log entry... (Triggers: Hazard, Staring, Belittle)"></textarea>
+    <button class="btn-arch" onclick="addE()">ARCHITECT TRUTH</button>
+</div>
+
+<div class="tl-view"><div class="v-line"></div><div id="hook"></div></div>
+
+<div class="footer-lock">
+    <button class="btn-seal" onclick="seal()">
+        <svg style="width:18px;" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6z"/></svg>
+        LOCK & SEND TO CLIO
+    </button>
+</div>
+
+<script>
+    const quotes = [
+        "Justice is the constant and perpetual will to allot to every man his due. — Ulpian",
+        "The law is a shield for the truth, and organization is the bridge to justice.",
+        "Organization is how we take our power back from chaos. — Brandeis",
+        "Structure is the path to freedom; truth is the architect. — WorkTimeLine"
+    ];
+
+    let tCount = 0;
+    
+    // Set random quote
+    document.getElementById('qOut').innerText = quotes[Math.floor(Math.random() * quotes.length)];
+
+    function toggleP() { document.body.classList.toggle('privacy-on', document.getElementById('pTog').checked); }
+
+    function addE() {
+        const box = document.getElementById('truthBox');
+        const txt = box.value.trim();
+        if(!txt) return;
+
+        const isHaz = txt.toLowerCase().includes("hazard");
+        const match = txt.toLowerCase().match(/hazard|staring|belittle/g);
+        if(match) tCount += match.length;
+        if(tCount >= 3) document.getElementById('ai-banner').style.display = 'flex';
+
+        const div = document.createElement('div');
+        div.className = 'entry' + (isHaz ? ' hazard-hit' : '');
+        div.innerHTML = `<div style="font-size:10px; font-weight:800; color:var(--teal); margin-bottom:5px;">RECORDED • ${new Date().toLocaleTimeString()}</div>${txt}`;
+        document.getElementById('hook').prepend(div);
+        box.value = "";
+    }
+
+    function seal() {
+        const btn = document.querySelector('.btn-seal');
+        btn.innerText = "VAULT SYNCED.";
+        btn.style.background = "#0f172a";
+        alert("Integrity Sealed. Redirecting to Clio...");
+        window.location.href = "https://ca.app.clio.com/nc/#/matters";
+    }
+</script>
+</body>
+</html>
