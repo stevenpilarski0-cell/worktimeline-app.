@@ -75,102 +75,97 @@
             <div id="timelineContainer"><div id="timeline" class="timeline"></div></div>
             <button id="lockBtn" class="lock-footer" onclick="sealVault()">LOCK & SEND TO CLIO</button>
         </div>
-    </div>
-        <script>
-        let hazardCount = 0; 
-        let isLocked = false; 
-        let entryCount = 0; 
-        let isPrivate = false;
-        const colorScale = ['#dcdcdc', '#a6c8c8', '#66b2b2', '#339999', '#008080'];
+    <script>
+    let hazardCount = 0; 
+    let isLocked = false; 
+    let entryCount = 0; 
+    let isPrivate = false;
+    const colorScale = ['#dcdcdc', '#a6c8c8', '#66b2b2', '#339999', '#008080'];
 
-        function togglePrivacy() {
-            isPrivate = !isPrivate;
-            document.getElementById('timelineContainer').classList.toggle('privacy-blur', isPrivate);
-            const btn = document.getElementById('privacyBtn');
-            btn.innerText = isPrivate ? "Privacy: ON" : "Privacy: OFF";
-            btn.style.background = isPrivate ? "var(--teal)" : "var(--gray-dark)";
+    function togglePrivacy() {
+        isPrivate = !isPrivate;
+        document.getElementById('timelineContainer').classList.toggle('privacy-blur', isPrivate);
+        const btn = document.getElementById('privacyBtn');
+        btn.innerText = isPrivate ? "Privacy: ON" : "Privacy: OFF";
+        btn.style.background = isPrivate ? "var(--teal)" : "var(--gray-dark)";
+    }
+
+    function triggerMedia(id) { 
+        if(isLocked) { 
+            addTamperEntry("Hardware access attempted while locked."); 
+            return; 
+        } 
+        document.getElementById(id).click(); 
+    }
+
+    function submitEntry() {
+        const box = document.getElementById('statusBox'); 
+        const text = box.value.trim();
+        if(!text) return; 
+        if(isLocked) { 
+            addTamperEntry(text); 
+            box.value=""; 
+            return; 
         }
+        const matches = text.match(/\bhazard\b/gi); 
+        if(matches) hazardCount += matches.length;
+        
+        entryCount++; 
+        updateTimelineColor(); 
+        addStandardEntry(text, hazardCount >= 3); 
+        box.value = "";
+    }
 
-        function triggerMedia(id) { 
-            if(isLocked) { 
-                addTamperEntry("Media Access Blocked"); 
-                return; 
-            } 
-            document.getElementById(id).click(); 
+    function updateTimelineColor() {
+        let idx = Math.min(entryCount, colorScale.length - 1);
+        document.documentElement.style.setProperty('--timeline-active-color', colorScale[idx]);
+    }
+
+    function addStandardEntry(text, isAI) {
+        const div = document.createElement('div'); 
+        div.className = `entry ${isAI ? 'ai-flagged' : ''}`;
+        
+        // FORCED DATE AND TIME FORMAT
+        const now = new Date();
+        const datePart = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const timePart = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        const fullStamp = datePart + " | " + timePart;
+
+        div.innerHTML = `<strong>${fullStamp}</strong> — ${text}`;
+        
+        if(isAI) {
+            div.innerHTML += `<div class="info-bubble"><strong>AI Pattern Recognition:</strong> System detected "Hazard" 3+ times. Integrity audit suggested.</div>`;
         }
+        document.getElementById('timeline').prepend(div);
+    }
 
-        function submitEntry() {
-            const box = document.getElementById('statusBox'); 
-            const text = box.value.trim();
-            if(!text) return; 
-            if(isLocked) { 
-                addTamperEntry(text); 
-                box.value=""; 
-                return; 
-            }
-            const matches = text.match(/\bhazard\b/gi); 
-            if(matches) hazardCount += matches.length;
-            
-            entryCount++; 
-            updateTimelineColor(); 
-            addStandardEntry(text, hazardCount >= 3); 
-            box.value = "";
+    function addTamperEntry(text) {
+        const div = document.createElement('div'); 
+        div.className = 'entry tamper-heavy';
+        
+        const now = new Date();
+        const fullStamp = now.toLocaleDateString() + " " + now.toLocaleTimeString();
+
+        div.innerHTML = `
+            <div style="color:red; font-weight:900; font-size:11px; letter-spacing:1px;">⚠️ TAMPER ALERT</div>
+            <strong>Attempted: ${fullStamp}</strong><br>
+            <span style="display:block; margin-top:5px; color:#444;">${text}</span>
+            <div class="info-bubble bubble-danger"><strong>Protocol:</strong> Timeline is sealed. Submission blocked.</div>`;
+        
+        document.getElementById('timeline').prepend(div);
+    }
+
+    function sealVault() { 
+        if(isLocked) return; 
+        if(confirm("Confirm: Lock timeline and transmit to Clio?")) {
+            isLocked = true; 
+            const btn = document.getElementById('lockBtn'); 
+            btn.innerHTML = '🔒 SECURED & SENT TO CLIO'; 
+            btn.style.opacity = "0.5";
+            btn.style.cursor = "not-allowed";
         }
+    }
+</script>
 
-        function updateTimelineColor() {
-            let idx = Math.min(entryCount, colorScale.length - 1);
-            document.documentElement.style.setProperty('--timeline-active-color', colorScale[idx]);
-        }
 
-        function addStandardEntry(text, isAI) {
-            const div = document.createElement('div'); 
-            div.className = `entry ${isAI ? 'ai-flagged' : ''}`;
-            
-            // UPDATED: Now includes full Month, Day, Year, and Time
-            const now = new Date();
-            const fullDateTime = now.toLocaleDateString([], { 
-                month: 'short', 
-                day: 'numeric', 
-                year: 'numeric' 
-            }) + ' | ' + now.toLocaleTimeString([], { 
-                hour: '2-digit', 
-                minute: '2-digit' 
-            });
-
-            div.innerHTML = `<strong>${fullDateTime}</strong> — ${text}`;
-            
-            if(isAI) {
-                div.innerHTML += `<div class="info-bubble"><strong>AI Pattern Recognition:</strong> System detected "Hazard" 3+ times. Pattern logged for review.</div>`;
-            }
-            document.getElementById('timeline').prepend(div);
-        }
-
-        function addTamperEntry(text) {
-            const div = document.createElement('div'); 
-            div.className = 'entry tamper-heavy';
-            
-            const now = new Date();
-            const fullDateTime = now.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' }) + ' | ' + now.toLocaleTimeString();
-
-            div.innerHTML = `
-                <div style="color:red; font-weight:900; font-size:12px; margin-bottom:4px;">⚠️ TAMPER ALERT</div>
-                <strong>Attempted at: ${fullDateTime}</strong><br>
-                <span style="display:block; margin-top:5px; color:#555;">${text}</span>
-                <div class="info-bubble bubble-danger"><strong>Integrity Protocol:</strong> File is sealed and transmitted to Clio. Changes are blocked.</div>`;
-            
-            document.getElementById('timeline').prepend(div);
-        }
-
-        function sealVault() { 
-            if(isLocked) return; 
-            if(confirm("Lock and transmit to Clio? This action is immutable.")) {
-                isLocked = true; 
-                const btn = document.getElementById('lockBtn'); 
-                btn.innerHTML = '🔒 SECURED & SENT TO CLIO'; 
-                btn.style.opacity = "0.5";
-                btn.style.cursor = "not-allowed";
-            }
-        }
-    </script>
-</body>
-</html>
+        
