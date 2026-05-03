@@ -3,198 +3,79 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>WorkTimeline | Functional Build</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+<title>WorkTimeline | Secured Workspace</title>
 <style>
-    :root { --teal: #008060; --dark: #004d4d; --gold: #f59e0b; --yellow-glass: rgba(254, 240, 138, 0.85); --red-glass: rgba(220, 38, 38, 0.2); }
-    body { margin: 0; font-family: 'Inter', sans-serif; background: #fff; padding-bottom: 120px; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
-    header { padding: 43px 25px 15px; position: relative; display: flex; align-items: flex-start; justify-content: flex-start; flex-direction: column; }
-    .quote-box { position: absolute; top: 45px; right: 25px; width: 160px; text-align: right; }
-    .quote-box p { font-size: 8px; font-style: italic; color: #94a3b8; line-height: 1.4; margin: 0; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; }
-    .logo-box { position: relative; width: 60px; margin-bottom: 10px; }
-    .briefcase { width: 42px; height: 32px; border: 3px solid var(--teal); border-radius: 8px; position: relative; }
-    .briefcase::before { content: ""; position: absolute; top: -10px; left: 11px; width: 14px; height: 7px; border: 3px solid var(--teal); border-bottom: none; border-radius: 4px 4px 0 0; }
-    .logo-line { position: absolute; top: 16px; left: -10px; width: 55px; height: 4px; background: var(--teal); border-radius: 10px; }
-    .brand { font-weight: 900; letter-spacing: 2px; color: var(--dark); font-size: 14px; text-transform: uppercase; }
-    .ai-banner { background: #fefce8; border: 1px solid #fef08a; padding: 14px 10px; border-radius: 10px; margin: 15px 20px; display: flex; align-items: center; gap: 10px; transition: 0.5s; }
-    .ai-banner span { font-size: 10px; font-weight: 700; color: #854d0e; text-transform: uppercase; }
-    .dot { width: 8px; height: 8px; background: var(--gold); border-radius: 50%; animation: blink 2s infinite; }
-    .container { padding: 0 20px; max-width: 450px; margin: 0 auto; }
-    .card { background: #f8fafc; padding: 25px; border-radius: 24px; border: 1px solid #f1f5f9; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-    
-    textarea { width: 100%; border: 1px solid #e2e8f0; padding: 16px; border-radius: 16px; font-size: 12px; font-weight: 700; outline: none; box-sizing: border-box; font-family: 'Courier New', monospace; background: #1a202c; color: #4fd1c5; resize: none; text-align: left; letter-spacing: 1px; min-height: 80px;}
-    
-    .icon-bar { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin: 20px 0; }
-    .mac-btn { background: var(--teal); color: #fff; border: none; padding: 10px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,128,128,0.2); }
-    .mac-btn svg { width: 22px; height: 22px; fill: white; }
-    .main-btn { background: var(--teal); color: #fff; border: none; padding: 20px; border-radius: 18px; font-weight: 700; width: 100%; font-size: 15px; cursor: pointer; transition: 0.2s; }
-    #timeline { border-left: 2px solid var(--teal); margin: 35px 10px; padding-left: 25px; }
-    .entry { position: relative; margin-bottom: 25px; padding: 18px; border-radius: 18px; background: #fff; border: 1px solid #f1f5f9; transition: 0.6s cubic-bezier(0.2, 1, 0.2, 1); font-size: 15px; font-weight: 600; line-height: 1.4; word-wrap: break-word; }
-    .entry::before { content: ''; position: absolute; left: -34px; top: 22px; width: 16px; height: 16px; background: #fff; border: 3px solid var(--teal); border-radius: 50%; z-index: 2; }
-    body.privacy-on .entry { filter: blur(35px); opacity: 0; transform: scale(0.95); }
-    .yellow-alert { background: var(--yellow-glass) !important; border: 1px solid #fef08a !important; }
-    .red-alert { background: var(--red-glass) !important; border: 2px solid #dc2626 !important; animation: shake 0.6s; color: #dc2626; }
-    .footer { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; border-top: 1px solid #edf2f7; padding: 20px 25px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; z-index: 1000; }
-    .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
-    .switch input { opacity: 0; width: 0; height: 0; }
-    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
-    .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
-    input:checked + .slider { background-color: var(--teal); }
-    input:checked + .slider:before { transform: translateX(24px); }
-    @keyframes shake { 0%, 100% { transform: translateX(0); } 15% { transform: translateX(-12px); } 30% { transform: translateX(12px); } 45% { transform: translateX(-12px); } 60% { transform: translateX(12px); } 75% { transform: translateX(-12px); } }
-    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;0,900;1,400&display=swap');
+
+  :root {
+    --teal: #008080; 
+    --gray-light: #f2f4f5; 
+    --gray-mid: #dcdcdc; 
+    --gray-dark: #2c3e50;
+    --yellow-ai: #fff3cd; 
+    --yellow-border: #ffc107; 
+    --red-light: #ffe6e6;
+    --red-light-border: #ff9999; 
+    --red-heavy: #ffcccc; 
+    --red-heavy-border: #ff0000;
+    /* This variable will change dynamically via JavaScript */
+    --timeline-active-color: #dcdcdc; 
+  }
+
+  body { font-family: 'Nunito', sans-serif; background-color: #e9ecef; margin: 0; padding: 20px; display: flex; justify-content: center; }
+  
+  .app-container { width: 100%; max-width: 800px; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); overflow: hidden; min-height: 85vh; display: flex; flex-direction: column; }
+  
+  .header-container { text-align: center; padding: 30px 20px 10px; border-bottom: 2px solid var(--gray-light); }
+  .header-container h1 { color: var(--teal); font-weight: 900; letter-spacing: 2px; margin: 10px 0 0 0; font-size: 24px; }
+  
+  .page { padding: 30px; flex-grow: 1; }
+
+  .workspace-grid { display: flex; gap: 30px; flex-wrap: wrap; }
+  .main-timeline-area { flex: 3; min-width: 300px; }
+  .side-panel { flex: 1; border-left: 2px solid var(--gray-light); padding-left: 20px; display: flex; flex-direction: column; gap: 20px; min-width: 200px; }
+
+  /* Draft Box - Now Light Gray */
+  .draft-box { background: var(--gray-light); border: 2px dashed var(--gray-mid); padding: 15px; border-radius: 8px; margin-bottom: 30px; }
+  .text-input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 10px; color: var(--gray-dark); background: var(--gray-light); font-family: 'Nunito', sans-serif; font-size: 15px; box-sizing: border-box; resize: none; min-height: 80px; }
+  .text-input:focus { outline: 2px solid var(--teal); background: white; }
+  
+  .btn-submit { background: var(--gray-dark); color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: 700; cursor: pointer; transition: 0.2s; font-family: 'Nunito', sans-serif; font-size: 15px; width: 100%;}
+  .btn-submit:hover { background: #1a252f; }
+
+  /* Chloe Lock Button */
+  .btn-lock { background: white; color: var(--teal); border: 2px solid var(--teal); padding: 15px; font-size: 14px; border-radius: 8px; font-weight: 900; width: 100%; cursor: pointer; transition: 0.3s; text-transform: uppercase; font-family: 'Nunito', sans-serif; display: flex; align-items: center; justify-content: center; gap: 8px; text-align: center; line-height: 1.2;}
+  .btn-lock svg { width: 18px; height: 18px; fill: currentColor; flex-shrink: 0; }
+  .btn-lock:hover { background: var(--teal); color: white; }
+  .btn-lock.locked { background: var(--gray-dark); color: white; border-color: var(--gray-dark); pointer-events: none; }
+
+  /* Timeline driven by dynamic variable */
+  .timeline { border-left: 4px solid var(--timeline-active-color); margin-left: 10px; padding-left: 20px; transition: border-color 0.5s ease; }
+  .entry { background: white; border-left: 5px solid var(--timeline-active-color); padding: 18px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); font-size: 15px; line-height: 1.5; transition: border-color 0.5s ease; word-wrap: break-word;}
+  
+  /* System Flags */
+  .ai-flagged { background: var(--yellow-ai) !important; border-left: 5px solid var(--yellow-border) !important; }
+  .ai-badge { font-size: 12px; font-weight: 900; color: #856404; text-transform: uppercase; margin-bottom: 5px; display: flex; align-items: center; gap: 6px;}
+  .ai-badge svg { width: 14px; height: 14px; fill: currentColor; }
+  
+  .tamper-heavy { background: var(--red-heavy) !important; border-left: 5px solid var(--red-heavy-border) !important; color: #900 !important; animation: shake 0.5s; }
+  .tamper-badge { font-size: 12px; font-weight: 900; color: var(--red-heavy-border); text-transform: uppercase; margin-bottom: 5px; display: flex; align-items: center; gap: 6px;}
+  .tamper-badge svg { width: 14px; height: 14px; fill: currentColor; }
+
+  @keyframes shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-10px); } 40% { transform: translateX(10px); } 60% { transform: translateX(-10px); } 80% { transform: translateX(10px); } }
+
+  /* Mobile responsiveness */
+  @media (max-width: 600px) {
+    .side-panel { border-left: none; padding-left: 0; border-top: 2px solid var(--gray-light); padding-top: 20px; }
+  }
 </style>
 </head>
-<body class="privacy-on">
+<body>
 
-<input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none">
-<input type="file" id="micInput" accept="audio/*" capture="user" style="display:none">
-<input type="file" id="docInput" style="display:none">
-
-<header>
-    <div class="logo-box"><div class="briefcase"></div><div class="logo-line"></div></div>
-    <span class="brand">WorkTimeline</span>
-    <div class="quote-box"><p>"Law is the Conscience of the community, where Truth is the architect of Freedom."</p></div>
-</header>
-
-<div id="ai-status" class="ai-banner">
-    <div class="dot" id="ai-dot"></div>
-    <span id="ai-text">AI RECOGNITION: AUTHENTICITY ACTIVE</span>
-</div>
-
-<div class="container">
-    <div class="card">
-        <textarea id="statusBox" placeholder="Type timeline entry here..."></textarea>
-        
-        <div class="icon-bar">
-            <div class="mac-btn" onclick="document.getElementById('cameraInput').click()"><svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg></div>
-            <div class="mac-btn" onclick="document.getElementById('micInput').click()"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg></div>
-            <div class="mac-btn" onclick="document.getElementById('docInput').click()"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg></div>
-        </div>
-        
-        <button class="main-btn" onclick="submitEntry()" id="actionBtn">LOG TO TIMELINE</button>
-    </div>
-    
-    <div id="timeline"></div>
-    
-    <div id="seal-area" style="display:none; text-align:center; padding-top:30px;">
-        <button id="lockBtn" class="main-btn" style="background:var(--dark);" onclick="sealVault()">SEAL & SYNC CONSCIENCE</button>
-        <p style="font-size: 10px; color: #dc2626; cursor: pointer; margin-top: 15px; font-weight: bold;" onclick="resetSystem()">[RESET SYSTEM]</p>
-    </div>
-</div>
-
-<div class="footer">
-    <div class="footer-label" style="font-size:11px; font-weight:700; color:#718096;">PRIVACY MODE</div>
-    <label class="switch">
-        <input type="checkbox" id="privacyToggle" checked onchange="togglePrivacy()">
-        <span class="slider"></span>
-    </label>
-</div>
-
-<script>
-    let hazardCount = 0;
-    let isLocked = false;
-
-    window.onload = function() {
-        if(localStorage.getItem('vLocked') === 'true') {
-            isLocked = true;
-            document.getElementById('lockBtn').innerHTML = '🔒 CONSCIENCE SYNCED';
-            document.getElementById('lockBtn').style.background = '#004d4d';
-            document.getElementById('seal-area').style.display = "block";
-        }
-    };
-
-    function togglePrivacy() {
-        var t = document.getElementById('privacyToggle');
-        if(!t.checked) {
-            document.body.classList.remove('privacy-on');
-        } else {
-            document.body.classList.add('privacy-on');
-        }
-    }
-
-    function submitEntry() {
-        const statusBox = document.getElementById('statusBox');
-        const text = statusBox.value.trim();
-        
-        if (text === "") return; 
-
-        if (isLocked) {
-            addEntry("INTEGRITY BREACH DETECTED: UNAUTHORIZED ENTRY ATTEMPT AFTER SEAL.", true);
-            statusBox.value = ""; 
-            triggerRedAlertUI();
-            return;
-        }
-
-        const hazardRegex = /\bhazard\b/i; 
-        if (hazardRegex.test(text)) {
-            hazardCount++;
-        }
-
-        addEntry(text, false);
-        statusBox.value = ""; 
-
-        if (hazardCount === 3) {
-            triggerPatternRecognition();
-        }
-    }
-
-    function addEntry(text, isTampering) {
-        var div = document.createElement('div');
-        div.className = 'entry';
-        
-        if(isTampering) {
-            div.classList.add('red-alert');
-        }
-
-        const now = new Date();
-        const timeString = now.toLocaleDateString() + ' | ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        
-        div.innerHTML = '<div style="font-size:10px; font-weight:800; color:var(--teal); margin-bottom:5px;">📅 ' + timeString + '</div>' + text;
-        
-        document.getElementById('timeline').appendChild(div);
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-    }
-
-    function triggerPatternRecognition() {
-        const aiBanner = document.getElementById('ai-status');
-        const aiText = document.getElementById('ai-text');
-        
-        aiBanner.style.background = 'var(--yellow-glass)';
-        aiBanner.style.borderColor = '#fef08a';
-        aiText.innerText = 'PATTERN RECOGNITION: HAZARD PROTOCOL TRIGGERED';
-        aiText.style.color = '#b45309';
-        
-        document.getElementById('seal-area').style.display = "block";
-    }
-
-    function triggerRedAlertUI() {
-        const aiBanner = document.getElementById('ai-status');
-        const aiText = document.getElementById('ai-text');
-        const aiDot = document.getElementById('ai-dot');
-        
-        aiBanner.classList.add('red-alert');
-        aiText.innerText = 'TAMPERING DETECTED: SYSTEM LOCKED';
-        aiText.style.color = '#dc2626';
-        aiDot.style.background = 'red';
-    }
-
-    function sealVault() {
-        isLocked = true;
-        localStorage.setItem('vLocked', 'true'); 
-        
-        document.getElementById('lockBtn').innerHTML = '🔒 CONSCIENCE SYNCED';
-        document.getElementById('lockBtn').style.background = '#004d4d';
-        
-        setTimeout(() => {
-            window.location.href = "https://ca.app.clio.com/nc/#/matters"; 
-        }, 800);
-    }
-
-    function resetSystem() {
-        localStorage.removeItem('vLocked');
-        location.reload();
-    }
-</script>
-</body>
-</html>
+<div class="app-container">
+  
+  <div class="header-container">
+    <svg viewBox="0 0 64 64" width="80" height="80">
+        <path d="M 22 20 L 22 14 C 22 10.686 24.686 8 28 8 L 36 8 C 39.314 8 42 10.686 42 14 L 42 20" fill="none" stroke="#008080" stroke-width="3" stroke-linecap="round"/>
+        <rect x="8" y="20" width="48" height="32" rx="4" fill="none" stroke="#008080" stroke-width="3"/>
+        <line x1="0" y1="36" x2="64" y2="36" stroke="#3498DB" stroke-width="4
