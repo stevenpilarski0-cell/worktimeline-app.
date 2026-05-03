@@ -28,6 +28,9 @@
   .header-container { text-align: center; padding: 30px 20px 10px; border-bottom: 2px solid var(--gray-light); }
   .header-container h1 { color: var(--teal); font-weight: 900; letter-spacing: 2px; margin: 10px 0 0 0; font-size: 24px; }
   
+  .quote-box { margin: 15px auto 20px; font-style: italic; color: #666; font-size: 15px; max-width: 90%; }
+  .quote-box span { font-weight: 900; font-style: normal; font-size: 12px; display: block; margin-top: 8px; color: var(--teal); text-transform: uppercase;}
+
   .page { padding: 30px; flex-grow: 1; }
 
   .workspace-grid { display: flex; gap: 30px; flex-wrap: wrap; }
@@ -35,9 +38,14 @@
   .side-panel { flex: 1; border-left: 2px solid var(--gray-light); padding-left: 20px; display: flex; flex-direction: column; gap: 20px; min-width: 200px; }
 
   .draft-box { background: var(--gray-light); border: 2px dashed var(--gray-mid); padding: 15px; border-radius: 8px; margin-bottom: 30px; }
-  .text-input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 10px; color: var(--gray-dark); background: var(--gray-light); font-family: 'Nunito', sans-serif; font-size: 15px; box-sizing: border-box; resize: none; min-height: 80px; }
+  .text-input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 15px; color: var(--gray-dark); background: var(--gray-light); font-family: 'Nunito', sans-serif; font-size: 15px; box-sizing: border-box; resize: none; min-height: 80px; }
   .text-input:focus { outline: 2px solid var(--teal); background: white; }
   
+  .media-toolbar { display: flex; gap: 15px; margin-bottom: 15px; justify-content: center; }
+  .media-btn { background: var(--teal); border: none; border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,128,128,0.3); }
+  .media-btn svg { width: 22px; height: 22px; fill: white; }
+  .media-btn:hover { background: #006666; transform: scale(1.05); }
+
   .btn-submit { background: var(--gray-dark); color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: 700; cursor: pointer; transition: 0.2s; font-family: 'Nunito', sans-serif; font-size: 15px; width: 100%;}
   .btn-submit:hover { background: #1a252f; }
 
@@ -69,6 +77,11 @@
 </style>
 </head>
 <body>
+
+<input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none">
+<input type="file" id="micInput" accept="audio/*" capture="user" style="display:none">
+<input type="file" id="docInput" style="display:none">
+
 <div class="app-container">
   <div class="header-container">
     <svg viewBox="0 0 64 64" width="80" height="80">
@@ -80,6 +93,7 @@
         <circle cx="48" cy="36" r="4" fill="#F2F4F5" stroke="#3498DB" stroke-width="3"/>
     </svg>
     <h1>WORKTIMELINE&trade;</h1>
+    <div class="quote-box">"Justice is truth in action."<span>— Benjamin Disraeli</span></div>
   </div>
 
   <div class="page">
@@ -88,6 +102,13 @@
         <div class="draft-box">
           <p style="margin-top: 0; font-size: 13px; color: #666; font-weight: 900; text-transform: uppercase;">New Entry</p>
           <textarea id="statusBox" class="text-input" placeholder="Type incident details here..."></textarea>
+          
+          <div class="media-toolbar">
+            <button class="media-btn" onclick="document.getElementById('cameraInput').click()"><svg viewBox="0 0 24 24"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm8 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10z"/></svg></button>
+            <button class="media-btn" onclick="document.getElementById('micInput').click()"><svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2zM8 18h8v2H8v-2z"/></svg></button>
+            <button class="media-btn" onclick="document.getElementById('docInput').click()"><svg viewBox="0 0 24 24"><path d="M6 2c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6H6zm7 7V3.5L18.5 9H13z"/></svg></button>
+          </div>
+
           <button class="btn-submit" onclick="submitEntry()">Submit to Timeline</button>
         </div>
         <div class="timeline" id="timeline"></div>
