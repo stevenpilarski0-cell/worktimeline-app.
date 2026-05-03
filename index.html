@@ -3,105 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeLine™ | Pattern AI</title>
+    <title>WorkTimeLine™ | Truth</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --teal: #008080; --dark: #2c3e50; --gray-light: #f8fafc; --gold: #eab308; --warn-bg: #fff3cd; --red: #dc2626; }
+        :root { --teal: #008080; --dark: #2c3e50; --gray-light: #f8fafc; --gold: #eab308; --red: #dc2626; --red-bg: #fee2e2; }
         body { font-family: 'Nunito', sans-serif; background: #e9ecef; margin: 0; display: flex; justify-content: center; }
         .app-container { width: 100%; max-width: 500px; background: white; min-height: 100vh; display: flex; flex-direction: column; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
         
-        .top-nav { display: flex; background: var(--dark); sticky: top; }
-        .tab-btn { background: transparent; color: #888; border: none; padding: 15px; font-size: 11px; font-weight: 900; cursor: pointer; text-transform: uppercase; flex: 1; }
-        .tab-btn.active { color: white; border-bottom: 4px solid var(--teal); background: rgba(0,128,128,0.1); }
+        header { padding: 30px 20px 10px; text-align: center; }
+        .logo-box { width: 80px; height: 60px; margin: 0 auto 15px; position: relative; display: flex; align-items: center; justify-content: center; }
+        .briefcase { width: 60px; height: 45px; border: 4px solid var(--teal); border-radius: 8px; position: relative; }
+        .briefcase::before { content: ''; position: absolute; top: -12px; left: 18px; width: 20px; height: 8px; border: 4px solid var(--teal); border-bottom: none; border-radius: 6px 6px 0 0; }
+        .timeline-line { position: absolute; width: 100%; height: 4px; background: #3498DB; top: 50%; left: 0; transform: translateY(-50%); z-index: 1; }
+        .timeline-dot { position: absolute; width: 10px; height: 10px; background: white; border: 2px solid #3498DB; border-radius: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 2; }
 
-        .page { display: none; padding: 20px; flex-grow: 1; }
-        .page.active { display: block; }
-
-        .input-card { background: var(--gray-light); padding: 20px; border-radius: 16px; border: 1px solid #e2e8f0; margin-bottom: 20px; }
-        textarea { width: 100%; border: 1px solid #ccc; padding: 12px; border-radius: 12px; font-size: 16px; font-family: inherit; resize: none; box-sizing: border-box; }
-        .btn-submit { background: var(--teal); color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: 900; margin-top: 10px; cursor: pointer; }
-
-        .timeline { border-left: 3px solid var(--teal); margin-left: 10px; padding-left: 20px; }
-        .entry { background: white; border: 1px solid #e2e8f0; padding: 15px; border-radius: 12px; margin-bottom: 15px; position: relative; animation: slideIn 0.3s ease; }
-        .entry-time { font-size: 10px; font-weight: 900; color: var(--teal); text-transform: uppercase; margin-bottom: 5px; }
-
-        /* AI Flag Style */
-        .ai-flagged { background: var(--warn-bg); border: 2px solid var(--gold); }
-        .ai-badge { font-size: 10px; font-weight: 900; color: #856404; text-transform: uppercase; margin-bottom: 5px; display: flex; align-items: center; gap: 5px; }
-
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
-    </style>
-</head>
-<body>
-
-<div class="app-container">
-    <nav class="top-nav">
-        <button class="tab-btn active" onclick="switchTab('workspace', this)">Workspace</button>
-        <button class="tab-btn" onclick="switchTab('lock', this)">Lock & Send</button>
-    </nav>
-
-    <div id="workspace" class="page active">
-        <div class="input-card">
-            <p style="margin:0 0 10px 0; font-size:11px; font-weight:900; color:var(--dark); letter-spacing:1px;">AI PATTERN MONITOR ACTIVE</p>
-            <textarea id="noteInput" rows="3" placeholder="Try typing: 'Supervisor refused'..."></textarea>
-            <button class="btn-submit" onclick="addEntry()">LOG TO TIMELINE</button>
-        </div>
-        <div id="timeline" class="timeline"></div>
-    </div>
-
-    <div id="lock" class="page">
-        <div style="text-align:center; padding:40px 10px;">
-            <h2 style="color:var(--red)">SEAL TIMELINE</h2>
-            <p>Ready to transmit to the Clio Legal Vault?</p>
-            <button class="btn-submit" style="background:var(--red)" onclick="alert('Sealed and Transmitted.')">CONFIRM & SEND</button>
-        </div>
-    </div>
-</div>
-
-<script>
-    let mentionCount = 0;
-
-    function switchTab(pageId, btn) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(pageId).classList.add('active');
-        btn.classList.add('active');
-    }
-
-    function addEntry() {
-        const text = document.getElementById('noteInput').value;
-        if(!text) return;
-
-        const timeline = document.getElementById('timeline');
-        const entry = document.createElement('div');
-        entry.className = 'entry';
-        
-        // AI PATTERN LOGIC
-        const lowerText = text.toLowerCase();
-        const triggers = ['safety', 'danger', 'hazard', 'refused', 'denied', 'supervisor', 'manager'];
-        let hasPattern = triggers.some(word => lowerText.includes(word));
-        
-        if (lowerText.includes('supervisor') || lowerText.includes('manager')) mentionCount++;
-        if (mentionCount >= 2) hasPattern = true;
-
-        const now = new Date();
-        const timeStr = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
-
-        if (hasPattern) {
-            entry.classList.add('ai-flagged');
-            entry.innerHTML = `
-                <div class="ai-badge">⚠️ CLIO DUO: PATTERN RECOGNIZED</div>
-                <div class="entry-time">🕒 ${timeStr}</div>
-                <div style="font-weight:700;">${text}</div>
-            `;
-        } else {
-            entry.innerHTML = `<div class="entry-time">🕒 ${timeStr}</div><div>${text}</div>`;
-        }
-
-        timeline.prepend(entry);
-        document.getElementById('noteInput').value = "";
-    }
-</script>
-
-</body>
-</html>
+        .brand { font-weight: 900; letter-spacing: 3px; color: var(--dark); font-size: 18px; text
