@@ -3,281 +3,234 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeLine | Modern Build</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>WorkTimeLine™ | Conscience of the Law</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Playfair+Display:italic,wght@600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-teal: #115e59;
-            --bg-light: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #1e293b;
-            --accent-green: #0d9488;
-            --alert-red: #ef4444;
+            --teal: #115e59;
+            --legal-gray: #f8fafc;
+            --alert-red: #dc2626;
+            --ai-yellow: #fef9c3;
         }
 
         body {
-            margin: 0;
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-light);
-            color: var(--text-main);
-            padding-bottom: 100px;
+            margin: 0; font-family: 'Inter', sans-serif; background: #fff; color: #0f172a;
+            transition: 0.5s; padding-bottom: 120px;
         }
 
-        /* Header Styles from Screenshot 2 */
+        /* LOGO & PHILOSOPHICAL HEADER */
         header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            background: #fff;
+            padding: 40px 25px 25px;
+            border-bottom: 1px solid #e2e8f0;
+            background: linear-gradient(to bottom, #ffffff, #f1f5f9);
         }
 
-        .menu-icon { width: 24px; height: 2px; background: var(--primary-teal); position: relative; }
-        .menu-icon::before, .menu-icon::after { content: ''; position: absolute; width: 24px; height: 2px; background: var(--primary-teal); }
-        .menu-icon::before { top: -8px; } .menu-icon::after { top: 8px; }
-
-        .brand-title { font-weight: 700; font-size: 18px; letter-spacing: 1px; color: #000; text-transform: uppercase; }
-
-        /* Action Grid from Screenshot 2 & 3 */
-        .action-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
-            padding: 20px;
-            background: #fff;
-            overflow-x: auto;
-        }
-
-        .action-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 10px;
-            font-weight: 700;
-            color: #64748b;
-            text-transform: uppercase;
-        }
-
-        .icon-circle {
-            width: 50px;
-            height: 50px;
-            border-radius: 15px;
-            background: #f1f5f9;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 8px;
-            transition: 0.3s;
-        }
-
-        .stealth-active { border: 2px solid var(--accent-green); color: var(--accent-green); }
-
-        /* Timeline Section */
-        .content-body { padding: 20px; }
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .section-header h2 { font-size: 28px; margin: 0; }
-        .date-pill { background: #e2e8f0; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; color: #475569; }
-
-        #timeline-container {
-            position: relative;
-            padding-left: 30px;
-            margin-top: 20px;
-        }
-
-        #timeline-line {
-            position: absolute;
-            left: 7px;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: #cbd5e1;
-        }
-
-        .timeline-card {
-            background: #fff;
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            position: relative;
-            transition: 0.5s ease;
-        }
-
-        .timeline-card::before {
-            content: '';
-            position: absolute;
-            left: -28px;
-            top: 25px;
-            width: 10px;
-            height: 10px;
-            background: var(--accent-green);
-            border-radius: 50%;
-            border: 3px solid #fff;
-            box-shadow: 0 0 0 2px var(--accent-green);
-        }
-
-        .time-badge {
-            background: #f0fdfa;
-            color: var(--accent-green);
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-size: 11px;
-            font-weight: 800;
-            display: inline-block;
-            margin-bottom: 12px;
-        }
-
-        .card-title { font-weight: 700; font-size: 16px; margin-bottom: 8px; color: #1e293b; }
-        .card-body { font-size: 14px; line-height: 1.5; color: #64748b; }
-
-        /* Stealth/Privacy Overlays */
-        body.privacy-on .timeline-card { filter: blur(12px); opacity: 0.3; }
+        .header-top { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
         
-        .red-alert {
-            border: 2px solid var(--alert-red) !important;
-            background: #fef2f2 !important;
+        .logo-box { width: 55px; }
+        .logo-box svg { width: 100%; height: auto; }
+
+        .brand-info { display: flex; flex-direction: column; }
+        .brand-info h1 { font-weight: 900; font-size: 16px; margin: 0; color: var(--teal); letter-spacing: 2px; }
+        .brand-info span { font-size: 9px; font-weight: 700; color: #64748b; text-transform: uppercase; }
+
+        .philosophy-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #334155;
+            border-left: 3px solid var(--teal);
+            padding-left: 15px;
+            margin: 10px 0;
+        }
+        .quote-author {
+            display: block;
+            font-size: 10px;
+            text-transform: uppercase;
+            font-weight: 800;
+            color: var(--teal);
+            margin-top: 5px;
+            font-family: 'Inter', sans-serif;
         }
 
-        /* Footer Nav */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background: #fff;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            padding: 15px 0;
-            border-top: 1px solid #e2e8f0;
-            z-index: 100;
+        /* AI STATUS */
+        #ai-status {
+            background: var(--ai-yellow);
+            margin: 15px 25px; padding: 12px; border-radius: 12px;
+            display: none; align-items: center; gap: 10px;
+            font-size: 11px; font-weight: 800; border: 1px solid #fde047;
         }
 
-        .nav-item { text-align: center; font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; }
-        .nav-item.active { color: var(--accent-green); }
-
-        /* Floating Action Button */
-        #add-btn {
-            position: fixed;
-            bottom: 85px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            background: var(--primary-teal);
-            border-radius: 50%;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            box-shadow: 0 10px 20px rgba(17, 94, 89, 0.3);
-            border: none;
-            z-index: 101;
-            cursor: pointer;
+        /* MAC-STYLE ACTION GRID */
+        .action-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 15px; padding: 0 25px 25px;
         }
 
-        @keyframes pulse-red { 0% { transform: scale(1); } 50% { transform: scale(1.02); background: #fee2e2; } 100% { transform: scale(1); } }
-        .integrity-fail { animation: pulse-red 0.5s infinite; }
+        .action-card {
+            background: var(--legal-gray); border-radius: 20px; padding: 25px 10px;
+            display: flex; flex-direction: column; align-items: center;
+            cursor: pointer; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        .action-card svg { width: 35px; height: 35px; fill: var(--teal); margin-bottom: 10px; }
+        .action-card span { font-size: 10px; font-weight: 900; text-transform: uppercase; color: var(--teal); }
+
+        /* TIMELINE FLOW */
+        .timeline-container { padding: 0 30px; position: relative; }
+        .line { position: absolute; left: 40px; top: 0; bottom: 0; width: 2px; background: #e2e8f0; }
+
+        .entry {
+            background: #fff; margin: 25px 0 25px 40px; padding: 20px;
+            border-radius: 20px; border: 1px solid #f1f5f9;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.03);
+            position: relative; animation: slideIn 0.5s ease;
+        }
+
+        .entry::before {
+            content: ''; position: absolute; left: -31px; top: 28px;
+            width: 14px; height: 14px; background: var(--teal);
+            border-radius: 50%; border: 4px solid #fff; box-shadow: 0 0 0 1px var(--teal);
+        }
+
+        /* TAMPERED ALERT */
+        .tampered { background: #fef2f2 !important; border: 2.5px solid var(--alert-red) !important; animation: shake 0.6s; }
+        .tampered::before { background: var(--alert-red) !important; }
+
+        /* SEAL BUTTON */
+        .footer {
+            position: fixed; bottom: 0; width: 100%; padding: 25px;
+            background: #fff; border-top: 1px solid #e2e8f0; box-sizing: border-box;
+        }
+        .btn-seal {
+            width: 100%; background: var(--teal); color: white; border: none;
+            padding: 22px; border-radius: 20px; font-weight: 900;
+            font-size: 14px; letter-spacing: 1px;
+        }
+
+        @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-10px);} 75% {transform: translateX(10px);} }
+        @keyframes slideIn { from {opacity: 0; transform: translateX(20px);} to {opacity: 1; transform: translateX(0);} }
+        input[type="file"] { display: none; }
     </style>
 </head>
-<body class="privacy-on">
+<body>
 
 <header>
-    <div class="menu-icon"></div>
-    <div class="brand-title">WorkTimeLine</div>
-    <div style="width:24px"></div> </header>
+    <div class="header-top">
+        <div class="logo-box">
+            <svg viewBox="0 0 100 100">
+                <rect x="15" y="35" width="70" height="45" rx="10" fill="none" stroke="#115e59" stroke-width="6"/>
+                <path d="M35 35 V25 Q35 18 50 18 Q65 18 65 25 V35" fill="none" stroke="#115e59" stroke-width="6"/>
+                <circle cx="35" cy="58" r="6" fill="#fff" stroke="#60a5fa" stroke-width="3"/>
+                <circle cx="50" cy="58" r="6" fill="#fff" stroke="#60a5fa" stroke-width="3"/>
+                <circle cx="65" cy="58" r="6" fill="#60a5fa" />
+            </svg>
+        </div>
+        <div class="brand-info">
+            <h1>WORKTIMELINE™</h1>
+            <span>The Architect of Truth</span>
+        </div>
+    </div>
+    <div class="philosophy-quote" id="quote-display">
+        "Justice is the constant and perpetual will to allot to every man his due."
+        <span class="quote-author" id="quote-author">— Ulpian (Digest of Roman Law)</span>
+    </div>
+</header>
+
+<div id="ai-status">
+    <div style="width: 8px; height: 8px; background: #ca8a04; border-radius: 50%;"></div>
+    <span id="ai-msg">AI PATTERN RECOGNITION: BRIDGING TRUTH TO RECORD</span>
+</div>
 
 <div class="action-grid">
-    <div class="action-item"><div class="icon-circle">📷</div><span>Camera</span></div>
-    <div class="action-item"><div class="icon-circle">📝</div><span>Notepad</span></div>
-    <div class="action-item" onclick="togglePrivacy()"><div class="icon-circle stealth-active" id="stealth-icon">👁️‍🗨️</div><span id="stealth-text">Stealth</span></div>
-    <div class="action-item"><div class="icon-circle">🎤</div><span>Audio</span></div>
-    <div class="action-item"><div class="icon-circle">🎥</div><span>Video</span></div>
+    <div class="action-card" onclick="document.getElementById('c-in').click()">
+        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        <span>Camera</span>
+    </div>
+    <input type="file" id="c-in" capture="environment" accept="image/*">
+
+    <div class="action-card" onclick="document.getElementById('m-in').click()">
+        <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg>
+        <span>Audio</span>
+    </div>
+    <input type="file" id="m-in" capture="user" accept="audio/*">
+
+    <div class="action-card" onclick="addNarrative()">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6z"/></svg>
+        <span>Document</span>
+    </div>
 </div>
 
-<div class="content-body">
-    <div class="section-header">
-        <h2>Timeline</h2>
-        <div class="date-pill">NOV 24, 2023</div>
-    </div>
-
-    <div id="timeline-container">
-        <div id="timeline-line"></div>
-        <div id="timeline-hook"></div>
-    </div>
+<div class="timeline-container">
+    <div class="line"></div>
+    <div id="timeline-hook"></div>
 </div>
 
-<button id="add-btn" onclick="nextStep()">+</button>
-
-<nav class="bottom-nav">
-    <div class="nav-item active">📂<br>Feed</div>
-    <div class="nav-item">📸<br>Capture</div>
-    <div class="nav-item">🛡️<br>Vault</div>
-    <div class="nav-item">📊<br>Insights</div>
-</nav>
+<div class="footer">
+    <button class="btn-seal" onclick="sealTimeline()">LOCK & SYNC WITH CLIO</button>
+</div>
 
 <script>
-    let step = 0;
-    const lines = [
-        { title: "Initial System Load", body: "I bet you they think I'm invisible, but I'm not. I'm just trapped." },
-        { title: "Grounding Exercise", body: "Law is not above me; it is the ground I stand on." },
-        { title: "Legal Strategy", body: "Lawyers want to work with me because my truth is organized." },
-        { title: "Reclaiming Power", body: "Being organized is how I take my power back." },
-        { title: "Freedom Architecture", body: "Using my tools to architect my own freedom." },
-        { title: "The Path", body: "Structure is the path to freedom." },
-        { title: "INTEGRITY BREACH", body: "But what if I look back... the truth is built, not changed." }
+    const quotes = [
+        { q: "Justice is the constant and perpetual will to allot to every man his due.", a: "— Ulpian (Roman Law)" },
+        { q: "If you are a lawyer, be a peace-maker. Discourage litigation. Persuade your neighbors to compromise.", a: "— Abraham Lincoln" },
+        { q: "The law should not be a check on the people, but a shield for them.", a: "— Louis Brandeis" },
+        { q: "Justice must not only be done; it must manifestly be seen to be done.", a: "— Lord Hewart" },
+        { q: "Be organized, be truthful. The architecture of your record is the path to your freedom.", a: "— WorkTimeLine Philosophy" }
     ];
 
-    function togglePrivacy() {
-        const body = document.body;
-        const icon = document.getElementById('stealth-icon');
-        body.classList.toggle('privacy-on');
-        
-        if(body.classList.contains('privacy-on')) {
-            icon.classList.add('stealth-active');
-            document.getElementById('stealth-text').innerText = "Stealth On";
-        } else {
-            icon.classList.remove('stealth-active');
-            document.getElementById('stealth-text').innerText = "Stealth Off";
-        }
-    }
+    let qIdx = 0;
+    setInterval(() => {
+        qIdx = (qIdx + 1) % quotes.length;
+        document.getElementById('quote-display').innerHTML = `"${quotes[qIdx].q}" <span class="quote-author">${quotes[qIdx].a}</span>`;
+    }, 8000);
 
-    function addEntry(data, isLast) {
-        const container = document.getElementById('timeline-hook');
-        const now = new Date();
-        const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        
-        const card = document.createElement('div');
-        card.className = 'timeline-card' + (isLast ? ' red-alert integrity-fail' : '');
-        
-        card.innerHTML = `
-            <div class="time-badge">${timeStr}</div>
-            <div class="card-title">${data.title}</div>
-            <div class="card-body">${data.body}</div>
-        `;
-        
-        container.prepend(card);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    let hazardCount = 0;
+    const scripts = [
+        "Case file opened. Establishing the baseline of truth.",
+        "Hazard detected at site entry. Client safety protocol activated.",
+        "Audio testimony recorded. Pattern analysis confirms integrity.",
+        "Safety protocol updated. Discrepancies between system and reality bridged.",
+        "Final evidence collection complete. Bridging client truth to legal standard."
+    ];
+    let sIdx = 0;
 
-    function nextStep() {
-        if (step < lines.length) {
-            const isLast = (step === lines.length - 1);
-            addEntry(lines[step], isLast);
-            
-            if (isLast) {
-                document.getElementById('add-btn').style.display = 'none';
-                setTimeout(() => {
-                    alert("Syncing to Clio Vault... Integrity verified.");
-                    window.location.href = "https://ca.app.clio.com/nc/#/matters";
-                }, 4000);
+    function addNarrative() {
+        if (sIdx < scripts.length) {
+            const txt = scripts[sIdx];
+            if (txt.toLowerCase().includes("safety protocol") || txt.toLowerCase().includes("hazard")) {
+                hazardCount++;
+                if (hazardCount >= 2) document.getElementById('ai-status').style.display = 'flex';
             }
-            step++;
+            const div = document.createElement('div');
+            div.className = 'entry';
+            div.innerHTML = `<div style="font-size:10px; font-weight:800; color:var(--teal); margin-bottom:6px;">VERIFIED LOG • ${new Date().toLocaleTimeString()}</div>${txt}`;
+            document.getElementById('timeline-hook').appendChild(div);
+            sIdx++;
+            window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
         }
     }
 
-    // Initial Start
-    window.onload = () => {
-        setTimeout(() => { nextStep(); }, 500);
-    };
+    function sealTimeline() {
+        sessionStorage.setItem('locked', 'true');
+        history.pushState({locked: true}, "");
+        const btn = document.querySelector('.btn-seal');
+        btn.innerText = "AUTHENTICATING TRUTH...";
+        btn.style.background = "#0f172a";
+        setTimeout(() => { window.location.href = "https://ca.app.clio.com/nc/#/matters"; }, 2000);
+    }
+
+    window.addEventListener('popstate', () => {
+        if (sessionStorage.getItem('locked') === 'true') {
+            document.body.style.background = "#fef2f2";
+            document.querySelectorAll('.entry').forEach(e => e.classList.add('tampered'));
+            const ai = document.getElementById('ai-status');
+            ai.style.display = 'flex';
+            ai.style.background = '#dc2626'; ai.style.color = 'white';
+            document.getElementById('ai-msg').innerText = "INTEGRITY BREACH: TIMELINE ALTERED POST-SUBMISSION";
+        }
+    });
 </script>
 </body>
 </html>
