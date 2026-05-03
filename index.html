@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeLine™ | Premium Architect</title>
+    <title>WorkTimeLine™ | Official Vault</title>
     <style>
-        /* CORE VARIABLES & MAC-STYLE AESTHETIC */
+        /* CORE PREMIUM VARIABLES */
         :root { 
             --teal: #115e59; 
             --active-blue: #3b82f6;
-            --glass-yellow: rgba(254, 240, 138, 0.9); 
+            --glass-yellow: rgba(254, 240, 138, 0.85); 
             --glass-red: rgba(239, 68, 68, 0.15); 
             --border-yellow: #facc15;
             --border-red: #ef4444;
@@ -34,16 +34,16 @@
         input:checked + .slider { background-color: var(--teal); }
         input:checked + .slider:before { transform: translateX(24px); }
 
-        /* ACTION GRID (Teal Silhouettes) */
+        /* ACTION GRID (Teal Silhouettes) - Native HTML Labels */
         .action-grid { display: flex; justify-content: space-between; gap: 12px; margin: 0 20px 20px; }
-        .action-card { flex: 1; background: var(--bg-gray); border-radius: 20px; padding: 18px 10px; text-align: center; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); cursor: pointer; transition: transform 0.1s; }
+        .action-card { flex: 1; background: var(--bg-gray); border-radius: 20px; padding: 18px 10px; text-align: center; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); cursor: pointer; transition: transform 0.1s; display: block; }
         .action-card:active { transform: scale(0.96); }
         .action-card svg { width: 32px; height: 32px; fill: var(--teal); margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto; }
         .action-card b { font-size: 9px; color: var(--teal); display: block; letter-spacing: 1px; text-transform: uppercase; }
 
         /* BANNERS */
         .banner-wrap { padding: 0 20px; }
-        .banner { margin-bottom: 15px; padding: 15px; border-radius: 12px; font-size: 11px; font-weight: 800; display: none; text-align: center; border: 1px solid; animation: fadeIn 0.4s ease; backdrop-filter: blur(8px); }
+        .banner { margin-bottom: 15px; padding: 15px; border-radius: 12px; font-size: 11px; font-weight: 800; display: none; text-align: center; border: 1px solid; animation: fadeIn 0.4s ease; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
         #ai-banner { background: var(--glass-yellow); border-color: var(--border-yellow); color: #854d0e; }
         #tamper-banner { background: var(--glass-red); border-color: var(--border-red); color: #b91c1c; }
 
@@ -68,19 +68,22 @@
         body.privacy-on .entry { filter: blur(20px); pointer-events: none; }
 
         /* LOCK FOOTER */
-        .footer { position: fixed; bottom: 0; width: 100%; padding: 20px; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-top: 1px solid #e2e8f0; z-index: 1000; }
+        .footer { position: fixed; bottom: 0; width: 100%; padding: 20px; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-top: 1px solid #e2e8f0; z-index: 1000; }
         .btn-lock { width: 100%; background: #0f172a; color: #ffffff; border: none; padding: 20px; border-radius: 15px; font-weight: 900; font-size: 14px; letter-spacing: 1px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 10px 20px rgba(15, 23, 42, 0.15); }
         .btn-lock svg { width: 20px; height: 20px; fill: #ffffff; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-5px); } 80% { transform: translateX(5px); } }
+
+        /* Hide actual inputs completely off-screen for iOS/Android compatibility */
+        .hidden-file-input { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
     </style>
 </head>
 <body>
 
-    <input type="file" id="camInput" accept="image/*" capture="environment" style="display:none">
-    <input type="file" id="micInput" accept="audio/*" capture="user" style="display:none">
-    <input type="file" id="docInput" accept=".pdf,.doc,.docx,.txt" style="display:none">
+    <input type="file" id="camInput" class="hidden-file-input" accept="image/*" capture="environment">
+    <input type="file" id="micInput" class="hidden-file-input" accept="audio/*" capture="user">
+    <input type="file" id="docInput" class="hidden-file-input" accept=".pdf,.doc,.docx,.txt">
 
     <div class="header-section">
         <div class="logo-box">
@@ -108,18 +111,18 @@
     </div>
 
     <div class="action-grid">
-        <div class="action-card" onclick="document.getElementById('camInput').click()">
+        <label class="action-card" for="camInput">
             <svg viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg>
             <b>CAMERA</b>
-        </div>
-        <div class="action-card" onclick="document.getElementById('micInput').click()">
+        </label>
+        <label class="action-card" for="micInput">
             <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
             <b>AUDIO</b>
-        </div>
-        <div class="action-card" onclick="document.getElementById('docInput').click()">
+        </label>
+        <label class="action-card" for="docInput">
             <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6z"/></svg>
             <b>DOCS</b>
-        </div>
+        </label>
     </div>
 
     <div class="input-wrap">
@@ -134,4 +137,118 @@
 
     <div class="footer">
         <button class="btn-lock" onclick="sealVault()">
+            <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6z"/></svg>
+            LOCK & SEND TO CLIO
+        </button>
+    </div>
+
+<script>
+    // --- EXTREMELY SAFE JAVASCRIPT WRAPPER ---
+    var quotes = [
+        "Justice is the constant and perpetual will to allot to every man his due. — Ulpian",
+        "The law is a shield for the truth, and organization is the bridge to justice.",
+        "Structure is the path to freedom; truth is the architect. — WorkTimeLine",
+        "Organization is how we take our power back from chaos. — Brandeis"
+    ];
+
+    var fallbackMemory = {};
+    function safeSet(k, v) { try { window.localStorage.setItem(k, v); } catch(e) { fallbackMemory[k] = v; } }
+    function safeGet(k) { try { return window.localStorage.getItem(k) || fallbackMemory[k] || null; } catch(e) { return fallbackMemory[k] || null; } }
+
+    window.onload = function() {
+        try {
+            var r = Math.floor(Math.random() * quotes.length);
+            document.getElementById('quoteDisplay').innerText = quotes[r];
             
+            if (safeGet('wtl_is_locked') === 'true') {
+                applyTamperState();
+            }
+        } catch(err) { }
+    };
+
+    function togglePrivacy() {
+        if (document.getElementById('pSwitch').checked) {
+            document.body.className = 'privacy-on';
+        } else {
+            document.body.className = '';
+        }
+    }
+
+    function submitLog() {
+        var input = document.getElementById('logInput');
+        var val = input.value;
+        
+        if (!val || val.replace(/^\s+|\s+$/g, '') === '') return;
+
+        if (safeGet('wtl_is_locked') === 'true') {
+            applyTamperState();
+        }
+
+        var low = val.toLowerCase();
+        
+        // --- 1. THE AI BRAIN: STRICT 3-ENTRY LOGIC ---
+        var hasTrigger = (low.indexOf("hazard") > -1 || low.indexOf("mock") > -1);
+        if (hasTrigger) {
+            var currentCount = parseInt(safeGet('wtl_trigger_count') || '0');
+            currentCount++;
+            safeSet('wtl_trigger_count', currentCount);
+
+            if (currentCount >= 3 && safeGet('ai_warned') !== 'true') {
+                alert("AI PATTERN RECOGNIZED: You have submitted 3 separate entries involving physical or behavioral risks ('Hazard' or 'Mocking'). These are flagged in yellow to alert your legal team.");
+                safeSet('ai_warned', 'true');
+                document.getElementById('ai-banner').style.display = 'block';
+            }
+        }
+
+        // --- 2. ARCHITECT THE VISUAL ENTRY ---
+        var div = document.createElement('div');
+        var classes = 'entry active-node'; 
+        
+        if (low.indexOf("hazard") > -1) {
+            classes += ' hazard-highlight'; 
+        }
+        if (safeGet('wtl_is_locked') === 'true') {
+            classes += ' tamper-highlight'; 
+        }
+        div.className = classes;
+
+        // --- 3. FULL DATE AND TIME STAMP ---
+        var now = new Date();
+        var dateOptions = { month: 'short', day: 'numeric', year: 'numeric' };
+        var timeOptions = { hour: '2-digit', minute: '2-digit' };
+        var fullStamp = now.toLocaleDateString([], dateOptions) + " at " + now.toLocaleTimeString([], timeOptions);
+
+        div.innerHTML = "<div style='font-size:10px; font-weight:800; color:#115e59; margin-bottom:8px; letter-spacing:1px; text-transform:uppercase;'>"+ fullStamp +" • VERIFIED RECORD</div><div style='line-height:1.5;'>" + val + "</div>";
+        
+        var anchor = document.getElementById('anchor');
+        anchor.insertBefore(div, anchor.firstChild);
+        
+        input.value = "";
+    }
+
+    function applyTamperState() {
+        document.getElementById('tamper-banner').style.display = 'block';
+        
+        var entries = document.getElementsByClassName('entry');
+        for(var i = 0; i < entries.length; i++) {
+            if (entries[i].className.indexOf('tamper-highlight') === -1) {
+                entries[i].className += ' tamper-highlight';
+            }
+        }
+
+        if (safeGet('tamper_warned') !== 'true') {
+            alert("INTEGRITY BREACH EXPLANATION: This record was previously sealed and synced to Clio. Any further additions are highlighted in RED to protect the evidentiary integrity of your original timeline.");
+            safeSet('tamper_warned', 'true');
+        }
+    }
+
+    function sealVault() {
+        var proceed = confirm("LEGAL ADVISORY: Once synchronized, this timeline is sealed within the Clio Legal Vault. Further edits will trigger the Integrity Breach Alert (Red). Proceed?");
+        if(proceed) {
+            safeSet('wtl_is_locked', 'true');
+            window.location.href = "https://ca.app.clio.com/nc/#/matters";
+        }
+    }
+</script>
+</body>
+</html>
