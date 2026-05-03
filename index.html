@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™ Secured</title>
+    <title>WorkTimeline™ | Secured Evidence</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
         :root {
@@ -16,7 +16,7 @@
         .app-container { width: 100%; max-width: 800px; background: white; border-radius: 12px; min-height: 85vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
         .privacy-blur { filter: blur(15px); pointer-events: none; transition: filter 0.3s ease; }
         .header-container { text-align: center; padding: 30px 10px; border-bottom: 2px solid var(--gray-light); }
-        .quote-box { font-style: italic; color: var(--gray-dark); margin: 15px auto; max-width: 80%; }
+        .quote-box { font-style: italic; color: var(--gray-dark); margin: 15px auto; max-width: 80%; line-height: 1.4; }
         .quote-box span { display: block; font-weight: 900; color: var(--teal); margin-top: 5px; }
         #statusBox { width:100%; height:80px; border-radius: 8px; border:1px solid #ccc; padding: 12px; font-family: inherit; box-sizing: border-box; margin-bottom: 12px; font-size: 16px; resize: none; }
         .media-toolbar { display: flex; gap: 12px; margin-bottom: 15px; }
@@ -24,12 +24,12 @@
         .media-btn svg { width: 28px; height: 28px; fill: white; }
         .media-btn span { font-size: 11px; font-weight: 700; text-transform: uppercase; }
         .submit-main { width: 100%; background: var(--teal); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 900; cursor: pointer; margin-bottom: 10px; }
-        .timeline { border-left: 5px solid var(--timeline-active-color); margin-left: 10px; padding-left: 20px; }
+        .timeline { border-left: 5px solid var(--timeline-active-color); margin-left: 10px; padding-left: 20px; transition: border-color 0.5s ease; }
         .entry { background: white; border-left: 6px solid var(--timeline-active-color); padding: 18px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         .info-bubble { background: #f0f7ff; border-left: 4px solid #007bff; padding: 12px; border-radius: 6px; font-size: 13px; margin-top: 10px; }
         .ai-flagged { background: var(--yellow-ai) !important; border-left-color: var(--yellow-border) !important; }
         .tamper-heavy { background: var(--red-heavy) !important; border-left-color: var(--red-heavy-border) !important; }
-        .lock-footer { background: var(--gray-dark); color: white; border: none; border-radius: 12px; padding: 18px; width: 100%; margin-top: 30px; cursor: pointer; font-weight: 900; }
+        .lock-footer { background: var(--gray-dark); color: white; border: none; border-radius: 12px; padding: 18px; width: 100%; margin-top: 30px; cursor: pointer; font-weight: 900; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -44,12 +44,13 @@
                 <circle cx="48" cy="36" r="4" fill="#F2F4F5" stroke="#3498DB" stroke-width="2"/>
             </svg>
             <h1 style="color: var(--teal); margin: 10px 0 0 0; font-weight: 900;">WORKTIMELINE&trade;</h1>
-            <div class="quote-box">"Justice is truth in action." <span>— Benjamin Disraeli</span></div>
-            <button id="privacyBtn" class="media-btn" style="background: var(--gray-dark); flex-direction: row; height: 40px; max-width: 200px; margin: 0 auto;" onclick="togglePrivacy()">Privacy: OFF</button>
+            <div class="quote-box">"Integrity is doing the right thing, even when no one is watching." <span>— C.S. Lewis</span></div>
+            
+            <button id="privacyBtn" class="media-btn" style="background: var(--gray-dark); flex-direction: row; height: 45px; max-width: 200px; margin: 0 auto;" onclick="togglePrivacy()">Privacy: OFF</button>
         </header>
 
         <div style="padding: 20px;">
-            <div style="background: var(--gray-light); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+            <div style="background: var(--gray-light); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--gray-mid);">
                 <textarea id="statusBox" placeholder="Enter incident details..."></textarea>
                 
                 <input type="file" id="cameraTrigger" accept="image/*" capture="environment" style="display:none">
@@ -58,7 +59,7 @@
 
                 <div class="media-toolbar">
                     <button class="media-btn" onclick="triggerMedia('cameraTrigger')">
-                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
+                        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                         <span>Camera</span>
                     </button>
                     <button class="media-btn" onclick="triggerMedia('micTrigger')">
@@ -70,112 +71,72 @@
                         <span>Doc</span>
                     </button>
                 </div>
-                <button class="submit-main" onclick="submitEntry()">SUBMIT ENTRY</button>
+                <button class="submit-main" onclick="submitEntry()">SUBMIT TO TIMELINE</button>
             </div>
             <div id="timelineContainer"><div id="timeline" class="timeline"></div></div>
             <button id="lockBtn" class="lock-footer" onclick="sealVault()">LOCK & SEND TO CLIO</button>
         </div>
- <script>
-    let hazardCount = 0; 
-    let isLocked = false; 
-    let entryCount = 0; 
-    let isPrivate = false;
-    const colorScale = ['#dcdcdc', '#a6c8c8', '#66b2b2', '#339999', '#008080'];
+    </div>
+    <script>
+        let hazardCount = 0; let isLocked = false; let entryCount = 0; let isPrivate = false;
+        const colorScale = ['#dcdcdc', '#a6c8c8', '#66b2b2', '#339999', '#008080'];
 
-    function togglePrivacy() {
-        isPrivate = !isPrivate;
-        document.getElementById('timelineContainer').classList.toggle('privacy-blur', isPrivate);
-        const btn = document.getElementById('privacyBtn');
-        btn.innerText = isPrivate ? "Privacy: ON" : "Privacy: OFF";
-        btn.style.background = isPrivate ? "var(--teal)" : "var(--gray-dark)";
-    }
-
-    function triggerMedia(id) { 
-        if(isLocked) { 
-            addTamperEntry("Hardware access attempted while locked."); 
-            return; 
-        } 
-        document.getElementById(id).click(); 
-    }
-
-    function submitEntry() {
-        const box = document.getElementById('statusBox'); 
-        const text = box.value.trim();
-        if(!text) return; 
-        if(isLocked) { 
-            addTamperEntry(text); 
-            box.value=""; 
-            return; 
+        function togglePrivacy() {
+            isPrivate = !isPrivate;
+            document.getElementById('timelineContainer').classList.toggle('privacy-blur', isPrivate);
+            const btn = document.getElementById('privacyBtn');
+            btn.innerText = isPrivate ? "Privacy: ON" : "Privacy: OFF";
+            btn.style.background = isPrivate ? "var(--teal)" : "var(--gray-dark)";
         }
-        const matches = text.match(/\bhazard\b/gi); 
-        if(matches) hazardCount += matches.length;
-        
-        entryCount++; 
-        updateTimelineColor(); 
-        addStandardEntry(text, hazardCount >= 3); 
-        box.value = "";
-    }
 
-    function updateTimelineColor() {
-        let idx = Math.min(entryCount, colorScale.length - 1);
-        document.documentElement.style.setProperty('--timeline-active-color', colorScale[idx]);
-    }
-
-    function addStandardEntry(text, isAI) {
-        const div = document.createElement('div'); 
-        div.className = `entry ${isAI ? 'ai-flagged' : ''}`;
-        
-        const now = new Date();
-        const datePart = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-        const timePart = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-        const fullStamp = datePart + " | " + timePart;
-
-        div.innerHTML = `<strong>${fullStamp}</strong> — ${text}`;
-        
-        if(isAI) {
-            div.innerHTML += `<div class="info-bubble"><strong>AI Pattern Recognition:</strong> System detected "Hazard" 3+ times. Integrity audit suggested.</div>`;
+        function triggerMedia(id) { 
+            if(isLocked) { addTamperEntry("Media access attempted."); return; } 
+            document.getElementById(id).click(); 
         }
-        document.getElementById('timeline').prepend(div);
-    }
 
-    function addTamperEntry(text) {
-        const div = document.createElement('div'); 
-        div.className = 'entry tamper-heavy';
-        
-        const now = new Date();
-        const fullStamp = now.toLocaleDateString() + " " + now.toLocaleTimeString();
-
-        div.innerHTML = `
-            <div style="color:red; font-weight:900; font-size:11px; letter-spacing:1px;">⚠️ TAMPER ALERT</div>
-            <strong>Attempted: ${fullStamp}</strong><br>
-            <span style="display:block; margin-top:5px; color:#444;">${text}</span>
-            <div class="info-bubble bubble-danger"><strong>Protocol:</strong> Timeline is sealed. Submission blocked.</div>`;
-        
-        document.getElementById('timeline').prepend(div);
-    }
-
-    // --- UPDATED SEAL VAULT LOGIC ---
-    function sealVault() { 
-        if(isLocked) return; 
-        
-        if(confirm("Confirm: Lock timeline and transmit to Clio? This will finalize the record and transfer you to the secure portal.")) {
-            isLocked = true; 
-            const btn = document.getElementById('lockBtn'); 
-            btn.innerHTML = '🔒 SECURED & TRANSMITTING...'; 
-            btn.style.opacity = "0.5";
-            btn.style.cursor = "wait";
-
-            // Delay the transfer slightly so the user sees the 'Secured' status
-            setTimeout(function() {
-                // This connects to the Clio OAuth/Authorization page
-                window.location.href = "https://ca.app.clio.com/oauth/authorize";
-            }, 1500); 
+        function submitEntry() {
+            const box = document.getElementById('statusBox'); const text = box.value.trim();
+            if(!text) return; if(isLocked) { addTamperEntry(text); box.value=""; return; }
+            const matches = text.match(/\bhazard\b/gi); if(matches) hazardCount += matches.length;
+            entryCount++; updateTimelineColor(); addStandardEntry(text, hazardCount >= 3); box.value = "";
         }
-    }
-</script>
 
+        function updateTimelineColor() {
+            let idx = Math.min(entryCount, colorScale.length - 1);
+            document.documentElement.style.setProperty('--timeline-active-color', colorScale[idx]);
+        }
+
+        function addStandardEntry(text, isAI) {
+            const div = document.createElement('div'); div.className = `entry ${isAI ? 'ai-flagged' : ''}`;
             
-    
+            // FULL DATE AND TIME STAMP
+            const now = new Date();
+            const fullDate = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            const fullTime = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            const stamp = fullDate + " | " + fullTime;
 
+            div.innerHTML = `<strong>${stamp}</strong> — ${text}`;
+            if(isAI) div.innerHTML += `<div class="info-bubble"><strong>AI Pattern Recognition:</strong> Multiple "Hazard" triggers detected.</div>`;
+            document.getElementById('timeline').prepend(div);
+        }
 
-        
+        function addTamperEntry(text) {
+            const div = document.createElement('div'); div.className = 'entry tamper-heavy';
+            const now = new Date();
+            const stamp = now.toLocaleDateString() + " | " + now.toLocaleTimeString();
+            div.innerHTML = `<div style="color:red; font-weight:900;">⚠️ TAMPER ALERT</div><strong>Attempted: ${stamp}</strong><br>${text}<div class="info-bubble"><strong>Locked:</strong> Timeline sealed & sent to Clio.</div>`;
+            document.getElementById('timeline').prepend(div);
+        }
+
+        function sealVault() { 
+            if(isLocked) return; 
+            if(window.confirm("Finalize timeline and transfer to Clio?")) {
+                isLocked = true; 
+                document.getElementById('lockBtn').innerHTML = '🔒 SECURED... REDIRECTING'; 
+                // Redirects directly to the Clio authorization site
+                window.location.replace("https://ca.app.clio.com/oauth/authorize");
+            }
+        }
+    </script>
+</body>
+</html>
