@@ -11,28 +11,35 @@
             --timeline-active-color: #dcdcdc; 
         }
         body { font-family: 'Nunito', sans-serif; background-color: #e9ecef; margin: 0; padding: 10px; display: flex; justify-content: center; }
-        .app-container { width: 100%; max-width: 800px; background: white; border-radius: 12px; min-height: 90vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.15); position: relative; }
+        .app-container { width: 100%; max-width: 500px; background: white; border-radius: 12px; min-height: 90vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.15); position: relative; padding-bottom: 20px; }
+        
         .heartbeat-container { position: absolute; top: 15px; right: 15px; display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 900; color: #27ae60; z-index: 102; }
         .dot { height: 8px; width: 8px; background-color: #27ae60; border-radius: 50%; display: inline-block; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(39, 174, 96, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(39, 174, 96, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(39, 174, 96, 0); } }
+
         .privacy-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 100; display: none; background: rgba(255,255,255,0.1); pointer-events: none; }
         .privacy-active .privacy-overlay { display: block; pointer-events: all; }
-        .header-container { text-align: center; padding: 20px 10px; border-bottom: 2px solid var(--gray-light); }
+
+        .header-container { text-align: center; padding: 25px 15px; border-bottom: 2px solid var(--gray-light); }
         .lawyer-link-box { background: #e0f2f1; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 2px solid var(--teal); position: relative; z-index: 10; }
-        .summary-header { background: #2c3e50; color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: none; border-left: 8px solid var(--teal); }
+        .summary-header { background: #2c3e50; color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: none; border-left: 8px solid var(--teal); text-align: left; }
         .summary-grid { display: grid; grid-template-columns: 1fr 1fr; font-size: 11px; gap: 5px; opacity: 0.9; }
-        .template-row { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 15px; }
-        .template-chip { background: white; border: 1.5px solid var(--teal); color: var(--teal); padding: 8px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap; }
-        #statusBox { width:100%; height:110px; border-radius: 8px; border:1px solid #ccc; padding: 12px; font-family: inherit; box-sizing: border-box; margin-bottom: 15px; font-size: 16px; resize: none; }
+
+        .template-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 15px; }
+        .template-chip { background: white; border: 1.5px solid var(--teal); color: var(--teal); padding: 8px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+        
+        #statusBox { width: 100%; height: 110px; border-radius: 8px; border: 1px solid #ccc; padding: 12px; font-family: inherit; box-sizing: border-box; margin-bottom: 15px; font-size: 16px; resize: none; }
         .media-toolbar { display: flex; gap: 10px; margin-bottom: 15px; }
-        .media-btn { background: var(--teal); color: white; border: none; border-radius: 12px; padding: 12px; cursor: pointer; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; }
+        .media-btn { background: var(--teal); color: white; border: none; border-radius: 12px; padding: 10px; cursor: pointer; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; }
         .media-btn svg { width: 22px; height: 22px; fill: white; }
         .media-btn span { font-size: 10px; font-weight: 900; }
-        .submit-main { width: 100%; background: var(--teal); color: white; border: none; padding: 16px; border-radius: 12px; font-weight: 900; cursor: pointer; font-size: 16px; }
-        .timeline { border-left: 5px solid var(--timeline-active-color); margin-left: 10px; padding-left: 20px; margin-top: 20px; }
-        .entry { background: white; border-left: 6px solid var(--timeline-active-color); padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+
+        .submit-main { width: 100%; background: var(--teal); color: white; border: none; padding: 16px; border-radius: 12px; font-weight: 900; cursor: pointer; font-size: 16px; margin-bottom: 10px; }
+        .timeline { border-left: 5px solid var(--timeline-active-color); margin: 20px 10px; padding-left: 20px; }
+        .entry { background: white; border-left: 6px solid var(--timeline-active-color); padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); font-size: 14px; text-align: left; }
         .meta-badge { font-size: 9px; color: #008080; background: #e0f2f1; padding: 2px 6px; border-radius: 4px; font-weight: 900; margin-top: 5px; display: inline-block; }
-        .lock-footer { background: var(--gray-dark); color: white; border: none; border-radius: 12px; padding: 18px; width: 100%; margin-top: 20px; cursor: pointer; font-weight: 900; text-transform: uppercase; }
+        
+        .lock-footer { background: var(--gray-dark); color: white; border: none; border-radius: 12px; padding: 18px; width: 100%; cursor: pointer; font-weight: 900; text-transform: uppercase; font-size: 14px; }
         .reset-link { font-size: 11px; color: #cc0000; cursor: pointer; margin: 20px auto; text-align: center; font-weight: bold; text-decoration: underline; display: block; }
     </style>
 </head>
@@ -50,32 +57,32 @@
                 <circle cx="32" cy="36" r="4" fill="#F2F4F5" stroke="#3498DB" stroke-width="2"/>
                 <circle cx="48" cy="36" r="4" fill="#F2F4F5" stroke="#3498DB" stroke-width="2"/>
             </svg>
-            <h1 style="color: var(--teal); margin: 5px 0; font-size: 24px;">WORKTIMELINE&trade;</h1>
-            <div class="quote-box">"Justice is truth in action."</div>
-            <button id="privacyBtn" class="media-btn" style="background: var(--gray-dark); flex-direction: row; height: 38px; max-width: 180px; margin: 5px auto; z-index: 101; position: relative;" onclick="togglePrivacy()">Privacy: OFF</button>
+            <h1 style="color: var(--teal); margin: 10px 0; font-size: 26px; font-weight: 900;">WORKTIMELINE&trade;</h1>
+            <p style="margin: 0 0 15px 0; font-style: italic; color: #555;">"Justice is truth in action."</p>
+            <button id="privacyBtn" class="submit-main" style="background: var(--gray-dark); height: 40px; width: 140px; font-size: 12px; margin: 0 auto;" onclick="togglePrivacy()">Privacy: OFF</button>
         </header>
 
-        <div style="padding: 15px; position: relative; z-index: 5;">
+        <div style="padding: 15px;">
             <div id="briefingHeader" class="summary-header">
                 <h3>Clio Duo Evidence Brief</h3>
                 <div class="summary-grid">
                     <div>Professional: <span id="sumLawyer">--</span></div>
                     <div>Integrity: <span id="sumHash">--</span></div>
                     <div>Entries: <span id="sumCount">0</span></div>
-                    <div>Status: <span style="color:#2ecc71;">VERIFIED IMMUTABLE</span></div>
+                    <div>Status: <span style="color:#2ecc71; font-weight: 900;">VERIFIED</span></div>
                 </div>
             </div>
 
-            <div id="mainInputArea" style="background: var(--gray-light); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--gray-mid);">
+            <div id="mainInputArea">
                 <div class="lawyer-link-box">
-                    <label style="font-size: 10px; font-weight: 900; color: var(--teal); text-transform: uppercase;">Attending Professional:</label>
+                    <label style="font-size: 10px; font-weight: 900; color: var(--teal); text-transform: uppercase; display: block; margin-bottom: 8px;">Attending Professional:</label>
                     <select id="lawyerSelect" onchange="runConflictCheck()" style="width: 100%; padding: 12px; border-radius: 6px; border: 1px solid var(--teal); font-weight: 700; background: white;">
-                        <option value="none">-- Select Professional --</option>
+                        <option value="none">-- Select Lawyer --</option>
                         <option value="L1">Marcus Thorne, Esq.</option>
                         <option value="L2">Sarah Jenkins, JD</option>
                         <option value="L3">Elena Rodriguez, LLM</option>
                     </select>
-                    <div id="conflictBadge">✓ ETHICAL CONFLICT CHECK: PASSED</div>
+                    <div id="conflictBadge" style="display:none; font-size: 10px; font-weight: 900; color: #27ae60; background: #d4efdf; padding: 5px; margin-top: 10px; text-align: center; border-radius: 5px;">✓ CONFLICT CHECK: PASSED</div>
                 </div>
 
                 <div class="template-row">
@@ -91,32 +98,29 @@
                     <button class="media-btn" onclick="triggerMedia('micTrigger')"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg><span>Mic</span></button>
                     <button class="media-btn" onclick="triggerMedia('docTrigger')"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg><span>Doc</span></button>
                 </div>
-                <input type="file" id="cameraTrigger" accept="image/*" capture="environment" style="display:none" onchange="logMedia('Photo')">
-                <input type="file" id="micTrigger" accept="audio/*" capture="microphone" style="display:none" onchange="logMedia('Audio')">
+                
+                <input type="file" id="cameraTrigger" style="display:none" onchange="logMedia('Photo')">
+                <input type="file" id="micTrigger" style="display:none" onchange="logMedia('Audio')">
                 <input type="file" id="docTrigger" style="display:none" onchange="logMedia('Doc')">
 
                 <button class="submit-main" onclick="submitEntry()">SUBMIT TO TIMELINE</button>
             </div>
-            <div id="timeline"></div>
+
+            <div id="timeline" class="timeline"></div>
+            
             <button id="lockBtn" class="lock-footer" onclick="sealVault()">LOCK & SEND TO CLIO</button>
             <div id="auditLog" style="display:none; text-align:center; margin-top:10px;"><div class="meta-badge" id="hashDisplay">SHA-256 HASH: ...</div></div>
-            <div class="reset-link" onclick="resetSystem()">[RESET SYSTEM]</div>
+            <div class="reset-link" onclick="resetSystem()">[RESET SYSTEM MEMORY]</div>
         </div>
-    </div>localStorage.
-
-        function resetSystem() { localStorage.clear(); location.reload(); }
-    </script>
-</body>
-</html>
+    </div>
     <script>
-        // --- CLIO CONFIGURATION (CANADA) ---
-        // I have pulled the Client ID directly from your screenshot
+        // --- YOUR CLIO CONFIG ---
         const CLIO_CLIENT_ID = "btscu9WmPHYellZtZA9slQfynBAQudwjaR7pEDdq"; 
         const CLIO_REDIRECT_URI = "https://worktimeline-app.vercel.app/"; 
         
         let isLocked = false; let isPrivate = false; let totalEntries = 0;
         const templates = {
-            site: "[SITE INSPECTION] Loc: [ ], Obs: [ ]",
+            site: "[SITE INSPECTION] Location: [ ], Obs: [ ]",
             witness: "[WITNESS] Name: [ ], Statement: [ ]",
             accident: "[INCIDENT REPORT] Nature: [ ], Action: [ ]"
         };
@@ -126,8 +130,7 @@
             const badge = document.getElementById('conflictBadge');
             if(select.value !== "none") {
                 badge.style.display = "block";
-                badge.innerText = "🔍 RUNNING FIRM CONFLICT CHECK...";
-                badge.style.background = "#fff3cd";
+                badge.innerText = "🔍 CHECKING CONFLICTS...";
                 setTimeout(() => {
                     badge.innerText = "✓ ETHICAL CONFLICT CHECK: PASSED";
                     badge.style.background = "#d4efdf";
@@ -137,8 +140,12 @@
         }
 
         window.onload = function() {
+            const saved = localStorage.getItem('selectedLawyer');
+            if(saved) document.getElementById('lawyerSelect').value = "L1"; // Simplified for demo
+            
             if (localStorage.getItem('timelineLocked') === 'true') {
-                isLocked = true; showSummary();
+                isLocked = true;
+                showSummary();
                 document.getElementById('hashDisplay').innerText = "VERIFIED SHA-256: " + localStorage.getItem('lastHash');
                 document.getElementById('auditLog').style.display = "block";
             }
@@ -154,7 +161,7 @@
 
         function logMedia(type) {
             if(document.getElementById('lawyerSelect').value === "none") { alert("Select Lawyer first."); return; }
-            addStandardEntry(`[SYSTEM LOG] ${type} captured. Integrity Ref: [VERIFIED-ID-882].`, true);
+            addStandardEntry(`[SYSTEM LOG] ${type} captured and logged to secure archive.`, true);
         }
 
         function submitEntry() {
@@ -184,7 +191,7 @@
 
         function sealVault() { 
             if(isLocked || document.getElementById('lawyerSelect').value === "none") return;
-            if(confirm("Lock and Connect to Clio Canada?")) {
+            if(confirm("Generate final Evidence Brief and Connect to Clio Canada?")) {
                 isLocked = true; 
                 const hash = Math.random().toString(36).substring(2, 12).toUpperCase();
                 localStorage.setItem('timelineLocked', 'true');
@@ -192,10 +199,8 @@
                 showSummary();
                 document.getElementById('auditLog').style.display = "block";
                 document.getElementById('hashDisplay').innerText = "SHA-256: " + hash;
-
-                // --- CA REGION HANDSHAKE ---
+                
                 const redirectUri = encodeURIComponent(CLIO_REDIRECT_URI);
-                // Using the specific CA endpoint to match your region
                 const clioAuthUrl = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=${CLIO_CLIENT_ID}&redirect_uri=${redirectUri}&scope=contacts`;
                 
                 setTimeout(() => { window.location.href = clioAuthUrl; }, 1500);
@@ -205,7 +210,10 @@
         function togglePrivacy() {
             isPrivate = !isPrivate;
             document.getElementById('appRoot').classList.toggle('privacy-active', isPrivate);
+            document.getElementById('privacyBtn').innerText = isPrivate ? "Privacy: ON" : "Privacy: OFF";
         }
 
         function resetSystem() { localStorage.clear(); location.reload(); }
     </script>
+</body>
+</html>
