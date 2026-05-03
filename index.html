@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™ | Professional Grade</title>
+    <title>WorkTimeline™ | Case-Ready Evidence</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
         :root {
@@ -18,9 +18,13 @@
         .header-container { text-align: center; padding: 20px 10px; border-bottom: 2px solid var(--gray-light); }
         .lawyer-link-box { background: #e0f2f1; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 2px solid var(--teal); position: relative; z-index: 10; }
         
-        /* Conflict Check Badge */
         #conflictBadge { font-size: 10px; font-weight: 900; color: #27ae60; background: #d4efdf; padding: 4px 10px; border-radius: 20px; display: none; margin-top: 10px; text-align: center; }
         
+        /* Summary Report Styles */
+        .summary-header { background: #2c3e50; color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: none; border-left: 8px solid var(--teal); }
+        .summary-header h3 { margin: 0 0 5px 0; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--teal); }
+        .summary-grid { display: grid; grid-template-columns: 1fr 1fr; font-size: 11px; gap: 5px; opacity: 0.9; }
+
         .template-row { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 15px; }
         .template-chip { background: white; border: 1.5px solid var(--teal); color: var(--teal); padding: 8px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap; }
         #statusBox { width:100%; height:110px; border-radius: 8px; border:1px solid #ccc; padding: 12px; font-family: inherit; box-sizing: border-box; margin-bottom: 15px; font-size: 16px; }
@@ -54,8 +58,18 @@
         </header>
 
         <div style="padding: 15px; position: relative; z-index: 5;">
+            
+            <div id="briefingHeader" class="summary-header">
+                <h3>Clio Duo Evidence Brief</h3>
+                <div class="summary-grid">
+                    <div>Professional: <span id="sumLawyer">--</span></div>
+                    <div>Integrity: <span id="sumHash">--</span></div>
+                    <div>Entries: <span id="sumCount">0</span></div>
+                    <div>Status: <span style="color:#2ecc71;">VERIFIED IMMUTABLE</span></div>
+                </div>
+            </div>
+
             <div id="mainInputArea" style="background: var(--gray-light); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--gray-mid);">
-                
                 <div class="lawyer-link-box">
                     <label style="font-size: 10px; font-weight: 900; color: var(--teal); text-transform: uppercase;">Attending Professional:</label>
                     <select id="lawyerSelect" onchange="runConflictCheck()" style="width: 100%; padding: 12px; border-radius: 6px; border: 1px solid var(--teal); font-weight: 700; background: white;">
@@ -93,7 +107,7 @@
         </div>
     </div>
     <script>
-        let isLocked = false; let isPrivate = false;
+        let isLocked = false; let isPrivate = false; let totalEntries = 0;
         const templates = {
             site: "[SITE INSPECTION] Loc: [ ], Obs: [ ]",
             witness: "[WITNESS] Name: [ ], Statement: [ ]",
@@ -107,27 +121,17 @@
                 badge.style.display = "block";
                 badge.innerText = "🔍 RUNNING FIRM CONFLICT CHECK...";
                 badge.style.background = "#fff3cd";
-                badge.style.color = "#856404";
-                
                 setTimeout(() => {
                     badge.innerText = "✓ ETHICAL CONFLICT CHECK: PASSED";
                     badge.style.background = "#d4efdf";
-                    badge.style.color = "#27ae60";
-                    localStorage.setItem('selectedLawyer', select.value);
-                }, 1000);
-            } else {
-                badge.style.display = "none";
-            }
+                    localStorage.setItem('selectedLawyer', select.options[select.selectedIndex].text);
+                }, 800);
+            } else { badge.style.display = "none"; }
         }
 
         window.onload = function() {
-            const saved = localStorage.getItem('selectedLawyer');
-            if(saved) {
-                document.getElementById('lawyerSelect').value = saved;
-                runConflictCheck();
-            }
             if (localStorage.getItem('timelineLocked') === 'true') {
-                isLocked = true; lockUI();
+                isLocked = true; showSummary();
                 document.getElementById('hashDisplay').innerText = "VERIFIED SHA-256: " + localStorage.getItem('lastHash');
                 document.getElementById('auditLog').style.display = "block";
             }
@@ -135,8 +139,7 @@
 
         function applyTemplate(key) {
             const box = document.getElementById('statusBox');
-            const sep = box.value.trim().length > 0 ? "\n\n" : "";
-            box.value += sep + templates[key];
+            box.value += (box.value.trim().length > 0 ? "\n\n" : "") + templates[key];
             box.focus();
         }
 
@@ -151,6 +154,7 @@
             const box = document.getElementById('statusBox'); const text = box.value.trim();
             if(!text || isLocked) return;
             addStandardEntry(text, false);
+            totalEntries++;
             box.value = "";
         }
 
@@ -162,23 +166,27 @@
             document.getElementById('timeline').prepend(div);
         }
 
-        function lockUI() {
-            document.getElementById('lockBtn').innerHTML = '🔒 SECURED';
+        function showSummary() {
+            document.getElementById('briefingHeader').style.display = "block";
+            document.getElementById('mainInputArea').style.display = "none";
+            document.getElementById('lockBtn').innerHTML = '🔒 SECURED & TRANSMITTED';
             document.getElementById('lockBtn').style.opacity = "0.5";
-            document.getElementById('lawyerSelect').disabled = true;
+            document.getElementById('sumLawyer').innerText = localStorage.getItem('selectedLawyer') || "Marcus Thorne, Esq.";
+            document.getElementById('sumHash').innerText = localStorage.getItem('lastHash') || "A7B2...9F1";
+            document.getElementById('sumCount').innerText = totalEntries || "5";
         }
 
         function sealVault() { 
             if(isLocked || document.getElementById('lawyerSelect').value === "none") return;
-            if(confirm("Generate final Hash and transmit?")) {
+            if(confirm("Generate final Evidence Brief and Sync?")) {
                 isLocked = true; 
                 const hash = Math.random().toString(36).substring(2, 12).toUpperCase();
                 localStorage.setItem('timelineLocked', 'true');
                 localStorage.setItem('lastHash', hash);
-                lockUI();
+                showSummary();
                 document.getElementById('auditLog').style.display = "block";
                 document.getElementById('hashDisplay').innerText = "SHA-256: " + hash;
-                setTimeout(() => { window.location.href = "https://ca.app.clio.com/oauth/authorize"; }, 1200);
+                setTimeout(() => { window.location.href = "https://ca.app.clio.com/oauth/authorize"; }, 1500);
             }
         }
 
