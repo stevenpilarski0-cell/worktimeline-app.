@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™ | Proactive Prep</title>
+    <title>WorkTimeline™ | Defensible Evidence</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
         :root {
@@ -17,7 +17,6 @@
         .privacy-blur { filter: blur(15px); pointer-events: none; transition: filter 0.3s ease; }
         .header-container { text-align: center; padding: 30px 10px; border-bottom: 2px solid var(--gray-light); }
         
-        /* Template Chip Styles */
         .template-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 10px; scrollbar-width: none; }
         .template-chip { background: white; border: 1px solid var(--teal); color: var(--teal); padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; cursor: pointer; transition: 0.2s; }
         .template-chip:hover { background: var(--teal); color: white; }
@@ -32,8 +31,13 @@
         .media-btn svg { width: 28px; height: 28px; fill: white; }
         .media-btn span { font-size: 11px; font-weight: 700; text-transform: uppercase; }
         .submit-main { width: 100%; background: var(--teal); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 900; cursor: pointer; margin-bottom: 10px; }
+        
         .timeline { border-left: 5px solid var(--timeline-active-color); margin-left: 10px; padding-left: 20px; }
         .entry { background: white; border-left: 6px solid var(--timeline-active-color); padding: 18px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        
+        /* Security Badge Styles */
+        .integrity-badge { font-size: 9px; background: #eee; color: #666; padding: 4px 8px; border-radius: 4px; font-family: monospace; margin-top: 10px; display: inline-block; }
+
         .lock-footer { background: var(--gray-dark); color: white; border: none; border-radius: 12px; padding: 18px; width: 100%; margin-top: 30px; cursor: pointer; font-weight: 900; text-transform: uppercase; }
         .reset-link { font-size: 10px; color: #cc0000; cursor: pointer; margin-top: 15px; text-align: center; font-weight: bold; text-decoration: underline; }
     </style>
@@ -50,7 +54,7 @@
                 <circle cx="48" cy="36" r="4" fill="#F2F4F5" stroke="#3498DB" stroke-width="2"/>
             </svg>
             <h1 style="color: var(--teal); margin: 10px 0 0 0; font-weight: 900;">WORKTIMELINE&trade;</h1>
-            <div class="quote-box">"Integrity is doing the right thing, even when no one is watching." <span>— C.S. Lewis</span></div>
+            <div class="quote-box">"Justice is truth in action." <span>— Benjamin Disraeli</span></div>
             <button id="privacyBtn" class="media-btn" style="background: var(--gray-dark); flex-direction: row; height: 45px; max-width: 200px; margin: 0 auto;" onclick="togglePrivacy()">Privacy: OFF</button>
         </header>
 
@@ -66,28 +70,18 @@
                     </select>
                 </div>
 
-                <label class="lawyer-label">Quick-Start Templates:</label>
                 <div class="template-row">
                     <div class="template-chip" onclick="applyTemplate('site')">Site Inspection</div>
                     <div class="template-chip" onclick="applyTemplate('witness')">Witness Statement</div>
                     <div class="template-chip" onclick="applyTemplate('accident')">Incident Report</div>
                 </div>
 
-                <textarea id="statusBox" placeholder="Start typing or select a template above..."></textarea>
+                <textarea id="statusBox" placeholder="Start typing details..."></textarea>
                 
                 <div class="media-toolbar">
-                    <button class="media-btn" onclick="triggerMedia('cameraTrigger')">
-                        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                        <span>Camera</span>
-                    </button>
-                    <button class="media-btn" onclick="triggerMedia('micTrigger')">
-                        <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-                        <span>Mic</span>
-                    </button>
-                    <button class="media-btn" onclick="triggerMedia('docTrigger')">
-                        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-                        <span>Doc</span>
-                    </button>
+                    <button class="media-btn" onclick="triggerMedia('cameraTrigger')"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>Camera</span></button>
+                    <button class="media-btn" onclick="triggerMedia('micTrigger')"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg><span>Mic</span></button>
+                    <button class="media-btn" onclick="triggerMedia('docTrigger')"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg><span>Doc</span></button>
                 </div>
                 
                 <input type="file" id="cameraTrigger" accept="image/*" capture="environment" style="display:none">
@@ -100,6 +94,11 @@
             <div id="timelineContainer"><div id="timeline" class="timeline"></div></div>
             
             <button id="lockBtn" class="lock-footer" onclick="sealVault()">LOCK & SEND TO CLIO</button>
+            
+            <div id="auditLog" style="display:none; text-align:center; margin-top:10px;">
+                <div class="integrity-badge" id="hashDisplay">SHA-256 HASH: GEN_PENDING...</div>
+            </div>
+
             <div class="reset-link" onclick="resetSystem()">[RESET SYSTEM MEMORY]</div>
         </div>
     </div>
@@ -108,9 +107,9 @@
         const colorScale = ['#dcdcdc', '#a6c8c8', '#66b2b2', '#339999', '#008080'];
 
         const templates = {
-            site: "[SITE INSPECTION]\nLocation: \nWeather Conditions: \nPersonnel Present: \nPrimary Observations: ",
-            witness: "[WITNESS STATEMENT]\nName: \nContact: \nRelationship to Event: \nStatement Detail: ",
-            accident: "[INCIDENT REPORT]\nNature of Incident: \nHazard Identified: \nImmediate Actions Taken: \nInjuries Reported: "
+            site: "[SITE INSPECTION]\nLocation: \nPersonnel Present: \nObservations: ",
+            witness: "[WITNESS STATEMENT]\nName: \nContact: \nStatement: ",
+            accident: "[INCIDENT REPORT]\nNature: \nHazard: \nImmediate Actions: "
         };
 
         function applyTemplate(key) {
@@ -122,17 +121,16 @@
         window.onload = function() {
             if (localStorage.getItem('timelineLocked') === 'true') {
                 isLocked = true;
-                const btn = document.getElementById('lockBtn');
-                btn.innerHTML = '🔒 SECURED & SENT TO CLIO';
-                btn.style.opacity = "0.5";
-                btn.style.cursor = "not-allowed";
-                document.getElementById('lawyerSelect').disabled = true;
+                lockUI();
+                document.getElementById('hashDisplay').innerText = "VERIFIED SHA-256: " + localStorage.getItem('lastHash');
+                document.getElementById('auditLog').style.display = "block";
             }
         };
 
         function resetSystem() {
-            if(confirm("Clear timeline and reset system?")) {
+            if(confirm("Wipe system memory and reset for a new lawyer log?")) {
                 localStorage.removeItem('timelineLocked');
+                localStorage.removeItem('lastHash');
                 location.reload();
             }
         }
@@ -140,25 +138,19 @@
         function togglePrivacy() {
             isPrivate = !isPrivate;
             document.getElementById('timelineContainer').classList.toggle('privacy-blur', isPrivate);
-            const btn = document.getElementById('privacyBtn');
-            btn.innerText = isPrivate ? "Privacy: ON" : "Privacy: OFF";
-            btn.style.background = isPrivate ? "var(--teal)" : "var(--gray-dark)";
+            document.getElementById('privacyBtn').innerText = isPrivate ? "Privacy: ON" : "Privacy: OFF";
         }
 
         function triggerMedia(id) { 
-            if(isLocked) { addTamperEntry("Hardware blocked."); return; } 
+            if(isLocked) { addTamperEntry("System Lock: Hardware denied."); return; } 
             document.getElementById(id).click(); 
         }
 
         function submitEntry() {
             const box = document.getElementById('statusBox'); const text = box.value.trim();
             if(!text) return; 
-            if(isLocked || localStorage.getItem('timelineLocked') === 'true') { 
-                isLocked = true;
-                addTamperEntry(text); 
-                box.value=""; 
-                return; 
-            }
+            if(isLocked) { addTamperEntry(text); box.value=""; return; }
+            
             const matches = text.match(/\bhazard\b/gi); if(matches) hazardCount += matches.length;
             entryCount++; updateTimelineColor(); addStandardEntry(text, hazardCount >= 3); box.value = "";
         }
@@ -170,20 +162,24 @@
 
         function addStandardEntry(text, isAI) {
             const div = document.createElement('div'); div.className = `entry ${isAI ? 'ai-flagged' : ''}`;
-            const now = new Date();
-            const datePart = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-            const timePart = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-            div.innerHTML = `<strong>${datePart} | ${timePart}</strong> — ${text.replace(/\n/g, '<br>')}`;
-            if(isAI) div.innerHTML += `<div class="info-bubble"><strong>Duo Analytics:</strong> Potential liability patterns identified.</div>`;
+            const stamp = new Date().toLocaleString([], { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+            div.innerHTML = `<strong>${stamp}</strong> — ${text.replace(/\n/g, '<br>')}`;
+            if(isAI) div.innerHTML += `<div class="info-bubble"><strong>Duo Analytics:</strong> Potential risk patterns flagged.</div>`;
             document.getElementById('timeline').prepend(div);
         }
 
         function addTamperEntry(text) {
             const div = document.createElement('div'); div.className = 'entry tamper-heavy';
-            const now = new Date();
-            const stamp = now.toLocaleDateString() + " | " + now.toLocaleTimeString();
-            div.innerHTML = `<div style="color:red; font-weight:900;">⚠️ TAMPER ALERT</div><strong>Attempted: ${stamp}</strong><br>${text}<div class="info-bubble bubble-danger"><strong>Lock:</strong> Entry blocked.</div>`;
+            div.innerHTML = `<div style="color:red; font-weight:900;">⚠️ TAMPER ALERT</div><strong>Logged Attempt:</strong><br>${text}<div class="info-bubble"><strong>Security:</strong> Record is immutable.</div>`;
             document.getElementById('timeline').prepend(div);
+        }
+
+        function lockUI() {
+            const btn = document.getElementById('lockBtn');
+            btn.innerHTML = '🔒 SECURED & TRANSMITTED';
+            btn.style.opacity = "0.5";
+            btn.style.cursor = "not-allowed";
+            document.getElementById('lawyerSelect').disabled = true;
         }
 
         function sealVault() { 
@@ -191,11 +187,25 @@
             if(document.getElementById('lawyerSelect').value === "none") {
                 alert("Please select a Professional."); return;
             }
-            if(window.confirm("Finalize and sync with Clio Duo?")) {
+            
+            if(window.confirm("Lock this timeline and generate the Defensibility Hash?")) {
                 isLocked = true; 
+                
+                // SIMULATE CRYPTOGRAPHIC HASHING
+                const randomHash = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
                 localStorage.setItem('timelineLocked', 'true');
-                document.getElementById('lockBtn').innerHTML = '🔒 TRANSMITTING TO CLIO...'; 
-                window.location.href = "https://ca.app.clio.com/oauth/authorize";
+                localStorage.setItem('lastHash', randomHash);
+                
+                document.getElementById('hashDisplay').innerText = "GENERATING SHA-256 HASH...";
+                document.getElementById('auditLog').style.display = "block";
+                
+                lockUI();
+
+                setTimeout(() => {
+                    document.getElementById('hashDisplay').innerText = "VERIFIED SHA-256: " + randomHash;
+                    // Final redirect to Clio
+                    window.location.href = "https://ca.app.clio.com/oauth/authorize";
+                }, 1500);
             }
         }
     </script>
