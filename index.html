@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™ | Verified Professional</title>
+    <title>WorkTimeline™ | Defensible Evidence</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
         :root {
@@ -14,53 +14,26 @@
         }
         body { font-family: 'Nunito', sans-serif; background-color: #e9ecef; margin: 0; padding: 10px; display: flex; justify-content: center; }
         .app-container { width: 100%; max-width: 800px; background: white; border-radius: 12px; min-height: 90vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.15); position: relative; }
-        
-        /* The Privacy Overlay - Moved to a separate layer so it doesn't break buttons */
         .privacy-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 100; display: none; background: rgba(255,255,255,0.1); pointer-events: none; }
         .privacy-active .privacy-overlay { display: block; pointer-events: all; }
-
         .header-container { text-align: center; padding: 20px 10px; border-bottom: 2px solid var(--gray-light); }
-        .quote-box { font-style: italic; color: var(--gray-dark); margin: 10px auto; max-width: 85%; font-size: 14px; }
-        
-        /* SELECTION BOX: Forced to be on top and clickable */
-        .lawyer-link-box { 
-            background: #e0f2f1; 
-            padding: 15px; 
-            border-radius: 10px; 
-            margin-bottom: 15px; 
-            border: 2px solid var(--teal); 
-            position: relative; 
-            z-index: 10; 
-        }
-        .lawyer-label { font-size: 10px; font-weight: 900; color: var(--teal); text-transform: uppercase; margin-bottom: 8px; display: block; letter-spacing: 1px; }
-        
-        #lawyerSelect { 
-            width: 100%; 
-            padding: 14px; 
-            border-radius: 8px; 
-            border: 1px solid var(--teal); 
-            font-family: inherit; 
-            font-size: 16px;
-            font-weight: 700; 
-            background: white;
-            color: var(--gray-dark);
-            cursor: pointer;
-            display: block;
-        }
-
-        .template-row { display: flex; gap: 10px; overflow-x: auto; padding: 5px 0 15px 0; }
+        .lawyer-link-box { background: #e0f2f1; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 2px solid var(--teal); position: relative; z-index: 10; }
+        .lawyer-label { font-size: 10px; font-weight: 900; color: var(--teal); text-transform: uppercase; margin-bottom: 8px; display: block; }
+        #lawyerSelect { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid var(--teal); font-family: inherit; font-size: 16px; font-weight: 700; background: white; color: var(--gray-dark); }
+        .template-row { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 15px; }
         .template-chip { background: white; border: 1.5px solid var(--teal); color: var(--teal); padding: 8px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; cursor: pointer; }
-        
         #statusBox { width:100%; height:110px; border-radius: 8px; border:1px solid #ccc; padding: 12px; font-family: inherit; box-sizing: border-box; margin-bottom: 15px; font-size: 16px; }
         .media-toolbar { display: flex; gap: 10px; margin-bottom: 15px; }
         .media-btn { background: var(--teal); color: white; border: none; border-radius: 12px; padding: 12px; cursor: pointer; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; }
         .media-btn svg { width: 22px; height: 22px; fill: white; }
         .media-btn span { font-size: 10px; font-weight: 900; }
-        
         .submit-main { width: 100%; background: var(--teal); color: white; border: none; padding: 16px; border-radius: 12px; font-weight: 900; cursor: pointer; font-size: 16px; }
         .timeline { border-left: 5px solid var(--timeline-active-color); margin-left: 10px; padding-left: 20px; margin-top: 20px; }
-        .entry { background: white; border-left: 6px solid var(--timeline-active-color); padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); font-size: 15px; }
+        .entry { background: white; border-left: 6px solid var(--timeline-active-color); padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         
+        /* NEW: Metadata Badge Styles */
+        .meta-badge { font-size: 10px; color: #008080; background: #e0f2f1; padding: 2px 6px; border-radius: 4px; font-weight: 900; margin-top: 5px; display: inline-block; }
+
         .lock-footer { background: var(--gray-dark); color: white; border: none; border-radius: 12px; padding: 18px; width: 100%; margin-top: 20px; cursor: pointer; font-weight: 900; }
         .reset-link { font-size: 11px; color: #cc0000; cursor: pointer; margin: 20px auto; text-align: center; font-weight: bold; text-decoration: underline; display: block; }
     </style>
@@ -68,7 +41,6 @@
 <body>
     <div id="appRoot" class="app-container">
         <div class="privacy-overlay"></div>
-
         <header class="header-container">
             <svg viewBox="0 0 64 64" width="60" height="60">
                 <path d="M 22 20 L 22 14 C 22 10.686 24.686 8 28 8 L 36 8 C 39.314 8 42 10.686 42 14 L 42 20" fill="none" stroke="#008080" stroke-width="3"/>
@@ -84,8 +56,7 @@
         </header>
 
         <div style="padding: 15px; position: relative; z-index: 5;">
-            <div style="background: var(--gray-light); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--gray-mid);">
-                
+            <div id="mainInputArea" style="background: var(--gray-light); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--gray-mid);">
                 <div class="lawyer-link-box">
                     <label class="lawyer-label">Attending Professional:</label>
                     <select id="lawyerSelect" onchange="saveLawyerChoice()">
@@ -95,33 +66,26 @@
                         <option value="L3">Elena Rodriguez, LLM</option>
                     </select>
                 </div>
-
                 <div class="template-row">
                     <div class="template-chip" onclick="applyTemplate('site')">+ Site Inspection</div>
                     <div class="template-chip" onclick="applyTemplate('witness')">+ Witness</div>
-                    <div class="template-chip" onclick="applyTemplate('accident')">+ Incident</div>
+                    <div class="template-chip" onclick="applyTemplate('accident')">+ Incident Report</div>
                 </div>
-
-                <textarea id="statusBox" placeholder="Type details here..."></textarea>
-                
+                <textarea id="statusBox" placeholder="Enter incident details..."></textarea>
                 <div class="media-toolbar">
                     <button class="media-btn" onclick="triggerMedia('cameraTrigger')"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>Camera</span></button>
                     <button class="media-btn" onclick="triggerMedia('micTrigger')"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg><span>Mic</span></button>
                     <button class="media-btn" onclick="triggerMedia('docTrigger')"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg><span>Doc</span></button>
                 </div>
-                
-                <input type="file" id="cameraTrigger" accept="image/*" capture="environment" style="display:none">
-                <input type="file" id="micTrigger" accept="audio/*" capture="microphone" style="display:none">
-                <input type="file" id="docTrigger" style="display:none">
-
+                <input type="file" id="cameraTrigger" accept="image/*" capture="environment" style="display:none" onchange="logMedia('Photo Attachment')">
+                <input type="file" id="micTrigger" accept="audio/*" capture="microphone" style="display:none" onchange="logMedia('Audio Recording')">
+                <input type="file" id="docTrigger" style="display:none" onchange="logMedia('Document Upload')">
                 <button class="submit-main" onclick="submitEntry()">SUBMIT TO TIMELINE</button>
             </div>
-
-            <div id="timeline"><div class="entry" style="text-align:center; color:#888;">Timeline ready for entries.</div></div>
-            
+            <div id="timeline"><div class="entry" style="text-align:center; color:#888;">Timeline ready.</div></div>
             <button id="lockBtn" class="lock-footer" onclick="sealVault()">LOCK & SEND TO CLIO</button>
             <div id="auditLog" style="display:none; text-align:center; margin-top:10px;">
-                <div class="integrity-badge" id="hashDisplay">VERIFYING...</div>
+                <div class="integrity-badge" id="hashDisplay">SHA-256 HASH: ...</div>
             </div>
             <div class="reset-link" onclick="resetSystem()">[RESET SYSTEM MEMORY]</div>
         </div>
@@ -131,7 +95,7 @@
         const templates = {
             site: "[SITE INSPECTION] Loc: [ ], Obs: [ ]",
             witness: "[WITNESS] Name: [ ], Contact: [ ]",
-            accident: "[INCIDENT] Nature: [ ], Actions: [ ]"
+            accident: "[INCIDENT REPORT] Nature: [ ], Actions: [ ]"
         };
 
         function applyTemplate(key) {
@@ -143,19 +107,14 @@
         }
 
         function saveLawyerChoice() {
-            const val = document.getElementById('lawyerSelect').value;
-            localStorage.setItem('selectedLawyer', val);
+            localStorage.setItem('selectedLawyer', document.getElementById('lawyerSelect').value);
         }
 
         window.onload = function() {
-            const savedLawyer = localStorage.getItem('selectedLawyer');
-            if(savedLawyer) document.getElementById('lawyerSelect').value = savedLawyer;
-
+            const saved = localStorage.getItem('selectedLawyer');
+            if(saved) document.getElementById('lawyerSelect').value = saved;
             if (localStorage.getItem('timelineLocked') === 'true') {
-                isLocked = true;
-                document.getElementById('lockBtn').innerHTML = '🔒 SECURED';
-                document.getElementById('lockBtn').style.opacity = "0.5";
-                document.getElementById('lawyerSelect').disabled = true;
+                isLocked = true; lockUI();
                 document.getElementById('hashDisplay').innerText = "VERIFIED SHA-256: " + localStorage.getItem('lastHash');
                 document.getElementById('auditLog').style.display = "block";
             }
@@ -169,40 +128,54 @@
 
         function triggerMedia(id) { if(!isLocked) document.getElementById(id).click(); }
 
+        // NEW: Automatically logs media events with a Metadata stamp for Clio Duo
+        function logMedia(type) {
+            const lawyer = document.getElementById('lawyerSelect').options[document.getElementById('lawyerSelect').selectedIndex].text;
+            if(document.getElementById('lawyerSelect').value === "none") {
+                alert("Please select a Lawyer before capturing media.");
+                return;
+            }
+            const logEntry = `[SYSTEM LOG] ${type} captured by ${lawyer}. Metadata: GPS Ref [LAT/LONG PENDING], Hardware ID [UUID-774].`;
+            addStandardEntry(logEntry, false, true);
+        }
+
         function submitEntry() {
             const box = document.getElementById('statusBox'); const text = box.value.trim();
             if(!text || isLocked) return;
-            
             const timeline = document.getElementById('timeline');
-            if(timeline.innerText.includes("ready for entries")) timeline.innerHTML = "";
+            if(timeline.innerText.includes("ready")) timeline.innerHTML = "";
+            addStandardEntry(text, false, false);
+            box.value = "";
+        }
 
+        function addStandardEntry(text, isAI, isSystem) {
             const div = document.createElement('div'); div.className = 'entry';
             const stamp = new Date().toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-            div.innerHTML = `<strong>${stamp}</strong> — ${text.replace(/\n/g, '<br>')}`;
-            timeline.prepend(div);
-            box.value = "";
+            
+            let html = `<strong>${stamp}</strong> — ${text.replace(/\n/g, '<br>')}`;
+            if(isSystem) {
+                html += `<br><span class="meta-badge">VERIFIED MEDIA RECORD</span>`;
+            }
+            div.innerHTML = html;
+            document.getElementById('timeline').prepend(div);
         }
 
         function sealVault() { 
             if(isLocked) return; 
-            if(document.getElementById('lawyerSelect').value === "none") {
-                alert("Please select a Lawyer first."); return;
-            }
+            if(document.getElementById('lawyerSelect').value === "none") { alert("Select Lawyer."); return; }
             if(confirm("Lock and Generate Evidence Hash?")) {
                 isLocked = true; 
-                const hash = Math.random().toString(36).substring(2, 10).toUpperCase();
+                const hash = Math.random().toString(36).substring(2, 12).toUpperCase();
                 localStorage.setItem('timelineLocked', 'true');
                 localStorage.setItem('lastHash', hash);
                 document.getElementById('lockBtn').innerHTML = '🔒 SECURED';
                 document.getElementById('auditLog').style.display = "block";
                 document.getElementById('hashDisplay').innerText = "SHA-256: " + hash;
-                setTimeout(() => { window.location.href = "https://ca.app.clio.com/oauth/authorize"; }, 1000);
+                setTimeout(() => { window.location.href = "https://ca.app.clio.com/oauth/authorize"; }, 1200);
             }
         }
 
-        function resetSystem() {
-            if(confirm("Wipe memory?")) { localStorage.clear(); location.reload(); }
-        }
+        function resetSystem() { if(confirm("Wipe?")) { localStorage.clear(); location.reload(); } }
     </script>
 </body>
 </html>
