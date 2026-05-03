@@ -9,18 +9,112 @@
             --teal: #115e59; 
             --active-blue: #3b82f6;
             --glass-yellow: rgba(254, 240, 138, 0.6); 
-            --glass-red: rgba(239, 68, 68, 0.2); 
+            --glass-red: rgba(239, 68, 68, 0.15); 
             --border-yellow: #facc15;
             --border-red: #ef4444;
         }
-        body { margin: 0; font-family: -apple-system, sans-serif; background: #fff; color: #1e293b; padding-bottom: 120px; }
+        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #fff; color: #1e293b; padding-bottom: 120px; }
         
-        header { padding: 25px 20px; border-bottom: 1px solid #f1f5f9; background: #fff; text-align: center; }
-        .logo-container { width: 80px; margin: 0 auto 10px; }
-        .logo-svg { width: 100%; height: auto; }
-        .brand { font-weight: 900; color: var(--teal); font-size: 14px; letter-spacing: 2px; text-transform: uppercase; }
-        
-        .quote { font-family: serif; font-style: italic; font-size: 13px; color: #64748b; border-left: 3px solid var(--teal); padding: 5px 15px; margin: 15px auto; max-width: 90%; line-height: 1.5; text-align: left; min-height: 40px; }
+        header { padding: 30px 20px; border-bottom: 1px solid #f1f5f9; text-align: center; background: #fff; }
+        .brand { font-weight: 900; color: var(--teal); font-size: 15px; letter-spacing: 2px; text-transform: uppercase; }
+        .quote { font-family: serif; font-style: italic; font-size: 13px; color: #64748b; border-left: 3px solid var(--teal); padding: 5px 15px; margin: 15px auto; max-width: 90%; line-height: 1.5; text-align: left; }
 
-        /* Privacy Switch (Off by Default) */
-        .priv-row { display
+        /* Privacy Switch */
+        .priv-row { display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 11px; font-weight: 800; color: var(--teal); text-transform: uppercase; margin-bottom: 20px;}
+        .switch { position: relative; width: 44px; height: 22px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--teal); }
+        input:checked + .slider:before { transform: translateX(22px); }
+
+        /* Mac-Style Silhouette Icons (CSS Generated) */
+        .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; padding: 20px; }
+        .card { background: #fff; border-radius: 20px; padding: 20px; text-align: center; border: 1px solid #f1f5f9; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); cursor: pointer; }
+        .icon-silhouette { width: 30px; height: 30px; background: var(--teal); margin: 0 auto 10px; border-radius: 6px; position: relative; }
+        
+        /* Camera Silhouette */
+        .cam-icon { border-radius: 8px; }
+        .cam-icon::after { content: ''; position: absolute; width: 12px; height: 12px; border: 3px solid #fff; border-radius: 50%; top: 6px; left: 6px; box-sizing: border-box; }
+        
+        /* Mic Silhouette */
+        .mic-icon { width: 14px; border-radius: 10px; }
+        .mic-icon::after { content: ''; position: absolute; width: 24px; height: 12px; border: 3px solid var(--teal); border-top: 0; border-radius: 0 0 15px 15px; bottom: -5px; left: -8px; }
+
+        /* Notepad Silhouette */
+        .note-icon { width: 22px; height: 28px; border-radius: 4px; }
+        .note-icon::after { content: ''; position: absolute; width: 12px; height: 2px; background: #fff; top: 8px; left: 5px; box-shadow: 0 5px 0 #fff, 0 10px 0 #fff; }
+
+        .card b { font-size: 9px; color: var(--teal); display: block; letter-spacing: 1px; margin-top: 5px; }
+
+        /* Banners & Highlights */
+        .banner { margin: 10px 20px; padding: 15px; border-radius: 15px; display: none; font-size: 11px; font-weight: 800; backdrop-filter: blur(10px); border: 1px solid; text-align: center; }
+        #ai-banner { background: var(--glass-yellow); border-color: var(--border-yellow); color: #854d0e; }
+        #tamper-banner { background: var(--glass-red); border-color: var(--border-red); color: #b91c1c; }
+
+        /* Input Section */
+        .input-box { padding: 0 20px; }
+        textarea { width: 100%; height: 90px; border: 1px solid #e2e8f0; border-radius: 15px; padding: 15px; box-sizing: border-box; font-size: 14px; outline: none; background: #f8fafc; transition: 0.3s; font-family: inherit;}
+        .btn-arch { width: 100%; background: var(--teal); color: #fff; border: none; padding: 18px; border-radius: 15px; font-weight: 800; margin-top: 12px; cursor: pointer; font-size: 12px; letter-spacing: 1px; }
+
+        /* Timeline View */
+        .timeline { padding: 25px; position: relative; }
+        .v-line { position: absolute; left: 35px; top: 0; bottom: 0; width: 2px; background: #f1f5f9; }
+        .entry { background: #fff; margin: 0 0 20px 30px; padding: 20px; border-radius: 20px; border: 1px solid #f1f5f9; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.03); transition: 0.4s; position: relative; }
+        .entry::before { content: ''; position: absolute; left: -26px; top: 26px; width: 12px; height: 12px; background: #e2e8f0; border-radius: 50%; border: 3px solid #fff; transition: 0.5s; z-index: 5;}
+        .entry.active-node::before { background: var(--active-blue); }
+
+        /* Alert Explanations */
+        .hazard-highlight { background: var(--glass-yellow) !important; border: 1px solid var(--border-yellow) !important; }
+        .tamper-highlight { background: var(--glass-red) !important; border: 1px solid var(--border-red) !important; color: var(--border-red); animation: shake 0.5s; }
+        
+        /* Blur State */
+        .privacy-on .entry { filter: blur(25px); pointer-events: none; }
+
+        /* Footer */
+        .footer { position: fixed; bottom: 0; width: 100%; padding: 20px; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-top: 1px solid #f1f5f9; box-sizing: border-box; z-index: 500; }
+        .lock-btn { width: 100%; background: var(--teal); color: #fff; border: none; padding: 20px; border-radius: 15px; font-weight: 900; letter-spacing: 1px; cursor: pointer; }
+
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="brand">WORKTIMELINE™</div>
+    <div class="quote" id="quoteDisplay">"The law is a shield for the truth, and organization is the bridge to justice."</div>
+    <div class="priv-row">
+        <span>Privacy Switch</span>
+        <label class="switch"><input type="checkbox" id="pTog" onchange="togglePrivacy()"><span class="slider"></span></label>
+    </div>
+</header>
+
+<div id="ai-banner" class="banner">⚠️ AI PATTERN RECOGNITION: RISK DETECTED</div>
+<div id="tamper-banner" class="banner">❌ TIMELINE INTEGRITY COMPROMISED</div>
+
+<div class="grid">
+    <div class="card"><div class="icon-silhouette cam-icon"></div><b>CAMERA</b></div>
+    <div class="card"><div class="icon-silhouette mic-icon"></div><b>AUDIO</b></div>
+    <div class="card"><div class="icon-silhouette note-icon"></div><b>NOTEPAD</b></div>
+</div>
+
+<div class="input-box">
+    <textarea id="box" placeholder="Architect truth... (Words: Hazard, Mock)"></textarea>
+    <button class="btn-arch" onclick="submitE()">ARCHITECT TRUTH</button>
+</div>
+
+<div class="timeline" id="tlBody">
+    <div class="v-line"></div>
+    <div id="anchor"></div>
+</div>
+
+<div class="footer">
+    <button class="lock-btn" onclick="seal()">LOCK & SEND TO CLIO</button>
+</div>
+
+<script>
+    let entriesFound = 0;
+    const quotes = [
+        "Justice is the constant and perpetual will to allot to every man his due. — Ulpian",
+        "Structure is the path to freedom; truth is the architect. — WorkTimeLine",
+        "Organization is how we take our power back from chaos.
