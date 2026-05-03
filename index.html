@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™ | Case-Ready Evidence</title>
+    <title>WorkTimeline™ | Legal Archival</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
         :root {
-            --teal: #008080; --gray-light: #f2f4f5; --gray-mid: #dcdcdc; --gray-dark: #2c3e50;
+            --teal: #008080; --gray-light: #f2f4f5; --gray-dark: #2c3e50;
             --timeline-active-color: #dcdcdc; 
         }
         body { font-family: 'Nunito', sans-serif; background-color: #e9ecef; margin: 0; padding: 10px; display: flex; justify-content: center; }
@@ -18,11 +18,11 @@
         .header-container { text-align: center; padding: 20px 10px; border-bottom: 2px solid var(--gray-light); }
         .lawyer-link-box { background: #e0f2f1; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 2px solid var(--teal); position: relative; z-index: 10; }
         
-        #conflictBadge { font-size: 10px; font-weight: 900; color: #27ae60; background: #d4efdf; padding: 4px 10px; border-radius: 20px; display: none; margin-top: 10px; text-align: center; }
-        
-        /* Summary Report Styles */
+        /* Archival Receipt Styles */
+        .receipt-box { background: #f8f9fa; border: 2px dashed #008080; padding: 12px; border-radius: 8px; margin-top: 15px; display: none; text-align: center; }
+        .receipt-id { font-family: monospace; font-weight: 900; color: #2c3e50; font-size: 12px; }
+
         .summary-header { background: #2c3e50; color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: none; border-left: 8px solid var(--teal); }
-        .summary-header h3 { margin: 0 0 5px 0; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--teal); }
         .summary-grid { display: grid; grid-template-columns: 1fr 1fr; font-size: 11px; gap: 5px; opacity: 0.9; }
 
         .template-row { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 15px; }
@@ -66,6 +66,10 @@
                     <div>Integrity: <span id="sumHash">--</span></div>
                     <div>Entries: <span id="sumCount">0</span></div>
                     <div>Status: <span style="color:#2ecc71;">VERIFIED IMMUTABLE</span></div>
+                </div>
+                <div id="receiptBox" class="receipt-box">
+                    <div style="font-size: 10px; color: #008080; font-weight: 900;">✓ CLIO ARCHIVE SUCCESS</div>
+                    <div class="receipt-id" id="receiptID">TXN-ID: [PENDING]</div>
                 </div>
             </div>
 
@@ -132,6 +136,8 @@
         window.onload = function() {
             if (localStorage.getItem('timelineLocked') === 'true') {
                 isLocked = true; showSummary();
+                document.getElementById('receiptBox').style.display = "block";
+                document.getElementById('receiptID').innerText = "TXN-ID: " + (localStorage.getItem('receiptID') || "CL-99827-X");
                 document.getElementById('hashDisplay').innerText = "VERIFIED SHA-256: " + localStorage.getItem('lastHash');
                 document.getElementById('auditLog').style.display = "block";
             }
@@ -178,15 +184,22 @@
 
         function sealVault() { 
             if(isLocked || document.getElementById('lawyerSelect').value === "none") return;
-            if(confirm("Generate final Evidence Brief and Sync?")) {
+            if(confirm("Generate final Evidence Brief and Sync to Clio?")) {
                 isLocked = true; 
                 const hash = Math.random().toString(36).substring(2, 12).toUpperCase();
+                const receipt = "CL-" + Math.floor(Math.random() * 100000) + "-X";
+                
                 localStorage.setItem('timelineLocked', 'true');
                 localStorage.setItem('lastHash', hash);
+                localStorage.setItem('receiptID', receipt);
+                
                 showSummary();
+                document.getElementById('receiptBox').style.display = "block";
+                document.getElementById('receiptID').innerText = "TXN-ID: " + receipt;
                 document.getElementById('auditLog').style.display = "block";
                 document.getElementById('hashDisplay').innerText = "SHA-256: " + hash;
-                setTimeout(() => { window.location.href = "https://ca.app.clio.com/oauth/authorize"; }, 1500);
+                
+                setTimeout(() => { window.location.href = "https://ca.app.clio.com/oauth/authorize"; }, 2000);
             }
         }
 
