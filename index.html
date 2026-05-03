@@ -102,11 +102,17 @@
             <div id="auditLog" style="display:none; text-align:center; margin-top:10px;"><div class="meta-badge" id="hashDisplay">SHA-256 HASH: ...</div></div>
             <div class="reset-link" onclick="resetSystem()">[RESET SYSTEM]</div>
         </div>
-    </div>
+    </div>localStorage.
+
+        function resetSystem() { localStorage.clear(); location.reload(); }
+    </script>
+</body>
+</html>
     <script>
-        // --- CLIO CONFIGURATION ---
-        const CLIO_CLIENT_ID = "348846"; 
-        const CLIO_REDIRECT_URI = "https://worktimeline-app.vercel.app/"; // Simplified to match index.html
+        // --- CLIO CONFIGURATION (CANADA) ---
+        // I have pulled the Client ID directly from your screenshot
+        const CLIO_CLIENT_ID = "btscu9WmPHYellZtZA9slQfynBAQudwjaR7pEDdq"; 
+        const CLIO_REDIRECT_URI = "https://worktimeline-app.vercel.app/"; 
         
         let isLocked = false; let isPrivate = false; let totalEntries = 0;
         const templates = {
@@ -178,7 +184,7 @@
 
         function sealVault() { 
             if(isLocked || document.getElementById('lawyerSelect').value === "none") return;
-            if(confirm("Lock and Connect to Clio?")) {
+            if(confirm("Lock and Connect to Clio Canada?")) {
                 isLocked = true; 
                 const hash = Math.random().toString(36).substring(2, 12).toUpperCase();
                 localStorage.setItem('timelineLocked', 'true');
@@ -186,7 +192,12 @@
                 showSummary();
                 document.getElementById('auditLog').style.display = "block";
                 document.getElementById('hashDisplay').innerText = "SHA-256: " + hash;
-                const clioAuthUrl = `https://app.clio.com/oauth/authorize?response_type=code&client_id=${CLIO_CLIENT_ID}&redirect_uri=${encodeURIComponent(CLIO_REDIRECT_URI)}&scope=contacts`;
+
+                // --- CA REGION HANDSHAKE ---
+                const redirectUri = encodeURIComponent(CLIO_REDIRECT_URI);
+                // Using the specific CA endpoint to match your region
+                const clioAuthUrl = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=${CLIO_CLIENT_ID}&redirect_uri=${redirectUri}&scope=contacts`;
+                
                 setTimeout(() => { window.location.href = clioAuthUrl; }, 1500);
             }
         }
@@ -198,5 +209,3 @@
 
         function resetSystem() { localStorage.clear(); location.reload(); }
     </script>
-</body>
-</html>
