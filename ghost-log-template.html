@@ -2,66 +2,145 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WorkTimeLine™ | Truth</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        @media print { .no-print { display: none; } }
-        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background: #fff; color: #000; margin: 0; padding: 40px; }
+        :root { --teal: #008080; --dark: #2c3e50; --gray-light: #f8fafc; --gold: #eab308; --red: #dc2626; --red-bg: #fee2e2; }
+        body { font-family: 'Nunito', sans-serif; background: #e9ecef; margin: 0; display: flex; justify-content: center; }
+        .app-container { width: 100%; max-width: 500px; background: white; min-height: 100vh; display: flex; flex-direction: column; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
         
-        /* The Technical Header */
-        .header { border-bottom: 3px solid #000; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-end; }
-        .brand { font-size: 24px; font-weight: 900; letter-spacing: -1px; text-transform: uppercase; }
-        .meta { font-family: 'Courier New', Courier, monospace; font-size: 10px; text-align: right; line-height: 1.2; }
+        header { padding: 30px 20px 10px; text-align: center; }
+        .logo-box { width: 80px; height: 60px; margin: 0 auto 15px; position: relative; display: flex; align-items: center; justify-content: center; }
+        .briefcase { width: 60px; height: 45px; border: 4px solid var(--teal); border-radius: 8px; position: relative; }
+        .briefcase::before { content: ''; position: absolute; top: -12px; left: 18px; width: 20px; height: 8px; border: 4px solid var(--teal); border-bottom: none; border-radius: 6px 6px 0 0; }
+        .timeline-line { position: absolute; width: 100%; height: 4px; background: #3498DB; top: 50%; left: 0; transform: translateY(-50%); z-index: 1; }
+        .timeline-dot { position: absolute; width: 10px; height: 10px; background: white; border: 2px solid #3498DB; border-radius: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 2; }
+
+        .brand { font-weight: 900; letter-spacing: 3px; color: var(--dark); font-size: 18px; text-transform: uppercase; margin-top: 10px; display: block; }
         
-        /* The Status Shield */
-        .status-shield { display: inline-block; background: #008080; color: #fff; padding: 4px 12px; font-size: 12px; font-weight: bold; border-radius: 2px; margin-bottom: 20px; }
-        
-        /* The Timeline Table */
-        .log-table { width: 100%; border-collapse: collapse; margin-bottom: 40px; }
-        .log-entry { border-bottom: 1px solid #e0e0e0; padding: 20px 0; }
-        .timestamp { font-family: 'Courier New', Courier, monospace; font-weight: bold; font-size: 13px; color: #666; margin-bottom: 8px; }
-        .narrative { font-size: 16px; line-height: 1.5; margin-bottom: 10px; color: #1a1a1a; }
-        
-        /* The Integrity DNA */
-        .hash-seal { font-family: 'Courier New', Courier, monospace; font-size: 9px; color: #aaa; background: #f8f8f8; padding: 4px; display: block; border-left: 2px solid #008080; }
-        
-        /* The Footer Vault */
-        .footer { margin-top: 60px; border-top: 1px solid #000; padding-top: 20px; font-size: 11px; }
-        .master-hash { font-family: 'Courier New', Courier, monospace; font-weight: bold; background: #000; color: #fff; padding: 10px; margin: 10px 0; display: block; text-align: center; font-size: 12px; }
+        /* Dynamic Quote Style */
+        .quote-container { min-height: 80px; display: flex; flex-direction: column; justify-content: center; }
+        .quote { font-style: italic; font-size: 14px; color: #555; padding: 0 30px; margin: 10px 0; line-height: 1.6; }
+        .quote span { display: block; margin-top: 5px; font-weight: 700; color: var(--teal); font-style: normal; font-size: 12px; }
+
+        .top-nav { display: flex; background: var(--dark); }
+        .tab-btn { background: transparent; color: #888; border: none; padding: 15px; font-size: 11px; font-weight: 900; cursor: pointer; text-transform: uppercase; flex: 1; }
+        .tab-btn.active { color: white; border-bottom: 4px solid var(--teal); background: rgba(0,128,128,0.1); }
+
+        .page { display: none; padding: 20px; flex-grow: 1; }
+        .page.active { display: block; }
+
+        .input-card { background: var(--gray-light); padding: 20px; border-radius: 16px; border: 1px solid #e2e8f0; margin-bottom: 20px; }
+        textarea { width: 100%; border: 1px solid #ccc; padding: 12px; border-radius: 12px; font-size: 16px; font-family: inherit; resize: none; box-sizing: border-box; }
+        .btn-submit { background: var(--teal); color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: 900; margin-top: 10px; cursor: pointer; }
+
+        .timeline { border-left: 3px solid var(--teal); margin-left: 10px; padding-left: 20px; }
+        .entry { background: white; border: 1px solid #e2e8f0; padding: 15px; border-radius: 12px; margin-bottom: 15px; position: relative; }
+
+        .tamper-warning { color: var(--red); font-weight: 900; font-size: 11px; display: none; text-align: center; margin-bottom: 10px; text-transform: uppercase; }
+        .tampered-card { background: var(--red-bg) !important; border-color: var(--red) !important; }
+        .tampered-btn { background: var(--red) !important; }
     </style>
 </head>
-<body>
+<body onload="setRandomQuote()">
 
-    <div class="header">
-        <div class="brand">WorkTimeline // Ghost Log</div>
-        <div class="meta">
-            REF: CLIO-MATTER-ID-XXXX<br>
-            VAULT: MONTREAL-CLE1<br>
-            ENVELOPE: PUBLIC-CLIENT-V2
+<div class="app-container">
+    <header>
+        <div class="logo-box">
+            <div class="briefcase">
+                <div class="timeline-line"></div>
+                <div class="timeline-dot" style="left: 20%;"></div>
+                <div class="timeline-dot" style="left: 50%;"></div>
+                <div class="timeline-dot" style="left: 80%;"></div>
+            </div>
+        </div>
+        <span class="brand">WorkTimeLine™</span>
+        <div class="quote-container">
+            <div id="quote-display" class="quote">
+                </div>
+        </div>
+    </header>
+
+    <nav class="top-nav">
+        <button class="tab-btn active" onclick="switchTab('workspace', this)">Workspace</button>
+        <button class="tab-btn" onclick="switchTab('lock', this)">Lock & Send</button>
+    </nav>
+
+    <div id="workspace" class="page active">
+        <div id="tamper-msg" class="tamper-warning">⚠️ METADATA BREACH: POST-SEAL ALTERATION</div>
+        <div id="input-area" class="input-card">
+            <textarea id="noteInput" rows="3" placeholder="Document the truth..."></textarea>
+            <button id="submit-btn" class="btn-submit" onclick="addEntry()">LOG TO TIMELINE</button>
+        </div>
+        <div id="timeline" class="timeline"></div>
+    </div>
+
+    <div id="lock" class="page">
+        <div style="text-align:center; padding:40px 10px;">
+            <h2 style="color:var(--teal)">SEAL & TRANSMIT</h2>
+            <p>Finalize the legal record for Clio?</p>
+            <button class="btn-submit" onclick="sealTimeline()">CONFIRM & SEND</button>
         </div>
     </div>
+</div>
 
-    <div class="status-shield">SUBMIT-THEN-LOCK VALIDATED</div>
+<script>
+    const quotes = [
+        { text: "It is the spirit and not the form of law that keeps justice alive.", author: "Earl Warren" },
+        { text: "Truth is the daughter of time, not of authority.", author: "Francis Bacon" },
+        { text: "The first duty of society is justice.", author: "Alexander Hamilton" },
+        { text: "Justice delayed is justice denied.", author: "William E. Gladstone" },
+        { text: "Injustice anywhere is a threat to justice everywhere.", author: "Martin Luther King Jr." },
+        { text: "The law is a profession of words.", author: "David Mellinkoff" },
+        { text: "Equality before the law is a fundamental tenet.", author: "Clio Philosophy" }
+    ];
 
-    <div class="log-entry">
-        <div class="timestamp">2026-04-28 | 08:45:12 PST // GPS: 49.1044° N, 122.6603° W</div>
-        <div class="narrative">
-            Site arrival. Initial safety inspection completed. Noted structural tension on secondary supports. Murdick informed via site radio.
-        </div>
-        <div class="hash-seal">SHA256: 4e3d5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e</div>
-    </div>
+    function setRandomQuote() {
+        const randomIndex = Math.floor(Math.random() * quotes.length);
+        const q = quotes[randomIndex];
+        document.getElementById('quote-display').innerHTML = `"${q.text}" <span>— ${q.author}</span>`;
+    }
 
-    <div class="log-entry">
-        <div class="timestamp">2026-04-28 | 13:10:45 PST // GPS: 49.1044° N, 122.6603° W</div>
-        <div class="narrative">
-            Observation of load shift during transition. Documentation locked to ensure timeline integrity for legal review.
-        </div>
-        <div class="hash-seal">SHA256: 8f92b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e4e3d5f6a7b8c9d0e1f2a3b4c5d6e7</div>
-    </div>
+    let isSealed = false;
 
-    <div class="footer">
-        <strong>CERTIFICATE OF INTEGRITY:</strong> This document represents a tamper-evident record. Narrative entries were hashed at the point of submission and are physically resident on Canadian soil.
-        <div class="master-hash">MASTER SEAL: 77a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a7b8c9d0e1</div>
-        <center>Generated by WorkTimeline for the Invisible 60%.</center>
-    </div>
+    function switchTab(pageId, btn) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    function addEntry() {
+        const text = document.getElementById('noteInput').value;
+        if(!text) return;
+        if (isSealed) triggerTamperMode();
+
+        const timeline = document.getElementById('timeline');
+        const entry = document.createElement('div');
+        entry.className = 'entry';
+        if(isSealed) entry.style.borderColor = 'var(--red)';
+        
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+        entry.innerHTML = `<div style="font-size:10px; font-weight:900; color:inherit;">🕒 ${timeStr}</div><div>${text}</div>`;
+        timeline.prepend(entry);
+        document.getElementById('noteInput').value = "";
+    }
+
+    function sealTimeline() {
+        isSealed = true;
+        alert("TIMELINE SEALED. Metadata synced.");
+        window.location.href = "https://www.clio.com/features/clio-duo/";
+    }
+
+    function triggerTamperMode() {
+        document.getElementById('tamper-msg').style.display = 'block';
+        document.getElementById('input-area').classList.add('tampered-card');
+        document.getElementById('submit-btn').classList.add('tampered-btn');
+    }
+</script>
 
 </body>
 </html>
