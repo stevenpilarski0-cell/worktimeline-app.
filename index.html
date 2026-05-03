@@ -1,45 +1,140 @@
-<div id="versa-bypass-layer" style="position:fixed; top:20px; right:20px; z-index:9999; width:350px; font-family:'Inter', sans-serif;">
-    
-    <div style="background: #1a1a1a; color: white; padding: 20px; border-radius: 12px; border: 1px solid #008080; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-        
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <span style="color:#00d1d1; font-weight:800; font-size:12px; letter-spacing:1px;">BYPASSING INTAKE...</span>
-            <div id="briefcase-icon" style="width:24px; height:20px; border:2px solid #00d1d1; border-radius:3px; position:relative; transition: 0.8s ease-in-out;">
-                <div style="width:10px; height:5px; border:2px solid #00d1d1; border-bottom:none; position:absolute; top:-7px; left:5px;"></div>
-            </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WorkTimeLine™ | Functional Build</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --teal: #008080; --dark: #004d4d; --gold: #f59e0b; --yellow-glass: rgba(254, 240, 138, 0.85); --red-glass: rgba(220, 38, 38, 0.2); }
+        body { margin: 0; font-family: 'Inter', sans-serif; background: #fff; padding-bottom: 120px; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+        header { padding: 45px 25px 15px; position: relative; display: flex; align-items: flex-start; justify-content: flex-start; flex-direction: column; }
+        .quote-box { position: absolute; top: 45px; right: 25px; width: 160px; text-align: right; }
+        .quote-box p { font-size: 8px; font-style: italic; color: #94a3b8; line-height: 1.4; margin: 0; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600;}
+        .logo-box { position: relative; width: 60px; margin-bottom: 10px; }
+        .briefcase { width: 42px; height: 32px; border: 3px solid var(--teal); border-radius: 8px; position: relative; }
+        .briefcase::before { content: ''; position: absolute; top: -10px; left: 11px; width: 14px; height: 7px; border: 3px solid var(--teal); border-bottom: none; border-radius: 4px 4px 0 0; }
+        .logo-line { position: absolute; top: 16px; left: -10px; width: 55px; height: 4px; background: var(--teal); border-radius: 10px; }
+        .brand { font-weight: 900; letter-spacing: 2px; color: var(--dark); font-size: 14px; text-transform: uppercase; }
+        .ai-banner { background: #fefce8; border: 1px solid #fef08a; padding: 14px 18px; border-radius: 16px; margin: 15px 20px; display: flex; align-items: center; gap: 10px; transition: 0.5s; }
+        .ai-banner span { font-size: 10px; font-weight: 700; color: #854d0e; text-transform: uppercase; }
+        .dot { width: 8px; height: 8px; background: var(--gold); border-radius: 50%; animation: blink 2s infinite; }
+        .container { padding: 0 20px; max-width: 450px; margin: 0 auto; }
+        .card { background: #f8fafc; padding: 25px; border-radius: 24px; border: 1px solid #f1f5f9; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        textarea { width: 100%; border: 1px solid #e2e8f0; padding: 16px; border-radius: 16px; font-size: 12px; font-weight: 700; outline: none; box-sizing: border-box; font-family: 'Courier New', monospace; background: #1a202c; color: #4fd1c5; resize: none; text-align: center; letter-spacing: 1px; }
+        .icon-bar { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin: 20px 0; }
+        .mac-btn { background: var(--teal); color: #fff; border: none; padding: 18px; border-radius: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,128,128,0.2); }
+        .mac-btn svg { width: 22px; height: 22px; fill: white; }
+        .main-btn { background: var(--teal); color: #fff; border: none; padding: 20px; border-radius: 18px; font-weight: 700; width: 100%; font-size: 15px; cursor: pointer; transition: 0.2s; }
+        #timeline { border-left: 2px solid var(--teal); margin: 35px 10px; padding-left: 25px; }
+        .entry { position: relative; margin-bottom: 25px; padding: 18px; border-radius: 18px; background: #fff; border: 1px solid #f1f5f9; transition: 0.6s cubic-bezier(0.2, 1, 0.2, 1); font-size: 15px; font-weight: 600; line-height: 1.4; }
+        .entry::before { content: ''; position: absolute; left: -34px; top: 22px; width: 16px; height: 16px; background: #fff; border: 3px solid var(--teal); border-radius: 50%; z-index: 2; }
+        body.privacy-on .entry { filter: blur(35px); opacity: 0; transform: scale(0.95); }
+        .yellow-alert { background: var(--yellow-glass) !important; border: 1px solid #fef08a !important; }
+        .red-alert { background: var(--red-glass) !important; border: 2.5px solid #dc2626 !important; animation: shake 0.6s; color: #dc2626; }
+        .footer { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; border-top: 1px solid #edf2f7; padding: 20px 25px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; z-index: 1000; }
+        .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--teal); }
+        input:checked + .slider:before { transform: translateX(24px); }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 15% { transform: translateX(-12px); } 30% { transform: translateX(12px); } 45% { transform: translateX(-12px); } 60% { transform: translateX(12px); } 75% { transform: translateX(-12px); } }
+    </style>
+</head>
+<body class="privacy-on">
+
+<input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none">
+<input type="file" id="micInput" accept="audio/*" capture="user" style="display:none">
+<input type="file" id="docInput" style="display:none">
+
+<header>
+    <div class="logo-box"><div class="briefcase"></div><div class="logo-line"></div></div>
+    <span class="brand">WorkTimeLine™</span>
+    <div class="quote-box"><p>"Law is the Conscience of the community, where Truth is the architect of Freedom."</p></div>
+</header>
+<div id="ai-status" class="ai-banner"><div class="dot"></div><span>AI RECOGNITION: AUTHENTICITY ACTIVE</span></div>
+<div class="container">
+    <div class="card">
+        <textarea id="statusBox" readonly>[SYSTEM IDLE: AWAITING TRUTH]</textarea>
+        <div class="icon-bar">
+            <div class="mac-btn" onclick="document.getElementById('cameraInput').click()"><svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg></div>
+            <div class="mac-btn" onclick="document.getElementById('micInput').click()"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zM17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg></div>
+            <div class="mac-btn" onclick="document.getElementById('docInput').click()"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg></div>
         </div>
-
-        <h3 style="font-size:18px; margin:0 0 10px 0;">"THEY THINK I'M INVISIBLE."</h3>
-        <p style="font-size:13px; color:#aaa; line-height:1.4;">
-            Transforming 13.5 years of <span style="color:white;">Gray Chaos</span> into <span style="color:#00d1d1;">Locked Gold</span> for Versa Auditors.
-        </p>
-
-        <div style="margin-top:20px; background:#222; padding:10px; border-radius:6px; font-family:monospace; font-size:11px;">
-            <div style="color:#00ff00;">> Exhibit Package: READY</div>
-            <div style="color:#00ff00;">> Chronological Timeline: READY</div>
-            <div style="color:#ffcc00;">> Contextual Notes: AUDITING...</div>
-        </div>
-
-        <button onclick="rotateBriefcase()" style="margin-top:15px; width:100%; padding:10px; background:#008080; border:none; color:white; font-weight:bold; border-radius:4px; cursor:pointer;">
-            CONVERT TO TEAL
-        </button>
+        <button class="main-btn" onclick="nextStep()" id="actionBtn">+ LOG TO TIMELINE</button>
+    </div>
+    <div id="timeline"></div>
+    <div id="seal-area" style="display:none; text-align:center; padding-top:30px;">
+        <button id="lockBtn" class="main-btn" style="background:var(--dark);" onclick="sealVault()">SEAL & SYNC CONSCIENCE</button>
     </div>
 </div>
-
+<div class="footer">
+    <div class="footer-label" style="font-size:11px; font-weight:700; color:#718096;">PRIVACY MODE</div>
+    <label class="switch"><input type="checkbox" id="privacyToggle" checked onchange="togglePrivacy()"><span class="slider"></span></label>
+</div>
 <script>
-function rotateBriefcase() {
-    const icon = document.getElementById('briefcase-icon');
-    const layer = document.getElementById('versa-bypass-layer');
+    var step = 0;
+    var isLocked = false;
+    localStorage.removeItem('vLocked'); // Forces clear state on every manual refresh
     
-    // Perform the 90-degree rotation shift
-    icon.style.transform = "rotate(90deg) scale(1.2)";
-    icon.style.borderColor = "#ffffff";
+    const lines = [
+        "I bet you they think I'm invisible, but I'm not. I'm just trapped. This is your prison within a prison. But I'm done. I won't be a prisoner anymore.",
+        "Law is not above me; it is the ground I stand on.",
+        "Lawyers want to work with me because my truth is organized.",
+        "Being organized is how I take my power back.",
+        "Using my tools to architect my own freedom.",
+        "Structure is the path to freedom.",
+        "But what if I look back, should I cave? Should I be scared? I won't allow myself to backtrack neither will work timeline because when the clients supposed to be kept at Center because sometimes the only way to keep the client centered is by putting him ahead, the truth is built, not changed." 
+    ];
+
+    window.onload = function() { addEntry(lines[0]); };
     
-    // Change the "Law is the ground I step on" transition
-    setTimeout(() => {
-        alert("INTAKE REMOVED. Moving directly to Consultation at Versa LLP.");
-        document.body.style.filter = "grayscale(100%)"; // The "Gray" world behind you
-        layer.style.filter = "none"; // Your app stays "Teal"
-    }, 800);
-}
+    function togglePrivacy() {
+        var t = document.getElementById('privacyToggle');
+        if(!t.checked) {
+            document.body.classList.remove('privacy-on'); 
+            document.getElementById('statusBox').innerText = '[TEARING DOWN THE WALL...]';
+        } else { document.body.classList.add('privacy-on'); }
+    }
+
+    function nextStep() {
+        step++; if (step < 7) { addEntry(lines[step]); updateStatus(step); }
+        // THE NATURAL RESET: After the Red Alert is shown (Step 6), reset 4 seconds later.
+        if (step === 6) {
+            setTimeout(() => { location.reload(); }, 6000); 
+        }
+    }
+
+    function updateStatus(s) {
+        let b = document.getElementById('statusBox');
+        if(s < 3) b.innerText = '[ANALYZING MANIFESTO DATA...]';
+        else if(s < 6) b.innerText = '[PATTERN RECOGNITION: ACTIVE]';
+        else if(s == 6) b.innerText = '[INTEGRITY BREACH DETECTED]';
+    }
+
+    function addEntry(text) {
+        var div = document.createElement('div'); div.className = 'entry';
+        var entriesCount = document.querySelectorAll('.entry').length; div.id = 'e' + entriesCount;
+        if(isLocked || text === lines[6]) {
+            div.classList.add('red-alert');
+            document.getElementById('ai-status').innerHTML = '<div class="dot" style="background:red"></div><span style="color:red">CLIENT IS CENTERED. AUTO-RESTARTING...</span>';
+        }
+        const now = new Date();
+        div.innerHTML = '<div style="font-size:10px; font-weight:800; color:var(--teal); margin-bottom:5px;">📅 ' + now.toLocaleDateString() + ' | 🕒 ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + '</div>' + text;
+        document.getElementById('timeline').appendChild(div);
+        if(entriesCount === 6 && !isLocked) { document.getElementById('e4').classList.add('yellow-alert'); document.getElementById('e5').classList.add('yellow-alert'); document.getElementById('e6').classList.add('yellow-alert'); }
+        document.getElementById('seal-area').style.display = "block";
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    function sealVault() { 
+        isLocked = true; 
+        document.getElementById('lockBtn').innerHTML = "🔒 CONSCIENCE SYNCED"; 
+        document.getElementById('lockBtn').style.background = "#004d4d"; 
+        document.getElementById('statusBox').innerText = '[CONSCIENCE VAULT: LOCKED]';
+        setTimeout(() => { window.location.href = "https://ca.app.clio.com/nc/#/matters"; }, 1500); 
+    }
 </script>
+</body>
+</html>
