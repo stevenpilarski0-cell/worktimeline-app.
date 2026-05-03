@@ -15,12 +15,26 @@
         .header-container { text-align: center; padding: 30px 20px; border-bottom: 1px solid var(--gray-light); }
         .lawyer-box { background: #e0f2f1; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1.5px solid var(--teal); }
         .template-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; }
-        .template-chip { background: white; border: 1.5px solid
+        .template-chip { background: white; border: 1.5px solid var(--teal); color: var(--teal); padding: 7px 14px; border-radius: 50px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+        #statusBox { width: 100%; height: 120px; border-radius: 12px; border: 1px solid #ddd; padding: 15px; font-size: 16px; margin-bottom: 15px; resize: none; box-sizing: border-box; font-family: inherit; }
+        .media-toolbar { display: flex; gap: 10px; margin-bottom: 20px; }
+        .media-btn { background: #f0f4f4; color: var(--teal); border: 2px solid var(--teal); border-radius: 18px; padding: 12px 5px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; cursor: pointer; transition: 0.2s; }
+        .media-btn svg { width: 26px; height: 26px; fill: var(--teal); }
+        .media-btn span { font-size: 9px; font-weight: 900; text-transform: uppercase; }
+        .media-btn:active { background: var(--teal); color: white; }
+        .media-btn:active svg { fill: white; }
+        .submit-main { width: 100%; background: var(--teal); color: white; border: none; padding: 18px; border-radius: 15px; font-weight: 900; cursor: pointer; font-size: 16px; }
+        .entry { background: white; border-left: 5px solid var(--teal); padding: 15px; border-radius: 10px; margin-bottom: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); text-align: left; }
+        .summary-header { background: var(--gray-dark); color: white; padding: 20px; border-radius: 15px; margin-bottom: 20px; display: none; border-left: 10px solid var(--teal); }
+        .lock-footer { background: var(--gray-dark); color: white; border: none; border-radius: 15px; padding: 20px; width: 100%; cursor: pointer; font-weight: 900; text-transform: uppercase; margin-top: auto; }
+        .privacy-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); z-index: 100; display: none; background: rgba(255,255,255,0.2); }
+        .privacy-active .privacy-overlay { display: block; }
+    </style>
+</head>
 <body>
     <div id="appRoot" class="app-container">
         <div class="privacy-overlay"></div>
         <div class="heartbeat"><span class="dot"></span> CLIO GROW ACTIVE</div>
-        
         <header class="header-container">
             <h1 style="color: var(--teal); margin: 0; font-size: 28px; font-weight: 900;">WORKTIMELINE&trade;</h1>
             <p style="margin: 5px 0 20px 0; font-style: italic; color: #666; font-size: 14px;">"Justice is truth in action."</p>
@@ -45,15 +59,12 @@
                         <option value="L2">Sarah Jenkins, JD</option>
                     </select>
                 </div>
-
                 <div class="template-row">
                     <div class="template-chip" onclick="applyTemplate('site')">+ Site Observation</div>
                     <div class="template-chip" onclick="applyTemplate('witness')">+ Witness Note</div>
                     <div class="template-chip" onclick="applyTemplate('intake')">+ Initial Intake</div>
                 </div>
-
                 <textarea id="statusBox" placeholder="Enter case details..."></textarea>
-                
                 <div class="media-toolbar">
                     <button class="media-btn" onclick="triggerMedia('cameraTrigger')">
                         <svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15a5 5 0 100-10 5 5 0 000 10z"/></svg>
@@ -68,61 +79,51 @@
                         <span>Doc</span>
                     </button>
                 </div>
-
                 <input type="file" id="cameraTrigger" accept="image/*" capture="environment" style="display:none" onchange="logMedia('Photo')">
                 <input type="file" id="micTrigger" accept="audio/*" capture="microphone" style="display:none" onchange="logMedia('Audio')">
                 <input type="file" id="docTrigger" style="display:none" onchange="logMedia('Document')">
-                
                 <button class="submit-main" onclick="submitEntry()">SUBMIT TO TIMELINE</button>
             </div>
-
             <div id="timeline" style="margin-top:25px;"></div>
-            
             <button id="lockBtn" class="lock-footer" onclick="sealVault()">LOCK & SYNC TO GROW</button>
             <div style="text-align:center; padding: 20px 0;"><a href="#" onclick="localStorage.clear(); location.reload();" style="color:red; font-size:11px; text-decoration: none;">[ CLEAR SESSION ]</a></div>
         </div>
     </div>
+
     <script>
         const CLIO_CLIENT_ID = "18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s"; 
         const CLIO_REDIRECT_URI = "https://worktimeline-app.vercel.app/index.html"; 
-
         let isLocked = false;
         const templates = {
             site: "[SITE] Location: [ ], Observation: [ ]",
             witness: "[WITNESS] Name: [ ], Statement: [ ]",
             intake: "[INTAKE] Priority: [ ], Summary: [ ]"
         };
-
         function runConflictCheck() {
             const val = document.getElementById('lawyerSelect').value;
             if(val !== "none") {
                 localStorage.setItem('lawyerName', document.getElementById('lawyerSelect').options[document.getElementById('lawyerSelect').selectedIndex].text);
             }
         }
-
         window.onload = function() {
             if (localStorage.getItem('locked') === 'true') {
                 isLocked = true;
                 showSummary();
             }
         };
-
         function applyTemplate(key) {
             const box = document.getElementById('statusBox');
             box.value += (box.value.trim().length > 0 ? "\n\n" : "") + templates[key];
             box.focus();
         }
-
         function triggerMedia(id) { if(!isLocked) document.getElementById(id).click(); }
         function logMedia(t) { addEntry(`[LOG] ${t} attached to timeline.`, true); }
-
         function submitEntry() {
             const text = document.getElementById('statusBox').value.trim();
             if(!text || isLocked) return;
             addEntry(text, false);
             document.getElementById('statusBox').value = "";
         }
-
         function addEntry(txt, sys) {
             const div = document.createElement('div'); div.className = 'entry';
             const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
@@ -130,7 +131,6 @@
             if(sys) div.style.backgroundColor = "#f9f9f9";
             document.getElementById('timeline').prepend(div);
         }
-
         function showSummary() {
             document.getElementById('briefingHeader').style.display = "block";
             document.getElementById('mainInputArea').style.display = "none";
@@ -139,7 +139,6 @@
             document.getElementById('lockBtn').innerHTML = "🔒 ARCHIVED IN CLIO GROW";
             document.getElementById('lockBtn').style.opacity = "0.5";
         }
-
         function sealVault() {
             if(isLocked || document.getElementById('lawyerSelect').value === "none") {
                 alert("Please select a lawyer first."); return;
@@ -148,12 +147,131 @@
             localStorage.setItem('locked', 'true');
             localStorage.setItem('hash', hash);
             showSummary();
-
             const url = `https://app.clio.com/oauth/authorize?response_type=code&client_id=${CLIO_CLIENT_ID}&redirect_uri=${encodeURIComponent(CLIO_REDIRECT_URI)}`;
-            
             setTimeout(() => { window.location.href = url; }, 1200);
         }
+        function togglePrivacy() { document.getElementById('appRoot').classList.toggle('privacy-active'); }
+    </script>
+</body>
+</html>
+<body>
+    <div id="appRoot" class="app-container">
+        <div class="privacy-overlay"></div>
+        <div class="heartbeat"><span class="dot"></span> CLIO GROW ACTIVE</div>
+        <header class="header-container">
+            <h1 style="color: var(--teal); margin: 0; font-size: 28px; font-weight: 900;">WORKTIMELINE&trade;</h1>
+            <p style="margin: 5px 0 20px 0; font-style: italic; color: #666; font-size: 14px;">"Justice is truth in action."</p>
+            <button class="submit-main" style="background: var(--gray-dark); height: 38px; width: 140px; font-size: 11px; margin: 0 auto; padding: 0;" onclick="togglePrivacy()">PROTECT VIEW</button>
+        </header>
 
+        <div style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column;">
+            <div id="briefingHeader" class="summary-header">
+                <h3 style="margin:0; font-size:16px; color:var(--teal);">Clio Grow Intake Brief</h3>
+                <div style="font-size:12px; margin-top:8px; display:grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <span>Lawyer: <b id="sumLawyer">--</b></span>
+                    <span>Hash: <b id="sumHash">--</b></span>
+                </div>
+            </div>
+
+            <div id="mainInputArea">
+                <div class="lawyer-box">
+                    <label style="font-size: 10px; font-weight: 900; color: var(--teal);">PROFESSIONAL SIGN-IN:</label>
+                    <select id="lawyerSelect" onchange="runConflictCheck()" style="width: 100%; padding: 12px; margin-top: 8px; font-weight: 700; border: none; border-radius: 8px; background: white;">
+                        <option value="none">-- Select Professional --</option>
+                        <option value="L1">Marcus Thorne, Esq.</option>
+                        <option value="L2">Sarah Jenkins, JD</option>
+                    </select>
+                </div>
+                <div class="template-row">
+                    <div class="template-chip" onclick="applyTemplate('site')">+ Site Observation</div>
+                    <div class="template-chip" onclick="applyTemplate('witness')">+ Witness Note</div>
+                    <div class="template-chip" onclick="applyTemplate('intake')">+ Initial Intake</div>
+                </div>
+                <textarea id="statusBox" placeholder="Enter case details..."></textarea>
+                <div class="media-toolbar">
+                    <button class="media-btn" onclick="triggerMedia('cameraTrigger')">
+                        <svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15a5 5 0 100-10 5 5 0 000 10z"/></svg>
+                        <span>Camera</span>
+                    </button>
+                    <button class="media-btn" onclick="triggerMedia('micTrigger')">
+                        <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                        <span>Audio</span>
+                    </button>
+                    <button class="media-btn" onclick="triggerMedia('docTrigger')">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                        <span>Doc</span>
+                    </button>
+                </div>
+                <input type="file" id="cameraTrigger" accept="image/*" capture="environment" style="display:none" onchange="logMedia('Photo')">
+                <input type="file" id="micTrigger" accept="audio/*" capture="microphone" style="display:none" onchange="logMedia('Audio')">
+                <input type="file" id="docTrigger" style="display:none" onchange="logMedia('Document')">
+                <button class="submit-main" onclick="submitEntry()">SUBMIT TO TIMELINE</button>
+            </div>
+            <div id="timeline" style="margin-top:25px;"></div>
+            <button id="lockBtn" class="lock-footer" onclick="sealVault()">LOCK & SYNC TO GROW</button>
+            <div style="text-align:center; padding: 20px 0;"><a href="#" onclick="localStorage.clear(); location.reload();" style="color:red; font-size:11px; text-decoration: none;">[ CLEAR SESSION ]</a></div>
+        </div>
+    </div>
+    <script>
+        const CLIO_CLIENT_ID = "18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s"; 
+        const CLIO_REDIRECT_URI = "https://worktimeline-app.vercel.app/index.html"; 
+        let isLocked = false;
+        const templates = {
+            site: "[SITE] Location: [ ], Observation: [ ]",
+            witness: "[WITNESS] Name: [ ], Statement: [ ]",
+            intake: "[INTAKE] Priority: [ ], Summary: [ ]"
+        };
+        function runConflictCheck() {
+            const val = document.getElementById('lawyerSelect').value;
+            if(val !== "none") {
+                localStorage.setItem('lawyerName', document.getElementById('lawyerSelect').options[document.getElementById('lawyerSelect').selectedIndex].text);
+            }
+        }
+        window.onload = function() {
+            if (localStorage.getItem('locked') === 'true') {
+                isLocked = true;
+                showSummary();
+            }
+        };
+        function applyTemplate(key) {
+            const box = document.getElementById('statusBox');
+            box.value += (box.value.trim().length > 0 ? "\n\n" : "") + templates[key];
+            box.focus();
+        }
+        function triggerMedia(id) { if(!isLocked) document.getElementById(id).click(); }
+        function logMedia(t) { addEntry(`[LOG] ${t} attached to timeline.`, true); }
+        function submitEntry() {
+            const text = document.getElementById('statusBox').value.trim();
+            if(!text || isLocked) return;
+            addEntry(text, false);
+            document.getElementById('statusBox').value = "";
+        }
+        function addEntry(txt, sys) {
+            const div = document.createElement('div'); div.className = 'entry';
+            const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            div.innerHTML = `<small style="color:var(--teal); font-weight:900;">${time}</small><p style="margin:5px 0 0 0;">${txt}</p>`;
+            if(sys) div.style.backgroundColor = "#f9f9f9";
+            document.getElementById('timeline').prepend(div);
+        }
+        function showSummary() {
+            document.getElementById('briefingHeader').style.display = "block";
+            document.getElementById('mainInputArea').style.display = "none";
+            document.getElementById('sumLawyer').innerText = localStorage.getItem('lawyerName') || "Marcus Thorne";
+            document.getElementById('sumHash').innerText = localStorage.getItem('hash') || "H1X9";
+            document.getElementById('lockBtn').innerHTML = "🔒 ARCHIVED IN CLIO GROW";
+            document.getElementById('lockBtn').style.opacity = "0.5";
+        }
+        function sealVault() {
+            if(isLocked || document.getElementById('lawyerSelect').value === "none") {
+                alert("Please select a lawyer first."); return;
+            }
+            const hash = Math.random().toString(36).substring(2, 10).toUpperCase();
+            localStorage.setItem('locked', 'true');
+            localStorage.setItem('hash', hash);
+            showSummary();
+            const url = `https://app.clio.com/oauth/authorize?response_type=code&client_id=${CLIO_CLIENT_ID}&redirect_uri=${encodeURIComponent(CLIO_REDIRECT_URI)}`;
+            setTimeout(() => { window.location.href = url; }, 1200);
+        }
         function togglePrivacy() { document.getElementById('appRoot').classList.toggle('privacy-active'); }
     </script>
 </body>
