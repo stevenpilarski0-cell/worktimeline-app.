@@ -3,30 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™ | Clio Sandbox Tested</title>
+    <title>WorkTimeline™ | Clio Professional Partner</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
         :root {
-            --teal: #008080; --gray-light: #f2f4f5; --gray-dark: #2c3e50;
+            --teal: #008080; --gray-light: #f2f4f5; --gray-mid: #dcdcdc; --gray-dark: #2c3e50;
             --timeline-active-color: #dcdcdc; 
         }
         body { font-family: 'Nunito', sans-serif; background-color: #e9ecef; margin: 0; padding: 10px; display: flex; justify-content: center; }
         .app-container { width: 100%; max-width: 800px; background: white; border-radius: 12px; min-height: 90vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.15); position: relative; }
         
-        /* CLOUD HEARTBEAT ANIMATION */
         .heartbeat-container { position: absolute; top: 15px; right: 15px; display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 900; color: #27ae60; z-index: 102; }
         .dot { height: 8px; width: 8px; background-color: #27ae60; border-radius: 50%; display: inline-block; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(39, 174, 96, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(39, 174, 96, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(39, 174, 96, 0); } }
 
         .privacy-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 100; display: none; background: rgba(255,255,255,0.1); pointer-events: none; }
         .privacy-active .privacy-overlay { display: block; pointer-events: all; }
-        .header-container { text-align: center; padding: 20px 10px; border-bottom: 2px solid var(--gray-light); position: relative; }
+        .header-container { text-align: center; padding: 20px 10px; border-bottom: 2px solid var(--gray-light); }
         .lawyer-link-box { background: #e0f2f1; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 2px solid var(--teal); position: relative; z-index: 10; }
         .summary-header { background: #2c3e50; color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: none; border-left: 8px solid var(--teal); }
         .summary-grid { display: grid; grid-template-columns: 1fr 1fr; font-size: 11px; gap: 5px; opacity: 0.9; }
         .template-row { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 15px; }
         .template-chip { background: white; border: 1.5px solid var(--teal); color: var(--teal); padding: 8px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap; }
-        #statusBox { width:100%; height:110px; border-radius: 8px; border:1px solid #ccc; padding: 12px; font-family: inherit; box-sizing: border-box; margin-bottom: 15px; font-size: 16px; }
+        #statusBox { width:100%; height:110px; border-radius: 8px; border:1px solid #ccc; padding: 12px; font-family: inherit; box-sizing: border-box; margin-bottom: 15px; font-size: 16px; resize: none; }
         .media-toolbar { display: flex; gap: 10px; margin-bottom: 15px; }
         .media-btn { background: var(--teal); color: white; border: none; border-radius: 12px; padding: 12px; cursor: pointer; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; }
         .media-btn svg { width: 22px; height: 22px; fill: white; }
@@ -42,10 +41,7 @@
 <body>
     <div id="appRoot" class="app-container">
         <div class="privacy-overlay"></div>
-        
-        <div class="heartbeat-container">
-            <span class="dot"></span> CLIO CLOUD ACTIVE
-        </div>
+        <div class="heartbeat-container"><span class="dot"></span> CLIO CLOUD ACTIVE</div>
 
         <header class="header-container">
             <svg viewBox="0 0 64 64" width="60" height="60">
@@ -110,8 +106,9 @@
         </div>
     </div>
     <script>
-        // CONFIG: Replace this with your Clio Developer Client ID later
-        const CLIO_CLIENT_ID = "YOUR_CLIENT_ID_GOES_HERE";
+        // --- CLIO CONFIGURATION ---
+        const CLIO_CLIENT_ID = "348846"; 
+        const CLIO_REDIRECT_URI = "https://worktimeline-app.vercel.app/timeline.html";
         
         let isLocked = false; let isPrivate = false; let totalEntries = 0;
         const templates = {
@@ -183,7 +180,8 @@
 
         function sealVault() { 
             if(isLocked || document.getElementById('lawyerSelect').value === "none") return;
-            if(confirm("Lock and transmit to Clio Sandbox?")) {
+            
+            if(confirm("Lock and Connect to Clio?")) {
                 isLocked = true; 
                 const hash = Math.random().toString(36).substring(2, 12).toUpperCase();
                 localStorage.setItem('timelineLocked', 'true');
@@ -193,10 +191,13 @@
                 document.getElementById('auditLog').style.display = "block";
                 document.getElementById('hashDisplay').innerText = "SHA-256: " + hash;
 
-                // REAL API REDIRECT: This will prompt your Clio Sandbox login
-                const clioUrl = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=${CLIO_CLIENT_ID}&redirect_uri=${window.location.href}`;
-                
-                setTimeout(() => { window.location.href = clioUrl; }, 1500);
+                // --- LIVE OAUTH HANDSHAKE ---
+                const redirectUri = encodeURIComponent(CLIO_REDIRECT_URI);
+                const clioAuthUrl = `https://app.clio.com/oauth/authorize?response_type=code&client_id=${CLIO_CLIENT_ID}&redirect_uri=${redirectUri}&scope=contacts`;
+
+                setTimeout(() => { 
+                    window.location.href = clioAuthUrl; 
+                }, 1500);
             }
         }
 
