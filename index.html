@@ -8,74 +8,73 @@
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
         :root { --teal: #008080; --gray-light: #f2f4f5; --gray-dark: #2c3e50; }
         body { font-family: 'Nunito', sans-serif; background-color: #e9ecef; margin: 0; padding: 10px; display: flex; justify-content: center; }
-        .app-container { width: 100%; max-width: 500px; background: white; border-radius: 12px; min-height: 90vh; display: flex; flex-direction: column; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
-        .heartbeat { position: absolute; top: 15px; right: 15px; display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 900; color: #27ae60; }
+        .app-container { width: 100%; max-width: 500px; background: white; border-radius: 20px; min-height: 90vh; display: flex; flex-direction: column; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
+        
+        .heartbeat { position: absolute; top: 15px; right: 15px; display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 900; color: #27ae60; z-index: 5; }
         .dot { height: 8px; width: 8px; background-color: #27ae60; border-radius: 50%; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(39,174,96,0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(39,174,96,0); } 100% { transform: scale(0.95); } }
-        .header-container { text-align: center; padding: 25px 15px; border-bottom: 2px solid var(--gray-light); }
-        .lawyer-box { background: #e0f2f1; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 2px solid var(--teal); }
-        .summary-header { background: var(--gray-dark); color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: none; border-left: 8px solid var(--teal); }
-        .template-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 5px; }
-        .template-chip { background: white; border: 1.5px solid var(--teal); color: var(--teal); padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap; }
-        #statusBox { width: 100%; height: 110px; border-radius: 8px; border: 1px solid #ccc; padding: 12px; font-size: 16px; margin-bottom: 15px; resize: none; box-sizing: border-box; }
-        .media-btn { background: var(--teal); color: white; border: none; border-radius: 12px; padding: 12px; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; }
-        .emoji-icon { font-size: 24px; }
-        .submit-main { width: 100%; background: var(--teal); color: white; border: none; padding: 16px; border-radius: 12px; font-weight: 900; cursor: pointer; }
-        .entry { background: white; border-left: 6px solid #dcdcdc; padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); text-align: left; }
-        .lock-footer { background: var(--gray-dark); color: white; border: none; border-radius: 12px; padding: 18px; width: 100%; cursor: pointer; font-weight: 900; text-transform: uppercase; margin-top: auto; }
-        .privacy-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; backdrop-filter: blur(20px); z-index: 100; display: none; }
-        .privacy-active .privacy-overlay { display: block; }
-    </style>
-</head>
+        
+        .header-container { text-align: center; padding: 30px 20px; border-bottom: 1px solid var(--gray-light); }
+        .lawyer-box { background: #e0f2f1; padding: 15px; border-radius: 12px; margin-bottom: 15px; border:
 <body>
     <div id="appRoot" class="app-container">
         <div class="privacy-overlay"></div>
         <div class="heartbeat"><span class="dot"></span> CLIO GROW ACTIVE</div>
+        
         <header class="header-container">
-            <h1 style="color: var(--teal); margin: 10px 0; font-size: 26px; font-weight: 900;">WORKTIMELINE&trade;</h1>
-            <p style="margin: 0 0 15px 0; font-style: italic; color: #555; font-size: 14px;">"Justice is truth in action."</p>
-            <button class="submit-main" style="background: var(--gray-dark); height: 35px; width: 120px; font-size: 10px; margin: 0 auto;" onclick="togglePrivacy()">Privacy Switch</button>
+            <h1 style="color: var(--teal); margin: 0; font-size: 28px; font-weight: 900; letter-spacing: -1px;">WORKTIMELINE&trade;</h1>
+            <p style="margin: 5px 0 20px 0; font-style: italic; color: #666; font-size: 14px;">"Justice is truth in action."</p>
+            <button class="submit-main" style="background: var(--gray-dark); height: 38px; width: 140px; font-size: 11px; margin: 0 auto; padding: 0;" onclick="togglePrivacy()">PROTECT VIEW</button>
         </header>
-        <div style="padding: 15px; flex-grow: 1; display: flex; flex-direction: column;">
+
+        <div style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column;">
             <div id="briefingHeader" class="summary-header">
-                <h3 style="margin:0; font-size:14px; color:var(--teal);">Clio Grow Intake Brief</h3>
-                <div style="font-size:11px; margin-top:5px; display:grid; grid-template-columns: 1fr 1fr;">
+                <h3 style="margin:0; font-size:16px; color:var(--teal);">Clio Grow Intake Brief</h3>
+                <div style="font-size:12px; margin-top:8px; display:grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                     <span>Lawyer: <b id="sumLawyer">--</b></span>
                     <span>Hash: <b id="sumHash">--</b></span>
                 </div>
             </div>
+
             <div id="mainInputArea">
                 <div class="lawyer-box">
-                    <label style="font-size: 10px; font-weight: 900; color: var(--teal);">AUTHENTICATING PROFESSIONAL:</label>
-                    <select id="lawyerSelect" onchange="runConflictCheck()" style="width: 100%; padding: 10px; margin-top: 5px; font-weight: 700;">
-                        <option value="none">-- Select Lawyer --</option>
+                    <label style="font-size: 10px; font-weight: 900; color: var(--teal); letter-spacing: 1px;">PROFESSIONAL SIGN-IN:</label>
+                    <select id="lawyerSelect" onchange="runConflictCheck()" style="width: 100%; padding: 12px; margin-top: 8px; font-weight: 700; border: none; border-radius: 8px; background: white;">
+                        <option value="none">-- Select Professional --</option>
                         <option value="L1">Marcus Thorne, Esq.</option>
                         <option value="L2">Sarah Jenkins, JD</option>
                     </select>
                 </div>
+
                 <div class="template-row">
                     <div class="template-chip" onclick="applyTemplate('site')">+ Site Observation</div>
                     <div class="template-chip" onclick="applyTemplate('witness')">+ Witness Note</div>
                     <div class="template-chip" onclick="applyTemplate('intake')">+ Initial Intake</div>
                 </div>
-                <textarea id="statusBox" placeholder="Start typing intake details here..."></textarea>
-                <div style="display:flex; gap:10px; margin-bottom:15px;">
+
+                <textarea id="statusBox" placeholder="Enter case details..."></textarea>
+                
+                <div class="media-toolbar">
                     <button class="media-btn" onclick="triggerMedia('cameraTrigger')">
-                        <span class="emoji-icon">📸</span>
-                        <span style="font-size: 10px; font-weight: 900;">Camera</span>
+                        <svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path fill-rule="evenodd" d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15a5 5 0 100-10 5 5 0 000 10z" clip-rule="evenodd"/></svg>
+                        <span>Camera</span>
                     </button>
                     <button class="media-btn" onclick="triggerMedia('micTrigger')">
-                        <span class="emoji-icon">🎤</span>
-                        <span style="font-size: 10px; font-weight: 900;">Mic</span>
+                        <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                        <span>Audio</span>
                     </button>
                 </div>
+
                 <input type="file" id="cameraTrigger" accept="image/*" capture="environment" style="display:none" onchange="logMedia('Photo')">
                 <input type="file" id="micTrigger" accept="audio/*" capture="microphone" style="display:none" onchange="logMedia('Audio')">
+                
                 <button class="submit-main" onclick="submitEntry()">SUBMIT TO TIMELINE</button>
             </div>
-            <div id="timeline" style="margin-top:20px;"></div>
+
+            <div id="timeline" style="margin-top:25px;"></div>
+            
             <button id="lockBtn" class="lock-footer" onclick="sealVault()">LOCK & SYNC TO GROW</button>
-            <div style="text-align:center; margin-top:15px;"><a href="#" onclick="localStorage.clear(); location.reload();" style="color:red; font-size:10px;">[RESET SYSTEM]</a></div>
+            <div style="text-align:center; padding: 20px 0;"><a href="#" onclick="localStorage.clear(); location.reload();" style="color:#e74c3c; font-size:11px; font-weight: 700; text-decoration: none;">[ CLEAR SESSION DATA ]</a></div>
         </div>
     </div>
     <script>
@@ -109,8 +108,8 @@
             box.focus();
         }
 
-        function triggerMedia(id) { document.getElementById(id).click(); }
-        function logMedia(t) { addEntry(`[LOG] ${t} captured.`, true); }
+        function triggerMedia(id) { if(!isLocked) document.getElementById(id).click(); }
+        function logMedia(t) { addEntry(`[LOG] ${t} captured for secure file.`, true); }
 
         function submitEntry() {
             const text = document.getElementById('statusBox').value.trim();
@@ -122,17 +121,17 @@
         function addEntry(txt, sys) {
             const div = document.createElement('div'); div.className = 'entry';
             const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            div.innerHTML = `<small>${time}</small><br>${txt}`;
-            if(sys) div.style.borderLeftColor = "#008080";
+            div.innerHTML = `<small style="color:var(--teal); font-weight:900;">${time}</small><p style="margin:5px 0 0 0;">${txt}</p>`;
+            if(sys) div.style.backgroundColor = "#f9f9f9";
             document.getElementById('timeline').prepend(div);
         }
 
         function showSummary() {
             document.getElementById('briefingHeader').style.display = "block";
             document.getElementById('mainInputArea').style.display = "none";
-            document.getElementById('sumLawyer').innerText = localStorage.getItem('lawyerName');
-            document.getElementById('sumHash').innerText = localStorage.getItem('hash');
-            document.getElementById('lockBtn').innerHTML = "🔒 ARCHIVED IN GROW";
+            document.getElementById('sumLawyer').innerText = localStorage.getItem('lawyerName') || "Authenticated User";
+            document.getElementById('sumHash').innerText = localStorage.getItem('hash') || "H1X9...V2";
+            document.getElementById('lockBtn').innerHTML = "🔒 ARCHIVED IN CLIO GROW";
             document.getElementById('lockBtn').style.opacity = "0.5";
         }
 
@@ -147,7 +146,7 @@
 
             const url = `https://app.clio.com/oauth/authorize?response_type=code&client_id=${CLIO_CLIENT_ID}&redirect_uri=${encodeURIComponent(CLIO_REDIRECT_URI)}`;
             
-            setTimeout(() => { window.location.href = url; }, 1000);
+            setTimeout(() => { window.location.href = url; }, 1200);
         }
 
         function togglePrivacy() { document.getElementById('appRoot').classList.toggle('privacy-active'); }
