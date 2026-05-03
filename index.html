@@ -3,139 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeLine™ | Truth</title>
+    <title>WorkTimeLine™ | Elite</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --teal: #008080; --dark: #2c3e50; --gray-light: #f8fafc; --gold: #eab308; --red: #dc2626; --red-bg: #fee2e2; }
+        :root { --teal: #008080; --dark: #2c3e50; --gray: #f8fafc; --gold: #eab308; --red: #dc2626; --red-bg: #fee2e2; }
         body { font-family: 'Nunito', sans-serif; background: #e9ecef; margin: 0; display: flex; justify-content: center; }
         .app-container { width: 100%; max-width: 500px; background: white; min-height: 100vh; display: flex; flex-direction: column; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+        header { padding: 25px 20px 10px; text-align: center; border-bottom: 1px solid #eee; }
+        .logo-box { width: 60px; height: 45px; border: 3px solid var(--teal); border-radius: 8px; margin: 0 auto; position: relative; }
+        .logo-box::before { content: ''; position: absolute; top: -10px; left: 16px; width: 18px; height: 7px; border: 3px solid var(--teal); border-bottom: none; border-radius: 4px 4px 0 0; }
+        .brand { font-weight: 900; letter-spacing: 2px; color: var(--dark); font-size: 16px; text-transform: uppercase; margin-top: 10px; display: block; }
         
-        header { padding: 30px 20px 10px; text-align: center; }
-        .logo-box { width: 80px; height: 60px; margin: 0 auto 15px; position: relative; display: flex; align-items: center; justify-content: center; }
-        .briefcase { width: 60px; height: 45px; border: 4px solid var(--teal); border-radius: 8px; position: relative; }
-        .briefcase::before { content: ''; position: absolute; top: -12px; left: 18px; width: 20px; height: 8px; border: 4px solid var(--teal); border-bottom: none; border-radius: 6px 6px 0 0; }
-        .timeline-line { position: absolute; width: 100%; height: 4px; background: #3498DB; top: 50%; left: 0; transform: translateY(-50%); z-index: 1; }
-        .timeline-dot { position: absolute; width: 10px; height: 10px; background: white; border: 2px solid #3498DB; border-radius: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 2; }
-
-        .brand { font-weight: 900; letter-spacing: 3px; color: var(--dark); font-size: 18px; text-transform: uppercase; margin-top: 10px; display: block; }
-        .quote { font-style: italic; font-size: 14px; color: #555; padding: 0 30px; margin: 10px 0; min-height: 50px; }
-        .quote span { display: block; margin-top: 5px; font-weight: 700; color: var(--teal); font-style: normal; font-size: 12px; }
-
         .top-nav { display: flex; background: var(--dark); }
         .tab-btn { background: transparent; color: #888; border: none; padding: 15px; font-size: 11px; font-weight: 900; cursor: pointer; text-transform: uppercase; flex: 1; }
-        .tab-btn.active { color: white; border-bottom: 4px solid var(--teal); background: rgba(0, 128, 128, 0.1); }
+        .tab-btn.active { color: white; border-bottom: 4px solid var(--teal); background: rgba(0,128,128,0.1); }
 
         .page { display: none; padding: 20px; flex-grow: 1; }
         .page.active { display: block; }
 
-        .input-card { background: var(--gray-light); padding: 20px; border-radius: 16px; border: 1px solid #e2e8f0; margin-bottom: 20px; }
+        .input-card { background: var(--gray); padding: 15px; border-radius: 16px; border: 1px solid #e2e8f0; margin-bottom: 20px; }
         textarea { width: 100%; border: 1px solid #ccc; padding: 12px; border-radius: 12px; font-size: 16px; font-family: inherit; resize: none; box-sizing: border-box; outline: none; }
-        .btn-submit { background: var(--teal); color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: 900; margin-top: 10px; cursor: pointer; }
+        
+        .media-bar { display: flex; gap: 10px; margin-top: 10px; }
+        .media-btn { flex: 1; padding: 8px; border-radius: 8px; border: 1px solid #ccc; background: white; font-size: 10px; font-weight: 900; cursor: pointer; }
+        .media-btn.active { background: var(--teal); color: white; border-color: var(--teal); }
+
+        .privacy-toggle { display: flex; align-items: center; justify-content: space-between; margin-top: 15px; padding-top: 10px; border-top: 1px solid #ddd; }
+        .switch { position: relative; display: inline-block; width: 44px; height: 22px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        input:checked + .slider { background-color: var(--teal); }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider:before { transform: translateX(22px); }
+
+        .btn-submit { background: var(--teal); color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: 900; margin-top: 15px; cursor: pointer; }
 
         .timeline { border-left: 3px solid var(--teal); margin-left: 10px; padding-left: 20px; }
         .entry { background: white; border: 1px solid #e2e8f0; padding: 15px; border-radius: 12px; margin-bottom: 15px; position: relative; }
+        .ghost-entry { filter: blur(5px); opacity: 0.3; }
+        .ai-flag { background: var(--warn-bg); border: 2px solid var(--gold); }
+        .tamper-warning { color: var(--red); font-weight: 900; font-size: 11px; display: none; text-align: center; margin-bottom: 10px; animation: flash 1s infinite; }
+        .tamper-mode { background: var(--red-bg) !important; border-color: var(--red) !important; color: var(--red) !important; }
 
-        .tamper-warning { color: var(--red); font-weight: 900; font-size: 11px; display: none; text-align: center; margin-bottom: 10px; text-transform: uppercase; }
-        .tampered-card { background: var(--red-bg) !important; border-color: var(--red) !important; }
-        .tampered-btn { background: var(--red) !important; }
+        @keyframes flash { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
     </style>
 </head>
-<body onload="setRandomQuote()">
+<body onload="checkQuotes()">
 
 <div class="app-container">
     <header>
-        <div class="logo-box">
-            <div class="briefcase">
-                <div class="timeline-line"></div>
-                <div class="timeline-dot" style="left: 20%;"></div>
-                <div class="timeline-dot" style="left: 50%;"></div>
-                <div class="timeline-dot" style="left: 80%;"></div>
-            </div>
-        </div>
+        <div class="logo-box"></div>
         <span class="brand">WorkTimeLine™</span>
-        <div id="quote-display" class="quote"></div>
+        <p id="quote" style="font-size: 12px; font-style: italic; color: #666; margin: 10px 0;"></p>
     </header>
 
     <nav class="top-nav">
-        <button class="tab-btn active" onclick="switchTab('workspace', this)">Workspace</button>
-        <button class="tab-btn" onclick="switchTab('lock', this)">Lock & Send</button>
+        <button class="tab-btn active" onclick="tab('workspace', this)">Workspace</button>
+        <button class="tab-btn" onclick="tab('lock', this)">Lock & Send</button>
     </nav>
 
     <div id="workspace" class="page active">
         <div id="tamper-msg" class="tamper-warning">⚠️ METADATA BREACH: POST-SEAL ALTERATION</div>
-        <div id="input-area" class="input-card">
-            <textarea id="noteInput" rows="3" placeholder="Document the truth..."></textarea>
-            <button id="submit-btn" class="btn-submit" onclick="addEntry()">LOG TO TIMELINE</button>
+        <div id="input-card" class="input-card">
+            <textarea id="note" rows="3" placeholder="Document the truth..."></textarea>
+            <div class="media-bar">
+                <button class="media-btn" onclick="this.classList.toggle('active')">📸 CAM</button>
+                <button class="media-btn" onclick="this.classList.toggle('active')">🎤 MIC</button>
+                <button class="media-btn" onclick="this.classList.toggle('active')">📄 DOC</button>
+            </div>
+            <div class="privacy-toggle">
+                <span style="font-size: 11px; font-weight: 900;">GHOST MODE (ENCRYPTED)</span>
+                <label class="switch"><input type="checkbox" id="ghost"><span class="slider"></span></label>
+            </div>
+            <button class="btn-submit" onclick="add()">LOG TO TIMELINE</button>
         </div>
         <div id="timeline" class="timeline"></div>
     </div>
 
     <div id="lock" class="page">
         <div style="text-align:center; padding:40px 10px;">
-            <h2 style="color:var(--teal)">SEAL & TRANSMIT</h2>
-            <p>Finalize the legal record for Clio?</p>
-            <button class="btn-submit" onclick="sealTimeline()">CONFIRM & SEND</button>
+            <h2 style="color:var(--teal)">SEAL VAULT</h2>
+            <p style="font-size: 14px;">Once sealed, data is immutable and sent to Clio.</p>
+            <button class="btn-submit" onclick="seal()">CONFIRM & SEAL</button>
         </div>
     </div>
 </div>
 
 <script>
-    const quotes = [
-        { text: "It is the spirit and not the form of law that keeps justice alive.", author: "Earl Warren" },
-        { text: "Truth is the daughter of time, not of authority.", author: "Francis Bacon" },
-        { text: "Justice delayed is justice denied.", author: "William E. Gladstone" },
-        { text: "Injustice anywhere is a threat to justice everywhere.", author: "Martin Luther King Jr." },
-        { text: "The first duty of society is justice.", author: "Alexander Hamilton" }
-    ];
-
-    function setRandomQuote() {
-        const randomIndex = Math.floor(Math.random() * quotes.length);
-        const q = quotes[randomIndex];
-        document.getElementById('quote-display').innerHTML = `"${q.text}" <span>— ${q.author}</span>`;
-    }
-
     let isSealed = false;
+    const quotes = ["'Truth is the daughter of time.' - Bacon", "'Justice delayed is justice denied.' - Gladstone", "'Spirit of law keeps justice alive.' - Warren"];
 
-    function switchTab(pageId, btn) {
-        const pages = document.querySelectorAll('.page');
-        const tabs = document.querySelectorAll('.tab-btn');
-        pages.forEach(p => p.style.display = 'none');
-        tabs.forEach(b => b.classList.remove('active'));
-        document.getElementById(pageId).style.display = 'block';
+    function checkQuotes() { document.getElementById('quote').innerText = quotes[Math.floor(Math.random()*quotes.length)]; }
+
+    function tab(id, btn) {
+        document.querySelectorAll('.page').forEach(p => p.style.display='none');
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).style.display='block';
         btn.classList.add('active');
     }
 
-    function addEntry() {
-        const input = document.getElementById('noteInput');
-        const text = input.value;
+    function add() {
+        const text = document.getElementById('note').value;
         if(!text) return;
-        if (isSealed) triggerTamperMode();
+        if(isSealed) { 
+            document.getElementById('tamper-msg').style.display='block';
+            document.getElementById('input-card').classList.add('tamper-mode');
+        }
 
-        const timeline = document.getElementById('timeline');
         const entry = document.createElement('div');
         entry.className = 'entry';
-        if(isSealed) entry.style.borderColor = 'var(--red)';
+        if(document.getElementById('ghost').checked) entry.classList.add('ghost-entry');
+        if(isSealed) entry.classList.add('tamper-mode');
         
-        const now = new Date();
-        const timeStr = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        // AI PATTERN
+        const triggers = ['safety', 'refused', 'supervisor', 'danger'];
+        if(triggers.some(t => text.toLowerCase().includes(t))) {
+            entry.style.background = '#fff3cd';
+            entry.style.borderColor = '#eab308';
+            entry.innerHTML = `<div style="font-size:9px; font-weight:900; color:#856404;">⚠️ AI PATTERN DETECTED</div>`;
+        }
 
-        entry.innerHTML = `<div style="font-size:10px; font-weight:900; color:inherit;">🕒 ${timeStr}</div><div>${text}</div>`;
-        timeline.prepend(entry);
-        input.value = "";
+        const time = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+        entry.innerHTML += `<div style="font-size:10px; font-weight:900; color:var(--teal);">🕒 ${time}</div><div>${text}</div>`;
+        
+        document.getElementById('timeline').prepend(entry);
+        document.getElementById('note').value = "";
     }
 
-    function sealTimeline() {
+    function seal() {
         isSealed = true;
-        alert("TIMELINE SEALED. Redirecting to Clio...");
-        window.location.href = "https://www.clio.com/features/clio-duo/";
-    }
-
-    function triggerTamperMode() {
-        document.getElementById('tamper-msg').style.display = 'block';
-        document.getElementById('input-area').classList.add('tampered-card');
-        document.getElementById('submit-btn').classList.add('tampered-btn');
+        alert("VAULT SEALED. Metadata synced to Clio.");
+        window.location.href = "https://www.clio.com/features/legal-ai/";
     }
 </script>
-
 </body>
 </html>
