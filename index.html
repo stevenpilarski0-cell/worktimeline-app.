@@ -9,10 +9,10 @@
         :root { 
             --teal: #115e59; 
             --active-blue: #3b82f6;
-            --glass-yellow: #fef08a; 
-            --glass-red: #fee2e2; 
-            --border-yellow: #facc15;
-            --border-red: #ef4444;
+            --glass-yellow: rgba(250, 204, 21, 0.25); 
+            --border-yellow: rgba(250, 204, 21, 0.7);
+            --glass-red: rgba(239, 68, 68, 0.15); 
+            --border-red: rgba(239, 68, 68, 0.6);
             --bg-gray: #f8fafc;
         }
         body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #ffffff; color: #1e293b; padding-bottom: 120px; -webkit-font-smoothing: antialiased; }
@@ -25,7 +25,7 @@
         .brand { font-weight: 900; color: var(--teal); font-size: 20px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; }
         .quote-box { font-family: Georgia, serif; font-style: italic; font-size: 15px; color: #475569; border-left: 4px solid var(--teal); padding: 15px 20px; text-align: left; background: var(--bg-gray); border-radius: 0 15px 15px 0; line-height: 1.6; }
 
-        /* PRIVACY SWITCH (Starts Clear, Switch right to Blur) */
+        /* PRIVACY SWITCH */
         .priv-row { display: flex; align-items: center; justify-content: center; gap: 12px; font-size: 12px; font-weight: 900; color: var(--teal); margin: 30px 0; text-transform: uppercase; }
         .switch { position: relative; width: 50px; height: 26px; }
         .switch input { opacity: 0; width: 0; height: 0; }
@@ -43,14 +43,44 @@
 
         /* BANNERS */
         .banner-wrap { padding: 0 20px; }
-        .banner { margin-bottom: 15px; padding: 15px; border-radius: 12px; font-size: 12px; font-weight: 800; display: none; text-align: center; border: 1px solid; }
+        .banner { margin-bottom: 15px; padding: 15px; border-radius: 12px; font-size: 12px; font-weight: 800; display: none; text-align: center; border: 1px solid; animation: fadeIn 0.4s ease; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
         #ai-banner { background: var(--glass-yellow); border-color: var(--border-yellow); color: #854d0e; }
         #tamper-banner { background: var(--glass-red); border-color: var(--border-red); color: #b91c1c; }
 
         /* INPUT AREA */
         .input-wrap { padding: 0 20px; }
-        textarea { width: 100%; height: 100px; border: 1px solid #e2e8f0; border-radius: 15px; padding: 15px; font-family: inherit; font-size: 15px; background: var(--bg-gray); outline: none; resize: none; transition: 0.3s; }
-        textarea:focus { background: #ffffff; border-color: var(--teal); }
+        textarea { width: 100%; height: 100px; border: 1px solid #e2e8f0; border-radius: 15px; padding: 15px; font-family: inherit; font-size: 15px; background: var(--bg-gray); outline: none; resize: none; transition: 0.3s; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+        textarea:focus { background: #ffffff; border-color: var(--teal); box-shadow: 0 0 0 3px rgba(17,94,89,0.1); }
         .btn-arch { width: 100%; background: var(--teal); color: #ffffff; border: none; padding: 18px; border-radius: 15px; font-weight: 900; margin-top: 15px; cursor: pointer; letter-spacing: 1px; font-size: 14px; box-shadow: 0 4px 6px rgba(17, 94, 89, 0.2); }
 
-        /* VISUAL TIM
+        /* VISUAL TIMELINE */
+        .timeline { padding: 30px 20px; position: relative; }
+        .v-line { position: absolute; left: 45px; top: 0; bottom: 0; width: 3px; background: #e2e8f0; }
+        
+        .entry { background: #ffffff; margin: 0 0 20px 45px; padding: 22px; border-radius: 20px; border: 1px solid #e2e8f0; box-shadow: 0 6px 12px rgba(0,0,0,0.04); position: relative; transition: filter 0.4s ease, background-color 0.4s ease; }
+        
+        /* Node Dots: Starts Gray, turns Blue on active entry */
+        .entry::before { content: ''; position: absolute; left: -31px; top: 25px; width: 15px; height: 15px; background: #cbd5e1; border-radius: 50%; border: 4px solid #ffffff; z-index: 10; box-shadow: 0 0 0 1px #cbd5e1; transition: 0.3s; }
+        .entry.active-node::before { background: var(--active-blue); box-shadow: 0 0 0 1px var(--active-blue); }
+
+        /* HIGHLIGHTS & BLUR */
+        .hazard-highlight { background: var(--glass-yellow) !important; border: 1px solid var(--border-yellow) !important; }
+        .tamper-highlight { background: var(--glass-red) !important; border: 2px solid var(--border-red) !important; color: #b91c1c; animation: shake 0.4s; }
+        body.privacy-on .entry { filter: blur(15px); pointer-events: none; }
+
+        /* EXPLANATION MODALS */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+        .modal-content { background: #ffffff; width: 85%; max-width: 400px; padding: 30px 25px; border-radius: 24px; text-align: center; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); animation: fadeIn 0.3s ease; }
+        .modal-title { font-size: 18px; font-weight: 900; color: var(--teal); margin: 0 0 12px 0; }
+        .modal-body { font-size: 14px; line-height: 1.6; color: #475569; margin-bottom: 25px; }
+        .btn-modal { background: var(--teal); color: #ffffff; border: none; padding: 16px; border-radius: 12px; font-weight: 800; font-size: 13px; cursor: pointer; width: 100%; box-shadow: 0 4px 6px rgba(17, 94, 89, 0.2); }
+
+        /* LOCK FOOTER */
+        .footer { position: fixed; bottom: 0; width: 100%; padding: 20px; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-top: 1px solid #e2e8f0; z-index: 1000; }
+        .btn-lock { width: 100%; background: #0f172a; color: #ffffff; border: none; padding: 20px; border-radius: 15px; font-weight: 900; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 10px 20px rgba(15, 23, 42, 0.15); }
+        .btn-lock svg { width: 22px; height: 22px; fill: #ffffff; }
+
+        .hidden-file-input { display: none; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes shake { 0%, 100% { transform: translateX
