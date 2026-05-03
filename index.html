@@ -15,10 +15,13 @@
         .header-container { text-align: center; padding: 25px 15px; border-bottom: 2px solid var(--gray-light); }
         .lawyer-box { background: #e0f2f1; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 2px solid var(--teal); }
         .summary-header { background: var(--gray-dark); color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: none; border-left: 8px solid var(--teal); }
+        .template-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 5px; }
+        .template-chip { background: white; border: 1.5px solid var(--teal); color: var(--teal); padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap; }
         #statusBox { width: 100%; height: 110px; border-radius: 8px; border: 1px solid #ccc; padding: 12px; font-size: 16px; margin-bottom: 15px; resize: none; box-sizing: border-box; }
-        .media-btn { background: var(--teal); color: white; border: none; border-radius: 12px; padding: 10px; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; }
+        .media-btn { background: var(--teal); color: white; border: none; border-radius: 12px; padding: 12px; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; }
+        .emoji-icon { font-size: 24px; }
         .submit-main { width: 100%; background: var(--teal); color: white; border: none; padding: 16px; border-radius: 12px; font-weight: 900; cursor: pointer; }
-        .entry { background: white; border-left: 6px solid #dcdcdc; padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .entry { background: white; border-left: 6px solid #dcdcdc; padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); text-align: left; }
         .lock-footer { background: var(--gray-dark); color: white; border: none; border-radius: 12px; padding: 18px; width: 100%; cursor: pointer; font-weight: 900; text-transform: uppercase; margin-top: auto; }
         .privacy-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; backdrop-filter: blur(20px); z-index: 100; display: none; }
         .privacy-active .privacy-overlay { display: block; }
@@ -30,6 +33,7 @@
         <div class="heartbeat"><span class="dot"></span> CLIO GROW ACTIVE</div>
         <header class="header-container">
             <h1 style="color: var(--teal); margin: 10px 0; font-size: 26px; font-weight: 900;">WORKTIMELINE&trade;</h1>
+            <p style="margin: 0 0 15px 0; font-style: italic; color: #555; font-size: 14px;">"Justice is truth in action."</p>
             <button class="submit-main" style="background: var(--gray-dark); height: 35px; width: 120px; font-size: 10px; margin: 0 auto;" onclick="togglePrivacy()">Privacy Switch</button>
         </header>
         <div style="padding: 15px; flex-grow: 1; display: flex; flex-direction: column;">
@@ -49,13 +53,24 @@
                         <option value="L2">Sarah Jenkins, JD</option>
                     </select>
                 </div>
-                <textarea id="statusBox" placeholder="Log initial intake details..."></textarea>
-                <div style="display:flex; gap:10px; margin-bottom:15px;">
-                    <button class="media-btn" onclick="triggerMedia('cameraTrigger')">📷<span>Camera</span></button>
-                    <button class="media-btn" onclick="triggerMedia('micTrigger')">🎤<span>Mic</span></button>
+                <div class="template-row">
+                    <div class="template-chip" onclick="applyTemplate('site')">+ Site Observation</div>
+                    <div class="template-chip" onclick="applyTemplate('witness')">+ Witness Note</div>
+                    <div class="template-chip" onclick="applyTemplate('intake')">+ Initial Intake</div>
                 </div>
-                <input type="file" id="cameraTrigger" style="display:none" onchange="logMedia('Photo')">
-                <input type="file" id="micTrigger" style="display:none" onchange="logMedia('Audio')">
+                <textarea id="statusBox" placeholder="Start typing intake details here..."></textarea>
+                <div style="display:flex; gap:10px; margin-bottom:15px;">
+                    <button class="media-btn" onclick="triggerMedia('cameraTrigger')">
+                        <span class="emoji-icon">📸</span>
+                        <span style="font-size: 10px; font-weight: 900;">Camera</span>
+                    </button>
+                    <button class="media-btn" onclick="triggerMedia('micTrigger')">
+                        <span class="emoji-icon">🎤</span>
+                        <span style="font-size: 10px; font-weight: 900;">Mic</span>
+                    </button>
+                </div>
+                <input type="file" id="cameraTrigger" accept="image/*" capture="environment" style="display:none" onchange="logMedia('Photo')">
+                <input type="file" id="micTrigger" accept="audio/*" capture="microphone" style="display:none" onchange="logMedia('Audio')">
                 <button class="submit-main" onclick="submitEntry()">SUBMIT TO TIMELINE</button>
             </div>
             <div id="timeline" style="margin-top:20px;"></div>
@@ -64,11 +79,15 @@
         </div>
     </div>
     <script>
-        // --- CLIO GROW CONFIGURATION ---
         const CLIO_CLIENT_ID = "18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s"; 
         const CLIO_REDIRECT_URI = "https://worktimeline-app.vercel.app/index.html"; 
 
         let isLocked = false;
+        const templates = {
+            site: "[SITE] Location: [ ], Observation: [ ]",
+            witness: "[WITNESS] Name: [ ], Statement: [ ]",
+            intake: "[INTAKE] Priority: [ ], Summary: [ ]"
+        };
 
         function runConflictCheck() {
             const val = document.getElementById('lawyerSelect').value;
@@ -84,8 +103,14 @@
             }
         };
 
+        function applyTemplate(key) {
+            const box = document.getElementById('statusBox');
+            box.value += (box.value.trim().length > 0 ? "\n\n" : "") + templates[key];
+            box.focus();
+        }
+
         function triggerMedia(id) { document.getElementById(id).click(); }
-        function logMedia(t) { addEntry(`[GROW LOG] ${t} captured for intake file.`, true); }
+        function logMedia(t) { addEntry(`[LOG] ${t} captured.`, true); }
 
         function submitEntry() {
             const text = document.getElementById('statusBox').value.trim();
@@ -118,11 +143,8 @@
             const hash = Math.random().toString(36).substring(2, 10).toUpperCase();
             localStorage.setItem('locked', 'true');
             localStorage.setItem('hash', hash);
-            
             showSummary();
 
-            // --- REDIRECT TO CLIO GROW API ---
-            // Note: Grow often uses a different authorize endpoint
             const url = `https://app.clio.com/oauth/authorize?response_type=code&client_id=${CLIO_CLIENT_ID}&redirect_uri=${encodeURIComponent(CLIO_REDIRECT_URI)}`;
             
             setTimeout(() => { window.location.href = url; }, 1000);
