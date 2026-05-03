@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeLine™ | Conscience of the Law</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Playfair+Display:italic,wght@600&display=swap" rel="stylesheet">
+    <title>WorkTimeLine™ | Professional Build</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --teal: #115e59;
+            --soft-teal: #f0fdfa;
             --legal-gray: #f8fafc;
             --alert-red: #dc2626;
             --ai-yellow: #fef9c3;
@@ -18,219 +19,94 @@
             transition: 0.5s; padding-bottom: 120px;
         }
 
-        /* LOGO & PHILOSOPHICAL HEADER */
+        /* Branding Header */
         header {
-            padding: 40px 25px 25px;
+            padding: 30px 25px 20px;
             border-bottom: 1px solid #e2e8f0;
-            background: linear-gradient(to bottom, #ffffff, #f1f5f9);
+            display: flex; align-items: center; justify-content: space-between;
         }
-
-        .header-top { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
         
-        .logo-box { width: 55px; }
+        .brand-block { display: flex; align-items: center; gap: 12px; }
+        .logo-box { width: 50px; }
         .logo-box svg { width: 100%; height: auto; }
+        .brand-info h1 { font-weight: 900; font-size: 15px; margin: 0; color: var(--teal); letter-spacing: 1px; }
 
-        .brand-info { display: flex; flex-direction: column; }
-        .brand-info h1 { font-weight: 900; font-size: 16px; margin: 0; color: var(--teal); letter-spacing: 2px; }
-        .brand-info span { font-size: 9px; font-weight: 700; color: #64748b; text-transform: uppercase; }
+        /* Privacy Switch (Blur) */
+        .privacy-block { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; color: #64748b; }
+        .switch { position: relative; display: inline-block; width: 44px; height: 22px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--teal); }
+        input:checked + .slider:before { transform: translateX(22px); }
 
-        .philosophy-quote {
-            font-family: 'Playfair Display', serif;
-            font-size: 14px;
-            line-height: 1.6;
-            color: #334155;
-            border-left: 3px solid var(--teal);
-            padding-left: 15px;
-            margin: 10px 0;
-        }
-        .quote-author {
-            display: block;
-            font-size: 10px;
-            text-transform: uppercase;
-            font-weight: 800;
-            color: var(--teal);
-            margin-top: 5px;
-            font-family: 'Inter', sans-serif;
-        }
-
-        /* AI STATUS */
-        #ai-status {
+        /* AI Recognition Banner */
+        #ai-banner {
             background: var(--ai-yellow);
-            margin: 15px 25px; padding: 12px; border-radius: 12px;
+            margin: 15px 20px; padding: 12px; border-radius: 12px;
             display: none; align-items: center; gap: 10px;
             font-size: 11px; font-weight: 800; border: 1px solid #fde047;
         }
 
-        /* MAC-STYLE ACTION GRID */
+        /* Solid Silhouette Icons Grid */
         .action-grid {
             display: grid; grid-template-columns: repeat(3, 1fr);
-            gap: 15px; padding: 0 25px 25px;
+            gap: 15px; padding: 20px;
         }
 
         .action-card {
-            background: var(--legal-gray); border-radius: 20px; padding: 25px 10px;
+            background: var(--legal-gray); border-radius: 20px; padding: 22px;
             display: flex; flex-direction: column; align-items: center;
-            cursor: pointer; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-            border: 1px solid #e2e8f0;
+            cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.03); border: 1px solid #e2e8f0;
         }
 
-        .action-card svg { width: 35px; height: 35px; fill: var(--teal); margin-bottom: 10px; }
-        .action-card span { font-size: 10px; font-weight: 900; text-transform: uppercase; color: var(--teal); }
+        .action-card svg { width: 32px; height: 32px; fill: var(--teal); margin-bottom: 8px; }
+        .action-card span { font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--teal); }
 
-        /* TIMELINE FLOW */
-        .timeline-container { padding: 0 30px; position: relative; }
-        .line { position: absolute; left: 40px; top: 0; bottom: 0; width: 2px; background: #e2e8f0; }
+        /* Timeline Input & Dynamic Architecture */
+        .timeline-creator { padding: 0 20px; }
+        #logInput {
+            width: 100%; border: 2px solid var(--legal-gray); padding: 16px;
+            border-radius: 16px; font-size: 14px; outline: none; box-sizing: border-box;
+            background: #fff; margin-bottom: 12px;
+        }
+        #logInput:focus { border-color: #e2e8f0; }
+
+        .btn-architect {
+            width: 100%; background: #1f2937; color: white; border: none;
+            padding: 18px; border-radius: 16px; font-weight: 800; font-size: 13px;
+            cursor: pointer; letter-spacing: 1px;
+        }
+
+        .timeline-container { padding: 25px 30px; position: relative; }
+        .vertical-line { position: absolute; left: 40px; top: 0; bottom: 0; width: 2px; background: #e2e8f0; }
 
         .entry {
-            background: #fff; margin: 25px 0 25px 40px; padding: 20px;
+            background: #fff; margin: 20px 0 20px 40px; padding: 20px;
             border-radius: 20px; border: 1px solid #f1f5f9;
             box-shadow: 0 10px 15px -3px rgba(0,0,0,0.03);
-            position: relative; animation: slideIn 0.5s ease;
+            position: relative; animation: slideIn 0.4s ease; transition: filter 0.3s ease;
         }
 
         .entry::before {
-            content: ''; position: absolute; left: -31px; top: 28px;
+            content: ''; position: absolute; left: -31px; top: 27px;
             width: 14px; height: 14px; background: var(--teal);
             border-radius: 50%; border: 4px solid #fff; box-shadow: 0 0 0 1px var(--teal);
         }
 
-        /* TAMPERED ALERT */
-        .tampered { background: #fef2f2 !important; border: 2.5px solid var(--alert-red) !important; animation: shake 0.6s; }
+        /* Privacy Blur Applied to Entry Cards */
+        .privacy-active .entry { filter: blur(15px); }
+
+        /* Tamper State */
+        .tampered { background: #fef2f2 !important; border: 2px solid var(--alert-red) !important; animation: shake 0.5s; }
         .tampered::before { background: var(--alert-red) !important; }
 
-        /* SEAL BUTTON */
-        .footer {
-            position: fixed; bottom: 0; width: 100%; padding: 25px;
+        /* Lock Footer */
+        .footer-lock {
+            position: fixed; bottom: 0; width: 100%; padding: 20px;
             background: #fff; border-top: 1px solid #e2e8f0; box-sizing: border-box;
         }
-        .btn-seal {
+        .btn-lock {
             width: 100%; background: var(--teal); color: white; border: none;
-            padding: 22px; border-radius: 20px; font-weight: 900;
-            font-size: 14px; letter-spacing: 1px;
-        }
-
-        @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-10px);} 75% {transform: translateX(10px);} }
-        @keyframes slideIn { from {opacity: 0; transform: translateX(20px);} to {opacity: 1; transform: translateX(0);} }
-        input[type="file"] { display: none; }
-    </style>
-</head>
-<body>
-
-<header>
-    <div class="header-top">
-        <div class="logo-box">
-            <svg viewBox="0 0 100 100">
-                <rect x="15" y="35" width="70" height="45" rx="10" fill="none" stroke="#115e59" stroke-width="6"/>
-                <path d="M35 35 V25 Q35 18 50 18 Q65 18 65 25 V35" fill="none" stroke="#115e59" stroke-width="6"/>
-                <circle cx="35" cy="58" r="6" fill="#fff" stroke="#60a5fa" stroke-width="3"/>
-                <circle cx="50" cy="58" r="6" fill="#fff" stroke="#60a5fa" stroke-width="3"/>
-                <circle cx="65" cy="58" r="6" fill="#60a5fa" />
-            </svg>
-        </div>
-        <div class="brand-info">
-            <h1>WORKTIMELINE™</h1>
-            <span>The Architect of Truth</span>
-        </div>
-    </div>
-    <div class="philosophy-quote" id="quote-display">
-        "Justice is the constant and perpetual will to allot to every man his due."
-        <span class="quote-author" id="quote-author">— Ulpian (Digest of Roman Law)</span>
-    </div>
-</header>
-
-<div id="ai-status">
-    <div style="width: 8px; height: 8px; background: #ca8a04; border-radius: 50%;"></div>
-    <span id="ai-msg">AI PATTERN RECOGNITION: BRIDGING TRUTH TO RECORD</span>
-</div>
-
-<div class="action-grid">
-    <div class="action-card" onclick="document.getElementById('c-in').click()">
-        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-        <span>Camera</span>
-    </div>
-    <input type="file" id="c-in" capture="environment" accept="image/*">
-
-    <div class="action-card" onclick="document.getElementById('m-in').click()">
-        <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg>
-        <span>Audio</span>
-    </div>
-    <input type="file" id="m-in" capture="user" accept="audio/*">
-
-    <div class="action-card" onclick="addNarrative()">
-        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6z"/></svg>
-        <span>Document</span>
-    </div>
-</div>
-
-<div class="timeline-container">
-    <div class="line"></div>
-    <div id="timeline-hook"></div>
-</div>
-
-<div class="footer">
-    <button class="btn-seal" onclick="sealTimeline()">LOCK & SYNC WITH CLIO</button>
-</div>
-
-<script>
-    const quotes = [
-        { q: "Justice is the constant and perpetual will to allot to every man his due.", a: "— Ulpian (Roman Law)" },
-        { q: "If you are a lawyer, be a peace-maker. Discourage litigation. Persuade your neighbors to compromise.", a: "— Abraham Lincoln" },
-        { q: "The law should not be a check on the people, but a shield for them.", a: "— Louis Brandeis" },
-        { q: "Justice must not only be done; it must manifestly be seen to be done.", a: "— Lord Hewart" },
-        { q: "Be organized, be truthful. The architecture of your record is the path to your freedom.", a: "— WorkTimeLine Philosophy" }
-    ];
-
-    let qIdx = 0;
-    setInterval(() => {
-        qIdx = (qIdx + 1) % quotes.length;
-        document.getElementById('quote-display').innerHTML = `"${quotes[qIdx].q}" <span class="quote-author">${quotes[qIdx].a}</span>`;
-    }, 8000);
-
-    let hazardCount = 0;
-    const scripts = [
-        "Case file opened. Establishing the baseline of truth.",
-        "Hazard detected at site entry. Client safety protocol activated.",
-        "Audio testimony recorded. Pattern analysis confirms integrity.",
-        "Safety protocol updated. Discrepancies between system and reality bridged.",
-        "Final evidence collection complete. Bridging client truth to legal standard."
-    ];
-    let sIdx = 0;
-
-    function addNarrative() {
-        if (sIdx < scripts.length) {
-            const txt = scripts[sIdx];
-            if (txt.toLowerCase().includes("safety protocol") || txt.toLowerCase().includes("hazard")) {
-                hazardCount++;
-                if (hazardCount >= 2) document.getElementById('ai-status').style.display = 'flex';
-            }
-            const div = document.createElement('div');
-            div.className = 'entry';
-            div.innerHTML = `<div style="font-size:10px; font-weight:800; color:var(--teal); margin-bottom:6px;">VERIFIED LOG • ${new Date().toLocaleTimeString()}</div>${txt}`;
-            document.getElementById('timeline-hook').appendChild(div);
-            sIdx++;
-            window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
-        }
-    }
-
-    function sealTimeline() {
-        sessionStorage.setItem('locked', 'true');
-        history.pushState({locked: true}, "");
-        const btn = document.querySelector('.btn-seal');
-        btn.innerText = "AUTHENTICATING TRUTH...";
-        btn.style.background = "#0f172a";
-        setTimeout(() => { window.location.href = "https://ca.app.clio.com/nc/#/matters"; }, 2000);
-    }
-
-    window.addEventListener('popstate', () => {
-        if (sessionStorage.getItem('locked') === 'true') {
-            document.body.style.background = "#fef2f2";
-            document.querySelectorAll('.entry').forEach(e => e.classList.add('tampered'));
-            const ai = document.getElementById('ai-status');
-            ai.style.display = 'flex';
-            ai.style.background = '#dc2626'; ai.style.color = 'white';
-            document.getElementById('ai-msg').innerText = "INTEGRITY BREACH: TIMELINE ALTERED POST-SUBMISSION";
-        }
-    });
-</script>
-</body>
-</html>
+            padding: 20px; border-radius: 18px; font-weight: 900;
+            font-size: 13px; letter-spacing: 1px; cursor:
