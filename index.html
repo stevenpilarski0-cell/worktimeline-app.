@@ -12,11 +12,9 @@
         }
         body { font-family: 'Nunito', sans-serif; background-color: #e9ecef; margin: 0; padding: 10px; display: flex; justify-content: center; }
         .app-container { width: 100%; max-width: 800px; background: white; border-radius: 12px; min-height: 90vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.15); position: relative; }
-        
         .heartbeat-container { position: absolute; top: 15px; right: 15px; display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 900; color: #27ae60; z-index: 102; }
         .dot { height: 8px; width: 8px; background-color: #27ae60; border-radius: 50%; display: inline-block; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(39, 174, 96, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(39, 174, 96, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(39, 174, 96, 0); } }
-
         .privacy-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 100; display: none; background: rgba(255,255,255,0.1); pointer-events: none; }
         .privacy-active .privacy-overlay { display: block; pointer-events: all; }
         .header-container { text-align: center; padding: 20px 10px; border-bottom: 2px solid var(--gray-light); }
@@ -108,7 +106,7 @@
     <script>
         // --- CLIO CONFIGURATION ---
         const CLIO_CLIENT_ID = "348846"; 
-        const CLIO_REDIRECT_URI = "https://worktimeline-app.vercel.app/timeline.html";
+        const CLIO_REDIRECT_URI = "https://worktimeline-app.vercel.app/"; // Simplified to match index.html
         
         let isLocked = false; let isPrivate = false; let totalEntries = 0;
         const templates = {
@@ -175,29 +173,21 @@
             document.getElementById('lockBtn').innerHTML = '🔒 SECURED & TRANSMITTED';
             document.getElementById('sumLawyer').innerText = localStorage.getItem('selectedLawyer') || "Marcus Thorne, Esq.";
             document.getElementById('sumHash').innerText = localStorage.getItem('lastHash') || "A7B2...9F1";
-            document.getElementById('sumCount').innerText = totalEntries || "5";
+            document.getElementById('sumCount').innerText = totalEntries || "0";
         }
 
         function sealVault() { 
             if(isLocked || document.getElementById('lawyerSelect').value === "none") return;
-            
             if(confirm("Lock and Connect to Clio?")) {
                 isLocked = true; 
                 const hash = Math.random().toString(36).substring(2, 12).toUpperCase();
                 localStorage.setItem('timelineLocked', 'true');
                 localStorage.setItem('lastHash', hash);
-                
                 showSummary();
                 document.getElementById('auditLog').style.display = "block";
                 document.getElementById('hashDisplay').innerText = "SHA-256: " + hash;
-
-                // --- LIVE OAUTH HANDSHAKE ---
-                const redirectUri = encodeURIComponent(CLIO_REDIRECT_URI);
-                const clioAuthUrl = `https://app.clio.com/oauth/authorize?response_type=code&client_id=${CLIO_CLIENT_ID}&redirect_uri=${redirectUri}&scope=contacts`;
-
-                setTimeout(() => { 
-                    window.location.href = clioAuthUrl; 
-                }, 1500);
+                const clioAuthUrl = `https://app.clio.com/oauth/authorize?response_type=code&client_id=${CLIO_CLIENT_ID}&redirect_uri=${encodeURIComponent(CLIO_REDIRECT_URI)}&scope=contacts`;
+                setTimeout(() => { window.location.href = clioAuthUrl; }, 1500);
             }
         }
 
