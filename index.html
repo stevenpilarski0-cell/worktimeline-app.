@@ -3,59 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeLine™ | Official</title>
+    <title>WorkTimeLine™ | Professional Build</title>
     <style>
         :root { 
             --teal: #115e59; 
-            --glass-yellow: rgba(254, 240, 138, 0.7); 
-            --glass-red: rgba(239, 68, 68, 0.7); 
+            --icon-gray: #cbd5e1;
+            --glass-yellow: rgba(254, 240, 138, 0.6); 
+            --glass-red: rgba(239, 68, 68, 0.15); 
             --border-yellow: #facc15;
             --border-red: #ef4444;
         }
-        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #fff; color: #333; padding-bottom: 120px; overflow-x: hidden; }
+        body { margin: 0; font-family: -apple-system, sans-serif; background: #fff; color: #1e293b; padding-bottom: 120px; }
         
-        /* Header & Quote */
-        header { padding: 25px 20px; border-bottom: 1px solid #eee; background: #fff; }
-        .brand { font-weight: 900; color: var(--teal); font-size: 16px; letter-spacing: 1px; }
-        .quote { font-style: italic; font-size: 13px; color: #666; border-left: 3px solid var(--teal); padding-left: 12px; margin: 15px 0; line-height: 1.4; }
+        /* Professional Header with Official Logo */
+        header { padding: 25px 20px; border-bottom: 1px solid #f1f5f9; background: #fff; text-align: center; }
+        .logo-container { width: 80px; margin: 0 auto 10px; }
+        .logo-svg { width: 100%; height: auto; }
+        .brand { font-weight: 900; color: var(--teal); font-size: 14px; letter-spacing: 2px; text-transform: uppercase; }
+        
+        .quote { font-family: serif; font-style: italic; font-size: 13px; color: #64748b; border-left: 3px solid var(--teal); padding: 5px 15px; margin: 15px auto; max-width: 90%; line-height: 1.5; text-align: left; }
 
         /* Privacy Switch */
-        .priv-row { display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: bold; color: #888; text-transform: uppercase; }
+        .priv-row { display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 10px;}
         
-        /* Modern Glass Banners */
-        .banner { margin: 10px 15px; padding: 15px; border-radius: 12px; display: none; font-size: 12px; font-weight: bold; backdrop-filter: blur(10px); border: 1px solid; animation: slideIn 0.3s ease; }
+        /* Action Grid with Silhouette Light Gray Icons */
+        .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; padding: 20px; }
+        .card { background: #fff; border-radius: 20px; padding: 20px; text-align: center; border: 1px solid #f1f5f9; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); cursor: pointer; }
+        .card svg { width: 35px; height: 35px; fill: var(--icon-gray); margin-bottom: 10px; }
+        .card b { font-size: 9px; color: #94a3b8; display: block; letter-spacing: 1px; }
+
+        /* AI & Tamper Banners */
+        .banner { margin: 10px 20px; padding: 15px; border-radius: 15px; display: none; font-size: 11px; font-weight: 800; backdrop-filter: blur(10px); border: 1px solid; text-align: center; }
         #ai-banner { background: var(--glass-yellow); border-color: var(--border-yellow); color: #854d0e; }
-        #tamper-banner { background: var(--glass-red); border-color: var(--border-red); color: #7f1d1d; }
+        #tamper-banner { background: var(--glass-red); border-color: var(--border-red); color: #b91c1c; }
 
-        /* Action Grid */
-        .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; padding: 15px; }
-        .card { background: #f8fafc; border-radius: 15px; padding: 18px; text-align: center; border: 1px solid #e2e8f0; cursor: pointer; }
-        .card b { font-size: 10px; color: var(--teal); display: block; margin-top: 8px; letter-spacing: 1px; }
+        /* Input Section */
+        .input-box { padding: 0 20px; }
+        textarea { width: 100%; height: 90px; border: 1px solid #e2e8f0; border-radius: 15px; padding: 15px; box-sizing: border-box; font-size: 14px; outline: none; background: #f8fafc; transition: 0.3s; }
+        textarea:focus { border-color: var(--teal); background: #fff; }
+        .btn-arch { width: 100%; background: #0f172a; color: #fff; border: none; padding: 18px; border-radius: 15px; font-weight: 800; margin-top: 12px; cursor: pointer; font-size: 12px; letter-spacing: 1px; }
 
-        /* Input */
-        .input-box { padding: 0 15px; }
-        textarea { width: 100%; height: 80px; border: 1px solid #cbd5e1; border-radius: 12px; padding: 12px; box-sizing: border-box; font-family: inherit; font-size: 14px; outline: none; }
-        .btn-arch { width: 100%; background: #0f172a; color: #fff; border: none; padding: 16px; border-radius: 12px; font-weight: bold; margin-top: 10px; cursor: pointer; }
-
-        /* Timeline Entries */
-        .timeline { padding: 20px; position: relative; }
-        .entry { background: #fff; border: 1px solid #f1f5f9; padding: 18px; border-radius: 18px; margin-bottom: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); position: relative; transition: 0.3s; }
-        
-        /* Highlighting States */
+        /* Timeline View */
+        .timeline { padding: 25px; position: relative; }
+        .entry { background: #fff; border: 1px solid #f1f5f9; padding: 20px; border-radius: 20px; margin-bottom: 15px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.03); transition: 0.4s; }
         .hazard-highlight { background: var(--glass-yellow) !important; border: 1px solid var(--border-yellow) !important; }
-        .tamper-highlight { background: var(--glass-red) !important; border: 1px solid var(--border-red) !important; animation: shake 0.4s; }
-        .blurred .entry { filter: blur(15px); }
+        .tamper-highlight { background: var(--glass-red) !important; border: 1px solid var(--border-red) !important; animation: shake 0.5s; }
+        body.privacy-on .entry { filter: blur(20px); pointer-events: none; }
 
-        /* Explanation Popups */
-        .modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); z-index: 1000; display: none; text-align: center; border: 1px solid #eee; }
-        .modal h3 { margin-top: 0; color: var(--teal); }
-        .modal p { font-size: 14px; line-height: 1.5; color: #4b5563; }
-        .modal button { background: var(--teal); color: white; border: none; padding: 12px 25px; border-radius: 10px; font-weight: bold; margin-top: 15px; }
-        .overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.4); z-index: 999; display: none; }
+        /* Explanation Modals */
+        .modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80%; background: white; padding: 30px; border-radius: 25px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); z-index: 1000; display: none; text-align: center; }
+        .modal h3 { margin: 0 0 15px; color: var(--teal); font-size: 18px; }
+        .modal p { font-size: 13px; line-height: 1.6; color: #64748b; margin-bottom: 20px; }
+        .modal button { background: var(--teal); color: white; border: none; padding: 14px 30px; border-radius: 12px; font-weight: 800; width: 100%; cursor: pointer; }
+        .overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 999; display: none; }
 
-        /* Footer */
-        .footer { position: fixed; bottom: 0; width: 100%; padding: 20px; background: white; border-top: 1px solid #eee; box-sizing: border-box; z-index: 500; }
-        .lock-btn { width: 100%; background: var(--teal); color: #fff; border: none; padding: 18px; border-radius: 12px; font-weight: 900; letter-spacing: 1px; cursor: pointer; }
+        /* Lock Button Footer */
+        .footer { position: fixed; bottom: 0; width: 100%; padding: 20px; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); border-top: 1px solid #f1f5f9; box-sizing: border-box; }
+        .lock-btn { width: 100%; background: var(--teal); color: #fff; border: none; padding: 20px; border-radius: 15px; font-weight: 900; letter-spacing: 1px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
 
-        @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes shake { 0%, 100
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+    </style>
+</head>
+<body>
+
+<div id="overlay" class="overlay"></div>
+
+<div id="aiModal" class="modal">
+    <h3>AI Insight: Pattern Detected</h3>
+    <p>Multiple entries containing behavioral or environmental risks have been identified. We bridge the gap by highlighting these patterns to ensure your legal representation has a clear roadmap of recurring hazards.</p>
+    <button onclick="closeModals()">CONTINUE ARCHITECTING</button>
+</div>
+
+<div id="tamperModal" class="modal">
+    <h3>Integrity Notification</h3>
+    <p>This record was sealed in the Clio Vault. An attempt to modify the timeline after synchronization has triggered a tamper alert to preserve the authenticity of your evidence.</p>
+    <button onclick="closeModals()">SECURE RECORD</button>
+</div>
+
+<header>
+    <div class="logo-container">
+        <svg class="logo-svg" viewBox="0 0 100 100">
+            <rect x="20" y="35" width="60" height="45" rx="8" fill="none" stroke="#115e59" stroke-width="5"/>
+            <path d="M40 35 V28 Q40 22 50 22 Q60 22 60 28 V35" fill="none" stroke="#115e59" stroke-width="5"/>
+            <line x1="15" y1="58" x2="85" y2="58" stroke="#60a5fa" stroke-width="3" />
+            <circle cx="35" cy="58" r="5" fill="#fff" stroke="#60a5fa" stroke-width="3"/>
+            <circle cx="50" cy="58" r="5" fill="#fff" stroke="#60a5fa" stroke-width="3"/>
+            <circle cx="65" cy="58" r="5" fill="#3b82f6" />
+        </svg>
+    </div>
+    <div class="brand">WORKTIMELINE™</div>
+    <div class="quote" id="quoteText"></div>
+    <div class="priv-row">
+        <span>Privacy Switch</span>
+        <input type="checkbox" id="pSwitch" onchange="applyPrivacy()">
+    </div>
+</header>
+
+<div id="ai-banner" class="banner">⚠️ AI PATTERN RECOGNITION: RISK DETECTED</div>
+<div id="tamper-banner" class="banner">❌ TIMELINE INTEGRITY COMPROMISED</div>
+
+<div class="grid">
+    <div class="card">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4V4zm12 8a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+        <b>CAMERA</b>
+    </div>
+    <div class="card">
+        <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
+        <b>AUDIO</b>
+    </div>
+    <div class="card">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2z"/></svg>
+        <b>NOTEPAD</b>
+    </div>
+</div>
+
+<div class="input-box">
+    <textarea id="entryText" placeholder="Log evidence... (Trigger words: Hazard, Staring, Belittle)"></textarea>
+    <button class="btn-arch" onclick="submitEntry()">ARCHITECT TRUTH</button>
+</div>
+
+<div class="timeline" id="timelineList"></div>
+
+<div class="footer">
+    <button class="lock-btn" onclick="sealVault()">
+        <svg style="width:16px;" viewBox="0 0 24 24"><path fill="white" d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6z"/></svg>
+        LOCK & SEND TO CLIO
+    </button>
+</div>
+
+<script>
+    let triggers = 0;
+    const quotes = [
+        "Justice is the constant and perpetual will to allot to every man his due. — Ulpian",
+        "The law is a shield for the truth, and organization is the bridge to justice.",
+        "Structure is the path to freedom; truth is the architect. — WorkTimeLine",
+        "Organization is how we take our power back from chaos. — Brandeis"
+    ];
+
+    window.onload = function() {
+        document.getElementById('quoteText').innerText = quotes[Math.floor(Math.random() * quotes.length)];
+        if (localStorage.getItem('vaultSealed') === 'true') triggerTamper();
+    };
+
+    function applyPrivacy() {
+        document.getElementById('timelineList').classList.toggle('privacy-on', document.getElementById('pSwitch').checked);
+    }
+
+    function submitEntry() {
+        const box = document.getElementById('entryText');
+        const val = box.value.trim();
+        if(!val) return;
+
+        if (localStorage.getItem('vaultSealed') === 'true') triggerTamper();
+
+        const lower = val.toLowerCase();
+        const matches = lower.match(/hazard|staring|belittle/g);
+        if(matches) triggers += matches.length;
+
+        if(triggers >= 3 && !sessionStorage.getItem('aiExplainerDone')) {
+            showModal('aiModal');
+            sessionStorage.setItem('aiExplainerDone', 'true');
+            document.getElementById('ai-banner').style.display = 'block';
+        }
+
+        const card = document.createElement('div');
+        card.className = 'entry';
+        if(lower.includes("hazard")) card.classList.add('hazard-highlight');
+        if(localStorage.getItem('vaultSealed') === 'true') card.classList.add('tamper-highlight');
+
+        card.innerHTML = `<div style="font-size:9px; font-weight:800; color:var(--teal); margin-bottom:8px;">${new Date().toLocaleTimeString()} • VERIFIED RECORD</div>${val}`;
+        
+        const list = document.getElementById('timelineList');
+        list.insertBefore(card, list.firstChild);
+        box.value = "";
+    }
+
+    function triggerTamper() {
+        document.getElementById('tamper-banner').style.display = 'block';
+        document.querySelectorAll('.entry').forEach(e => e.classList.add('tamper-highlight'));
+        if (!sessionStorage.getItem('tamperExplainerDone')) {
+            showModal('tamperModal');
+            sessionStorage.setItem('tamperExplainerDone', 'true');
+        }
+    }
+
+    function sealVault() {
+        localStorage.setItem('vaultSealed', 'true');
+        alert("Integrity Sealed. Synchronizing with Clio Vault...");
+        window.location.href = "https://ca.app.clio.com/nc/#/matters";
+    }
+
+    function showModal(id) {
+        document.getElementById('overlay').style.display = 'block';
+        document.getElementById(id).style.display = 'block';
+    }
+
+    function closeModals() {
+        document.getElementById('overlay').style.display = 'none';
+        document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+    }
+</script>
+</body>
+</html>
