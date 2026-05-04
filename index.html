@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WorkTimeline™ | Master Prototype</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
         
@@ -96,6 +97,10 @@
         .lock-footer { background: var(--gray-dark); color: #ffffff; border: none; border-radius: 30px; padding: 22px; width: 100%; cursor: pointer; font-weight: 900; text-transform: uppercase; margin-top: auto; transition: 0.2s; font-family: 'Nunito', sans-serif; }
         .lock-footer:active { transform: scale(0.98); }
         
+        /* DATABASE CONFIG PANEL */
+        .db-config-panel { background: #fff; border: 2px solid #ddd; padding: 15px; border-radius: 20px; margin-bottom: 15px; font-size: 12px; display: none; }
+        .db-config-panel input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 12px; margin-top: 5px; margin-bottom: 10px; font-family: inherit; font-size: 13px; box-sizing: border-box; }
+
         /* WARNING MODAL */
         .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; backdrop-filter: blur(15px); background: rgba(255,255,255,0.7); z-index: 100; display: none; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; }
         .modal-content { background: white; border-radius: 30px; padding: 30px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.15); border: 2px solid var(--platinum-mid); }
@@ -176,11 +181,23 @@
                     <p style="margin: 2px 0 0 0; font-style: italic; color: var(--platinum-dark); font-size: 12px; font-weight: 600;">"Justice is truth in action."</p>
                 </div>
             </div>
-            <button class="submit-main" style="background: var(--platinum-bg); color: var(--gray-dark); box-shadow: none; height: 35px; width: 90px; font-size: 9px; margin: 0; padding: 0; border: 2px solid var(--platinum-mid); z-index: 95; flex-shrink: 0;" onclick="togglePrivacy()">PROTECT VIEW</button>
+            <div style="display: flex; flex-direction: column; gap: 5px;">
+                <button class="submit-main" style="background: var(--platinum-bg); color: var(--gray-dark); box-shadow: none; height: 32px; width: 90px; font-size: 9px; margin: 0; padding: 0; border: 2px solid var(--platinum-mid); z-index: 95; font-weight: 900;" onclick="togglePrivacy()">PROTECT VIEW</button>
+                <button class="submit-main" style="background: white; color: var(--teal); box-shadow: none; height: 26px; width: 90px; font-size: 9px; margin: 0; padding: 0; border: 1px dashed var(--teal); z-index: 95; font-weight: 800;" onclick="toggleDbPanel()">DB CONFIG</button>
+            </div>
         </header>
 
         <div style="padding: 25px; flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto;">
             
+            <div id="dbConfig" class="db-config-panel">
+                <strong>Database Settings (Saves to device securely)</strong>
+                <label style="display:block; margin-top:8px;">Supabase URL:</label>
+                <input type="text" id="dbUrl" placeholder="https://xyz.supabase.co">
+                <label style="display:block;">Supabase Anon Key:</label>
+                <input type="text" id="dbKey" placeholder="eyJhbGciOi...">
+                <button class="submit-main" style="padding:10px; margin:0;" onclick="saveDbKeys()">Save DB Connection</button>
+            </div>
+
             <div id="briefingHeader" class="summary-header">
                 <h3 style="margin:0 0 10px 0; font-size:18px; color:var(--teal-soft);">Clio Grow Intake Brief</h3>
                 <div style="font-size:13px; font-weight: 600; opacity: 0.9;">
@@ -260,7 +277,7 @@
     </div>
 
     <script>
-        // --- CINEMATIC INTRO ---
+        // --- 42-SECOND CINEMATIC INTRO FLOW ---
         window.addEventListener('load', () => {
             const splash = document.getElementById('splashScreen');
             const steps = [
@@ -275,13 +292,49 @@
             setTimeout(() => { steps[3].classList.remove('active'); steps[4].classList.add('active'); }, 24000); 
             setTimeout(() => { steps[4].classList.remove('active'); steps[5].classList.add('active'); }, 30000); 
             
+            // Wait 5 seconds on final slide before popping checkmark
             setTimeout(() => { document.getElementById('clioCheck').classList.add('pop'); }, 35000); 
 
+            // Fade it out smoothly
             setTimeout(() => {
                 splash.style.opacity = '0';
                 setTimeout(() => splash.style.display = 'none', 1000);
             }, 39500);
+
+            // Fetch stored Supabase DB keys if existing
+            if (localStorage.getItem('sb_url')) document.getElementById('dbUrl').value = localStorage.getItem('sb_url');
+            if (localStorage.getItem('sb_key')) document.getElementById('dbKey').value = localStorage.getItem('sb_key');
+            initSupabase();
         });
+
+        // --- SUPABASE INTIALIZATION ENGINE ---
+        let sb = null;
+        function initSupabase() {
+            const u = localStorage.getItem('sb_url');
+            const k = localStorage.getItem('sb_key');
+            if (u && k && typeof supabase !== 'undefined') {
+                sb = supabase.createClient(u, k);
+            }
+        }
+
+        function toggleDbPanel() {
+            const p = document.getElementById('dbConfig');
+            p.style.display = (p.style.display === 'block') ? 'none' : 'block';
+        }
+
+        function saveDbKeys() {
+            const u = document.getElementById('dbUrl').value.trim();
+            const k = document.getElementById('dbKey').value.trim();
+            if (u && k) {
+                localStorage.setItem('sb_url', u);
+                localStorage.setItem('sb_key', k);
+                initSupabase();
+                alert('Database keys successfully linked!');
+                toggleDbPanel();
+            } else {
+                alert('Both fields are required.');
+            }
+        }
 
         // --- CORE APPLICATION LOGIC ---
         let isLocked = false;
@@ -315,7 +368,7 @@
             addEntry(`🔒 ${t} attached to secure timeline.`, true); 
         }
 
-        function submitEntry() {
+        async function submitEntry() {
             const text = document.getElementById('statusBox').value.trim();
             if (!text || isLocked) return;
             
@@ -325,6 +378,18 @@
                     document.getElementById('patternAlert').style.display = "block";
                     patternFlagged = true;
                 }
+            }
+
+            // Push directly to Supabase table in the cloud
+            if (sb) {
+                const lawyer = localStorage.getItem('lawyer') || "Unassigned";
+                const { error } = await sb.from('timeline_entries').insert([{ 
+                    lawyer_name: lawyer, 
+                    entry_text: text, 
+                    latitude: "49.2827° N", 
+                    longitude: "123.1207° W" 
+                }]);
+                if (error) console.error("Cloud DB insertion error:", error);
             }
 
             addEntry(text, false);
