@@ -424,33 +424,38 @@
             document.getElementById('warningModal').style.display = "none"; 
         }
 
-        function proceedToSummary() {
-            closeWarning(); 
-            isLocked = true;
-            document.getElementById('briefingHeader').style.display = "block";
-            document.getElementById('mainInputArea').style.display = "none";
-            document.getElementById('duoSummaryBox').style.display = "block"; 
-            
-            document.getElementById('sumLawyer').innerText = localStorage.getItem('lawyer') || "Marcus Thorne, Esq.";
-            document.getElementById('sumHash').innerText = Math.random().toString(36).substring(2, 6).toUpperCase();
-            
-            const entriesCount = document.querySelectorAll('.entry').length;
-            const extraAlert = patternFlagged ? " ⚠️ Risk Assessment module generated based on pattern detection." : "";
-            
-            document.getElementById('duoSummaryText').innerHTML = `<strong>Actionable Intelligence:</strong> Compiled ${entriesCount} secure field events. Extracted location metadata, witness notes, and high-fidelity attachments.${extraAlert}`;
-            
-                const clientId = '18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s'; 
-    const redirectUri = 'https://worktimeline-app.vercel.app'; 
-    const authUrl = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+            function proceedToSummary() {
+        closeWarning();
+        isLocked = true;
+        document.getElementById('briefingHeader').style.display = 'block';
+        document.getElementById('mainInputArea').style.display = 'none';
+        document.getElementById('duoSummaryBox').style.display = 'block';
 
-    window.location.href = authUrl;
+        document.getElementById('sumLawyer').innerText = localStorage.getItem('lawyer') || "Marcus Thorne, Esq.";
+        document.getElementById('sumHash').innerText = Math.random().toString(36).substring(2, 8).toUpperCase();
 
-            
-        }
+        const entriesCount = document.querySelectorAll('.entry').length;
+        const extraAlert = patternFlagged ? " ⚠️ Risk Assessment module generated based on pattern detection." : "";
 
-        function togglePrivacy() { 
-            document.getElementById('appRoot').classList.toggle('privacy-active'); 
-        }
-    </script>
+        document.getElementById('duoSummaryText').innerHTML = `<strong>Actionable Intelligence:</strong> Compiled ${entriesCount} secure field events. Extracted location metadata, witness notes, and high-fidelity attachments.${extraAlert}`;
+
+        const lockBtn = document.getElementById('lockBtn');
+        lockBtn.innerHTML = "Approve Summary & Sync To Clio 🚀";
+        lockBtn.style.background = "var(--clio-blue)";
+        
+        lockBtn.onclick = function() {
+            const clientId = 'btscu9WmPHYelIZtZA9sIQfynBAQudwjaR7pEDdq'; 
+            const redirectUri = 'https://worktimeline-app.vercel.app'; 
+            const authUrl = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+
+            window.location.href = authUrl;
+        };
+    }
+
+    function togglePrivacy() {
+        document.getElementById('appRoot').classList.toggle('privacy-active');
+    }
+</script>
 </body>
 </html>
+
