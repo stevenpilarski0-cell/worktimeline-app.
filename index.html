@@ -3,18 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™ | Final Presentation</title>
+    <title>WorkTimeline™ | Full Professional Edition</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
         
         :root { 
             --teal: #008080; 
+            --teal-soft: #e0f2f1;
             --clio-blue: #0076CE;
             --platinum-bg: #d8e2ea; 
+            --platinum-mid: #eef1f5; 
             --gray-dark: #2c3e50; 
         }
 
-        body { font-family: 'Nunito', sans-serif; background-color: #f4f7f9; margin: 0; padding: 10px; display: flex; justify-content: center; overflow: hidden; }
+        body { font-family: 'Nunito', sans-serif; background-color: var(--platinum-mid); margin: 0; padding: 10px; display: flex; justify-content: center; overflow: hidden; }
         
         .app-container { 
             width: 100%; max-width: 500px; background: #ffffff; 
@@ -23,7 +25,7 @@
             overflow: hidden; 
         }
 
-        /* --- SPLASH SCREEN --- */
+        /* --- PRESENTATION SPLASH --- */
         .splash-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--platinum-bg); z-index: 9999;
@@ -44,11 +46,9 @@
 
         .bold-brand { font-weight: 900 !important; }
 
-        /* THE SVG LOGO */
         .logo-container { background: white; padding: 20px; border-radius: 25px; margin-bottom: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
         .svg-logo { width: 120px; height: auto; }
 
-        /* CHECKMARK POP */
         .clio-check-container {
             position: absolute; bottom: 35px; right: 35px; 
             width: 35px; height: 35px; background: white; border-radius: 50%;
@@ -59,9 +59,17 @@
         }
         .clio-check-container.pop { opacity: 1; transform: scale(1); }
 
-        /* APP HEADER */
+        /* --- APP UI RESTORED --- */
         .header { display: flex; align-items: center; padding: 20px; border-bottom: 1px solid #eee; }
-        .submit-main { width: 100%; background: var(--teal); color: white; border: none; padding: 18px; border-radius: 25px; font-weight: 900; font-size: 16px; cursor: pointer; }
+        .lawyer-box { background: var(--teal-soft); padding: 15px; border-radius: 20px; margin-bottom: 15px; }
+        .template-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 10px; }
+        .template-chip { background: #ffffff; border: 2px solid var(--teal-soft); color: var(--teal); padding: 8px 14px; border-radius: 50px; font-size: 11px; font-weight: 800; cursor: pointer; white-space: nowrap; }
+        
+        #statusBox { width: 100%; height: 110px; border-radius: 20px; border: 2px solid var(--platinum-mid); background: #fbfbfb; padding: 15px; font-size: 15px; margin-bottom: 15px; resize: none; font-family: 'Nunito', sans-serif; }
+        .submit-main { width: 100%; background: var(--teal); color: white; border: none; padding: 18px; border-radius: 25px; font-weight: 900; font-size: 16px; cursor: pointer; box-shadow: 0 5px 15px rgba(0,128,128,0.2); }
+        
+        .entry { background: #ffffff; border: 1px solid #eee; padding: 15px; border-radius: 18px; margin-bottom: 10px; position: relative; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+        .duo-box { background: linear-gradient(135deg, #f0f7f7, #ffffff); border: 2px dashed var(--teal); border-radius: 20px; padding: 15px; margin-bottom: 15px; display: none; }
     </style>
 </head>
 <body>
@@ -72,21 +80,18 @@
                 <h1 style="font-size: 26px;">We know you’re there.</h1>
                 <p style="font-size: 18px;">If you feel invisible... <b>you’re not.</b></p>
             </div>
-
             <div id="step2" class="splash-step">
                 <h2 style="font-size: 22px;">It feels like you’re in a gray area.</h2>
                 <p style="font-size: 16px;">Trapped right behind the walls of a gray prison.</p>
                 <p style="font-size: 16px; margin-top: 5px;">You don't know what to do or where to go.</p>
             </div>
-
             <div id="step3" class="splash-step">
                 <h2 style="font-size: 22px;">But we see you. We hear you.</h2>
                 <p style="font-size: 16px;">And we’re here to help you tear down the wall.</p>
             </div>
-
             <div id="step4" class="splash-step light-text">
                 <div class="logo-container">
-                    <svg class="svg-logo" viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
+                    <svg class="svg-logo" viewBox="0 0 100 80">
                         <rect x="10" y="20" width="80" height="55" rx="8" fill="none" stroke="#008080" stroke-width="5"/>
                         <path d="M35 20 V10 Q35 5 40 5 H60 Q65 5 65 10 V20" fill="none" stroke="#008080" stroke-width="5"/>
                         <line x1="5" y1="48" x2="95" y2="48" stroke="#5dade2" stroke-width="6" stroke-linecap="round"/>
@@ -97,13 +102,11 @@
                 </div>
                 <h2 style="font-size: 24px;">Welcome to the Blue Skies.</h2>
             </div>
-
             <div id="step5" class="splash-step light-text">
                 <h2 style="font-size: 22px;">Clio keeps the client at the center.</h2>
                 <p style="font-size: 16px; margin-top: 8px;">We do too. But with <span class="bold-brand">WorkTimeline</span>...</p>
                 <h2 style="font-size: 26px; margin-top: 8px;">We keep the client AHEAD.</h2>
             </div>
-
             <div id="step6" class="splash-step light-text">
                 <div style="position: relative; display: inline-block;">
                     <div class="logo-container">
@@ -127,22 +130,44 @@
         </div>
 
         <header class="header">
-            <svg style="width:40px; height: auto; margin-right: 12px;" viewBox="0 0 100 80">
+            <svg style="width:35px; height: auto; margin-right: 12px;" viewBox="0 0 100 80">
                 <rect x="10" y="20" width="80" height="55" rx="8" fill="none" stroke="#008080" stroke-width="6"/>
                 <path d="M35 20 V10 Q35 5 40 5 H60 Q65 5 65 10 V20" fill="none" stroke="#008080" stroke-width="6"/>
                 <line x1="5" y1="48" x2="95" y2="48" stroke="#5dade2" stroke-width="6" stroke-linecap="round"/>
             </svg>
             <div>
-                <h1 style="color: var(--teal); margin: 0; font-size: 20px; font-weight: 900;">WorkTimeline&trade;</h1>
-                <p style="margin: 0; font-style: italic; color: #7a8b9e; font-size: 10px;">"Justice is truth in action."</p>
+                <h1 style="color: var(--teal); margin: 0; font-size: 18px; font-weight: 900;">WorkTimeline&trade;</h1>
+                <p style="margin: 0; font-style: italic; color: #7a8b9e; font-size: 9px;">"Justice is truth in action."</p>
             </div>
         </header>
 
-        <div style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto;">
-            <textarea id="entryBox" style="width: 100%; height: 100px; border-radius: 20px; border: 2px solid #ddd; padding: 15px; font-family: inherit; margin-bottom: 15px; resize: none;" placeholder="Start documenting your truth..."></textarea>
-            <button class="submit-main" onclick="addEntry()">Add to Timeline</button>
-            <div id="timelineList" style="margin-top: 15px;"></div>
-            <button class="submit-main" style="background: var(--gray-dark); margin-top: auto;" onclick="alert('Syncing with Clio...')">Lock & Send to Clio</button>
+        <div style="padding: 20px; flex-grow: 1; overflow-y: auto;">
+            <div class="lawyer-box">
+                <label style="font-size: 10px; font-weight: 900; color: var(--teal); display: block; margin-bottom: 5px;">PROFESSIONAL SIGN-IN:</label>
+                <select id="lawyerSelect" style="width: 100%; padding: 10px; border-radius: 12px; border: none; font-family: inherit; font-weight: 700;">
+                    <option value="none">-- Select Lawyer --</option>
+                    <option value="Marcus">Marcus Thorne, Esq.</option>
+                    <option value="Sarah">Sarah Jenkins, JD</option>
+                </select>
+            </div>
+
+            <div id="duoSummary" class="duo-box">
+                <h4 style="color: var(--teal); margin: 0 0 5px 0; font-size: 14px;">✨ Clio Duo AI Summary</h4>
+                <p id="duoText" style="font-size: 12px; margin: 0; line-height: 1.4;"></p>
+            </div>
+
+            <div id="mainInput">
+                <div class="template-row">
+                    <div class="template-chip" onclick="applyTemplate('Site Observation: ')">+ Site</div>
+                    <div class="template-chip" onclick="applyTemplate('Witness Statement: ')">+ Witness</div>
+                    <div class="template-chip" onclick="applyTemplate('Initial Intake: ')">+ Intake</div>
+                </div>
+                <textarea id="statusBox" placeholder="Start documenting..."></textarea>
+                <button class="submit-main" onclick="addEntry()">Add to Timeline</button>
+            </div>
+            
+            <div id="timelineList" style="margin-top: 20px;"></div>
+            <button id="lockBtn" class="submit-main" style="background: var(--gray-dark); margin-top: 20px;" onclick="lockTimeline()">Lock & Send to Clio</button>
         </div>
     </div>
 
@@ -155,7 +180,6 @@
                 document.getElementById('step5'), document.getElementById('step6')
             ];
 
-            // Pacing
             setTimeout(() => { steps[0].classList.remove('active'); steps[1].classList.add('active'); }, 6000); 
             setTimeout(() => { steps[1].classList.remove('active'); steps[2].classList.add('active'); }, 12000); 
             setTimeout(() => { steps[2].classList.remove('active'); splash.classList.add('clio-transition'); steps[3].classList.add('active'); }, 18000); 
@@ -169,13 +193,30 @@
             }, 38000);
         });
 
+        function applyTemplate(t) { document.getElementById('statusBox').value = t; }
+
         function addEntry() {
-            const val = document.getElementById('entryBox').value; if(!val) return;
+            const val = document.getElementById('statusBox').value; if(!val) return;
             const item = document.createElement('div');
-            item.style.padding = "15px"; item.style.background = "#f4f7f9"; item.style.borderRadius = "15px"; item.style.marginBottom = "10px";
-            item.innerHTML = `<small style="color:var(--teal); font-weight:800;">${new Date().toLocaleTimeString()}</small><p style="margin:5px 0 0 0;">${val}</p>`;
+            item.className = 'entry';
+            item.innerHTML = `<small style="color:var(--teal); font-weight:800;">${new Date().toLocaleTimeString()}</small><p style="margin:5px 0 0 0; font-size:14px;">${val}</p>`;
             document.getElementById('timelineList').prepend(item);
-            document.getElementById('entryBox').value = "";
+            document.getElementById('statusBox').value = "";
+        }
+
+        function lockTimeline() {
+            const lawyer = document.getElementById('lawyerSelect').value;
+            if(lawyer === "none") { alert("Please select a Professional first!"); return; }
+            
+            document.getElementById('mainInput').style.display = "none";
+            document.getElementById('duoSummary').style.display = "block";
+            const count = document.querySelectorAll('.entry').length;
+            document.getElementById('duoText').innerText = `Duo has analyzed ${count} events. Evidence is secured with location metadata and prepared for Clio Grow intake.`;
+            
+            const btn = document.getElementById('lockBtn');
+            btn.innerText = "Confirm & Sync to Clio Portal";
+            btn.style.background = "var(--clio-blue)";
+            btn.onclick = () => { window.location.href = "https://app.clio.com"; };
         }
     </script>
 </body>
