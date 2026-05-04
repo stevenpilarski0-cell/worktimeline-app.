@@ -16,23 +16,12 @@
         .lawyer-box { background: #e0f2f1; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1.5px solid var(--teal); }
         .template-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; }
         .template-chip { background: white; border: 1.5px solid var(--teal); color: var(--teal); padding: 7px 14px; border-radius: 50px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: 0.2s; }
-        .template-chip:active { background: var(--teal); color: white; }
         #statusBox { width: 100%; height: 120px; border-radius: 12px; border: 1px solid #ddd; padding: 15px; font-size: 16px; margin-bottom: 15px; resize: none; box-sizing: border-box; font-family: inherit; }
         .media-toolbar { display: flex; gap: 10px; margin-bottom: 20px; }
-        .media-btn { background: #f0f4f4; color: var(--teal); border: 2px solid var(--teal); border-radius: 18px; padding: 12px 5px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; cursor: pointer; transition: 0.2s; }
+        .media-btn { background: #f0f4f4; color: var(--teal); border: 2px solid var(--teal); border-radius: 18px; padding: 12px 5px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; cursor: pointer; }
         .media-btn svg { width: 26px; height: 26px; fill: var(--teal); }
         .media-btn span { font-size: 9px; font-weight: 900; text-transform: uppercase; }
-        .media-btn:active { background: var(--teal); color: white; }
-        .media-btn:active svg { fill: white; }
-        .submit-main { width: 100%; background: var(--teal); color: white; border: none; padding: 18px; border-radius: 15px; font-weight: 900; cursor: pointer; font-size: 16px; margin-bottom: 10px; }
-        .entry { background: white; border-left: 5px solid var(--teal); padding: 15px; border-radius: 10px; margin-bottom: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); text-align: left; position: relative; }
-        .geo-tag { font-size: 9px; color: #888; margin-top: 4px; display: block; font-weight: 700; }
-        .summary-header { background: var(--gray-dark); color: white; padding: 20px; border-radius: 15px; margin-bottom: 20px; display: none; border-left: 10px solid var(--teal); }
-        .lock-footer { background: var(--gray-dark); color: white; border: none; border-radius: 15px; padding: 20px; width: 100%; cursor: pointer; font-weight: 900; text-transform: uppercase; margin-top: auto; }
-        .privacy-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; backdrop-filter: blur(25px); z-index: 100; display: none; background: rgba(255,255,255,0.2); }
-        .privacy-active .privacy-overlay { display: block; }
-    </style>
-</head>
+        .submit-main { width: 100%; background: var(--teal); color: white; border: none; padding: 18px; border-radius: 15px; font-weight: 900; cursor: pointer; font-size: 16px
 <body>
     <div id="appRoot" class="app-container">
         <div class="privacy-overlay"></div>
@@ -124,10 +113,13 @@
 
         function addEntry(txt, sys) {
             const div = document.createElement('div'); div.className = 'entry';
-            const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            // "Elite" Geo-tag Simulation
+            const now = new Date();
+            // DATE + TIME Format
+            const dateStr = now.toLocaleDateString([], {month: 'short', day: 'numeric', year: 'numeric'});
+            const timeStr = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
             const geo = "LAT: 49.2827° N | LON: 123.1207° W (VERIFIED)";
-            div.innerHTML = `<small style="color:var(--teal); font-weight:900;">${time}</small><p style="margin:5px 0 0 0;">${txt}</p><span class="geo-tag">${geo}</span>`;
+            div.innerHTML = `<small style="color:var(--teal); font-weight:900; text-transform: uppercase;">${dateStr} | ${timeStr}</small><p style="margin:5px 0 0 0;">${txt}</p><span class="geo-tag">${geo}</span>`;
             if(sys) div.style.backgroundColor = "#f9f9f9";
             document.getElementById('timeline').prepend(div);
         }
