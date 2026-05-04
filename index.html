@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WorkTimeline™ | Friendly Edition</title>
     <style>
-        /* Happy, rounded, bouncy font */
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
         
         :root { 
@@ -19,7 +18,6 @@
 
         body { font-family: 'Nunito', sans-serif; background-color: var(--platinum-mid); margin: 0; padding: 10px; display: flex; justify-content: center; }
         
-        /* Bright white, fully rounded main container */
         .app-container { 
             width: 100%; max-width: 500px; background: #ffffff; 
             border-radius: 35px; min-height: 90vh; display: flex; flex-direction: column; 
@@ -44,35 +42,7 @@
         #statusBox:focus { outline: none; border-color: var(--teal); background: #ffffff; box-shadow: 0 5px 15px rgba(0,128,128,0.05); }
 
         .media-toolbar { display: flex; gap: 12px; margin-bottom: 20px; }
-        .media-btn { background: var(--platinum-bg); border: 2px solid transparent; border-radius: 25px; padding: 15px 5px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; cursor: pointer; transition: 0.2s; }
-        .media-btn svg { width: 28px; height: 28px; fill: var(--teal); transition: 0.2s; }
-        .media-btn span { font-size: 10px; font-weight: 900; text-transform: uppercase; color: var(--platinum-dark); font-family: 'Nunito', sans-serif; }
-        .media-btn:active { transform: scale(0.95); background: var(--teal-soft); border-color: var(--teal); }
-        
-        .submit-main { width: 100%; background: var(--teal); color: #ffffff; border: none; padding: 20px; border-radius: 30px; font-weight: 900; font-size: 16px; cursor: pointer; margin-bottom: 10px; box-shadow: 0 8px 20px rgba(0, 128, 128, 0.25); transition: 0.2s; font-family: 'Nunito', sans-serif; }
-        .submit-main:active { transform: scale(0.98); box-shadow: 0 4px 10px rgba(0, 128, 128, 0.2); }
-
-        .entry { background: #ffffff; border: 2px solid var(--platinum-mid); padding: 20px; border-radius: 25px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); text-align: left; position: relative; }
-        .timestamp-box { color: var(--teal); font-size: 11px; font-weight: 900; text-transform: uppercase; background: var(--teal-soft); padding: 6px 14px; border-radius: 12px; display: inline-block; margin-bottom: 10px; }
-        .geo-tag { font-size: 10px; color: var(--platinum-dark); margin-top: 10px; display: block; font-weight: 800; display: flex; align-items: center; gap: 4px; }
-        
-        /* Duo & AI Pattern Boxes */
-        .summary-header { background: var(--gray-dark); color: #ffffff; padding: 25px; border-radius: 30px; margin-bottom: 15px; display: none; text-align: center; box-shadow: 0 8px 20px rgba(44, 62, 80, 0.2); }
-        .duo-box { background: linear-gradient(135deg, #f0f7f7, #ffffff); border: 2px dashed var(--teal); border-radius: 25px; padding: 20px; margin-bottom: 20px; display: none; text-align: left; box-shadow: 0 5px 15px rgba(0,128,128,0.1); }
-        .pattern-alert { background: #fff3e0; border: 2px solid #ff9800; border-radius: 20px; padding: 18px; margin-bottom: 15px; color: #e65100; font-size: 13px; font-weight: 800; display: none; animation: slideDown 0.4s ease-out; }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .lock-footer { background: var(--gray-dark); color: #ffffff; border: none; border-radius: 30px; padding: 22px; width: 100%; cursor: pointer; font-weight: 900; text-transform: uppercase; margin-top: auto; transition: 0.2s; font-family: 'Nunito', sans-serif; }
-        .lock-footer:active { transform: scale(0.98); }
-        
-        /* Custom Warning Modal */
-        .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; backdrop-filter: blur(15px); background: rgba(255,255,255,0.7); z-index: 100; display: none; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; }
-        .modal-content { background: white; border-radius: 30px; padding: 30px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.15); border: 2px solid var(--platinum-mid); }
-        .modal-btn-row { display: flex; gap: 10px; margin-top: 20px; }
-        .btn-cancel { background: var(--platinum-mid); color: var(--gray-dark); padding: 15px; border-radius: 20px; flex: 1; font-weight: 800; border: none; font-family: 'Nunito', sans-serif; cursor: pointer; }
-        .btn-proceed { background: var(--teal); color: white; padding: 15px; border-radius: 20px; flex: 1; font-weight: 800; border: none; font-family: 'Nunito', sans-serif; cursor: pointer; }
-    </style>
-</head>
+        .media-btn { background: var(--platinum-bg); border: 2px solid transparent; border-radius: 25px; padding: 15px 5px; flex: 1; display: flex; flex-direction: column; align-items: center;
 <body>
     <div id="appRoot" class="app-container">
         <div id="warningModal" class="modal-overlay">
@@ -88,6 +58,7 @@
             </div>
         </div>
 
+        <div class="privacy-overlay"></div>
         <div class="heartbeat"><span class="dot"></span> ACTIVE</div>
         
         <header class="header-container">
@@ -96,7 +67,7 @@
                 <h1 style="color: var(--teal); margin: 0; font-size: 26px; font-weight: 900; letter-spacing: -0.5px;">WorkTimeline</h1>
                 <p style="margin: 2px 0 0 0; font-style: italic; color: var(--platinum-dark); font-size: 13px; font-weight: 600;">"Justice is truth in action."</p>
             </div>
-            <button class="submit-main" style="background: var(--platinum-bg); color: var(--gray-dark); box-shadow: none; height: 35px; width: 110px; font-size: 10px; margin: 0; padding: 0; border: 2px solid var(--platinum-mid);" onclick="localStorage.clear(); location.reload();">CLEAR DATA</button>
+            <button class="submit-main" style="background: var(--platinum-bg); color: var(--gray-dark); box-shadow: none; height: 35px; width: 110px; font-size: 10px; margin: 0; padding: 0; border: 2px solid var(--platinum-mid); z-index: 95; position: relative;" onclick="togglePrivacy()">PROTECT VIEW</button>
         </header>
 
         <div style="padding: 25px; flex-grow: 1; display: flex; flex-direction: column;">
@@ -161,7 +132,6 @@
         const CLIO_REDIRECT_URI = "https://worktimeline-app.vercel.app/index.html"; 
         let isLocked = false;
         
-        // AI Tracker Variables
         let hazardCount = 0;
         let patternFlagged = false;
         
@@ -189,7 +159,6 @@
             const text = document.getElementById('statusBox').value.trim();
             if(!text || isLocked) return;
             
-            // AI Pattern Recognition Logic (Counts the word 'hazard')
             if (text.toLowerCase().includes('hazard')) {
                 hazardCount++;
                 if (hazardCount >= 3 && !patternFlagged) {
@@ -205,7 +174,6 @@
         function addEntry(txt, sys) {
             const div = document.createElement('div'); div.className = 'entry';
             
-            // FULL FRIENDLY DATE AND TIME STRING
             const now = new Date();
             const dateOptions = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
             const timeOptions = { hour: '2-digit', minute: '2-digit' };
@@ -230,7 +198,6 @@
             document.getElementById('timeline').prepend(div);
         }
 
-        /* Modal & Locking Logic */
         function showWarning() {
             if(document.getElementById('lawyerSelect').value === "none") { 
                 alert("Please select a Professional first! 👩‍⚖️"); 
@@ -247,7 +214,6 @@
             closeWarning();
             isLocked = true;
             
-            // Show Summary UI
             document.getElementById('briefingHeader').style.display = "block";
             document.getElementById('mainInputArea').style.display = "none";
             document.getElementById('duoSummaryBox').style.display = "block"; 
@@ -255,22 +221,21 @@
             document.getElementById('sumLawyer').innerText = localStorage.getItem('lawyer') || "Marcus Thorne";
             document.getElementById('sumHash').innerText = Math.random().toString(36).substring(2, 6).toUpperCase();
             
-            // Generate AI Text
             const entriesCount = document.querySelectorAll('.entry').length;
             const extraAlert = patternFlagged ? " ⚠️ Risk Assessment Module generated based on pattern detection." : "";
             document.getElementById('duoSummaryText').innerHTML = `<strong>Actionable Intelligence:</strong> Compiled ${entriesCount} secure field events. Extracted location metadata, witness notes, and media attachments.${extraAlert}`;
 
-            // Update the Lock button to become the manual "Proceed to Clio" button
             const lockBtn = document.getElementById('lockBtn');
             lockBtn.innerHTML = "Approve Summary & Send To Clio 🚀";
             lockBtn.style.background = "var(--teal)";
             
-            // Switch the button's function to execute the redirect on the next click
             lockBtn.onclick = function() {
                 const authUrl = `https://app.clio.com/oauth/authorize?response_type=code&client_id=${CLIO_CLIENT_ID}&redirect_uri=${encodeURIComponent(CLIO_REDIRECT_URI)}`;
                 window.location.href = authUrl;
             };
         }
+
+        function togglePrivacy() { document.getElementById('appRoot').classList.toggle('privacy-active'); }
     </script>
 </body>
 </html>
