@@ -57,7 +57,22 @@
         .geo-tag { font-size: 10px; color: var(--platinum-dark); margin-top: 10px; display: block; font-weight: 800; display: flex; align-items: center; gap: 4px; }
         
         /* Duo & AI Pattern Boxes */
-        .summary-header { background: var(--gray-dark); color: #ffffff; padding: 25px; border-radius: 30px; margin-bottom: 15px; display: none; text-align: center; box-shadow: 0 8px 20px rgba(44, 62, 80,
+        .summary-header { background: var(--gray-dark); color: #ffffff; padding: 25px; border-radius: 30px; margin-bottom: 15px; display: none; text-align: center; box-shadow: 0 8px 20px rgba(44, 62, 80, 0.2); }
+        .duo-box { background: linear-gradient(135deg, #f0f7f7, #ffffff); border: 2px dashed var(--teal); border-radius: 25px; padding: 20px; margin-bottom: 20px; display: none; text-align: left; box-shadow: 0 5px 15px rgba(0,128,128,0.1); }
+        .pattern-alert { background: #fff3e0; border: 2px solid #ff9800; border-radius: 20px; padding: 18px; margin-bottom: 15px; color: #e65100; font-size: 13px; font-weight: 800; display: none; animation: slideDown 0.4s ease-out; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .lock-footer { background: var(--gray-dark); color: #ffffff; border: none; border-radius: 30px; padding: 22px; width: 100%; cursor: pointer; font-weight: 900; text-transform: uppercase; margin-top: auto; transition: 0.2s; font-family: 'Nunito', sans-serif; }
+        .lock-footer:active { transform: scale(0.98); }
+        
+        /* Custom Warning Modal */
+        .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; backdrop-filter: blur(15px); background: rgba(255,255,255,0.7); z-index: 100; display: none; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; }
+        .modal-content { background: white; border-radius: 30px; padding: 30px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.15); border: 2px solid var(--platinum-mid); }
+        .modal-btn-row { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-cancel { background: var(--platinum-mid); color: var(--gray-dark); padding: 15px; border-radius: 20px; flex: 1; font-weight: 800; border: none; font-family: 'Nunito', sans-serif; cursor: pointer; }
+        .btn-proceed { background: var(--teal); color: white; padding: 15px; border-radius: 20px; flex: 1; font-weight: 800; border: none; font-family: 'Nunito', sans-serif; cursor: pointer; }
+    </style>
+</head>
 <body>
     <div id="appRoot" class="app-container">
         <div id="warningModal" class="modal-overlay">
