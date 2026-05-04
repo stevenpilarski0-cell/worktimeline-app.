@@ -420,9 +420,11 @@
             document.getElementById('warningModal').style.display = "flex";
         }
 
-        function closeWarning() { 
+                function closeWarning() { 
             document.getElementById('warningModal').style.display = "none"; 
-                        function proceedToSummary() {
+        }
+
+        function proceedToSummary() {
             closeWarning();
             isLocked = true;
             document.getElementById('briefingHeader').style.display = 'block';
@@ -444,7 +446,7 @@
 
                 window.location.href = authUrl;
             };
-        } // FIXED: Removed the extra stray bracket that was here.
+        }
 
         function togglePrivacy() {
             document.getElementById('appRoot').classList.toggle('privacy-active');
