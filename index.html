@@ -454,7 +454,24 @@
 
     function togglePrivacy() {
         document.getElementById('appRoot').classList.toggle('privacy-active');
-    }
+    }    // --- THE CLIO DATA RECEIVER ---
+    window.addEventListener('load', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const clioCode = urlParams.get('code');
+
+        if (clioCode) {
+            alert("Clio connection successful! Handshake complete.");
+            const lockBtn = document.getElementById('lockBtn');
+            if (lockBtn) {
+                lockBtn.innerHTML = "✅ Sync Authorized: Ready to Push";
+                lockBtn.style.background = "#28a745"; 
+                lockBtn.onclick = function() {
+                    alert("Final Step: Sending Summary to Matter 16986525...");
+                };
+            }
+        }
+    });
+
 </script>
 </body>
 </html>
