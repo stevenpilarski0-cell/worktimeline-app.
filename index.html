@@ -16,6 +16,7 @@
             --platinum-light: #d8e2ea;
             --platinum-dark: #7a8b9e;
             --gray-dark: #2c3e50; 
+            --clio-blue: #0076CE; /* Official Clio Blue */
         }
 
         body { font-family: 'Nunito', sans-serif; background-color: var(--platinum-mid); margin: 0; padding: 10px; display: flex; justify-content: center; }
@@ -49,7 +50,7 @@
             position: absolute; width: 85%; opacity: 0; pointer-events: none;
             transition: opacity 1s ease-in-out, transform 1s ease-in-out;
             transform: translateY(10px);
-            color: var(--gray-dark); /* Dark text for the gray background */
+            color: var(--gray-dark); 
         }
         .splash-step.active {
             opacity: 1; transform: translateY(0); pointer-events: auto;
@@ -75,6 +76,28 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             background: white; padding: 4px; object-fit: contain;
         }
+
+        /* The Clio Checkmark Overlay for Step 6 */
+        .final-logo-wrapper {
+            position: relative; display: inline-block; margin-bottom: 20px;
+        }
+        .clio-checkmark {
+            position: absolute;
+            bottom: 25px; right: 15px; /* Positioned to hit the final circle area */
+            width: 40px; height: 40px;
+            background: var(--clio-blue); /* Clio Blue */
+            border: 4px solid white;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; transform: scale(0);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Satisfying pop animation */
+            z-index: 10;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .clio-checkmark.pop {
+            opacity: 1; transform: scale(1);
+        }
+        .clio-checkmark svg { width: 22px; height: 22px; fill: white; }
         /* ------------------------------------------- */
 
         .heartbeat { position: absolute; top: 20px; right: 20px; display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 800; color: #00a859; z-index: 5; }
@@ -170,7 +193,12 @@
             </div>
 
             <div id="step6" class="splash-step light-text">
-                <img src="1000023910.jpg" alt="Logo" class="splash-logo" onerror="this.style.display='none'">
+                <div class="final-logo-wrapper">
+                    <img src="1000023910.jpg" alt="Logo" class="splash-logo-large" onerror="this.style.display='none'">
+                    <div id="clioCheck" class="clio-checkmark">
+                        <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                    </div>
+                </div>
                 <h2 class="splash-title">Justice should be effortless.</h2>
                 <p class="splash-text">And it can be... if telling the truth takes no effort.</p>
                 <h3 style="margin-top: 15px; font-size: 22px; font-weight: 900; letter-spacing: 1px;">WorkTimeline</h3>
@@ -195,12 +223,14 @@
         <div class="heartbeat"><span class="dot"></span> ACTIVE</div>
         
         <header class="header-container">
-            <img src="1000023910.jpg" alt="WorkTimeline Logo" class="header-logo" onerror="this.style.display='none'">
-            <div style="flex-grow: 1;">
-                <h1 style="color: var(--teal); margin: 0; font-size: 24px; font-weight: 900; letter-spacing: -0.5px; display: flex; align-items: flex-start;">
-                    WorkTimeline<span style="font-size: 12px; margin-top: 2px; margin-left: 2px;">&trade;</span>
-                </h1>
-                <p style="margin: 2px 0 0 0; font-style: italic; color: var(--platinum-dark); font-size: 12px; font-weight: 600;">"Justice is truth in action."</p>
+            <div style="display: flex; align-items: center; gap: 12px; flex-grow: 1;">
+                <img src="1000023910.jpg" alt="Briefcase Logo" style="width: 50px; height: 50px; object-fit: contain; flex-shrink: 0; border-radius: 12px; border: 1px solid var(--platinum-mid); background: white; padding: 2px;">
+                <div>
+                    <h1 style="color: var(--teal); margin: 0; font-size: 24px; font-weight: 900; letter-spacing: -0.5px; display: flex; align-items: flex-start;">
+                        WorkTimeline<span style="font-size: 12px; margin-top: 2px; margin-left: 2px;">&trade;</span>
+                    </h1>
+                    <p style="margin: 2px 0 0 0; font-style: italic; color: var(--platinum-dark); font-size: 12px; font-weight: 600;">"Justice is truth in action."</p>
+                </div>
             </div>
             <button class="submit-main" style="background: var(--platinum-bg); color: var(--gray-dark); box-shadow: none; height: 35px; width: 90px; font-size: 9px; margin: 0; padding: 0; border: 2px solid var(--platinum-mid); z-index: 95; flex-shrink: 0;" onclick="togglePrivacy()">PROTECT VIEW</button>
         </header>
@@ -266,61 +296,66 @@
     </div>
 
     <script>
-        // --- PRESENTATION TIMELINE SCRIPT (28 Seconds) ---
+        // --- PRESENTATION TIMELINE SCRIPT (32 Seconds) ---
         window.addEventListener('load', () => {
             const splash = document.getElementById('splashScreen');
             const steps = [
-                document.getElementById('step0'), // Logo
+                document.getElementById('step0'), // Logo Only
                 document.getElementById('step1'), // Answer
                 document.getElementById('step2'), // Alone Stats
                 document.getElementById('step3'), // Gray Prison
                 document.getElementById('step4'), // Teal Transition
                 document.getElementById('step5'), // Clio Ahead
-                document.getElementById('step6')  // Effortless Conclusion
+                document.getElementById('step6')  // Effortless Conclusion + Checkmark
             ];
 
-            // 0 - 4.5s: Plaster the Big Logo
+            // 0s - 2.5s: Plaster the Big Logo immediately on load
             setTimeout(() => { 
                 steps[0].classList.remove('active'); 
                 steps[1].classList.add('active'); 
-            }, 4500); 
+            }, 2500); 
             
-            // 4.5s - 8s: WorkTimeline. The answer is here.
+            // 2.5s - 6.5s: WorkTimeline. The answer is here.
             setTimeout(() => { 
                 steps[1].classList.remove('active'); 
                 steps[2].classList.add('active'); 
-            }, 8000); 
+            }, 6500); 
             
-            // 8s - 12s: 77% Alone stat
+            // 6.5s - 12s: 77% Alone stat
             setTimeout(() => { 
                 steps[2].classList.remove('active'); 
                 steps[3].classList.add('active'); 
-            }, 12500); 
+            }, 12000); 
             
-            // 12.5s - 17s: Gray Area Prison
+            // 12s - 17.5s: Gray Area Prison
             setTimeout(() => { 
                 steps[3].classList.remove('active'); 
                 splash.classList.add('teal-transition'); // Turns screen Teal
                 steps[4].classList.add('active'); 
-            }, 17000); 
+            }, 17500); 
             
-            // 17s - 21s: Teal Sky
+            // 17.5s - 22.5s: Teal Sky
             setTimeout(() => { 
                 steps[4].classList.remove('active'); 
                 steps[5].classList.add('active'); 
-            }, 21500); 
+            }, 22500); 
             
-            // 21.5s - 25.5s: Clio / Client Ahead
+            // 22.5s - 27.5s: Clio / Client Ahead
             setTimeout(() => { 
                 steps[5].classList.remove('active'); 
                 steps[6].classList.add('active'); 
-            }, 26000); 
+            }, 27500); 
             
-            // 26s - 29s: Justice is effortless. Then fade away.
+            // 28.5s: The Clio Checkmark POPS onto the final logo!
+            setTimeout(() => { 
+                document.getElementById('clioCheck').classList.add('pop');
+            }, 28500); 
+
+            // 32s: Fade away to the app
             setTimeout(() => {
                 splash.classList.add('fade-out');
                 setTimeout(() => splash.style.display = 'none', 1000); 
-            }, 29500); 
+            }, 32000); 
         });
 
         // --- APP LOGIC ---
