@@ -3,155 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™ | Final Edition</title>
+    <title>WorkTimeline™ | Presentation Edition</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
         
         :root { 
             --teal: #008080; 
-            --teal-soft: #e0f2f1;
-            --platinum-light: #d8e2ea;
-            --gray-dark: #2c3e50; 
             --clio-blue: #0076CE;
+            --platinum-bg: #d8e2ea; /* The Gray Area Color */
+            --gray-dark: #2c3e50; 
         }
 
-        body { font-family: 'Nunito', sans-serif; background-color: #eef1f5; margin: 0; padding: 10px; display: flex; justify-content: center; }
+        body { font-family: 'Nunito', sans-serif; background-color: #f4f7f9; margin: 0; padding: 10px; display: flex; justify-content: center; }
         
         .app-container { 
             width: 100%; max-width: 500px; background: #ffffff; 
             border-radius: 35px; min-height: 90vh; display: flex; flex-direction: column; 
-            position: relative; box-shadow: 0 15px 40px rgba(0, 128, 128, 0.1); 
+            position: relative; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1); 
             overflow: hidden; 
         }
 
-        /* --- THE CODED LOGO (No Image File Needed) --- */
-        .coded-logo {
-            width: 120px; height: 90px; border: 6px solid var(--teal);
-            border-radius: 15px; position: relative; background: white; margin-bottom: 20px;
-        }
-        .coded-logo::before { /* Handle */
-            content: ''; position: absolute; top: -20px; left: 35px; width: 40px; height: 15px;
-            border: 6px solid var(--teal); border-bottom: none; border-radius: 10px 10px 0 0;
-        }
-        .coded-line { /* Timeline bar */
-            position: absolute; top: 45px; left: -10px; width: 140px; height: 8px;
-            background: #5dade2; border-radius: 4px; display: flex; justify-content: space-around; align-items: center;
-        }
-        .coded-dot { width: 16px; height: 16px; background: white; border: 4px solid #5dade2; border-radius: 50%; position: relative; }
-        
-        /* The Clio Checkmark popping on the last dot */
-        #finalCheck {
-            position: absolute; top: -15px; right: -15px; width: 30px; height: 30px;
-            background: var(--clio-blue); border: 3px solid white; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0; transform: scale(0); transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        #finalCheck svg { width: 18px; height: 18px; fill: white; }
-        #finalCheck.pop { opacity: 1; transform: scale(1); }
-
-        /* --- SPLASH STEPS --- */
+        /* --- PRESENTATION SPLASH --- */
         .splash-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--platinum-light); z-index: 9999;
+            background: var(--platinum-bg); 
+            z-index: 9999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: background 3s, opacity 1s; padding: 30px; box-sizing: border-box; text-align: center;
+            transition: background 3s ease-in-out, opacity 1s ease-out;
+            padding: 30px; box-sizing: border-box; text-align: center;
         }
-        .splash-step { position: absolute; width: 85%; opacity: 0; transform: translateY(10px); transition: 1s; font-weight: 400; color: var(--gray-dark); }
-        .splash-step.active { opacity: 1; transform: translateY(0); }
-        .bold-brand { font-weight: 900 !important; }
-        .teal-bg { background: var(--teal) !important; }
-        .light-text { color: white !important; }
+        /* Transition into Clio Blue Skies */
+        .splash-screen.clio-transition { background: var(--clio-blue); }
+        .splash-screen.fade-out { opacity: 0; pointer-events: none; }
+        
+        .splash-step {
+            position: absolute; width: 85%; opacity: 0; pointer-events: none;
+            transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+            transform: translateY(10px);
+            color: var(--gray-dark); 
+            font-weight: 400;
+        }
+        .splash-step.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .splash-step.light-text { color: #ffffff; }
 
-        /* --- APP UI --- */
+        .bold-brand { font-weight: 900 !important; }
+
+        .splash-logo-large { width: 180px; height: 180px; border-radius: 30px; margin-bottom: 25px; object-fit: contain; }
+        .splash-logo-mini { width: 80px; height: 80px; border-radius: 18px; margin-bottom: 20px; object-fit: contain; }
+
+        /* THE CLIO CHECKMARK */
+        .final-logo-wrapper { position: relative; display: inline-block; margin-bottom: 20px; }
+        .clio-checkmark {
+            position: absolute; 
+            bottom: 64px; right: 26px; /* Hits the 3rd dot of your briefcase logo */
+            width: 38px; height: 38px; background: white; 
+            border: 4px solid var(--clio-blue); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; transform: scale(0);
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            z-index: 10;
+        }
+        .clio-checkmark.pop { opacity: 1; transform: scale(1); }
+        .clio-checkmark svg { width: 22px; height: 22px; fill: var(--clio-blue); }
+
+        /* APP STYLES */
         .header { display: flex; align-items: center; padding: 25px; border-bottom: 2px solid #f0f0f0; }
-        .mini-logo { transform: scale(0.4); margin-right: -30px; margin-left: -30px; }
-        .submit-btn { width: 100%; background: var(--teal); color: white; border: none; padding: 18px; border-radius: 25px; font-weight: 900; font-size: 16px; cursor: pointer; }
+        .header-logo { width: 50px; height: 50px; margin-right: 15px; object-fit: contain; }
+        .submit-main { width: 100%; background: var(--teal); color: white; border: none; padding: 20px; border-radius: 30px; font-weight: 900; font-size: 16px; cursor: pointer; }
     </style>
 </head>
 <body>
     <div id="appRoot" class="app-container">
         
         <div id="splashScreen" class="splash-screen">
-            <div id="step1" class="splash-step active">
-                <div class="coded-logo">
-                    <div class="coded-line"><div class="coded-dot"></div><div class="coded-dot"></div><div class="coded-dot"></div></div>
-                </div>
-                <h1 style="font-size: 32px; color: var(--teal);" class="bold-brand">WorkTimeline</h1>
+            <div id="step0" class="splash-step active">
+                <img src="./1000023910.jpg" alt="Logo" class="splash-logo-large" onerror="this.style.display='none'">
             </div>
 
-            <div id="step2" class="splash-step">
-                <h2 style="font-size: 26px;">We know you're there.</h2>
+            <div id="step1" class="splash-step">
+                <h1 style="font-size: 28px; margin-bottom: 10px;">We know you're there.</h1>
                 <p style="font-size: 18px;">You're not invisible.</p>
             </div>
 
-            <div id="step3" class="splash-step">
-                <h2 style="font-size: 22px;">It feels like you're in a gray area...</h2>
-                <p style="font-size: 16px;">trapped right behind this gray prison wall.</p>
+            <div id="step2" class="splash-step">
+                <h2 style="font-size: 24px;">It feels like you're in a gray area.</h2>
+                <p style="font-size: 16px;">Trapped right behind this gray prison wall.</p>
             </div>
 
-            <div id="step4" class="splash-step">
-                <h2 style="font-size: 22px;">But we see you. We hear you.</h2>
+            <div id="step3" class="splash-step">
+                <h2 style="font-size: 24px;">But we see you. We hear you.</h2>
                 <p style="font-size: 16px;">And we're here to help you tear down this wall.</p>
             </div>
 
+            <div id="step4" class="splash-step light-text">
+                <img src="./1000023910.jpg" alt="Logo" class="splash-logo-mini" style="background: white; padding: 5px; border-radius: 15px;">
+                <h2 style="font-size: 24px;">To finally see the Blue Skies.</h2>
+            </div>
+
             <div id="step5" class="splash-step light-text">
-                <div class="coded-logo" style="border-color: white;"><div class="coded-line"></div></div>
-                <h2 style="font-size: 24px;">To finally see the Teal Skies.</h2>
+                <h2 style="font-size: 24px;">Clio keeps the client at the center.</h2>
+                <p style="font-size: 16px; margin-top: 10px;">We do too. But with <span class="bold-brand">WorkTimeline</span>...</p>
+                <h2 style="font-size: 28px; margin-top: 10px;">We keep the client AHEAD.</h2>
             </div>
 
             <div id="step6" class="splash-step light-text">
-                <div class="coded-logo" style="border-color: white; transform: scale(1.2);">
-                    <div class="coded-line">
-                        <div class="coded-dot"></div><div class="coded-dot"></div>
-                        <div class="coded-dot">
-                            <div id="finalCheck"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-                        </div>
+                <div class="final-logo-wrapper">
+                    <img src="./1000023910.jpg" alt="Logo" class="splash-logo-large" style="background: white; padding: 10px; border-radius: 25px;">
+                    <div id="clioCheck" class="clio-checkmark">
+                        <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
                     </div>
                 </div>
-                <h2 style="font-size: 22px; margin-top: 20px;">Justice should feel effortless.</h2>
+                <h2 style="font-size: 22px;">Justice should feel effortless.</h2>
                 <p style="font-size: 16px;">If telling the truth takes no effort...</p>
-                <h3 style="font-size: 26px;" class="bold-brand">WorkTimeline</h3>
+                <h3 style="margin-top: 15px; font-size: 28px;" class="bold-brand">WorkTimeline</h3>
             </div>
         </div>
 
         <header class="header">
-            <div class="coded-logo mini-logo"><div class="coded-line"></div></div>
-            <div style="margin-left: 10px;">
+            <img src="./1000023910.jpg" alt="Logo" class="header-logo" onerror="this.style.display='none'">
+            <div>
                 <h1 style="color: var(--teal); margin: 0; font-size: 22px; font-weight: 900;">WorkTimeline&trade;</h1>
-                <p style="margin: 0; font-style: italic; color: var(--platinum-dark); font-size: 11px;">"Justice is truth in action."</p>
+                <p style="margin: 0; font-style: italic; color: var(--gray-dark); font-size: 11px;">"Justice is truth in action."</p>
             </div>
         </header>
 
-        <div style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column;">
-            <textarea id="box" style="width: 100%; height: 120px; border-radius: 20px; border: 2px solid #ddd; padding: 15px; font-family: inherit; margin-bottom: 15px;" placeholder="What happened today?"></textarea>
-            <button class="submit-btn" onclick="add()">Add to Timeline</button>
-            <div id="list" style="margin-top: 20px;"></div>
-            <button class="submit-btn" style="background: var(--gray-dark); margin-top: auto;" onclick="alert('Sent to Clio!')">Lock & Send to Clio</button>
+        <div style="padding: 25px; flex-grow: 1; display: flex; flex-direction: column;">
+            <textarea id="entryBox" style="width: 100%; height: 120px; border-radius: 20px; border: 2px solid #ddd; padding: 15px; font-family: inherit; margin-bottom: 15px; resize: none;" placeholder="What's the status?"></textarea>
+            <button class="submit-main" onclick="addEntry()">Add to Timeline</button>
+            <div id="timelineList" style="margin-top: 20px;"></div>
+            <button class="submit-main" style="background: var(--gray-dark); margin-top: auto;" onclick="alert('Syncing with Clio...')">Lock & Send to Clio</button>
         </div>
     </div>
 
     <script>
         window.addEventListener('load', () => {
-            const s = document.getElementById('splashScreen');
-            const steps = [document.getElementById('step1'), document.getElementById('step2'), document.getElementById('step3'), document.getElementById('step4'), document.getElementById('step5'), document.getElementById('step6')];
-            
-            setTimeout(() => { steps[0].classList.remove('active'); steps[1].classList.add('active'); }, 4000);
-            setTimeout(() => { steps[1].classList.remove('active'); steps[2].classList.add('active'); }, 9000);
-            setTimeout(() => { steps[2].classList.remove('active'); steps[3].classList.add('active'); }, 14000);
-            setTimeout(() => { steps[3].classList.remove('active'); s.classList.add('teal-bg'); steps[4].classList.add('active'); }, 19000);
-            setTimeout(() => { steps[4].classList.remove('active'); steps[5].classList.add('active'); }, 24000);
-            setTimeout(() => { document.getElementById('finalCheck').classList.add('pop'); }, 25500);
+            const splash = document.getElementById('splashScreen');
+            const steps = [
+                document.getElementById('step0'), document.getElementById('step1'), 
+                document.getElementById('step2'), document.getElementById('step3'), 
+                document.getElementById('step4'), document.getElementById('step5'), 
+                document.getElementById('step6')
+            ];
 
-            setTimeout(() => { s.style.opacity = '0'; setTimeout(() => s.style.display = 'none', 1000); }, 30000);
+            // 40s Pitch Timing
+            setTimeout(() => { steps[0].classList.remove('active'); steps[1].classList.add('active'); }, 5000); 
+            setTimeout(() => { steps[1].classList.remove('active'); steps[2].classList.add('active'); }, 11000); 
+            setTimeout(() => { steps[2].classList.remove('active'); steps[3].classList.add('active'); }, 17000); 
+            setTimeout(() => { steps[3].classList.remove('active'); splash.classList.add('clio-transition'); steps[4].classList.add('active'); }, 23000); 
+            setTimeout(() => { steps[4].classList.remove('active'); steps[5].classList.add('active'); }, 29000); 
+            setTimeout(() => { steps[5].classList.remove('active'); steps[6].classList.add('active'); }, 35000); 
+            setTimeout(() => { document.getElementById('clioCheck').classList.add('pop'); }, 36500); 
+
+            setTimeout(() => {
+                splash.classList.add('fade-out');
+                setTimeout(() => splash.style.display = 'none', 1000);
+            }, 42000);
         });
 
-        function add() {
-            const t = document.getElementById('box').value; if(!t) return;
-            const d = document.createElement('div');
-            d.style.padding = "15px"; d.style.background = "#f4f7f9"; d.style.borderRadius = "15px"; d.style.marginBottom = "10px";
-            d.innerHTML = `<small style="color:var(--teal)">${new Date().toLocaleTimeString()}</small><p style="margin:5px 0 0 0;">${t}</p>`;
-            document.getElementById('list').prepend(d);
-            document.getElementById('box').value = "";
+        function addEntry() {
+            const val = document.getElementById('entryBox').value; if(!val) return;
+            const item = document.createElement('div');
+            item.style.padding = "15px"; item.style.background = "#f9f9f9"; item.style.borderRadius = "15px"; item.style.marginBottom = "10px";
+            item.innerHTML = `<small style="color:var(--teal); font-weight:800;">${new Date().toLocaleTimeString()}</small><p style="margin:5px 0 0 0;">${val}</p>`;
+            document.getElementById('timelineList').prepend(item);
+            document.getElementById('entryBox').value = "";
         }
     </script>
 </body>
