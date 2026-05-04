@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WorkTimeline™ | Friendly Edition</title>
     <style>
-        /* Happy, rounded, bouncy font */
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
         
         :root { 
@@ -16,12 +15,11 @@
             --platinum-light: #d8e2ea;
             --platinum-dark: #7a8b9e;
             --gray-dark: #2c3e50; 
-            --clio-blue: #0076CE; /* Official Clio Blue */
+            --clio-blue: #0076CE;
         }
 
         body { font-family: 'Nunito', sans-serif; background-color: var(--platinum-mid); margin: 0; padding: 10px; display: flex; justify-content: center; }
         
-        /* Bright white, fully rounded main container */
         .app-container { 
             width: 100%; max-width: 500px; background: #ffffff; 
             border-radius: 35px; min-height: 90vh; display: flex; flex-direction: column; 
@@ -29,7 +27,7 @@
             overflow: hidden; 
         }
 
-        /* --- CINEMATIC PRESENTATION SPLASH SCREEN (35 Seconds) --- */
+        /* --- CINEMATIC PRESENTATION --- */
         .splash-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--platinum-light); 
@@ -38,107 +36,53 @@
             transition: background 3s ease-in-out, opacity 1s ease-out;
             padding: 30px; box-sizing: border-box; text-align: center;
         }
-        .splash-screen.teal-transition {
-            background: var(--teal); 
-        }
-        .splash-screen.fade-out {
-            opacity: 0; pointer-events: none;
-        }
+        .splash-screen.teal-transition { background: var(--teal); }
+        .splash-screen.fade-out { opacity: 0; pointer-events: none; }
         
         .splash-step {
             position: absolute; width: 85%; opacity: 0; pointer-events: none;
-            transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+            transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
             transform: translateY(10px);
             color: var(--gray-dark); 
         }
-        .splash-step.active {
-            opacity: 1; transform: translateY(0); pointer-events: auto;
-        }
-        .splash-step.light-text {
-            color: #ffffff; 
-        }
+        .splash-step.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .splash-step.light-text { color: #ffffff; }
 
         .splash-title { font-size: 24px; font-weight: 900; margin-bottom: 15px; line-height: 1.3; }
-        .splash-text { font-size: 16px; font-weight: 600; margin-bottom: 10px; line-height: 1.5; opacity: 0.9; }
-        .splash-list { list-style: none; padding: 0; margin: 15px 0; font-size: 14px; font-weight: 800; font-style: italic; opacity: 0.8; }
+        .splash-text { font-size: 16px; font-weight: 600; margin-bottom: 10px; line-height: 1.5; }
+        .splash-list { list-style: none; padding: 0; margin: 15px 0; font-size: 14px; font-weight: 800; font-style: italic; }
         .splash-list li { margin-bottom: 8px; }
-        .splash-fineprint { font-size: 12px; opacity: 0.8; margin-top: 15px; font-style: italic; }
         
-        .splash-logo-large {
-            width: 150px; height: 150px; border-radius: 30px; margin-bottom: 20px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-            background: white; padding: 5px; object-fit: contain;
-        }
-        .splash-logo {
-            width: 70px; height: 70px; border-radius: 18px; margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            background: white; padding: 4px; object-fit: contain;
-        }
+        .splash-logo-large { width: 160px; height: 160px; border-radius: 30px; margin-bottom: 20px; background: white; padding: 5px; object-fit: contain; box-shadow: 0 15px 40px rgba(0,0,0,0.1); }
+        .splash-logo { width: 80px; height: 80px; border-radius: 18px; margin-bottom: 20px; background: white; padding: 4px; object-fit: contain; }
 
-        .final-logo-wrapper {
-            position: relative; display: inline-block; margin-bottom: 20px;
-        }
+        .final-logo-wrapper { position: relative; display: inline-block; margin-bottom: 20px; }
         .clio-checkmark {
-            position: absolute;
-            bottom: 25px; right: 15px; 
-            width: 40px; height: 40px;
-            background: var(--clio-blue); 
-            border: 4px solid white;
-            border-radius: 50%;
+            position: absolute; bottom: 25px; right: 15px; 
+            width: 45px; height: 45px; background: var(--clio-blue); 
+            border: 4px solid white; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             opacity: 0; transform: scale(0);
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
             z-index: 10;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
-        .clio-checkmark.pop {
-            opacity: 1; transform: scale(1);
-        }
-        .clio-checkmark svg { width: 22px; height: 22px; fill: white; }
+        .clio-checkmark.pop { opacity: 1; transform: scale(1); }
+        .clio-checkmark svg { width: 24px; height: 24px; fill: white; }
 
+        /* --- APP STYLES --- */
         .heartbeat { position: absolute; top: 20px; right: 20px; display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 800; color: #00a859; z-index: 5; }
         .dot { height: 10px; width: 10px; background-color: #00a859; border-radius: 50%; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0,168,89,0.5); } 70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(0,168,89,0); } 100% { transform: scale(0.95); } }
+        @keyframes pulse { 0% { transform: scale(0.95); } 70% { transform: scale(1); } 100% { transform: scale(0.95); } }
 
-        .header-container { display: flex; align-items: center; padding: 35px 20px 25px; border-bottom: 3px solid var(--platinum-bg); text-align: left; }
-        .header-logo { width: 55px; height: 55px; margin-right: 15px; border-radius: 16px; object-fit: contain; flex-shrink: 0; background: white; padding: 2px; border: 1px solid var(--platinum-mid); }
+        .header-container { display: flex; align-items: center; padding: 35px 20px 25px; border-bottom: 3px solid var(--platinum-bg); }
+        .header-logo { width: 55px; height: 55px; margin-right: 15px; border-radius: 16px; object-fit: contain; background: white; padding: 2px; border: 1px solid var(--platinum-mid); }
         
-        .lawyer-box { background: var(--teal-soft); padding: 18px; border-radius: 25px; margin-bottom: 15px; border: 2px solid transparent; transition: 0.3s; }
+        .lawyer-box { background: var(--teal-soft); padding: 18px; border-radius: 25px; margin-bottom: 15px; }
+        #statusBox { width: 100%; height: 120px; border-radius: 25px; border: 2px solid var(--platinum-mid); background: var(--platinum-bg); padding: 18px; font-size: 16px; margin-bottom: 15px; resize: none; font-family: 'Nunito', sans-serif; }
         
-        .template-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; }
-        .template-chip { background: #ffffff; border: 2px solid var(--teal-soft); color: var(--teal); padding: 8px 16px; border-radius: 50px; font-size: 12px; font-weight: 800; cursor: pointer; white-space: nowrap; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.02); font-family: 'Nunito', sans-serif; }
-        .template-chip:active { transform: scale(0.95); background: var(--teal); color: white; border-color: var(--teal); }
-        
-        #statusBox { width: 100%; height: 120px; border-radius: 25px; border: 2px solid var(--platinum-mid); background: var(--platinum-bg); padding: 18px; font-size: 16px; margin-bottom: 15px; resize: none; box-sizing: border-box; font-family: 'Nunito', sans-serif; transition: 0.3s; }
-        #statusBox:focus { outline: none; border-color: var(--teal); background: #ffffff; box-shadow: 0 5px 15px rgba(0,128,128,0.05); }
+        .submit-main { width: 100%; background: var(--teal); color: #ffffff; border: none; padding: 20px; border-radius: 30px; font-weight: 900; font-size: 16px; cursor: pointer; }
+        .lock-footer { background: var(--gray-dark); color: #ffffff; border: none; border-radius: 30px; padding: 22px; width: 100%; cursor: pointer; font-weight: 900; margin-top: auto; }
 
-        .media-toolbar { display: flex; gap: 12px; margin-bottom: 20px; }
-        .media-btn { background: var(--platinum-bg); border: 2px solid transparent; border-radius: 25px; padding: 15px 5px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; cursor: pointer; transition: 0.2s; }
-        .media-btn svg { width: 28px; height: 28px; fill: var(--teal); transition: 0.2s; }
-        .media-btn span { font-size: 10px; font-weight: 900; text-transform: uppercase; color: var(--platinum-dark); font-family: 'Nunito', sans-serif; }
-        .media-btn:active { transform: scale(0.95); background: var(--teal-soft); border-color: var(--teal); }
-        
-        .submit-main { width: 100%; background: var(--teal); color: #ffffff; border: none; padding: 20px; border-radius: 30px; font-weight: 900; font-size: 16px; cursor: pointer; margin-bottom: 10px; box-shadow: 0 8px 20px rgba(0, 128, 128, 0.25); transition: 0.2s; font-family: 'Nunito', sans-serif; }
-        .submit-main:active { transform: scale(0.98); box-shadow: 0 4px 10px rgba(0, 128, 128, 0.2); }
-
-        .entry { background: #ffffff; border: 2px solid var(--platinum-mid); padding: 20px; border-radius: 25px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); text-align: left; position: relative; }
-        .timestamp-box { color: var(--teal); font-size: 11px; font-weight: 900; text-transform: uppercase; background: var(--teal-soft); padding: 6px 14px; border-radius: 12px; display: inline-block; margin-bottom: 10px; }
-        .geo-tag { font-size: 10px; color: var(--platinum-dark); margin-top: 10px; display: block; font-weight: 800; display: flex; align-items: center; gap: 4px; }
-        
-        .summary-header { background: var(--gray-dark); color: #ffffff; padding: 25px; border-radius: 30px; margin-bottom: 15px; display: none; text-align: center; box-shadow: 0 8px 20px rgba(44, 62, 80, 0.2); }
-        .duo-box { background: linear-gradient(135deg, #f0f7f7, #ffffff); border: 2px dashed var(--teal); border-radius: 25px; padding: 20px; margin-bottom: 20px; display: none; text-align: left; box-shadow: 0 5px 15px rgba(0,128,128,0.1); }
-        .pattern-alert { background: #fff3e0; border: 2px solid #ff9800; border-radius: 20px; padding: 18px; margin-bottom: 15px; color: #e65100; font-size: 13px; font-weight: 800; display: none; animation: slideDown 0.4s ease-out; }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .lock-footer { background: var(--gray-dark); color: #ffffff; border: none; border-radius: 30px; padding: 22px; width: 100%; cursor: pointer; font-weight: 900; text-transform: uppercase; margin-top: auto; transition: 0.2s; font-family: 'Nunito', sans-serif; }
-        .lock-footer:active { transform: scale(0.98); }
-        
-        .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; backdrop-filter: blur(15px); background: rgba(255,255,255,0.7); z-index: 100; display: none; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; }
-        .modal-content { background: white; border-radius: 30px; padding: 30px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.15); border: 2px solid var(--platinum-mid); }
-        .modal-btn-row { display: flex; gap: 10px; margin-top: 20px; }
-        .btn-cancel { background: var(--platinum-mid); color: var(--gray-dark); padding: 15px; border-radius: 20px; flex: 1; font-weight: 800; border: none; font-family: 'Nunito', sans-serif; cursor: pointer; }
-        .btn-proceed { background: var(--teal); color: white; padding: 15px; border-radius: 20px; flex: 1; font-weight: 800; border: none; font-family: 'Nunito', sans-serif; cursor: pointer; }
-        
         .privacy-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; backdrop-filter: blur(20px); z-index: 90; display: none; background: rgba(255,255,255,0.6); }
         .privacy-active .privacy-overlay { display: block; }
     </style>
@@ -149,11 +93,11 @@
         <div id="splashScreen" class="splash-screen">
             
             <div id="step0" class="splash-step active">
-                <img src="1000023907.jpg" alt="Logo" class="splash-logo-large" onerror="this.style.display='none'">
+                <img src="1000023907.jpg" alt="Logo" class="splash-logo-large" onerror="this.src='1000023907.JPG'">
             </div>
 
             <div id="step1" class="splash-step">
-                <h1 style="font-size: 32px; font-weight: 900; color: var(--teal); margin-bottom: 10px; letter-spacing: -1px;">WorkTimeline</h1>
+                <h1 style="font-size: 32px; font-weight: 900; color: var(--teal); margin-bottom: 10px;">WorkTimeline</h1>
                 <p class="splash-text">The answer is finally here.</p>
                 <p class="splash-text">What we've been waiting for.</p>
             </div>
@@ -170,38 +114,38 @@
 
             <div id="step3" class="splash-step">
                 <h2 class="splash-title">It feels like you're in a gray area.</h2>
-                <p class="splash-text">Trapped in a prison of your own circumstances.</p>
-                <p class="splash-text" style="margin-top: 15px; font-weight: 800;">You feel like you're completely invisible.</p>
+                <p class="splash-text">Trapped behind a wall of a gray prison...</p>
+                <p class="splash-text" style="margin-top: 15px; font-weight: 800; color: var(--platinum-dark);">...where you feel completely invisible.</p>
             </div>
 
             <div id="step3b" class="splash-step">
-                <h2 class="splash-title">But you're not.</h2>
+                <h2 class="splash-title" style="font-size: 30px;">But you're NOT.</h2>
                 <p class="splash-text">We know you're there.</p>
-                <p class="splash-text" style="margin-top: 15px;">We're here to help you tear down the wall...</p>
+                <p class="splash-text" style="margin-top: 15px;">We're here to help you tear down that wall.</p>
             </div>
 
             <div id="step4" class="splash-step light-text">
-                <img src="1000023907.jpg" alt="Logo" class="splash-logo" onerror="this.style.display='none'">
-                <h2 class="splash-title">...to finally see the Teal Skies.</h2>
+                <img src="1000023907.jpg" alt="Logo" class="splash-logo" onerror="this.src='1000023907.JPG'">
+                <h2 class="splash-title">To finally be SEEN.</h2>
+                <p class="splash-text">Welcome to the Teal Skies.</p>
             </div>
 
             <div id="step5" class="splash-step light-text">
-                <h2 class="splash-title">Clio believes in keeping the client at the center.</h2>
-                <p class="splash-text">We believe that too. But with WorkTimeline...</p>
-                <h2 class="splash-title" style="margin-top: 5px; font-size: 28px;">We put the client AHEAD.</h2>
-                <p class="splash-fineprint">*Lawyers reject cases daily due to zero documentation. Standardizing evidence capture lowers intake friction and drastically drops administrative costs.</p>
+                <h2 class="splash-title">Clio keeps the client at the center.</h2>
+                <p class="splash-text">We do too. But with WorkTimeline...</p>
+                <h2 class="splash-title" style="margin-top: 5px; font-size: 28px;">We keep the client AHEAD.</h2>
             </div>
 
             <div id="step6" class="splash-step light-text">
                 <div class="final-logo-wrapper">
-                    <img src="1000023907.jpg" alt="Logo" class="splash-logo-large" onerror="this.style.display='none'">
+                    <img src="1000023907.jpg" alt="Logo" class="splash-logo-large" onerror="this.src='1000023907.JPG'">
                     <div id="clioCheck" class="clio-checkmark">
                         <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
                     </div>
                 </div>
                 <h2 class="splash-title">Justice should be effortless.</h2>
-                <p class="splash-text">And it can be... if telling the truth takes no effort.</p>
-                <h3 style="margin-top: 15px; font-size: 22px; font-weight: 900; letter-spacing: 1px;">WorkTimeline</h3>
+                <p class="splash-text">If telling the truth takes no effort...</p>
+                <h3 style="margin-top: 15px; font-size: 22px; font-weight: 900;">WorkTimeline</h3>
             </div>
 
         </div>
@@ -211,183 +155,60 @@
         
         <header class="header-container">
             <div style="display: flex; align-items: center; gap: 12px; flex-grow: 1;">
-                <img src="1000023907.jpg" alt="Briefcase Logo" style="width: 50px; height: 50px; object-fit: contain; flex-shrink: 0; border-radius: 12px; border: 1px solid var(--platinum-mid); background: white; padding: 2px;" onerror="this.style.display='none'">
+                <img src="1000023907.jpg" alt="Logo" class="header-logo" onerror="this.src='1000023907.JPG'">
                 <div>
-                    <h1 style="color: var(--teal); margin: 0; font-size: 24px; font-weight: 900; letter-spacing: -0.5px; display: flex; align-items: flex-start;">
-                        WorkTimeline<span style="font-size: 12px; margin-top: 2px; margin-left: 2px;">&trade;</span>
-                    </h1>
-                    <p style="margin: 2px 0 0 0; font-style: italic; color: var(--platinum-dark); font-size: 12px; font-weight: 600;">"Justice is truth in action."</p>
+                    <h1 style="color: var(--teal); margin: 0; font-size: 24px; font-weight: 900;">WorkTimeline&trade;</h1>
+                    <p style="margin: 2px 0 0 0; font-style: italic; color: var(--platinum-dark); font-size: 11px;">"Justice is truth in action."</p>
                 </div>
             </div>
-            <button class="submit-main" style="background: var(--platinum-bg); color: var(--gray-dark); box-shadow: none; height: 35px; width: 90px; font-size: 9px; margin: 0; padding: 0; border: 2px solid var(--platinum-mid); z-index: 95; flex-shrink: 0;" onclick="togglePrivacy()">PROTECT VIEW</button>
+            <button class="submit-main" style="background: var(--platinum-bg); color: var(--gray-dark); height: 35px; width: 90px; font-size: 9px; padding: 0; border: 2px solid var(--platinum-mid);" onclick="togglePrivacy()">PROTECT VIEW</button>
         </header>
 
         <div style="padding: 25px; flex-grow: 1; display: flex; flex-direction: column;">
-            
-            <div id="briefingHeader" class="summary-header">
-                <h3 style="margin:0 0 10px 0; font-size:18px; color:var(--teal-soft);">Clio Grow Intake Brief</h3>
-                <div style="font-size:13px; font-weight: 600; opacity: 0.9;">
-                    Lawyer: <b id="sumLawyer">--</b> <br> Hash: <b id="sumHash">--</b>
-                </div>
-            </div>
-
-            <div id="duoSummaryBox" class="duo-box">
-                <h4 style="color: var(--teal); margin: 0 0 10px 0; font-size: 15px; font-weight: 900;">✨ Clio Duo AI Summary</h4>
-                <p id="duoSummaryText" style="font-size: 13px; color: var(--gray-dark); margin: 0; line-height: 1.6; font-weight: 600;">Analyzing timeline data and metadata...</p>
-            </div>
-
-            <div id="mainInputArea">
-                <div class="lawyer-box">
-                    <label style="font-size: 11px; font-weight: 900; color: var(--teal); display: block; margin-bottom: 8px;">PROFESSIONAL SIGN-IN:</label>
-                    <select id="lawyerSelect" onchange="runConflictCheck()" style="width: 100%; padding: 14px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 14px; border: 2px solid #ffffff; border-radius: 15px; background: #ffffff; color: var(--gray-dark); outline: none;">
-                        <option value="none">-- Select Professional --</option>
-                        <option value="L1">Marcus Thorne, Esq.</option>
-                        <option value="L2">Sarah Jenkins, JD</option>
-                    </select>
-                </div>
-                
-                <div id="patternAlert" class="pattern-alert">
-                    🔍 <strong>Clio Duo Pattern Detected:</strong> The term "Hazard" has been logged in 3 separate events. Generating Risk Assessment module for review.
-                </div>
-
-                <div class="template-row">
-                    <div class="template-chip" onclick="applyTemplate('site')">+ Site Observation</div>
-                    <div class="template-chip" onclick="applyTemplate('witness')">+ Witness Note</div>
-                    <div class="template-chip" onclick="applyTemplate('intake')">+ Initial Intake</div>
-                </div>
-                <textarea id="statusBox" placeholder="Enter case details here..."></textarea>
-                <div class="media-toolbar">
-                    <div class="media-btn" onclick="triggerMedia('cameraTrigger')">
-                        <svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15a5 5 0 100-10 5 5 0 000 10z"/></svg>
-                        <span>Camera</span>
-                    </div>
-                    <div class="media-btn" onclick="triggerMedia('micTrigger')">
-                        <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-                        <span>Audio</span>
-                    </div>
-                    <div class="media-btn" onclick="triggerMedia('docTrigger')">
-                        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-                        <span>Doc</span>
-                    </div>
-                </div>
-                <input type="file" id="cameraTrigger" accept="image/*" capture="environment" style="display:none" onchange="logMedia('Photo')">
-                <input type="file" id="micTrigger" accept="audio/*" capture="microphone" style="display:none" onchange="logMedia('Audio')">
-                <input type="file" id="docTrigger" style="display:none" onchange="logMedia('Document')">
-                <button class="submit-main" onclick="submitEntry()">Add to Timeline</button>
-            </div>
+            <textarea id="statusBox" placeholder="Enter incident details..."></textarea>
+            <button class="submit-main" onclick="submitEntry()">Add to Timeline</button>
             <div id="timeline" style="margin-top:10px;"></div>
-            <button id="lockBtn" class="lock-footer" onclick="showWarning()">Lock & Prepare Summary</button>
-            
-            <div style="text-align:center; padding: 20px 0;"><a href="#" onclick="localStorage.clear(); location.reload();" style="color:var(--platinum-dark); font-size:12px; text-decoration: none; font-weight:800;">Clear Session</a></div>
+            <button id="lockBtn" class="lock-footer" onclick="proceedToSummary()">Lock & Send to Clio</button>
         </div>
     </div>
 
     <script>
-        // --- PRESENTATION TIMELINE SCRIPT (35 Seconds) ---
         window.addEventListener('load', () => {
             const splash = document.getElementById('splashScreen');
             const steps = [
-                document.getElementById('step0'), 
-                document.getElementById('step1'), 
-                document.getElementById('step2'), 
-                document.getElementById('step3'), 
-                document.getElementById('step3b'),
-                document.getElementById('step4'), 
-                document.getElementById('step5'), 
-                document.getElementById('step6')  
+                document.getElementById('step0'), document.getElementById('step1'), 
+                document.getElementById('step2'), document.getElementById('step3'), 
+                document.getElementById('step3b'), document.getElementById('step4'), 
+                document.getElementById('step5'), document.getElementById('step6')
             ];
 
-            // Sequence Timing
-            setTimeout(() => { steps[0].classList.remove('active'); steps[1].classList.add('active'); }, 2500); 
-            setTimeout(() => { steps[1].classList.remove('active'); steps[2].classList.add('active'); }, 6500); 
+            // Timings (Total 35s)
+            setTimeout(() => { steps[0].classList.remove('active'); steps[1].classList.add('active'); }, 3000); 
+            setTimeout(() => { steps[1].classList.remove('active'); steps[2].classList.add('active'); }, 7000); 
             setTimeout(() => { steps[2].classList.remove('active'); steps[3].classList.add('active'); }, 12000); 
-            setTimeout(() => { steps[3].classList.remove('active'); steps[4].classList.add('active'); }, 16500); 
+            setTimeout(() => { steps[3].classList.remove('active'); steps[4].classList.add('active'); }, 17000); 
             setTimeout(() => { steps[4].classList.remove('active'); splash.classList.add('teal-transition'); steps[5].classList.add('active'); }, 21000); 
-            setTimeout(() => { steps[5].classList.remove('active'); steps[6].classList.add('active'); }, 25500); 
-            setTimeout(() => { steps[6].classList.remove('active'); steps[7].classList.add('active'); }, 30500); 
+            setTimeout(() => { steps[5].classList.remove('active'); steps[6].classList.add('active'); }, 26000); 
+            setTimeout(() => { steps[6].classList.remove('active'); steps[7].classList.add('active'); }, 30000); 
             setTimeout(() => { document.getElementById('clioCheck').classList.add('pop'); }, 31500); 
 
             setTimeout(() => {
                 splash.classList.add('fade-out');
-                setTimeout(() => splash.style.display = 'none', 1000); 
-            }, 36500); 
+                setTimeout(() => splash.style.display = 'none', 1000);
+            }, 36000);
         });
-
-        // --- APP LOGIC ---
-        const CLIO_CLIENT_ID = "18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s"; 
-        const CLIO_REDIRECT_URI = "https://worktimeline-app.vercel.app/index.html"; 
-        let isLocked = false;
-        let hazardCount = 0;
-        let patternFlagged = false;
-        
-        const templates = {
-            site: "📍 [SITE] Location: \nObservation: ",
-            witness: "👤 [WITNESS] Name: \nStatement: ",
-            intake: "📋 [INTAKE] Priority: \nSummary: "
-        };
-
-        function runConflictCheck() {
-            const el = document.getElementById('lawyerSelect');
-            if(el.value !== "none") localStorage.setItem('lawyer', el.options[el.selectedIndex].text);
-        }
-
-        function applyTemplate(key) {
-            const box = document.getElementById('statusBox');
-            box.value += (box.value.trim().length > 0 ? "\n\n" : "") + templates[key];
-            box.focus();
-        }
-
-        function triggerMedia(id) { if(!isLocked) document.getElementById(id).click(); }
-        function logMedia(t) { addEntry(`🔒 ${t} attached to timeline.`, true); }
 
         function submitEntry() {
             const text = document.getElementById('statusBox').value.trim();
-            if(!text || isLocked) return;
-            
-            if (text.toLowerCase().includes('hazard')) {
-                hazardCount++;
-                if (hazardCount >= 3 && !patternFlagged) {
-                    document.getElementById('patternAlert').style.display = "block";
-                    patternFlagged = true;
-                }
-            }
-
-            addEntry(text, false);
+            if(!text) return;
+            const div = document.createElement('div');
+            div.style.padding = "15px"; div.style.background = "#f9f9f9"; div.style.borderRadius = "15px"; div.style.marginBottom = "10px";
+            div.innerHTML = `<small style="color:var(--teal)">${new Date().toLocaleString()}</small><p>${text}</p>`;
+            document.getElementById('timeline').prepend(div);
             document.getElementById('statusBox').value = "";
         }
-
-        function addEntry(txt, sys) {
-            const div = document.createElement('div'); div.className = 'entry';
-            const now = new Date();
-            const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
-            const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-            const geo = "🌍 LAT: 49.2827° N | LON: 123.1207° W";
-            div.innerHTML = `<span class="timestamp-box">${dateStr} at ${timeStr}</span><p style="margin:5px 0 0 0; color: #2c3e50; font-weight: 600; line-height: 1.5;">${txt}</p><span class="geo-tag">${geo}</span>`;
-            if(sys) { div.style.backgroundColor = "var(--platinum-bg)"; div.style.borderColor = "var(--teal-soft)"; }
-            document.getElementById('timeline').prepend(div);
-        }
-
-        function showWarning() {
-            if(document.getElementById('lawyerSelect').value === "none") { alert("Please select a Professional first! 👩‍⚖️"); return; }
-            document.getElementById('warningModal').style.display = "flex";
-        }
-        function closeWarning() { document.getElementById('warningModal').style.display = "none"; }
-        function proceedToSummary() {
-            closeWarning(); isLocked = true;
-            document.getElementById('briefingHeader').style.display = "block";
-            document.getElementById('mainInputArea').style.display = "none";
-            document.getElementById('duoSummaryBox').style.display = "block"; 
-            document.getElementById('sumLawyer').innerText = localStorage.getItem('lawyer') || "Marcus Thorne";
-            document.getElementById('sumHash').innerText = Math.random().toString(36).substring(2, 6).toUpperCase();
-            const entriesCount = document.querySelectorAll('.entry').length;
-            const extraAlert = patternFlagged ? " ⚠️ Risk Assessment Module generated based on pattern detection." : "";
-            document.getElementById('duoSummaryText').innerHTML = `<strong>Actionable Intelligence:</strong> Compiled ${entriesCount} secure field events. Extracted location metadata, witness notes, and media attachments.${extraAlert}`;
-            const lockBtn = document.getElementById('lockBtn');
-            lockBtn.innerHTML = "Approve Summary & Send To Clio 🚀";
-            lockBtn.style.background = "var(--teal)";
-            lockBtn.onclick = function() { window.location.href = `https://app.clio.com/oauth/authorize?response_type=code&client_id=${CLIO_CLIENT_ID}&redirect_uri=${encodeURIComponent(CLIO_REDIRECT_URI)}`; };
-        }
         function togglePrivacy() { document.getElementById('appRoot').classList.toggle('privacy-active'); }
+        function proceedToSummary() { alert("Syncing with Clio..."); window.location.href="https://app.clio.com"; }
     </script>
 </body>
 </html>
