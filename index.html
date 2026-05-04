@@ -26,7 +26,7 @@
             overflow: hidden; 
         }
 
-        /* --- CINEMATIC PRESENTATION --- */
+        /* --- CINEMATIC PRESENTATION SPLASH --- */
         .splash-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--platinum-light); 
@@ -49,32 +49,41 @@
         .splash-step.light-text { color: #ffffff; }
 
         .bold-brand { font-weight: 900 !important; }
-
         .splash-title { font-size: 24px; margin-bottom: 15px; line-height: 1.3; font-weight: 400; }
         .splash-text { font-size: 16px; margin-bottom: 10px; line-height: 1.5; font-weight: 400; }
 
-        /* Icon Placeholder */
-        .splash-icon { font-size: 60px; margin-bottom: 20px; }
+        .splash-logo-large { width: 180px; height: 180px; border-radius: 30px; margin-bottom: 25px; object-fit: contain; }
+        .splash-logo { width: 80px; height: 80px; border-radius: 18px; margin-bottom: 20px; object-fit: contain; }
 
+        /* THE CLIO CHECKMARK POSITIONED ON THE LAST DOT */
+        .final-logo-wrapper { position: relative; display: inline-block; margin-bottom: 20px; }
+        .clio-checkmark {
+            position: absolute; 
+            bottom: 68px; right: 28px; /* Perfectly aligned with the 3rd dot of your logo */
+            width: 35px; height: 35px; background: var(--clio-blue); 
+            border: 3px solid white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; transform: scale(0);
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            z-index: 10;
+        }
+        .clio-checkmark.pop { opacity: 1; transform: scale(1); }
+        .clio-checkmark svg { width: 20px; height: 20px; fill: white; }
+
+        /* APP HEADER & CONTENT */
         .header-container { display: flex; align-items: center; padding: 35px 20px 25px; border-bottom: 3px solid var(--platinum-bg); }
-        .header-logo-text { font-size: 30px; margin-right: 15px; }
-        
+        .header-logo { width: 55px; height: 55px; margin-right: 15px; border-radius: 16px; object-fit: contain; background: white; padding: 2px; border: 1px solid var(--platinum-mid); }
         .submit-main { width: 100%; background: var(--teal); color: #ffffff; border: none; padding: 20px; border-radius: 30px; font-weight: 900; font-size: 16px; cursor: pointer; }
-        
         .privacy-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; backdrop-filter: blur(20px); z-index: 90; display: none; background: rgba(255,255,255,0.6); }
         .privacy-active .privacy-overlay { display: block; }
-
-        .entry { background: #f9f9f9; padding: 15px; border-radius: 15px; margin-bottom: 10px; text-align: left; border: 1px solid var(--platinum-mid); }
     </style>
 </head>
 <body>
     <div id="appRoot" class="app-container">
         
         <div id="splashScreen" class="splash-screen">
-            
             <div id="step0" class="splash-step active">
-                <div class="splash-icon">💼</div>
-                <h1 style="font-size: 32px;" class="bold-brand">WorkTimeline</h1>
+                <img src="1000023907.jpg" alt="Logo" class="splash-logo-large">
             </div>
 
             <div id="step1" class="splash-step">
@@ -93,7 +102,7 @@
             </div>
 
             <div id="step4" class="splash-step light-text">
-                <div class="splash-icon">✨</div>
+                <img src="1000023907.jpg" alt="Logo" class="splash-logo">
                 <h2 class="splash-title">To finally see the Teal Skies.</h2>
             </div>
 
@@ -104,17 +113,21 @@
             </div>
 
             <div id="step6" class="splash-step light-text">
-                <div class="splash-icon">🚀</div>
-                <h2 class="splash-title">Justice should be effortless.</h2>
+                <div class="final-logo-wrapper">
+                    <img src="1000023907.jpg" alt="Logo" class="splash-logo-large">
+                    <div id="clioCheck" class="clio-checkmark">
+                        <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                    </div>
+                </div>
+                <h2 class="splash-title">Justice should feel effortless.</h2>
                 <p class="splash-text">If telling the truth takes no effort...</p>
                 <h3 style="margin-top: 15px; font-size: 24px;" class="bold-brand">WorkTimeline</h3>
             </div>
-
         </div>
 
         <header class="header-container">
             <div style="display: flex; align-items: center; gap: 12px; flex-grow: 1;">
-                <div class="header-logo-text">💼</div>
+                <img src="1000023907.jpg" alt="Logo" class="header-logo">
                 <div>
                     <h1 style="color: var(--teal); margin: 0; font-size: 24px; font-weight: 900;">WorkTimeline&trade;</h1>
                     <p style="margin: 2px 0 0 0; font-style: italic; color: var(--platinum-dark); font-size: 11px;">"Justice is truth in action."</p>
@@ -142,13 +155,15 @@
                 document.getElementById('step6')
             ];
 
-            // Cinematic Timing
+            // 40s Pitch Sequence
             setTimeout(() => { steps[0].classList.remove('active'); steps[1].classList.add('active'); }, 5000); 
             setTimeout(() => { steps[1].classList.remove('active'); steps[2].classList.add('active'); }, 11000); 
             setTimeout(() => { steps[2].classList.remove('active'); steps[3].classList.add('active'); }, 17000); 
             setTimeout(() => { steps[3].classList.remove('active'); splash.classList.add('teal-transition'); steps[4].classList.add('active'); }, 23000); 
             setTimeout(() => { steps[4].classList.remove('active'); steps[5].classList.add('active'); }, 29000); 
             setTimeout(() => { steps[5].classList.remove('active'); steps[6].classList.add('active'); }, 35000); 
+            // The Clio Blue Checkmark POPS onto the 3rd dot
+            setTimeout(() => { document.getElementById('clioCheck').classList.add('pop'); }, 36500); 
 
             setTimeout(() => {
                 splash.classList.add('fade-out');
@@ -160,9 +175,8 @@
             const text = document.getElementById('statusBox').value.trim();
             if(!text) return;
             const div = document.createElement('div');
-            div.className = 'entry';
-            const now = new Date();
-            div.innerHTML = `<small style="color:var(--teal); font-weight:800;">${now.toLocaleString()}</small><p style="margin:5px 0 0 0; font-weight:600;">${text}</p>`;
+            div.style.padding = "15px"; div.style.background = "#f9f9f9"; div.style.borderRadius = "15px"; div.style.marginBottom = "10px";
+            div.innerHTML = `<small style="color:var(--teal); font-weight:800;">${new Date().toLocaleString()}</small><p style="margin:5px 0 0 0; font-weight:600;">${text}</p>`;
             document.getElementById('timeline').prepend(div);
             document.getElementById('statusBox').value = "";
         }
