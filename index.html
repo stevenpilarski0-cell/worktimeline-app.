@@ -59,7 +59,7 @@
         .final-logo-wrapper { position: relative; display: inline-block; margin-bottom: 20px; }
         .clio-checkmark {
             position: absolute; 
-            bottom: 68px; right: 28px; /* Perfectly aligned with the 3rd dot of your logo */
+            bottom: 68px; right: 28px; 
             width: 35px; height: 35px; background: var(--clio-blue); 
             border: 3px solid white; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
@@ -83,7 +83,7 @@
         
         <div id="splashScreen" class="splash-screen">
             <div id="step0" class="splash-step active">
-                <img src="1000023907.jpg" alt="Logo" class="splash-logo-large">
+                <img src="./1000023907.jpg" alt="Logo" class="splash-logo-large">
             </div>
 
             <div id="step1" class="splash-step">
@@ -102,7 +102,7 @@
             </div>
 
             <div id="step4" class="splash-step light-text">
-                <img src="1000023907.jpg" alt="Logo" class="splash-logo">
+                <img src="./1000023907.jpg" alt="Logo" class="splash-logo">
                 <h2 class="splash-title">To finally see the Teal Skies.</h2>
             </div>
 
@@ -114,7 +114,7 @@
 
             <div id="step6" class="splash-step light-text">
                 <div class="final-logo-wrapper">
-                    <img src="1000023907.jpg" alt="Logo" class="splash-logo-large">
+                    <img src="./1000023907.jpg" alt="Logo" class="splash-logo-large">
                     <div id="clioCheck" class="clio-checkmark">
                         <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
                     </div>
@@ -127,7 +127,7 @@
 
         <header class="header-container">
             <div style="display: flex; align-items: center; gap: 12px; flex-grow: 1;">
-                <img src="1000023907.jpg" alt="Logo" class="header-logo">
+                <img src="./1000023907.jpg" alt="Logo" class="header-logo">
                 <div>
                     <h1 style="color: var(--teal); margin: 0; font-size: 24px; font-weight: 900;">WorkTimeline&trade;</h1>
                     <p style="margin: 2px 0 0 0; font-style: italic; color: var(--platinum-dark); font-size: 11px;">"Justice is truth in action."</p>
@@ -162,7 +162,6 @@
             setTimeout(() => { steps[3].classList.remove('active'); splash.classList.add('teal-transition'); steps[4].classList.add('active'); }, 23000); 
             setTimeout(() => { steps[4].classList.remove('active'); steps[5].classList.add('active'); }, 29000); 
             setTimeout(() => { steps[5].classList.remove('active'); steps[6].classList.add('active'); }, 35000); 
-            // The Clio Blue Checkmark POPS onto the 3rd dot
             setTimeout(() => { document.getElementById('clioCheck').classList.add('pop'); }, 36500); 
 
             setTimeout(() => {
