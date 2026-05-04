@@ -5,20 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WorkTimeline™ | Friendly Edition</title>
     <style>
+        /* Happy, rounded, bouncy font */
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
         
         :root { 
             --teal: #008080; 
             --teal-soft: #e0f2f1;
-            --platinum-bg: #f8fafd; /* Brightened significantly */
-            --platinum-mid: #eef1f5; /* Very soft light gray for the body */
+            --platinum-bg: #f8fafd; 
+            --platinum-mid: #eef1f5; 
             --platinum-dark: #7a8b9e;
             --gray-dark: #2c3e50; 
         }
 
         body { font-family: 'Nunito', sans-serif; background-color: var(--platinum-mid); margin: 0; padding: 10px; display: flex; justify-content: center; }
         
-        /* Bright white, rounded main container */
+        /* Bright white, fully rounded main container */
         .app-container { 
             width: 100%; max-width: 500px; background: #ffffff; 
             border-radius: 35px; min-height: 90vh; display: flex; flex-direction: column; 
@@ -30,19 +31,48 @@
         .dot { height: 10px; width: 10px; background-color: #00a859; border-radius: 50%; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0,168,89,0.5); } 70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(0,168,89,0); } 100% { transform: scale(0.95); } }
 
-        .header-container { display: flex; align-items: center; padding: 35px 20px 25px; border-bottom: 2px solid var(--platinum-bg); text-align: left; }
-        .header-logo { width: 55px; height: 55px; margin-right: 15px; border-radius: 12px; object-fit: contain; flex-shrink: 0; }
+        .header-container { display: flex; align-items: center; padding: 35px 20px 25px; border-bottom: 3px solid var(--platinum-bg); text-align: left; }
+        .header-logo { width: 55px; height: 55px; margin-right: 15px; border-radius: 16px; object-fit: contain; flex-shrink: 0; }
         
-        .lawyer-box { background: var(--teal-soft); padding: 18px; border-radius: 20px; margin-bottom: 15px; border: 2px solid transparent; transition: 0.3s; }
+        .lawyer-box { background: var(--teal-soft); padding: 18px; border-radius: 25px; margin-bottom: 15px; border: 2px solid transparent; transition: 0.3s; }
         
         .template-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; }
-        .template-chip { background: #ffffff; border: 2px solid var(--teal-soft); color: var(--teal); padding: 8px 16px; border-radius: 50px; font-size: 12px; font-weight: 800; cursor: pointer; white-space: nowrap; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .template-chip { background: #ffffff; border: 2px solid var(--teal-soft); color: var(--teal); padding: 8px 16px; border-radius: 50px; font-size: 12px; font-weight: 800; cursor: pointer; white-space: nowrap; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.02); font-family: 'Nunito', sans-serif; }
         .template-chip:active { transform: scale(0.95); background: var(--teal); color: white; border-color: var(--teal); }
         
-        #statusBox { width: 100%; height: 120px; border-radius: 20px; border: 2px solid var(--platinum-
+        #statusBox { width: 100%; height: 120px; border-radius: 25px; border: 2px solid var(--platinum-mid); background: var(--platinum-bg); padding: 18px; font-size: 16px; margin-bottom: 15px; resize: none; box-sizing: border-box; font-family: 'Nunito', sans-serif; transition: 0.3s; }
+        #statusBox:focus { outline: none; border-color: var(--teal); background: #ffffff; box-shadow: 0 5px 15px rgba(0,128,128,0.05); }
+
+        .media-toolbar { display: flex; gap: 12px; margin-bottom: 20px; }
+        .media-btn { background: var(--platinum-bg); border: 2px solid transparent; border-radius: 25px; padding: 15px 5px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; cursor: pointer; transition: 0.2s; }
+        .media-btn svg { width: 28px; height: 28px; fill: var(--teal); transition: 0.2s; }
+        .media-btn span { font-size: 10px; font-weight: 900; text-transform: uppercase; color: var(--platinum-dark); font-family: 'Nunito', sans-serif; }
+        .media-btn:active { transform: scale(0.95); background: var(--teal-soft); border-color: var(--teal); }
+        
+        .submit-main { width: 100%; background: var(--teal); color: #ffffff; border: none; padding: 20px; border-radius: 30px; font-weight: 900; font-size: 16px; cursor: pointer; margin-bottom: 10px; box-shadow: 0 8px 20px rgba(0, 128, 128, 0.25); transition: 0.2s; font-family: 'Nunito', sans-serif; }
+        .submit-main:active { transform: scale(0.98); box-shadow: 0 4px 10px rgba(0, 128, 128, 0.2); }
+
+        .entry { background: #ffffff; border: 2px solid var(--platinum-mid); padding: 20px; border-radius: 25px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); text-align: left; position: relative; }
+        .timestamp-box { color: var(--teal); font-size: 11px; font-weight: 900; text-transform: uppercase; background: var(--teal-soft); padding: 6px 14px; border-radius: 12px; display: inline-block; margin-bottom: 10px; }
+        .geo-tag { font-size: 10px; color: var(--platinum-dark); margin-top: 10px; display: block; font-weight: 800; display: flex; align-items: center; gap: 4px; }
+        
+        /* Duo & AI Pattern Boxes */
+        .summary-header { background: var(--gray-dark); color: #ffffff; padding: 25px; border-radius: 30px; margin-bottom: 15px; display: none; text-align: center; box-shadow: 0 8px 20px rgba(44, 62, 80,
 <body>
     <div id="appRoot" class="app-container">
-        <div class="privacy-overlay"></div>
+        <div id="warningModal" class="modal-overlay">
+            <div class="modal-content">
+                <h2 style="color: var(--teal); margin: 0 0 10px 0; font-weight: 900;">Lock Timeline?</h2>
+                <p style="color: var(--gray-dark); font-size: 14px; font-weight: 600; line-height: 1.5; margin: 0;">
+                    You are about to lock this timeline. Clio Duo will generate an AI summary for you to review. Once approved, it will be securely submitted, and you will be redirected to the Clio Portal.
+                </p>
+                <div class="modal-btn-row">
+                    <button class="btn-cancel" onclick="closeWarning()">Go Back</button>
+                    <button class="btn-proceed" onclick="proceedToSummary()">Proceed</button>
+                </div>
+            </div>
+        </div>
+
         <div class="heartbeat"><span class="dot"></span> ACTIVE</div>
         
         <header class="header-container">
@@ -51,7 +81,7 @@
                 <h1 style="color: var(--teal); margin: 0; font-size: 26px; font-weight: 900; letter-spacing: -0.5px;">WorkTimeline</h1>
                 <p style="margin: 2px 0 0 0; font-style: italic; color: var(--platinum-dark); font-size: 13px; font-weight: 600;">"Justice is truth in action."</p>
             </div>
-            <button class="submit-main" style="background: var(--platinum-bg); color: var(--gray-dark); box-shadow: none; height: 35px; width: 110px; font-size: 10px; margin: 0; padding: 0; border: 2px solid var(--platinum-mid);" onclick="togglePrivacy()">PROTECT VIEW</button>
+            <button class="submit-main" style="background: var(--platinum-bg); color: var(--gray-dark); box-shadow: none; height: 35px; width: 110px; font-size: 10px; margin: 0; padding: 0; border: 2px solid var(--platinum-mid);" onclick="localStorage.clear(); location.reload();">CLEAR DATA</button>
         </header>
 
         <div style="padding: 25px; flex-grow: 1; display: flex; flex-direction: column;">
@@ -71,7 +101,7 @@
             <div id="mainInputArea">
                 <div class="lawyer-box">
                     <label style="font-size: 11px; font-weight: 900; color: var(--teal); display: block; margin-bottom: 8px;">PROFESSIONAL SIGN-IN:</label>
-                    <select id="lawyerSelect" onchange="runConflictCheck()" style="width: 100%; padding: 14px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 14px; border: 2px solid #ffffff; border-radius: 12px; background: #ffffff; color: var(--gray-dark); outline: none;">
+                    <select id="lawyerSelect" onchange="runConflictCheck()" style="width: 100%; padding: 14px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 14px; border: 2px solid #ffffff; border-radius: 15px; background: #ffffff; color: var(--gray-dark); outline: none;">
                         <option value="none">-- Select Professional --</option>
                         <option value="L1">Marcus Thorne, Esq.</option>
                         <option value="L2">Sarah Jenkins, JD</option>
@@ -79,7 +109,7 @@
                 </div>
                 
                 <div id="patternAlert" class="pattern-alert">
-                    🔍 <strong>Clio Duo Pattern Detected:</strong> The term "Hazard" has been logged in 3 separate events. Generating Risk Assessment module for Clio Manage.
+                    🔍 <strong>Clio Duo Pattern Detected:</strong> The term "Hazard" has been logged in 3 separate events. Generating Risk Assessment module for review.
                 </div>
 
                 <div class="template-row">
@@ -108,8 +138,7 @@
                 <button class="submit-main" onclick="submitEntry()">Add to Timeline</button>
             </div>
             <div id="timeline" style="margin-top:10px;"></div>
-            <button id="lockBtn" class="lock-footer" onclick="sealVault()">Lock & Prepare Summary</button>
-            <div style="text-align:center; padding: 20px 0;"><a href="#" onclick="localStorage.clear(); location.reload();" style="color:var(--platinum-dark); font-size:12px; text-decoration: none; font-weight:800;">Clear Session</a></div>
+            <button id="lockBtn" class="lock-footer" onclick="showWarning()">Lock & Prepare Summary</button>
         </div>
     </div>
     <script>
@@ -145,10 +174,10 @@
             const text = document.getElementById('statusBox').value.trim();
             if(!text || isLocked) return;
             
-            // AI Pattern Recognition Logic
+            // AI Pattern Recognition Logic (Counts the word 'hazard')
             if (text.toLowerCase().includes('hazard')) {
                 hazardCount++;
-                if (hazardCount === 3 && !patternFlagged) {
+                if (hazardCount >= 3 && !patternFlagged) {
                     document.getElementById('patternAlert').style.display = "block";
                     patternFlagged = true;
                 }
@@ -161,7 +190,7 @@
         function addEntry(txt, sys) {
             const div = document.createElement('div'); div.className = 'entry';
             
-            // Generate Full Friendly Date and Time String
+            // FULL FRIENDLY DATE AND TIME STRING
             const now = new Date();
             const dateOptions = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
             const timeOptions = { hour: '2-digit', minute: '2-digit' };
@@ -174,7 +203,7 @@
             
             div.innerHTML = `
                 <span class="timestamp-box">${fullTimestamp}</span>
-                <p style="margin:5px 0 0 0; color: #2c3e50; font-weight: 600; line-height: 1.5;">${txt}</p>
+                <p style="margin:5px 0 0 0; color: #2c3e50; font-weight: 600; line-height: 1.5; font-family: 'Nunito', sans-serif;">${txt}</p>
                 <span class="geo-tag">${geo}</span>
             `;
             
@@ -186,8 +215,21 @@
             document.getElementById('timeline').prepend(div);
         }
 
-        function sealVault() {
-            if(document.getElementById('lawyerSelect').value === "none") { alert("Please select a Professional first! 👩‍⚖️"); return; }
+        /* Modal & Locking Logic */
+        function showWarning() {
+            if(document.getElementById('lawyerSelect').value === "none") { 
+                alert("Please select a Professional first! 👩‍⚖️"); 
+                return; 
+            }
+            document.getElementById('warningModal').style.display = "flex";
+        }
+
+        function closeWarning() {
+            document.getElementById('warningModal').style.display = "none";
+        }
+
+        function proceedToSummary() {
+            closeWarning();
             isLocked = true;
             
             // Show Summary UI
@@ -214,8 +256,6 @@
                 window.location.href = authUrl;
             };
         }
-
-        function togglePrivacy() { document.getElementById('appRoot').classList.toggle('privacy-active'); }
     </script>
 </body>
 </html>
