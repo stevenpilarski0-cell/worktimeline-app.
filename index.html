@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™ | Final Master</title>
+    <title>WorkTimeline™ | Master Prototype</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
         
@@ -25,7 +25,7 @@
             overflow: hidden; 
         }
 
-        /* --- CINEMATIC PRESENTATION SCRIPT --- */
+        /* --- CINEMATIC PRESENTATION OVERLAY --- */
         .splash-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--platinum-bg); z-index: 9999;
@@ -43,9 +43,10 @@
         }
         .splash-step.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
         .splash-step.light-text { color: #ffffff; }
+
         .bold-brand { font-weight: 900 !important; }
 
-        /* THE SVG LOGO & CLIO POP */
+        /* UNBREAKABLE LOGO BOX */
         .logo-container { background: white; padding: 20px; border-radius: 25px; margin-bottom: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); position: relative; }
         .svg-logo { width: 120px; height: auto; display: block; }
 
@@ -58,13 +59,13 @@
         }
         .clio-check-pop.pop { opacity: 1; transform: scale(1); }
 
-        /* --- MASTER PROTOTYPE UI --- */
+        /* --- APP UI --- */
         .header { display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid #eee; }
         .lawyer-box { background: var(--teal-soft); padding: 15px; border-radius: 20px; margin-bottom: 15px; }
         .template-row { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; }
         .template-chip { background: #ffffff; border: 2px solid var(--teal-soft); color: var(--teal); padding: 8px 14px; border-radius: 50px; font-size: 11px; font-weight: 800; cursor: pointer; white-space: nowrap; }
         
-        #statusBox { width: 100%; height: 100px; border-radius: 20px; border: 2px solid var(--platinum-mid); background: #fbfbfb; padding: 15px; font-size: 15px; margin-bottom: 12px; resize: none; font-family: inherit; }
+        #statusBox { width: 100%; height: 110px; border-radius: 20px; border: 2px solid var(--platinum-mid); background: #fbfbfb; padding: 15px; font-size: 15px; margin-bottom: 15px; resize: none; font-family: inherit; }
         .submit-main { width: 100%; background: var(--teal); color: white; border: none; padding: 18px; border-radius: 25px; font-weight: 900; font-size: 16px; cursor: pointer; }
         
         .entry { background: #ffffff; border: 1px solid #eee; padding: 15px; border-radius: 18px; margin-bottom: 10px; position: relative; }
@@ -79,16 +80,20 @@
             <div id="step1" class="splash-step active">
                 <h1 style="font-size: 28px; margin-bottom: 10px;">Feel invisible?</h1>
                 <p style="font-size: 18px;">Well, you’re not. <b>We know you’re there.</b></p>
+                <p style="font-size: 18px; margin-top: 10px;">We see you. We hear you.</p>
             </div>
+
             <div id="step2" class="splash-step">
                 <h2 style="font-size: 24px;">It’s just that gray area.</h2>
                 <p style="font-size: 16px; margin-top: 15px;">Feel trapped. Feel stuck.</p>
                 <p style="font-size: 16px;">Behind the Great Wall of prison.</p>
             </div>
+
             <div id="step3" class="splash-step">
                 <h2 style="font-size: 24px;">Don't know what to do?</h2>
                 <p style="font-size: 16px; margin-top: 15px;">We’re here to help you <b>tear down the wall.</b></p>
             </div>
+
             <div id="step4" class="splash-step light-text">
                 <div class="logo-container">
                     <svg class="svg-logo" viewBox="0 0 100 80">
@@ -102,11 +107,13 @@
                 </div>
                 <h2 style="font-size: 24px;">Welcome to the Blue Skies.</h2>
             </div>
+
             <div id="step5" class="splash-step light-text">
                 <h2 style="font-size: 22px;">Clio keeps the client at the center.</h2>
                 <p style="font-size: 16px; margin-top: 8px;">We do too. But with <span class="bold-brand">WorkTimeline</span>...</p>
                 <h2 style="font-size: 26px; margin-top: 8px;">We keep the client AHEAD.</h2>
             </div>
+
             <div id="step6" class="splash-step light-text">
                 <div class="logo-container">
                     <svg class="svg-logo" viewBox="0 0 100 80">
@@ -175,7 +182,7 @@
     </div>
 
     <script>
-        // Cinematic Sequence (42s)
+        // Cinematic Sequence
         window.addEventListener('load', () => {
             const splash = document.getElementById('splashScreen');
             const steps = [document.getElementById('step1'), document.getElementById('step2'), document.getElementById('step3'), document.getElementById('step4'), document.getElementById('step5'), document.getElementById('step6')];
@@ -188,7 +195,6 @@
             setTimeout(() => { splash.style.opacity = '0'; setTimeout(() => splash.style.display = 'none', 1000); }, 38000);
         });
 
-        // Functional Prototype Engine
         function applyTemplate(t) { document.getElementById('statusBox').value = t; document.getElementById('statusBox').focus(); }
 
         function addEntry() {
@@ -203,15 +209,12 @@
         function lockTimeline() {
             const lawyer = document.getElementById('lawyerSelect').value;
             if(lawyer === "none") { alert("Select a Professional first!"); return; }
-            
             document.getElementById('appInterface').style.display = "none";
             document.getElementById('duoAnalysis').style.display = "block";
             document.getElementById('summaryHead').style.display = "block";
             document.getElementById('sumLawyer').innerText = lawyer;
-            
             const count = document.querySelectorAll('.entry').length;
-            document.getElementById('duoText').innerText = `Analysis complete. Duo has verified ${count} events. Evidence package is secure and ready for Clio Grow portal transition.`;
-            
+            document.getElementById('duoText').innerText = `Duo AI Analysis: Processed ${count} events. Evidence package is secure and ready for Clio Grow transition.`;
             const btn = document.getElementById('lockBtn');
             btn.innerText = "Confirm Sync to Clio Grow";
             btn.style.background = "var(--clio-blue)";
