@@ -27,12 +27,43 @@
             overflow: hidden; 
         }
 
+        /* --- SPLASH SCREEN ANIMATION --- */
+        .splash-screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--gray-dark); /* Starts in the Gray Area */
+            z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: white;
+            transition: background 1.5s ease-in-out, opacity 0.8s ease-out;
+        }
+        .splash-screen.teal-transition {
+            background: var(--teal); /* Shifts to Teal Skies */
+        }
+        .splash-screen.fade-out {
+            opacity: 0; pointer-events: none;
+        }
+        .splash-logo {
+            width: 80px; height: 80px; border-radius: 20px; margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            background: white; padding: 5px; object-fit: contain;
+        }
+        .splash-text {
+            font-size: 22px; font-weight: 900; letter-spacing: 0.5px; text-align: center;
+            animation: fadeIn 1s forwards;
+        }
+        .splash-subtext {
+            font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.9);
+            margin-top: 10px; opacity: 0; transition: opacity 1s ease-in-out;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* ------------------------------- */
+
         .heartbeat { position: absolute; top: 20px; right: 20px; display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 800; color: #00a859; z-index: 5; }
         .dot { height: 10px; width: 10px; background-color: #00a859; border-radius: 50%; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0,168,89,0.5); } 70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(0,168,89,0); } 100% { transform: scale(0.95); } }
 
         .header-container { display: flex; align-items: center; padding: 35px 20px 25px; border-bottom: 3px solid var(--platinum-bg); text-align: left; }
-        .header-logo { width: 55px; height: 55px; margin-right: 15px; border-radius: 16px; object-fit: contain; flex-shrink: 0; }
+        .header-logo { width: 55px; height: 55px; margin-right: 15px; border-radius: 16px; object-fit: contain; flex-shrink: 0; background: white; padding: 2px; border: 1px solid var(--platinum-mid); }
         
         .lawyer-box { background: var(--teal-soft); padding: 18px; border-radius: 25px; margin-bottom: 15px; border: 2px solid transparent; transition: 0.3s; }
         
@@ -77,6 +108,13 @@
 </head>
 <body>
     <div id="appRoot" class="app-container">
+        
+        <div id="splashScreen" class="splash-screen">
+            <img src="1000023910.jpg" alt="Logo" class="splash-logo" onerror="this.style.display='none'">
+            <div id="splashMainText" class="splash-text">Escaping the gray area...</div>
+            <div id="splashSubText" class="splash-subtext">Keeping the client ahead.</div>
+        </div>
+
         <div id="warningModal" class="modal-overlay">
             <div class="modal-content">
                 <h2 style="color: var(--teal); margin: 0 0 10px 0; font-weight: 900;">Lock Timeline?</h2>
@@ -96,10 +134,12 @@
         <header class="header-container">
             <img src="1000023910.jpg" alt="WorkTimeline Logo" class="header-logo" onerror="this.style.display='none'">
             <div style="flex-grow: 1;">
-                <h1 style="color: var(--teal); margin: 0; font-size: 26px; font-weight: 900; letter-spacing: -0.5px;">WorkTimeline</h1>
-                <p style="margin: 2px 0 0 0; font-style: italic; color: var(--platinum-dark); font-size: 13px; font-weight: 600;">"Justice is truth in action."</p>
+                <h1 style="color: var(--teal); margin: 0; font-size: 24px; font-weight: 900; letter-spacing: -0.5px; display: flex; align-items: flex-start;">
+                    WorkTimeline<span style="font-size: 12px; margin-top: 2px; margin-left: 2px;">&trade;</span>
+                </h1>
+                <p style="margin: 2px 0 0 0; font-style: italic; color: var(--platinum-dark); font-size: 12px; font-weight: 600;">"Justice is truth in action."</p>
             </div>
-            <button class="submit-main" style="background: var(--platinum-bg); color: var(--gray-dark); box-shadow: none; height: 35px; width: 110px; font-size: 10px; margin: 0; padding: 0; border: 2px solid var(--platinum-mid); z-index: 95; position: relative;" onclick="togglePrivacy()">PROTECT VIEW</button>
+            <button class="submit-main" style="background: var(--platinum-bg); color: var(--gray-dark); box-shadow: none; height: 35px; width: 90px; font-size: 9px; margin: 0; padding: 0; border: 2px solid var(--platinum-mid); z-index: 95; flex-shrink: 0;" onclick="togglePrivacy()">PROTECT VIEW</button>
         </header>
 
         <div style="padding: 25px; flex-grow: 1; display: flex; flex-direction: column;">
@@ -163,10 +203,30 @@
     </div>
 
     <script>
+        // Splash Screen Logic
+        window.addEventListener('load', () => {
+            const splash = document.getElementById('splashScreen');
+            const mainText = document.getElementById('splashMainText');
+            const subText = document.getElementById('splashSubText');
+            
+            // At 1.5s, shift to Teal Skies
+            setTimeout(() => {
+                splash.classList.add('teal-transition');
+                mainText.innerHTML = "Welcome to the Teal Skies.";
+                subText.style.opacity = "1";
+            }, 1500);
+
+            // At 3.5s, fade out completely
+            setTimeout(() => {
+                splash.classList.add('fade-out');
+                setTimeout(() => splash.style.display = 'none', 800);
+            }, 3500);
+        });
+
+        // App Logic
         const CLIO_CLIENT_ID = "18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s"; 
         const CLIO_REDIRECT_URI = "https://worktimeline-app.vercel.app/index.html"; 
         let isLocked = false;
-        
         let hazardCount = 0;
         let patternFlagged = false;
         
