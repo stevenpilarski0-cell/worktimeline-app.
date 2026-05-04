@@ -10,17 +10,17 @@
         :root { 
             --teal: #008080; 
             --teal-soft: #e0f2f1;
-            --platinum-bg: #f4f7f9; 
-            --platinum-mid: #dbe2e8;
+            --platinum-bg: #f8fafd; /* Brightened significantly */
+            --platinum-mid: #eef1f5; /* Very soft light gray for the body */
             --platinum-dark: #7a8b9e;
             --gray-dark: #2c3e50; 
         }
 
         body { font-family: 'Nunito', sans-serif; background-color: var(--platinum-mid); margin: 0; padding: 10px; display: flex; justify-content: center; }
         
-        /* Soft, rounded main container */
+        /* Bright white, rounded main container */
         .app-container { 
-            width: 100%; max-width: 500px; background: white; 
+            width: 100%; max-width: 500px; background: #ffffff; 
             border-radius: 35px; min-height: 90vh; display: flex; flex-direction: column; 
             position: relative; box-shadow: 0 15px 40px rgba(0, 128, 128, 0.08); 
             overflow: hidden; 
@@ -30,42 +30,16 @@
         .dot { height: 10px; width: 10px; background-color: #00a859; border-radius: 50%; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0,168,89,0.5); } 70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(0,168,89,0); } 100% { transform: scale(0.95); } }
 
-        /* Updated Header for Logo */
         .header-container { display: flex; align-items: center; padding: 35px 20px 25px; border-bottom: 2px solid var(--platinum-bg); text-align: left; }
         .header-logo { width: 55px; height: 55px; margin-right: 15px; border-radius: 12px; object-fit: contain; flex-shrink: 0; }
         
         .lawyer-box { background: var(--teal-soft); padding: 18px; border-radius: 20px; margin-bottom: 15px; border: 2px solid transparent; transition: 0.3s; }
         
         .template-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; }
-        .template-chip { background: white; border: 2px solid var(--teal-soft); color: var(--teal); padding: 8px 16px; border-radius: 50px; font-size: 12px; font-weight: 800; cursor: pointer; white-space: nowrap; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .template-chip { background: #ffffff; border: 2px solid var(--teal-soft); color: var(--teal); padding: 8px 16px; border-radius: 50px; font-size: 12px; font-weight: 800; cursor: pointer; white-space: nowrap; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
         .template-chip:active { transform: scale(0.95); background: var(--teal); color: white; border-color: var(--teal); }
         
-        #statusBox { width: 100%; height: 120px; border-radius: 20px; border: 2px solid var(--platinum-mid); background: var(--platinum-bg); padding: 18px; font-size: 16px; margin-bottom: 15px; resize: none; box-sizing: border-box; font-family: inherit; transition: 0.3s; }
-        #statusBox:focus { outline: none; border-color: var(--teal); background: white; box-shadow: 0 5px 15px rgba(0,128,128,0.05); }
-
-        .media-toolbar { display: flex; gap: 12px; margin-bottom: 20px; }
-        .media-btn { background: var(--platinum-bg); border: 2px solid transparent; border-radius: 22px; padding: 15px 5px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; cursor: pointer; transition: 0.2s; }
-        .media-btn svg { width: 28px; height: 28px; fill: var(--teal); transition: 0.2s; }
-        .media-btn span { font-size: 10px; font-weight: 900; text-transform: uppercase; color: var(--platinum-dark); }
-        .media-btn:active { transform: scale(0.95); background: var(--teal-soft); border-color: var(--teal); }
-        
-        .submit-main { width: 100%; background: var(--teal); color: white; border: none; padding: 20px; border-radius: 25px; font-weight: 900; font-size: 16px; cursor: pointer; margin-bottom: 10px; box-shadow: 0 8px 20px rgba(0, 128, 128, 0.25); transition: 0.2s; }
-        .submit-main:active { transform: scale(0.98); box-shadow: 0 4px 10px rgba(0, 128, 128, 0.2); }
-
-        .entry { background: white; border: 2px solid var(--platinum-mid); padding: 20px; border-radius: 20px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); text-align: left; position: relative; }
-        .timestamp-box { color: var(--teal); font-size: 11px; font-weight: 900; text-transform: uppercase; background: var(--teal-soft); padding: 6px 12px; border-radius: 12px; display: inline-block; margin-bottom: 10px; }
-        .geo-tag { font-size: 10px; color: var(--platinum-dark); margin-top: 10px; display: block; font-weight: 800; display: flex; align-items: center; gap: 4px; }
-        
-        /* Duo & AI Pattern Boxes */
-        .summary-header { background: var(--gray-dark); color: white; padding: 25px; border-radius: 25px; margin-bottom: 15px; display: none; text-align: center; box-shadow: 0 8px 20px rgba(44, 62, 80, 0.2); }
-        .duo-box { background: linear-gradient(135deg, #f0f7f7, #ffffff); border: 2px dashed var(--teal); border-radius: 20px; padding: 20px; margin-bottom: 20px; display: none; text-align: left; box-shadow: 0 5px 15px rgba(0,128,128,0.1); }
-        .pattern-alert { background: #fff3e0; border: 2px solid #ff9800; border-radius: 15px; padding: 15px; margin-bottom: 15px; color: #e65100; font-size: 13px; font-weight: 800; display: none; animation: slideDown 0.4s ease-out; }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .lock-footer { background: var(--gray-dark); color: white; border: none; border-radius: 25px; padding: 22px; width: 100%; cursor: pointer; font-weight: 900; text-transform: uppercase; margin-top: auto; transition: 0.2s; }
-        .lock-footer:active { transform: scale(0.98); }
-        
-        .privacy-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; backdrop-filter: blur(20px); z-index: 100; display: none
+        #statusBox { width: 100%; height: 120px; border-radius: 20px; border: 2px solid var(--platinum-
 <body>
     <div id="appRoot" class="app-container">
         <div class="privacy-overlay"></div>
@@ -97,7 +71,7 @@
             <div id="mainInputArea">
                 <div class="lawyer-box">
                     <label style="font-size: 11px; font-weight: 900; color: var(--teal); display: block; margin-bottom: 8px;">PROFESSIONAL SIGN-IN:</label>
-                    <select id="lawyerSelect" onchange="runConflictCheck()" style="width: 100%; padding: 14px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 14px; border: 2px solid white; border-radius: 12px; background: white; color: var(--gray-dark); outline: none;">
+                    <select id="lawyerSelect" onchange="runConflictCheck()" style="width: 100%; padding: 14px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 14px; border: 2px solid #ffffff; border-radius: 12px; background: #ffffff; color: var(--gray-dark); outline: none;">
                         <option value="none">-- Select Professional --</option>
                         <option value="L1">Marcus Thorne, Esq.</option>
                         <option value="L2">Sarah Jenkins, JD</option>
