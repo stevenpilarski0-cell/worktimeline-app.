@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™ | Final Presentation</title>
+    <title>WorkTimeline™ | Presentation Edition</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
         
@@ -23,62 +23,61 @@
             overflow: hidden; 
         }
 
-        /* --- PRESENTATION SPLASH --- */
+        /* --- PITCH PRESENTATION SPLASH --- */
         .splash-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--platinum-bg); 
-            z-index: 9999;
+            background: var(--platinum-bg); z-index: 9999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             transition: background 3s ease-in-out, opacity 1s ease-out;
             padding: 30px; box-sizing: border-box; text-align: center;
         }
-        /* Blue Sky Transition */
         .splash-screen.clio-transition { background: var(--clio-blue); }
         .splash-screen.fade-out { opacity: 0; pointer-events: none; }
         
         .splash-step {
             position: absolute; width: 85%; opacity: 0; pointer-events: none;
             transition: opacity 1s ease-in-out, transform 1s ease-in-out;
-            transform: translateY(10px);
-            color: var(--gray-dark); 
-            font-weight: 400;
-            z-index: 10000; /* Ensures text is always on top */
+            transform: translateY(10px); color: var(--gray-dark); font-weight: 400;
         }
         .splash-step.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
         .splash-step.light-text { color: #ffffff; }
 
         .bold-brand { font-weight: 900 !important; }
 
-        /* LOGO BOX STYLING */
+        /* CODED LOGO DESIGN */
         .logo-box {
-            background: white; 
-            padding: 15px; 
-            border-radius: 25px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            margin-bottom: 25px;
-            display: inline-block;
+            background: white; padding: 20px; border-radius: 25px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 25px;
+            display: inline-block; position: relative;
         }
-        .splash-logo-large { width: 180px; height: 180px; object-fit: contain; display: block; }
-        .splash-logo-mini { width: 80px; height: 80px; object-fit: contain; display: block; }
+        .coded-briefcase {
+            width: 100px; height: 75px; border: 5px solid var(--teal);
+            border-radius: 12px; position: relative; background: white;
+        }
+        .coded-briefcase::before {
+            content: ''; position: absolute; top: -18px; left: 28px; width: 35px; height: 12px;
+            border: 5px solid var(--teal); border-bottom: none; border-radius: 8px 8px 0 0;
+        }
+        .coded-timeline {
+            position: absolute; top: 35px; left: -15px; width: 130px; height: 7px;
+            background: #5dade2; border-radius: 4px; display: flex; justify-content: space-around; align-items: center;
+        }
+        .timeline-dot { width: 14px; height: 14px; background: white; border: 3px solid #5dade2; border-radius: 50%; position: relative; }
 
-        /* THE CLIO CHECKMARK */
-        .final-logo-wrapper { position: relative; display: inline-block; margin-bottom: 20px; }
+        /* CLIO CHECKMARK POP */
         .clio-checkmark {
-            position: absolute; 
-            bottom: 60px; right: 24px; /* Aligned for the 3rd dot */
-            width: 40px; height: 40px; background: white; 
-            border: 4px solid var(--clio-blue); border-radius: 50%;
+            position: absolute; bottom: 50px; right: 15px; 
+            width: 38px; height: 38px; background: white; 
+            border: 3px solid var(--clio-blue); border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             opacity: 0; transform: scale(0);
-            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            z-index: 10001;
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 10;
         }
         .clio-checkmark.pop { opacity: 1; transform: scale(1); }
         .clio-checkmark svg { width: 22px; height: 22px; fill: var(--clio-blue); }
 
         /* APP STYLES */
         .header { display: flex; align-items: center; padding: 25px; border-bottom: 2px solid #f0f0f0; }
-        .header-logo { width: 50px; height: 50px; margin-right: 15px; object-fit: contain; border-radius: 10px; }
         .submit-main { width: 100%; background: var(--teal); color: white; border: none; padding: 20px; border-radius: 30px; font-weight: 900; font-size: 16px; cursor: pointer; }
     </style>
 </head>
@@ -86,32 +85,25 @@
     <div id="appRoot" class="app-container">
         
         <div id="splashScreen" class="splash-screen">
-            <div id="step0" class="splash-step active">
-                <div class="logo-box">
-                    <img src="1000023910.jpg" alt="Logo" class="splash-logo-large">
-                </div>
-            </div>
-
-            <div id="step1" class="splash-step">
-                <h1 style="font-size: 28px; margin-bottom: 10px;">We know you're there.</h1>
-                <p style="font-size: 18px;">You're not invisible.</p>
+            <div id="step1" class="splash-step active">
+                <h1 style="font-size: 28px; margin-bottom: 10px;">We know you’re there.</h1>
+                <p style="font-size: 18px;">If you feel invisible... <b>you’re not.</b></p>
             </div>
 
             <div id="step2" class="splash-step">
-                <h2 style="font-size: 24px;">It feels like you're in a gray area.</h2>
-                <p style="font-size: 16px;">Trapped right behind this gray prison wall.</p>
+                <h2 style="font-size: 24px;">It feels like you’re in a gray area.</h2>
+                <p style="font-size: 16px;">Trapped right behind the walls of a gray prison.</p>
+                <p style="font-size: 16px; margin-top: 10px;">You don't know what to do or where to go.</p>
             </div>
 
             <div id="step3" class="splash-step">
                 <h2 style="font-size: 24px;">But we see you. We hear you.</h2>
-                <p style="font-size: 16px;">And we're here to help you tear down this wall.</p>
+                <p style="font-size: 16px;">And we’re here to help you <b>tear down the wall.</b></p>
             </div>
 
             <div id="step4" class="splash-step light-text">
-                <div class="logo-box">
-                    <img src="1000023910.jpg" alt="Logo" class="splash-logo-mini">
-                </div>
-                <h2 style="font-size: 24px;">To finally see the Blue Skies.</h2>
+                <div class="logo-box"><div class="coded-briefcase"><div class="coded-timeline"><div class="timeline-dot"></div><div class="timeline-dot"></div><div class="timeline-dot"></div></div></div></div>
+                <h2 style="font-size: 26px;">Welcome to the Blue Skies.</h2>
             </div>
 
             <div id="step5" class="splash-step light-text">
@@ -121,11 +113,11 @@
             </div>
 
             <div id="step6" class="splash-step light-text">
-                <div class="final-logo-wrapper">
-                    <div class="logo-box">
-                        <img src="1000023910.jpg" alt="Logo" class="splash-logo-large">
-                    </div>
-                    <div id="clioCheck" class="clio-checkmark">
+                <div class="logo-box">
+                   <div class="coded-briefcase">
+                        <div class="coded-timeline"><div class="timeline-dot"></div><div class="timeline-dot"></div><div class="timeline-dot"></div></div>
+                   </div>
+                   <div id="clioCheck" class="clio-checkmark">
                         <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
                     </div>
                 </div>
@@ -136,7 +128,7 @@
         </div>
 
         <header class="header">
-            <img src="1000023910.jpg" alt="Logo" class="header-logo">
+            <div class="coded-briefcase" style="transform: scale(0.5); margin-right: -25px;"><div class="coded-timeline"></div></div>
             <div>
                 <h1 style="color: var(--teal); margin: 0; font-size: 22px; font-weight: 900;">WorkTimeline&trade;</h1>
                 <p style="margin: 0; font-style: italic; color: var(--gray-dark); font-size: 11px;">"Justice is truth in action."</p>
@@ -144,10 +136,10 @@
         </header>
 
         <div style="padding: 25px; flex-grow: 1; display: flex; flex-direction: column;">
-            <textarea id="entryBox" style="width: 100%; height: 120px; border-radius: 20px; border: 2px solid #ddd; padding: 15px; font-family: inherit; margin-bottom: 15px; resize: none;" placeholder="What's the status?"></textarea>
+            <textarea id="entryBox" style="width: 100%; height: 120px; border-radius: 20px; border: 2px solid #ddd; padding: 15px; font-family: inherit; margin-bottom: 15px; resize: none;" placeholder="Start documenting your truth..."></textarea>
             <button class="submit-main" onclick="addEntry()">Add to Timeline</button>
             <div id="timelineList" style="margin-top: 20px;"></div>
-            <button class="submit-main" style="background: var(--gray-dark); margin-top: auto;" onclick="alert('Syncing with Clio...')">Lock & Send to Clio</button>
+            <button class="submit-main" style="background: var(--gray-dark); margin-top: auto;" onclick="alert('Syncing with Clio Portal...')">Lock & Send to Clio</button>
         </div>
     </div>
 
@@ -155,31 +147,29 @@
         window.addEventListener('load', () => {
             const splash = document.getElementById('splashScreen');
             const steps = [
-                document.getElementById('step0'), document.getElementById('step1'), 
-                document.getElementById('step2'), document.getElementById('step3'), 
-                document.getElementById('step4'), document.getElementById('step5'), 
-                document.getElementById('step6')
+                document.getElementById('step1'), document.getElementById('step2'), 
+                document.getElementById('step3'), document.getElementById('step4'), 
+                document.getElementById('step5'), document.getElementById('step6')
             ];
 
-            // 40s Pitch Timing
-            setTimeout(() => { steps[0].classList.remove('active'); steps[1].classList.add('active'); }, 5000); 
-            setTimeout(() => { steps[1].classList.remove('active'); steps[2].classList.add('active'); }, 11000); 
-            setTimeout(() => { steps[2].classList.remove('active'); steps[3].classList.add('active'); }, 17000); 
-            setTimeout(() => { steps[3].classList.remove('active'); splash.classList.add('clio-transition'); steps[4].classList.add('active'); }, 23000); 
-            setTimeout(() => { steps[4].classList.remove('active'); steps[5].classList.add('active'); }, 29000); 
-            setTimeout(() => { steps[5].classList.remove('active'); steps[6].classList.add('active'); }, 35000); 
-            setTimeout(() => { document.getElementById('clioCheck').classList.add('pop'); }, 36500); 
+            // 40-second script pacing
+            setTimeout(() => { steps[0].classList.remove('active'); steps[1].classList.add('active'); }, 6000); 
+            setTimeout(() => { steps[1].classList.remove('active'); steps[2].classList.add('active'); }, 12000); 
+            setTimeout(() => { steps[2].classList.remove('active'); splash.classList.add('clio-transition'); steps[3].classList.add('active'); }, 18000); 
+            setTimeout(() => { steps[3].classList.remove('active'); steps[4].classList.add('active'); }, 24000); 
+            setTimeout(() => { steps[4].classList.remove('active'); steps[5].classList.add('active'); }, 30000); 
+            setTimeout(() => { document.getElementById('clioCheck').classList.add('pop'); }, 32000); 
 
             setTimeout(() => {
-                splash.classList.add('fade-out');
+                splash.style.opacity = '0';
                 setTimeout(() => splash.style.display = 'none', 1000);
-            }, 42000);
+            }, 38000);
         });
 
         function addEntry() {
             const val = document.getElementById('entryBox').value; if(!val) return;
             const item = document.createElement('div');
-            item.style.padding = "15px"; item.style.background = "#f9f9f9"; item.style.borderRadius = "15px"; item.style.marginBottom = "10px";
+            item.style.padding = "15px"; item.style.background = "#f4f7f9"; item.style.borderRadius = "15px"; item.style.marginBottom = "10px";
             item.innerHTML = `<small style="color:var(--teal); font-weight:800;">${new Date().toLocaleTimeString()}</small><p style="margin:5px 0 0 0;">${val}</p>`;
             document.getElementById('timelineList').prepend(item);
             document.getElementById('entryBox').value = "";
