@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™ | Master Prototype</title>
+    <title>WorkTimeline™ | Final Master</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
         
@@ -25,7 +25,7 @@
             overflow: hidden; 
         }
 
-        /* --- CINEMATIC PRESENTATION OVERLAY --- */
+        /* --- CINEMATIC PRESENTATION SCRIPT --- */
         .splash-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--platinum-bg); z-index: 9999;
@@ -43,15 +43,14 @@
         }
         .splash-step.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
         .splash-step.light-text { color: #ffffff; }
-
         .bold-brand { font-weight: 900 !important; }
 
-        /* UNBREAKABLE LOGO BOX */
+        /* THE SVG LOGO & CLIO POP */
         .logo-container { background: white; padding: 20px; border-radius: 25px; margin-bottom: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); position: relative; }
         .svg-logo { width: 120px; height: auto; display: block; }
 
         .clio-check-pop {
-            position: absolute; top: 43px; right: 23px; /* Aligned with 3rd dot of SVG */
+            position: absolute; top: 43px; right: 23px; 
             width: 32px; height: 32px; background: var(--clio-blue); border: 3px solid white; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             opacity: 0; transform: scale(0);
@@ -59,20 +58,18 @@
         }
         .clio-check-pop.pop { opacity: 1; transform: scale(1); }
 
-        /* --- APP FUNCTIONAL STYLES --- */
+        /* --- MASTER PROTOTYPE UI --- */
         .header { display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid #eee; }
         .lawyer-box { background: var(--teal-soft); padding: 15px; border-radius: 20px; margin-bottom: 15px; }
         .template-row { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; }
-        .template-chip { background: #ffffff; border: 2px solid var(--teal-soft); color: var(--teal); padding: 8px 14px; border-radius: 50px; font-size: 11px; font-weight: 800; cursor: pointer; white-space: nowrap; transition: 0.2s; }
-        .template-chip:active { transform: scale(0.95); background: var(--teal); color: white; }
-
-        #statusBox { width: 100%; height: 110px; border-radius: 20px; border: 2px solid var(--platinum-mid); background: #fbfbfb; padding: 15px; font-size: 15px; margin-bottom: 15px; resize: none; font-family: inherit; outline: none; }
-        .submit-main { width: 100%; background: var(--teal); color: white; border: none; padding: 18px; border-radius: 25px; font-weight: 900; font-size: 16px; cursor: pointer; box-shadow: 0 5px 15px rgba(0,128,128,0.2); }
+        .template-chip { background: #ffffff; border: 2px solid var(--teal-soft); color: var(--teal); padding: 8px 14px; border-radius: 50px; font-size: 11px; font-weight: 800; cursor: pointer; white-space: nowrap; }
         
-        .entry { background: #ffffff; border: 1px solid #eee; padding: 15px; border-radius: 18px; margin-bottom: 10px; position: relative; animation: slideUp 0.3s ease-out; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        #statusBox { width: 100%; height: 100px; border-radius: 20px; border: 2px solid var(--platinum-mid); background: #fbfbfb; padding: 15px; font-size: 15px; margin-bottom: 12px; resize: none; font-family: inherit; }
+        .submit-main { width: 100%; background: var(--teal); color: white; border: none; padding: 18px; border-radius: 25px; font-weight: 900; font-size: 16px; cursor: pointer; }
         
+        .entry { background: #ffffff; border: 1px solid #eee; padding: 15px; border-radius: 18px; margin-bottom: 10px; position: relative; }
         .duo-box { background: linear-gradient(135deg, #f0f7f7, #ffffff); border: 2px dashed var(--teal); border-radius: 20px; padding: 15px; margin-bottom: 15px; display: none; }
+        .summary-header { background: var(--gray-dark); color: #ffffff; padding: 20px; border-radius: 25px; margin-bottom: 15px; display: none; text-align: center; }
     </style>
 </head>
 <body>
@@ -89,9 +86,8 @@
                 <p style="font-size: 16px;">Behind the Great Wall of prison.</p>
             </div>
             <div id="step3" class="splash-step">
-                <h2 style="font-size: 24px;">Don't know where to go?</h2>
-                <p style="font-size: 16px;">Don't know what to do?</p>
-                <p style="font-size: 18px; margin-top: 15px; color: var(--teal); font-weight: 800;">We're here to help you tear down the wall.</p>
+                <h2 style="font-size: 24px;">Don't know what to do?</h2>
+                <p style="font-size: 16px; margin-top: 15px;">We’re here to help you <b>tear down the wall.</b></p>
             </div>
             <div id="step4" class="splash-step light-text">
                 <div class="logo-container">
@@ -143,60 +139,56 @@
             </div>
         </header>
 
-        <div style="padding: 20px; flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column;">
+        <div style="padding: 20px; flex-grow: 1; overflow-y: auto;">
+            <div id="summaryHead" class="summary-header">
+                <h3 style="margin:0; font-size:16px; color:var(--teal-soft);">Clio Grow Intake Brief</h3>
+                <div style="font-size:12px; margin-top:5px;">Professional: <b id="sumLawyer">--</b></div>
+            </div>
+
             <div class="lawyer-box">
                 <label style="font-size: 10px; font-weight: 900; color: var(--teal); display: block; margin-bottom: 5px;">PROFESSIONAL SIGN-IN:</label>
                 <select id="lawyerSelect" style="width: 100%; padding: 10px; border-radius: 12px; border: none; font-family: inherit; font-weight: 700;">
                     <option value="none">-- Select Lawyer --</option>
-                    <option value="Marcus">Marcus Thorne, Esq.</option>
-                    <option value="Sarah">Sarah Jenkins, JD</option>
+                    <option value="Marcus Thorne">Marcus Thorne, Esq.</option>
+                    <option value="Sarah Jenkins">Sarah Jenkins, JD</option>
                 </select>
             </div>
 
-            <div id="duoSummary" class="duo-box">
+            <div id="duoAnalysis" class="duo-box">
                 <h4 style="color: var(--teal); margin: 0 0 5px 0; font-size: 14px;">✨ Clio Duo AI Summary</h4>
-                <p id="duoText" style="font-size: 12px; margin: 0; line-height: 1.4; color: var(--gray-dark); font-weight: 600;"></p>
+                <p id="duoText" style="font-size: 12px; margin: 0; color: var(--gray-dark); font-weight: 600;"></p>
             </div>
 
-            <div id="inputArea">
+            <div id="appInterface">
                 <div class="template-row">
                     <div class="template-chip" onclick="applyTemplate('Site Observation: ')">+ Site</div>
                     <div class="template-chip" onclick="applyTemplate('Witness Statement: ')">+ Witness</div>
-                    <div class="template-chip" onclick="applyTemplate('Initial Intake: ')">+ Intake</div>
+                    <div class="template-chip" onclick="applyTemplate('Intake Priority: ')">+ Intake</div>
                 </div>
-                <textarea id="statusBox" placeholder="Tell your truth..."></textarea>
+                <textarea id="statusBox" placeholder="Start documenting..."></textarea>
                 <button class="submit-main" onclick="addEntry()">Add to Timeline</button>
             </div>
             
             <div id="timelineList" style="margin-top: 15px;"></div>
-            <button id="lockBtn" class="submit-main" style="background: var(--gray-dark); margin-top: auto;" onclick="lockTimeline()">Lock & Send to Clio</button>
+            <button id="lockBtn" class="submit-main" style="background: var(--gray-dark); margin-top: 20px;" onclick="lockTimeline()">Lock & Send to Clio</button>
         </div>
     </div>
 
     <script>
-        // Cinematic Script Pacing
+        // Cinematic Sequence (42s)
         window.addEventListener('load', () => {
             const splash = document.getElementById('splashScreen');
-            const steps = [
-                document.getElementById('step1'), document.getElementById('step2'), 
-                document.getElementById('step3'), document.getElementById('step4'), 
-                document.getElementById('step5'), document.getElementById('step6')
-            ];
-
+            const steps = [document.getElementById('step1'), document.getElementById('step2'), document.getElementById('step3'), document.getElementById('step4'), document.getElementById('step5'), document.getElementById('step6')];
             setTimeout(() => { steps[0].classList.remove('active'); steps[1].classList.add('active'); }, 6000); 
             setTimeout(() => { steps[1].classList.remove('active'); steps[2].classList.add('active'); }, 12000); 
             setTimeout(() => { steps[2].classList.remove('active'); splash.classList.add('clio-transition'); steps[3].classList.add('active'); }, 18000); 
             setTimeout(() => { steps[3].classList.remove('active'); steps[4].classList.add('active'); }, 24000); 
             setTimeout(() => { steps[4].classList.remove('active'); steps[5].classList.add('active'); }, 30000); 
             setTimeout(() => { document.getElementById('clioCheck').classList.add('pop'); }, 31500); 
-
-            setTimeout(() => {
-                splash.style.opacity = '0';
-                setTimeout(() => splash.style.display = 'none', 1000);
-            }, 38000);
+            setTimeout(() => { splash.style.opacity = '0'; setTimeout(() => splash.style.display = 'none', 1000); }, 38000);
         });
 
-        // App Logic
+        // Functional Prototype Engine
         function applyTemplate(t) { document.getElementById('statusBox').value = t; document.getElementById('statusBox').focus(); }
 
         function addEntry() {
@@ -210,12 +202,15 @@
 
         function lockTimeline() {
             const lawyer = document.getElementById('lawyerSelect').value;
-            if(lawyer === "none") { alert("Please select a Professional first! 👩‍⚖️"); return; }
+            if(lawyer === "none") { alert("Select a Professional first!"); return; }
             
-            document.getElementById('inputArea').style.display = "none";
-            document.getElementById('duoSummary').style.display = "block";
+            document.getElementById('appInterface').style.display = "none";
+            document.getElementById('duoAnalysis').style.display = "block";
+            document.getElementById('summaryHead').style.display = "block";
+            document.getElementById('sumLawyer').innerText = lawyer;
+            
             const count = document.querySelectorAll('.entry').length;
-            document.getElementById('duoText').innerText = `Duo AI Analysis: Processed ${count} verified events. Metadata hash generated. Data is ready for secure Clio Grow transition.`;
+            document.getElementById('duoText').innerText = `Analysis complete. Duo has verified ${count} events. Evidence package is secure and ready for Clio Grow portal transition.`;
             
             const btn = document.getElementById('lockBtn');
             btn.innerText = "Confirm Sync to Clio Grow";
