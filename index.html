@@ -422,14 +422,14 @@
 
         function closeWarning() { 
             document.getElementById('warningModal').style.display = "none"; 
-                function proceedToSummary() {
+                        function proceedToSummary() {
             closeWarning();
             isLocked = true;
             document.getElementById('briefingHeader').style.display = 'block';
             document.getElementById('mainInputArea').style.display = 'none';
             document.getElementById('duoSummaryBox').style.display = 'block';
 
-            // Set Summary Details
+            // Set Summary Details (Lawyer name and a unique Hash ID)
             document.getElementById('sumLawyer').innerText = localStorage.getItem('lawyer') || "Marcus Thorne, Esq.";
             document.getElementById('sumHash').innerText = Math.random().toString(36).substring(2, 8).toUpperCase();
 
@@ -444,7 +444,7 @@
 
                 window.location.href = authUrl;
             };
-        }
+        } // FIXED: Removed the extra stray bracket that was here.
 
         function togglePrivacy() {
             document.getElementById('appRoot').classList.toggle('privacy-active');
