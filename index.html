@@ -431,18 +431,10 @@
         document.getElementById('mainInputArea').style.display = 'none';
         document.getElementById('duoSummaryBox').style.display = 'block';
 
-        document.getElementById('sumLawyer').innerText = localStorage.getItem('lawyer') || "Marcus Thorne, Esq.";
-        document.getElementById('sumHash').innerText = Math.random().toString(36).substring(2, 8).toUpperCase();
-
-        const entriesCount = document.querySelectorAll('.entry').length;
-        const extraAlert = patternFlagged ? " ⚠️ Risk Assessment module generated based on pattern detection." : "";
-
-        document.getElementById('duoSummaryText').innerHTML = `<strong>Actionable Intelligence:</strong> Compiled ${entriesCount} secure field events. Extracted location metadata, witness notes, and high-fidelity attachments.${extraAlert}`;
-
-        const lockBtn = document.getElementById('lockBtn');
+                const lockBtn = document.getElementById('lockBtn');
         lockBtn.innerHTML = "Approve Summary & Sync To Clio 🚀";
         lockBtn.style.background = "var(--clio-blue)";
-        
+
         lockBtn.onclick = function() {
             const clientId = 'btscu9WmPHYelIZtZA9sIQfynBAQudwjaR7pEDdq'; 
             const redirectUri = 'https://worktimeline-app.vercel.app'; 
@@ -451,36 +443,37 @@
             window.location.href = authUrl;
         };
     }
+}
 
-    function togglePrivacy() {
-        document.getElementById('appRoot').classList.toggle('privacy-active');
-    }    
-        // --- THE CLIO DATA RECEIVER ---
-    window.addEventListener('load', () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const clioCode = urlParams.get('code');
+function togglePrivacy() {
+    document.getElementById('appRoot').classList.toggle('privacy-active');
+}
 
-        if (clioCode) {
-            alert("Clio connection successful! Handshake complete.");
-            const lockBtn = document.getElementById('lockBtn');
-            if (lockBtn) {
-                lockBtn.innerHTML = "✅ Sync Authorized: Ready to Push";
-                lockBtn.style.background = "#28a745"; 
+// --- THE CLIO DATA RECEIVER ---
+window.addEventListener('load', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const clioCode = urlParams.get('code');
+
+    if (clioCode) {
+        alert("Clio connection successful! Handshake complete.");
+        const lockBtn = document.getElementById('lockBtn');
+        if (lockBtn) {
+            lockBtn.innerHTML = "✅ Sync Authorized: Ready to Push";
+            lockBtn.style.background = "#28a745"; 
+            
+            lockBtn.onclick = function() {
+                lockBtn.innerHTML = "⌛ Transmitting to Clio...";
                 
-                lockBtn.onclick = function() {
-                    lockBtn.innerHTML = "⌛ Transmitting to Clio...";
-                    const noteBody = document.getElementById('duoSummaryText').innerText;
-                    
-                                        setTimeout(() => {
-                        alert("🚀 SUCCESS!\n\nBecause Clio keeps them centered, WorkTimeline keeps them a step ahead.\n\nSummary synced to Matter 16986525.");
-                        lockBtn.innerHTML = "✅ Sync Complete";
-                        lockBtn.style.background = "#000";
-                        lockBtn.disabled = true;
-                    }, 1500);
-                };
-            }
+                setTimeout(() => {
+                    alert("🚀 SUCCESS!\n\nBecause Clio keeps them centered, WorkTimeline keeps them a step ahead.\n\nSummary synced to Matter 16986525.");
+                    lockBtn.innerHTML = "✅ Sync Complete";
+                    lockBtn.style.background = "#000";
+                    lockBtn.disabled = true;
+                }, 1500);
+            };
         }
-    });
+    }
+});
 </script>
 </body>
 </html>
