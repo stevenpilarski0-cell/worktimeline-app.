@@ -3,60 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™ Elite</title>
+    <title>WorkTimeline™ | Elite Partner</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Inter:wght@300;400;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700;900&display=swap');
         
         :root { 
-            --cyber-teal: #00f2ff; 
-            --deep-teal: #008080;
-            --platinum-gray: #e5e5e5;
-            --metallic-bg: #1a1a1a;
-            --glass-white: rgba(255, 255, 255, 0.05);
+            --teal: #008080; 
+            --teal-bright: #00b3b3;
+            --platinum-light: #f4f7f9; 
+            --platinum-mid: #e0e5ec;
+            --platinum-dark: #8b9aaa;
+            --gray-dark: #2c3e50; 
         }
 
-        body { font-family: 'Inter', sans-serif; background-color: #0d0d0d; margin: 0; padding: 10px; color: var(--platinum-gray); }
+        body { font-family: 'Inter', sans-serif; background-color: var(--platinum-mid); margin: 0; padding: 10px; display: flex; justify-content: center; }
         
+        /* Futuristic Glass & Platinum Container */
         .app-container { 
-            width: 100%; max-width: 500px; background: linear-gradient(145deg, #1a1a1a, #000000); 
-            border-radius: 30px; min-height: 90vh; display: flex; flex-direction: column; 
-            position: relative; box-shadow: 0 0 50px rgba(0, 242, 255, 0.15); border: 1px solid rgba(255,255,255,0.1); overflow: hidden;
-        }
-
-        .heartbeat { position: absolute; top: 15px; right: 20px; display: flex; align-items: center; gap: 8px; font-family: 'Orbitron', sans-serif; font-size: 9px; color: var(--cyber-teal); letter-spacing: 1px; }
-        .dot { height: 6px; width: 6px; background-color: var(--cyber-teal); border-radius: 50%; box-shadow: 0 0 10px var(--cyber-teal); animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
-
-        .header-container { text-align: center; padding: 40px 20px; border-bottom: 1px solid rgba(255,
+            width: 100%; max-width: 500px; background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(10px); border-radius: 20px; min-height: 90vh; display: flex; flex-direction: column; 
+            position: relative; box-shadow: 0 15px 35px rgba(0, 128, 12
 <body>
     <div id="appRoot" class="app-container">
-        <div class="heartbeat"><span class="dot"></span> SYNCING_GROW</div>
+        <div class="privacy-overlay"></div>
+        <div class="heartbeat"><span class="dot"></span> CLIO GROW ACTIVE</div>
         
         <header class="header-container">
-            <h1>WORKTIMELINE&trade;</h1>
-            <p class="quote">Justice is truth in action.</p>
+            <h1 style="color: var(--teal); margin: 0; font-size: 28px; font-weight: 900; letter-spacing: -0.5px;">WORKTIMELINE&trade;</h1>
+            <p style="margin: 5px 0 20px 0; font-style: italic; color: var(--platinum-dark); font-size: 14px;">"Justice is truth in action."</p>
+            <button class="submit-main" style="background: var(--gray-dark); box-shadow: none; height: 38px; width: 140px; font-size: 11px; margin: 0 auto; padding: 0;" onclick="togglePrivacy()">PROTECT VIEW</button>
         </header>
 
-        <div style="padding: 25px; flex-grow: 1; display: flex; flex-direction: column;">
+        <div style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column;">
+            <div id="briefingHeader" class="summary-header">
+                <h3 style="margin:0; font-size:16px; color:var(--teal-bright);">Clio Grow Intake Brief</h3>
+                <div style="font-size:12px; margin-top:8px; display:grid; grid-template-columns: 1fr 1fr;">
+                    <span>Lawyer: <b id="sumLawyer">--</b></span>
+                    <span>Hash: <b id="sumHash">--</b></span>
+                </div>
+            </div>
+
             <div id="mainInputArea">
                 <div class="lawyer-box">
-                    <label style="font-size: 9px; font-weight: 900; color: var(--cyber-teal); letter-spacing: 1.5px;">AUTHENTICATING_PRO_ID:</label>
-                    <select id="lawyerSelect" onchange="runConflictCheck()" style="width: 100%; padding: 12px; margin-top: 10px; font-weight: 700; border: none; border-radius: 8px; background: black; color: white; border: 1px solid rgba(255,255,255,0.1);">
-                        <option value="none">-- ACCESS PORTAL --</option>
+                    <label style="font-size: 10px; font-weight: 900; color: var(--teal); letter-spacing: 0.5px;">AUTHENTICATING PROFESSIONAL:</label>
+                    <select id="lawyerSelect" onchange="runConflictCheck()" style="width: 100%; padding: 12px; margin-top: 8px; font-weight: 700; border: 1px solid var(--platinum-mid); border-radius: 8px; background: white; color: var(--gray-dark); outline: none;">
+                        <option value="none">-- Select Professional --</option>
                         <option value="L1">Marcus Thorne, Esq.</option>
                         <option value="L2">Sarah Jenkins, JD</option>
                     </select>
                 </div>
-
-                <div style="display: flex; gap: 10px; margin-bottom: 15px; overflow-x: auto;">
-                    <div class="template-chip" onclick="applyTemplate('site')">Observation</div>
-                    <div class="template-chip" onclick="applyTemplate('witness')">Witness</div>
-                    <div class="template-chip" onclick="applyTemplate('intake')">Intake</div>
+                <div class="template-row">
+                    <div class="template-chip" onclick="applyTemplate('site')">+ Site Observation</div>
+                    <div class="template-chip" onclick="applyTemplate('witness')">+ Witness Note</div>
+                    <div class="template-chip" onclick="applyTemplate('intake')">+ Initial Intake</div>
                 </div>
-
-                <textarea id="statusBox" placeholder="LOG_CASE_DATA_HERE..."></textarea>
-
-                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <textarea id="statusBox" placeholder="Enter case details..."></textarea>
+                <div class="media-toolbar">
                     <div class="media-btn" onclick="triggerMedia('cameraTrigger')">
                         <svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15a5 5 0 100-10 5 5 0 000 10z"/></svg>
                         <span>Camera</span>
@@ -70,17 +72,14 @@
                         <span>Doc</span>
                     </div>
                 </div>
-
                 <input type="file" id="cameraTrigger" accept="image/*" capture="environment" style="display:none" onchange="logMedia('Photo')">
                 <input type="file" id="micTrigger" accept="audio/*" capture="microphone" style="display:none" onchange="logMedia('Audio')">
                 <input type="file" id="docTrigger" style="display:none" onchange="logMedia('Document')">
-                
-                <button class="submit-main" onclick="submitEntry()">LOG TO TIMELINE</button>
+                <button class="submit-main" onclick="submitEntry()">SUBMIT TO TIMELINE</button>
             </div>
-
-            <div id="timeline" style="margin-top:10px;"></div>
-            
-            <button id="lockBtn" class="lock-footer" onclick="sealVault()">SYNC_TO_CLIO_VAULT</button>
+            <div id="timeline" style="margin-top:15px;"></div>
+            <button id="lockBtn" class="lock-footer" onclick="sealVault()">LOCK & SYNC TO GROW</button>
+            <div style="text-align:center; padding: 20px 0;"><a href="#" onclick="localStorage.clear(); location.reload();" style="color:var(--platinum-dark); font-size:11px; text-decoration: none; font-weight:700;">[ CLEAR SESSION ]</a></div>
         </div>
     </div>
     <script>
@@ -89,16 +88,24 @@
         let isLocked = false;
         
         const templates = {
-            site: "[SITE_OBS]: ", witness: "[WITNESS_STMT]: ", intake: "[INTAKE_DATA]: "
+            site: "[SITE] Location: [ ], Observation: [ ]",
+            witness: "[WITNESS] Name: [ ], Statement: [ ]",
+            intake: "[INTAKE] Priority: [ ], Summary: [ ]"
         };
 
+        function runConflictCheck() {
+            const el = document.getElementById('lawyerSelect');
+            if(el.value !== "none") localStorage.setItem('lawyer', el.options[el.selectedIndex].text);
+        }
+
         function applyTemplate(key) {
-            document.getElementById('statusBox').value += templates[key];
-            document.getElementById('statusBox').focus();
+            const box = document.getElementById('statusBox');
+            box.value += (box.value.trim().length > 0 ? "\n\n" : "") + templates[key];
+            box.focus();
         }
 
         function triggerMedia(id) { if(!isLocked) document.getElementById(id).click(); }
-        function logMedia(t) { addEntry(`[SECURE_LOG]: ${t} captured and encrypted.`, true); }
+        function logMedia(t) { addEntry(`[SECURE LOG] ${t} attached to timeline.`, true); }
 
         function submitEntry() {
             const text = document.getElementById('statusBox').value.trim();
@@ -110,47 +117,49 @@
         function addEntry(txt, sys) {
             const div = document.createElement('div'); div.className = 'entry';
             
-            // FULL PLATINUM TIMESTAMP (Day, Month, Date, Year, Time)
+            // Generate Full Date and Time String
             const now = new Date();
-            const options = { 
-                weekday: 'long', 
-                month: 'long', 
-                day: 'numeric', 
-                year: 'numeric', 
-                hour: '2-digit', 
-                minute: '2-digit', 
-                second: '2-digit' 
-            };
-            const fullStamp = now.toLocaleDateString('en-US', options).toUpperCase();
+            const dateOptions = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
+            const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
             
-            const geo = `LOC_VERIFIED: 49.2827° N, 123.1207° W | HASH_${Math.random().toString(36).substring(7).toUpperCase()}`;
+            const dateStr = now.toLocaleDateString('en-US', dateOptions);
+            const timeStr = now.toLocaleTimeString('en-US', timeOptions);
+            
+            const fullTimestamp = `${dateStr} | ${timeStr}`;
+            const geo = "LAT: 49.2827° N | LON: 123.1207° W (VERIFIED)";
             
             div.innerHTML = `
-                <span class="timestamp">${fullStamp}</span>
-                <p style="margin:0; font-size:16px; line-height:1.4;">${txt}</p>
+                <span class="timestamp-box">${fullTimestamp}</span>
+                <p style="margin:5px 0 0 0; color: #333;">${txt}</p>
                 <span class="geo-tag">${geo}</span>
             `;
             
             if(sys) {
-                div.style.borderLeftColor = "#ffffff";
-                div.style.background = "rgba(255,255,255,0.08)";
+                div.style.backgroundColor = "var(--platinum-light)";
+                div.style.borderColor = "var(--platinum-mid)";
             }
             
             document.getElementById('timeline').prepend(div);
         }
 
-        function sealVault() {
-            if(document.getElementById('lawyerSelect').value === "none") { alert("IDENTITY REQUIRED"); return; }
-            document.getElementById('lockBtn').innerHTML = "ENCRYPTING...";
-            document.getElementById('lockBtn').style.opacity = "0.5";
-            
-            setTimeout(() => {
-                const url = `https://app.clio.com/oauth/authorize?response_type=code&client_id=${CLIO_CLIENT_ID}&redirect_uri=${encodeURIComponent(CLIO_REDIRECT_URI)}`;
-                window.location.href = url;
-            }, 1000);
+        function showSummary() {
+            document.getElementById('briefingHeader').style.display = "block";
+            document.getElementById('mainInputArea').style.display = "none";
+            document.getElementById('sumLawyer').innerText = localStorage.getItem('lawyer') || "Marcus Thorne";
+            document.getElementById('sumHash').innerText = Math.random().toString(36).substring(2, 6).toUpperCase();
+            document.getElementById('lockBtn').innerHTML = "🔒 SYNCED TO GROW";
+            document.getElementById('lockBtn').style.opacity = "0.7";
         }
 
-        function runConflictCheck() { console.log("Identity Verified."); }
+        function sealVault() {
+            if(document.getElementById('lawyerSelect').value === "none") { alert("Please Select Lawyer first."); return; }
+            isLocked = true;
+            showSummary();
+            const authUrl = `https://app.clio.com/oauth/authorize?response_type=code&client_id=${CLIO_CLIENT_ID}&redirect_uri=${encodeURIComponent(CLIO_REDIRECT_URI)}`;
+            setTimeout(() => { window.location.href = authUrl; }, 1200);
+        }
+
+        function togglePrivacy() { document.getElementById('appRoot').classList.toggle('privacy-active'); }
     </script>
 </body>
 </html>
