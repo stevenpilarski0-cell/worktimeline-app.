@@ -64,6 +64,12 @@
         .splash-list li { margin-bottom: 8px; }
         .splash-fineprint { font-size: 12px; opacity: 0.8; margin-top: 15px; font-style: italic; }
         
+        /* Logos */
+        .splash-logo-large {
+            width: 150px; height: 150px; border-radius: 30px; margin-bottom: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            background: white; padding: 5px; object-fit: contain;
+        }
         .splash-logo {
             width: 70px; height: 70px; border-radius: 18px; margin-bottom: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
@@ -124,7 +130,17 @@
         
         <div id="splashScreen" class="splash-screen">
             
-            <div id="step1" class="splash-step active">
+            <div id="step0" class="splash-step active">
+                <img src="1000023910.jpg" alt="Logo" class="splash-logo-large" onerror="this.style.display='none'">
+            </div>
+
+            <div id="step1" class="splash-step">
+                <h1 style="font-size: 32px; font-weight: 900; color: var(--teal); margin-bottom: 10px; letter-spacing: -1px;">WorkTimeline</h1>
+                <p class="splash-text">The answer is finally here.</p>
+                <p class="splash-text">What we've been waiting for.</p>
+            </div>
+
+            <div id="step2" class="splash-step">
                 <h2 class="splash-title">Trust me, you feel like you're alone.</h2>
                 <p class="splash-text">77% of everyday legal issues never reach a lawyer.</p>
                 <ul class="splash-list">
@@ -134,30 +150,30 @@
                 </ul>
             </div>
 
-            <div id="step2" class="splash-step">
+            <div id="step3" class="splash-step">
                 <h2 class="splash-title">It feels like you're in a gray area.</h2>
-                <p class="splash-text">Trapped in a prison of your own circumstances, and you can't escape.</p>
+                <p class="splash-text">Trapped in a prison of your own circumstances, unable to escape.</p>
                 <p class="splash-text" style="margin-top: 20px;">But every once in a while, you find a crack in the wall...</p>
             </div>
 
-            <div id="step3" class="splash-step light-text">
+            <div id="step4" class="splash-step light-text">
                 <img src="1000023910.jpg" alt="Logo" class="splash-logo" onerror="this.style.display='none'">
-                <h2 class="splash-title">...reminding you there is a Teal Sky worth fighting for.</h2>
+                <h2 class="splash-title">...reminding you there is a Teal Sky worth breaking down the wall for.</h2>
                 <p class="splash-text">You just need a little help.</p>
             </div>
 
-            <div id="step4" class="splash-step light-text">
+            <div id="step5" class="splash-step light-text">
                 <h2 class="splash-title">Clio believes in keeping the client at the center.</h2>
                 <p class="splash-text">We believe that too. But with WorkTimeline...</p>
-                <h2 class="splash-title" style="margin-top: 5px;">We put the client AHEAD.</h2>
+                <h2 class="splash-title" style="margin-top: 5px; font-size: 28px;">We put the client AHEAD.</h2>
                 <p class="splash-fineprint">*Lawyers reject cases daily due to zero documentation. Standardizing evidence capture lowers intake friction and drastically drops administrative costs.</p>
             </div>
 
-            <div id="step5" class="splash-step light-text">
+            <div id="step6" class="splash-step light-text">
                 <img src="1000023910.jpg" alt="Logo" class="splash-logo" onerror="this.style.display='none'">
                 <h2 class="splash-title">Justice should be effortless.</h2>
                 <p class="splash-text">And it can be... if telling the truth takes no effort.</p>
-                <h3 style="margin-top: 15px; font-weight: 900; letter-spacing: 1px;">WorkTimeline</h3>
+                <h3 style="margin-top: 15px; font-size: 22px; font-weight: 900; letter-spacing: 1px;">WorkTimeline</h3>
             </div>
 
         </div>
@@ -250,49 +266,61 @@
     </div>
 
     <script>
-        // --- PRESENTATION SPLASH SCRIPT ---
+        // --- PRESENTATION TIMELINE SCRIPT (28 Seconds) ---
         window.addEventListener('load', () => {
             const splash = document.getElementById('splashScreen');
             const steps = [
-                document.getElementById('step1'),
-                document.getElementById('step2'),
-                document.getElementById('step3'),
-                document.getElementById('step4'),
-                document.getElementById('step5')
+                document.getElementById('step0'), // Logo
+                document.getElementById('step1'), // Answer
+                document.getElementById('step2'), // Alone Stats
+                document.getElementById('step3'), // Gray Prison
+                document.getElementById('step4'), // Teal Transition
+                document.getElementById('step5'), // Clio Ahead
+                document.getElementById('step6')  // Effortless Conclusion
             ];
 
-            // Sequence Timing (approx 17.5 seconds total)
-            
-            // Show Step 2 (Gray Area)
+            // 0 - 4.5s: Plaster the Big Logo
             setTimeout(() => { 
                 steps[0].classList.remove('active'); 
                 steps[1].classList.add('active'); 
-            }, 3500);
+            }, 4500); 
             
-            // Show Step 3 (Teal Sky & Background Transition)
+            // 4.5s - 8s: WorkTimeline. The answer is here.
             setTimeout(() => { 
                 steps[1].classList.remove('active'); 
-                splash.classList.add('teal-transition'); // Triggers the smooth color blend
                 steps[2].classList.add('active'); 
-            }, 7000);
+            }, 8000); 
             
-            // Show Step 4 (Clio & Stats)
+            // 8s - 12s: 77% Alone stat
             setTimeout(() => { 
                 steps[2].classList.remove('active'); 
                 steps[3].classList.add('active'); 
-            }, 10500);
+            }, 12500); 
             
-            // Show Step 5 (Effortless Conclusion)
+            // 12.5s - 17s: Gray Area Prison
             setTimeout(() => { 
                 steps[3].classList.remove('active'); 
+                splash.classList.add('teal-transition'); // Turns screen Teal
                 steps[4].classList.add('active'); 
-            }, 14500);
-
-            // Fade out the whole splash screen into the app
+            }, 17000); 
+            
+            // 17s - 21s: Teal Sky
+            setTimeout(() => { 
+                steps[4].classList.remove('active'); 
+                steps[5].classList.add('active'); 
+            }, 21500); 
+            
+            // 21.5s - 25.5s: Clio / Client Ahead
+            setTimeout(() => { 
+                steps[5].classList.remove('active'); 
+                steps[6].classList.add('active'); 
+            }, 26000); 
+            
+            // 26s - 29s: Justice is effortless. Then fade away.
             setTimeout(() => {
                 splash.classList.add('fade-out');
                 setTimeout(() => splash.style.display = 'none', 1000); 
-            }, 18000);
+            }, 29500); 
         });
 
         // --- APP LOGIC ---
