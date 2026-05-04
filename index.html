@@ -3,73 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™ | Full Professional Edition</title>
+    <title>WorkTimeline™ | Presentation Edition</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
         
         :root { 
             --teal: #008080; 
-            --teal-soft: #e0f2f1;
             --clio-blue: #0076CE;
-            --platinum-bg: #d8e2ea; 
-            --platinum-mid: #eef1f5; 
+            --platinum-bg: #d8e2ea; /* Our Gray Area Color */
             --gray-dark: #2c3e50; 
         }
 
-        body { font-family: 'Nunito', sans-serif; background-color: var(--platinum-mid); margin: 0; padding: 10px; display: flex; justify-content: center; overflow: hidden; }
+        body { font-family: 'Nunito', sans-serif; background-color: #eef1f5; margin: 0; padding: 10px; display: flex; justify-content: center; }
         
         .app-container { 
             width: 100%; max-width: 500px; background: #ffffff; 
-            border-radius: 35px; height: 92vh; display: flex; flex-direction: column; 
-            position: relative; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1); 
+            border-radius: 35px; height: 90vh; display: flex; flex-direction: column; 
+            position: relative; box-shadow: 0 15px 40px rgba(0, 128, 128, 0.1); 
             overflow: hidden; 
         }
+
+        /* --- THE LOGO (Impossible to Break Version) --- */
+        .coded-logo {
+            width: 120px; height: 90px; border: 6px solid var(--teal);
+            border-radius: 15px; position: relative; background: white; margin-bottom: 20px;
+        }
+        .coded-logo::before { /* Handle */
+            content: ''; position: absolute; top: -20px; left: 35px; width: 40px; height: 15px;
+            border: 6px solid var(--teal); border-bottom: none; border-radius: 10px 10px 0 0;
+        }
+        .coded-line { /* Timeline bar */
+            position: absolute; top: 45px; left: -10px; width: 140px; height: 8px;
+            background: #5dade2; border-radius: 4px; display: flex; justify-content: space-around; align-items: center;
+        }
+        .coded-dot { width: 16px; height: 16px; background: white; border: 4px solid #5dade2; border-radius: 50%; position: relative; z-index: 10; }
+        
+        /* The Clio Checkmark popping on the last dot */
+        #finalCheck {
+            position: absolute; top: -15px; right: -15px; width: 30px; height: 30px;
+            background: var(--clio-blue); border: 3px solid white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; transform: scale(0); transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 100;
+        }
+        #finalCheck svg { width: 18px; height: 18px; fill: white; }
+        #finalCheck.pop { opacity: 1; transform: scale(1); }
 
         /* --- PRESENTATION SPLASH --- */
         .splash-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--platinum-bg); z-index: 9999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: background 3s ease-in-out, opacity 1s ease-out;
-            padding: 30px; box-sizing: border-box; text-align: center;
+            transition: background 3s, opacity 1s; padding: 30px; box-sizing: border-box; text-align: center;
         }
         .splash-screen.clio-transition { background: var(--clio-blue); }
         .splash-screen.fade-out { opacity: 0; pointer-events: none; }
         
-        .splash-step {
-            position: absolute; width: 85%; opacity: 0; pointer-events: none;
-            transition: opacity 1s ease-in-out, transform 1s ease-in-out;
-            transform: translateY(15px); color: var(--gray-dark); font-weight: 400;
-        }
-        .splash-step.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
-        .splash-step.light-text { color: #ffffff; }
-
+        .splash-step { position: absolute; width: 85%; opacity: 0; transform: translateY(10px); transition: 1s; font-weight: 400; color: var(--gray-dark); }
+        .splash-step.active { opacity: 1; transform: translateY(0); }
         .bold-brand { font-weight: 900 !important; }
+        .light-text { color: white !important; }
 
-        .logo-container { background: white; padding: 20px; border-radius: 25px; margin-bottom: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-        .svg-logo { width: 120px; height: auto; }
-
-        .clio-check-container {
-            position: absolute; bottom: 35px; right: 35px; 
-            width: 35px; height: 35px; background: white; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0; transform: scale(0);
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 3px solid var(--clio-blue);
-        }
-        .clio-check-container.pop { opacity: 1; transform: scale(1); }
-
-        /* --- APP UI RESTORED --- */
-        .header { display: flex; align-items: center; padding: 20px; border-bottom: 1px solid #eee; }
-        .lawyer-box { background: var(--teal-soft); padding: 15px; border-radius: 20px; margin-bottom: 15px; }
-        .template-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 10px; }
-        .template-chip { background: #ffffff; border: 2px solid var(--teal-soft); color: var(--teal); padding: 8px 14px; border-radius: 50px; font-size: 11px; font-weight: 800; cursor: pointer; white-space: nowrap; }
-        
-        #statusBox { width: 100%; height: 110px; border-radius: 20px; border: 2px solid var(--platinum-mid); background: #fbfbfb; padding: 15px; font-size: 15px; margin-bottom: 15px; resize: none; font-family: 'Nunito', sans-serif; }
-        .submit-main { width: 100%; background: var(--teal); color: white; border: none; padding: 18px; border-radius: 25px; font-weight: 900; font-size: 16px; cursor: pointer; box-shadow: 0 5px 15px rgba(0,128,128,0.2); }
-        
-        .entry { background: #ffffff; border: 1px solid #eee; padding: 15px; border-radius: 18px; margin-bottom: 10px; position: relative; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
-        .duo-box { background: linear-gradient(135deg, #f0f7f7, #ffffff); border: 2px dashed var(--teal); border-radius: 20px; padding: 15px; margin-bottom: 15px; display: none; }
+        /* --- APP UI --- */
+        .header { display: flex; align-items: center; padding: 25px; border-bottom: 2px solid #f0f0f0; }
+        .mini-logo { transform: scale(0.4); margin-right: -30px; margin-left: -30px; }
+        .submit-btn { width: 100%; background: var(--teal); color: white; border: none; padding: 18px; border-radius: 25px; font-weight: 900; font-size: 16px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -77,146 +75,94 @@
         
         <div id="splashScreen" class="splash-screen">
             <div id="step1" class="splash-step active">
-                <h1 style="font-size: 26px;">We know you’re there.</h1>
-                <p style="font-size: 18px;">If you feel invisible... <b>you’re not.</b></p>
+                <h1 style="font-size: 28px; margin-bottom: 10px;">Feel invisible?</h1>
+                <p style="font-size: 18px;">Well, you’re not.</p>
             </div>
+
             <div id="step2" class="splash-step">
-                <h2 style="font-size: 22px;">It feels like you’re in a gray area.</h2>
-                <p style="font-size: 16px;">Trapped right behind the walls of a gray prison.</p>
-                <p style="font-size: 16px; margin-top: 5px;">You don't know what to do or where to go.</p>
+                <h2 style="font-size: 24px;">It’s just that gray area.</h2>
+                <p style="font-size: 16px; margin-top: 15px;">Trapped behind the Great Wall of prison.</p>
             </div>
+
             <div id="step3" class="splash-step">
-                <h2 style="font-size: 22px;">But we see you. We hear you.</h2>
-                <p style="font-size: 16px;">And we’re here to help you tear down the wall.</p>
+                <h2 style="font-size: 24px;">Feel trapped. Feel stuck.</h2>
+                <p style="font-size: 16px; margin-top: 15px;">You don't know where to go.</p>
+                <p style="font-size: 16px;">You don't know what to do.</p>
             </div>
+
             <div id="step4" class="splash-step light-text">
-                <div class="logo-container">
-                    <svg class="svg-logo" viewBox="0 0 100 80">
-                        <rect x="10" y="20" width="80" height="55" rx="8" fill="none" stroke="#008080" stroke-width="5"/>
-                        <path d="M35 20 V10 Q35 5 40 5 H60 Q65 5 65 10 V20" fill="none" stroke="#008080" stroke-width="5"/>
-                        <line x1="5" y1="48" x2="95" y2="48" stroke="#5dade2" stroke-width="6" stroke-linecap="round"/>
-                        <circle cx="25" cy="48" r="5" fill="white" stroke="#5dade2" stroke-width="3"/>
-                        <circle cx="50" cy="48" r="5" fill="white" stroke="#5dade2" stroke-width="3"/>
-                        <circle cx="75" cy="48" r="5" fill="white" stroke="#5dade2" stroke-width="3"/>
-                    </svg>
-                </div>
-                <h2 style="font-size: 24px;">Welcome to the Blue Skies.</h2>
+                <div class="coded-logo" style="border-color: white; transform: scale(0.8);"><div class="coded-line"></div></div>
+                <h2 style="font-size: 22px;">But we see you. We hear you.</h2>
+                <p style="font-size: 16px; margin-top: 10px;">And we’re here to help you tear down the wall.</p>
             </div>
+
             <div id="step5" class="splash-step light-text">
                 <h2 style="font-size: 22px;">Clio keeps the client at the center.</h2>
-                <p style="font-size: 16px; margin-top: 8px;">We do too. But with <span class="bold-brand">WorkTimeline</span>...</p>
-                <h2 style="font-size: 26px; margin-top: 8px;">We keep the client AHEAD.</h2>
+                <p style="font-size: 16px; margin-top: 10px;">We do too. But with <span class="bold-brand">WorkTimeline</span>...</p>
+                <h2 style="font-size: 28px; margin-top: 10px;">We keep the client AHEAD.</h2>
             </div>
+
             <div id="step6" class="splash-step light-text">
-                <div style="position: relative; display: inline-block;">
-                    <div class="logo-container">
-                        <svg class="svg-logo" viewBox="0 0 100 80">
-                            <rect x="10" y="20" width="80" height="55" rx="8" fill="none" stroke="#008080" stroke-width="5"/>
-                            <path d="M35 20 V10 Q35 5 40 5 H60 Q65 5 65 10 V20" fill="none" stroke="#008080" stroke-width="5"/>
-                            <line x1="5" y1="48" x2="95" y2="48" stroke="#5dade2" stroke-width="6" stroke-linecap="round"/>
-                            <circle cx="25" cy="48" r="5" fill="white" stroke="#5dade2" stroke-width="3"/>
-                            <circle cx="50" cy="48" r="5" fill="white" stroke="#5dade2" stroke-width="3"/>
-                            <circle cx="75" cy="48" r="5" fill="white" stroke="#5dade2" stroke-width="3"/>
-                        </svg>
-                    </div>
-                    <div id="clioCheck" class="clio-check-container">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0076CE" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <div class="coded-logo" style="border-color: white; transform: scale(1.1); margin-bottom: 30px;">
+                    <div class="coded-line">
+                        <div class="coded-dot"></div><div class="coded-dot"></div>
+                        <div class="coded-dot" id="lastDot">
+                            <div id="finalCheck"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+                        </div>
                     </div>
                 </div>
-                <h2 style="font-size: 20px;">Justice should feel effortless.</h2>
-                <p style="font-size: 15px;">If telling the truth takes no effort...</p>
-                <h3 style="margin-top: 10px; font-size: 26px;" class="bold-brand">WorkTimeline</h3>
+                <h2 style="font-size: 20px; margin-top: 25px;">Justice should feel effortless.</h2>
+                <p style="font-size: 16px;">If telling the truth takes no effort...</p>
+                <h3 style="font-size: 26px;" class="bold-brand">WorkTimeline</h3>
             </div>
         </div>
 
         <header class="header">
-            <svg style="width:35px; height: auto; margin-right: 12px;" viewBox="0 0 100 80">
-                <rect x="10" y="20" width="80" height="55" rx="8" fill="none" stroke="#008080" stroke-width="6"/>
-                <path d="M35 20 V10 Q35 5 40 5 H60 Q65 5 65 10 V20" fill="none" stroke="#008080" stroke-width="6"/>
-                <line x1="5" y1="48" x2="95" y2="48" stroke="#5dade2" stroke-width="6" stroke-linecap="round"/>
-            </svg>
-            <div>
-                <h1 style="color: var(--teal); margin: 0; font-size: 18px; font-weight: 900;">WorkTimeline&trade;</h1>
-                <p style="margin: 0; font-style: italic; color: #7a8b9e; font-size: 9px;">"Justice is truth in action."</p>
+            <div class="coded-logo mini-logo"><div class="coded-line"></div></div>
+            <div style="margin-left: 10px;">
+                <h1 style="color: var(--teal); margin: 0; font-size: 22px; font-weight: 900;">WorkTimeline&trade;</h1>
+                <p style="margin: 0; font-style: italic; color: var(--platinum-dark); font-size: 11px;">"Justice is truth in action."</p>
             </div>
         </header>
 
-        <div style="padding: 20px; flex-grow: 1; overflow-y: auto;">
-            <div class="lawyer-box">
-                <label style="font-size: 10px; font-weight: 900; color: var(--teal); display: block; margin-bottom: 5px;">PROFESSIONAL SIGN-IN:</label>
-                <select id="lawyerSelect" style="width: 100%; padding: 10px; border-radius: 12px; border: none; font-family: inherit; font-weight: 700;">
-                    <option value="none">-- Select Lawyer --</option>
-                    <option value="Marcus">Marcus Thorne, Esq.</option>
-                    <option value="Sarah">Sarah Jenkins, JD</option>
-                </select>
-            </div>
-
-            <div id="duoSummary" class="duo-box">
-                <h4 style="color: var(--teal); margin: 0 0 5px 0; font-size: 14px;">✨ Clio Duo AI Summary</h4>
-                <p id="duoText" style="font-size: 12px; margin: 0; line-height: 1.4;"></p>
-            </div>
-
-            <div id="mainInput">
-                <div class="template-row">
-                    <div class="template-chip" onclick="applyTemplate('Site Observation: ')">+ Site</div>
-                    <div class="template-chip" onclick="applyTemplate('Witness Statement: ')">+ Witness</div>
-                    <div class="template-chip" onclick="applyTemplate('Initial Intake: ')">+ Intake</div>
-                </div>
-                <textarea id="statusBox" placeholder="Start documenting..."></textarea>
-                <button class="submit-main" onclick="addEntry()">Add to Timeline</button>
-            </div>
-            
-            <div id="timelineList" style="margin-top: 20px;"></div>
-            <button id="lockBtn" class="submit-main" style="background: var(--gray-dark); margin-top: 20px;" onclick="lockTimeline()">Lock & Send to Clio</button>
+        <div style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column;">
+            <textarea id="box" style="width: 100%; height: 120px; border-radius: 20px; border: 2px solid #ddd; padding: 15px; font-family: inherit; margin-bottom: 15px;" placeholder="Start documenting your truth..."></textarea>
+            <button class="submit-btn" onclick="add()">Add to Timeline</button>
+            <div id="list" style="margin-top: 20px;"></div>
+            <button class="submit-btn" style="background: var(--gray-dark); margin-top: auto;" onclick="alert('Sent to Clio!')">Lock & Send to Clio</button>
         </div>
     </div>
 
     <script>
         window.addEventListener('load', () => {
-            const splash = document.getElementById('splashScreen');
+            const s = document.getElementById('splashScreen');
             const steps = [
-                document.getElementById('step1'), document.getElementById('step2'), 
-                document.getElementById('step3'), document.getElementById('step4'), 
-                document.getElementById('step5'), document.getElementById('step6')
+                document.getElementById('step1'), 
+                document.getElementById('step2'), 
+                document.getElementById('step3'), 
+                document.getElementById('step4'), 
+                document.getElementById('step5'), 
+                document.getElementById('step6')
             ];
+            
+            // extended sequence (approx 42 seconds)
+            setTimeout(() => { steps[0].classList.remove('active'); steps[1].classList.add('active'); }, 5000); // 5s Feel invisible?
+            setTimeout(() => { steps[1].classList.remove('active'); steps[2].classList.add('active'); }, 11000); 
+            setTimeout(() => { steps[2].classList.remove('active'); steps[3].classList.add('active'); }, 17000); 
+            setTimeout(() => { steps[3].classList.remove('active'); s.classList.add('clio-transition'); steps[4].classList.add('active'); }, 23000); 
+            setTimeout(() => { steps[4].classList.remove('active'); steps[5].classList.add('active'); }, 29000); 
+            setTimeout(() => { document.getElementById('finalCheck').classList.add('pop'); }, 30500); // Checkmark lands on 3rd dot
 
-            setTimeout(() => { steps[0].classList.remove('active'); steps[1].classList.add('active'); }, 6000); 
-            setTimeout(() => { steps[1].classList.remove('active'); steps[2].classList.add('active'); }, 12000); 
-            setTimeout(() => { steps[2].classList.remove('active'); splash.classList.add('clio-transition'); steps[3].classList.add('active'); }, 18000); 
-            setTimeout(() => { steps[3].classList.remove('active'); steps[4].classList.add('active'); }, 24000); 
-            setTimeout(() => { steps[4].classList.remove('active'); steps[5].classList.add('active'); }, 30000); 
-            setTimeout(() => { document.getElementById('clioCheck').classList.add('pop'); }, 32000); 
-
-            setTimeout(() => {
-                splash.style.opacity = '0';
-                setTimeout(() => splash.style.display = 'none', 1000);
-            }, 38000);
+            setTimeout(() => { s.style.opacity = '0'; setTimeout(() => s.style.display = 'none', 1000); }, 38000); // Fades into app
         });
 
-        function applyTemplate(t) { document.getElementById('statusBox').value = t; }
-
-        function addEntry() {
-            const val = document.getElementById('statusBox').value; if(!val) return;
-            const item = document.createElement('div');
-            item.className = 'entry';
-            item.innerHTML = `<small style="color:var(--teal); font-weight:800;">${new Date().toLocaleTimeString()}</small><p style="margin:5px 0 0 0; font-size:14px;">${val}</p>`;
-            document.getElementById('timelineList').prepend(item);
-            document.getElementById('statusBox').value = "";
-        }
-
-        function lockTimeline() {
-            const lawyer = document.getElementById('lawyerSelect').value;
-            if(lawyer === "none") { alert("Please select a Professional first!"); return; }
-            
-            document.getElementById('mainInput').style.display = "none";
-            document.getElementById('duoSummary').style.display = "block";
-            const count = document.querySelectorAll('.entry').length;
-            document.getElementById('duoText').innerText = `Duo has analyzed ${count} events. Evidence is secured with location metadata and prepared for Clio Grow intake.`;
-            
-            const btn = document.getElementById('lockBtn');
-            btn.innerText = "Confirm & Sync to Clio Portal";
-            btn.style.background = "var(--clio-blue)";
-            btn.onclick = () => { window.location.href = "https://app.clio.com"; };
+        function add() {
+            const t = document.getElementById('box').value; if(!t) return;
+            const d = document.createElement('div');
+            d.style.padding = "15px"; d.style.background = "#f4f7f9"; d.style.borderRadius = "15px"; d.style.marginBottom = "10px";
+            d.innerHTML = `<small style="color:var(--teal)">${new Date().toLocaleTimeString()}</small><p style="margin:5px 0 0 0;">${t}</p>`;
+            document.getElementById('list').prepend(d);
+            document.getElementById('box').value = "";
         }
     </script>
 </body>
