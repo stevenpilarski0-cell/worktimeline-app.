@@ -439,13 +439,13 @@
             
             document.getElementById('duoSummaryText').innerHTML = `<strong>Actionable Intelligence:</strong> Compiled ${entriesCount} secure field events. Extracted location metadata, witness notes, and high-fidelity attachments.${extraAlert}`;
             
-            const lockBtn = document.getElementById('lockBtn');
-            lockBtn.innerHTML = "Approve Summary & Sync To Clio 🚀";
-            lockBtn.style.background = "var(--clio-blue)";
-            lockBtn.onclick = function() { 
-                 window.location.href = 'https://ca.app.clio.com/nc/#/matters/16986525';
+                const clientId = '18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s'; 
+    const redirectUri = 'https://worktimeline-app.vercel.app'; 
+    const authUrl = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
 
-            };
+    window.location.href = authUrl;
+
+            
         }
 
         function togglePrivacy() { 
