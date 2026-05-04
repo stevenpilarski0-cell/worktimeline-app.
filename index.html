@@ -50,41 +50,25 @@
 
         .splash-title { font-size: 24px; font-weight: 900; margin-bottom: 15px; line-height: 1.3; }
         .splash-text { font-size: 16px; font-weight: 600; margin-bottom: 10px; line-height: 1.5; }
-        .splash-list { list-style: none; padding: 0; margin: 15px 0; font-size: 14px; font-weight: 800; font-style: italic; }
-        .splash-list li { margin-bottom: 8px; }
         
-        .splash-logo-large { width: 160px; height: 160px; border-radius: 30px; margin-bottom: 20px; background: white; padding: 5px; object-fit: contain; box-shadow: 0 15px 40px rgba(0,0,0,0.1); }
-        .splash-logo { width: 80px; height: 80px; border-radius: 18px; margin-bottom: 20px; background: white; padding: 4px; object-fit: contain; }
-
-        .final-logo-wrapper { position: relative; display: inline-block; margin-bottom: 20px; }
-        .clio-checkmark {
-            position: absolute; bottom: 25px; right: 15px; 
-            width: 45px; height: 45px; background: var(--clio-blue); 
-            border: 4px solid white; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0; transform: scale(0);
-            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            z-index: 10;
+        /* CSS Logo (No image file needed) */
+        .briefcase-icon {
+            width: 80px; height: 60px; border: 4px solid var(--teal); border-radius: 12px;
+            position: relative; margin-bottom: 25px; background: white;
         }
-        .clio-checkmark.pop { opacity: 1; transform: scale(1); }
-        .clio-checkmark svg { width: 24px; height: 24px; fill: white; }
+        .briefcase-icon::after {
+            content: ''; position: absolute; top: -15px; left: 20px; width: 32px; height: 12px;
+            border: 4px solid var(--teal); border-bottom: none; border-radius: 8px 8px 0 0;
+        }
 
-        /* --- APP STYLES --- */
         .heartbeat { position: absolute; top: 20px; right: 20px; display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 800; color: #00a859; z-index: 5; }
         .dot { height: 10px; width: 10px; background-color: #00a859; border-radius: 50%; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { transform: scale(0.95); } 70% { transform: scale(1); } 100% { transform: scale(0.95); } }
 
         .header-container { display: flex; align-items: center; padding: 35px 20px 25px; border-bottom: 3px solid var(--platinum-bg); }
-        .header-logo { width: 55px; height: 55px; margin-right: 15px; border-radius: 16px; object-fit: contain; background: white; padding: 2px; border: 1px solid var(--platinum-mid); }
-        
-        .lawyer-box { background: var(--teal-soft); padding: 18px; border-radius: 25px; margin-bottom: 15px; }
-        #statusBox { width: 100%; height: 120px; border-radius: 25px; border: 2px solid var(--platinum-mid); background: var(--platinum-bg); padding: 18px; font-size: 16px; margin-bottom: 15px; resize: none; font-family: 'Nunito', sans-serif; }
-        
         .submit-main { width: 100%; background: var(--teal); color: #ffffff; border: none; padding: 20px; border-radius: 30px; font-weight: 900; font-size: 16px; cursor: pointer; }
-        .lock-footer { background: var(--gray-dark); color: #ffffff; border: none; border-radius: 30px; padding: 22px; width: 100%; cursor: pointer; font-weight: 900; margin-top: auto; }
-
-        .privacy-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; backdrop-filter: blur(20px); z-index: 90; display: none; background: rgba(255,255,255,0.6); }
-        .privacy-active .privacy-overlay { display: block; }
+        
+        #statusBox { width: 100%; height: 120px; border-radius: 25px; border: 2px solid var(--platinum-mid); background: var(--platinum-bg); padding: 18px; font-size: 16px; margin-bottom: 15px; resize: none; font-family: 'Nunito', sans-serif; }
     </style>
 </head>
 <body>
@@ -92,29 +76,21 @@
         
         <div id="splashScreen" class="splash-screen">
             
-            <div id="step0" class="splash-step active">
-                <img src="1000023907.jpg" alt="Logo" class="splash-logo-large" onerror="this.src='1000023907.JPG'">
-            </div>
-
-            <div id="step1" class="splash-step">
+            <div id="step1" class="splash-step active">
+                <div class="briefcase-icon"></div>
                 <h1 style="font-size: 32px; font-weight: 900; color: var(--teal); margin-bottom: 10px;">WorkTimeline</h1>
                 <p class="splash-text">The answer is finally here.</p>
-                <p class="splash-text">What we've been waiting for.</p>
             </div>
 
             <div id="step2" class="splash-step">
                 <h2 class="splash-title">Trust me, you feel like you're alone.</h2>
                 <p class="splash-text">77% of everyday legal issues never reach a lawyer.</p>
-                <ul class="splash-list">
-                    <li>"It's too expensive."</li>
-                    <li>"They won't listen to me."</li>
-                    <li>"I don't stand a chance."</li>
-                </ul>
+                <p class="splash-text" style="font-style: italic; opacity: 0.8;">"It's too expensive. They won't listen."</p>
             </div>
 
             <div id="step3" class="splash-step">
                 <h2 class="splash-title">It feels like you're in a gray area.</h2>
-                <p class="splash-text">Trapped behind a wall of a gray prison...</p>
+                <p class="splash-text">Trapped behind the walls of a gray prison...</p>
                 <p class="splash-text" style="margin-top: 15px; font-weight: 800; color: var(--platinum-dark);">...where you feel completely invisible.</p>
             </div>
 
@@ -125,7 +101,6 @@
             </div>
 
             <div id="step4" class="splash-step light-text">
-                <img src="1000023907.jpg" alt="Logo" class="splash-logo" onerror="this.src='1000023907.JPG'">
                 <h2 class="splash-title">To finally be SEEN.</h2>
                 <p class="splash-text">Welcome to the Teal Skies.</p>
             </div>
@@ -137,38 +112,27 @@
             </div>
 
             <div id="step6" class="splash-step light-text">
-                <div class="final-logo-wrapper">
-                    <img src="1000023907.jpg" alt="Logo" class="splash-logo-large" onerror="this.src='1000023907.JPG'">
-                    <div id="clioCheck" class="clio-checkmark">
-                        <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-                    </div>
-                </div>
                 <h2 class="splash-title">Justice should be effortless.</h2>
                 <p class="splash-text">If telling the truth takes no effort...</p>
                 <h3 style="margin-top: 15px; font-size: 22px; font-weight: 900;">WorkTimeline</h3>
             </div>
-
         </div>
 
-        <div class="privacy-overlay"></div>
         <div class="heartbeat"><span class="dot"></span> ACTIVE</div>
         
         <header class="header-container">
-            <div style="display: flex; align-items: center; gap: 12px; flex-grow: 1;">
-                <img src="1000023907.jpg" alt="Logo" class="header-logo" onerror="this.src='1000023907.JPG'">
-                <div>
-                    <h1 style="color: var(--teal); margin: 0; font-size: 24px; font-weight: 900;">WorkTimeline&trade;</h1>
-                    <p style="margin: 2px 0 0 0; font-style: italic; color: var(--platinum-dark); font-size: 11px;">"Justice is truth in action."</p>
-                </div>
+            <div style="flex-grow: 1;">
+                <h1 style="color: var(--teal); margin: 0; font-size: 24px; font-weight: 900;">WorkTimeline&trade;</h1>
+                <p style="margin: 2px 0 0 0; font-style: italic; color: var(--platinum-dark); font-size: 12px;">"Justice is truth in action."</p>
             </div>
-            <button class="submit-main" style="background: var(--platinum-bg); color: var(--gray-dark); height: 35px; width: 90px; font-size: 9px; padding: 0; border: 2px solid var(--platinum-mid);" onclick="togglePrivacy()">PROTECT VIEW</button>
+            <button style="background: var(--platinum-bg); color: var(--gray-dark); height: 35px; width: 90px; font-size: 9px; border-radius: 15px; border: 2px solid var(--platinum-mid);" onclick="togglePrivacy()">PROTECT VIEW</button>
         </header>
 
         <div style="padding: 25px; flex-grow: 1; display: flex; flex-direction: column;">
             <textarea id="statusBox" placeholder="Enter incident details..."></textarea>
             <button class="submit-main" onclick="submitEntry()">Add to Timeline</button>
             <div id="timeline" style="margin-top:10px;"></div>
-            <button id="lockBtn" class="lock-footer" onclick="proceedToSummary()">Lock & Send to Clio</button>
+            <button class="lock-footer" style="background: var(--gray-dark); margin-top: auto; border: none; border-radius: 30px; padding: 20px; color: white; font-weight: 900;" onclick="proceedToSummary()">Lock & Send to Clio</button>
         </div>
     </div>
 
@@ -176,26 +140,24 @@
         window.addEventListener('load', () => {
             const splash = document.getElementById('splashScreen');
             const steps = [
-                document.getElementById('step0'), document.getElementById('step1'), 
-                document.getElementById('step2'), document.getElementById('step3'), 
-                document.getElementById('step3b'), document.getElementById('step4'), 
-                document.getElementById('step5'), document.getElementById('step6')
+                document.getElementById('step1'), document.getElementById('step2'), 
+                document.getElementById('step3'), document.getElementById('step3b'), 
+                document.getElementById('step4'), document.getElementById('step5'), 
+                document.getElementById('step6')
             ];
 
-            // Timings (Total 35s)
-            setTimeout(() => { steps[0].classList.remove('active'); steps[1].classList.add('active'); }, 3000); 
-            setTimeout(() => { steps[1].classList.remove('active'); steps[2].classList.add('active'); }, 7000); 
-            setTimeout(() => { steps[2].classList.remove('active'); steps[3].classList.add('active'); }, 12000); 
-            setTimeout(() => { steps[3].classList.remove('active'); steps[4].classList.add('active'); }, 17000); 
-            setTimeout(() => { steps[4].classList.remove('active'); splash.classList.add('teal-transition'); steps[5].classList.add('active'); }, 21000); 
-            setTimeout(() => { steps[5].classList.remove('active'); steps[6].classList.add('active'); }, 26000); 
-            setTimeout(() => { steps[6].classList.remove('active'); steps[7].classList.add('active'); }, 30000); 
-            setTimeout(() => { document.getElementById('clioCheck').classList.add('pop'); }, 31500); 
+            // 35s sequence
+            setTimeout(() => { steps[0].classList.remove('active'); steps[1].classList.add('active'); }, 4000); 
+            setTimeout(() => { steps[1].classList.remove('active'); steps[2].classList.add('active'); }, 9000); 
+            setTimeout(() => { steps[2].classList.remove('active'); steps[3].classList.add('active'); }, 14000); 
+            setTimeout(() => { steps[3].classList.remove('active'); steps[4].classList.add('active'); }, 19000); 
+            setTimeout(() => { steps[4].classList.remove('active'); splash.classList.add('teal-transition'); steps[5].classList.add('active'); }, 23000); 
+            setTimeout(() => { steps[5].classList.remove('active'); steps[6].classList.add('active'); }, 28000); 
 
             setTimeout(() => {
                 splash.classList.add('fade-out');
                 setTimeout(() => splash.style.display = 'none', 1000);
-            }, 36000);
+            }, 35000);
         });
 
         function submitEntry() {
