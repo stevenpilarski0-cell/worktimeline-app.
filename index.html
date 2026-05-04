@@ -29,23 +29,22 @@
             overflow: hidden; 
         }
 
-        /* --- CINEMATIC PRESENTATION SPLASH SCREEN --- */
+        /* --- CINEMATIC PRESENTATION SPLASH SCREEN (35 Seconds) --- */
         .splash-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--platinum-light); /* Starts Light Gray */
+            background: var(--platinum-light); 
             z-index: 9999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             transition: background 3s ease-in-out, opacity 1s ease-out;
             padding: 30px; box-sizing: border-box; text-align: center;
         }
         .splash-screen.teal-transition {
-            background: var(--teal); /* Smooth blend to Teal */
+            background: var(--teal); 
         }
         .splash-screen.fade-out {
             opacity: 0; pointer-events: none;
         }
         
-        /* Presentation Steps */
         .splash-step {
             position: absolute; width: 85%; opacity: 0; pointer-events: none;
             transition: opacity 1s ease-in-out, transform 1s ease-in-out;
@@ -56,7 +55,7 @@
             opacity: 1; transform: translateY(0); pointer-events: auto;
         }
         .splash-step.light-text {
-            color: #ffffff; /* Turns white once the background turns Teal */
+            color: #ffffff; 
         }
 
         .splash-title { font-size: 24px; font-weight: 900; margin-bottom: 15px; line-height: 1.3; }
@@ -65,7 +64,6 @@
         .splash-list li { margin-bottom: 8px; }
         .splash-fineprint { font-size: 12px; opacity: 0.8; margin-top: 15px; font-style: italic; }
         
-        /* Logos */
         .splash-logo-large {
             width: 150px; height: 150px; border-radius: 30px; margin-bottom: 20px;
             box-shadow: 0 15px 40px rgba(0,0,0,0.15);
@@ -77,20 +75,19 @@
             background: white; padding: 4px; object-fit: contain;
         }
 
-        /* The Clio Checkmark Overlay for Step 6 */
         .final-logo-wrapper {
             position: relative; display: inline-block; margin-bottom: 20px;
         }
         .clio-checkmark {
             position: absolute;
-            bottom: 25px; right: 15px; /* Positioned to hit the final circle area */
+            bottom: 25px; right: 15px; 
             width: 40px; height: 40px;
-            background: var(--clio-blue); /* Clio Blue */
+            background: var(--clio-blue); 
             border: 4px solid white;
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             opacity: 0; transform: scale(0);
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Satisfying pop animation */
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
             z-index: 10;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
@@ -98,7 +95,6 @@
             opacity: 1; transform: scale(1);
         }
         .clio-checkmark svg { width: 22px; height: 22px; fill: white; }
-        /* ------------------------------------------- */
 
         .heartbeat { position: absolute; top: 20px; right: 20px; display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 800; color: #00a859; z-index: 5; }
         .dot { height: 10px; width: 10px; background-color: #00a859; border-radius: 50%; animation: pulse 2s infinite; }
@@ -137,7 +133,6 @@
         .lock-footer { background: var(--gray-dark); color: #ffffff; border: none; border-radius: 30px; padding: 22px; width: 100%; cursor: pointer; font-weight: 900; text-transform: uppercase; margin-top: auto; transition: 0.2s; font-family: 'Nunito', sans-serif; }
         .lock-footer:active { transform: scale(0.98); }
         
-        /* Custom Warning Modal & Privacy */
         .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; backdrop-filter: blur(15px); background: rgba(255,255,255,0.7); z-index: 100; display: none; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; }
         .modal-content { background: white; border-radius: 30px; padding: 30px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.15); border: 2px solid var(--platinum-mid); }
         .modal-btn-row { display: flex; gap: 10px; margin-top: 20px; }
@@ -154,7 +149,7 @@
         <div id="splashScreen" class="splash-screen">
             
             <div id="step0" class="splash-step active">
-                <img src="1000023910.jpg" alt="Logo" class="splash-logo-large" onerror="this.style.display='none'">
+                <img src="1000023907.jpg" alt="Logo" class="splash-logo-large" onerror="this.style.display='none'">
             </div>
 
             <div id="step1" class="splash-step">
@@ -175,14 +170,19 @@
 
             <div id="step3" class="splash-step">
                 <h2 class="splash-title">It feels like you're in a gray area.</h2>
-                <p class="splash-text">Trapped in a prison of your own circumstances, unable to escape.</p>
-                <p class="splash-text" style="margin-top: 20px;">But every once in a while, you find a crack in the wall...</p>
+                <p class="splash-text">Trapped in a prison of your own circumstances.</p>
+                <p class="splash-text" style="margin-top: 15px; font-weight: 800;">You feel like you're completely invisible.</p>
+            </div>
+
+            <div id="step3b" class="splash-step">
+                <h2 class="splash-title">But you're not.</h2>
+                <p class="splash-text">We know you're there.</p>
+                <p class="splash-text" style="margin-top: 15px;">We're here to help you tear down the wall...</p>
             </div>
 
             <div id="step4" class="splash-step light-text">
-                <img src="1000023910.jpg" alt="Logo" class="splash-logo" onerror="this.style.display='none'">
-                <h2 class="splash-title">...reminding you there is a Teal Sky worth breaking down the wall for.</h2>
-                <p class="splash-text">You just need a little help.</p>
+                <img src="1000023907.jpg" alt="Logo" class="splash-logo" onerror="this.style.display='none'">
+                <h2 class="splash-title">...to finally see the Teal Skies.</h2>
             </div>
 
             <div id="step5" class="splash-step light-text">
@@ -194,7 +194,7 @@
 
             <div id="step6" class="splash-step light-text">
                 <div class="final-logo-wrapper">
-                    <img src="1000023910.jpg" alt="Logo" class="splash-logo-large" onerror="this.style.display='none'">
+                    <img src="1000023907.jpg" alt="Logo" class="splash-logo-large" onerror="this.style.display='none'">
                     <div id="clioCheck" class="clio-checkmark">
                         <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
                     </div>
@@ -206,25 +206,12 @@
 
         </div>
 
-        <div id="warningModal" class="modal-overlay">
-            <div class="modal-content">
-                <h2 style="color: var(--teal); margin: 0 0 10px 0; font-weight: 900;">Lock Timeline?</h2>
-                <p style="color: var(--gray-dark); font-size: 14px; font-weight: 600; line-height: 1.5; margin: 0;">
-                    You are about to lock this timeline. Clio Duo will generate an AI summary for you to review. Once approved, it will be securely submitted, and you will be redirected to the Clio Portal.
-                </p>
-                <div class="modal-btn-row">
-                    <button class="btn-cancel" onclick="closeWarning()">Go Back</button>
-                    <button class="btn-proceed" onclick="proceedToSummary()">Proceed</button>
-                </div>
-            </div>
-        </div>
-
         <div class="privacy-overlay"></div>
         <div class="heartbeat"><span class="dot"></span> ACTIVE</div>
         
         <header class="header-container">
             <div style="display: flex; align-items: center; gap: 12px; flex-grow: 1;">
-                <img src="1000023910.jpg" alt="Briefcase Logo" style="width: 50px; height: 50px; object-fit: contain; flex-shrink: 0; border-radius: 12px; border: 1px solid var(--platinum-mid); background: white; padding: 2px;">
+                <img src="1000023907.jpg" alt="Briefcase Logo" style="width: 50px; height: 50px; object-fit: contain; flex-shrink: 0; border-radius: 12px; border: 1px solid var(--platinum-mid); background: white; padding: 2px;" onerror="this.style.display='none'">
                 <div>
                     <h1 style="color: var(--teal); margin: 0; font-size: 24px; font-weight: 900; letter-spacing: -0.5px; display: flex; align-items: flex-start;">
                         WorkTimeline<span style="font-size: 12px; margin-top: 2px; margin-left: 2px;">&trade;</span>
@@ -296,66 +283,34 @@
     </div>
 
     <script>
-        // --- PRESENTATION TIMELINE SCRIPT (32 Seconds) ---
+        // --- PRESENTATION TIMELINE SCRIPT (35 Seconds) ---
         window.addEventListener('load', () => {
             const splash = document.getElementById('splashScreen');
             const steps = [
-                document.getElementById('step0'), // Logo Only
-                document.getElementById('step1'), // Answer
-                document.getElementById('step2'), // Alone Stats
-                document.getElementById('step3'), // Gray Prison
-                document.getElementById('step4'), // Teal Transition
-                document.getElementById('step5'), // Clio Ahead
-                document.getElementById('step6')  // Effortless Conclusion + Checkmark
+                document.getElementById('step0'), 
+                document.getElementById('step1'), 
+                document.getElementById('step2'), 
+                document.getElementById('step3'), 
+                document.getElementById('step3b'),
+                document.getElementById('step4'), 
+                document.getElementById('step5'), 
+                document.getElementById('step6')  
             ];
 
-            // 0s - 2.5s: Plaster the Big Logo immediately on load
-            setTimeout(() => { 
-                steps[0].classList.remove('active'); 
-                steps[1].classList.add('active'); 
-            }, 2500); 
-            
-            // 2.5s - 6.5s: WorkTimeline. The answer is here.
-            setTimeout(() => { 
-                steps[1].classList.remove('active'); 
-                steps[2].classList.add('active'); 
-            }, 6500); 
-            
-            // 6.5s - 12s: 77% Alone stat
-            setTimeout(() => { 
-                steps[2].classList.remove('active'); 
-                steps[3].classList.add('active'); 
-            }, 12000); 
-            
-            // 12s - 17.5s: Gray Area Prison
-            setTimeout(() => { 
-                steps[3].classList.remove('active'); 
-                splash.classList.add('teal-transition'); // Turns screen Teal
-                steps[4].classList.add('active'); 
-            }, 17500); 
-            
-            // 17.5s - 22.5s: Teal Sky
-            setTimeout(() => { 
-                steps[4].classList.remove('active'); 
-                steps[5].classList.add('active'); 
-            }, 22500); 
-            
-            // 22.5s - 27.5s: Clio / Client Ahead
-            setTimeout(() => { 
-                steps[5].classList.remove('active'); 
-                steps[6].classList.add('active'); 
-            }, 27500); 
-            
-            // 28.5s: The Clio Checkmark POPS onto the final logo!
-            setTimeout(() => { 
-                document.getElementById('clioCheck').classList.add('pop');
-            }, 28500); 
+            // Sequence Timing
+            setTimeout(() => { steps[0].classList.remove('active'); steps[1].classList.add('active'); }, 2500); 
+            setTimeout(() => { steps[1].classList.remove('active'); steps[2].classList.add('active'); }, 6500); 
+            setTimeout(() => { steps[2].classList.remove('active'); steps[3].classList.add('active'); }, 12000); 
+            setTimeout(() => { steps[3].classList.remove('active'); steps[4].classList.add('active'); }, 16500); 
+            setTimeout(() => { steps[4].classList.remove('active'); splash.classList.add('teal-transition'); steps[5].classList.add('active'); }, 21000); 
+            setTimeout(() => { steps[5].classList.remove('active'); steps[6].classList.add('active'); }, 25500); 
+            setTimeout(() => { steps[6].classList.remove('active'); steps[7].classList.add('active'); }, 30500); 
+            setTimeout(() => { document.getElementById('clioCheck').classList.add('pop'); }, 31500); 
 
-            // 32s: Fade away to the app
             setTimeout(() => {
                 splash.classList.add('fade-out');
                 setTimeout(() => splash.style.display = 'none', 1000); 
-            }, 32000); 
+            }, 36500); 
         });
 
         // --- APP LOGIC ---
@@ -403,68 +358,35 @@
 
         function addEntry(txt, sys) {
             const div = document.createElement('div'); div.className = 'entry';
-            
             const now = new Date();
-            const dateOptions = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
-            const timeOptions = { hour: '2-digit', minute: '2-digit' };
-            
-            const dateStr = now.toLocaleDateString('en-US', dateOptions);
-            const timeStr = now.toLocaleTimeString('en-US', timeOptions);
-            const fullTimestamp = `${dateStr} at ${timeStr}`;
-            
+            const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+            const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
             const geo = "🌍 LAT: 49.2827° N | LON: 123.1207° W";
-            
-            div.innerHTML = `
-                <span class="timestamp-box">${fullTimestamp}</span>
-                <p style="margin:5px 0 0 0; color: #2c3e50; font-weight: 600; line-height: 1.5; font-family: 'Nunito', sans-serif;">${txt}</p>
-                <span class="geo-tag">${geo}</span>
-            `;
-            
-            if(sys) {
-                div.style.backgroundColor = "var(--platinum-bg)";
-                div.style.borderColor = "var(--teal-soft)";
-            }
-            
+            div.innerHTML = `<span class="timestamp-box">${dateStr} at ${timeStr}</span><p style="margin:5px 0 0 0; color: #2c3e50; font-weight: 600; line-height: 1.5;">${txt}</p><span class="geo-tag">${geo}</span>`;
+            if(sys) { div.style.backgroundColor = "var(--platinum-bg)"; div.style.borderColor = "var(--teal-soft)"; }
             document.getElementById('timeline').prepend(div);
         }
 
         function showWarning() {
-            if(document.getElementById('lawyerSelect').value === "none") { 
-                alert("Please select a Professional first! 👩‍⚖️"); 
-                return; 
-            }
+            if(document.getElementById('lawyerSelect').value === "none") { alert("Please select a Professional first! 👩‍⚖️"); return; }
             document.getElementById('warningModal').style.display = "flex";
         }
-
-        function closeWarning() {
-            document.getElementById('warningModal').style.display = "none";
-        }
-
+        function closeWarning() { document.getElementById('warningModal').style.display = "none"; }
         function proceedToSummary() {
-            closeWarning();
-            isLocked = true;
-            
+            closeWarning(); isLocked = true;
             document.getElementById('briefingHeader').style.display = "block";
             document.getElementById('mainInputArea').style.display = "none";
             document.getElementById('duoSummaryBox').style.display = "block"; 
-            
             document.getElementById('sumLawyer').innerText = localStorage.getItem('lawyer') || "Marcus Thorne";
             document.getElementById('sumHash').innerText = Math.random().toString(36).substring(2, 6).toUpperCase();
-            
             const entriesCount = document.querySelectorAll('.entry').length;
             const extraAlert = patternFlagged ? " ⚠️ Risk Assessment Module generated based on pattern detection." : "";
             document.getElementById('duoSummaryText').innerHTML = `<strong>Actionable Intelligence:</strong> Compiled ${entriesCount} secure field events. Extracted location metadata, witness notes, and media attachments.${extraAlert}`;
-
             const lockBtn = document.getElementById('lockBtn');
             lockBtn.innerHTML = "Approve Summary & Send To Clio 🚀";
             lockBtn.style.background = "var(--teal)";
-            
-            lockBtn.onclick = function() {
-                const authUrl = `https://app.clio.com/oauth/authorize?response_type=code&client_id=${CLIO_CLIENT_ID}&redirect_uri=${encodeURIComponent(CLIO_REDIRECT_URI)}`;
-                window.location.href = authUrl;
-            };
+            lockBtn.onclick = function() { window.location.href = `https://app.clio.com/oauth/authorize?response_type=code&client_id=${CLIO_CLIENT_ID}&redirect_uri=${encodeURIComponent(CLIO_REDIRECT_URI)}`; };
         }
-
         function togglePrivacy() { document.getElementById('appRoot').classList.toggle('privacy-active'); }
     </script>
 </body>
