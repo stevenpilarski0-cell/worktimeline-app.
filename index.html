@@ -84,14 +84,14 @@
             </div>
 
             <div id="step2" class="splash-step">
-                <h2 style="font-size: 24px;">It’s just that gray area.</h2>
-                <p style="font-size: 16px; margin-top: 15px;">Feel trapped. Feel stuck.</p>
-                <p style="font-size: 16px;">Behind the Great Wall of prison.</p>
+                <h2 style="font-size: 24px;">You feel trapped.</h2>
+                <p style="font-size: 18px; margin-top: 15px;">Stuck, like you're in a prison.</p>
             </div>
 
             <div id="step3" class="splash-step">
-                <h2 style="font-size: 24px;">Don't know what to do?</h2>
-                <p style="font-size: 16px; margin-top: 15px;">We’re here to help you <b>tear down the wall.</b></p>
+                <h2 style="font-size: 24px;">Don't know where to go?</h2>
+                <p style="font-size: 18px; margin-top: 10px;">Don't know what to do?</p>
+                <p style="font-size: 18px; margin-top: 15px; color: var(--teal); font-weight: 800;">But we're here to help you tear down the walls.</p>
             </div>
 
             <div id="step4" class="splash-step light-text">
@@ -187,10 +187,10 @@
             setTimeout(() => { steps[3].classList.remove('active'); steps[4].classList.add('active'); }, 24000); 
             setTimeout(() => { steps[4].classList.remove('active'); steps[5].classList.add('active'); }, 30000); 
             
-            // Wait exactly 5 seconds on the last slide, then pop the Clio checkmark onto the 3rd dot
+            // Exact 5 Seconds reveal of logo before the Clio checkmark lands on 3rd dot
             setTimeout(() => { document.getElementById('clioCheck').classList.add('pop'); }, 35000); 
 
-            // Fade the complete cinematic splash out after viewing the final checkmark
+            // Fade out
             setTimeout(() => {
                 splash.style.opacity = '0';
                 setTimeout(() => splash.style.display = 'none', 1000);
