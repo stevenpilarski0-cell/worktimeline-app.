@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Final Prototype</title>
+    <title>WorkTimeline™ | Master Fidelity</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root { 
             --wt-teal: #0d9488; --wt-gray-light: #f8fafc; --wt-dark: #0f172a; 
-            --wt-ochre: #d97706; --wt-red: #dc2626;
-            --clio-blue: #0056b3; --mac-radius: 22px;
+            --wt-ochre: #d97706; --wt-red: #dc2626; --wt-risk-bg: #fff1f2;
+            --mac-radius: 22px; --clio-blue: #0056b3;
         }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         
@@ -19,133 +19,131 @@
             overflow: hidden; color: var(--wt-dark);
         }
 
-        /* ACT 1: EXTENDED CINEMATIC NARRATIVE (+20 SECONDS) */
-        .full-screen { position: fixed; inset: 0; z-index: 99999; background: var(--wt-gray-light); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 45px; text-align: center; }
-        #stage { width: 100%; height: 400px; display: flex; align-items: center; justify-content: center; position: relative; }
-        .phrase { position: absolute; width: 100%; opacity: 0; transition: 1.5s cubic-bezier(0.4, 0, 0.2, 1); transform: translateY(30px); }
-        .phrase.active { opacity: 1; transform: translateY(0); }
-        
-        .stat-tag { font-size: 0.95rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 2.5px; display: block; margin-bottom: 25px; }
-        .main-quote { color: var(--wt-teal); font-size: 1.7rem; font-weight: 400; line-height: 1.5; max-width: 800px; }
+        /* SCREEN LAYERS */
+        .layer { position: fixed; inset: 0; z-index: 10000; transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; }
+        #act-intro { display: none; }
+        #act-branding { display: none; background: white; }
+        #gate-btn { display: none; padding: 20px 40px; border-radius: var(--mac-radius); border: none; background: var(--wt-teal); color: white; font-weight: 600; cursor: pointer; margin-top: 30px; }
 
-        /* DASHBOARD ELEMENTS */
-        .layer { display: none; background: white; }
-        .sq-btn { width: 100%; padding: 22px; border-radius: var(--mac-radius); border: none; font-weight: 600; cursor: pointer; color: white; background: var(--wt-teal); font-size: 1rem; transition: 0.4s; }
+        /* CINEMATIC PRESENTATION (No Walls, Extended, +20s Pacing) */
+        #stage { width: 100%; height: 350px; display: flex; align-items: center; justify-content: center; position: relative; }
+        .phrase { position: absolute; width: 100%; opacity: 0; transition: 1.5s cubic-bezier(0.4, 0, 0.2, 1); transform: translateY(20px); }
+        .phrase.active { opacity: 1; transform: translateY(0); }
+        .stat-tag { font-size: 0.9rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 20px; }
+        .main-quote { color: var(--wt-teal); font-size: 1.5rem; font-weight: 400; line-height: 1.4; }
+
+        /* THE ENGINE */
+        #main-app { display: none; flex-direction: column; height: 100dvh; z-index: 10; }
+        .header { background: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; z-index: 11000; position: relative; }
         
-        #main-app { display: none; flex-direction: column; height: 100dvh; }
-        .header { background: white; padding: 18px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; }
-        
-        /* AI PULSE LOGIC */
+        /* STATUS & PRIVACY */
         .ai-pulse { width: 14px; height: 14px; border-radius: 50%; background: var(--wt-teal); display: inline-block; margin-right: 10px; transition: 0.3s; }
         .pulse-warn { animation: aiGlow 1.2s infinite; background: var(--wt-ochre) !important; box-shadow: 0 0 10px var(--wt-ochre); }
         .pulse-alert { animation: aiGlow 0.6s infinite; background: var(--wt-red) !important; box-shadow: 0 0 15px var(--wt-red); }
         @keyframes aiGlow { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.5; } }
 
-        .sw-track { width: 54px; height: 28px; background: #e2e8f0; border-radius: 30px; position: relative; cursor: pointer; }
-        .sw-thumb { position: absolute; width: 22px; height: 22px; background: white; border-radius: 50%; top: 3px; left: 3px; transition: 0.3s; }
-        .sw-on { background: var(--wt-teal); } .sw-on .sw-thumb { left: 29px; }
-        .blur-active { filter: blur(65px) grayscale(100%); pointer-events: none; opacity: 0.2; }
+        .sw-track { width: 50px; height: 26px; background: #e2e8f0; border-radius: 30px; position: relative; cursor: pointer; }
+        .sw-thumb { position: absolute; width: 20px; height: 20px; background: white; border-radius: 50%; top: 3px; left: 3px; transition: 0.3s; }
+        .sw-on { background: var(--wt-teal); } .sw-on .sw-thumb { left: 27px; }
+        .blur-active { filter: blur(60px) grayscale(100%); pointer-events: none; opacity: 0.2; }
 
-        /* MODES */
-        .mode-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 15px 20px; background: white; }
-        .mode-btn { padding: 16px; border-radius: 16px; border: 1.5px solid #eee; background: #fcfcfc; font-size: 0.8rem; font-weight: 800; color: #94a3b8; cursor: pointer; text-transform: uppercase; }
-        .mode-btn.active { background: var(--wt-teal); color: white; border-color: var(--wt-teal); }
+        /* INFORMATICS KEY (LEGEND) */
+        .informatics-key { font-size: 0.6rem; color: #64748b; display: flex; gap: 15px; justify-content: center; padding: 8px 15px; background: #fcfcfc; border-bottom: 1px solid #f1f5f9; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
 
-        .pane { flex-grow: 1; overflow-y: auto; padding: 25px; display: none; flex-direction: column; gap: 18px; }
-        .pane.active { display: flex; }
-        .card { background: white; padding: 20px; border-radius: var(--mac-radius); border: 1px solid #f1f5f9; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
-        .stamp { font-size: 0.65rem; color: var(--wt-teal); font-weight: 700; margin-bottom: 8px; display: block; }
+        /* ORGANIZED LAYOUT (TWO VIEWING PANES) */
+        .workspace { flex-grow: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; overflow: hidden; background: #fcfcfc; }
+        .organized-pane { background: rgba(255,255,255,0.5); border-radius: 18px; border: 1px solid #eee; overflow: hidden; display: flex; flex-direction: column; }
+        .pane-label { font-size: 0.6rem; font-weight: 800; padding: 10px 15px; color: #64748b; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #eee; background: #fff; }
+        .pane-list { flex-grow: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+        
+        /* CARD STYLES */
+        .organized-card { background: white; padding: 15px; border-radius: 15px; font-size: 0.8rem; border: 1px solid #f1f5f9; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+        .timestamp { font-size: 0.55rem; color: var(--wt-teal); font-weight: 700; margin-bottom: 5px; display: block; }
 
-        /* ICONS */
-        .media-bar { display: flex; justify-content: space-around; padding: 18px; border-top: 1px solid #f1f5f9; background: white; }
-        .mac-icon { width: 52px; height: 52px; background: var(--wt-teal); border-radius: 18px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; fill: white; }
-
-        .footer { background: white; padding: 25px; border-top: 1px solid #f1f5f9; }
-        textarea { width: 100%; height: 90px; border: 1.5px solid #f1f5f9; background: #f8fafc; border-radius: 20px; padding: 18px; font-family: 'Outfit'; resize: none; margin-bottom: 15px; font-size: 1.05rem; }
+        /* INPUT AREA */
+        .media-bar { display: flex; justify-content: space-around; padding: 12px; background: white; border-top: 1px solid #f1f5f9; }
+        .mac-icon { width: 44px; height: 44px; background: var(--wt-teal); border-radius: 14px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; fill: white; }
+        
+        .footer { background: white; padding: 15px; border-top: 1px solid #f1f5f9; z-index: 11000; position: relative; }
+        textarea { width: 100%; height: 75px; border: 1.5px solid #f1f5f9; background: #f8fafc; border-radius: 15px; padding: 15px; font-family: 'Outfit'; resize: none; margin-bottom: 12px; font-size: 0.9rem; }
+        .button-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .submit-btn { width: 100%; padding: 16px; border-radius: 15px; border: none; font-weight: 600; cursor: pointer; color: white; background: var(--wt-teal); font-size: 0.85rem; transition: 0.3s; }
+        .btn-gray { background: #e2e8f0; color: var(--wt-dark); }
+        .btn-clio { background: var(--clio-blue); }
     </style>
 </head>
 <body onload="startCinematic()">
 
-    <div id="act-intro" class="full-screen">
+    <div id="act-intro" class="layer full-screen" style="display:flex;">
         <div id="stage"></div>
-        <button id="gate-btn" class="sq-btn" style="display:none; width: 280px;" onclick="toBranding()">CONTINUE NARRATIVE</button>
+        <button id="gate-btn" onclick="toBranding()">CONTINUE NARRATIVE</button>
     </div>
 
-    <div id="act-branding" class="full-screen layer">
-        <h2 style="color:var(--wt-teal); margin-bottom: 20px; font-size: 2rem;">WorkTimeline™</h2>
-        <p style="padding: 0 20px; line-height:1.8; font-size: 1.3rem; font-weight: 300;">
-            "WorkTimeline™ brings the client one step forward to the center where they belong until the firm helps them never look back."
+    <div id="act-branding" class="layer">
+        <h2 style="color:var(--wt-teal); margin:0;">WorkTimeline™</h2>
+        <p style="padding: 20px; font-size: 1.2rem; font-weight: 300;">
+            "WorkTimeline™ helps the client take their first step forward to the center where they belong, so the firms can help them never look back."
         </p>
-        <button class="sq-btn" style="width: 240px; margin-top: 40px;" onclick="toLogin()">ENTER GATEWAY</button>
-    </div>
-
-    <div id="act-login" class="full-screen layer">
-        <h3 style="color:var(--wt-teal); margin-bottom: 30px;">Secure Access</h3>
-        <input type="text" style="width:100%; max-width:340px; padding:22px; border-radius:20px; border:1.5px solid #eee; margin-bottom:15px;" placeholder="Client Reference ID">
-        <button class="sq-btn" style="max-width:340px;" onclick="enterApp()">SUBMIT FOR CLIENT</button>
-        <div style="margin: 25px 0; color: #ccc; font-size: 0.8rem; font-weight: 600;">OR</div>
-        <button class="sq-btn" style="max-width:340px; background:var(--clio-blue);" onclick="enterApp()">SIGN IN WITH CLIO</button>
+        <button class="sq-btn" style="width: 220px;" onclick="enterApp()">ENTER GATEWAY</button>
     </div>
 
     <div id="main-app">
         <header class="header">
             <div style="display:flex; align-items:center;">
                 <div id="ai-status" class="ai-pulse"></div>
-                <h4 style="margin:0; color:var(--wt-teal); font-weight:600; font-size:1.1rem;">WorkTimeline™</h4>
+                <h4 style="margin:0; color:var(--wt-teal); font-weight:600; font-size:1rem;">WorkTimeline</h4>
             </div>
-            <div style="display:flex; gap:15px; align-items:center;">
-                <div id="privacy-sw" class="sw-track" onclick="togglePrivacy()"><div class="sw-thumb"></div></div>
-                <button class="mac-icon" style="width:40px; height:40px;" onclick="alert('Counsel Bridge Connected')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></button>
-            </div>
+            <div id="privacy-sw" class="sw-track" onclick="togglePrivacy()"><div class="sw-thumb"></div></div>
         </header>
 
+        <div class="informatics-key">
+            <div><span style="font-weight:900;">• STATUS:</span> Risk Detected</div>
+            <div><span style="font-weight:900;">•</span> Tamper-Proof Stamp</div>
+        </div>
+
         <div id="app-shell" style="display: flex; flex-direction: column; flex-grow: 1;">
-            <div class="mode-selector">
-                <button id="btn-T" class="mode-btn active" onclick="switchMode('T')">Timeline</button>
-                <button id="btn-N" class="mode-btn" onclick="switchMode('N')">Con'd Notes</button>
+            <div class="workspace">
+                <div class="organized-pane">
+                    <div class="pane-label">Timeline Track</div>
+                    <div id="list-timeline" class="pane-list"></div>
+                </div>
+                <div class="organized-pane">
+                    <div class="pane-label">Con'd Notes</div>
+                    <div id="list-notes" class="pane-list"></div>
+                </div>
             </div>
-
-            <div style="display:flex; gap:8px; overflow-x:auto; padding:0 20px 15px; scrollbar-width:none;">
-                <div style="background:#f1f5f9; color:var(--wt-teal); padding:10px 18px; border-radius:25px; font-size:0.75rem; font-weight:700; white-space:nowrap; border:1px solid #e2e8f0;" onclick="setTemplate('Witness Statement: \nName: \nAccount: ')">Witness</div>
-                <div style="background:#f1f5f9; color:var(--wt-teal); padding:10px 18px; border-radius:25px; font-size:0.75rem; font-weight:700; white-space:nowrap; border:1px solid #e2e8f0;" onclick="setTemplate('Setting: \nObservation of Environment: ')">Setting</div>
-            </div>
-
-            <div id="pane-T" class="pane active"></div>
-            <div id="pane-N" class="pane"></div>
 
             <div class="media-bar">
-                <button class="mac-icon" onclick="triggerCam()"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm9 3.5V6a2 2 0 0 0-2-2h-3.2l-1.3-1.7a1 1 0 0 0-.8-.3H9.3a1 1 0 0 0-.8.3L7.2 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5z"/></svg></button>
-                <button class="mac-icon" onclick="alert('Mic Active')"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg></button>
-                <button class="mac-icon" onclick="triggerDoc()"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6z"/></svg></button>
-                <button class="mac-icon" onclick="window.location.href='tel:911'"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></button>
+                <button class="mac-icon" onclick="triggerSys('camera')"><svg class="mac-svg" width="22" height="22" viewBox="0 0 24 24"><path d="M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm9 3.5V6a2 2 0 0 0-2-2h-3.2l-1.3-1.7a1 1 0 0 0-.8-.3H9.3a1 1 0 0 0-.8.3L7.2 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5z"/></svg></button>
+                <button class="mac-icon" onclick="alert('Voice Bridge Active')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg></button>
+                <button class="mac-icon" onclick="triggerSys('doc')"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6z"/></svg></button>
+                <button class="mac-icon" onclick="window.location.href='tel:5551234567'"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></button>
             </div>
 
             <div class="footer">
-                <textarea id="main-in" placeholder="Truth requires zero effort..." oninput="checkPattern(this.value)"></textarea>
-                <button id="add-btn" class="sq-btn" onclick="addEntry()">ADD TO TIMELINE</button>
-                <button id="lock-btn" class="sq-btn" style="margin-top:10px; font-size:0.75rem; background:#e2e8f0; color:#0f172a;" onclick="clioLock()">LOCK & SUBMIT TO CLIO</button>
+                <textarea id="main-in" placeholder="Truth requires zero effort..." oninput="patternMatch(this.value)"></textarea>
+                <div class="button-row">
+                    <button class="submit-btn" onclick="commitEntry('Timeline')">Add Timeline</button>
+                    <button class="submit-btn btn-gray" onclick="commitEntry('Note')">+ Con'd Notes</button>
+                </div>
+                <button id="lock-btn" class="sq-btn btn-clio" style="margin-top:10px; font-size:0.7rem;" onclick="clioHandshake()">LOCK & SUBMIT TO CLIO</button>
             </div>
         </div>
     </div>
 
-    <input type="file" id="camera-file" accept="image/*" capture="environment" style="display:none;" onchange="mediaReady('Photo')">
-    <input type="file" id="doc-file" style="display:none;" onchange="mediaReady('Document')">
+    <input type="file" id="camera-act" accept="image/*" capture="environment" style="display:none;" onchange="mediaCommitted('Photo')">
+    <input type="file" id="doc-act" style="display:none;" onchange="mediaCommitted('File')">
 
     <script>
         const script = [
-            {s: "Jack Newton (Clio): '77% of legal needs go unmet.'", t: "The Legal Access Gap is a failure of modern infrastructure."},
-            {s: "The Industry Standard: ROI is the only metric.", t: "Firms save $4,200 in manual labor per informatics-locked case."},
-            {s: "WorkTimeline™ is the missing link.", t: "Transforming raw trauma into actionable informatics instantly."},
-            {s: "The Gray Area: Where 90% of evidence dies.", t: "Contemporaneous recording is the only defense against tampering."},
-            {s: "They say you're invisible.", t: "We know you're not. We hear you. We see you."},
-            {s: "Prison?", t: "It may seem like it. It may feel like the walls are closing in."},
-            {s: "But there are no walls.", t: "It's just that gray area. Don't know where to go?"},
-            {s: "It's okay. We got you.", t: "We're here to help you now. We aren't here to tear down the walls."},
-            {s: "Justice is truth in informatics.", t: "We're here to remind you... there are no walls."}
+            {s: "Jack Newton (Clio): '77% of legal needs go unmet.'", t: "Bridging the Access Gap."},
+            {s: "ROI: Intake is the #1 driver of firm success.", t: "Automated informatics, not manual stories."},
+            {s: "They think you're invisible. You're not.", t: "No, you're not caught in a prison..."},
+            {s: "Just that gray area.", t: "Record the truth instantly. Reminding you..."},
+            {s: "Justice is now effortless.", t: "There are no walls."}
         ];
-
-        let pIdx = 0; let mode = 'T';
-
+        
+        let pIdx = 0;
         function startCinematic() {
             const stage = document.getElementById('stage');
             if (pIdx < script.length) {
@@ -158,53 +156,48 @@
                 setTimeout(() => {
                     el.classList.remove('active');
                     setTimeout(() => { pIdx++; startCinematic(); }, 1200);
-                }, 8000); // EXTENDED TO 8s PER SLIDE FOR +20s TOTAL
+                }, 6000); // 6s PACING FOR VOICE OVER
             } else { document.getElementById('gate-btn').style.display = 'block'; }
         }
 
-        function triggerCam() { document.getElementById('camera-file').click(); }
-        function triggerDoc() { document.getElementById('doc-file').click(); }
-        function mediaReady(type) { switchMode('T'); document.getElementById('main-in').value = `[${type} Attached]`; addEntry(); }
+        function triggerSys(action) {
+            if(action === 'camera') document.getElementById('camera-act').click();
+            if(action === 'doc') document.getElementById('doc-act').click();
+        }
 
-        function checkPattern(val) {
+        function mediaCommitted(type) {
+            const list = document.getElementById('list-timeline');
+            const card = document.createElement('div'); card.className = 'organized-card';
+            const now = new Date();
+            const fullStamp = `${now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} @ ${now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
+            card.innerHTML = `<span class="timestamp">${type.toUpperCase()} CAPTURED • ${fullStamp}</span>Verified informatics attached to Track.`;
+            list.prepend(card);
+        }
+
+        function patternMatch(val) {
             const status = document.getElementById('ai-status');
-            const alertWords = ['hazard', 'tampering', 'threat', 'unsafe', 'witness'];
-            const matches = alertWords.filter(w => val.toLowerCase().includes(w)).length;
+            const critical = ['tampering', 'hazard', 'harassment', 'threat'];
+            const matches = critical.filter(w => val.toLowerCase().includes(w)).length;
             if(matches >= 2) status.className = 'ai-pulse pulse-alert';
             else if(matches >= 1) status.className = 'ai-pulse pulse-warn';
             else status.className = 'ai-pulse';
         }
 
-        function addEntry() {
+        function commitEntry(type) {
             const val = document.getElementById('main-in').value; if(!val) return;
-            const pane = document.getElementById('pane-' + mode);
-            const card = document.createElement('div'); card.className = 'card';
+            const targetPane = type === 'Timeline' ? 'list-timeline' : 'list-notes';
+            const list = document.getElementById(targetPane);
+            const card = document.createElement('div'); card.className = 'organized-card';
             const now = new Date();
-            const stamp = `${now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} @ ${now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
-            card.innerHTML = `<span class="stamp">${mode === 'T' ? 'TIMELINE' : 'NOTE'} • ${stamp}</span>${val}`;
-            pane.prepend(card); document.getElementById('main-in').value = "";
+            const fullStamp = `${now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} @ ${now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
+            card.innerHTML = `<span class="timestamp">${type.toUpperCase()} • ${fullStamp}</span>${val}`;
+            list.prepend(card); document.getElementById('main-in').value = "";
             document.getElementById('ai-status').className = 'ai-pulse';
         }
 
-        function clioLock() {
-            document.getElementById('lock-btn').style.background = 'var(--clio-blue)';
-            document.getElementById('lock-btn').style.color = 'white';
-            document.getElementById('lock-btn').innerText = 'SUBMITTED TO CLIO';
-            alert("Pattern Analytics Verified. Submission Handshake Successful.");
-        }
-
-        function switchMode(m) {
-            mode = m; document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
-            document.getElementById('btn-' + m).classList.add('active');
-            document.getElementById('pane-' + m).classList.add('active');
-            document.getElementById('add-btn').innerText = m === 'T' ? 'ADD TO TIMELINE' : 'SAVE TO NOTES';
-        }
-
-        function setTemplate(t) { document.getElementById('main-in').value = t; }
+        function clioHandshake() { alert("Submission Handshake sent to Legal Cloud Dashboard."); }
         function toBranding() { document.getElementById('act-intro').style.display = 'none'; document.getElementById('act-branding').style.display = 'flex'; }
-        function toLogin() { document.getElementById('act-branding').style.display = 'none'; document.getElementById('act-login').style.display = 'flex'; }
-        function enterApp() { document.getElementById('act-login').style.display = 'none'; document.getElementById('main-app').style.display = 'flex'; }
+        function enterApp() { document.getElementById('act-branding').style.display = 'none'; document.getElementById('main-app').style.display = 'flex'; }
         function togglePrivacy() { document.getElementById('app-shell').classList.toggle('blur-active'); document.getElementById('privacy-sw').classList.toggle('sw-on'); }
     </script>
 </body>
