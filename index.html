@@ -3,203 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeline™ | Master Handshake</title>
+    <title>WorkTimeline™ | Breaking The Wall</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root { 
             --wt-teal: #167e7c; --wt-dark-teal: #0a2e2d; --wt-cream: #f8f5f1; 
-            --wt-gray: #bdc3c7; --wt-ochre: #ffd600; --wt-red: #ff4b2b; --clio-blue: #0056b3;
+            --wt-gray: #bdc3c7; --wt-ochre: #ffd600; --clio-blue: #0056b3;
         }
         body, html { margin: 0; padding: 0; font-family: 'Outfit', sans-serif; background: var(--wt-cream); overflow: hidden; height: 100%; }
 
-        /* ACT 1: ADVOCACY INTRO */
+        /* ACT 1: ADVOCACY DIALOGUE (TEAL TEXT) */
         #layer-intro { 
-            position: fixed; inset: 0; z-index: 9999; 
-            background: linear-gradient(-45deg, #0f4c4b, #2f3535, #167e7c); 
-            background-size: 400% 400%; animation: bgBreath 15s ease infinite; 
+            position: fixed; inset: 0; z-index: 9999; background: var(--wt-cream); 
             display: flex; align-items: center; justify-content: center; transition: 1.2s ease; 
         }
-        @keyframes bgBreath { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        .dialogue-text { color: white; font-size: 2.2rem; font-weight: 300; text-align: center; max-width: 85%; transition: opacity 0.8s ease; line-height: 1.5; }
+        .dialogue-text { color: var(--wt-teal); font-size: 2.1rem; font-weight: 300; text-align: center; max-width: 80%; transition: opacity 0.8s ease; line-height: 1.5; }
 
-        /* ACT 2: SELECTION */
-        #layer-selection { position: fixed; inset: 0; z-index: 8888; background: var(--wt-cream); display: flex; align-items: center; justify-content: center; transition: 0.8s; text-align: center; }
-        .card-select { background: white; padding: 30px; border-radius: 35px; width: 170px; cursor: pointer; border: 2.5px solid transparent; margin: 15px; transition: 0.4s; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
-        .card-select:hover { border-color: var(--wt-teal); transform: translateY(-8px); }
+        .logo-box { text-align: center; margin-bottom: 20px; opacity: 0; transition: 2s; }
+        .wt-line { stroke: var(--wt-teal); stroke-width: 2.5; }
+
+        /* ACT 2: GATEKEEPER LOGIN */
+        #layer-login { position: fixed; inset: 0; z-index: 8888; background: var(--wt-cream); display: flex; align-items: center; justify-content: center; transition: 0.8s; visibility: hidden; opacity: 0; }
+        .login-card { background: white; padding: 50px; border-radius: 40px; width: 340px; box-shadow: 0 20px 60px rgba(0,0,0,0.05); text-align: center; }
+        .input-field { width: 100%; padding: 16px; margin: 12px 0; border-radius: 50px; border: 1.5px solid #eee; font-family: 'Outfit'; outline: none; box-sizing: border-box; }
+        .btn-clio-login { background: var(--clio-blue); color: white; border: none; padding: 16px; width: 100%; border-radius: 50px; cursor: pointer; font-weight: 600; margin-top: 10px; font-size: 1rem; }
 
         /* ACT 3: THE ENGINE */
         #main-app { height: 100%; padding: 40px; box-sizing: border-box; overflow-y: auto; }
-        .vault-active .privacy-sensitive { filter: blur(20px); opacity: 0.15; pointer-events: none; }
+        .vault-active .privacy-sensitive { filter: blur(20px); opacity: 0.15; }
 
-        .header-main { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
-        
-        /* MAC LIGHT BRIDGE */
-        .comm-bridge { display: flex; align-items: center; gap: 12px; }
-        .mac-light { width: 12px; height: 12px; border-radius: 50%; background: var(--wt-teal); box-shadow: 0 0 12px var(--wt-teal); animation: breathe 2s infinite; }
-        .mac-light.tamper-red { background: var(--wt-red); box-shadow: 0 0 20px var(--wt-red); animation: none; }
-        @keyframes breathe { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-
-        /* TRANSLATOR TOGGLE */
-        .toggle-ui { display: flex; align-items: center; gap: 10px; font-size: 0.65rem; font-weight: 600; color: var(--wt-teal); letter-spacing: 1px; }
-
-        /* THE STREET */
-        .street-card { 
-            display: flex; gap: 20px; padding: 75px 25px; 
-            background: var(--wt-gray); border-radius: 50px; 
-            box-shadow: 0 15px 45px rgba(0,0,0,0.05); 
-            justify-content: space-around; transition: 1s ease; border: 2px solid transparent;
-        }
+        .street-card { display: flex; gap: 20px; padding: 75px 25px; background: var(--wt-gray); border-radius: 50px; justify-content: space-around; transition: 1s ease; margin-top: 25px; }
         .street-card.locked { background: var(--wt-teal); }
-        .street-card.handshake { background: var(--wt-dark-teal); box-shadow: 0 0 60px rgba(22, 126, 124, 0.6); border: 2px solid var(--wt-teal); }
+        .street-card.handshake { background: var(--wt-dark-teal); box-shadow: 0 0 60px rgba(22, 126, 124, 0.6); }
 
-        .milestone { text-align: center; cursor: pointer; }
-        .briefcase-svg { width: 65px; height: 65px; fill: white; transition: 0.5s; }
+        .milestone { text-align: center; cursor: grab; }
+        .briefcase-svg { width: 60px; height: 60px; fill: white; }
         .label-text { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; margin-top: 15px; color: white; letter-spacing: 1.5px; }
 
-        /* PATTERN ENGINE OCHRE PULSE */
-        .pulse-ochre { filter: drop-shadow(0 0 15px var(--wt-ochre)); animation: pulseEng 2.5s infinite; }
-        @keyframes pulseEng { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        .pulse-ochre { filter: drop-shadow(0 0 15px var(--wt-ochre)); animation: pEng 2.5s infinite; }
+        @keyframes pEng { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
 
-        /* MODAL / TRANSLATOR */
-        #modal-overlay {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 360px; background: white; border-radius: 30px; padding: 35px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.2); display: none; z-index: 10000;
-        }
-
-        .btn-master { padding: 20px 35px; border-radius: 60px; font-weight: 600; cursor: pointer; border: none; font-family: 'Outfit'; width: 100%; margin-top: 25px; transition: 0.3s; font-size: 1rem; }
-        .btn-lock { background: var(--wt-teal); color: white; }
-        .btn-clio { background: var(--clio-blue); color: white; display: none; }
-
-        #final-quote { 
-            margin-top: 50px; text-align: center; color: var(--wt-dark-teal); 
-            font-size: 1.3rem; font-weight: 300; line-height: 1.6; 
-            opacity: 0; transition: 2.5s; max-width: 700px; margin-left: auto; margin-right: auto;
-        }
+        #final-quote { margin-top: 50px; text-align: center; color: var(--wt-dark-teal); font-size: 1.3rem; font-weight: 300; opacity: 0; transition: 2.5s; line-height: 1.6; }
     </style>
 </head>
 <body id="master-body">
 
     <div id="layer-intro">
-        <div style="text-align:center; color:white;">
+        <div style="text-align:center;">
+            <div id="logo-header" class="logo-box">
+                <svg width="100" height="40" viewBox="0 0 100 40">
+                    <line x1="0" y1="20" x2="100" y2="20" class="wt-line"/>
+                    <circle cx="25" cy="20" r="5" fill="#167e7c"/><circle cx="50" cy="20" r="5" fill="#167e7c"/><circle cx="75" cy="20" r="5" fill="#167e7c"/>
+                </svg>
+            </div>
             <p class="dialogue-text" id="intro-text">"They think you're invisible."</p>
-            <button onclick="nextStep('layer-intro')" id="start-trigger" style="margin-top:50px; background:none; border:1px solid white; color:white; padding:12px 45px; border-radius:50px; cursor:pointer; opacity:0; transition: 2s;">START EXPERIENCE</button>
         </div>
     </div>
 
-    <div id="layer-selection">
-        <div>
-            <h2 style="color:var(--wt-teal); font-weight:600; margin-bottom:40px;">Select Your Receiving Counsel</h2>
-            <div style="display:flex; justify-content:center;">
-                <div class="card-select" onclick="nextStep('layer-selection')"><h3>Jordan</h3><p style="font-size:0.8rem; font-weight:300;">Warm & Steady</p></div>
-                <div class="card-select" onclick="nextStep('layer-selection')"><h3>Taylor</h3><p style="font-size:0.8rem; font-weight:300;">Clear & Empathetic</p></div>
-            </div>
+    <div id="layer-login">
+        <div class="login-card">
+            <h2 style="color: var(--wt-teal); margin-bottom: 5px; font-weight: 600;">Secure Entry</h2>
+            <p style="font-size: 0.7rem; letter-spacing: 2px; color: #888; margin-bottom: 30px;">WORKTIMELINE™ GATEWAY</p>
+            <input type="text" class="input-field" placeholder="User ID / Case Reference">
+            <button class="btn-clio-login" onclick="login()">Login with Clio</button>
+            <p style="font-size: 0.6rem; color: #bbb; margin-top: 25px;">Authenticated via Supabase Cloud Encryption</p>
         </div>
     </div>
 
     <div id="main-app">
-        <header class="header-main">
-            <div>
-                <h2 style="color: var(--wt-teal); margin:0; font-weight:600;">WorkTimeline™</h2>
-                <div class="comm-bridge">
-                    <div id="bridge-light" class="mac-light"></div>
-                    <span id="bridge-text" style="font-size:0.65rem; font-weight:600; color:var(--wt-teal); letter-spacing:1px;">LIVE COUNSEL LINK</span>
-                </div>
-            </div>
-            
-            <div style="display:flex; align-items:center; gap:30px;">
-                <div class="toggle-ui">
-                    <span>TRANSLATOR</span>
-                    <input type="checkbox" id="trans-toggle" checked>
-                </div>
-                <div onclick="document.getElementById('master-body').classList.toggle('vault-active')" style="cursor:pointer; color:var(--wt-teal);">
-                    <svg width="35" height="35" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 11c0-1.1.9-2 2-2s2 .9 2 2M8 11c0-3.3 2.7-6 6-6s6 2.7 6 6M12 21c-4.4 0-8-3.6-8-8 0-1.1.9-2 2-2s2 .9 2 2c0 2.2 1.8 4 4 4s4-1.8 4-4"/></svg>
-                </div>
+        <header style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;">
+            <h2 style="color: var(--wt-teal); margin:0; font-weight:600;">WorkTimeline™</h2>
+            <div onclick="document.getElementById('master-body').classList.toggle('vault-active')" style="cursor:pointer; color:var(--wt-teal);">
+                <svg width="35" height="35" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 11c0-1.1.9-2 2-2s2 .9 2 2M8 11c0-3.3 2.7-6 6-6s6 2.7 6 6M12 21c-4.4 0-8-3.6-8-8 0-1.1.9-2 2-2s2 .9 2 2c0 2.2 1.8 4 4 4s4-1.8 4-4"/></svg>
             </div>
         </header>
 
         <div id="street-engine" class="street-card">
-            <div class="milestone" onclick="handleTranslate('prima')"><svg class="briefcase-svg" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg><div class="label-text">Intake</div></div>
-            <div class="milestone" onclick="handleTranslate('res')"><svg class="briefcase-svg pulse-ochre" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg><div class="label-text">Pattern</div></div>
-            <div class="milestone" onclick="triggerConflict()"><svg class="briefcase-svg" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg><div class="label-text">Setting</div></div>
+            <div class="milestone"><svg class="briefcase-svg" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg><div class="label-text">Intake</div></div>
+            <div class="milestone"><svg class="briefcase-svg pulse-ochre" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg><div class="label-text">Witness</div></div>
+            <div class="milestone"><svg class="briefcase-svg" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg><div class="label-text">Setting</div></div>
         </div>
 
-        <button class="btn-master btn-lock" id="lock-btn" onclick="executeLock()">Lock Entry & Summarize</button>
-        <button class="btn-master btn-clio" id="clio-btn" onclick="executeHandshake()">Commit Handshake to Cloud</button>
-
-        <div class="privacy-sensitive" id="summary-panel" style="margin-top:40px; padding:35px; background:white; border-radius:35px; display:none; border:1px solid #f0f0f0;">
-            <p id="output-log" style="font-size: 0.95rem; color: #555; line-height:1.6;">Awaiting Intelligence Sync...</p>
-        </div>
-
+        <button id="lock-btn" style="background:var(--wt-teal); color:white; padding:20px; border-radius:50px; width:100%; border:none; font-family:'Outfit'; font-weight:600; margin-top:30px; cursor:pointer;" onclick="executeLock()">Lock Entry & Summarize</button>
+        
         <div id="final-quote">
             "The lawyer puts the client a few steps ahead so they can stay at the center... and the firm allows them to never want to look back again."
         </div>
     </div>
 
-    <div id="modal-overlay" onclick="this.style.display='none'">
-        <span id="latin-term" style="font-style:italic; color:var(--wt-teal); font-size:1.4rem; display:block; margin-bottom:10px;">Term</span>
-        <p id="latin-def" style="font-size:0.95rem; line-height:1.6; color:#444;">Definition</p>
-    </div>
-
     <script>
-        const lines = ["\"They think you're invisible.\"", "\"We see you.\"", "\"We hear you.\"", "\"We're here to tear down the walls.\"", "WorkTimeline™"];
+        const lines = [
+            "\"They think you're invisible.\"",
+            "\"We see you.\"",
+            "\"We hear you.\"",
+            "\"This isn't a prison.\"",
+            "\"It's just a gray area.\"",
+            "\"We're here to help you knock down the walls.\"",
+            "WorkTimeline™"
+        ];
         let currentLine = 0;
         const textEl = document.getElementById('intro-text');
-        const trigger = document.getElementById('start-trigger');
+        const logoEl = document.getElementById('logo-header');
 
         const dialogueInterval = setInterval(() => {
             currentLine++;
             if(currentLine < lines.length) {
                 textEl.style.opacity = 0;
-                setTimeout(() => { textEl.innerText = lines[currentLine]; textEl.style.opacity = 1; }, 800);
-            } else { clearInterval(dialogueInterval); trigger.style.opacity = 1; }
-        }, 3000);
-
-        function nextStep(id) { document.getElementById(id).style.opacity = '0'; setTimeout(() => { document.getElementById(id).style.display = 'none'; }, 1000); }
-        
-        function handleTranslate(type) {
-            if(!document.getElementById('trans-toggle').checked) return;
-            const modal = document.getElementById('modal-overlay');
-            const term = document.getElementById('latin-term');
-            const def = document.getElementById('latin-def');
-            modal.style.display = 'block';
-            if(type === 'res') {
-                term.innerText = "Res Ipsa Loquitur";
-                def.innerText = "The pattern speaks for itself. The Engine identifies a sequence of events so clear that the nature of the error is obvious based on the timeline alone.";
+                setTimeout(() => {
+                    if (lines[currentLine] === "WorkTimeline™") { logoEl.style.opacity = 1; }
+                    textEl.innerText = lines[currentLine];
+                    textEl.style.opacity = 1;
+                }, 800);
             } else {
-                term.innerText = "Prima Facie";
-                def.innerText = "At first sight. The Engine indicates that these patterns are sufficient to establish the legal fact of your intake unless disproved.";
+                clearInterval(dialogueInterval);
+                setTimeout(() => {
+                    document.getElementById('layer-intro').style.opacity = 0;
+                    setTimeout(() => { 
+                        document.getElementById('layer-intro').style.display = 'none';
+                        const login = document.getElementById('layer-login');
+                        login.style.visibility = 'visible';
+                        login.style.opacity = 1;
+                    }, 1000);
+                }, 2000);
             }
-        }
+        }, 3200);
 
-        function triggerConflict() {
-            document.getElementById('bridge-light').classList.add('tamper-red');
-            document.getElementById('bridge-text').innerText = "CONFLICT DETECTED: CONSULT COUNSEL";
-            document.getElementById('bridge-text').style.color = "var(--wt-red)";
-            if(document.getElementById('trans-toggle').checked) {
-                document.getElementById('modal-overlay').style.display = 'block';
-                document.getElementById('latin-term').innerText = "In Limine";
-                document.getElementById('latin-def').innerText = "At the threshold. A conflict has been identified that requires immediate lawyer intervention.";
-            }
+        function login() {
+            document.getElementById('layer-login').style.opacity = 0;
+            setTimeout(() => { document.getElementById('layer-login').style.display = 'none'; }, 800);
         }
-
+        
         function executeLock() {
             document.getElementById('street-engine').classList.add('locked');
-            document.getElementById('lock-btn').style.display = 'none';
-            document.getElementById('clio-btn').style.display = 'block';
-            document.getElementById('summary-panel').style.display = 'block';
-            document.getElementById('output-log').innerText = "Timeline Locked. Pattern Recognition Engine has successfully mapped precedents to your intake.";
+            document.getElementById('lock-btn').innerText = "Execute Cloud Handshake";
+            document.getElementById('lock-btn').onclick = function() {
+                document.getElementById('street-engine').classList.replace('locked', 'handshake');
+                document.getElementById('final-quote').style.opacity = 1;
+                this.style.display = 'none';
+            };
         }
-
-        function executeHandshake() {
-            document.getElementById('street-engine').classList.remove('locked');
-            document.getElementById('street-engine').classList.add('handshake');
-            document.getElementById('output-log').innerText = "HANDSHAKE VERIFIED: Data Pushed to Supabase Cloud & Clio.";
-            document.getElementById('final-quote').style.opacity = 1;
-        }
-
         Sortable.create(document.getElementById('street-engine'), { animation: 150 });
     </script>
 </body>
