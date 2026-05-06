@@ -1,188 +1,274 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>WorkTimeline™ | Master Integrated</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WorkTimeline™ | Case Architect</title>
     <style>
         :root {
             --teal-brand: #115e59;
-            --active-blue: #3b82f6;
+            --teal-bg: #f0fdfa;
             --active-green: #22c55e;
-            --hazard-yellow: #facc15;
-            --tamper-red: #ef4444;
-            --bg-dark: #0f172a;
+            --border-color: #cbd5e1;
+            --glass-yellow: rgba(250, 204, 21, 0.25);
+            --glass-red: rgba(239, 68, 68, 0.2);
+            --active-blue: #3b82f6;
         }
 
-        body, html { margin: 0; padding: 0; background: #fff; font-family: -apple-system, sans-serif; overflow-x: hidden; height: 100%; }
-
-        /* --- 1. CINEMATIC NARRATIVE (DEMO REEL) --- */
-        #intro-sequence {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-dark); z-index: 10000;
-            display: flex; align-items: center; justify-content: center;
-            transition: opacity 1s ease;
-        }
-        .reel-text {
-            color: #fff; font-size: 24px; font-weight: 900; text-align: center;
-            opacity: 0; position: absolute; transform: translateY(20px);
-            transition: 1.5s ease; padding: 0 30px; line-height: 1.5;
-        }
-        .reel-text span { color: var(--active-blue); }
-        .show-text { opacity: 1; transform: translateY(0); }
-
-        /* --- 2. LOGIN SCREEN --- */
-        #login-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #f1f5f9; z-index: 9000; display: none;
-            flex-direction: column; align-items: center; justify-content: center;
-        }
-        .login-card {
-            background: #fff; padding: 40px; border-radius: 30px;
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); width: 85%; max-width: 400px; text-align: center;
-        }
-        .login-card input {
-            width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px;
-            border: 1px solid #cbd5e1; font-size: 16px;
-        }
-        .btn-login {
-            width: 100%; background: var(--teal-brand); color: #fff; padding: 18px;
-            border: none; border-radius: 12px; font-weight: 900; cursor: pointer; margin-top: 10px;
+        body { 
+            margin: 0; 
+            font-family: -apple-system, sans-serif; 
+            background: #ffffff; 
+            padding-bottom: 120px;
         }
 
-        /* --- 3. MAIN PROTOTYPE DASHBOARD --- */
-        #main-app { display: none; }
-        header { padding: 25px 20px; display: flex; justify-content: space-between; align-items: flex-start; }
-        .logo-box { width: 50px; height: 50px; }
-        .brand-text h1 { margin: 0; font-size: 24px; color: var(--teal-brand); font-weight: 800; }
+        /* HEADER SECTION */
+        header {
+            padding: 25px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .left-header { display: flex; align-items: center; gap: 15px; }
+        .logo-box { width: 55px; height: 55px; }
         
-        /* THE LEGEND PULSE LIGHTS */
-        .status-area { text-align: right; }
-        .legend-row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 5px; }
-        .pulse-dot { width: 12px; height: 12px; border-radius: 50%; opacity: 0.1; transition: 0.5s; }
-        
-        .pulse-ai { background: var(--hazard-yellow); animation: p-y 2s infinite; opacity: 1; box-shadow: 0 0 10px var(--hazard-yellow); }
-        .pulse-tamper { background: var(--tamper-red); animation: p-r 0.8s infinite; opacity: 1; box-shadow: 0 0 15px var(--tamper-red); }
+        .brand-text h1 { 
+            margin: 0; 
+            font-size: 26px; 
+            color: var(--teal-brand); 
+            font-weight: 800;
+        }
+        .brand-text p { 
+            margin: 5px 0 0; 
+            font-style: italic; 
+            font-size: 14px; 
+            color: #64748b; 
+        }
 
-        @keyframes p-y { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.3); opacity: 1; } }
-        @keyframes p-r { 0%, 100% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.6); opacity: 1; } }
+        .right-header { text-align: right; }
+        .status { 
+            font-size: 11px; 
+            font-weight: 900; 
+            color: var(--active-green); 
+            display: flex; 
+            align-items: center; 
+            justify-content: flex-end; 
+            gap: 5px; 
+            margin-bottom: 10px;
+        }
+        .status::before { content: ''; width: 8px; height: 8px; background: var(--active-green); border-radius: 50%; }
 
-        /* UI COMPONENTS */
-        .signin-box { margin: 10px 20px; background: #e6f4f1; padding: 20px; border-radius: 20px; }
-        textarea { width: 100%; height: 120px; border-radius: 20px; border: none; background: #e2e8f0; padding: 15px; font-size: 16px; margin-top: 15px; outline: none; }
+        .btn-header {
+            display: block;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 800;
+            background: #f1f5f9;
+            border: 1px solid var(--border-color);
+            margin-bottom: 6px;
+            color: #1e293b;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        /* SIGN-IN BOX */
+        .signin-box {
+            margin: 10px 20px;
+            background: #e6f4f1;
+            padding: 25px;
+            border-radius: 25px;
+        }
+        .signin-box label { 
+            display: block;
+            font-size: 12px; 
+            font-weight: 900;
+            color: var(--teal-brand); 
+            text-transform: uppercase; 
+            margin-bottom: 15px; 
+        }
+        select {
+            width: 100%;
+            padding: 16px;
+            border-radius: 15px;
+            border: 1px solid #fff;
+            background: #fff;
+            font-size: 15px;
+        }
+
+        /* CATEGORY SCROLLER */
+        .scroller {
+            display: flex;
+            gap: 12px;
+            padding: 15px 20px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .pill {
+            white-space: nowrap;
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: 1.5px solid var(--border-color);
+            background: #fff;
+            color: var(--teal-brand);
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        /* TEXT INPUT AREA */
+        .input-wrap { padding: 0 20px; }
+        textarea {
+            width: 100%;
+            height: 150px;
+            border-radius: 25px;
+            border: none;
+            background: #e2e8f0;
+            padding: 20px;
+            font-size: 16px;
+            outline: none;
+            font-family: inherit;
+        }
+
+        /* ACTION GRID */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            padding: 25px 20px;
+        }
+        .card {
+            background: #f1f5f9;
+            border-radius: 25px;
+            padding: 22px 10px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .card svg { width: 35px; height: 35px; fill: #64748b; margin-bottom: 10px; }
+        .card b { font-size: 11px; color: #64748b; text-transform: uppercase; display: block; }
+
+        /* TIMELINE DISPLAY */
         .timeline { padding: 20px; }
-        .entry { background: #fff; border: 1px solid #e2e8f0; padding: 15px; border-radius: 15px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .hazard-highlight { background: rgba(250, 204, 21, 0.2) !important; border-left: 5px solid var(--hazard-yellow) !important; }
-        .tamper-highlight { background: rgba(239, 68, 68, 0.1) !important; border-left: 5px solid var(--tamper-red) !important; }
+        .entry {
+            background: #fff;
+            border: 1px solid #f1f5f9;
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        .entry::before { 
+            content: ''; position: absolute; left: -10px; top: 25px; width: 8px; height: 8px; background: #cbd5e1; border-radius: 50%;
+        }
+        .entry.active-node::before { background: var(--active-blue); }
+
+        /* DYNAMIC COLORS (AI & TAMPER) */
+        .hazard-highlight { background: var(--glass-yellow) !important; border: 1px solid #facc15 !important; }
+        .tamper-highlight { background: var(--glass-red) !important; border: 1px solid #ef4444 !important; color: #b91c1c; }
+        body.blurred .entry, body.blurred textarea { filter: blur(20px); pointer-events: none; }
+
+        /* LEGEND PULSE AREA */
+        .pulse-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-left: 5px; opacity: 0.2; }
+        .p-ai { background: #facc15; animation: pulseY 2s infinite; opacity: 1; }
+        .p-tm { background: #ef4444; animation: pulseR 0.8s infinite; opacity: 1; }
+        @keyframes pulseY { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+        @keyframes pulseR { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <div id="intro-sequence">
-        <div class="reel-text" id="r1">In a world of noise...</div>
-        <div class="reel-text" id="r2">There are <span>No Walls</span> between you and the truth.</div>
-        <div class="reel-text" id="r3">Architecture is the constant will to log <span>Justice.</span></div>
-        <div class="reel-text" id="r4">Establishing Secure Vault...</div>
-    </div>
-
-    <div id="login-screen">
-        <div class="login-card">
-            <h2 style="color:var(--teal-brand); margin-top:0;">WorkTimeline™</h2>
-            <p style="color:#64748b; font-size:14px;">Professional Access Only</p>
-            <input type="text" placeholder="Professional ID" />
-            <input type="password" placeholder="Vault Key" />
-            <button class="btn-login" onclick="showDashboard()">UNLOCK ARCHIVE</button>
+<header>
+    <div class="left-header">
+        <div class="logo-box">
+            <svg viewBox="0 0 100 100"><rect x="15" y="30" width="70" height="50" rx="10" fill="none" stroke="#115e59" stroke-width="6"/><path d="M35 30 V28 Q35 15 50 15 Q65 15 65 20 V30" fill="none" stroke="#115e59" stroke-width="6"/><line x1="10" y1="55" x2="90" y2="55" stroke="#3b82f6" stroke-width="4" /></svg>
+        </div>
+        <div class="brand-text">
+            <h1>WorkTimeline™</h1>
+            <p>"Justice is truth in action."</p>
         </div>
     </div>
-
-    <div id="main-app">
-        <header>
-            <div style="display:flex; gap:15px; align-items:center;">
-                <div class="logo-box">
-                    <svg viewBox="0 0 100 100"><rect x="15" y="30" width="70" height="50" rx="10" fill="none" stroke="#115e59" stroke-width="6"/><path d="M35 30 V28 Q35 15 50 15 Q65 15 65 20 V30" fill="none" stroke="#115e59" stroke-width="6"/><line x1="10" y1="55" x2="90" y2="55" stroke="#3b82f6" stroke-width="4" /></svg>
-                </div>
-                <div class="brand-text">
-                    <h1>WorkTimeline™</h1>
-                </div>
-            </div>
-            <div class="status-area">
-                <div style="font-size:11px; font-weight:900; color:var(--active-green);">ACTIVE</div>
-                <div class="legend-row">
-                    <div class="pulse-dot" id="ai-light" style="background:var(--hazard-yellow)" title="AI Pattern"></div>
-                    <div class="pulse-dot" id="tamper-light" style="background:var(--tamper-red)" title="Tamper Detection"></div>
-                </div>
-            </div>
-        </header>
-
-        <div class="signin-box">
-            <label style="font-size:11px; font-weight:900; color:var(--teal-brand); text-transform:uppercase;">Select Role:</label>
-            <select style="width:100%; padding:12px; margin-top:10px; border-radius:10px; border:none;"><option>Attorney</option><option>Investigator</option></select>
-            <textarea id="mainInput" placeholder="Log incident here..."></textarea>
-            <button onclick="addEntry()" style="width:100%; background:var(--teal-brand); color:#fff; border:none; padding:18px; border-radius:15px; font-weight:900; margin-top:10px;">ARCHITECT TRUTH</button>
+    <div class="right-header">
+        <div class="status">ACTIVE 
+            <span id="ai-light" class="pulse-dot"></span>
+            <span id="tm-light" class="pulse-dot"></span>
         </div>
-
-        <div id="tl" class="timeline"></div>
+        <button class="btn-header" onclick="document.body.classList.toggle('blurred')">PROTECT VIEW</button>
+        <button class="btn-header" style="border-style: dashed;">DB CONFIG</button>
     </div>
+</header>
 
-    <script>
-        // --- 1. INTRO LOGIC ---
-        let steps = ["r1", "r2", "r3", "r4"];
-        let cur = 0;
+<div class="signin-box">
+    <label>Professional Sign-In:</label>
+    <select>
+        <option>-- Select Professional --</option>
+        <option>Attorney</option>
+        <option>Lead Investigator</option>
+    </select>
+</div>
 
-        function runReel() {
-            if (cur > 0) document.getElementById(steps[cur-1]).classList.remove('show-text');
-            if (cur < steps.length) {
-                document.getElementById(steps[cur]).classList.add('show-text');
-                cur++;
-                setTimeout(runReel, 2500);
-            } else {
-                document.getElementById('intro-sequence').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('intro-sequence').style.display = 'none';
-                    document.getElementById('login-screen').style.display = 'flex';
-                }, 1000);
+<div class="scroller">
+    <div class="pill">+ Site Observation</div>
+    <div class="pill">+ Witness Note</div>
+    <div class="pill">+ Incident</div>
+</div>
+
+<div class="input-wrap">
+    <textarea id="mainInput" placeholder="Enter case details here..."></textarea>
+    <button onclick="submitEntry()" style="width:100%; background:var(--teal-brand); color:white; border:none; padding:20px; border-radius:25px; margin-top:15px; font-weight:900; font-size:15px; cursor:pointer;">ARCHITECT RECORD</button>
+</div>
+
+<div class="grid">
+    <div class="card"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4V4zm12 8a4 4 0 11-8 0 4 4 0 018 0z"/></svg><b>CAMERA</b></div>
+    <div class="card"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg><b>AUDIO</b></div>
+    <div class="card"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6z"/></svg><b>DOC</b></div>
+</div>
+
+<div id="tl" class="timeline"></div>
+
+<script>
+    let aiCount = 0;
+    let sealed = false;
+
+    function submitEntry() {
+        const box = document.getElementById('mainInput');
+        const val = box.value.trim();
+        if(!val) return;
+
+        const low = val.toLowerCase();
+        
+        // Lock trigger for demo
+        if(low === 'lock and sync') {
+            sealed = true;
+            document.getElementById('tm-light').classList.add('p-tm');
+            alert("Vault Sealed to Clio.");
+            box.value = ""; return;
+        }
+
+        const div = document.createElement('div');
+        div.className = 'entry active-node';
+        
+        // AI Logic
+        if(low.includes('hazard') || low.includes('mock')) {
+            aiCount++;
+            div.classList.add('hazard-highlight');
+            if(aiCount >= 3) {
+                document.getElementById('ai-light').classList.add('p-ai');
             }
         }
-        runReel();
 
-        // --- 2. TRANSITION TO DASHBOARD ---
-        function showDashboard() {
-            document.getElementById('login-screen').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('main-app').style.display = 'block';
-            }, 500);
-        }
+        // Tamper Logic
+        if(sealed) div.classList.add('tamper-highlight');
 
-        // --- 3. DASHBOARD LOGIC ---
-        let aiCount = 0;
-        function addEntry() {
-            const input = document.getElementById('mainInput');
-            const val = input.value.trim();
-            if (!val) return;
+        const now = new Date();
+        const stamp = now.toLocaleDateString() + " " + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        div.innerHTML = `<div style="font-size:10px; font-weight:900; color:var(--teal-brand); margin-bottom:10px;">${stamp} • VERIFIED</div>${val}`;
+        
+        const tl = document.getElementById('tl');
+        tl.insertBefore(div, tl.firstChild);
+        box.value = "";
+    }
+</script>
 
-            const div = document.createElement('div');
-            div.className = 'entry';
-            const low = val.toLowerCase();
-
-            if (low.includes('hazard')) {
-                aiCount++;
-                div.classList.add('hazard-highlight');
-                document.getElementById('ai-light').classList.add('pulse-ai');
-                if (aiCount >= 3) document.getElementById('ai-light').style.animationDuration = '0.4s';
-            }
-
-            if (low.includes('lock')) {
-                document.getElementById('tamper-light').classList.add('pulse-tamper');
-                alert("Timeline Sealed to Clio.");
-                input.value = ""; return;
-            }
-
-            const now = new Date();
-            div.innerHTML = `<strong>${now.toLocaleTimeString()}</strong><br>${val}`;
-            document.getElementById('tl').insertBefore(div, document.getElementById('tl').firstChild);
-            input.value = "";
-        }
-    </script>
 </body>
 </html>
