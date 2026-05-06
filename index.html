@@ -3,186 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeline™ | THE PROTOTYPE</title>
+    <title>WorkTimeline™ | Master Build</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root { 
             --wt-teal: #167e7c; --wt-dark-teal: #0a2e2d; --wt-cream: #f8f5f1; 
-            --wt-gray: #bdc3c7; --wt-ochre: #ffd600; --clio-blue: #0056b3;
+            --wt-gray: #bdc3c7; --wt-ochre: #ffd600; --wt-red: #ff4b2b; --clio-blue: #0056b3;
         }
         body, html { margin: 0; padding: 0; font-family: 'Outfit', sans-serif; background: var(--wt-cream); overflow: hidden; height: 100%; }
 
-        /* ACT 1: THE ADVOCACY INTRO */
-        #layer-intro { 
-            position: fixed; inset: 0; z-index: 9999; background: var(--wt-cream); 
-            display: flex; align-items: center; justify-content: center; transition: 1.5s ease; 
-        }
-        .dialogue-text { color: var(--wt-teal); font-size: 1.8rem; font-weight: 300; text-align: center; max-width: 80%; transition: opacity 1s ease; line-height: 1.6; }
-        .stat-subtext { font-size: 1rem; color: #888; margin-top: 15px; font-weight: 400; opacity: 0; transition: 1s; }
+        /* SEQUENCE LAYERS */
+        .layer { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; transition: 1.2s ease; padding: 40px; text-align: center; background: var(--wt-cream); z-index: 10; }
+        .hidden { opacity: 0; pointer-events: none; visibility: hidden; transform: translateY(20px); }
 
-        /* THE SUITCASE LOGO */
-        .suitcase-logo-box { text-align: center; margin-bottom: 25px; opacity: 0; transition: 2s; }
+        /* ACT 1: ADVOCACY DIALOGUE */
+        .dialogue-text { color: var(--wt-teal); font-size: 2rem; font-weight: 300; line-height: 1.6; max-width: 850px; }
+        .stats { font-size: 1rem; color: #888; margin-top: 20px; font-weight: 400; }
 
         /* ACT 2: GATEKEEPER LOGIN */
-        #layer-login { position: fixed; inset: 0; z-index: 8888; background: var(--wt-cream); display: flex; align-items: center; justify-content: center; transition: 1s; visibility: hidden; opacity: 0; }
-        .login-card { background: white; padding: 50px; border-radius: 40px; width: 360px; box-shadow: 0 20px 60px rgba(0,0,0,0.05); text-align: center; }
-        .input-field { width: 100%; padding: 16px; margin: 12px 0; border-radius: 50px; border: 1.5px solid #eee; font-family: 'Outfit'; outline: none; box-sizing: border-box; text-align: center; }
-        .btn-submit { background: var(--wt-teal); color: white; border: none; padding: 16px; width: 100%; border-radius: 50px; cursor: pointer; font-weight: 600; margin-bottom: 15px; }
-        .btn-clio-blue { background: var(--clio-blue); color: white; border: none; padding: 16px; width: 100%; border-radius: 50px; cursor: pointer; font-weight: 600; }
+        .login-card { background: white; padding: 50px; border-radius: 40px; width: 380px; box-shadow: 0 20px 60px rgba(0,0,0,0.05); }
+        .input-field { width: 100%; padding: 18px; margin: 12px 0; border-radius: 50px; border: 1.5px solid #eee; text-align: center; font-family: 'Outfit'; font-size: 1rem; }
+        .btn-submit { background: var(--wt-teal); color: white; border: none; padding: 18px; width: 100%; border-radius: 50px; cursor: pointer; font-weight: 600; margin-bottom: 15px; }
+        .btn-clio-blue { background: var(--clio-blue); color: white; border: none; padding: 18px; width: 100%; border-radius: 50px; cursor: pointer; font-weight: 600; }
 
-        /* ACT 3: THE PROTOTYPE STREET */
-        #main-app { height: 100%; padding: 40px; box-sizing: border-box; overflow-y: auto; }
-        .street-container { 
-            display: flex; gap: 20px; padding: 80px 30px; background: var(--wt-gray); 
-            border-radius: 50px; justify-content: space-around; transition: 1.2s ease; margin-top: 30px;
-        }
-        .street-container.locked { background: var(--wt-teal); }
-        .street-container.handshake { background: var(--wt-dark-teal); box-shadow: 0 0 60px rgba(22, 126, 124, 0.6); }
+        /* ACT 3: THE LEGEND */
+        .legend-card { background: white; padding: 40px; border-radius: 40px; max-width: 700px; text-align: left; box-shadow: 0 10px 40px rgba(0,0,0,0.03); }
+        .legend-row { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; }
+        .dot { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; }
 
-        /* DRAGGABLE MILESTONES */
-        .milestone { text-align: center; cursor: grab; width: 120px; transition: transform 0.2s; }
-        .milestone:active { cursor: grabbing; }
-        .briefcase-svg { width: 65px; height: 65px; fill: white; }
-        .label-text { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; margin-top: 15px; color: white; letter-spacing: 1.5px; }
+        /* ACT 4: AI CHOICE */
+        .ai-grid { display: flex; gap: 25px; margin-top: 30px; }
+        .ai-option { background: white; padding: 30px; border-radius: 35px; width: 220px; cursor: pointer; border: 2px solid transparent; transition: 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.02); }
+        .ai-option:hover { border-color: var(--wt-teal); transform: translateY(-5px); }
 
-        /* OCHRE PATTERN RECOGNITION */
+        /* ACT 5: THE ENGINE */
+        #main-app { height: 100%; padding: 45px; box-sizing: border-box; overflow-y: auto; }
+        .street-engine { display: flex; gap: 20px; padding: 80px 30px; background: var(--wt-gray); border-radius: 55px; justify-content: space-around; transition: 1s ease; margin-top: 35px; }
+        .street-engine.locked { background: var(--wt-teal); }
+        .street-engine.handshake { background: var(--wt-dark-teal); box-shadow: 0 0 65px rgba(22, 126, 124, 0.6); }
         .pulse-ochre { filter: drop-shadow(0 0 15px var(--wt-ochre)); animation: pEng 2.5s infinite; }
         @keyframes pEng { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-
-        .btn-master { padding: 20px; border-radius: 50px; width: 100%; border: none; margin-top: 40px; font-weight: 600; cursor: pointer; font-family: 'Outfit'; transition: 0.3s; }
-        
-        /* VAULT / PRIVACY */
-        .vault-active .privacy-sensitive { filter: blur(25px); opacity: 0.1; pointer-events: none; }
+        .mac-light { width: 14px; height: 14px; border-radius: 50%; background: var(--wt-teal); box-shadow: 0 0 12px var(--wt-teal); }
+        .tamper-red { background: var(--wt-red) !important; box-shadow: 0 0 15px var(--wt-red) !important; }
     </style>
 </head>
 <body id="master-body">
 
-    <div id="layer-intro">
+    <div id="act-1" class="layer">
         <div style="text-align:center;">
-            <div id="logo-header" class="suitcase-logo-box">
-                <svg width="120" height="80" viewBox="0 0 120 80">
-                    <path fill="var(--wt-teal)" d="M90,25H30c-2.8,0-5,2.2-5,5v35c0,2.8,2.2,5,5,5h60c2.8,0,5,2.2,5,5V30C95,27.2,92.8,25,90,25z M45,20c0-2.8,2.2-5,5-5h20c2.8,0,5,2.2,5,5v5H45V20z"/>
-                    <line x1="30" y1="55" x2="90" y2="55" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                    <circle cx="40" cy="55" r="3" fill="white"/><circle cx="60" cy="55" r="3" fill="white"/><circle cx="80" cy="55" r="5" fill="var(--wt-ochre)"/>
-                </svg>
-            </div>
             <p class="dialogue-text" id="intro-text">"They think you're invisible."</p>
-            <p class="stat-subtext" id="stat-text"></p>
+            <p class="stats" id="intro-stats">In 2025, millions of workplace violations remained hidden in the gray area.</p>
         </div>
     </div>
 
-    <div id="layer-login">
+    <div id="act-2" class="layer hidden">
         <div class="login-card">
-            <h2 style="color: var(--wt-teal); font-weight: 600;">Secure Entry</h2>
+            <h2 style="color: var(--wt-teal); margin-bottom: 5px;">Secure Entry</h2>
             <p style="font-size: 0.7rem; letter-spacing: 2px; color: #888; margin-bottom: 30px;">WORKTIMELINE™ GATEWAY</p>
-            <input type="text" class="input-field" id="ref-num" placeholder="Enter Reference Number">
-            <button class="btn-submit" onclick="enterApp()">Submit Reference</button>
+            <input type="text" class="input-field" placeholder="Enter Reference Number">
+            <button class="btn-submit" onclick="showAct(3)">Submit Reference</button>
             <div style="margin: 20px 0; height: 1px; background: #eee;"></div>
-            <button class="btn-clio-blue" onclick="enterApp()">Login with Clio</button>
+            <button class="btn-clio-blue" onclick="showAct(3)">Login with Clio</button>
         </div>
     </div>
 
-    <div id="main-app">
-        <header style="display:flex; justify-content:space-between; align-items:flex-start;">
-            <div>
-                <h2 style="color: var(--wt-teal); margin:0; font-weight:600;">WorkTimeline™</h2>
-                <p style="font-size: 0.7rem; color: #666; margin-top: 8px; max-width: 450px; line-height: 1.4;">
-                    WorkTimeline™ helps the client with the first steps that they need to take to get to the center where they belong... so the firm can make them never look back.
-                </p>
-            </div>
-            <div onclick="document.getElementById('master-body').classList.toggle('vault-active')" style="cursor:pointer; color:var(--wt-teal); text-align:center;">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M12 11c0-1.1.9-2 2-2s2 .9 2 2M8 11c0-3.3 2.7-6 6-6s6 2.7 6 6M12 21c-4.4 0-8-3.6-8-8 0-1.1.9-2 2-2s2 .9 2 2c0 2.2 1.8 4 4 4s4-1.8 4-4"/></svg>
-                <div style="font-size:0.5rem; font-weight:600;">SENSOR</div>
-            </div>
-        </header>
+    <div id="act-3" class="layer hidden">
+        <div class="legend-card">
+            <h3 style="color:var(--wt-teal); margin-bottom:25px;">Intelligence Legend</h3>
+            <div class="legend-row"><div class="dot" style="background:var(--wt-gray)"></div><span><strong>Gray Area:</strong> The unverified starting point of your intake.</span></div>
+            <div class="legend-row"><div class="dot" style="background:var(--wt-ochre)"></div><span><strong>Steady Ochre:</strong> Pattern Recognition Engine identifying your narrative truth.</span></div>
+            <div class="legend-row"><div class="dot" style="background:var(--wt-teal)"></div><span><strong>Vibrant Teal:</strong> Locked momentum. Your story is now data-verified.</span></div>
+            <div class="legend-row"><div class="dot" style="background:var(--wt-red)"></div><span><strong>Glowing Red:</strong> Tamper Alert. Pattern conflict detected; lawyer intervention required.</span></div>
+            <button class="btn-submit" style="margin-top:20px;" onclick="showAct(4)">Next: Select Counsel Bridge</button>
+        </div>
+    </div>
 
-        <div id="prototype-street" class="street-container">
-            <div class="milestone" data-id="intake">
-                <svg class="briefcase-svg" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg>
-                <div class="label-text">Intake</div>
-            </div>
-            <div class="milestone" data-id="witness">
-                <svg class="briefcase-svg pulse-ochre" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg>
-                <div class="label-text">Witness</div>
-            </div>
-            <div class="milestone" data-id="setting">
-                <svg class="briefcase-svg" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg>
-                <div class="label-text">Setting</div>
+    <div id="act-4" class="layer hidden">
+        <div style="text-align:center;">
+            <h2 style="color:var(--wt-teal); margin-bottom:10px;">Select Your Bridge</h2>
+            <p style="color:#888; font-size:0.9rem;">Choose the intelligence profile for your handshake.</p>
+            <div class="ai-grid">
+                <div class="ai-option" onclick="showAct(5)">
+                    <h3>Jordan</h3><p style="font-size:0.8rem; line-height:1.4;">Steady & Analytical. Focuses on timeline consistency and data integrity.</p>
+                </div>
+                <div class="ai-option" onclick="showAct(5)">
+                    <h3>Taylor</h3><p style="font-size:0.8rem; line-height:1.4;">Empathetic & Clear. Focuses on translating your lived experience into law.</p>
+                </div>
             </div>
         </div>
+    </div>
 
-        <button id="main-action-btn" class="btn-master" style="background:var(--wt-teal); color:white;" onclick="lockTimeline()">Lock Entry & Summarize</button>
+    <div id="act-5" class="hidden" style="height:100%;">
+        <div id="main-app">
+            <header>
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <h2 style="color: var(--wt-teal); margin:0; font-weight:600;">WorkTimeline™</h2>
+                    <div id="bridge-light" class="mac-light"></div>
+                </div>
+                <p style="font-size: 0.85rem; color: #555; margin-top: 15px; max-width: 600px; line-height: 1.6; font-style: italic;">
+                    "WorkTimeline™ helps the client take the first step to get to the center where they belong until they find the firm that makes them never look back."
+                </p>
+            </header>
 
-        <div class="privacy-sensitive" id="summary-output" style="margin-top:40px; padding:30px; background:white; border-radius:35px; display:none; border:1px solid #eee;">
-            <h4 style="color:var(--wt-teal); margin-top:0;">Handshake Summary</h4>
-            <p id="log-text" style="font-size:0.9rem; color:#555; line-height:1.6;">Synchronizing with Supabase Cloud...</p>
+            <div id="street" class="street-engine">
+                <div class="milestone"><svg width="60" height="60" fill="white" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg></div>
+                <div class="milestone" onclick="triggerRed()"><svg class="pulse-ochre" width="60" height="60" fill="white" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg></div>
+                <div class="milestone"><svg width="60" height="60" fill="white" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg></div>
+            </div>
+
+            <button style="width:100%; padding:20px; border-radius:50px; background:var(--wt-teal); color:white; border:none; margin-top:40px; font-weight:600; cursor:pointer;" onclick="lock()">Execute Handshake</button>
         </div>
     </div>
 
     <script>
-        const sequence = [
-            { t: "\"They think you're invisible.\"", s: "74% of workplace violations go unreported due to fear." },
-            { t: "\"We see you.\"", s: "1.2 Million people successfully seek legal recourse annually." },
-            { t: "\"We hear you.\"", s: "Your timeline is the foundation of your truth." },
-            { t: "\"This isn't a prison. It's just a gray area.\"", s: "We provide the light to navigate it." },
-            { t: "\"We're not here to knock down the walls.\"", s: "We're here to remind you... there are none." },
-            { t: "WorkTimeline™", s: "Taking the Intake" }
+        const intro = [
+            {t: "\"They think you're invisible.\"", s: "74% of workplace violations go unreported due to fear."},
+            {t: "\"We see you. We hear you.\"", s: "1.2 Million people successfully seek legal recourse annually."},
+            {t: "\"This isn't a prison. It's just a gray area.\"", s: "We provide the bridge through the uncertainty."},
+            {t: "\"We're not here to knock down the walls.\"", s: "We're here to remind you... there are none."},
+            {t: "WorkTimeline™", s: "Taking the first step."}
         ];
-        
-        let step = 0;
+        let i = 0;
         const textEl = document.getElementById('intro-text');
-        const statEl = document.getElementById('stat-text');
-        const logoEl = document.getElementById('logo-header');
+        const statEl = document.getElementById('intro-stats');
 
-        const introLoop = setInterval(() => {
-            if(step < sequence.length) {
+        const loop = setInterval(() => {
+            i++;
+            if(i < intro.length) {
                 textEl.style.opacity = 0; statEl.style.opacity = 0;
-                setTimeout(() => {
-                    if (sequence[step].t === "WorkTimeline™") { logoEl.style.opacity = 1; }
-                    textEl.innerText = sequence[step].t;
-                    statEl.innerText = sequence[step].s;
-                    textEl.style.opacity = 1; statEl.style.opacity = 1;
-                    step++;
-                }, 1000);
+                setTimeout(() => { textEl.innerText = intro[i].t; statEl.innerText = intro[i].s; textEl.style.opacity = 1; statEl.style.opacity = 1; }, 800);
             } else {
-                clearInterval(introLoop);
-                setTimeout(() => {
-                    document.getElementById('layer-intro').style.opacity = 0;
-                    setTimeout(() => { 
-                        document.getElementById('layer-intro').style.display = 'none';
-                        document.getElementById('layer-login').style.visibility = 'visible';
-                        document.getElementById('layer-login').style.opacity = 1;
-                    }, 1500);
-                }, 2000);
+                clearInterval(loop);
+                setTimeout(() => showAct(2), 2500);
             }
         }, 4500);
 
-        function enterApp() {
-            document.getElementById('layer-login').style.opacity = 0;
-            setTimeout(() => { document.getElementById('layer-login').style.display = 'none'; }, 1000);
+        function showAct(num) {
+            document.querySelectorAll('.layer').forEach(l => l.classList.add('hidden'));
+            const next = document.getElementById('act-' + num);
+            if(next) { next.classList.remove('hidden'); next.style.display = 'flex'; }
+            if(num === 5) { document.getElementById('act-5').classList.remove('hidden'); document.getElementById('act-5').style.display = 'block'; }
         }
 
-        // THE DRAG AND DROP PROTOTYPE ENGINE
-        Sortable.create(document.getElementById('prototype-street'), {
-            animation: 150,
-            ghostClass: 'sortable-ghost'
-        });
-
-        function lockTimeline() {
-            const street = document.getElementById('prototype-street');
-            const btn = document.getElementById('main-action-btn');
-            street.classList.add('locked');
-            document.getElementById('summary-output').style.display = 'block';
-            
-            btn.innerText = "Execute Cloud Handshake";
-            btn.onclick = function() {
-                street.classList.replace('locked', 'handshake');
-                document.getElementById('log-text').innerText = "HANDSHAKE VERIFIED: Data transmitted to Supabase & Clio.";
-                btn.style.display = 'none';
-            };
+        function triggerRed() {
+            document.getElementById('bridge-light').classList.add('tamper-red');
+            alert("Pattern Recognition Alert: Discrepancy detected in Intake logic. Red Tamper Light active.");
         }
+
+        function lock() {
+            document.getElementById('street').classList.add('handshake');
+        }
+
+        Sortable.create(document.getElementById('street'), { animation: 150 });
     </script>
 </body>
 </html>
