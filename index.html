@@ -25,164 +25,246 @@
         }
         #act-1 { display: flex; z-index: 5000; background: var(--wt-gray-med); }
 
+        /* INTRO DRIFTING */
+        .drifter { opacity: 0; transform: translateY(15px); transition: 1.5s ease; font-size: 1.3rem; font-weight: 300; color: white; position: absolute; width: 80%; }
+        .drifter.active { opacity: 1; transform: translateY(0); }
+        .stat { font-size: 0.7rem; color: #bbb; margin-bottom: 10px; font-weight: 600; text-transform: uppercase; }
+
         /* THE LOGO: BRIEFCASE + 3 DOTS */
         .logo-row { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
-        .briefcase { 
-            width: 50px; height: 38px; background: var(--wt-teal); 
-            border-radius: 6px; position: relative; flex-shrink: 0;
-        }
-        .handle { 
-            width: 20px; height: 7px; border: 3px solid var(--wt-teal); 
-            border-bottom: none; border-radius: 4px 4px 0 0; 
-            position: absolute; top: -7px; left: 50%; transform: translateX(-50%); 
-        }
-        .timeline-line { 
-            position: absolute; width: 80%; height: 1.5px; background: white; 
-            top: 55%; left: 10%; display: flex; justify-content: space-between; 
-        }
-        .dot { width: 4px; height: 4px; background: white; border-radius: 50%; transform: translateY(-1.5px); }
+        .briefcase { width: 55px; height: 42px; background: var(--wt-teal); border-radius: 8px; position: relative; }
+        .handle { width: 24px; height: 8px; border: 3px solid var(--wt-teal); border-bottom: none; border-radius: 4px 4px 0 0; position: absolute; top: -8px; left: 50%; transform: translateX(-50%); }
+        .timeline-line { position: absolute; width: 80%; height: 2px; background: white; top: 60%; left: 10%; display: flex; justify-content: space-between; align-items: center; }
+        .dot { width: 5px; height: 5px; background: white; border-radius: 50%; }
 
-        /* TEXT DRIFTING */
-        .drifter { opacity: 0; transform: translateY(10px); transition: 1.2s ease; font-size: 1.3rem; font-weight: 300; color: white; }
-        .drifter.active { opacity: 1; transform: translateY(0); color: var(--wt-teal); }
-        .stat { font-size: 0.75rem; color: #aaa; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; }
+        /* DASHBOARD LAYOUT */
+        #main-app { display: none; flex-direction: column; height: 100dvh; background: var(--wt-gray-light); color: var(--wt-dark); transition: filter 0.3s ease; }
+        .privacy-blur { filter: blur(30px) grayscale(100%); pointer-events: none; }
 
-        /* DASHBOARD */
-        #main-app { display: none; flex-direction: column; height: 100dvh; background: var(--wt-gray-light); color: var(--wt-dark); }
-        .header { background: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
+        .header { background: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
         
         /* MAC STYLE ICONS */
-        .mac-btn { width: 40px; height: 40px; background: var(--wt-teal); border-radius: 10px; border: none; display: flex; align-items: center; justify-content: center; }
-        .mac-svg { width: 22px; height: 22px; fill: white; }
+        .icon-btn { width: 42px; height: 42px; background: var(--wt-teal); border-radius: 12px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .icon-svg { width: 22px; height: 22px; fill: white; }
         
-        .phone-bridge { width: 16px; height: 16px; border-radius: 50%; background: var(--wt-teal); box-shadow: 0 0 8px var(--wt-teal); cursor: pointer; }
-        .phone-pulse { animation: phoneGlow 1s infinite; background: var(--wt-red) !important; box-shadow: 0 0 15px var(--wt-red) !important; }
-        @keyframes phoneGlow { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.3); } }
+        .bridge-phone { width: 18px; height: 18px; border-radius: 50%; background: var(--wt-teal); box-shadow: 0 0 10px var(--wt-teal); cursor: pointer; }
+        .tamper-pulse { animation: tamperGlow 1s infinite; background: var(--wt-red) !important; box-shadow: 0 0 20px var(--wt-red) !important; }
+        @keyframes tamperGlow { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.6; } }
 
-        /* TIMELINE */
-        #timeline { flex-grow: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
-        .entry { background: white; padding: 12px; border-radius: 12px; border: 1px solid #ddd; position: relative; }
-        .entry-meta { font-size: 0.55rem; color: var(--wt-teal); font-weight: 600; }
+        /* MAIN AREAS */
+        #timeline-view { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+        .entry-box { background: rgba(13, 148, 136, 0.08); border: 1px solid rgba(13, 148, 136, 0.2); padding: 15px; border-radius: 18px; position: relative; }
+        .entry-note { background: #fdfdfd; border: 1px dashed #ccc; padding: 12px; border-radius: 15px; font-style: italic; font-size: 0.8rem; }
+        .stamp { font-size: 0.55rem; color: var(--wt-teal); font-weight: 600; margin-bottom: 4px; display: block; }
+        
+        /* INPUT AREA */
+        .input-center { background: white; padding: 15px; border-top: 1px solid #eee; }
+        textarea { width: 100%; height: 70px; border: none; background: #f3f4f6; border-radius: 15px; padding: 12px; font-family: 'Outfit'; resize: none; margin-bottom: 10px; font-size: 0.9rem; color: var(--wt-dark); }
+        .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .square-btn { background: var(--wt-teal); color: white; border: none; padding: 15px; border-radius: 15px; font-weight: 600; font-size: 0.75rem; cursor: pointer; }
 
-        /* CON'D NOTES AREA */
-        .footer { background: white; padding: 12px 15px; border-top: 1px solid #eee; }
-        textarea { width: 100%; height: 60px; border: none; background: #f0f0f0; border-radius: 10px; padding: 10px; font-family: 'Outfit'; resize: none; margin-bottom: 8px; }
-        .btn-teal { background: var(--wt-teal); color: white; border: none; padding: 14px; border-radius: 10px; width: 100%; font-weight: 600; font-size: 0.9rem; }
+        /* CHAT DRAWER */
+        #chat-drawer { position: fixed; bottom: -100%; left: 0; right: 0; height: 70%; background: white; border-radius: 25px 25px 0 0; z-index: 6000; transition: 0.4s; padding: 20px; box-shadow: 0 -10px 40px rgba(0,0,0,0.1); }
+        .drawer-active { bottom: 0 !important; }
+
+        /* PRIVACY SWITCH */
+        .privacy-toggle { width: 40px; height: 20px; background: #ccc; border-radius: 20px; position: relative; cursor: pointer; transition: 0.3s; }
+        .privacy-toggle::after { content: ''; position: absolute; width: 16px; height: 16px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: 0.3s; }
+        .p-on { background: var(--wt-teal); }
+        .p-on::after { left: 22px; }
     </style>
 </head>
-<body>
+<body onload="runAdvocacy()">
 
-    <div id="act-1" class="screen" onclick="forceDashboard()">
-        <div style="height: 150px;">
-            <span id="stat-el" class="stat"></span><br>
-            <span id="text-el" class="drifter"></span>
-        </div>
-        <p style="position:fixed; bottom:40px; font-size:0.5rem; opacity:0.4;">TAP TO SKIP INTRO</p>
+    <div id="act-1" class="screen" onclick="forceApp()">
+        <div id="intro-wrap" style="height: 200px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+            </div>
+        <p style="position:fixed; bottom:50px; font-size:0.5rem; opacity:0.5; color: white;">TAP TO ENTER TRUTH</p>
     </div>
 
-    <div id="act-2" class="screen" style="background:white; color:var(--wt-teal);">
+    <div id="act-2" class="layer hidden" style="background: white; color: var(--wt-teal);">
         <div class="logo-row">
             <div class="briefcase"><div class="handle"></div><div class="timeline-line"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>
             <h2 style="margin:0;">WorkTimeline™</h2>
         </div>
-        <p style="font-weight:300; font-size:0.95rem; line-height:1.5;">"WorkTimeline™ helps the client take the first step towards the center where they belong until they find the firm that allows them to never look back."</p>
-        <p style="font-style:italic; font-size:0.85rem; margin-top:20px;">Justice should be effortless. Telling the truth shouldn't take effort.</p>
-        <button class="btn-teal" style="margin-top:30px; width:180px;" onclick="next(2, 3)">Enter</button>
+        <p style="font-weight:400; font-size:1rem; padding: 0 20px; line-height:1.6;">
+            "WorkTimeline™ helps the client take the first step towards the center where they belong until the firm helps them never want to look back."
+        </p>
+        <p style="font-style:italic; font-size:0.85rem; margin-top:15px; color: #666;">Justice should be effortless. Telling the truth shouldn't take effort.</p>
+        <button class="square-btn" style="width: 180px; margin-top:30px;" onclick="next(2, 3)">Continue</button>
     </div>
 
-    <div id="act-3" class="screen" style="background:white; color:var(--wt-teal);">
-        <h3>Secure Access</h3>
-        <button class="btn-teal" onclick="next(3, 4)">JORDAN AI (Analytical)</button>
-        <button class="btn-teal" style="margin-top:10px; background:#0056b3;" onclick="next(3, 4)">TAYLOR AI (Empathetic)</button>
-        <div style="margin:15px 0; color:#ccc; font-size:0.7rem;">OR</div>
-        <button class="btn-teal" style="background:var(--wt-dark);" onclick="next(3, 4)">Login with Clio</button>
+    <div id="act-3" class="layer hidden" style="background: white; color: var(--wt-teal);">
+        <h3 style="margin-bottom:20px;">Intelligence Intel</h3>
+        <div style="text-align:left; font-size:0.8rem; line-height:1.5; color:#555; width:100%; max-width:280px;">
+            <p>● <span style="background:var(--wt-ochre); width:10px; height:10px; border-radius:50%; display:inline-block; animation:tamperGlow 1.5s infinite;"></span> <strong>Ochre Pulse:</strong> Pattern Recognition active.</p>
+            <p>● <span style="background:var(--wt-red); width:10px; height:10px; border-radius:50%; display:inline-block;"></span> <strong>Red Pulse:</strong> Tamper alert detected.</p>
+            <hr style="border:0; border-top:1px solid #eee; margin:15px 0;">
+            <p><strong>Jordan (AI):</strong> Analytical, focusing on case law and discrepancies.</p>
+            <p><strong>Taylor (AI):</strong> Empathetic, focusing on narrative clarity and emotional truth.</p>
+        </div>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button class="square-btn" style="background:var(--wt-teal);" onclick="setAI('Jordan')">JORDAN</button>
+            <button class="square-btn" style="background:var(--clio-blue);" onclick="setAI('Taylor')">TAYLOR</button>
+        </div>
     </div>
 
-    <div id="act-4" class="screen" style="padding:0; justify-content: flex-start; z-index: 6000;">
+    <div id="main-app">
         <header class="header">
             <div style="display:flex; align-items:center; gap:10px;">
                 <div class="briefcase" style="width:34px; height:26px;"><div class="handle" style="width:14px; height:5px; top:-5px;"></div><div class="timeline-line"><div class="dot" style="width:2px; height:2px; transform:translateY(-1px);"></div><div class="dot" style="width:2px; height:2px; transform:translateY(-1px);"></div><div class="dot" style="width:2px; height:2px; transform:translateY(-1px);"></div></div></div>
                 <div>
                     <h4 style="margin:0; color:var(--wt-teal); font-size:0.9rem;">WorkTimeline™</h4>
                     <div style="display:flex; align-items:center; gap:5px;">
-                        <div id="phone-bridge" class="phone-bridge" onclick="this.classList.toggle('phone-pulse')"></div>
-                        <span style="font-size:0.45rem; color:#999; font-weight:600;">BRIDGE ACTIVE</span>
+                        <div id="phone-light" class="bridge-phone" onclick="triggerFaceTime()"></div>
+                        <span id="ai-status" style="font-size:0.45rem; color:#999; font-weight:600;">AI ACTIVE</span>
                     </div>
                 </div>
             </div>
-            <div class="header-icons" style="display:flex; gap:6px;">
-                <button class="mac-btn" onclick="alert('Camera')"><svg class="mac-svg" viewBox="0 0 24 24"><path d="M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm9 3.5V6a2 2 0 0 0-2-2h-3.2l-1.3-1.7a1 1 0 0 0-.8-.3H9.3a1 1 0 0 0-.8.3L7.2 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5z"/></svg></button>
-                <button class="mac-btn" onclick="alert('Doc')"><svg class="mac-svg" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6z"/></svg></button>
-                <button class="mac-btn" onclick="alert('Mic')"><svg class="mac-svg" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg></button>
+            <div style="display:flex; gap:8px; align-items:center;">
+                <div id="p-switch" class="privacy-toggle" onclick="togglePrivacy()"></div>
+                <button class="icon-btn" onclick="toggleChat()"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></button>
             </div>
         </header>
 
-        <div id="timeline"></div>
+        <div style="display:flex; justify-content:space-around; padding: 10px; background: white; border-bottom:1px solid #eee;">
+            <button class="icon-btn" onclick="simulateMedia('Camera')"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm9 3.5V6a2 2 0 0 0-2-2h-3.2l-1.3-1.7a1 1 0 0 0-.8-.3H9.3a1 1 0 0 0-.8.3L7.2 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5z"/></svg></button>
+            <button class="icon-btn" onclick="simulateMedia('Doc')"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6z"/></svg></button>
+            <button class="icon-btn" onclick="simulateMedia('Mic')"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg></button>
+            <button class="icon-btn" onclick="triggerFaceTime()"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></button>
+        </div>
 
-        <div class="footer">
-            <span style="font-size:0.55rem; font-weight:600; color:var(--wt-teal); float:left; margin-bottom:4px;">CON'D NOTES (Contemporaneous)</span>
-            <textarea id="main-in" placeholder="Type truth here..."></textarea>
-            <button class="btn-teal" onclick="addEntry()">+ SUBMIT TO TIMELINE</button>
-            <button class="btn-teal" style="background:var(--wt-dark); margin-top:5px; height:45px;" onclick="alert('Sent to Clio Summary')">LOCK & SEND TO CLIO</button>
+        <div id="timeline-view">
+            </div>
+
+        <div class="input-center">
+            <textarea id="main-input" placeholder="Telling the truth shouldn't take effort. Type here..."></textarea>
+            <div class="btn-row">
+                <button class="square-btn" onclick="addItem('timeline')">ADD TO TIMELINE</button>
+                <button class="square-btn" style="background:var(--wt-dark);" onclick="addItem('notes')">+ CON'D NOTES</button>
+            </div>
+            <button class="square-btn" style="width:100%; margin-top:10px; background: #333;" onclick="lockAndSend()">LOCK & SEND TO CLIO</button>
         </div>
     </div>
 
+    <div id="chat-drawer">
+        <button style="float:right; border:none; background:none; font-weight:800;" onclick="toggleChat()">CLOSE</button>
+        <h3 style="color:var(--wt-teal);">Counsel Bridge</h3>
+        <div id="chat-stream" style="height:70%; background:#f9f9f9; border-radius:15px; padding:15px; font-size:0.8rem; overflow-y:auto; text-align:left;">
+            <p><strong>Counsel:</strong> I am monitoring. Pattern recognition is active. Let's build this timeline.</p>
+        </div>
+        <input type="text" style="width:100%; border:none; background:#eee; padding:12px; border-radius:10px;" placeholder="Message lawyer...">
+    </div>
+
     <script>
-        const content = [
-            {s: "Fact: 86% of civil problems get no help.", t: "It's too expensive."},
-            {s: "Fact: Wealth determines legal speed.", t: "They got more money than me."},
-            {s: "Fact: Silence empowers the status quo.", t: "I don't have enough evidence."},
+        const advocacy = [
+            {s: "Fact: 86% of civil legal problems get no help.", t: "It's too expensive."},
+            {s: "Fact: Wealth gap determines justice speed.", t: "They got more money than me."},
+            {s: "Your truth is the data.", t: "I don't have enough evidence."},
             {s: "Justice should be effortless.", t: "Where's the proof?"},
-            {s: "We translate experience into law.", t: "I don't know Latin."},
-            {s: "The bridge to the center.", t: "We're here to remind you..."},
+            {s: "Real change starts with informatics.", t: "I don't know Latin."},
+            {s: "", t: "We're not here to help you tear down the walls."},
+            {s: "", t: "We're here to remind you..."},
             {s: "Justice is now effortless.", t: "There are none."}
         ];
 
         let i = 0;
-        function runIntro() {
-            if (i < content.length) {
-                const textEl = document.getElementById('text-el');
-                const statEl = document.getElementById('stat-el');
-                const layer1 = document.getElementById('act-1');
+        let selectedAI = "Jordan";
+        let hazardCount = 0;
 
-                textEl.style.opacity = 0;
-                setTimeout(() => {
-                    if (i === content.length - 1) {
-                        layer1.style.background = "white";
-                        textEl.style.color = "var(--wt-teal)";
-                    }
-                    statEl.innerText = content[i].s;
-                    textEl.innerText = content[i].t;
-                    textEl.style.opacity = 1;
-                    i++;
-                    setTimeout(runIntro, 4000);
-                }, 600);
-            } else {
-                next(1, 2);
+        function runAdvocacy() {
+            const wrap = document.getElementById('intro-wrap');
+            const layer = document.getElementById('act-1');
+            
+            function cycle() {
+                if(i < advocacy.length) {
+                    wrap.innerHTML = `<div class="drifter"><span class="stat">${advocacy[i].s}</span>${advocacy[i].t}</div>`;
+                    const el = wrap.querySelector('.drifter');
+                    setTimeout(() => el.classList.add('active'), 100);
+                    if(i === advocacy.length - 1) setTimeout(() => layer.style.background = "white", 2000);
+                    
+                    setTimeout(() => {
+                        el.classList.remove('active');
+                        i++;
+                        setTimeout(cycle, 1000);
+                    }, 4000);
+                } else {
+                    layer.style.display = "none";
+                    document.getElementById('act-2').classList.remove('hidden');
+                }
             }
-        }
-        runIntro();
-
-        function next(curr, nextId) {
-            document.getElementById('act-' + curr).style.display = 'none';
-            document.getElementById('act-' + nextId).style.display = 'flex';
+            cycle();
         }
 
-        function forceDashboard() {
-            document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
-            document.getElementById('act-4').style.display = 'flex';
-            document.body.style.background = "var(--wt-gray-light)";
+        function next(c, n) {
+            document.getElementById('act-'+c).style.display = "none";
+            document.getElementById('act-'+n).classList.remove('hidden');
         }
 
-        function addEntry() {
-            const val = document.getElementById('main-in').value;
-            if(!val) return;
-            const entry = document.createElement('div');
-            entry.className = 'entry';
+        function setAI(ai) {
+            selectedAI = ai;
+            document.getElementById('ai-status').innerText = ai.toUpperCase() + " AI ACTIVE";
+            next(3, 'login'); // Go to App
+        }
+
+        function showDashboard() {
+            document.querySelectorAll('.layer').forEach(l => l.style.display = 'none');
+            document.getElementById('main-app').style.display = 'flex';
+        }
+
+        function forceApp() { showDashboard(); }
+
+        function togglePrivacy() {
+            const app = document.getElementById('main-app');
+            const sw = document.getElementById('p-switch');
+            app.classList.toggle('privacy-blur');
+            sw.classList.toggle('p-on');
+        }
+
+        function toggleChat() { document.getElementById('chat-drawer').classList.toggle('drawer-active'); }
+
+        function addItem(type) {
+            const input = document.getElementById('main-input');
+            if(!input.value) return;
+            
+            if(input.value.toLowerCase().includes('hazard')) hazardCount++;
+
+            const box = document.createElement('div');
             const now = new Date();
-            entry.innerHTML = `<span style="float:right; color:red; font-size:0.5rem;" onclick="this.parentElement.remove()">DELETE</span><span class="meta">STAMPED: ${now.toLocaleTimeString()}</span><div style="font-size:0.8rem; line-height:1.4;">${val}</div>`;
-            document.getElementById('timeline').prepend(entry);
-            document.getElementById('main-in').value = '';
+            const stamp = `${now.getHours()}:${now.getMinutes()} | ${now.toDateString()}`;
+            
+            if(type === 'timeline') {
+                box.className = 'entry-box';
+                if(hazardCount >= 3) {
+                    box.style.border = "1.5px solid var(--wt-ochre)";
+                    document.getElementById('phone-light').classList.add('tamper-pulse');
+                    alert("Friday Case Law Alert: Sequence matches precedent 24-B (Unsafe Workplace).");
+                }
+                box.innerHTML = `<span class="stamp">TIMELINE • ${stamp}</span><div style="font-size:0.85rem;">${input.value}</div>`;
+            } else {
+                box.className = 'entry-note';
+                box.innerHTML = `<span class="stamp">CON'D NOTE • ${stamp}</span><div>${input.value}</div>`;
+            }
+
+            document.getElementById('timeline-view').prepend(box);
+            input.value = "";
+        }
+
+        function simulateMedia(m) {
+            const box = document.createElement('div');
+            box.className = 'entry-box';
+            box.innerHTML = `<span class="stamp">${m.toUpperCase()} UPLOADED • ${new Date().toLocaleTimeString()}</span><div style="color:var(--wt-teal); font-weight:600;">[ SOLID ${m.toUpperCase()} DATA ATTACHED ]</div>`;
+            document.getElementById('timeline-view').prepend(box);
+        }
+
+        function triggerFaceTime() {
+            alert("Establishing FaceTime Bridge with Counsel...");
+        }
+
+        function lockAndSend() {
+            const count = document.querySelectorAll('.entry-box').length;
+            alert(`TIMELINE LOCKED.\n\nSummary for Clio:\n${selectedAI} AI has verified ${count} events. Evidence logic matches required legal thresholds.\n\nSent to Firm Dashboard.`);
+            location.reload();
         }
     </script>
 </body>
