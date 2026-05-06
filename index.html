@@ -8,139 +8,136 @@
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <style>
         :root { 
-            --wt-teal: #167e7c; 
-            --wt-cream: #f8f5f1; 
-            --clio-blue: #0056b3; 
-            --wt-ochre: #ffd600;
-            --wt-red: #8b0000;
-            --wt-gray: #2f3535;
+            --wt-teal: #167e7c; --wt-cream: #f8f5f1; --clio-blue: #0056b3; 
+            --wt-ochre: #ffd600; --wt-red: #8b0000; --wt-gray: #2f3535;
         }
 
         body, html { 
-            margin: 0; padding: 0; 
-            font-family: 'Outfit', sans-serif; 
-            background: var(--wt-cream); 
-            color: var(--wt-gray);
+            margin: 0; padding: 0; font-family: 'Outfit', sans-serif; 
+            background: var(--wt-cream); color: var(--wt-gray);
             overflow: hidden; height: 100%; 
         }
 
-        /* TYPOGRAPHY WRAPPER */
-        h1, h2, h3, p, button, input { font-family: 'Outfit', sans-serif; }
-
-        /* ACT 1: CINEMATIC VIDEO INTRO */
-        #layer-presentation { position: fixed; inset: 0; z-index: 9999; background: #000; transition: 0.8s; }
-        .hero-video { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
-        .video-ui { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.3); color: white; }
-
-        /* ACT 2: CHARACTER & AI SKIN */
-        #layer-setup { position: fixed; inset: 0; z-index: 8888; background: var(--wt-cream); display: flex; align-items: center; justify-content: center; transition: 0.6s; text-align: center; }
-        .card { background: white; padding: 30px; border-radius: 30px; width: 150px; cursor: pointer; border: 2px solid transparent; transition: 0.4s; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
-        .card.selected { border-color: var(--wt-teal); background: #f0f7f7; transform: translateY(-5px); }
-
-        /* ACT 3: CLIO LOGIN (MAC STYLE) */
-        #layer-clio { position: fixed; inset: 0; z-index: 7777; background: var(--wt-cream); display: flex; align-items: center; justify-content: center; transition: 0.6s; }
-        .clio-btn { background: var(--clio-blue); color: white; border: none; padding: 18px 36px; border-radius: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.3s; }
-        .clio-btn:hover { transform: scale(1.02); box-shadow: 0 10px 20px rgba(0,86,179,0.2); }
-
-        /* ACT 4: THE PROTOTYPE ENGINE */
-        #main-prototype { height: 100%; padding: 40px; box-sizing: border-box; overflow-y: auto; }
-        .logo-main { font-weight: 600; font-size: 2rem; color: var(--wt-teal); margin: 0; }
-        .slogan-main { font-weight: 300; font-size: 0.8rem; letter-spacing: 3px; color: var(--wt-gray); margin-top: 5px; text-transform: uppercase; }
-
-        .street-container { 
-            display: flex; gap: 20px; padding: 70px 40px; 
-            background: white; border-radius: 40px; 
-            box-shadow: 0 20px 60px rgba(0,0,0,0.04); 
-            justify-content: space-around; margin-top: 40px; 
-            border: 1px solid rgba(0,0,0,0.02);
+        /* ACT 1: THE LIVING DIALOGUE INTRO (THE "VIDEO" WITHOUT A FILE) */
+        #layer-presentation {
+            position: fixed; inset: 0; z-index: 9999;
+            background: linear-gradient(-45deg, #0f4c4b, #2f3535, #167e7c, #0a2e2d);
+            background-size: 400% 400%;
+            animation: breatheGradient 15s ease infinite;
+            display: flex; align-items: center; justify-content: center;
+            transition: opacity 1s ease;
         }
+
+        @keyframes breatheGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .dialogue-text {
+            color: white; font-size: 2.2rem; font-weight: 300;
+            text-align: center; max-width: 85%; line-height: 1.4;
+            transition: opacity 1s ease;
+        }
+
+        /* ACT 2: CHARACTER & GUIDE SELECTION */
+        #layer-setup { 
+            position: fixed; inset: 0; z-index: 8888; 
+            background: var(--wt-cream); display: flex; 
+            align-items: center; justify-content: center; 
+            transition: 0.6s; text-align: center; 
+        }
+        .card { 
+            background: white; padding: 30px; border-radius: 30px; 
+            width: 150px; cursor: pointer; border: 2.5px solid transparent; 
+            transition: 0.4s; box-shadow: 0 10px 30px rgba(0,0,0,0.03); 
+        }
+        .card.active { border-color: var(--wt-teal); background: #f0f7f7; transform: translateY(-5px); }
+
+        /* ACT 3: THE WORKING PROTOTYPE (THE STREET) */
+        #main-app { height: 100%; padding: 40px; box-sizing: border-box; overflow-y: auto; }
+        .street-card { 
+            display: flex; gap: 20px; padding: 70px 40px; 
+            background: white; border-radius: 45px; 
+            box-shadow: 0 25px 70px rgba(0,0,0,0.05); 
+            justify-content: space-around; margin-top: 40px; 
+        }
+        .briefcase { width: 65px; height: 65px; fill: var(--wt-teal); cursor: grab; }
         
-        .briefcase-icon { width: 60px; height: 60px; fill: var(--wt-teal); cursor: grab; transition: 0.3s; }
-        
-        /* THE REFINED PULSE CODE */
-        .pulse-ochre { filter: drop-shadow(0 0 15px var(--wt-ochre)); animation: luxPulse 2.5s infinite ease-in-out; }
-        .pulse-red { filter: drop-shadow(0 0 15px var(--wt-red)); animation: luxPulse 1.8s infinite ease-in-out; border: 2.5px solid var(--wt-red); border-radius: 12px; }
-        
-        @keyframes luxPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.12); opacity: 0.8; } }
+        /* PULSE ENGINE */
+        .pulse-ochre { filter: drop-shadow(0 0 15px var(--wt-ochre)); animation: p 2s infinite; }
+        .pulse-red { filter: drop-shadow(0 0 15px var(--wt-red)); border: 2.5px solid var(--wt-red); border-radius: 12px; animation: p 1.5s infinite; }
+        @keyframes p { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
 
         /* THE SIGNATURE THREADED LOGO */
-        .wt-logo-wrap { width: 120px; margin-bottom: 25px; }
+        .wt-logo-svg { width: 110px; margin-bottom: 20px; }
+        .wt-line { stroke: var(--wt-teal); stroke-width: 2.5; }
     </style>
 </head>
 <body>
 
     <div id="layer-presentation">
-        <video class="hero-video" autoplay muted playsinline loop><source src="presentation.mp4" type="video/mp4"></video>
-        <div class="video-ui">
-            <svg class="wt-logo-wrap" viewBox="0 0 100 40"><line x1="0" y1="20" x2="100" y2="20" stroke="white" stroke-width="2"/><circle cx="25" cy="20" r="5" fill="white"/><circle cx="50" cy="20" r="5" fill="white"/><circle cx="75" cy="20" r="5" fill="white"/></svg>
-            <h1 style="font-size: 3rem; font-weight: 600; margin: 0;">WorkTimeline™</h1>
-            <p style="font-weight: 300; letter-spacing: 4px; margin-top: 10px;">TAKING THE INTAKE</p>
-            <button onclick="advance('layer-presentation')" style="margin-top: 40px; background: white; color: var(--wt-teal); border: none; padding: 14px 40px; border-radius: 50px; cursor: pointer; font-weight: 600; font-size: 1rem;">Enter The Center</button>
+        <div style="text-align:center;">
+            <p class="dialogue-text" id="intro-dialogue">WorkTimeline™</p>
+            <button onclick="nextLayer('layer-presentation')" style="margin-top: 60px; background: rgba(255,255,255,0.15); border: 1.5px solid white; color: white; padding: 12px 40px; border-radius: 50px; cursor: pointer; backdrop-filter: blur(5px);">Start Experience</button>
         </div>
     </div>
 
     <div id="layer-setup">
         <div>
-            <h2 style="font-weight: 600; color: var(--wt-teal);">Select Your Guide</h2>
-            <div style="display: flex; gap: 25px; margin: 45px 0; justify-content: center;">
-                <div class="card" onclick="select(this)"><h4 style="margin:0;">Jordan</h4><p style="font-size:0.75rem; font-weight:300; margin-top:5px;">Warm & Steady</p></div>
-                <div class="card" onclick="select(this)"><h4 style="margin:0;">Taylor</h4><p style="font-size:0.75rem; font-weight:300; margin-top:5px;">Clear & Empathetic</p></div>
+            <svg class="wt-logo-svg" viewBox="0 0 100 40"><line x1="0" y1="20" x2="100" y2="20" class="wt-line"/><circle cx="25" cy="20" r="5" fill="#167e7c"/><circle cx="50" cy="20" r="5" fill="#167e7c"/><circle cx="75" cy="20" r="5" fill="#167e7c"/></svg>
+            <h2 style="font-weight: 600; color: var(--wt-teal);">Choose Your Guide</h2>
+            <div style="display:flex; gap:25px; justify-content:center; margin: 45px 0;">
+                <div class="card" id="j" onclick="sel('j')"><h4>Jordan</h4><p style="font-size:0.75rem; font-weight:300;">Warm & Steady</p></div>
+                <div class="card" id="t" onclick="sel('t')"><h4>Taylor</h4><p style="font-size:0.75rem; font-weight:300;">Clear & Empathetic</p></div>
             </div>
-            <p style="margin-top: 30px;"><label style="font-size: 0.9rem; font-weight: 300;"><input type="checkbox" id="ai-toggle" checked style="accent-color: var(--wt-teal);"> Enable AI Pattern Recognition</label></p>
-            <button onclick="advance('layer-setup')" style="background: var(--wt-teal); color: white; border: none; padding: 16px 50px; border-radius: 50px; cursor: pointer; margin-top: 30px; font-weight: 600;">Proceed to Clio</button>
+            <button onclick="nextLayer('layer-setup')" style="background:var(--wt-teal); color:white; border:none; padding:18px 50px; border-radius:50px; cursor:pointer; font-weight:600;">Enter the Center</button>
         </div>
     </div>
 
-    <div id="layer-clio">
-        <div style="text-align: center;">
-            <svg class="wt-logo-wrap" viewBox="0 0 100 40"><line x1="0" y1="20" x2="100" y2="20" stroke="#167e7c" stroke-width="2"/><circle cx="25" cy="20" r="5" fill="#167e7c"/><circle cx="50" cy="20" r="5" fill="#167e7c"/><circle cx="75" cy="20" r="5" fill="#167e7c"/></svg>
-            <h2 style="color: var(--wt-teal); font-weight: 600;">Secure Handshake</h2>
-            <button class="clio-btn" onclick="advance('layer-clio')">
-                <img src="https://logowik.com/content/uploads/images/clio2942.jpg" width="22" style="border-radius: 3px;"> Sign in with Clio
-            </button>
-        </div>
-    </div>
-
-    <div id="main-prototype">
-        <header style="display: flex; justify-content: space-between; align-items: flex-start;">
+    <div id="main-app">
+        <header style="display:flex; justify-content:space-between; align-items:flex-start;">
             <div>
-                <h1 class="logo-main">WorkTimeline™</h1>
-                <p class="slogan-main">Taking the Intake</p>
+                <h1 style="color:var(--wt-teal); margin:0; font-weight:600;">WorkTimeline™</h1>
+                <p style="font-size:0.8rem; letter-spacing:4px; font-weight:300; text-transform:uppercase; color:var(--wt-gray);">Taking the Intake</p>
             </div>
-            <svg class="wt-logo-wrap" style="width: 80px; margin: 0;" viewBox="0 0 100 40"><line x1="0" y1="20" x2="100" y2="20" stroke="#167e7c" stroke-width="2"/><circle cx="25" cy="20" r="5" fill="#167e7c"/><circle cx="50" cy="20" r="5" fill="#167e7c"/><circle cx="75" cy="20" r="5" fill="#167e7c"/></svg>
+            <svg class="wt-logo-svg" style="width:80px; margin:0;" viewBox="0 0 100 40"><line x1="0" y1="20" x2="100" y2="20" class="wt-line"/><circle cx="25" cy="20" r="5" fill="#167e7c"/><circle cx="50" cy="20" r="5" fill="#167e7c"/><circle cx="75" cy="20" r="5" fill="#167e7c"/></svg>
         </header>
 
-        <div id="street" class="street-container">
-            <svg class="briefcase-icon" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg>
-            <svg id="ai-item" class="briefcase-icon pulse-ochre" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg>
-            <svg class="briefcase-icon pulse-red" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg>
-        </div>
-
-        <div style="margin-top: 50px; padding: 40px; background: white; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.02);">
-            <h3 style="font-weight: 600; color: var(--wt-teal);">Contemporaneous Notes</h3>
-            <p style="color: #888; font-weight: 300; font-size: 0.95rem; line-height: 1.6;">AI Pulse Active: Analyzing case history for gaps. Drag and drop briefcases to reorganize the handshake timeline.</p>
+        <div id="street" class="street-card">
+            <svg class="briefcase" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg>
+            <svg class="briefcase pulse-ochre" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg>
+            <svg class="briefcase pulse-red" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg>
         </div>
     </div>
 
     <script>
-        function advance(id) {
-            const el = document.getElementById(id);
-            el.style.opacity = '0';
-            setTimeout(() => { 
-                el.style.display = 'none'; 
-                if(id === 'layer-setup') checkAIPulse();
-            }, 600);
-        }
-        function select(el) {
-            document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
-            el.classList.add('selected');
-        }
-        function checkAIPulse() {
-            if(!document.getElementById('ai-toggle').checked) {
-                document.getElementById('ai-item').classList.remove('pulse-ochre');
+        // DIALOGUE ROTATION LOGIC
+        const lines = ["WorkTimeline™", "Taking the Intake", "The first steps to the center...", "...where you belong."];
+        let currentLine = 0;
+        function rotateText() {
+            if (currentLine < lines.length) {
+                const el = document.getElementById('intro-dialogue');
+                el.style.opacity = 0;
+                setTimeout(() => {
+                    el.innerText = lines[currentLine];
+                    el.style.opacity = 1;
+                    currentLine++;
+                }, 1000);
             }
         }
-        Sortable.create(document.getElementById('street'), { animation: 200, ghostClass: 'sortable-ghost' });
+        setInterval(rotateText, 3500);
+
+        function nextLayer(id) {
+            const el = document.getElementById(id);
+            el.style.opacity = '0';
+            setTimeout(() => { el.style.display = 'none'; }, 800);
+        }
+        function sel(id) {
+            document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+        Sortable.create(document.getElementById('street'), { animation: 150 });
     </script>
 </body>
 </html>
