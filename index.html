@@ -3,103 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeline™ | The Handshake</title>
+    <title>WorkTimeline™ | Master Prototype</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <style>
-        :root { --wt-teal: #167e7c; --wt-cream: #f8f5f1; --clio-blue: #0056b3; }
-        body, html { margin: 0; padding: 0; font-family: 'Outfit', sans-serif; background: var(--wt-cream); overflow: hidden; height: 100%; }
+        :root { 
+            --wt-teal: #167e7c; 
+            --wt-cream: #f8f5f1; 
+            --clio-blue: #0056b3; 
+            --wt-ochre: #ffd600;
+            --wt-red: #8b0000;
+            --wt-gray: #2f3535;
+        }
 
-        /* THE THREADING LOGO (LINE THROUGH 3 DOTS) */
-        .wt-logo { width: 120px; height: auto; margin-bottom: 20px; }
-        .wt-line { stroke: var(--wt-teal); stroke-width: 2.5; }
-        .wt-dot { fill: var(--wt-teal); }
+        body, html { 
+            margin: 0; padding: 0; 
+            font-family: 'Outfit', sans-serif; 
+            background: var(--wt-cream); 
+            color: var(--wt-gray);
+            overflow: hidden; height: 100%; 
+        }
 
-        /* LAYERS */
-        .full-layer { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; transition: 0.8s; }
-        #layer-video { z-index: 5000; background: #000; }
-        #layer-intro { z-index: 4000; background: var(--wt-cream); text-align: center; }
-        #layer-login { z-index: 3000; background: var(--wt-cream); text-align: center; }
+        /* TYPOGRAPHY WRAPPER */
+        h1, h2, h3, p, button, input { font-family: 'Outfit', sans-serif; }
 
-        /* BUTTONS */
-        .wt-btn { background: var(--wt-teal); color: white; border: none; padding: 15px 40px; border-radius: 50px; cursor: pointer; font-family: 'Outfit'; font-weight: 600; }
-        .clio-btn { background: var(--clio-blue); color: white; border: none; padding: 15px 30px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; margin: auto; }
+        /* ACT 1: CINEMATIC VIDEO INTRO */
+        #layer-presentation { position: fixed; inset: 0; z-index: 9999; background: #000; transition: 0.8s; }
+        .hero-video { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
+        .video-ui { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.3); color: white; }
 
-        /* DASHBOARD */
-        #dashboard { padding: 40px; height: 100%; }
-        .street { display: flex; gap: 30px; padding: 50px; background: white; border-radius: 30px; justify-content: center; box-shadow: 0 10px 40px rgba(0,0,0,0.05); }
-        .briefcase { width: 55px; fill: var(--wt-teal); cursor: grab; }
-        .pulse-gold { filter: drop-shadow(0 0 12px #ffd600); animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        /* ACT 2: CHARACTER & AI SKIN */
+        #layer-setup { position: fixed; inset: 0; z-index: 8888; background: var(--wt-cream); display: flex; align-items: center; justify-content: center; transition: 0.6s; text-align: center; }
+        .card { background: white; padding: 30px; border-radius: 30px; width: 150px; cursor: pointer; border: 2px solid transparent; transition: 0.4s; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
+        .card.selected { border-color: var(--wt-teal); background: #f0f7f7; transform: translateY(-5px); }
+
+        /* ACT 3: CLIO LOGIN (MAC STYLE) */
+        #layer-clio { position: fixed; inset: 0; z-index: 7777; background: var(--wt-cream); display: flex; align-items: center; justify-content: center; transition: 0.6s; }
+        .clio-btn { background: var(--clio-blue); color: white; border: none; padding: 18px 36px; border-radius: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.3s; }
+        .clio-btn:hover { transform: scale(1.02); box-shadow: 0 10px 20px rgba(0,86,179,0.2); }
+
+        /* ACT 4: THE PROTOTYPE ENGINE */
+        #main-prototype { height: 100%; padding: 40px; box-sizing: border-box; overflow-y: auto; }
+        .logo-main { font-weight: 600; font-size: 2rem; color: var(--wt-teal); margin: 0; }
+        .slogan-main { font-weight: 300; font-size: 0.8rem; letter-spacing: 3px; color: var(--wt-gray); margin-top: 5px; text-transform: uppercase; }
+
+        .street-container { 
+            display: flex; gap: 20px; padding: 70px 40px; 
+            background: white; border-radius: 40px; 
+            box-shadow: 0 20px 60px rgba(0,0,0,0.04); 
+            justify-content: space-around; margin-top: 40px; 
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+        
+        .briefcase-icon { width: 60px; height: 60px; fill: var(--wt-teal); cursor: grab; transition: 0.3s; }
+        
+        /* THE REFINED PULSE CODE */
+        .pulse-ochre { filter: drop-shadow(0 0 15px var(--wt-ochre)); animation: luxPulse 2.5s infinite ease-in-out; }
+        .pulse-red { filter: drop-shadow(0 0 15px var(--wt-red)); animation: luxPulse 1.8s infinite ease-in-out; border: 2.5px solid var(--wt-red); border-radius: 12px; }
+        
+        @keyframes luxPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.12); opacity: 0.8; } }
+
+        /* THE SIGNATURE THREADED LOGO */
+        .wt-logo-wrap { width: 120px; margin-bottom: 25px; }
     </style>
 </head>
 <body>
 
-    <div id="layer-video" class="full-layer">
-        <video autoplay muted playsinline loop style="width:100%; height:100%; object-fit:cover; opacity:0.6;">
-            <source src="your-video.mp4" type="video/mp4">
-        </video>
-        <div style="position:absolute; text-align:center; color:white;">
-            <svg class="wt-logo" viewBox="0 0 100 40">
-                <line x1="0" y1="20" x2="100" y2="20" stroke="white" stroke-width="2"/>
-                <circle cx="25" cy="20" r="5" fill="white"/>
-                <circle cx="50" cy="20" r="5" fill="white"/>
-                <circle cx="75" cy="20" r="5" fill="white"/>
-            </svg>
-            <h1 style="font-size:3rem; margin:0;">WorkTimeline™</h1>
-            <p style="letter-spacing:4px; font-weight:300;">TAKING THE INTAKE</p>
-            <button class="wt-btn" onclick="next('layer-video')" style="margin-top:30px;">Choose Your Guide</button>
+    <div id="layer-presentation">
+        <video class="hero-video" autoplay muted playsinline loop><source src="presentation.mp4" type="video/mp4"></video>
+        <div class="video-ui">
+            <svg class="wt-logo-wrap" viewBox="0 0 100 40"><line x1="0" y1="20" x2="100" y2="20" stroke="white" stroke-width="2"/><circle cx="25" cy="20" r="5" fill="white"/><circle cx="50" cy="20" r="5" fill="white"/><circle cx="75" cy="20" r="5" fill="white"/></svg>
+            <h1 style="font-size: 3rem; font-weight: 600; margin: 0;">WorkTimeline™</h1>
+            <p style="font-weight: 300; letter-spacing: 4px; margin-top: 10px;">TAKING THE INTAKE</p>
+            <button onclick="advance('layer-presentation')" style="margin-top: 40px; background: white; color: var(--wt-teal); border: none; padding: 14px 40px; border-radius: 50px; cursor: pointer; font-weight: 600; font-size: 1rem;">Enter The Center</button>
         </div>
     </div>
 
-    <div id="layer-intro" class="full-layer">
+    <div id="layer-setup">
         <div>
-             <svg class="wt-logo" viewBox="0 0 100 40">
-                <line x1="0" y1="20" x2="100" y2="20" class="wt-line"/>
-                <circle cx="25" cy="20" r="5" class="wt-dot"/>
-                <circle cx="50" cy="20" r="5" class="wt-dot"/>
-                <circle cx="75" cy="20" r="5" class="wt-dot"/>
-            </svg>
-            <h2>Select Your Character</h2>
-            <div style="display:flex; gap:20px; margin:40px 0;">
-                <div style="background:white; padding:30px; border-radius:20px; width:120px; cursor:pointer;" onclick="this.style.border='2px solid #167e7c'">Jordan</div>
-                <div style="background:white; padding:30px; border-radius:20px; width:120px; cursor:pointer;" onclick="this.style.border='2px solid #167e7c'">Taylor</div>
+            <h2 style="font-weight: 600; color: var(--wt-teal);">Select Your Guide</h2>
+            <div style="display: flex; gap: 25px; margin: 45px 0; justify-content: center;">
+                <div class="card" onclick="select(this)"><h4 style="margin:0;">Jordan</h4><p style="font-size:0.75rem; font-weight:300; margin-top:5px;">Warm & Steady</p></div>
+                <div class="card" onclick="select(this)"><h4 style="margin:0;">Taylor</h4><p style="font-size:0.75rem; font-weight:300; margin-top:5px;">Clear & Empathetic</p></div>
             </div>
-            <button class="wt-btn" onclick="next('layer-intro')">Proceed to Login</button>
+            <p style="margin-top: 30px;"><label style="font-size: 0.9rem; font-weight: 300;"><input type="checkbox" id="ai-toggle" checked style="accent-color: var(--wt-teal);"> Enable AI Pattern Recognition</label></p>
+            <button onclick="advance('layer-setup')" style="background: var(--wt-teal); color: white; border: none; padding: 16px 50px; border-radius: 50px; cursor: pointer; margin-top: 30px; font-weight: 600;">Proceed to Clio</button>
         </div>
     </div>
 
-    <div id="layer-login" class="full-layer">
-        <div>
-            <h2 style="color:var(--wt-teal);">Secure Access</h2>
-            <button class="clio-btn" onclick="next('layer-login')">Sign in with Clio</button>
+    <div id="layer-clio">
+        <div style="text-align: center;">
+            <svg class="wt-logo-wrap" viewBox="0 0 100 40"><line x1="0" y1="20" x2="100" y2="20" stroke="#167e7c" stroke-width="2"/><circle cx="25" cy="20" r="5" fill="#167e7c"/><circle cx="50" cy="20" r="5" fill="#167e7c"/><circle cx="75" cy="20" r="5" fill="#167e7c"/></svg>
+            <h2 style="color: var(--wt-teal); font-weight: 600;">Secure Handshake</h2>
+            <button class="clio-btn" onclick="advance('layer-clio')">
+                <img src="https://logowik.com/content/uploads/images/clio2942.jpg" width="22" style="border-radius: 3px;"> Sign in with Clio
+            </button>
         </div>
     </div>
 
-    <div id="dashboard">
-        <header style="display:flex; justify-content:space-between; align-items:center;">
-            <h1 style="color:var(--wt-teal);">WorkTimeline™</h1>
-            <svg class="wt-logo" style="width:80px; margin:0;" viewBox="0 0 100 40">
-                <line x1="0" y1="20" x2="100" y2="20" class="wt-line"/>
-                <circle cx="25" cy="20" r="5" class="wt-dot"/>
-                <circle cx="50" cy="20" r="5" class="wt-dot"/>
-                <circle cx="75" cy="20" r="5" class="wt-dot"/>
-            </svg>
+    <div id="main-prototype">
+        <header style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+                <h1 class="logo-main">WorkTimeline™</h1>
+                <p class="slogan-main">Taking the Intake</p>
+            </div>
+            <svg class="wt-logo-wrap" style="width: 80px; margin: 0;" viewBox="0 0 100 40"><line x1="0" y1="20" x2="100" y2="20" stroke="#167e7c" stroke-width="2"/><circle cx="25" cy="20" r="5" fill="#167e7c"/><circle cx="50" cy="20" r="5" fill="#167e7c"/><circle cx="75" cy="20" r="5" fill="#167e7c"/></svg>
         </header>
-        <div id="street" class="street">
-            <svg class="briefcase" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg>
-            <svg class="briefcase pulse-gold" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg>
-            <svg class="briefcase" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg>
+
+        <div id="street" class="street-container">
+            <svg class="briefcase-icon" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg>
+            <svg id="ai-item" class="briefcase-icon pulse-ochre" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg>
+            <svg class="briefcase-icon pulse-red" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg>
+        </div>
+
+        <div style="margin-top: 50px; padding: 40px; background: white; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.02);">
+            <h3 style="font-weight: 600; color: var(--wt-teal);">Contemporaneous Notes</h3>
+            <p style="color: #888; font-weight: 300; font-size: 0.95rem; line-height: 1.6;">AI Pulse Active: Analyzing case history for gaps. Drag and drop briefcases to reorganize the handshake timeline.</p>
         </div>
     </div>
 
     <script>
-        function next(id) {
-            const l = document.getElementById(id);
-            l.style.opacity = '0';
-            setTimeout(() => { l.style.display = 'none'; }, 800);
+        function advance(id) {
+            const el = document.getElementById(id);
+            el.style.opacity = '0';
+            setTimeout(() => { 
+                el.style.display = 'none'; 
+                if(id === 'layer-setup') checkAIPulse();
+            }, 600);
         }
-        Sortable.create(document.getElementById('street'), { animation: 150 });
+        function select(el) {
+            document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+        }
+        function checkAIPulse() {
+            if(!document.getElementById('ai-toggle').checked) {
+                document.getElementById('ai-item').classList.remove('pulse-ochre');
+            }
+        }
+        Sortable.create(document.getElementById('street'), { animation: 200, ghostClass: 'sortable-ghost' });
     </script>
 </body>
 </html>
