@@ -7,27 +7,27 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root { 
-            --wt-teal: #0d9488; --wt-gray-light: #f3f4f6; --wt-ochre: #d97706; 
-            --wt-red: #dc2626; --wt-dark: #1e293b; --clio-blue: #0056b3;
+            --wt-teal: #0d9488; --wt-gray-light: #f3f4f6; --wt-gray-med: #e5e7eb; 
+            --wt-ochre: #d97706; --wt-red: #dc2626; --wt-dark: #1e293b; --clio-blue: #0056b3;
         }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body, html { 
             margin: 0; padding: 0; font-family: 'Outfit', sans-serif; 
-            background: #f3f4f6; height: 100dvh; width: 100vw; 
+            background: var(--wt-gray-light); height: 100dvh; width: 100vw; 
             overflow: hidden; color: var(--wt-dark);
         }
 
-        /* ACT 1: STACKED ADVOCACY */
-        .screen { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; z-index: 1000; transition: opacity 0.5s; }
-        #act-intro { display: flex; z-index: 5000; background: #f3f4f6; overflow-y: auto; justify-content: flex-start; padding-top: 60px; }
+        /* ACT 1: ADVOCACY (STACKED) */
+        .screen { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; z-index: 1000; }
+        #act-intro { display: flex; z-index: 5000; background: var(--wt-gray-light); overflow-y: auto; justify-content: flex-start; padding-top: 50px; }
         
-        .quote-stack { display: flex; flex-direction: column; gap: 25px; width: 100%; align-items: center; }
-        .drifter { color: var(--wt-teal); font-size: 1.2rem; font-weight: 300; opacity: 0; transform: translateY(10px); transition: 1s ease; max-width: 90%; line-height: 1.4; text-align: center; }
+        .quote-stack { display: flex; flex-direction: column; gap: 20px; width: 100%; align-items: center; }
+        .drifter { color: var(--wt-teal); font-size: 1.25rem; font-weight: 300; opacity: 0; transform: translateY(10px); transition: 1.2s ease; max-width: 90%; line-height: 1.4; }
         .drifter.active { opacity: 1; transform: translateY(0); }
-        .stat-line { font-size: 0.7rem; color: #64748b; font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 4px; }
+        .stat-line { font-size: 0.75rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 4px; }
 
-        /* THE REVELATION BRANDING */
+        /* ACT 2: REVELATION BRANDING */
         #act-branding { background: white; }
         .logo-box { display: flex; align-items: center; gap: 12px; margin-bottom: 25px; }
         .briefcase { width: 55px; height: 42px; background: var(--wt-teal); border-radius: 8px; position: relative; }
@@ -35,39 +35,40 @@
         .timeline-line { position: absolute; width: 75%; height: 2px; background: white; top: 60%; left: 12.5%; display: flex; justify-content: space-between; align-items: center; }
         .dot { width: 5px; height: 5px; background: white; border-radius: 50%; }
 
-        /* THE ENGINE */
-        #main-app { display: none; flex-direction: column; height: 100dvh; background: #f3f4f6; }
-        .header { background: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
-        .mac-solid { width: 42px; height: 42px; background: var(--wt-teal); border-radius: 12px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        
-        /* THE BLUE SHIFT */
-        .clio-mode .mac-solid, .clio-mode .sq-btn { background: var(--clio-blue) !important; }
-        .clio-mode .briefcase { background: var(--clio-blue) !important; }
+        /* ACT 3: SIGN-IN (SEPARATE BUTTONS) */
+        #act-signin { background: white; }
+        .input-box { width: 100%; max-width: 300px; padding: 15px; border-radius: 12px; border: 1.5px solid #eee; font-family: 'Outfit'; margin-bottom: 12px; }
 
-        /* PULSING */
+        /* ACT 4: AI SELECT */
+        #act-ai { background: white; }
+
+        /* THE ENGINE */
+        #main-app { display: none; flex-direction: column; height: 100dvh; background: var(--wt-gray-light); }
+        .header { background: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
+        .mac-solid { width: 44px; height: 44px; background: var(--wt-teal); border-radius: 12px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
+        
+        /* STATUS */
         .bridge-phone { width: 18px; height: 18px; border-radius: 50%; background: var(--wt-teal); box-shadow: 0 0 10px var(--wt-teal); }
-        .pulse-warning { background: var(--wt-ochre) !important; box-shadow: 0 0 15px var(--wt-ochre) !important; animation: p 1.5s infinite; }
-        .pulse-critical { background: var(--wt-red) !important; box-shadow: 0 0 20px var(--wt-red) !important; animation: p 0.6s infinite; }
-        @keyframes p { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.4); opacity: 0.6; } }
+        .tamper-pulse { animation: tamperGlow 1s infinite; background: var(--wt-red) !important; box-shadow: 0 0 20px var(--wt-red) !important; }
+        @keyframes tamperGlow { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.3); } }
+
+        /* FOOTER INPUT */
+        .footer-control { background: white; padding: 15px; border-top: 1px solid #eee; }
+        textarea { width: 100%; height: 75px; border: none; background: #f8fafc; border-radius: 15px; padding: 15px; font-family: 'Outfit'; resize: none; margin-bottom: 12px; font-size: 0.95rem; }
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .sq-btn { background: var(--wt-teal); color: white; border: none; padding: 16px; border-radius: 15px; font-weight: 600; font-size: 0.8rem; cursor: pointer; }
+        .btn-clio { background: var(--clio-blue) !important; }
 
         /* TEMPLATES */
-        .template-row { display: flex; gap: 8px; overflow-x: auto; padding: 10px 15px; background: white; }
-        .chip { background: #e2e8f0; color: var(--wt-teal); padding: 8px 16px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; white-space: nowrap; }
-
-        /* INPUT */
-        .footer-control { background: white; padding: 15px; border-top: 1px solid #eee; }
-        textarea { width: 100%; height: 70px; border: none; background: #f1f5f9; border-radius: 15px; padding: 12px; font-family: 'Outfit'; resize: none; font-size: 0.9rem; }
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-        .sq-btn { background: var(--wt-teal); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 600; font-size: 0.75rem; }
-
-        .blur-active { filter: blur(30px); pointer-events: none; }
+        .template-row { display: flex; gap: 8px; overflow-x: auto; padding: 10px 15px; background: white; scrollbar-width: none; }
+        .chip { background: #f1f5f9; color: var(--wt-teal); padding: 8px 16px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; white-space: nowrap; border: 1px solid #e2e8f0; }
     </style>
 </head>
-<body onload="initApp()">
+<body onload="runAdvocacy()">
 
     <div id="act-intro" class="screen">
-        <div class="quote-stack" id="stack"></div>
-        <button id="gate-btn" class="sq-btn" style="display:none; width: 200px; margin-top: 40px; position: relative; z-index: 6000;" onclick="toBranding()">Continue</button>
+        <div class="quote-stack" id="stack-container"></div>
+        <button id="gate-btn" class="sq-btn" style="display:none; width: 220px; margin-top: 40px; position: relative; z-index: 6000;" onclick="toBranding()">Continue</button>
     </div>
 
     <div id="act-branding" class="screen">
@@ -75,23 +76,26 @@
             <div class="briefcase"><div class="handle"></div><div class="timeline-line"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>
             <h2 style="margin:0; color:var(--wt-teal);">WorkTimeline™</h2>
         </div>
-        <p style="font-weight:400; font-size:1.1rem; padding: 0 25px; line-height:1.6;">
+        <p style="font-weight:400; font-size:1.05rem; padding: 0 25px; line-height:1.6;">
             "WorkTimeline™ brings the client one step forward to the center where they belong until the firm helps them never look back."
         </p>
-        <p style="font-style:italic; font-size:0.85rem; color: #666; margin-top: 15px;">Justice should be effortless. Telling the truth shouldn't take effort.</p>
-        <button class="sq-btn" style="width: 200px; margin-top: 30px;" onclick="toLogin()">Enter Gateway</button>
+        <button class="sq-btn" style="width: 200px; margin-top: 30px;" onclick="nextAct('act-branding', 'act-signin')">Enter Gateway</button>
     </div>
 
-    <div id="act-login" class="screen" style="background:white;">
-        <h3 style="color:var(--wt-teal);">System Intelligence</h3>
-        <div style="text-align:left; font-size:0.8rem; margin: 20px 0; max-width: 280px;">
-            <p>● <span style="color:var(--wt-ochre); font-weight:bold;">OCHRE:</span> Pattern Detected.</p>
-            <p>● <span style="color:var(--wt-red); font-weight:bold;">RED:</span> Conflict/Tamper alert.</p>
+    <div id="act-signin" class="screen">
+        <h3 style="color:var(--wt-teal); margin-bottom:20px;">Secure Sign-In</h3>
+        <input type="text" class="input-box" placeholder="Client Reference ID">
+        <button class="sq-btn" style="width: 300px;" onclick="nextAct('act-signin', 'act-ai')">Login with Client ID</button>
+        <div style="margin: 15px 0; color: #ccc; font-size: 0.7rem;">OR</div>
+        <button class="sq-btn btn-clio" style="width: 300px;" onclick="nextAct('act-signin', 'act-ai')">Login with Clio</button>
+    </div>
+
+    <div id="act-ai" class="screen">
+        <h3 style="color:var(--wt-teal);">Choose Your Intel Bridge</h3>
+        <div style="display:flex; flex-direction:column; gap:12px; width: 100%; max-width: 300px;">
+            <button class="sq-btn" onclick="startApp('Jordan')">JORDAN AI (Analytical)</button>
+            <button class="sq-btn" onclick="startApp('Taylor')">TAYLOR AI (Empathetic)</button>
         </div>
-        <button class="sq-btn" style="margin-bottom:10px;" onclick="startEngine('Jordan')">JORDAN (Analytical)</button>
-        <button class="sq-btn" style="background:var(--clio-blue);" onclick="startEngine('Taylor')">TAYLOR (Empathetic)</button>
-        <div style="margin: 15px 0; font-size: 0.7rem; color: #aaa;">OR</div>
-        <button class="sq-btn" style="background:#111;" onclick="startEngine('Clio')">Login with Clio</button>
     </div>
 
     <div id="main-app">
@@ -99,31 +103,38 @@
             <div style="display:flex; align-items:center; gap:10px;">
                 <div class="briefcase" style="width:34px; height:26px;"><div class="handle" style="width:14px; height:4px; top:-4px;"></div><div class="timeline-line"><div class="dot" style="width:2px; height:2px;"></div><div class="dot" style="width:2px; height:2px;"></div><div class="dot" style="width:2px; height:2px;"></div></div></div>
                 <div>
-                    <h4 style="margin:0; color:var(--wt-teal);">WorkTimeline™</h4>
-                    <div id="bridge-light" class="bridge-phone"></div>
+                    <h4 style="margin:0; color:var(--wt-teal); font-size:0.9rem;">WorkTimeline™</h4>
+                    <div id="phone-bridge" class="bridge-phone"></div>
                 </div>
             </div>
             <div style="display:flex; gap:10px; align-items:center;">
-                <div onclick="document.getElementById('main-app').classList.toggle('blur-active')" style="width:30px; height:15px; background:#ddd; border-radius:10px; cursor:pointer;"></div>
+                <div onclick="document.getElementById('main-app').classList.toggle('blur-mode')" style="width:30px; height:15px; background:#ddd; border-radius:10px; cursor:pointer;"></div>
                 <button class="mac-solid" style="width:36px; height:36px;"><svg width="18" height="18" fill="white" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></button>
             </div>
         </header>
 
+        <div style="display:flex; justify-content:space-around; padding: 12px; background: white; border-bottom: 1px solid #eee;">
+            <button class="mac-solid" onclick="alert('Camera Active')"><svg width="22" height="22" fill="white" viewBox="0 0 24 24"><path d="M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm9 3.5V6a2 2 0 0 0-2-2h-3.2l-1.3-1.7a1 1 0 0 0-.8-.3H9.3a1 1 0 0 0-.8.3L7.2 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5z"/></svg></button>
+            <button class="mac-solid" onclick="alert('Mic Active')"><svg width="22" height="22" fill="white" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg></button>
+            <button class="mac-solid" onclick="alert('Doc Active')"><svg width="22" height="22" fill="white" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6z"/></svg></button>
+            <button class="mac-solid" onclick="alert('FaceTime Bridge Active')"><svg width="22" height="22" fill="white" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></button>
+        </div>
+
         <div class="template-row">
             <div class="chip" onclick="setIn('Witness Statement: ')">Witness</div>
             <div class="chip" onclick="setIn('Scene/Setting: ')">Setting</div>
-            <div class="chip" onclick="setIn('Evidence Note: ')">Evidence</div>
+            <div class="chip" onclick="setIn('Evidence Record: ')">Evidence</div>
         </div>
 
         <div id="timeline" style="flex-grow:1; overflow-y:auto; padding:15px;"></div>
 
         <div class="footer-control">
-            <textarea id="main-in" placeholder="Type here..."></textarea>
+            <textarea id="main-in" placeholder="Telling the truth takes no effort..."></textarea>
             <div class="btn-grid">
                 <button class="sq-btn" onclick="add('timeline')">ADD TO TIMELINE</button>
-                <button class="sq-btn" style="background:#333;" onclick="add('notes')">+ CON'D NOTES</button>
+                <button class="sq-btn" style="background:var(--wt-gray-med); color:var(--wt-dark);" onclick="add('notes')">+ CON'D NOTES</button>
             </div>
-            <button id="lock-btn" class="sq-btn" style="width:100%; margin-top:10px;" onclick="lock()">LOCK & SEND TO CLIO</button>
+            <button id="lock-btn" class="sq-btn" style="width:100%; margin-top:12px;" onclick="lock()">LOCK & SEND TO CLIO</button>
         </div>
     </div>
 
@@ -131,34 +142,27 @@
         const quotes = [
             {s: "Fact: 86% of civil legal problems get no help.", t: "It's too expensive."},
             {s: "Fact: Legal fees average $300 per hour.", t: "They got more money than me."},
-            {s: "Fact: Most evidence is lost in the first 48 hours.", t: "I don't have enough evidence."},
-            {s: "Justice should be effortless.", t: "Where's the proof?"},
-            {s: "We translate experience into law.", t: "I don't know Latin."},
-            {s: "", t: "We're here to remind you..."},
-            {s: "There are no walls.", t: "There are none."}
+            {s: "Fact: Most evidence is lost in the first 48 hours.", t: "Where's the proof?"},
+            {s: "Fact: You feel invisible.", t: "They think you're invisible. You're not."},
+            {s: "We see you. We hear you.", t: "No, you're not caught in a prison..."},
+            {s: "Just that gray area.", t: "We're not here to tear down the walls for you."},
+            {s: "We're here to remind you...", t: "There are none."}
         ];
 
         let qIdx = 0;
         let hazard = 0;
 
-        function initApp() {
-            showQuotes();
-        }
-
-        function showQuotes() {
+        function runAdvocacy() {
+            const container = document.getElementById('stack-container');
             if (qIdx < quotes.length) {
-                const el = document.createElement('div');
-                el.className = 'drifter';
-                el.innerHTML = `<span class="stat-line">${quotes[qIdx].s}</span>${quotes[qIdx].t}`;
-                document.getElementById('stack').appendChild(el);
-                setTimeout(() => el.classList.add('active'), 100);
-                
-                if (qIdx === quotes.length - 1) {
-                    setTimeout(() => { document.getElementById('act-intro').style.background = "white"; }, 1000);
-                }
-                
+                const item = document.createElement('div');
+                item.className = 'drifter';
+                item.innerHTML = `<span class="stat-line">${quotes[qIdx].s}</span>${quotes[qIdx].t}`;
+                container.appendChild(item);
+                setTimeout(() => item.classList.add('active'), 100);
+                if (qIdx === quotes.length - 1) setTimeout(() => document.getElementById('act-intro').style.background = "white", 1000);
                 qIdx++;
-                setTimeout(showQuotes, 3500);
+                setTimeout(runAdvocacy, 4200);
             } else {
                 document.getElementById('gate-btn').style.display = "block";
             }
@@ -177,10 +181,9 @@
             box.style.border = type === 'notes' ? "1px dashed #ccc" : "1px solid #eee";
             
             if(hazard >= 2) {
-                box.style.border = "2px solid var(--wt-ochre)";
-                document.getElementById('bridge-light').className = 'bridge-phone pulse-warning';
+                box.style.border = "2.2px solid var(--wt-ochre)";
+                document.getElementById('phone-bridge').className = 'bridge-phone tamper-pulse';
             }
-            if(hazard >= 4) document.getElementById('bridge-light').className = 'bridge-phone pulse-critical';
 
             box.innerHTML = `<span style="font-size:0.6rem; color:var(--wt-teal); font-weight:600;">${type.toUpperCase()} • ${new Date().toLocaleTimeString()}</span><div style="font-size:0.9rem; margin-top:5px;">${val}</div>`;
             document.getElementById('timeline').prepend(box);
@@ -188,13 +191,13 @@
         }
 
         function lock() {
-            document.body.classList.add('clio-mode');
-            alert("Summary Sent to Clio:\nNarrative verified. Professional handshake complete.");
+            document.getElementById('lock-btn').classList.add('btn-clio');
+            alert(`Case Summary Generated and Sent to Clio.`);
         }
 
+        function nextAct(c, n) { document.getElementById(c).style.display = "none"; document.getElementById(n).style.display = "flex"; }
+        function startApp(ai) { document.getElementById('act-ai').style.display = "none"; document.getElementById('main-app').style.display = "flex"; }
         function toBranding() { document.getElementById('act-intro').style.display = "none"; document.getElementById('act-branding').style.display = "flex"; }
-        function toLogin() { document.getElementById('act-branding').style.display = "none"; document.getElementById('act-login').style.display = "flex"; }
-        function startEngine() { document.getElementById('act-login').style.display = "none"; document.getElementById('main-app').style.display = "flex"; }
     </script>
 </body>
 </html>
