@@ -3,308 +3,236 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>WorkTimeline™ | Case Architect</title>
+    <title>WorkTimeline™ | Master Integrated</title>
     <style>
         :root {
             --teal-brand: #115e59;
             --teal-bg: #e6f4f1;
             --active-green: #22c55e;
-            --border-color: #cbd5e1;
-            --glass-yellow: rgba(250, 204, 21, 0.25);
-            --glass-red: rgba(239, 68, 68, 0.2);
             --active-blue: #3b82f6;
+            --hazard-yellow: #facc15;
+            --tamper-red: #ef4444;
+            --border-color: #cbd5e1;
         }
 
-        body { 
-            margin: 0; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            background: #ffffff; 
-            padding-bottom: 50px;
-            -webkit-font-smoothing: antialiased;
-        }
+        body, html { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #fff; overflow-x: hidden; }
 
-        /* --- 1. PRESENTATION HEADER --- */
-        header {
-            padding: 25px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
+        /* --- 1. CINEMATIC INTRO (THE DEMO REEL) --- */
+        #intro-reel {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #0f172a; color: #fff; z-index: 10000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; transition: opacity 1s ease;
         }
+        .reel-text { 
+            font-size: 26px; font-weight: 900; opacity: 0; position: absolute;
+            transform: translateY(20px); transition: 1s; padding: 0 30px; line-height: 1.4;
+        }
+        .reel-text span { color: var(--active-blue); }
+        .visible { opacity: 1; transform: translateY(0); }
 
+        /* --- 2. MAIN DASHBOARD --- */
+        #main-app { opacity: 0; transition: 1.5s; }
+        header { padding: 25px 20px; display: flex; justify-content: space-between; align-items: flex-start; }
+        
         .left-header { display: flex; align-items: center; gap: 15px; }
         .logo-box { width: 55px; height: 55px; }
-        
-        .brand-text h1 { 
-            margin: 0; 
-            font-size: 26px; 
-            color: var(--teal-brand); 
-            font-weight: 800;
-        }
-        .brand-text p { 
-            margin: 5px 0 0; 
-            font-style: italic; 
-            font-size: 14px; 
-            color: #64748b; 
-        }
+        .brand-text h1 { margin: 0; font-size: 26px; color: var(--teal-brand); font-weight: 800; }
+        .brand-text p { margin: 5px 0 0; font-style: italic; font-size: 14px; color: #64748b; }
 
+        /* --- 3. THE PULSE LEGEND & COUNSEL LINK --- */
         .right-header { text-align: right; }
-        .status { 
-            font-size: 11px; 
-            font-weight: 900; 
-            color: var(--active-green); 
-            display: flex; 
-            align-items: center; 
-            justify-content: flex-end; 
-            gap: 5px; 
-            margin-bottom: 10px;
-        }
-        .status::before { content: ''; width: 8px; height: 8px; background: var(--active-green); border-radius: 50%; }
+        .status-area { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+        .status-main { font-size: 11px; font-weight: 900; color: var(--active-green); display: flex; align-items: center; gap: 5px; }
+        .status-main::before { content: ''; width: 8px; height: 8px; background: var(--active-green); border-radius: 50%; }
 
-        .btn-header {
-            display: block;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 800;
-            background: #f1f5f9;
-            border: 1px solid var(--border-color);
-            margin-bottom: 6px;
-            color: #1e293b;
-            cursor: pointer;
-            text-transform: uppercase;
-        }
+        .legend-row { display: flex; gap: 10px; margin-top: 2px; }
+        .pulse-dot { width: 12px; height: 12px; border-radius: 50%; opacity: 0.15; transition: 0.5s; border: 1px solid rgba(0,0,0,0.1); }
+        
+        /* AI Pulse Logic */
+        .ai-dot { background: var(--hazard-yellow); }
+        .pulse-ai { animation: pulse-yellow 2s infinite; opacity: 1; box-shadow: 0 0 10px var(--hazard-yellow); }
+        
+        /* Tamper Pulse Logic */
+        .tamper-dot { background: var(--tamper-red); }
+        .pulse-tamper { animation: pulse-red 0.8s infinite; opacity: 1; box-shadow: 0 0 15px var(--tamper-red); }
 
-        /* --- 2. SIGN-IN & CONFIG CARD --- */
-        .signin-box {
-            margin: 10px 20px;
-            background: var(--teal-bg);
-            padding: 25px;
-            border-radius: 25px;
-        }
-        .signin-box label { 
-            display: block;
-            font-size: 12px; 
-            font-weight: 900;
-            color: var(--teal-brand); 
-            text-transform: uppercase; 
-            margin-bottom: 15px; 
-            letter-spacing: 1px;
-        }
-        select {
-            width: 100%;
-            padding: 16px;
-            border-radius: 15px;
-            border: 1px solid #fff;
-            background: #fff;
-            font-size: 15px;
-            color: #475569;
-            outline: none;
-        }
+        #lawyer-link { position: relative; margin-top: 10px; cursor: pointer; color: #cbd5e1; transition: 0.3s; }
+        .msg-active { color: var(--active-blue) !important; animation: bounce 2s infinite; }
+        .msg-count { position: absolute; top: -5px; right: -5px; background: var(--tamper-red); color: #fff; font-size: 9px; padding: 2px 5px; border-radius: 10px; display: none; }
 
-        /* --- 3. CATEGORY SCROLLER --- */
-        .scroller {
-            display: flex;
-            gap: 12px;
-            padding: 15px 20px;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-        .pill {
-            white-space: nowrap;
-            padding: 10px 20px;
-            border-radius: 25px;
-            border: 1.5px solid var(--border-color);
-            background: #fff;
-            color: var(--teal-brand);
-            font-weight: 700;
-            font-size: 13px;
-        }
+        /* --- 4. DASHBOARD COMPONENTS --- */
+        .signin-box { margin: 10px 20px; background: var(--teal-bg); padding: 25px; border-radius: 25px; }
+        .signin-box label { display: block; font-size: 12px; font-weight: 900; color: var(--teal-brand); text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; }
+        select { width: 100%; padding: 16px; border-radius: 15px; border: 1px solid #fff; background: #fff; font-size: 15px; color: #475569; }
 
-        /* --- 4. PROTOTYPE INPUT AREA --- */
+        .scroller { display: flex; gap: 12px; padding: 15px 20px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .pill { white-space: nowrap; padding: 10px 20px; border-radius: 25px; border: 1.5px solid var(--border-color); background: #fff; color: var(--teal-brand); font-weight: 700; font-size: 13px; cursor: pointer; }
+
         .input-wrap { padding: 0 20px; }
-        textarea {
-            width: 100%;
-            height: 150px;
-            border-radius: 25px;
-            border: none;
-            background: #e2e8f0;
-            padding: 20px;
-            font-family: inherit;
-            font-size: 16px;
-            outline: none;
-            color: #1e293b;
-        }
-        .btn-arch {
-            width: 100%; 
-            background: var(--teal-brand); 
-            color: white; 
-            border: none; 
-            padding: 20px; 
-            border-radius: 25px; 
-            margin-top: 15px; 
-            font-weight: 900; 
-            font-size: 15px;
-            letter-spacing: 1px;
-            cursor: pointer;
-        }
+        textarea { width: 100%; height: 140px; border-radius: 25px; border: none; background: #e2e8f0; padding: 20px; font-family: inherit; font-size: 16px; outline: none; }
+        .btn-arch { width: 100%; background: var(--teal-brand); color: white; border: none; padding: 20px; border-radius: 25px; margin-top: 15px; font-weight: 900; font-size: 15px; cursor: pointer; }
 
-        /* --- 5. ACTION GRID --- */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            padding: 25px 20px;
-        }
-        .card {
-            background: #f1f5f9;
-            border-radius: 25px;
-            padding: 22px 10px;
-            text-align: center;
-            cursor: pointer;
-        }
+        .action-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; padding: 25px 20px; }
+        .card { background: #f1f5f9; border-radius: 25px; padding: 22px 10px; text-align: center; cursor: pointer; }
         .card svg { width: 35px; height: 35px; fill: #64748b; margin-bottom: 10px; }
         .card b { font-size: 11px; color: #64748b; text-transform: uppercase; display: block; }
 
-        /* --- 6. TIMELINE VIEW --- */
         .timeline { padding: 20px; }
-        .entry {
-            background: #fff;
-            border: 1px solid #f1f5f9;
-            padding: 22px;
-            border-radius: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            position: relative;
-            animation: slideUp 0.4s ease;
-        }
+        .entry { background: #fff; border: 1px solid #f1f5f9; padding: 20px; border-radius: 20px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); position: relative; animation: slideUp 0.4s ease; }
+        
+        /* HIGHLIGHT STATES */
+        .hazard-highlight { background: rgba(250, 204, 21, 0.15) !important; border: 1.5px solid var(--hazard-yellow) !important; }
+        .tamper-highlight { background: rgba(239, 68, 68, 0.1) !important; border: 1.5px solid var(--tamper-red) !important; color: #b91c1c; }
 
-        /* --- DYNAMIC STATES --- */
-        .hazard-highlight { background: var(--glass-yellow) !important; border: 1.5px solid #facc15 !important; }
-        .tamper-highlight { background: var(--glass-red) !important; border: 1.5px solid #ef4444 !important; color: #b91c1c; }
-        body.blurred .entry, body.blurred textarea { filter: blur(20px); pointer-events: none; }
-
-        /* MODAL */
-        .modal-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-        .modal { background: #fff; width: 85%; max-width: 400px; padding: 30px; border-radius: 30px; text-align: center; }
-        .btn-modal { background: var(--teal-brand); color: #fff; border: none; padding: 18px; width: 100%; border-radius: 15px; font-weight: 800; margin-top: 20px; cursor: pointer; }
-
+        @keyframes pulse-yellow { 0%, 100% { transform: scale(1); opacity: 0.4; } 50% { transform: scale(1.3); opacity: 1; } }
+        @keyframes pulse-red { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.6); opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
     </style>
 </head>
 <body>
 
-<div id="modalBg" class="modal-bg">
-    <div class="modal">
-        <h3 id="mTitle" style="color:var(--teal-brand); margin-top:0; font-weight:900;">Alert</h3>
-        <p id="mBody" style="font-size: 15px; line-height: 1.6; color: #475569;"></p>
-        <button class="btn-modal" onclick="closeM()">I UNDERSTAND</button>
+    <div id="intro-reel">
+        <p class="reel-text" id="t1">In a world of noise...</p>
+        <p class="reel-text" id="t2">There are <span>No Walls</span> between you and the truth.</p>
+        <p class="reel-text" id="t3">Architecture is the constant will to log <span>Justice.</span></p>
+        <p class="reel-text" id="t4">Establishing Secure Bridge...</p>
     </div>
-</div>
 
-<header>
-    <div class="left-header">
-        <div class="logo-box">
-            <svg viewBox="0 0 100 100"><rect x="15" y="30" width="70" height="50" rx="10" fill="none" stroke="#115e59" stroke-width="6"/><path d="M35 30 V20 Q35 15 50 15 Q65 15 65 20 V30" fill="none" stroke="#115e59" stroke-width="6"/><line x1="10" y1="55" x2="90" y2="55" stroke="#3b82f6" stroke-width="4" /></svg>
+    <div id="main-app">
+        <header>
+            <div class="left-header">
+                <div class="logo-box">
+                    <svg viewBox="0 0 100 100"><rect x="15" y="30" width="70" height="50" rx="10" fill="none" stroke="#115e59" stroke-width="6"/><path d="M35 30 V28 Q35 15 50 15 Q65 15 65 20 V30" fill="none" stroke="#115e59" stroke-width="6"/><line x1="10" y1="55" x2="90" y2="55" stroke="#3b82f6" stroke-width="4" /></svg>
+                </div>
+                <div class="brand-text">
+                    <h1>WorkTimeline™</h1>
+                    <p>"Justice is truth in action."</p>
+                </div>
+            </div>
+            <div class="right-header">
+                <div class="status-area">
+                    <div class="status-main">ACTIVE</div>
+                    <div class="legend-row">
+                        <div class="pulse-dot ai-dot" id="ai-light" title="Pattern Strength"></div>
+                        <div class="pulse-dot tamper-dot" id="tamper-light" title="Seal Integrity"></div>
+                    </div>
+                    <div id="lawyer-link" onclick="openClioDashboard()">
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+                        <span class="msg-count" id="mCount">1</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="signin-box">
+            <label>Professional Sign-In:</label>
+            <select id="proRole">
+                <option>-- Select Professional --</option>
+                <option>Lead Attorney</option>
+                <option>Lead Investigator</option>
+            </select>
         </div>
-        <div class="brand-text">
-            <h1>WorkTimeline™</h1>
-            <p>"Justice is truth in action."</p>
+
+        <div class="scroller">
+            <div class="pill" onclick="useTemplate('Hazard')">+ Safety Hazard</div>
+            <div class="pill" onclick="useTemplate('Witness')">+ Witness Note</div>
+            <div class="pill" onclick="useTemplate('Clio')">+ Sync to Clio</div>
         </div>
+
+        <div class="input-wrap">
+            <textarea id="mainInput" placeholder="Enter case details here..."></textarea>
+            <button class="btn-arch" onclick="submitToTimeline()">ARCHITECT RECORD</button>
+        </div>
+
+        <div class="action-grid">
+            <div class="card"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4V4zm12 8a4 4 0 11-8 0 4 4 0 018 0z"/></svg><b>CAMERA</b></div>
+            <div class="card"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg><b>AUDIO</b></div>
+            <div class="card"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6z"/></svg><b>DOC</b></div>
+        </div>
+
+        <div id="tl" class="timeline"></div>
     </div>
-    <div class="right-header">
-        <div class="status">ACTIVE</div>
-        <button class="btn-header" onclick="document.body.classList.toggle('blurred')">PROTECT VIEW</button>
-        <button class="btn-header" style="border-style: dashed;">DB CONFIG</button>
-    </div>
-</header>
 
-<div class="signin-box">
-    <label>Professional Sign-In:</label>
-    <select id="proRole">
-        <option>-- Select Professional --</option>
-        <option>Lead Attorney</option>
-        <option>Field Investigator</option>
-        <option>Architect of Record</option>
-    </select>
-</div>
-
-<div class="scroller">
-    <div class="pill">+ Site Observation</div>
-    <div class="pill">+ Witness Note</div>
-    <div class="pill">+ Incident Record</div>
-    <div class="pill">+ Safety Hazard</div>
-</div>
-
-<div class="input-wrap">
-    <textarea id="mainInput" placeholder="Enter case details here..."></textarea>
-    <button class="btn-arch" onclick="addEntry()">ARCHITECT RECORD</button>
-</div>
-
-<div class="grid">
-    <div class="card"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4V4zm12 8a4 4 0 11-8 0 4 4 0 018 0z"/></svg><b>CAMERA</b></div>
-    <div class="card"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg><b>AUDIO</b></div>
-    <div class="card"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6z"/></svg><b>DOC</b></div>
-</div>
-
-<div id="timeline" class="timeline"></div>
-
-<script>
-    var triggerCount = 0;
-    var isVaultLocked = false;
-
-    function closeM() { document.getElementById('modalBg').style.display = 'none'; }
-    function openM(t, b) {
-        document.getElementById('mTitle').innerText = t;
-        document.getElementById('mBody').innerText = b;
-        document.getElementById('modalBg').style.display = 'flex';
-    }
-
-    function addEntry() {
-        var box = document.getElementById('mainInput');
-        var val = box.value.trim();
-        if(!val) return;
-
-        // Tamper Logic (triggered if user types "lock" first)
-        if(isVaultLocked) {
-            openM("Integrity Breach Detected", "You are attempting to modify a sealed timeline. Post-seal modifications are flagged in RED to ensure legal admissibility.");
-        }
-
-        var low = val.toLowerCase();
+    <script>
+        // --- 1. CORE STATE ---
+        let patternCount = 0;
+        let vaultSealed = false;
         
-        // AI Logic: Fire after 3rd trigger
-        if(low.indexOf('hazard') > -1 || low.indexOf('mock') > -1) {
-            triggerCount++;
-            if(triggerCount === 3) {
-                openM("AI Pattern Recognition", "The AI has detected recurring risk patterns across 3 separate entries. These are now highlighted in modern transparent yellow for legal clarity.");
+        // --- 2. CINEMATIC REEL LOGIC ---
+        const introTexts = ["t1", "t2", "t3", "t4"];
+        let step = 0;
+        const reel = setInterval(() => {
+            if(step > 0) document.getElementById(introTexts[step-1]).classList.remove('visible');
+            if(step < introTexts.length) {
+                document.getElementById(introTexts[step]).classList.add('visible');
+                step++;
+            } else {
+                clearInterval(reel);
+                document.getElementById('intro-reel').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('intro-reel').style.display = 'none';
+                    document.getElementById('main-app').style.opacity = '1';
+                }, 1000);
+            }
+        }, 2200);
+
+        // --- 3. CLIO HANDSHAKE & TEMPLATES ---
+        function useTemplate(type) {
+            const input = document.getElementById('mainInput');
+            if(type === 'Hazard') input.value = "[HAZARD]: Recurring safety breach identified at North Sector.";
+            if(type === 'Witness') input.value = "[WITNESS]: Employee confirms management was aware of risk.";
+            if(type === 'Clio') {
+                vaultSealed = true;
+                alert("HANDSHAKE COMPLETE: Timeline Sealed to Clio Vault.");
+                input.value = "";
             }
         }
 
-        // Vault Lock Hack: Type "lock" to seal the vault
-        if(low === "lock") {
-            isVaultLocked = true;
-            alert("Vault Sealed. Future entries will trigger Tamper Alert.");
+        // --- 4. ARCHITECT LOGIC ---
+        function submitToTimeline() {
+            const box = document.getElementById('mainInput');
+            const val = box.value.trim();
+            if(!val) return;
+
+            const div = document.createElement('div');
+            div.className = 'entry';
+            const low = val.toLowerCase();
+
+            // AI Pattern Brain
+            if(low.includes('hazard') || low.includes('risk')) {
+                patternCount++;
+                div.classList.add('hazard-highlight');
+                const light = document.getElementById('ai-light');
+                light.classList.add('pulse-ai');
+                if(patternCount >= 3) {
+                    light.style.animationDuration = '0.4s'; // Heavy pattern = Heavy pulse
+                    // Trigger Lawyer Pulse
+                    document.getElementById('lawyer-link').classList.add('msg-active');
+                    document.getElementById('mCount').style.display = 'block';
+                }
+            }
+
+            // Tamper Integrity Brain
+            if(vaultSealed) {
+                div.classList.add('tamper-highlight');
+                document.getElementById('tamper-light').classList.add('pulse-tamper');
+            }
+
+            const now = new Date();
+            div.innerHTML = `<div style="font-size:10px; font-weight:900; color:var(--teal-brand); margin-bottom:8px;">${now.toLocaleDateString()} AT ${now.toLocaleTimeString()} • SECURE</div>${val}`;
+            document.getElementById('tl').insertBefore(div, document.getElementById('tl').firstChild);
             box.value = "";
-            return;
         }
 
-        var div = document.createElement('div');
-        div.className = 'entry';
-        
-        // Apply Highlights
-        if(low.indexOf('hazard') > -1) div.classList.add('hazard-highlight');
-        if(isVaultLocked) div.classList.add('tamper-highlight');
-
-        // Date/Time Stamp
-        var d = new Date();
-        var stamp = d.toLocaleDateString([], {month:'short', day:'numeric', year:'numeric'}) + " AT " + d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-        
-        div.innerHTML = "<div style='font-size:10px; font-weight:900; color:var(--teal-brand); margin-bottom:10px; letter-spacing:1px;'>" + stamp + " • VERIFIED RECORD</div>" + val;
-        
-        var tl = document.getElementById('timeline');
-        tl.insertBefore(div, tl.firstChild);
-        box.value = "";
-    }
-</script>
-
+        // --- 5. THE MOCK DASHBOARD (LAWYER POINT OF VIEW) ---
+        function openClioDashboard() {
+            // This represents the handshake to the lawyer's dashboard
+            alert("OPENING COUNSEL-SIDE DASHBOARD...\n\nLawyer Status: REVIEWING FEED\nPattern Match: HIGH\nIntegrity: SEALED");
+            document.getElementById('lawyer-link').classList.remove('msg-active');
+            document.getElementById('mCount').style.display = 'none';
+        }
+    </script>
 </body>
 </html>
