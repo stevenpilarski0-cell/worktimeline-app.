@@ -3,121 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeline™ | Taking the Intake</title>
+    <title>WorkTimeline™ | Clio Handshake</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     
     <style>
         :root {
             --wt-teal: #167e7c;
-            --wt-gray: #2f3535;
-            --wt-ochre: #ffd600;
-            --wt-red: #8b0000;
+            --clio-blue: #0056b3; /* The Official Clio Blue */
             --wt-cream: #f8f5f1;
             --wt-radius: 24px;
         }
 
-        body { margin: 0; font-family: 'Outfit', sans-serif; background: var(--wt-cream); overflow-x: hidden; }
+        body { margin: 0; font-family: 'Outfit', sans-serif; background: var(--wt-cream); overflow: hidden; }
 
-        /* ACT 1: VIDEO PRESENTATION */
+        /* ACT 1: PRESENTATION VIDEO */
         #presentation-layer {
-            position: fixed;
-            inset: 0;
-            background: #000;
-            z-index: 30000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: fixed; inset: 0; background: #000; z-index: 50000;
+            display: flex; align-items: center; justify-content: center;
             transition: opacity 0.8s ease;
         }
-        #brand-video { width: 100%; height: 100%; object-fit: cover; }
-        .video-overlay { position: absolute; bottom: 50px; width: 100%; text-align: center; }
-        .skip-btn { 
-            background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); 
-            border: 1px solid white; color: white; padding: 12px 30px; 
-            border-radius: 50px; cursor: pointer; 
-        }
+        .skip-btn { position: absolute; bottom: 40px; background: rgba(255,255,255,0.2); color: white; border: 1px solid white; padding: 10px 25px; border-radius: 50px; cursor: pointer; }
 
-        /* ACT 2: LOGIN SCREEN */
+        /* ACT 2: CLIO LOGIN */
         #login-screen {
-            position: fixed;
-            inset: 0;
-            background: var(--wt-cream);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 20000;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: fixed; inset: 0; background: var(--wt-cream); z-index: 40000;
+            display: flex; align-items: center; justify-content: center;
+            transition: transform 0.6s ease-in-out;
         }
-        .login-card { 
-            background: white; padding: 40px; border-radius: var(--wt-radius); 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1); text-align: center; width: 320px; 
-        }
-        .wt-input { 
-            width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #eee; 
-            border-radius: 15px; font-family: 'Outfit'; box-sizing: border-box; 
-        }
-        .login-btn { 
-            width: 100%; background: var(--wt-teal); color: white; border: none; 
-            padding: 15px; border-radius: 50px; font-weight: 600; cursor: pointer; 
+        .login-card { background: white; padding: 50px; border-radius: var(--wt-radius); text-align: center; box-shadow: 0 15px 40px rgba(0,0,0,0.1); }
+        .clio-btn { 
+            background: var(--clio-blue); color: white; border: none; padding: 15px 30px; 
+            border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; margin-top: 20px;
         }
 
-        /* ACT 3: DASHBOARD (As seen in your screenshot) */
-        .header-main { padding: 40px 20px; text-align: left; }
-        .logo-text { font-weight: 600; font-size: 1.8rem; color: var(--wt-teal); margin: 0; }
-        .slogan-text { font-weight: 300; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: var(--wt-gray); margin-top: 5px; }
-        
-        #timeline-street { 
-            display: flex; justify-content: space-around; padding: 40px 10px; 
-            background: white; margin: 20px; border-radius: var(--wt-radius); 
-        }
-        .briefcase-milestone { width: 45px; height: 45px; fill: var(--wt-teal); cursor: grab; }
-
-        /* PULSE CLASSES */
-        .heavy-ochre-pulse { filter: drop-shadow(0 0 10px var(--wt-ochre)); animation: pulse 2s infinite; }
-        .integrity-pulse-red { filter: drop-shadow(0 0 10px var(--wt-red)); animation: pulse 1.5s infinite; border: 2px solid var(--wt-red); }
+        /* ACT 3: THE PROTOTYPE (THE HANDSHAKE) */
+        #dashboard-app { height: 100vh; overflow-y: auto; padding: 20px; box-sizing: border-box; }
+        .logo-header { color: var(--wt-teal); font-weight: 600; font-size: 1.5rem; margin-bottom: 20px; }
+        #timeline-street { display: flex; gap: 20px; padding: 40px; background: white; border-radius: var(--wt-radius); }
+        .briefcase { width: 50px; fill: var(--wt-teal); }
+        .pulse-gold { filter: drop-shadow(0 0 10px #ffd600); animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
     </style>
 </head>
 <body>
 
     <div id="presentation-layer">
-        <video id="brand-video" autoplay muted playsinline>
-            <source src="your-video-link.mp4" type="video/mp4">
+        <video id="main-video" autoplay muted style="width:100%; height:100%; object-fit:cover;">
+            <source src="your-presentation-video.mp4" type="video/mp4">
         </video>
-        <div class="video-overlay">
-            <button onclick="toLogin()" class="skip-btn">Skip to Login →</button>
-        </div>
+        <button class="skip-btn" onclick="goToLogin()">Skip Presentation →</button>
     </div>
 
     <div id="login-screen">
         <div class="login-card">
-            <h1 class="logo-text">WorkTimeline™</h1>
-            <p class="slogan-text">Taking the Intake</p>
-            <input type="text" placeholder="Access Code" class="wt-input">
-            <button onclick="toDashboard()" class="login-btn">Enter the Center</button>
+            <svg class="briefcase" style="width:60px; margin-bottom:10px;" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg>
+            <h2 style="margin:0; color:#167e7c;">WorkTimeline™</h2>
+            <p style="font-size:0.8rem; margin-bottom:30px;">TAKING THE INTAKE</p>
+            <button class="clio-btn" onclick="goToDashboard()">
+                <img src="https://logowik.com/content/uploads/images/clio2942.jpg" width="20" style="border-radius:2px;"> 
+                Sign in with Clio
+            </button>
         </div>
     </div>
 
     <div id="dashboard-app">
-        <header class="header-main">
-            <h1 class="logo-text">WorkTimeline™</h1>
-            <p class="slogan-text">Taking the Intake</p>
-        </header>
-
+        <div class="logo-header">WorkTimeline™</div>
         <div id="timeline-street">
-            <svg class="briefcase-milestone" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg>
-            <svg class="briefcase-milestone heavy-ochre-pulse" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg>
-            <svg class="briefcase-milestone integrity-pulse-red" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg>
+            <svg class="briefcase" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg>
+            <svg class="briefcase pulse-gold" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg>
+        </div>
+        <div style="padding:20px; background:white; margin-top:20px; border-radius:24px;">
+            <h3>Contemporaneous Notes</h3>
+            <p>Clio Handshake Active: Syncing record 1042...</p>
         </div>
     </div>
 
     <script>
-        function toLogin() {
+        function goToLogin() {
             document.getElementById('presentation-layer').style.opacity = '0';
             setTimeout(() => { document.getElementById('presentation-layer').style.display = 'none'; }, 800);
         }
-        function toDashboard() {
+        function goToDashboard() {
             document.getElementById('login-screen').style.transform = 'translateY(-100%)';
         }
         Sortable.create(document.getElementById('timeline-street'), { animation: 150 });
