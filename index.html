@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeline™ | The Center</title>
+    <title>WorkTimeline™ | THE PROTOTYPE</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root { 
             --wt-teal: #167e7c; --wt-dark-teal: #0a2e2d; --wt-cream: #f8f5f1; 
@@ -13,17 +14,16 @@
         }
         body, html { margin: 0; padding: 0; font-family: 'Outfit', sans-serif; background: var(--wt-cream); overflow: hidden; height: 100%; }
 
-        /* ACT 1: ADVOCACY INTRO (TEAL TEXT) */
+        /* ACT 1: THE ADVOCACY INTRO */
         #layer-intro { 
             position: fixed; inset: 0; z-index: 9999; background: var(--wt-cream); 
             display: flex; align-items: center; justify-content: center; transition: 1.5s ease; 
         }
         .dialogue-text { color: var(--wt-teal); font-size: 1.8rem; font-weight: 300; text-align: center; max-width: 80%; transition: opacity 1s ease; line-height: 1.6; }
-        .stat-subtext { font-size: 1rem; color: #888; margin-top: 10px; font-weight: 400; }
+        .stat-subtext { font-size: 1rem; color: #888; margin-top: 15px; font-weight: 400; opacity: 0; transition: 1s; }
 
-        /* THE SUITCASE LOGO WITH THREADED TIMELINE */
+        /* THE SUITCASE LOGO */
         .suitcase-logo-box { text-align: center; margin-bottom: 25px; opacity: 0; transition: 2s; }
-        .st0{fill:none;stroke:var(--wt-teal);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
 
         /* ACT 2: GATEKEEPER LOGIN */
         #layer-login { position: fixed; inset: 0; z-index: 8888; background: var(--wt-cream); display: flex; align-items: center; justify-content: center; transition: 1s; visibility: hidden; opacity: 0; }
@@ -32,15 +32,29 @@
         .btn-submit { background: var(--wt-teal); color: white; border: none; padding: 16px; width: 100%; border-radius: 50px; cursor: pointer; font-weight: 600; margin-bottom: 15px; }
         .btn-clio-blue { background: var(--clio-blue); color: white; border: none; padding: 16px; width: 100%; border-radius: 50px; cursor: pointer; font-weight: 600; }
 
-        /* ACT 3: ENGINE */
+        /* ACT 3: THE PROTOTYPE STREET */
         #main-app { height: 100%; padding: 40px; box-sizing: border-box; overflow-y: auto; }
-        .street-card { display: flex; gap: 20px; padding: 75px 25px; background: var(--wt-gray); border-radius: 50px; justify-content: space-around; transition: 1.2s ease; margin-top: 25px; }
-        .street-card.locked { background: var(--wt-teal); }
-        .street-card.handshake { background: var(--wt-dark-teal); box-shadow: 0 0 60px rgba(22, 126, 124, 0.6); }
+        .street-container { 
+            display: flex; gap: 20px; padding: 80px 30px; background: var(--wt-gray); 
+            border-radius: 50px; justify-content: space-around; transition: 1.2s ease; margin-top: 30px;
+        }
+        .street-container.locked { background: var(--wt-teal); }
+        .street-container.handshake { background: var(--wt-dark-teal); box-shadow: 0 0 60px rgba(22, 126, 124, 0.6); }
 
-        .briefcase-svg { width: 60px; height: 60px; fill: white; }
+        /* DRAGGABLE MILESTONES */
+        .milestone { text-align: center; cursor: grab; width: 120px; transition: transform 0.2s; }
+        .milestone:active { cursor: grabbing; }
+        .briefcase-svg { width: 65px; height: 65px; fill: white; }
+        .label-text { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; margin-top: 15px; color: white; letter-spacing: 1.5px; }
+
+        /* OCHRE PATTERN RECOGNITION */
         .pulse-ochre { filter: drop-shadow(0 0 15px var(--wt-ochre)); animation: pEng 2.5s infinite; }
         @keyframes pEng { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+
+        .btn-master { padding: 20px; border-radius: 50px; width: 100%; border: none; margin-top: 40px; font-weight: 600; cursor: pointer; font-family: 'Outfit'; transition: 0.3s; }
+        
+        /* VAULT / PRIVACY */
+        .vault-active .privacy-sensitive { filter: blur(25px); opacity: 0.1; pointer-events: none; }
     </style>
 </head>
 <body id="master-body">
@@ -49,11 +63,9 @@
         <div style="text-align:center;">
             <div id="logo-header" class="suitcase-logo-box">
                 <svg width="120" height="80" viewBox="0 0 120 80">
-                    <path fill="var(--wt-teal)" d="M90,25H30c-2.8,0-5,2.2-5,5v35c0,2.8,2.2,5,5,5h60c2.8,0,5-2.2,5-5V30C95,27.2,92.8,25,90,25z M45,20c0-2.8,2.2-5,5-5h20c2.8,0,5,2.2,5,5v5H45V20z"/>
-                    <line x1="30" y1="50" x2="90" y2="50" stroke="white" stroke-width="2"/>
-                    <circle cx="40" cy="50" r="3" fill="white"/>
-                    <circle cx="60" cy="50" r="3" fill="white"/>
-                    <circle cx="80" cy="50" r="3" fill="white"/>
+                    <path fill="var(--wt-teal)" d="M90,25H30c-2.8,0-5,2.2-5,5v35c0,2.8,2.2,5,5,5h60c2.8,0,5,2.2,5,5V30C95,27.2,92.8,25,90,25z M45,20c0-2.8,2.2-5,5-5h20c2.8,0,5,2.2,5,5v5H45V20z"/>
+                    <line x1="30" y1="55" x2="90" y2="55" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                    <circle cx="40" cy="55" r="3" fill="white"/><circle cx="60" cy="55" r="3" fill="white"/><circle cx="80" cy="55" r="5" fill="var(--wt-ochre)"/>
                 </svg>
             </div>
             <p class="dialogue-text" id="intro-text">"They think you're invisible."</p>
@@ -63,59 +75,79 @@
 
     <div id="layer-login">
         <div class="login-card">
-            <h2 style="color: var(--wt-teal); margin-bottom: 5px; font-weight: 600;">Secure Entry</h2>
+            <h2 style="color: var(--wt-teal); font-weight: 600;">Secure Entry</h2>
             <p style="font-size: 0.7rem; letter-spacing: 2px; color: #888; margin-bottom: 30px;">WORKTIMELINE™ GATEWAY</p>
-            
-            <input type="text" class="input-field" placeholder="Enter Reference Number">
-            <button class="btn-submit" onclick="login()">Submit Reference</button>
-            
+            <input type="text" class="input-field" id="ref-num" placeholder="Enter Reference Number">
+            <button class="btn-submit" onclick="enterApp()">Submit Reference</button>
             <div style="margin: 20px 0; height: 1px; background: #eee;"></div>
-            
-            <button class="btn-clio-blue" onclick="login()">Login with Clio</button>
+            <button class="btn-clio-blue" onclick="enterApp()">Login with Clio</button>
         </div>
     </div>
 
     <div id="main-app">
-        <header style="margin-bottom:40px;">
-            <h2 style="color: var(--wt-teal); margin:0; font-weight:600;">WorkTimeline™</h2>
-            <p style="font-size: 0.7rem; color: #999; margin-top: 5px; max-width: 400px;">Helping the client with the first steps that they need to take to get to the center where they belong... so the firm can make them never look back.</p>
+        <header style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div>
+                <h2 style="color: var(--wt-teal); margin:0; font-weight:600;">WorkTimeline™</h2>
+                <p style="font-size: 0.7rem; color: #666; margin-top: 8px; max-width: 450px; line-height: 1.4;">
+                    WorkTimeline™ helps the client with the first steps that they need to take to get to the center where they belong... so the firm can make them never look back.
+                </p>
+            </div>
+            <div onclick="document.getElementById('master-body').classList.toggle('vault-active')" style="cursor:pointer; color:var(--wt-teal); text-align:center;">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M12 11c0-1.1.9-2 2-2s2 .9 2 2M8 11c0-3.3 2.7-6 6-6s6 2.7 6 6M12 21c-4.4 0-8-3.6-8-8 0-1.1.9-2 2-2s2 .9 2 2c0 2.2 1.8 4 4 4s4-1.8 4-4"/></svg>
+                <div style="font-size:0.5rem; font-weight:600;">SENSOR</div>
+            </div>
         </header>
 
-        <div id="street-engine" class="street-card">
-            <div class="milestone"><svg class="briefcase-svg" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg></div>
-            <div class="milestone"><svg class="briefcase-svg pulse-ochre" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9(removed to fit limit)z"/></svg></div>
+        <div id="prototype-street" class="street-container">
+            <div class="milestone" data-id="intake">
+                <svg class="briefcase-svg" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg>
+                <div class="label-text">Intake</div>
+            </div>
+            <div class="milestone" data-id="witness">
+                <svg class="briefcase-svg pulse-ochre" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg>
+                <div class="label-text">Witness</div>
+            </div>
+            <div class="milestone" data-id="setting">
+                <svg class="briefcase-svg" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg>
+                <div class="label-text">Setting</div>
+            </div>
         </div>
 
-        <button id="lock-btn" style="background:var(--wt-teal); color:white; padding:20px; border-radius:50px; width:100%; border:none; margin-top:30px; font-weight:600; cursor:pointer;" onclick="executeLock()">Lock Entry & Summarize</button>
+        <button id="main-action-btn" class="btn-master" style="background:var(--wt-teal); color:white;" onclick="lockTimeline()">Lock Entry & Summarize</button>
+
+        <div class="privacy-sensitive" id="summary-output" style="margin-top:40px; padding:30px; background:white; border-radius:35px; display:none; border:1px solid #eee;">
+            <h4 style="color:var(--wt-teal); margin-top:0;">Handshake Summary</h4>
+            <p id="log-text" style="font-size:0.9rem; color:#555; line-height:1.6;">Synchronizing with Supabase Cloud...</p>
+        </div>
     </div>
 
     <script>
         const sequence = [
-            { t: "\"They think you're invisible.\"", s: "In 2025, 74% of workplace violations went unreported due to fear." },
-            { t: "\"We see you.\"", s: "Every year, 1.2 million people successfully seek legal recourse." },
-            { t: "\"We hear you.\"", s: "You are not a number. You are part of a movement toward equity." },
-            { t: "\"This isn't a prison. It's just a gray area.\"", s: "The law was built for you, not against you." },
+            { t: "\"They think you're invisible.\"", s: "74% of workplace violations go unreported due to fear." },
+            { t: "\"We see you.\"", s: "1.2 Million people successfully seek legal recourse annually." },
+            { t: "\"We hear you.\"", s: "Your timeline is the foundation of your truth." },
+            { t: "\"This isn't a prison. It's just a gray area.\"", s: "We provide the light to navigate it." },
             { t: "\"We're not here to knock down the walls.\"", s: "We're here to remind you... there are none." },
             { t: "WorkTimeline™", s: "Taking the Intake" }
         ];
         
-        let i = 0;
+        let step = 0;
         const textEl = document.getElementById('intro-text');
         const statEl = document.getElementById('stat-text');
         const logoEl = document.getElementById('logo-header');
 
-        const interval = setInterval(() => {
-            if(i < sequence.length) {
+        const introLoop = setInterval(() => {
+            if(step < sequence.length) {
                 textEl.style.opacity = 0; statEl.style.opacity = 0;
                 setTimeout(() => {
-                    if (sequence[i].t === "WorkTimeline™") { logoEl.style.opacity = 1; }
-                    textEl.innerText = sequence[i].t;
-                    statEl.innerText = sequence[i].s;
+                    if (sequence[step].t === "WorkTimeline™") { logoEl.style.opacity = 1; }
+                    textEl.innerText = sequence[step].t;
+                    statEl.innerText = sequence[step].s;
                     textEl.style.opacity = 1; statEl.style.opacity = 1;
-                    i++;
+                    step++;
                 }, 1000);
             } else {
-                clearInterval(interval);
+                clearInterval(introLoop);
                 setTimeout(() => {
                     document.getElementById('layer-intro').style.opacity = 0;
                     setTimeout(() => { 
@@ -123,17 +155,32 @@
                         document.getElementById('layer-login').style.visibility = 'visible';
                         document.getElementById('layer-login').style.opacity = 1;
                     }, 1500);
-                }, 2500);
+                }, 2000);
             }
-        }, 4500); // SLOWED DOWN
+        }, 4500);
 
-        function login() { document.getElementById('layer-login').style.opacity = 0; setTimeout(() => { document.getElementById('layer-login').style.display = 'none'; }, 1000); }
-        function executeLock() {
-            document.getElementById('street-engine').classList.add('locked');
-            document.getElementById('lock-btn').innerText = "Commit to Cloud Handshake";
-            document.getElementById('lock-btn').onclick = function() {
-                document.getElementById('street-engine').classList.replace('locked', 'handshake');
-                this.style.display = 'none';
+        function enterApp() {
+            document.getElementById('layer-login').style.opacity = 0;
+            setTimeout(() => { document.getElementById('layer-login').style.display = 'none'; }, 1000);
+        }
+
+        // THE DRAG AND DROP PROTOTYPE ENGINE
+        Sortable.create(document.getElementById('prototype-street'), {
+            animation: 150,
+            ghostClass: 'sortable-ghost'
+        });
+
+        function lockTimeline() {
+            const street = document.getElementById('prototype-street');
+            const btn = document.getElementById('main-action-btn');
+            street.classList.add('locked');
+            document.getElementById('summary-output').style.display = 'block';
+            
+            btn.innerText = "Execute Cloud Handshake";
+            btn.onclick = function() {
+                street.classList.replace('locked', 'handshake');
+                document.getElementById('log-text').innerText = "HANDSHAKE VERIFIED: Data transmitted to Supabase & Clio.";
+                btn.style.display = 'none';
             };
         }
     </script>
