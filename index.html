@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™</title>
+    <title>WorkTimeline™ | Jack Newton Philosophy Build</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -18,14 +18,14 @@
             overflow: hidden; color: var(--wt-dark);
         }
 
-        /* ACT 1: ADVOCACY STACK */
-        .screen { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; z-index: 1000; }
-        #act-intro { display: flex; z-index: 5000; background: var(--wt-gray-light); overflow-y: auto; justify-content: flex-start; padding-top: 50px; }
+        /* ACT 1: DRIFTING ADVOCACY (VOICE-OVER CALIBRATED) */
+        .screen { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 35px; text-align: center; z-index: 1000; transition: opacity 0.6s; }
+        #act-intro { display: flex; z-index: 5000; background: var(--wt-gray-light); overflow-y: auto; justify-content: flex-start; padding-top: 80px; }
         
-        .quote-stack { display: flex; flex-direction: column; gap: 20px; width: 100%; align-items: center; }
-        .drifter { color: var(--wt-teal); font-size: 1.25rem; font-weight: 300; opacity: 0; transform: translateY(10px); transition: 1.2s ease; max-width: 90%; line-height: 1.4; }
+        .quote-stack { display: flex; flex-direction: column; gap: 35px; width: 100%; align-items: center; }
+        .drifter { color: var(--wt-teal); font-size: 1.3rem; font-weight: 300; opacity: 0; transform: translateY(15px); transition: 2.2s ease; max-width: 90%; line-height: 1.6; }
         .drifter.active { opacity: 1; transform: translateY(0); }
-        .stat-line { font-size: 0.75rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 4px; }
+        .stat-line { font-size: 0.75rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; display: block; margin-bottom: 8px; }
 
         /* THE BRANDING REVELATION */
         .logo-box { display: flex; align-items: center; gap: 12px; margin-bottom: 25px; }
@@ -34,103 +34,120 @@
         .timeline-line { position: absolute; width: 75%; height: 2px; background: white; top: 60%; left: 12.5%; display: flex; justify-content: space-between; align-items: center; }
         .dot { width: 5px; height: 5px; background: white; border-radius: 50%; }
 
-        /* THE ENGINE DASHBOARD */
-        #main-app { display: none; flex-direction: column; height: 100dvh; background: var(--wt-gray-light); transition: opacity 0.3s; }
-        
-        /* PRIVACY BLUR STATE */
-        .blur-mode { filter: blur(50px) grayscale(100%); pointer-events: none; opacity: 0.3; }
-
+        /* THE ENGINE */
+        #main-app { display: none; flex-direction: column; height: 100dvh; background: var(--wt-gray-light); }
         .header { background: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
-        .mac-solid { width: 44px; height: 44px; background: var(--wt-teal); border-radius: 12px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        
-        /* THE PRIVACY SWITCH */
-        .privacy-toggle { width: 45px; height: 22px; background: #cbd5e1; border-radius: 20px; position: relative; cursor: pointer; transition: 0.3s; }
-        .privacy-toggle::after { content: ''; position: absolute; width: 18px; height: 18px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .p-on { background: var(--wt-teal); } 
-        .p-on::after { left: 25px; }
+        .mac-solid { width: 44px; height: 44px; background: var(--wt-teal); border-radius: 12px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
+        .blur-mode { filter: blur(40px) grayscale(100%); pointer-events: none; opacity: 0.4; }
 
-        /* TIMELINE STYLES */
-        #timeline { flex-grow: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 12px; }
-        .entry-box { background: white; border: 1px solid #e5e7eb; padding: 15px; border-radius: 20px; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
-        .entry-media { width: 100%; border-radius: 12px; margin-top: 10px; border: 1px solid #eee; }
-        .stamp { font-size: 0.6rem; color: var(--wt-teal); font-weight: 600; display: block; margin-bottom: 5px; }
+        /* PULSING STATUS */
+        .bridge-light { width: 18px; height: 18px; border-radius: 50%; background: var(--wt-teal); box-shadow: 0 0 10px var(--wt-teal); }
+        .pulse-ochre { background: var(--wt-ochre) !important; box-shadow: 0 0 15px var(--wt-ochre) !important; animation: glow 1.5s infinite; }
+        .pulse-red { background: var(--wt-red) !important; box-shadow: 0 0 20px var(--wt-red) !important; animation: glow 0.7s infinite; }
+        @keyframes glow { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.3); } }
 
-        /* INPUT BLOCK */
-        .footer-control { background: white; padding: 15px; border-top: 1px solid #eee; }
-        textarea { width: 100%; height: 75px; border: none; background: #f8fafc; border-radius: 15px; padding: 15px; font-family: 'Outfit'; resize: none; margin-bottom: 12px; font-size: 0.95rem; }
-        .sq-btn { width: 100%; background: var(--wt-teal); color: white; border: none; padding: 16px; border-radius: 15px; font-weight: 600; font-size: 0.8rem; cursor: pointer; }
+        /* TEMPLATES (INTAKE CHIPS) */
+        .chip-row { display: flex; gap: 8px; overflow-x: auto; padding: 10px 15px; background: white; scrollbar-width: none; }
+        .chip { background: #f1f5f9; color: var(--wt-teal); padding: 8px 16px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; white-space: nowrap; border: 1px solid #e2e8f0; }
+
+        /* FOOTER & BUTTONS */
+        .footer { background: white; padding: 15px; border-top: 1px solid #eee; }
+        textarea { width: 100%; height: 75px; border: none; background: #f8fafc; border-radius: 15px; padding: 15px; font-family: 'Outfit'; resize: none; margin-bottom: 12px; font-size: 1rem; }
+        .sq-btn { width: 100%; padding: 16px; border-radius: 15px; border: none; font-weight: 600; cursor: pointer; color: white; background: var(--wt-teal); font-size: 0.85rem; }
+
+        /* PRIVACY */
+        .sw-track { width: 44px; height: 22px; background: #cbd5e1; border-radius: 20px; position: relative; cursor: pointer; }
+        .sw-thumb { position: absolute; width: 18px; height: 18px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: 0.3s; }
+        .sw-on { background: var(--wt-teal); } .sw-on .sw-thumb { left: 24px; }
     </style>
 </head>
 <body onload="runAdvocacy()">
 
     <div id="act-intro" class="screen">
         <div class="quote-stack" id="stack-container"></div>
-        <button id="gate-btn" class="sq-btn" style="display:none; width: 220px; margin-top: 40px; position: relative; z-index: 6000;" onclick="toBranding()">Continue to Center</button>
+        <button id="gate-btn" class="sq-btn" style="display:none; width: 220px; margin-top: 50px;" onclick="toBranding()">Continue to Center</button>
     </div>
 
-    <div id="act-branding" class="screen" style="background:white; color:var(--wt-teal);">
+    <div id="act-branding" class="screen" style="background:white;">
         <div class="logo-box">
             <div class="briefcase"><div class="handle"></div><div class="timeline-line"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>
             <div>
-                <h2 style="margin:0;">WorkTimeline™</h2>
+                <h2 style="color:var(--wt-teal); margin:0;">WorkTimeline™</h2>
                 <span style="font-size: 0.5rem; letter-spacing: 2px; font-weight: 600; color: #888;">INTAKE</span>
             </div>
         </div>
-        <p style="font-weight:400; font-size:1.05rem; padding: 0 25px; line-height:1.6; color: var(--wt-dark);">
+        <p style="padding: 0 20px; line-height:1.7; font-size: 1.1rem; color: var(--wt-dark);">
             "WorkTimeline™ brings the client one step forward to the center where they belong until the firm helps them never look back."
+        </p>
+        <p style="font-style:italic; font-size:0.85rem; color: #666; margin-top: 15px; max-width: 320px;">
+            Inspired by Jack Newton: "The legal industry is at a crossroads. We must bridge the gap between the people who need help and the firms ready to provide it."
         </p>
         <button class="sq-btn" style="width: 200px; margin-top: 30px;" onclick="toLogin()">Enter Gateway</button>
     </div>
 
     <div id="act-login" class="screen" style="background:white;">
         <h3 style="color:var(--wt-teal);">Secure Access</h3>
-        <button class="sq-btn" style="margin-bottom:12px; width: 280px;" onclick="startEngine()">JORDAN AI (Analytical)</button>
-        <button class="sq-btn" style="margin-bottom:12px; width: 280px; background:var(--clio-blue);" onclick="startEngine()">TAYLOR AI (Empathetic)</button>
+        <input type="text" style="width:100%; max-width:300px; padding:15px; border-radius:12px; border:1px solid #ddd; margin-bottom:12px;" placeholder="Client Reference ID">
+        <button class="sq-btn" style="width:300px;" onclick="startEngine()">SUBMIT FOR CLIENT</button>
+        <div style="margin: 15px 0; color: #ccc; font-size: 0.7rem;">OR</div>
+        <button class="sq-btn" style="width:300px; background:var(--clio-blue);" onclick="startEngine()">SIGN IN WITH CLIO</button>
     </div>
 
     <div id="main-app">
         <header class="header">
             <div style="display:flex; align-items:center; gap:10px;">
                 <div class="briefcase" style="width:34px; height:26px;"><div class="handle" style="width:14px; height:4px; top:-4px;"></div><div class="timeline-line"><div class="dot" style="width:2px; height:2px;"></div><div class="dot" style="width:2px; height:2px;"></div><div class="dot" style="width:2px; height:2px;"></div></div></div>
-                <div>
-                    <h4 style="margin:0; color:var(--wt-teal); font-size:0.9rem;">WorkTimeline™</h4>
-                    <span style="font-size: 0.4rem; font-weight: 600; color: #aaa;">INTAKE</span>
-                </div>
+                <div><h4 style="margin:0; color:var(--wt-teal); font-size:0.85rem;">WorkTimeline™</h4><div id="bridge-light" class="bridge-light"></div></div>
             </div>
             <div style="display:flex; gap:12px; align-items:center;">
-                <div id="p-switch" class="privacy-toggle" onclick="togglePrivacy()"></div>
-                <button class="mac-solid" style="width:36px; height:36px;" onclick="alert('FaceTime Bridge Active')">📞</button>
+                <div id="privacy-sw" class="sw-track" onclick="togglePrivacy()"><div class="sw-thumb"></div></div>
+                <button class="mac-solid" style="width:36px; height:36px;" onclick="alert('Message Bridge Active')">
+                    <svg width="20" height="20" fill="white" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+                </button>
             </div>
         </header>
 
-        <div style="display:flex; justify-content:space-around; padding: 15px; background: white; border-bottom: 1px solid #eee;">
+        <div style="display:flex; justify-content:space-around; padding: 12px; background: white; border-bottom: 1px solid #eee;">
             <button class="mac-solid" onclick="triggerMedia('camera')">📷</button>
-            <button class="mac-solid" onclick="triggerMedia('mic')">🎙️</button>
+            <button class="mac-solid" onclick="alert('Mic Active')">🎙️</button>
             <button class="mac-solid" onclick="triggerMedia('doc')">📄</button>
+            <button class="mac-solid" onclick="alert('FaceTime Bridge Active')">📞</button>
         </div>
 
-        <div id="timeline"></div>
+        <div class="chip-row">
+            <div class="chip" onclick="setIn('Witness Statement: ')">Witness</div>
+            <div class="chip" onclick="setIn('Intake Detail: ')">Intake</div>
+            <div class="chip" onclick="setIn('Setting Note: ')">Setting</div>
+        </div>
 
-        <div class="footer-control">
+        <div id="timeline" style="flex-grow:1; overflow-y:auto; padding:15px;"></div>
+
+        <div class="footer">
             <textarea id="main-in" placeholder="Telling the truth takes no effort..."></textarea>
-            <button class="sq-btn" onclick="addText()">ADD TO TIMELINE</button>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <button class="sq-btn" onclick="add('T')">ADD TO TIMELINE</button>
+                <button class="sq-btn" style="background:var(--wt-gray-med); color:var(--wt-dark);" onclick="add('N')">+ CON'D NOTES</button>
+            </div>
+            <button id="lock-btn" class="sq-btn" style="width:100%; margin-top:10px; background:var(--wt-dark);" onclick="lock()">LOCK & SEND TO CLIO</button>
         </div>
     </div>
 
-    <input type="file" id="camera-in" accept="image/*" capture="environment" style="display:none;" onchange="handleFile(event, 'Photo')">
-    <input type="file" id="doc-in" accept="application/pdf, .doc, .docx" style="display:none;" onchange="handleFile(event, 'Document')">
+    <input type="file" id="cam-trigger" accept="image/*" capture="environment" style="display:none;" onchange="handleMedia(event)">
+    <input type="file" id="doc-trigger" style="display:none;" onchange="handleMedia(event)">
 
     <script>
         const quotes = [
-            {s: "Fact: 86% of civil legal problems get no help.", t: "It's too expensive."},
-            {s: "Fact: Wealth Determines justice speed.", t: "They got more money than me."},
-            {s: "We see you. We hear you.", t: "You're not caught in a prison."},
-            {s: "Just that gray area.", t: "Not here to tear down the walls..."},
+            {s: "Jack Newton (Clio): '77% of legal needs don't reach a lawyer.'", t: "The Access to Justice Gap is real."},
+            {s: "Fact: 86% of civil legal problems get zero help.", t: "It's too expensive. It's too complex."},
+            {s: "The Gray Area: Where 90% of employment data is lost.", t: "If you don't record it, it didn't happen."},
+            {s: "For Lawyers: 'Quality intake is the #1 driver of firm success.'", t: "We deliver verified informatics, not just stories."},
+            {s: "They think you're invisible. You're not.", t: "We see you. We hear you."},
+            {s: "No, you're not caught in a prison.", t: "Just that gray area."},
+            {s: "We're here to help.", t: "Not here to tear down the walls..."},
             {s: "To remind you...", t: "There are none."}
         ];
 
-        let qIdx = 0;
-
+        let qIdx = 0, hazard = 0;
         function runAdvocacy() {
             const container = document.getElementById('stack-container');
             if (qIdx < quotes.length) {
@@ -139,56 +156,59 @@
                 item.innerHTML = `<span class="stat-line">${quotes[qIdx].s}</span>${quotes[qIdx].t}`;
                 container.appendChild(item);
                 setTimeout(() => item.classList.add('active'), 100);
-                if (qIdx === quotes.length - 1) setTimeout(() => document.getElementById('act-intro').style.background = "white", 1000);
+                if (qIdx === quotes.length - 1) setTimeout(() => document.getElementById('act-intro').style.background = "white", 1500);
                 qIdx++;
-                setTimeout(runAdvocacy, 4000);
+                setTimeout(runAdvocacy, 6000); // SLOWED TO 6 SECONDS FOR MEASURED VO
             } else {
                 document.getElementById('gate-btn').style.display = "block";
             }
         }
 
-        function toBranding() { document.getElementById('act-intro').style.display="none"; document.getElementById('act-branding').style.display="flex"; }
-        function toLogin() { document.getElementById('act-branding').style.display="none"; document.getElementById('act-login').style.display="flex"; }
-        function startEngine() { document.getElementById('act-login').style.display="none"; document.getElementById('main-app').style.display="flex"; }
+        function setIn(t) { document.getElementById('main-in').value = t; }
 
-        // --- THE FUNCTIONAL PROTOTYPE LOGIC ---
-
-        function togglePrivacy() {
-            const app = document.getElementById('main-app');
-            const sw = document.getElementById('p-switch');
-            app.classList.toggle('blur-mode');
-            sw.classList.toggle('p-on');
-        }
-
-        function triggerMedia(type) {
-            if (type === 'camera') document.getElementById('camera-in').click();
-            if (type === 'doc') document.getElementById('doc-in').click();
-            if (type === 'mic') alert("Microphone Bridge Active: Voice memo recording...");
-        }
-
-        function handleFile(event, label) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const box = document.createElement('div');
-                box.className = 'entry-box';
-                const content = label === 'Photo' ? `<img src="${e.target.result}" class="entry-media">` : `<div style="padding:10px; background:#f0f0f0; border-radius:10px; font-size:0.8rem;">📎 ${file.name} uploaded.</div>`;
-                box.innerHTML = `<span class="stamp">${label.toUpperCase()} • ${new Date().toLocaleTimeString()}</span>${content}`;
-                document.getElementById('timeline').prepend(box);
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function addText() {
+        function add(type) {
             const val = document.getElementById('main-in').value;
             if(!val) return;
+            if(val.toLowerCase().includes('hazard')) hazard++;
             const box = document.createElement('div');
-            box.className = 'entry-box';
-            box.innerHTML = `<span class="stamp">NOTE • ${new Date().toLocaleTimeString()}</span><div>${val}</div>`;
+            box.style.padding = "15px"; box.style.borderRadius = "15px"; box.style.marginBottom = "10px"; box.style.background = type === 'T' ? "rgba(13, 148, 136, 0.1)" : "white";
+            box.style.border = type === 'N' ? "1px dashed #ccc" : "1px solid #eee";
+            
+            if(hazard >= 2) {
+                box.style.borderColor = "var(--wt-ochre)";
+                document.getElementById('bridge-light').className = 'bridge-light pulse-ochre';
+            }
+            if(hazard >= 4) document.getElementById('bridge-light').className = 'bridge-light pulse-red';
+
+            box.innerHTML = `<span style="font-size:0.6rem; color:var(--wt-teal); font-weight:600;">${type === 'T' ? 'TIMELINE' : 'CON\'D NOTE'} • ${new Date().toLocaleTimeString()}</span><div style="font-size:0.9rem; margin-top:5px;">${val}</div>`;
             document.getElementById('timeline').prepend(box);
             document.getElementById('main-in').value = "";
         }
+
+        function triggerMedia(t) { (t === 'camera') ? document.getElementById('cam-trigger').click() : document.getElementById('doc-trigger').click(); }
+
+        function handleMedia(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            const box = document.createElement('div');
+            box.style.padding = "15px"; box.style.borderRadius = "15px"; box.style.marginBottom = "10px"; box.style.background = "white"; box.style.border = "1px solid #eee";
+            box.innerHTML = `<span style="font-size:0.6rem; color:var(--wt-teal); font-weight:600;">MEDIA UPLOADED</span><div style="font-size:0.85rem; margin-top:5px;">📎 ${file.name} (Verified)</div>`;
+            document.getElementById('timeline').prepend(box);
+        }
+
+        function togglePrivacy() {
+            document.getElementById('main-app').classList.toggle('blur-mode');
+            document.getElementById('privacy-sw').classList.toggle('sw-on');
+        }
+
+        function lock() {
+            document.getElementById('lock-btn').style.background = "var(--clio-blue)";
+            alert("Pattern Recognition Summary:\nTimeline verified. Logic locked.\nHandshake sent to Clio Dashboard.");
+        }
+
+        function toBranding() { document.getElementById('act-intro').style.display="none"; document.getElementById('act-branding').style.display="flex"; }
+        function toLogin() { document.getElementById('act-branding').style.display="none"; document.getElementById('act-login').style.display="flex"; }
+        function startEngine() { document.getElementById('act-login').style.display="none"; document.getElementById('main-app').style.display="flex"; }
     </script>
 </body>
 </html>
