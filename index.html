@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Master Fidelity</title>
+    <title>WorkTimeline™ | Bridge</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root { 
             --wt-teal: #0d9488; --wt-gray-light: #f8fafc; --wt-dark: #0f172a; 
-            --wt-ochre: #d97706; --wt-red: #dc2626; --wt-risk-bg: #fff1f2;
-            --mac-radius: 22px; --clio-blue: #0056b3;
+            --wt-ochre: #d97706; --wt-red: #dc2626; --clio-blue: #0056b3;
+            --mac-radius: 22px;
         }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         
@@ -19,185 +19,177 @@
             overflow: hidden; color: var(--wt-dark);
         }
 
-        /* SCREEN LAYERS */
-        .layer { position: fixed; inset: 0; z-index: 10000; transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; }
-        #act-intro { display: none; }
-        #act-branding { display: none; background: white; }
-        #gate-btn { display: none; padding: 20px 40px; border-radius: var(--mac-radius); border: none; background: var(--wt-teal); color: white; font-weight: 600; cursor: pointer; margin-top: 30px; }
-
-        /* CINEMATIC PRESENTATION (No Walls, Extended, +20s Pacing) */
+        /* ACT 1: PRESENTATION (SINGLE PHRASE) */
+        .layer { position: fixed; inset: 0; z-index: 10000; background: var(--wt-gray-light); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; }
         #stage { width: 100%; height: 350px; display: flex; align-items: center; justify-content: center; position: relative; }
-        .phrase { position: absolute; width: 100%; opacity: 0; transition: 1.5s cubic-bezier(0.4, 0, 0.2, 1); transform: translateY(20px); }
+        .phrase { position: absolute; width: 100%; opacity: 0; transition: 1.5s ease-in-out; transform: translateY(20px); }
         .phrase.active { opacity: 1; transform: translateY(0); }
         .stat-tag { font-size: 0.9rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 20px; }
         .main-quote { color: var(--wt-teal); font-size: 1.5rem; font-weight: 400; line-height: 1.4; }
 
-        /* THE ENGINE */
-        #main-app { display: none; flex-direction: column; height: 100dvh; z-index: 10; }
-        .header { background: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; z-index: 11000; position: relative; }
-        
-        /* STATUS & PRIVACY */
+        /* ACT 2: ENGINE */
+        #main-app { display: none; flex-direction: column; height: 100dvh; }
+        .header { background: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; z-index: 11000; }
         .ai-pulse { width: 14px; height: 14px; border-radius: 50%; background: var(--wt-teal); display: inline-block; margin-right: 10px; transition: 0.3s; }
-        .pulse-warn { animation: aiGlow 1.2s infinite; background: var(--wt-ochre) !important; box-shadow: 0 0 10px var(--wt-ochre); }
-        .pulse-alert { animation: aiGlow 0.6s infinite; background: var(--wt-red) !important; box-shadow: 0 0 15px var(--wt-red); }
-        @keyframes aiGlow { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.5; } }
+        .pulse-warn { animation: glow 1.2s infinite; background: var(--wt-ochre) !important; }
+        .pulse-alert { animation: glow 0.6s infinite; background: var(--wt-red) !important; }
+        @keyframes glow { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.5; } }
 
+        /* PRIVACY */
         .sw-track { width: 50px; height: 26px; background: #e2e8f0; border-radius: 30px; position: relative; cursor: pointer; }
         .sw-thumb { position: absolute; width: 20px; height: 20px; background: white; border-radius: 50%; top: 3px; left: 3px; transition: 0.3s; }
         .sw-on { background: var(--wt-teal); } .sw-on .sw-thumb { left: 27px; }
         .blur-active { filter: blur(60px) grayscale(100%); pointer-events: none; opacity: 0.2; }
 
-        /* INFORMATICS KEY (LEGEND) */
-        .informatics-key { font-size: 0.6rem; color: #64748b; display: flex; gap: 15px; justify-content: center; padding: 8px 15px; background: #fcfcfc; border-bottom: 1px solid #f1f5f9; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        /* MODES (TIMELINE / NOTES / CHAT) */
+        .mode-selector { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 12px; background: white; }
+        .mode-btn { padding: 12px; border-radius: 14px; border: 1.5px solid #eee; background: #fcfcfc; font-size: 0.65rem; font-weight: 800; color: #94a3b8; cursor: pointer; text-transform: uppercase; }
+        .mode-btn.active { background: var(--wt-teal); color: white; border-color: var(--wt-teal); }
 
-        /* ORGANIZED LAYOUT (TWO VIEWING PANES) */
-        .workspace { flex-grow: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; overflow: hidden; background: #fcfcfc; }
-        .organized-pane { background: rgba(255,255,255,0.5); border-radius: 18px; border: 1px solid #eee; overflow: hidden; display: flex; flex-direction: column; }
-        .pane-label { font-size: 0.6rem; font-weight: 800; padding: 10px 15px; color: #64748b; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #eee; background: #fff; }
-        .pane-list { flex-grow: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
-        
-        /* CARD STYLES */
-        .organized-card { background: white; padding: 15px; border-radius: 15px; font-size: 0.8rem; border: 1px solid #f1f5f9; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+        /* PANES */
+        .stage-area { flex-grow: 1; position: relative; overflow: hidden; background: #fcfcfc; }
+        .pane { position: absolute; inset: 0; padding: 15px; overflow-y: auto; display: none; flex-direction: column; gap: 12px; }
+        .pane.active { display: flex; }
+        .card { background: white; padding: 15px; border-radius: 18px; border: 1px solid #f1f5f9; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
         .timestamp { font-size: 0.55rem; color: var(--wt-teal); font-weight: 700; margin-bottom: 5px; display: block; }
 
-        /* INPUT AREA */
-        .media-bar { display: flex; justify-content: space-around; padding: 12px; background: white; border-top: 1px solid #f1f5f9; }
-        .mac-icon { width: 44px; height: 44px; background: var(--wt-teal); border-radius: 14px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; fill: white; }
+        /* CHAT BUBBLES */
+        .msg { max-width: 80%; padding: 12px; border-radius: 15px; font-size: 0.85rem; margin-bottom: 8px; }
+        .msg-me { align-self: flex-end; background: var(--wt-teal); color: white; border-bottom-right-radius: 4px; }
+        .msg-lawyer { align-self: flex-start; background: #e2e8f0; color: var(--wt-dark); border-bottom-left-radius: 4px; }
+
+        /* FOOTER & BUTTONS */
+        .media-bar { display: flex; justify-content: space-around; padding: 15px; background: white; border-top: 1px solid #f1f5f9; }
+        .mac-icon { width: 48px; height: 48px; background: var(--wt-teal); border-radius: 16px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; fill: white; }
         
-        .footer { background: white; padding: 15px; border-top: 1px solid #f1f5f9; z-index: 11000; position: relative; }
-        textarea { width: 100%; height: 75px; border: 1.5px solid #f1f5f9; background: #f8fafc; border-radius: 15px; padding: 15px; font-family: 'Outfit'; resize: none; margin-bottom: 12px; font-size: 0.9rem; }
-        .button-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .submit-btn { width: 100%; padding: 16px; border-radius: 15px; border: none; font-weight: 600; cursor: pointer; color: white; background: var(--wt-teal); font-size: 0.85rem; transition: 0.3s; }
-        .btn-gray { background: #e2e8f0; color: var(--wt-dark); }
-        .btn-clio { background: var(--clio-blue); }
+        .footer { background: white; padding: 20px; border-top: 1px solid #f1f5f9; }
+        textarea { width: 100%; height: 70px; border: 1.5px solid #f1f5f9; border-radius: 18px; padding: 15px; font-family: 'Outfit'; resize: none; margin-bottom: 12px; font-size: 0.95rem; }
+        .submit-btn { width: 100%; padding: 18px; border-radius: 18px; border: none; font-weight: 600; cursor: pointer; color: white; background: var(--wt-teal); font-size: 0.85rem; transition: 0.4s; }
+        .btn-clio { background: var(--clio-blue) !important; }
     </style>
 </head>
-<body onload="startCinematic()">
+<body onload="runIntro()">
 
-    <div id="act-intro" class="layer full-screen" style="display:flex;">
+    <div id="act-intro" class="layer">
         <div id="stage"></div>
-        <button id="gate-btn" onclick="toBranding()">CONTINUE NARRATIVE</button>
-    </div>
-
-    <div id="act-branding" class="layer">
-        <h2 style="color:var(--wt-teal); margin:0;">WorkTimeline™</h2>
-        <p style="padding: 20px; font-size: 1.2rem; font-weight: 300;">
-            "WorkTimeline™ helps the client take their first step forward to the center where they belong, so the firms can help them never look back."
-        </p>
-        <button class="sq-btn" style="width: 220px;" onclick="enterApp()">ENTER GATEWAY</button>
+        <button id="gate-btn" class="submit-btn" style="display:none; width: 220px;" onclick="enterApp()">CONTINUE</button>
     </div>
 
     <div id="main-app">
         <header class="header">
             <div style="display:flex; align-items:center;">
                 <div id="ai-status" class="ai-pulse"></div>
-                <h4 style="margin:0; color:var(--wt-teal); font-weight:600; font-size:1rem;">WorkTimeline</h4>
+                <h4 style="margin:0; color:var(--wt-teal); font-weight:600;">WorkTimeline™</h4>
             </div>
             <div id="privacy-sw" class="sw-track" onclick="togglePrivacy()"><div class="sw-thumb"></div></div>
         </header>
 
-        <div class="informatics-key">
-            <div><span style="font-weight:900;">• STATUS:</span> Risk Detected</div>
-            <div><span style="font-weight:900;">•</span> Tamper-Proof Stamp</div>
-        </div>
+        <div id="app-shell" style="display:flex; flex-direction:column; flex-grow:1;">
+            <div class="mode-selector">
+                <button id="btn-T" class="mode-btn active" onclick="switchMode('T')">Timeline</button>
+                <button id="btn-N" class="mode-btn" onclick="switchMode('N')">Notes</button>
+                <button id="btn-C" class="mode-btn" onclick="switchMode('C')">Chat</button>
+            </div>
 
-        <div id="app-shell" style="display: flex; flex-direction: column; flex-grow: 1;">
-            <div class="workspace">
-                <div class="organized-pane">
-                    <div class="pane-label">Timeline Track</div>
-                    <div id="list-timeline" class="pane-list"></div>
-                </div>
-                <div class="organized-pane">
-                    <div class="pane-label">Con'd Notes</div>
-                    <div id="list-notes" class="pane-list"></div>
+            <div class="stage-area">
+                <div id="pane-T" class="pane active"></div>
+                <div id="pane-N" class="pane"></div>
+                <div id="pane-C" class="pane">
+                    <div class="msg msg-lawyer">Secure Counsel Bridge active. How can I help you with your case today?</div>
                 </div>
             </div>
 
             <div class="media-bar">
-                <button class="mac-icon" onclick="triggerSys('camera')"><svg class="mac-svg" width="22" height="22" viewBox="0 0 24 24"><path d="M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm9 3.5V6a2 2 0 0 0-2-2h-3.2l-1.3-1.7a1 1 0 0 0-.8-.3H9.3a1 1 0 0 0-.8.3L7.2 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5z"/></svg></button>
-                <button class="mac-icon" onclick="alert('Voice Bridge Active')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg></button>
+                <button class="mac-icon" onclick="triggerSys('camera')"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm9 3.5V6a2 2 0 0 0-2-2h-3.2l-1.3-1.7a1 1 0 0 0-.8-.3H9.3a1 1 0 0 0-.8.3L7.2 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5z"/></svg></button>
+                <button class="mac-icon" onclick="alert('Mic Recording for Duo...')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg></button>
                 <button class="mac-icon" onclick="triggerSys('doc')"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6z"/></svg></button>
-                <button class="mac-icon" onclick="window.location.href='tel:5551234567'"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></button>
+                <button class="mac-icon" onclick="window.location.href='tel:1234567890'"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></button>
             </div>
 
             <div class="footer">
-                <textarea id="main-in" placeholder="Truth requires zero effort..." oninput="patternMatch(this.value)"></textarea>
-                <div class="button-row">
-                    <button class="submit-btn" onclick="commitEntry('Timeline')">Add Timeline</button>
-                    <button class="submit-btn btn-gray" onclick="commitEntry('Note')">+ Con'd Notes</button>
-                </div>
-                <button id="lock-btn" class="sq-btn btn-clio" style="margin-top:10px; font-size:0.7rem;" onclick="clioHandshake()">LOCK & SUBMIT TO CLIO</button>
+                <textarea id="main-in" placeholder="Truth requires zero effort..." oninput="patternRec(this.value)"></textarea>
+                <button id="main-action" class="submit-btn" onclick="commit()">ADD TO TIMELINE</button>
+                <button id="clio-btn" class="submit-btn" style="margin-top:10px; font-size:0.7rem; background:#333;" onclick="duoHandshake()">LOCK & SUMMARIZE FOR CLIO DUO</button>
             </div>
         </div>
     </div>
 
-    <input type="file" id="camera-act" accept="image/*" capture="environment" style="display:none;" onchange="mediaCommitted('Photo')">
-    <input type="file" id="doc-act" style="display:none;" onchange="mediaCommitted('File')">
+    <input type="file" id="sys-cam" accept="image/*" capture="environment" style="display:none;" onchange="mediaDone('Photo')">
+    <input type="file" id="sys-doc" style="display:none;" onchange="mediaDone('Doc')">
 
     <script>
         const script = [
             {s: "Jack Newton (Clio): '77% of legal needs go unmet.'", t: "Bridging the Access Gap."},
-            {s: "ROI: Intake is the #1 driver of firm success.", t: "Automated informatics, not manual stories."},
-            {s: "They think you're invisible. You're not.", t: "No, you're not caught in a prison..."},
-            {s: "Just that gray area.", t: "Record the truth instantly. Reminding you..."},
-            {s: "Justice is now effortless.", t: "There are no walls."}
+            {s: "ROI: Lawyers save $4,200 per informatics-ready case.", t: "Quality data drives success."},
+            {s: "They say you're invisible. You're not.", t: "We hear you. We see you."},
+            {s: "Prison?", t: "It's just that gray area. No walls."},
+            {s: "It's okay. We got you.", t: "Reminding you... there are none."}
         ];
         
-        let pIdx = 0;
-        function startCinematic() {
+        let pIdx = 0, currentMode = 'T';
+
+        function runIntro() {
             const stage = document.getElementById('stage');
             if (pIdx < script.length) {
                 stage.innerHTML = '';
-                const el = document.createElement('div');
-                el.className = 'phrase';
+                const el = document.createElement('div'); el.className = 'phrase';
                 el.innerHTML = `<span class="stat-tag">${script[pIdx].s}</span><span class="main-quote">${script[pIdx].t}</span>`;
                 stage.appendChild(el);
                 setTimeout(() => el.classList.add('active'), 100);
                 setTimeout(() => {
                     el.classList.remove('active');
-                    setTimeout(() => { pIdx++; startCinematic(); }, 1200);
-                }, 6000); // 6s PACING FOR VOICE OVER
+                    setTimeout(() => { pIdx++; runIntro(); }, 1200);
+                }, 6000);
             } else { document.getElementById('gate-btn').style.display = 'block'; }
         }
 
-        function triggerSys(action) {
-            if(action === 'camera') document.getElementById('camera-act').click();
-            if(action === 'doc') document.getElementById('doc-act').click();
+        function switchMode(m) {
+            currentMode = m;
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+            document.getElementById('btn-' + m).classList.add('active');
+            document.getElementById('pane-' + m).classList.add('active');
+            
+            const btn = document.getElementById('main-action');
+            if(m === 'T') btn.innerText = "ADD TO TIMELINE";
+            else if(m === 'N') btn.innerText = "SAVE TO NOTES";
+            else btn.innerText = "SEND MESSAGE TO LAWYER";
         }
 
-        function mediaCommitted(type) {
-            const list = document.getElementById('list-timeline');
-            const card = document.createElement('div'); card.className = 'organized-card';
-            const now = new Date();
-            const fullStamp = `${now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} @ ${now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
-            card.innerHTML = `<span class="timestamp">${type.toUpperCase()} CAPTURED • ${fullStamp}</span>Verified informatics attached to Track.`;
-            list.prepend(card);
-        }
-
-        function patternMatch(val) {
-            const status = document.getElementById('ai-status');
-            const critical = ['tampering', 'hazard', 'harassment', 'threat'];
-            const matches = critical.filter(w => val.toLowerCase().includes(w)).length;
-            if(matches >= 2) status.className = 'ai-pulse pulse-alert';
-            else if(matches >= 1) status.className = 'ai-pulse pulse-warn';
-            else status.className = 'ai-pulse';
-        }
-
-        function commitEntry(type) {
+        function commit() {
             const val = document.getElementById('main-in').value; if(!val) return;
-            const targetPane = type === 'Timeline' ? 'list-timeline' : 'list-notes';
-            const list = document.getElementById(targetPane);
-            const card = document.createElement('div'); card.className = 'organized-card';
             const now = new Date();
-            const fullStamp = `${now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} @ ${now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
-            card.innerHTML = `<span class="timestamp">${type.toUpperCase()} • ${fullStamp}</span>${val}`;
-            list.prepend(card); document.getElementById('main-in').value = "";
+            const stamp = `${now.toLocaleDateString()} @ ${now.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit', second:'2-digit'})}`;
+            
+            if(currentMode === 'C') {
+                const bubble = document.createElement('div');
+                bubble.className = 'msg msg-me'; bubble.innerText = val;
+                document.getElementById('pane-C').appendChild(bubble);
+            } else {
+                const card = document.createElement('div'); card.className = 'card';
+                card.innerHTML = `<span class="timestamp">${currentMode === 'T' ? 'TIMELINE' : 'NOTE'} • ${stamp}</span>${val}`;
+                document.getElementById('pane-' + currentMode).prepend(card);
+            }
+            document.getElementById('main-in').value = "";
             document.getElementById('ai-status').className = 'ai-pulse';
         }
 
-        function clioHandshake() { alert("Submission Handshake sent to Legal Cloud Dashboard."); }
-        function toBranding() { document.getElementById('act-intro').style.display = 'none'; document.getElementById('act-branding').style.display = 'flex'; }
-        function enterApp() { document.getElementById('act-branding').style.display = 'none'; document.getElementById('main-app').style.display = 'flex'; }
+        function triggerSys(a) { if(a === 'camera') document.getElementById('sys-cam').click(); else document.getElementById('sys-doc').click(); }
+        function mediaDone(t) { switchMode('T'); document.getElementById('main-in').value = `[${t} Attached]`; commit(); }
+
+        function duoHandshake() {
+            const btn = document.getElementById('clio-btn');
+            btn.className = 'submit-btn btn-clio'; btn.innerText = 'DASHBOARD CONNECTED';
+            alert("Clio Duo Analysis:\n- Timeline Events Sync'd\n- Notes Informatics Locked\n- Counsel Chat Encrypted\n\nHandshake Successful.");
+        }
+
+        function patternRec(v) {
+            const ai = document.getElementById('ai-status');
+            if(v.toLowerCase().includes('hazard') || v.toLowerCase().includes('threat')) ai.className = 'ai-pulse pulse-alert';
+            else ai.className = 'ai-pulse';
+        }
+
+        function enterApp() { document.getElementById('act-intro').style.display = 'none'; document.getElementById('main-app').style.display = 'flex'; }
         function togglePrivacy() { document.getElementById('app-shell').classList.toggle('blur-active'); document.getElementById('privacy-sw').classList.toggle('sw-on'); }
     </script>
 </body>
