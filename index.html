@@ -3,109 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™ | Truth Engine</title>
+    <title>WorkTimeline™ | Master Engine</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <style>
         :root { 
             --wt-teal: #0d9488; --wt-gray-light: #f3f4f6; --wt-ochre: #d97706; --wt-red: #dc2626; --wt-dark: #1e293b;
         }
         body, html { margin: 0; padding: 0; font-family: 'Outfit', sans-serif; background: var(--wt-gray-light); height: 100%; overflow: hidden; }
 
-        /* ACT 1: ADVOCACY (Starts Light Gray) */
-        #act-intro { position: fixed; inset: 0; z-index: 5000; background: var(--wt-gray-light); display: flex; align-items: center; justify-content: center; transition: background 0.4s ease-in-out; padding: 30px; text-align: center; }
-        .adv-text { color: var(--wt-teal); font-size: 1.5rem; font-weight: 300; line-height: 1.5; opacity: 0; transition: 0.8s; }
-        .adv-stat { font-size: 0.8rem; color: #64748b; margin-top: 15px; }
+        /* ACT 1: ADVOCACY SEQUENCE (Drifting Quotes) */
+        #act-intro { position: fixed; inset: 0; z-index: 5000; background: var(--wt-gray-light); display: flex; align-items: center; justify-content: center; transition: background 0.5s ease-in-out; padding: 30px; text-align: center; }
+        .drifter { position: absolute; width: 80%; color: var(--wt-teal); font-size: 1.4rem; font-weight: 300; opacity: 0; transform: translateY(20px); transition: 1.5s ease; }
+        .drifter.active { opacity: 1; transform: translateY(0); }
+        .drifter.exit { opacity: 0; transform: translateY(-20px); }
+        .stat-tag { font-size: 0.8rem; color: #888; margin-top: 10px; display: block; font-weight: 600; }
 
-        /* INTERMEDIATE LAYERS */
-        .layer { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: white; z-index: 1000; padding: 25px; transition: 0.6s; overflow-y: auto; }
-        .hidden { opacity: 0; pointer-events: none; transform: translateY(15px); }
+        /* ACT 2: BRANDING / LOGIN */
+        .layer { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: white; z-index: 1000; padding: 25px; transition: 0.6s; overflow-y: auto; text-align: center; }
+        .hidden { opacity: 0; pointer-events: none; transform: scale(1.05); }
 
-        /* UI LEGEND STYLING */
-        .legend-item { display: flex; align-items: flex-start; gap: 15px; text-align: left; margin-bottom: 15px; width: 100%; }
-        .indicator-dot { width: 12px; height: 12px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
-        .pulse-anim { animation: pulseGlow 1.5s infinite; }
-        @keyframes pulseGlow { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.3); } }
+        /* BRIEFCASE LOGO WITH 3 DOTS */
+        .briefcase-logo { width: 100px; height: 75px; background: var(--wt-teal); border-radius: 12px; position: relative; margin: 0 auto 20px; }
+        .briefcase-handle { width: 40px; height: 15px; border: 4px solid var(--wt-teal); border-bottom: none; border-radius: 8px 8px 0 0; position: absolute; top: -15px; left: 50%; transform: translateX(-50%); }
+        .timeline-dots { position: absolute; width: 70%; height: 2px; background: white; top: 60%; left: 15%; display: flex; justify-content: space-between; align-items: center; }
+        .timeline-dots::before, .timeline-dots::after, .dot-mid { content: ''; width: 6px; height: 6px; background: white; border-radius: 50%; }
 
-        /* DASHBOARD */
-        #main-app { height: 100%; display: none; flex-direction: column; background: var(--wt-gray-light); }
-        .header { background: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; }
+        /* UI LEGEND */
+        .legend-grid { text-align: left; width: 100%; max-width: 300px; margin: 20px 0; font-size: 0.8rem; }
+        .legend-item { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .pulse-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .pulse-anim { animation: wPulse 1.5s infinite; }
+        @keyframes wPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.4); opacity: 0.5; } }
 
-        /* MAC ICONS */
-        .mac-btn { width: 40px; height: 40px; background: var(--wt-teal); border-radius: 10px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .mac-svg { width: 20px; height: 20px; fill: white; }
-        .phone-bridge { width: 18px; height: 18px; border-radius: 50%; background: var(--wt-teal); box-shadow: 0 0 8px var(--wt-teal); cursor: pointer; }
-        .tamper-glow { background: var(--wt-red) !important; box-shadow: 0 0 15px var(--wt-red) !important; animation: pulseGlow 1s infinite; }
+        /* DASHBOARD (MOBILE INFORMATICS) */
+        #main-app { height: 100%; display: none; flex-direction: column; }
+        .header { background: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
+        .header-icons { display: flex; gap: 10px; }
+        
+        .mac-solid { width: 42px; height: 42px; background: var(--wt-teal); border-radius: 10px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .mac-svg { width: 22px; height: 22px; fill: white; }
 
-        /* TIMELINE BUILDER */
-        #timeline { flex-grow: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
-        .entry { background: rgba(13, 148, 136, 0.06); border: 1px solid rgba(13, 148, 136, 0.15); padding: 12px; border-radius: 15px; position: relative; }
-        .entry-meta { font-size: 0.55rem; color: var(--wt-teal); font-weight: 600; text-transform: uppercase; }
-        .entry-text { font-size: 0.85rem; color: var(--wt-dark); margin-top: 4px; }
-        .del-x { position: absolute; right: 12px; top: 12px; color: var(--wt-red); font-size: 0.7rem; font-weight: 800; }
+        /* PHONE ICON (MAC STYLE) */
+        .phone-icon { width: 20px; height: 20px; border-radius: 50%; background: var(--wt-teal); box-shadow: 0 0 10px var(--wt-teal); cursor: pointer; }
+        .phone-pulse { animation: phoneGlow 1s infinite; background: var(--wt-red) !important; box-shadow: 0 0 20px var(--wt-red) !important; }
+        @keyframes phoneGlow { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
 
-        /* MODALS / DRAWERS */
-        .drawer { position: fixed; bottom: -100%; left: 0; right: 0; height: 80%; background: white; border-radius: 25px 25px 0 0; z-index: 6000; transition: 0.4s; padding: 20px; box-shadow: 0 -10px 40px rgba(0,0,0,0.1); }
-        .drawer-active { bottom: 0 !important; }
+        /* INTAKE / TIMELINE AREA */
+        #timeline-container { flex-grow: 1; overflow-y: auto; padding: 15px; }
+        .entry { background: rgba(13, 148, 136, 0.08); border-radius: 15px; padding: 12px; margin-bottom: 10px; border: 1px solid rgba(13, 148, 136, 0.1); position: relative; }
+        .entry-meta { font-size: 0.6rem; color: var(--wt-teal); font-weight: 600; text-transform: uppercase; }
+        .entry-text { font-size: 0.85rem; color: var(--wt-dark); margin-top: 5px; }
+        .del-btn { position: absolute; right: 10px; top: 10px; color: var(--wt-red); font-size: 0.7rem; font-weight: 800; }
 
-        /* BUTTONS & INPUTS */
-        .btn-teal { width: 100%; background: var(--wt-teal); color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 0.9rem; cursor: pointer; }
-        .input-box { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd; font-family: 'Outfit'; margin-bottom: 10px; box-sizing: border-box; font-size: 0.9rem; }
+        /* CON'D NOTES (ALWAYS ACCESSIBLE DRAWER) */
+        #cond-notes-drawer { background: white; border-top: 2px solid var(--wt-teal); height: 180px; padding: 15px; display: flex; flex-direction: column; }
+        .notes-input { flex-grow: 1; border: none; background: #f9f9f9; border-radius: 10px; padding: 10px; font-family: 'Outfit'; resize: none; font-size: 0.9rem; }
+
+        .btn-teal { width: 100%; background: var(--wt-teal); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 600; cursor: pointer; }
     </style>
 </head>
-<body onload="runAdvocacy()">
+<body onload="initAdvocacy()">
 
     <div id="act-intro">
-        <div>
-            <p class="adv-text" id="intro-p">"They think you're invisible."</p>
-            <p class="adv-stat" id="intro-s"></p>
-        </div>
+        <div id="intro-box">
+            </div>
     </div>
 
     <div id="act-branding" class="layer hidden">
-        <svg width="80" height="60" viewBox="0 0 100 70"><path fill="var(--wt-teal)" d="M80,25H20c-2.8,0-5,2.2-5,5v30c0,2.8,2.2,5,5,5h60c2.8,0,5-2.2,5-5V30C85,27.2,82.8,25,80,25z M40,20c0-2.8,2.2-5,5-5h10c2.8,0,5,2.2,5,5v5H40V20z"/></svg>
-        <h2 style="color:var(--wt-teal); margin: 10px 0;">WorkTimeline™</h2>
-        <p style="color:var(--wt-teal); font-weight:300; font-size:1.1rem; line-height:1.4; margin-bottom: 30px;">
-            Justice should be effortless. It is now with WorkTimeline™, because telling the truth shouldn't take effort.
+        <div class="briefcase-logo"><div class="briefcase-handle"></div><div class="timeline-dots"><div class="dot-mid"></div></div></div>
+        <h2 style="color:var(--wt-teal); margin: 0;">WorkTimeline™</h2>
+        <p style="color:var(--wt-teal); font-weight:300; font-size:1rem; padding: 20px; line-height: 1.6;">
+            "WorkTimeline™ helps the client take the first step towards the center where they belong until they get help from the firm that allows them to never look back."
         </p>
-        <button class="btn-teal" onclick="showLayer('act-branding', 'act-legend')">View System Legend</button>
+        <button class="btn-teal" style="width: 200px;" onclick="showLayer('act-branding', 'act-legend')">View Legend</button>
     </div>
 
     <div id="act-legend" class="layer hidden">
-        <h3 style="color:var(--wt-teal);">System Legend</h3>
-        <div class="legend-item">
-            <div class="indicator-dot" style="background:#ccc;"></div>
-            <div><strong>Gray Area:</strong> Initial state. Your narrative is being prepared for informatics sync.</div>
+        <h3 style="color:var(--wt-teal);">UI Legend</h3>
+        <div class="legend-grid">
+            <div class="legend-item"><div class="pulse-dot" style="background:#ccc;"></div> <span><strong>Gray:</strong> Initial unverified informatics.</span></div>
+            <div class="legend-item"><div class="pulse-dot pulse-anim" style="background:var(--wt-ochre);"></div> <span><strong>Ochre Pulse:</strong> AI Pattern Recognition active.</span></div>
+            <div class="legend-item"><div class="pulse-dot" style="background:var(--wt-teal);"></div> <span><strong>Teal:</strong> Verified logic locked for Clio.</span></div>
+            <div class="legend-item"><div class="pulse-dot pulse-anim" style="background:var(--wt-red);"></div> <span><strong>Red Pulse:</strong> Tamper alert. Bridge call required.</span></div>
         </div>
-        <div class="legend-item">
-            <div class="indicator-dot pulse-anim" style="background:var(--wt-ochre);"></div>
-            <div><strong>Ochre Pulse:</strong> AI Pattern Recognition is identifying high-risk legal discrepancies or critical case matches.</div>
-        </div>
-        <div class="legend-item">
-            <div class="indicator-dot" style="background:var(--wt-teal);"></div>
-            <div><strong>Vibrant Teal:</strong> Verified state. Logic is locked and ready for Clio transmission.</div>
-        </div>
-        <div class="legend-item">
-            <div class="indicator-dot pulse-anim" style="background:var(--wt-red);"></div>
-            <div><strong>Red Glow:</strong> Tamper alert. High-level conflict detected. Professional FaceTime Bridge required.</div>
-        </div>
-        <button class="btn-teal" onclick="showLayer('act-legend', 'act-ai-select')">Select AI Intel Counsel</button>
+        <button class="btn-teal" onclick="showLayer('act-legend', 'act-ai')">Select AI Counsel</button>
     </div>
 
-    <div id="act-ai-select" class="layer hidden">
-        <h3 style="color:var(--wt-teal);">Choose Your Intel Bridge</h3>
-        <div class="legend-item" onclick="setAI('Jordan')" style="cursor:pointer; border:1px solid #eee; padding:15px; border-radius:15px;">
-            <div><strong>Jordan:</strong> Analytical & Pattern-focused. Excels at identifying timeline inconsistencies and legal case law matches.</div>
-        </div>
-        <div class="legend-item" onclick="setAI('Taylor')" style="cursor:pointer; border:1px solid #eee; padding:15px; border-radius:15px; margin-top:10px;">
-            <div><strong>Taylor:</strong> Empathetic & Narrative-focused. Excels at translating lived experience into clear informatics for the firm.</div>
+    <div id="act-ai" class="layer hidden">
+        <h3 style="color:var(--wt-teal);">Select Intel Counsel</h3>
+        <div style="display:flex; flex-direction:column; gap:15px; width:100%;">
+            <button class="btn-teal" onclick="setAI('Jordan')">JORDAN (Analytical)</button>
+            <button class="btn-teal" style="background:var(--clio-blue);" onclick="setAI('Taylor')">TAYLOR (Empathetic)</button>
         </div>
     </div>
 
     <div id="act-login" class="layer hidden">
         <h3 style="color:var(--wt-teal);">Secure Access</h3>
-        <input type="text" class="input-box" placeholder="Client User ID">
-        <button class="btn-teal" onclick="showDashboard()">Sign In</button>
-        <div style="margin: 15px 0; font-size:0.7rem; color:#aaa;">OR</div>
+        <input type="text" class="btn-teal" style="background:white; color:black; border:1px solid #ddd;" placeholder="Client User ID">
+        <button class="btn-teal" style="margin-top:10px;" onclick="showDashboard()">Enter Tool</button>
+        <div style="margin:15px 0; font-size:0.7rem; color:#aaa;">OR</div>
         <button class="btn-teal" style="background:#0056b3;" onclick="showDashboard()">Login with Clio</button>
     </div>
 
@@ -113,88 +110,101 @@
         <header class="header">
             <div>
                 <h4 style="margin:0; color:var(--wt-teal);">WorkTimeline™</h4>
-                <div style="display:flex; align-items:center; gap:6px;">
-                    <div id="bridge-phone" class="phone-bridge" onclick="toggleDrawer('face-chat')"></div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <div id="phone-bridge" class="phone-icon" onclick="openChat()"></div>
                     <span style="font-size:0.5rem; color:#999; font-weight:600;" id="ai-label">AI ACTIVE</span>
                 </div>
             </div>
-            <div style="display:flex; gap:8px;">
-                <button class="mac-btn" onclick="triggerFile()"><svg class="mac-svg" viewBox="0 0 24 24"><path d="M12 11c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6 2l-3-3V7c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v3l-3 3v6c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-6z"/></svg></button>
-                <button class="mac-btn" onclick="triggerMic()"><svg class="mac-svg" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg></button>
-                <button class="mac-btn" onclick="toggleDrawer('chat-box')"><svg class="mac-svg" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></button>
+            <div class="header-icons">
+                <button class="mac-solid" onclick="triggerFile('camera')">
+                    <svg class="mac-svg" viewBox="0 0 24 24"><path d="M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm9 3.5V6a2 2 0 0 0-2-2h-3.2l-1.3-1.7a1 1 0 0 0-.8-.3H9.3a1 1 0 0 0-.8.3L7.2 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5zM12 18a6 6 0 1 1 0-12 6 6 0 0 1 0 12z"/></svg>
+                </button>
+                <button class="mac-solid" onclick="triggerFile('doc')">
+                    <svg class="mac-svg" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                </button>
+                <button class="mac-solid" onclick="triggerMic()">
+                    <svg class="mac-svg" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zM17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                </button>
             </div>
         </header>
 
-        <div style="padding: 15px; background: white; border-bottom: 1px solid #eee;">
-            <div style="display:flex; gap:8px; overflow-x:auto; padding-bottom:10px; margin-bottom:10px;">
-                <button class="mac-btn" style="width:auto; padding:0 10px; font-size:0.6rem;" onclick="toggleDrawer('notes-box')">CON'D NOTES</button>
-                <button class="mac-btn" style="width:auto; padding:0 10px; font-size:0.6rem; background:#f0f0f0; color:#333;" onclick="setMode('Witness')">WITNESS</button>
-                <button class="mac-btn" style="width:auto; padding:0 10px; font-size:0.6rem; background:#f0f0f0; color:#333;" onclick="setMode('Scene')">SCENE</button>
+        <div style="padding: 15px; background: white;">
+            <textarea id="entry-input" class="notes-input" style="width:100%; height:60px; margin-bottom:10px;" placeholder="Telling the truth shouldn't take effort. Type here..."></textarea>
+            <button class="btn-teal" onclick="addEntry()">+ SUBMIT TO TIMELINE</button>
+        </div>
+
+        <div id="timeline-container"></div>
+
+        <div id="cond-notes-drawer">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                <span style="font-size:0.7rem; font-weight:600; color:var(--wt-teal);">CON'D NOTES (Contemporaneous)</span>
+                <button style="border:none; background:var(--wt-dark); color:white; font-size:0.6rem; border-radius:5px; padding:3px 8px;" onclick="openChat()">PRIVATE CHAT</button>
             </div>
-            <textarea id="entry-input" class="input-box" style="height:60px; margin:0; border:none; background:#f9f9f9;" placeholder="Tap to type truth..."></textarea>
-            <button class="btn-teal" style="margin-top:10px;" onclick="addEntry()">ADD TO TIMELINE</button>
+            <textarea id="manual-cond-notes" class="notes-input" placeholder="Note thoughts here in real-time..."></textarea>
         </div>
 
-        <div id="timeline"></div>
-        <button class="btn-teal" style="border-radius:0; background: var(--wt-dark);" onclick="lockApp()">LOCK & SEND TO CLIO</button>
+        <button class="btn-teal" style="border-radius:0; background: var(--wt-dark);" onclick="lockAndSend()">LOCK & SEND TO CLIO</button>
     </div>
 
-    <div id="notes-box" class="drawer">
-        <h3 style="color:var(--wt-teal);">Confidential Notes</h3>
-        <textarea class="input-box" style="height: 60%;" placeholder="Private notes for your lawyer..."></textarea>
-        <button class="btn-teal" onclick="toggleDrawer('notes-box')">SAVE & CLOSE</button>
-    </div>
-
-    <div id="chat-box" class="drawer">
+    <div id="chat-drawer" class="layer hidden" style="justify-content: flex-start; padding-top: 50px;">
+        <button style="position:absolute; top:20px; right:20px; border:none; background:none; font-weight:800;" onclick="showDashboard()">[X] CLOSE</button>
         <h3 style="color:var(--wt-teal);">Counsel Bridge Chat</h3>
-        <div id="chat-ui" style="height: 60%; background:#f9f9f9; border-radius:15px; padding:10px; margin-bottom:10px; overflow-y:auto; font-size:0.8rem;">
-            <p><strong>Counsel:</strong> I'm monitoring your input. Let me know if you need clarification.</p>
+        <div id="chat-stream" style="flex-grow:1; width:100%; background:#f9f9f9; border-radius:20px; padding:15px; margin-bottom:10px; overflow-y:auto; text-align:left; font-size:0.8rem;">
+            <p><strong>Jordan (AI):</strong> I am monitoring your timeline. Pattern recognition is active.</p>
         </div>
-        <input type="text" class="input-box" placeholder="Message Counsel...">
-        <button class="btn-teal" onclick="toggleDrawer('chat-box')">SEND MESSAGE</button>
-    </div>
-
-    <div id="face-chat" class="drawer" style="text-align:center;">
-        <h3 style="color:var(--wt-teal);">Live FaceTime Bridge</h3>
-        <div style="width:80px; height:80px; border-radius:50%; background:#f0f0f0; margin: 30px auto; display:flex; align-items:center; justify-content:center; font-size:1.5rem;">📞</div>
-        <p style="font-size:0.8rem; color:#666;">Establishing encrypted connection to your firm...</p>
-        <button class="btn-teal" style="background:var(--wt-red);" onclick="toggleDrawer('face-chat')">END BRIDGE</button>
+        <input type="text" class="notes-input" style="width:100%; flex-grow:0; height:45px;" placeholder="Message lawyer...">
+        <button class="btn-teal" style="margin-top:10px;">SEND MESSAGE</button>
     </div>
 
     <input type="file" id="file-trigger" style="display:none;">
 
     <script>
-        const script = [
-            {t: "They think you're invisible.", s: "74% of workplace violations go unreported."},
-            {t: "Silence empowers the status quo.", s: "Truth requires an effortless record."},
-            {t: "This isn't a prison. It's a transition.", s: "Real data is the only key."},
-            {t: "We're not here to tear down the walls.", s: "We're here to remind you..."},
-            {t: "There are none.", s: "Justice should be effortless."}
+        const introContent = [
+            {t: "It's too expensive.", s: "Fact: 86% of civil legal problems get no help."},
+            {t: "They got more money than me.", s: "Fact: Cost is the #1 barrier to justice."},
+            {t: "I don't have enough evidence.", s: "Your truth is the data."},
+            {t: "Where's the proof?", s: "Justice should be effortless."},
+            {t: "Do you know how much it will cost?", s: "We bridge the gap."},
+            {t: "I don't know Latin.", s: "We translate experience into law."},
+            {t: "We're not here to tear down the walls.", s: "Real change starts with informatics."},
+            {t: "We're here to remind you...", s: ""},
+            {t: "There are none.", s: ""}
         ];
 
-        let mode = "Entry";
+        let selectedAI = "Jordan";
         let hazardCount = 0;
 
-        function runAdvocacy() {
+        function initAdvocacy() {
+            const box = document.getElementById('intro-box');
+            const layer = document.getElementById('act-intro');
             let i = 0;
-            const t = document.getElementById('intro-p');
-            const s = document.getElementById('intro-s');
-            const l = document.getElementById('act-intro');
-            function next() {
-                if (i < script.length) {
-                    t.style.opacity = 0; s.style.opacity = 0;
+
+            function cycle() {
+                if (i < introContent.length) {
+                    box.innerHTML = `<div class="drifter">
+                        <span class="stat-tag">${introContent[i].s}</span>
+                        ${introContent[i].t}
+                    </div>`;
+                    const el = box.querySelector('.drifter');
+                    
+                    setTimeout(() => el.classList.add('active'), 50);
+                    
+                    if (i === introContent.length - 1) {
+                        setTimeout(() => layer.style.background = "white", 2000);
+                    }
+
                     setTimeout(() => {
-                        if(i === 4) l.style.background = "white";
-                        t.innerText = script[i].t; s.innerText = script[i].s;
-                        t.style.opacity = 1; s.style.opacity = 1; i++;
-                        setTimeout(next, 4000);
-                    }, 800);
+                        el.classList.remove('active');
+                        el.classList.add('exit');
+                        i++;
+                        setTimeout(cycle, 1500);
+                    }, 4000);
                 } else {
-                    l.classList.add('hidden');
+                    layer.classList.add('hidden');
                     document.getElementById('act-branding').classList.remove('hidden');
                 }
             }
-            next();
+            cycle();
         }
 
         function showLayer(curr, next) {
@@ -202,45 +212,58 @@
             document.getElementById(next).classList.remove('hidden');
         }
 
-        function setAI(name) {
-            document.getElementById('ai-label').innerText = `${name.toUpperCase()} AI ACTIVE`;
-            showLayer('act-ai-select', 'act-login');
+        function setAI(ai) {
+            selectedAI = ai;
+            document.getElementById('ai-label').innerText = `${ai.toUpperCase()} AI ACTIVE`;
+            showLayer('act-ai', 'act-login');
         }
 
         function showDashboard() {
-            document.getElementById('act-login').classList.add('hidden');
-            setTimeout(() => {
-                document.getElementById('act-login').style.display = 'none';
-                document.getElementById('main-app').style.display = 'flex';
-            }, 600);
+            document.querySelectorAll('.layer').forEach(l => l.classList.add('hidden'));
+            document.getElementById('main-app').style.display = 'flex';
         }
 
-        function toggleDrawer(id) { document.getElementById(id).classList.toggle('drawer-active'); }
-
-        function setMode(m) { mode = m; document.getElementById('entry-input').placeholder = `Type ${m} truth...`; }
+        function openChat() {
+            document.getElementById('chat-drawer').classList.remove('hidden');
+        }
 
         function addEntry() {
             const input = document.getElementById('entry-input');
             if(!input.value) return;
+
             if(input.value.toLowerCase().includes('hazard')) hazardCount++;
 
             const now = new Date();
             const stamp = `${now.getHours()}:${now.getMinutes()} | ${now.toDateString()} | GPS: VERIFIED`;
             const box = document.createElement('div');
             box.className = 'entry';
+            
             if(hazardCount >= 3) {
                 box.style.border = "1.5px solid var(--wt-ochre)";
                 box.style.background = "rgba(217, 119, 6, 0.05)";
-                document.getElementById('bridge-phone').classList.add('tamper-glow');
+                document.getElementById('phone-bridge').classList.add('phone-pulse');
             }
-            box.innerHTML = `<span class="del-x" onclick="this.parentElement.remove()">DELETE</span><span class="entry-meta">${mode} • ${stamp}</span><div class="entry-text">${input.value}</div>`;
-            document.getElementById('timeline').prepend(box);
+
+            box.innerHTML = `
+                <span class="del-btn" onclick="this.parentElement.remove()">DELETE</span>
+                <span class="entry-meta">TIMELINE • ${stamp}</span>
+                <div class="entry-text">${input.value}</div>
+            `;
+            document.getElementById('timeline-container').prepend(box);
             input.value = "";
         }
 
-        function triggerFile() { document.getElementById('file-trigger').click(); }
-        function triggerMic() { alert("Audio Bridge Active: Recording informatics..."); }
-        function lockApp() { alert("TIMELINE LOCKED: AI Summary generated and transmitted to Clio."); location.reload(); }
+        function triggerFile(type) { document.getElementById('file-trigger').click(); }
+        function triggerMic() { alert("Audio Bridge Active: Stamping record for Clio..."); }
+
+        function lockAndSend() {
+            const boxes = document.querySelectorAll('.entry');
+            let summary = `Case Summary (${selectedAI}): Narrative contains ${boxes.length} events. `;
+            if(hazardCount >= 3) summary += "High-risk patterns detected and flagged for review.";
+            
+            alert(`TIMELINE LOCKED\n\n${summary}\n\nTransmitting to Clio Database...`);
+            location.reload();
+        }
     </script>
 </body>
 </html>
