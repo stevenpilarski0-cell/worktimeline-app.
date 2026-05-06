@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeline™ | Master Engine</title>
+    <title>WorkTimeline™ | Master Engine v3.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -14,57 +14,63 @@
         }
         body, html { margin: 0; padding: 0; font-family: 'Outfit', sans-serif; background: white; height: 100%; overflow: hidden; }
 
-        /* THE ADVOCACY LAYER (MEDIUM GRAY) */
+        /* ACT 1: ADVOCACY LAYER (STRICT MEDIUM GRAY START) */
         #layer-advocacy { 
-            position: fixed; inset: 0; z-index: 2000; background: var(--wt-gray-med); 
-            display: flex; align-items: center; justify-content: center; transition: background 0.5s ease, opacity 1s ease; padding: 40px; text-align: center; 
+            position: fixed; inset: 0; z-index: 5000; background: var(--wt-gray-med); 
+            display: flex; align-items: center; justify-content: center; transition: background 0.4s ease-in-out, opacity 1s ease; padding: 40px; text-align: center; 
         }
-        .dialogue-text { color: var(--wt-teal); font-size: 2.2rem; font-weight: 300; line-height: 1.6; max-width: 850px; transition: opacity 0.8s ease; }
+        .dialogue-text { color: var(--wt-teal); font-size: 2.2rem; font-weight: 300; line-height: 1.6; max-width: 850px; transition: opacity 0.6s ease; }
 
-        /* SEQUENCE LAYERS (WHITE) */
+        /* SEQUENCE LAYERS (BRIGHT WHITE) */
         .layer { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; transition: 1s ease; padding: 40px; text-align: center; background: white; z-index: 1000; }
         .hidden { opacity: 0; pointer-events: none; visibility: hidden; }
 
-        /* BRANDING & CARDS */
-        .card { background: white; padding: 50px; border-radius: 45px; width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,0.08); border: 1px solid #f0f0f0; }
-        .input-field { width: 100%; padding: 18px; margin: 15px 0; border-radius: 50px; border: 1.5px solid #eee; text-align: center; font-family: 'Outfit'; font-size: 1rem; outline: none; }
-        .btn-wt { background: var(--wt-teal); color: white; border: none; padding: 18px; width: 100%; border-radius: 50px; cursor: pointer; font-weight: 600; transition: 0.3s; }
-        .btn-clio { background: var(--clio-blue); color: white; border: none; padding: 18px; width: 100%; border-radius: 50px; cursor: pointer; font-weight: 600; margin-top: 15px; }
-
-        /* MASTER DASHBOARD UI (EXACTLY IMAGE 2) */
-        #main-dashboard { height: 100%; padding: 30px; box-sizing: border-box; overflow-y: auto; display: none; background: var(--wt-cream); position: relative; z-index: 10; }
-        .vault-active .privacy-sensitive { filter: blur(25px); opacity: 0.15; pointer-events: none; }
+        /* THE ENGINE DASHBOARD LAYOUT */
+        #main-app { height: 100%; display: none; grid-template-columns: 320px 1fr 340px; gap: 20px; padding: 20px; box-sizing: border-box; background: var(--wt-cream); position: relative; z-index: 10; }
         
-        .header-pro { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px; }
-        .prof-dropdown { width: 100%; padding: 18px; border-radius: 25px; border: 1.5px solid #e0e0e0; background: white; font-family: 'Outfit'; font-size: 1rem; color: #444; margin-top: 10px; }
+        /* SIDEBARS & COMPONENTS */
+        .sidebar { background: white; border-radius: 40px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); display: flex; flex-direction: column; gap: 15px; overflow: hidden; }
         
-        .entry-card { background: white; border-radius: 35px; padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.03); margin-top: 25px; }
-        .case-details { width: 100%; height: 150px; border: none; font-family: 'Outfit'; font-size: 1.1rem; resize: none; outline: none; color: #333; }
-
-        .media-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
-        .media-btn { background: #f0f3f5; border-radius: 25px; padding: 25px; text-align: center; border: none; cursor: pointer; }
-
-        /* THE STREET (IMAGE 1 INTEGRATED) */
-        .street-view { 
-            display: flex; gap: 20px; padding: 60px 20px; 
-            background: var(--wt-teal); border-radius: 45px; 
-            justify-content: space-around; transition: 1s ease; margin-top: 30px;
+        /* TIMELINE STREET (TRANSPARENT TEAL BOXES) */
+        #timeline-street { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; padding: 10px; }
+        .timeline-box { 
+            background: rgba(22, 126, 124, 0.1); border: 1.2px solid rgba(22, 126, 124, 0.2); 
+            padding: 20px; border-radius: 25px; cursor: grab; backdrop-filter: blur(8px);
         }
-        .street-view.tampered { background: var(--wt-red) !important; box-shadow: 0 0 50px var(--wt-red); }
-        .briefcase-svg { width: 60px; height: 60px; fill: white; }
-        .pulse-ochre { filter: drop-shadow(0 0 15px var(--wt-ochre)); animation: pEng 2.5s infinite; }
-        @keyframes pEng { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        .box-meta { font-size: 0.65rem; color: var(--wt-teal); font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; }
+        .box-text { font-size: 0.95rem; color: var(--wt-dark-teal); margin-top: 8px; line-height: 1.4; }
 
-        /* INTERFACE TOOLS */
-        .mac-light { width: 18px; height: 18px; border-radius: 50%; background: var(--wt-teal); box-shadow: 0 0 12px var(--wt-teal); cursor: pointer; }
-        .tamper-red { background: var(--wt-red) !important; box-shadow: 0 0 20px var(--wt-red) !important; }
-        .fingerprint-sensor { cursor: pointer; color: var(--wt-teal); text-align: center; }
+        /* TRASH & NOTES DROP ZONES */
+        .trash-zone { background: #fee7e7; border: 2px dashed var(--wt-red); border-radius: 25px; padding: 20px; text-align: center; color: var(--wt-red); font-weight: 600; }
+        #contact-notes-area { border: 1.5px solid var(--wt-gray-light); border-radius: 25px; flex-grow: 1; padding: 15px; overflow-y: auto; background: #fafafa; }
+
+        /* MAC STYLE SOLID TEAL ICONS */
+        .mac-icon-btn { width: 50px; height: 50px; background: var(--wt-teal); border-radius: 16px; border: none; color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2rem; }
+        .mac-phone-bridge { width: 24px; height: 24px; border-radius: 50%; background: var(--wt-teal); box-shadow: 0 0 15px var(--wt-teal); cursor: pointer; }
+        .bridge-red { background: var(--wt-red) !important; box-shadow: 0 0 25px var(--wt-red) !important; }
+
+        /* PRIVATE CHAT MAILBOX */
+        #chat-window { height: 250px; border-radius: 25px; background: #f9f9f9; border: 1px solid #eee; display: flex; flex-direction: column; overflow: hidden; }
+        #chat-msgs { flex-grow: 1; padding: 15px; overflow-y: auto; font-size: 0.8rem; display: flex; flex-direction: column; gap: 8px; }
+        .msg-lawyer { background: var(--wt-teal); color: white; padding: 8px 12px; border-radius: 15px; align-self: flex-start; border-bottom-left-radius: 2px; }
+        .msg-client { background: #e0e0e0; color: #333; padding: 8px 12px; border-radius: 15px; align-self: flex-end; border-bottom-right-radius: 2px; }
+
+        /* UTILITY */
+        .btn-wt { background: var(--wt-teal); color: white; border: none; padding: 18px; border-radius: 50px; cursor: pointer; font-weight: 600; font-size: 1rem; }
+        .pulse-ochre { animation: ochrePulse 2.5s infinite; }
+        @keyframes ochrePulse { 0%, 100% { box-shadow: 0 0 10px var(--wt-ochre); } 50% { box-shadow: 0 0 25px var(--wt-ochre); } }
+
+        /* VIDEO CALL OVERLAY */
+        #video-overlay { position: fixed; top: 100px; left: 50%; transform: translateX(-50%); width: 320px; height: 200px; background: #000; border: 4px solid var(--wt-teal); border-radius: 30px; display: none; z-index: 6000; box-shadow: 0 30px 60px rgba(0,0,0,0.4); }
     </style>
 </head>
 <body onload="runAdvocacy()">
 
     <div id="layer-advocacy">
-        <p class="dialogue-text" id="intro-text">"They think you're invisible."</p>
+        <div>
+            <p class="dialogue-text" id="intro-text">"They think you're invisible."</p>
+            <p id="advocacy-stat" style="font-size: 0.9rem; color: rgba(22, 126, 124, 0.6); margin-top: 25px; font-weight: 400;"></p>
+        </div>
     </div>
 
     <div id="act-branding" class="layer hidden">
@@ -73,133 +79,167 @@
                 <path fill="var(--wt-teal)" d="M90,25H30c-2.8,0-5,2.2-5,5v35c0,2.8,2.2,5,5,5h60c2.8,0,5-2.2,5-5V30C95,27.2,92.8,25,90,25z M45,20c0-2.8,2.2-5,5-5h20c2.8,0,5,2.2,5,5v5H45V20z"/>
                 <line x1="35" y1="50" x2="85" y2="50" stroke="white" stroke-width="2.5"/><circle cx="42" cy="50" r="3" fill="white"/><circle cx="60" cy="50" r="3" fill="white"/><circle cx="78" cy="50" r="5" fill="var(--wt-ochre)"/>
             </svg>
-            <h2 style="color:var(--wt-teal); font-weight:600; font-size:2rem; margin:0;">WorkTimeline™</h2>
-            <p style="color:var(--wt-teal); font-size:1.4rem; font-weight:300; max-width:600px; margin-top:20px; line-height:1.5;">
-                "Telling the truth takes no effort. It is effortless with WorkTimeline™."
+            <h2 style="color:var(--wt-teal); font-size:2.5rem; font-weight:600; margin:0;">WorkTimeline™</h2>
+            <p style="color:var(--wt-teal); font-size:1.4rem; font-weight:300; max-width:650px; margin:20px auto; line-height:1.6;">
+                "Justice should be effortless. It is now with WorkTimeline™, because telling the truth shouldn't take effort."
             </p>
-            <button class="btn-wt" style="width:200px; margin-top:40px;" onclick="showAct('act-branding', 'act-legend')">Continue to Legend</button>
-        </div>
-    </div>
-
-    <div id="act-legend" class="layer hidden">
-        <div class="card" style="width:600px; text-align:left;">
-            <h3 style="color:var(--wt-teal); margin-bottom:25px;">Intelligence Legend</h3>
-            <p>● <span style="background:var(--wt-gray-med); width:12px; height:12px; border-radius:50%; display:inline-block;"></span> <strong>Gray Area:</strong> Initial unverified state.</p>
-            <p>● <span style="background:var(--wt-ochre); width:12px; height:12px; border-radius:50%; display:inline-block; box-shadow:0 0 5px var(--wt-ochre);"></span> <strong>Ochre Pulse:</strong> Pattern Recognition Engine active.</p>
-            <p>● <span style="background:var(--wt-teal); width:12px; height:12px; border-radius:50%; display:inline-block; box-shadow:0 0 5px var(--wt-teal);"></span> <strong>Teal:</strong> Locked Momentum. Truth Verified.</p>
-            <p>● <span style="background:var(--wt-red); width:12px; height:12px; border-radius:50%; display:inline-block; box-shadow:0 0 8px var(--wt-red);"></span> <strong>Tamper Red:</strong> Conflict detected. Connect with Agent.</p>
-            <button class="btn-wt" style="margin-top:20px;" onclick="showAct('act-legend', 'act-login')">Enter Gateway</button>
+            <button class="btn-wt" style="width:220px; margin-top:40px;" onclick="showAct('act-branding', 'act-login')">Enter Engine</button>
         </div>
     </div>
 
     <div id="act-login" class="layer hidden">
-        <div class="card">
-            <h2 style="color:var(--wt-teal); font-weight:600;">Secure Access</h2>
-            <input type="text" class="input-field" placeholder="Reference ID">
-            <button class="btn-wt" onclick="startDashboard()">Submit Reference</button>
-            <button class="btn-clio" onclick="startDashboard()">Login with Clio</button>
+        <div style="background:white; padding:50px; border-radius:45px; box-shadow:0 20px 60px rgba(0,0,0,0.05); text-align:center; max-width:500px;">
+            <h3 style="color:var(--wt-teal); margin-bottom:25px;">Intelligence Legend</h3>
+            <div style="text-align:left; font-size:0.85rem; color:#666; margin-bottom:30px; display:flex; flex-direction:column; gap:12px;">
+                <p>● <span style="background:var(--wt-gray-med); display:inline-block; width:10px; height:10px; border-radius:50%;"></span> <strong>Gray:</strong> Cold Unverified Intake.</p>
+                <p>● <span style="background:var(--wt-ochre); display:inline-block; width:10px; height:10px; border-radius:50%; box-shadow:0 0 5px var(--wt-ochre);"></span> <strong>Ochre Pulse:</strong> Pattern Recognition Engine.</p>
+                <p>● <span style="background:var(--wt-teal); display:inline-block; width:10px; height:10px; border-radius:50%; box-shadow:0 0 5px var(--wt-teal);"></span> <strong>Teal:</strong> Verified Momentum Locked.</p>
+                <p>● <span style="background:var(--wt-red); display:inline-block; width:10px; height:10px; border-radius:50%; box-shadow:0 0 10px var(--wt-red);"></span> <strong>Red Tamper:</strong> Discrepancy Alert Bridge.</p>
+            </div>
+            <button class="btn-wt" onclick="startApp()">Enter Master Prototype</button>
         </div>
     </div>
 
-    <div id="main-dashboard">
-        <header class="header-pro">
-            <div style="max-width:70%;">
+    <div id="video-overlay"><div style="color:white; font-size:0.6rem; padding:10px; background:rgba(0,0,0,0.5);">LIVE BRIDGE FEED</div></div>
+
+    <div id="main-app">
+        <header style="grid-column: span 3; display:flex; justify-content:space-between; align-items:center;">
+            <div>
                 <h2 style="color:var(--wt-teal); margin:0; font-weight:600;">WorkTimeline™</h2>
-                <p style="font-size:0.8rem; color:#888; font-style:italic; margin-top:5px;">"Justice is truth in action."</p>
-            </div>
-            <div style="display:flex; gap:20px; align-items:center;">
-                <div id="mac-light" class="mac-light" onclick="triggerTamper()"></div>
-                <div class="fingerprint-sensor" onclick="togglePrivacy()">
-                    <svg width="35" height="35" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 11c0-1.1.9-2 2-2s2 .9 2 2M8 11c0-3.3 2.7-6 6-6s6 2.7 6 6M12 21c-4.4 0-8-3.6-8-8 0-1.1.9-2 2-2s2 .9 2 2c0 2.2 1.8 4 4 4s4-1.8 4-4"/></svg>
+                <div style="display:flex; align-items:center; gap:10px; margin-top:5px;">
+                    <div id="bridge-phone" class="mac-phone-bridge" onclick="toggleVideo()"></div>
+                    <span style="font-size:0.6rem; font-weight:600; color:var(--wt-teal);">COUNSEL BRIDGE: ACTIVE</span>
                 </div>
+            </div>
+            <div style="display:flex; gap:15px;">
+                <div style="text-align:right; margin-right:15px;">
+                    <p style="font-size:0.6rem; font-weight:600; color:#888; margin:0;">AI ANALYSIS</p>
+                    <div style="width:30px; height:15px; background:var(--wt-ochre); border-radius:10px; margin-left:auto;"></div>
+                </div>
+                <button class="mac-icon-btn">📷</button>
+                <button class="mac-icon-btn">🎙️</button>
+                <button class="mac-icon-btn">📄</button>
             </div>
         </header>
 
-        <p style="font-size:0.75rem; color:#666; margin-bottom:15px; font-weight:600; letter-spacing:1px;">PROFESSIONAL SIGN-IN:</p>
-        <select class="prof-dropdown">
-            <option>-- Select Professional --</option>
-            <option>Jordan (Analytical)</option>
-            <option>Taylor (Empathetic)</option>
-        </select>
+        <div class="sidebar">
+            <h4 style="color:var(--wt-teal); margin:0;">Intake Profile</h4>
+            <select id="type-select" style="padding:15px; border-radius:15px; border:1px solid #eee; font-family:'Outfit';">
+                <option>Witness Statement</option>
+                <option>Site Observation</option>
+                <option>Setting Detail</option>
+            </select>
+            <textarea id="case-input" style="flex-grow:1; border-radius:20px; border:1px solid #eee; padding:20px; resize:none; font-family:'Outfit';" placeholder="Enter the truth..."></textarea>
+            <button class="btn-wt" onclick="addToTimeline()">ADD TO TIMELINE</button>
+            <div id="trash-can" class="trash-zone">🗑️<br>DRAG TO DELETE</div>
+        </div>
 
-        <div class="privacy-sensitive">
-            <div class="entry-card">
-                <textarea class="case-details" placeholder="Enter case details here..."></textarea>
-                <div class="media-grid">
-                    <button class="media-btn">📷<br><span style="font-size:0.6rem; font-weight:600;">CAMERA</span></button>
-                    <button class="media-btn">🎙️<br><span style="font-size:0.6rem; font-weight:600;">AUDIO</span></button>
-                    <button class="media-btn">📄<br><span style="font-size:0.6rem; font-weight:600;">DOC</span></button>
+        <div style="display:flex; flex-direction:column;">
+            <p style="font-size:0.8rem; color:#555; font-style:italic; text-align:center; margin-bottom:20px;">
+                "WorkTimeline™ helps the client take the first step to get to the center where they belong until they find the firm that makes them never look back."
+            </p>
+            <div id="timeline-street"></div>
+            <button id="lock-btn" class="btn-wt" style="margin-top:20px; background:var(--wt-dark-teal);" onclick="lockToClio()">LOCK & SEND TO CLIO</button>
+        </div>
+
+        <div class="sidebar">
+            <h4 style="color:var(--wt-teal); margin:0;">Private Counsel Mailbox</h4>
+            <div id="chat-window">
+                <div id="chat-msgs"><div class="msg-lawyer">Welcome. I'm reviewing your entries live. Leave a note if you need me.</div></div>
+                <div style="display:flex; padding:10px; gap:5px; background:white;">
+                    <input type="text" id="chat-in" style="flex-grow:1; border:none; background:#f0f0f0; border-radius:20px; padding:10px; font-size:0.8rem;" placeholder="Message lawyer...">
+                    <button onclick="sendMsg()" style="background:var(--wt-teal); color:white; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer;">↑</button>
                 </div>
             </div>
-
-            <div id="street" class="street-view">
-                <div class="milestone"><svg class="briefcase-svg" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg><div style="color:white; font-size:0.6rem; margin-top:5px; font-weight:600;">INTAKE</div></div>
-                <div class="milestone"><svg class="briefcase-svg pulse-ochre" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg><div style="color:white; font-size:0.6rem; margin-top:5px; font-weight:600;">PATTERN REC</div></div>
-                <div class="milestone"><svg class="briefcase-svg" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg><div style="color:white; font-size:0.6rem; margin-top:5px; font-weight:600;">SETTING</div></div>
-            </div>
-
-            <button style="width:100%; background:var(--wt-teal); color:white; padding:20px; border-radius:50px; border:none; margin-top:30px; font-weight:600; font-size:1.1rem; cursor:pointer;" onclick="handshake()">Commit to Cloud Handshake</button>
+            <h4 style="color:var(--wt-teal); margin-bottom:0;">Contact Notes</h4>
+            <div id="contact-notes-area"></div>
+            <input type="text" id="manual-note" style="padding:12px; border-radius:15px; border:1px solid #eee;" placeholder="Type manual note...">
+            <button onclick="addManualNote()" style="background:var(--wt-gray-med); color:white; border:none; padding:10px; border-radius:15px; cursor:pointer; font-size:0.8rem;">SAVE NOTE</button>
         </div>
     </div>
 
     <script>
         const script = [
-            "\"They think you're invisible.\"",
-            "\"We see you. We hear you.\"",
-            "\"This isn't a prison. It's just a gray area.\"",
-            "\"We're not here to help you tear down the walls.\"",
-            "\"We're here to remind you... there are none.\""
+            {t: "\"They think you're invisible.\"", s: "74% of violations go unreported. You are the exception."},
+            {t: "\"This isn't a prison. It's just a gray area.\"", s: "Real truth requires real metadata."},
+            {t: "\"We're not here to help you tear down the walls.\"", s: "We're here to provide the bridge through them."},
+            {t: "\"We're here to remind you... there are none.\"", s: "Justice is now effortless."}
         ];
         let idx = 0;
-        const textEl = document.getElementById('intro-text');
-        const advocacyLayer = document.getElementById('layer-advocacy');
+        let gps = "LAT: 34.0522 LON: -118.2437";
 
         function runAdvocacy() {
-            if (idx < script.length - 1) {
+            const textEl = document.getElementById('intro-text');
+            const statEl = document.getElementById('advocacy-stat');
+            const layer = document.getElementById('layer-advocacy');
+            
+            const loop = setInterval(() => {
                 idx++;
-                textEl.style.opacity = 0;
-                setTimeout(() => {
-                    textEl.innerText = script[idx];
-                    textEl.style.opacity = 1;
-                    setTimeout(runAdvocacy, 4000);
-                }, 800);
-            } else {
-                // THE TRANSITION: FLASH TO BRIGHT WHITE
-                setTimeout(() => {
-                    advocacyLayer.style.background = "white"; 
-                    setTimeout(() => {
-                        advocacyLayer.classList.add('hidden');
-                        document.getElementById('act-branding').classList.remove('hidden');
-                    }, 800);
-                }, 4000);
-            }
+                if(idx < script.length) {
+                    textEl.style.opacity = 0; statEl.style.opacity = 0;
+                    if(idx === 3) { layer.style.background = "white"; }
+                    setTimeout(() => { 
+                        textEl.innerText = script[idx].t; statEl.innerText = script[idx].s;
+                        textEl.style.opacity = 1; statEl.style.opacity = 1;
+                    }, 500);
+                } else {
+                    clearInterval(loop);
+                    setTimeout(() => { showAct('layer-advocacy', 'act-branding'); }, 4000);
+                }
+            }, 4500);
+        }
+
+        function addToTimeline() {
+            const input = document.getElementById('case-input');
+            const type = document.getElementById('type-select');
+            if(!input.value) return;
+
+            const now = new Date();
+            const timeStamp = `${now.toDateString()} | ${now.toLocaleTimeString()} | ${gps}`;
+            const box = document.createElement('div');
+            box.className = 'timeline-box';
+            if(input.value.length > 50) box.classList.add('pulse-ochre'); // Artificial pattern rec
+            
+            box.innerHTML = `<span class="box-meta">${type.value} • ${timeStamp}</span><div class="box-text">${input.value}</div>`;
+            document.getElementById('timeline-street').appendChild(box);
+            input.value = "";
         }
 
         function showAct(curr, next) {
             document.getElementById(curr).classList.add('hidden');
-            setTimeout(() => {
-                document.getElementById(curr).style.display = 'none';
-                document.getElementById(next).classList.remove('hidden');
-                document.getElementById(next).style.display = 'flex';
-            }, 800);
+            document.getElementById(next).classList.remove('hidden');
         }
 
-        function startDashboard() {
+        function startApp() {
             document.querySelectorAll('.layer').forEach(l => l.style.display = 'none');
-            document.getElementById('main-dashboard').style.display = 'block';
-            Sortable.create(document.getElementById('street'), { animation: 150 });
+            document.getElementById('main-app').style.display = 'grid';
+            initSortable();
         }
 
-        function togglePrivacy() { document.body.classList.toggle('vault-active'); }
-
-        function triggerTamper() {
-            document.getElementById('mac-light').classList.add('tamper-red');
-            document.getElementById('street').classList.add('tamper-red');
-            alert("HEAVY PATTERN CONFLICT: Tamper alert active. Face Chat Bridge required.");
+        function initSortable() {
+            Sortable.create(document.getElementById('timeline-street'), { group: 'shared', animation: 150, sort: false });
+            Sortable.create(document.getElementById('trash-can'), { group: 'shared', onAdd: (e) => e.item.remove() });
+            Sortable.create(document.getElementById('contact-notes-area'), { group: 'shared', onAdd: (e) => { e.item.style.fontSize = "0.6rem"; e.item.style.padding = "10px"; } });
         }
 
-        function handshake() { alert("Data Transmitted to Supabase & Clio."); }
+        function sendMsg() {
+            const field = document.getElementById('chat-in');
+            if(!field.value) return;
+            const m = document.createElement('div');
+            m.className = 'msg-client'; m.innerText = field.value;
+            document.getElementById('chat-msgs').appendChild(m);
+            field.value = "";
+            document.getElementById('chat-msgs').scrollTop = document.getElementById('chat-msgs').scrollHeight;
+        }
+
+        function toggleVideo() {
+            const v = document.getElementById('video-overlay');
+            const p = document.getElementById('bridge-phone');
+            if(v.style.display === 'block') { v.style.display = 'none'; p.classList.remove('bridge-red'); }
+            else { v.style.display = 'block'; p.classList.add('bridge-red'); }
+        }
+
+        function lockToClio() { alert("Timeline Locked. Syncing with Supabase and generating Clio Summary..."); location.reload(); }
     </script>
 </body>
 </html>
-
