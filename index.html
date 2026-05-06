@@ -2,244 +2,218 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeline™ | Master Engine v3.0</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WorkTimeline™ | Master Engine</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root { 
-            --wt-teal: #167e7c; --wt-dark-teal: #0a2e2d; --wt-cream: #f8f5f1; 
-            --wt-gray-med: #5a5a5a; --wt-gray-light: #e8ecef; --wt-ochre: #ffd600; --wt-red: #ff4b2b; --clio-blue: #0056b3;
+            --wt-teal: #0d9488; --wt-dark-teal: #0f172a; --wt-gray-bg: #f8fafc; 
+            --wt-gray-med: #e2e8f0; --wt-ochre: #d97706; --wt-red: #dc2626; --clio-blue: #2563eb;
         }
-        body, html { margin: 0; padding: 0; font-family: 'Outfit', sans-serif; background: white; height: 100%; overflow: hidden; }
+        body, html { margin: 0; padding: 0; font-family: 'Outfit', sans-serif; background: var(--wt-gray-bg); height: 100%; overflow: hidden; }
 
-        /* ACT 1: ADVOCACY LAYER (STRICT MEDIUM GRAY START) */
-        #layer-advocacy { 
-            position: fixed; inset: 0; z-index: 5000; background: var(--wt-gray-med); 
-            display: flex; align-items: center; justify-content: center; transition: background 0.4s ease-in-out, opacity 1s ease; padding: 40px; text-align: center; 
-        }
-        .dialogue-text { color: var(--wt-teal); font-size: 2.2rem; font-weight: 300; line-height: 1.6; max-width: 850px; transition: opacity 0.6s ease; }
+        /* ACT 1: ADVOCACY (LIGHT GRAY -> WHITE FLASH) */
+        #layer-advocacy { position: fixed; inset: 0; z-index: 5000; background: var(--wt-gray-med); display: flex; align-items: center; justify-content: center; transition: 0.5s; padding: 30px; text-align: center; }
+        .adv-text { color: var(--wt-teal); font-size: 1.5rem; font-weight: 300; line-height: 1.4; transition: 0.8s; }
+        .adv-stat { font-size: 0.85rem; color: #64748b; margin-top: 15px; font-weight: 400; }
 
-        /* SEQUENCE LAYERS (BRIGHT WHITE) */
-        .layer { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; transition: 1s ease; padding: 40px; text-align: center; background: white; z-index: 1000; }
-        .hidden { opacity: 0; pointer-events: none; visibility: hidden; }
+        /* ACT 2: SIGN-IN & BRANDING */
+        .layer { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.8s; padding: 25px; background: white; z-index: 1000; text-align: center; }
+        .hidden { opacity: 0; pointer-events: none; visibility: hidden; transform: translateY(20px); }
 
-        /* THE ENGINE DASHBOARD LAYOUT */
-        #main-app { height: 100%; display: none; grid-template-columns: 320px 1fr 340px; gap: 20px; padding: 20px; box-sizing: border-box; background: var(--wt-cream); position: relative; z-index: 10; }
+        /* MOBILE ENGINE LAYOUT */
+        #main-app { height: 100%; display: none; flex-direction: column; background: var(--wt-gray-bg); }
+        .header { background: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; }
         
-        /* SIDEBARS & COMPONENTS */
-        .sidebar { background: white; border-radius: 40px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); display: flex; flex-direction: column; gap: 15px; overflow: hidden; }
+        /* ICONS & BRIDGE */
+        .mac-icon { width: 44px; height: 44px; background: var(--wt-teal); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; border: none; font-size: 1.2rem; }
+        .bridge-phone { width: 20px; height: 20px; border-radius: 50%; background: var(--wt-teal); box-shadow: 0 0 10px var(--wt-teal); cursor: pointer; transition: 0.4s; }
+        .tamper-light { background: rgba(220, 38, 38, 0.4); box-shadow: 0 0 10px rgba(220, 38, 38, 0.4); }
+        .tamper-heavy { background: var(--wt-red); box-shadow: 0 0 20px var(--wt-red); animation: pulseRed 1s infinite; }
+        @keyframes pulseRed { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } }
+
+        /* INPUT AREA */
+        .input-deck { background: white; padding: 20px; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+        .cat-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: none; }
+        .cat-tag { padding: 8px 16px; border-radius: 20px; background: #f1f5f9; color: var(--wt-teal); font-size: 0.75rem; font-weight: 600; white-space: nowrap; border: 1px solid #e2e8f0; }
+        .cat-tag.active { background: var(--wt-teal); color: white; }
+
+        /* TIMELINE BOXES (TRANSPARENT TEAL) */
+        #timeline { flex-grow: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .t-box { background: rgba(13, 148, 136, 0.08); border: 1px solid rgba(13, 148, 136, 0.2); padding: 15px; border-radius: 20px; position: relative; }
+        .t-meta { font-size: 0.6rem; color: var(--wt-teal); font-weight: 600; display: block; margin-bottom: 5px; }
+        .t-text { font-size: 0.9rem; color: var(--wt-dark-teal); line-height: 1.4; }
         
-        /* TIMELINE STREET (TRANSPARENT TEAL BOXES) */
-        #timeline-street { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; padding: 10px; }
-        .timeline-box { 
-            background: rgba(22, 126, 124, 0.1); border: 1.2px solid rgba(22, 126, 124, 0.2); 
-            padding: 20px; border-radius: 25px; cursor: grab; backdrop-filter: blur(8px);
-        }
-        .box-meta { font-size: 0.65rem; color: var(--wt-teal); font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; }
-        .box-text { font-size: 0.95rem; color: var(--wt-dark-teal); margin-top: 8px; line-height: 1.4; }
+        /* AI PATTERN STATE */
+        .ai-pulse { border: 2px solid var(--wt-ochre) !important; background: rgba(217, 119, 6, 0.1) !important; animation: ochreBreathe 2s infinite; }
+        @keyframes ochreBreathe { 0%, 100% { box-shadow: 0 0 5px var(--wt-ochre); } 50% { box-shadow: 0 0 20px var(--wt-ochre); } }
 
-        /* TRASH & NOTES DROP ZONES */
-        .trash-zone { background: #fee7e7; border: 2px dashed var(--wt-red); border-radius: 25px; padding: 20px; text-align: center; color: var(--wt-red); font-weight: 600; }
-        #contact-notes-area { border: 1.5px solid var(--wt-gray-light); border-radius: 25px; flex-grow: 1; padding: 15px; overflow-y: auto; background: #fafafa; }
+        /* CHAT SIDEBAR (MOBILE DRAWER) */
+        #chat-drawer { position: fixed; bottom: -100%; left: 0; right: 0; background: white; height: 60%; border-radius: 30px 30px 0 0; z-index: 6000; transition: 0.4s; padding: 20px; box-shadow: 0 -10px 40px rgba(0,0,0,0.1); }
+        .drawer-open { bottom: 0 !important; }
 
-        /* MAC STYLE SOLID TEAL ICONS */
-        .mac-icon-btn { width: 50px; height: 50px; background: var(--wt-teal); border-radius: 16px; border: none; color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2rem; }
-        .mac-phone-bridge { width: 24px; height: 24px; border-radius: 50%; background: var(--wt-teal); box-shadow: 0 0 15px var(--wt-teal); cursor: pointer; }
-        .bridge-red { background: var(--wt-red) !important; box-shadow: 0 0 25px var(--wt-red) !important; }
-
-        /* PRIVATE CHAT MAILBOX */
-        #chat-window { height: 250px; border-radius: 25px; background: #f9f9f9; border: 1px solid #eee; display: flex; flex-direction: column; overflow: hidden; }
-        #chat-msgs { flex-grow: 1; padding: 15px; overflow-y: auto; font-size: 0.8rem; display: flex; flex-direction: column; gap: 8px; }
-        .msg-lawyer { background: var(--wt-teal); color: white; padding: 8px 12px; border-radius: 15px; align-self: flex-start; border-bottom-left-radius: 2px; }
-        .msg-client { background: #e0e0e0; color: #333; padding: 8px 12px; border-radius: 15px; align-self: flex-end; border-bottom-right-radius: 2px; }
-
-        /* UTILITY */
-        .btn-wt { background: var(--wt-teal); color: white; border: none; padding: 18px; border-radius: 50px; cursor: pointer; font-weight: 600; font-size: 1rem; }
-        .pulse-ochre { animation: ochrePulse 2.5s infinite; }
-        @keyframes ochrePulse { 0%, 100% { box-shadow: 0 0 10px var(--wt-ochre); } 50% { box-shadow: 0 0 25px var(--wt-ochre); } }
-
-        /* VIDEO CALL OVERLAY */
-        #video-overlay { position: fixed; top: 100px; left: 50%; transform: translateX(-50%); width: 320px; height: 200px; background: #000; border: 4px solid var(--wt-teal); border-radius: 30px; display: none; z-index: 6000; box-shadow: 0 30px 60px rgba(0,0,0,0.4); }
+        .btn-wt { width: 100%; padding: 16px; border-radius: 14px; border: none; background: var(--wt-teal); color: white; font-weight: 600; font-size: 1rem; cursor: pointer; }
     </style>
 </head>
 <body onload="runAdvocacy()">
 
     <div id="layer-advocacy">
         <div>
-            <p class="dialogue-text" id="intro-text">"They think you're invisible."</p>
-            <p id="advocacy-stat" style="font-size: 0.9rem; color: rgba(22, 126, 124, 0.6); margin-top: 25px; font-weight: 400;"></p>
-        </div>
-    </div>
-
-    <div id="act-branding" class="layer hidden">
-        <div style="text-align:center;">
-            <svg width="120" height="80" viewBox="0 0 120 80" style="margin-bottom:30px;">
-                <path fill="var(--wt-teal)" d="M90,25H30c-2.8,0-5,2.2-5,5v35c0,2.8,2.2,5,5,5h60c2.8,0,5-2.2,5-5V30C95,27.2,92.8,25,90,25z M45,20c0-2.8,2.2-5,5-5h20c2.8,0,5,2.2,5,5v5H45V20z"/>
-                <line x1="35" y1="50" x2="85" y2="50" stroke="white" stroke-width="2.5"/><circle cx="42" cy="50" r="3" fill="white"/><circle cx="60" cy="50" r="3" fill="white"/><circle cx="78" cy="50" r="5" fill="var(--wt-ochre)"/>
-            </svg>
-            <h2 style="color:var(--wt-teal); font-size:2.5rem; font-weight:600; margin:0;">WorkTimeline™</h2>
-            <p style="color:var(--wt-teal); font-size:1.4rem; font-weight:300; max-width:650px; margin:20px auto; line-height:1.6;">
-                "Justice should be effortless. It is now with WorkTimeline™, because telling the truth shouldn't take effort."
-            </p>
-            <button class="btn-wt" style="width:220px; margin-top:40px;" onclick="showAct('act-branding', 'act-login')">Enter Engine</button>
+            <p class="adv-text" id="adv-t">"They think you're invisible."</p>
+            <p class="adv-stat" id="adv-s"></p>
         </div>
     </div>
 
     <div id="act-login" class="layer hidden">
-        <div style="background:white; padding:50px; border-radius:45px; box-shadow:0 20px 60px rgba(0,0,0,0.05); text-align:center; max-width:500px;">
-            <h3 style="color:var(--wt-teal); margin-bottom:25px;">Intelligence Legend</h3>
-            <div style="text-align:left; font-size:0.85rem; color:#666; margin-bottom:30px; display:flex; flex-direction:column; gap:12px;">
-                <p>● <span style="background:var(--wt-gray-med); display:inline-block; width:10px; height:10px; border-radius:50%;"></span> <strong>Gray:</strong> Cold Unverified Intake.</p>
-                <p>● <span style="background:var(--wt-ochre); display:inline-block; width:10px; height:10px; border-radius:50%; box-shadow:0 0 5px var(--wt-ochre);"></span> <strong>Ochre Pulse:</strong> Pattern Recognition Engine.</p>
-                <p>● <span style="background:var(--wt-teal); display:inline-block; width:10px; height:10px; border-radius:50%; box-shadow:0 0 5px var(--wt-teal);"></span> <strong>Teal:</strong> Verified Momentum Locked.</p>
-                <p>● <span style="background:var(--wt-red); display:inline-block; width:10px; height:10px; border-radius:50%; box-shadow:0 0 10px var(--wt-red);"></span> <strong>Red Tamper:</strong> Discrepancy Alert Bridge.</p>
-            </div>
-            <button class="btn-wt" onclick="startApp()">Enter Master Prototype</button>
+        <svg width="100" height="70" viewBox="0 0 100 70">
+            <path fill="var(--wt-teal)" d="M80,25H20c-2.8,0-5,2.2-5,5v30c0,2.8,2.2,5,5,5h60c2.8,0,5-2.2,5-5V30C85,27.2,82.8,25,80,25z M40,20c0-2.8,2.2-5,5-5h10c2.8,0,5,2.2,5,5v5H40V20z"/>
+            <line x1="25" y1="48" x2="75" y2="48" stroke="white" stroke-width="2.5"/><circle cx="35" cy="48" r="3" fill="white"/><circle cx="50" cy="48" r="3" fill="white"/><circle cx="65" cy="48" r="3" fill="white"/>
+        </svg>
+        <h2 style="color:var(--wt-teal); margin:10px 0;">WorkTimeline™</h2>
+        <p style="color:var(--wt-teal); font-size:1.1rem; font-weight:300; max-width:280px;">"Justice should be effortless. Telling the truth shouldn't take effort."</p>
+        
+        <div style="width:100%; margin-top:30px;">
+            <input type="text" style="width:100%; padding:15px; border-radius:12px; border:1px solid #ddd; margin-bottom:10px; box-sizing:border-box;" placeholder="Client User ID">
+            <button class="btn-wt" onclick="showAct('act-login', 'act-app')">Sign In</button>
+            <button class="btn-wt" style="background:var(--clio-blue); margin-top:10px;" onclick="showAct('act-login', 'act-app')">Login with Clio</button>
         </div>
     </div>
 
-    <div id="video-overlay"><div style="color:white; font-size:0.6rem; padding:10px; background:rgba(0,0,0,0.5);">LIVE BRIDGE FEED</div></div>
+    <div id="act-app" style="display:none; height:100%;">
+        <div id="main-app">
+            <header class="header">
+                <div>
+                    <h4 style="margin:0; color:var(--wt-teal);">WorkTimeline™</h4>
+                    <span style="font-size:0.6rem; color:#999;">Jordan AI Active</span>
+                </div>
+                <div style="display:flex; gap:15px; align-items:center;">
+                    <div id="phone-bridge" class="bridge-phone" onclick="openChat()"></div>
+                    <button class="mac-icon" style="width:36px; height:36px;">🎙️</button>
+                </div>
+            </header>
 
-    <div id="main-app">
-        <header style="grid-column: span 3; display:flex; justify-content:space-between; align-items:center;">
-            <div>
-                <h2 style="color:var(--wt-teal); margin:0; font-weight:600;">WorkTimeline™</h2>
-                <div style="display:flex; align-items:center; gap:10px; margin-top:5px;">
-                    <div id="bridge-phone" class="mac-phone-bridge" onclick="toggleVideo()"></div>
-                    <span style="font-size:0.6rem; font-weight:600; color:var(--wt-teal);">COUNSEL BRIDGE: ACTIVE</span>
+            <div class="input-deck">
+                <div class="cat-scroll">
+                    <div class="cat-tag active" onclick="setCat(this, 'Witness')">Witness</div>
+                    <div class="cat-tag" onclick="setCat(this, 'Scene')">Scene</div>
+                    <div class="cat-tag" onclick="setCat(this, 'Timeline')">Timeline</div>
+                    <div class="cat-tag" onclick="setCat(this, 'Evidence')">Evidence</div>
+                </div>
+                <textarea id="case-in" style="width:100%; height:100px; border:none; background:#f8fafc; border-radius:15px; padding:15px; font-family:'Outfit'; resize:none;" placeholder="Tap to enter details..."></textarea>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px;">
+                    <span style="font-size:0.6rem; color:#999;">AI RECOGNITION: <strong id="ai-status">NORMAL</strong></span>
+                    <button onclick="addBox()" style="background:var(--wt-teal); color:white; border:none; padding:10px 25px; border-radius:50px; font-weight:600;">+ ADD</button>
                 </div>
             </div>
-            <div style="display:flex; gap:15px;">
-                <div style="text-align:right; margin-right:15px;">
-                    <p style="font-size:0.6rem; font-weight:600; color:#888; margin:0;">AI ANALYSIS</p>
-                    <div style="width:30px; height:15px; background:var(--wt-ochre); border-radius:10px; margin-left:auto;"></div>
+
+            <div id="timeline">
                 </div>
-                <button class="mac-icon-btn">📷</button>
-                <button class="mac-icon-btn">🎙️</button>
-                <button class="mac-icon-btn">📄</button>
+
+            <div style="display:flex; gap:10px; padding:15px; background:white; border-top:1px solid #eee;">
+                <div id="trash" style="flex:1; height:60px; background:#fee2e2; border:2px dashed var(--wt-red); border-radius:15px; display:flex; align-items:center; justify-content:center; color:var(--wt-red); font-size:0.7rem; font-weight:600;">TRASH</div>
+                <div id="notes" style="flex:1; height:60px; background:#f0fdf4; border:2px dashed var(--wt-teal); border-radius:15px; display:flex; align-items:center; justify-content:center; color:var(--wt-teal); font-size:0.7rem; font-weight:600;">NOTES</div>
             </div>
-        </header>
-
-        <div class="sidebar">
-            <h4 style="color:var(--wt-teal); margin:0;">Intake Profile</h4>
-            <select id="type-select" style="padding:15px; border-radius:15px; border:1px solid #eee; font-family:'Outfit';">
-                <option>Witness Statement</option>
-                <option>Site Observation</option>
-                <option>Setting Detail</option>
-            </select>
-            <textarea id="case-input" style="flex-grow:1; border-radius:20px; border:1px solid #eee; padding:20px; resize:none; font-family:'Outfit';" placeholder="Enter the truth..."></textarea>
-            <button class="btn-wt" onclick="addToTimeline()">ADD TO TIMELINE</button>
-            <div id="trash-can" class="trash-zone">🗑️<br>DRAG TO DELETE</div>
+            
+            <button class="btn-wt" style="border-radius:0;" onclick="alert('Sent to Clio Summary')">LOCK & SEND TO CLIO</button>
         </div>
+    </div>
 
-        <div style="display:flex; flex-direction:column;">
-            <p style="font-size:0.8rem; color:#555; font-style:italic; text-align:center; margin-bottom:20px;">
-                "WorkTimeline™ helps the client take the first step to get to the center where they belong until they find the firm that makes them never look back."
-            </p>
-            <div id="timeline-street"></div>
-            <button id="lock-btn" class="btn-wt" style="margin-top:20px; background:var(--wt-dark-teal);" onclick="lockToClio()">LOCK & SEND TO CLIO</button>
+    <div id="chat-drawer">
+        <div style="width:40px; height:5px; background:#eee; border-radius:10px; margin:0 auto 20px;"></div>
+        <h3 style="color:var(--wt-teal); margin:0;">Counsel Bridge</h3>
+        <div id="chat-msgs" style="height:70%; overflow-y:auto; padding:15px 0; font-size:0.8rem; color:#555;">
+            <p><strong>Lawyer:</strong> I'm reviewing the entries. The Witness Statement looks consistent.</p>
         </div>
-
-        <div class="sidebar">
-            <h4 style="color:var(--wt-teal); margin:0;">Private Counsel Mailbox</h4>
-            <div id="chat-window">
-                <div id="chat-msgs"><div class="msg-lawyer">Welcome. I'm reviewing your entries live. Leave a note if you need me.</div></div>
-                <div style="display:flex; padding:10px; gap:5px; background:white;">
-                    <input type="text" id="chat-in" style="flex-grow:1; border:none; background:#f0f0f0; border-radius:20px; padding:10px; font-size:0.8rem;" placeholder="Message lawyer...">
-                    <button onclick="sendMsg()" style="background:var(--wt-teal); color:white; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer;">↑</button>
-                </div>
-            </div>
-            <h4 style="color:var(--wt-teal); margin-bottom:0;">Contact Notes</h4>
-            <div id="contact-notes-area"></div>
-            <input type="text" id="manual-note" style="padding:12px; border-radius:15px; border:1px solid #eee;" placeholder="Type manual note...">
-            <button onclick="addManualNote()" style="background:var(--wt-gray-med); color:white; border:none; padding:10px; border-radius:15px; cursor:pointer; font-size:0.8rem;">SAVE NOTE</button>
+        <div style="display:flex; gap:10px;">
+            <input type="text" style="flex:1; padding:12px; border-radius:10px; border:1px solid #ddd;" placeholder="Type message...">
+            <button style="background:var(--wt-teal); color:white; border:none; border-radius:10px; padding:0 15px;">Send</button>
         </div>
+        <button class="btn-wt" style="margin-top:15px; background:var(--clio-blue);" onclick="toggleDrawer()">Close</button>
     </div>
 
     <script>
-        const script = [
-            {t: "\"They think you're invisible.\"", s: "74% of violations go unreported. You are the exception."},
-            {t: "\"This isn't a prison. It's just a gray area.\"", s: "Real truth requires real metadata."},
-            {t: "\"We're not here to help you tear down the walls.\"", s: "We're here to provide the bridge through them."},
-            {t: "\"We're here to remind you... there are none.\"", s: "Justice is now effortless."}
+        const advocacy = [
+            {t: "They think you're invisible.", s: "74% of workplace violations go unreported."},
+            {t: "Fact: Silence empowers the status quo.", s: "Data is the only universal language."},
+            {t: "This isn't a prison. It's a transition.", s: "Justice requires an effortless record."},
+            {t: "We're not here to tear down the walls.", s: "We're here to remind you..."},
+            {t: "There are none.", s: "Justice should be effortless."}
         ];
-        let idx = 0;
-        let gps = "LAT: 34.0522 LON: -118.2437";
+        
+        let curCat = "Witness";
 
         function runAdvocacy() {
-            const textEl = document.getElementById('intro-text');
-            const statEl = document.getElementById('advocacy-stat');
+            let i = 0;
+            const t = document.getElementById('adv-t');
+            const s = document.getElementById('adv-s');
             const layer = document.getElementById('layer-advocacy');
-            
-            const loop = setInterval(() => {
-                idx++;
-                if(idx < script.length) {
-                    textEl.style.opacity = 0; statEl.style.opacity = 0;
-                    if(idx === 3) { layer.style.background = "white"; }
-                    setTimeout(() => { 
-                        textEl.innerText = script[idx].t; statEl.innerText = script[idx].s;
-                        textEl.style.opacity = 1; statEl.style.opacity = 1;
-                    }, 500);
+
+            function next() {
+                if (i < advocacy.length) {
+                    t.style.opacity = 0; s.style.opacity = 0;
+                    setTimeout(() => {
+                        if(i === 4) layer.style.background = "white"; // THE FLASH
+                        t.innerText = advocacy[i].t;
+                        s.innerText = advocacy[i].s;
+                        t.style.opacity = 1; s.style.opacity = 1;
+                        i++;
+                        setTimeout(next, 4500);
+                    }, 800);
                 } else {
-                    clearInterval(loop);
-                    setTimeout(() => { showAct('layer-advocacy', 'act-branding'); }, 4000);
+                    layer.classList.add('hidden');
+                    document.getElementById('act-login').classList.remove('hidden');
                 }
-            }, 4500);
+            }
+            next();
         }
 
-        function addToTimeline() {
-            const input = document.getElementById('case-input');
-            const type = document.getElementById('type-select');
-            if(!input.value) return;
+        function setCat(el, c) {
+            document.querySelectorAll('.cat-tag').forEach(t => t.classList.remove('active'));
+            el.classList.add('active'); curCat = c;
+        }
 
+        function addBox() {
+            const input = document.getElementById('case-in');
+            if(!input.value) return;
             const now = new Date();
-            const timeStamp = `${now.toDateString()} | ${now.toLocaleTimeString()} | ${gps}`;
-            const box = document.createElement('div');
-            box.className = 'timeline-box';
-            if(input.value.length > 50) box.classList.add('pulse-ochre'); // Artificial pattern rec
+            const stamp = `${now.getHours()}:${now.getMinutes()} | ${now.toDateString()}`;
             
-            box.innerHTML = `<span class="box-meta">${type.value} • ${timeStamp}</span><div class="box-text">${input.value}</div>`;
-            document.getElementById('timeline-street').appendChild(box);
+            const b = document.createElement('div');
+            b.className = 't-box';
+            
+            // INTENSE AI PATTERN RECOGNITION LOGIC
+            if(input.value.length > 50) {
+                b.classList.add('ai-pulse');
+                document.getElementById('ai-status').innerText = "HIGH PATTERN";
+                document.getElementById('ai-status').style.color = "var(--wt-ochre)";
+                document.getElementById('phone-bridge').classList.add('tamper-light');
+            }
+
+            b.innerHTML = `<span class="t-meta">${curCat} • ${stamp} • GPS: VERIFIED</span><div class="t-text">${input.value}</div>`;
+            document.getElementById('timeline').prepend(b);
             input.value = "";
         }
 
-        function showAct(curr, next) {
+        function openChat() { document.getElementById('chat-drawer').classList.add('drawer-open'); }
+        function toggleDrawer() { document.getElementById('chat-drawer').classList.remove('drawer-open'); }
+
+        function showAct(curr, nextID) {
             document.getElementById(curr).classList.add('hidden');
-            document.getElementById(next).classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById(curr).style.display = 'none';
+                document.getElementById(nextID).style.display = 'block';
+                document.getElementById('act-app').style.display = 'block';
+                document.getElementById('main-app').style.display = 'flex';
+                initSort();
+            }, 800);
         }
 
-        function startApp() {
-            document.querySelectorAll('.layer').forEach(l => l.style.display = 'none');
-            document.getElementById('main-app').style.display = 'grid';
-            initSortable();
+        function initSort() {
+            Sortable.create(document.getElementById('timeline'), { group: 'shared', animation: 150 });
+            Sortable.create(document.getElementById('trash'), { group: 'shared', onAdd: (e) => e.item.remove() });
+            Sortable.create(document.getElementById('notes'), { group: 'shared', onAdd: (e) => { e.item.style.borderColor = '#0d9488'; } });
         }
-
-        function initSortable() {
-            Sortable.create(document.getElementById('timeline-street'), { group: 'shared', animation: 150, sort: false });
-            Sortable.create(document.getElementById('trash-can'), { group: 'shared', onAdd: (e) => e.item.remove() });
-            Sortable.create(document.getElementById('contact-notes-area'), { group: 'shared', onAdd: (e) => { e.item.style.fontSize = "0.6rem"; e.item.style.padding = "10px"; } });
-        }
-
-        function sendMsg() {
-            const field = document.getElementById('chat-in');
-            if(!field.value) return;
-            const m = document.createElement('div');
-            m.className = 'msg-client'; m.innerText = field.value;
-            document.getElementById('chat-msgs').appendChild(m);
-            field.value = "";
-            document.getElementById('chat-msgs').scrollTop = document.getElementById('chat-msgs').scrollHeight;
-        }
-
-        function toggleVideo() {
-            const v = document.getElementById('video-overlay');
-            const p = document.getElementById('bridge-phone');
-            if(v.style.display === 'block') { v.style.display = 'none'; p.classList.remove('bridge-red'); }
-            else { v.style.display = 'block'; p.classList.add('bridge-red'); }
-        }
-
-        function lockToClio() { alert("Timeline Locked. Syncing with Supabase and generating Clio Summary..."); location.reload(); }
     </script>
 </body>
 </html>
