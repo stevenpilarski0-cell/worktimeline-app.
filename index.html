@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™</title>
+    <title>WorkTimeline™ | Master Narrative</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -19,59 +19,61 @@
             overflow: hidden; color: var(--wt-dark);
         }
 
-        /* ACT 1: ADVOCACY (VOICE-OVER CALIBRATED) */
-        .screen { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 35px; text-align: center; z-index: 1000; }
-        #act-intro { display: flex; z-index: 5000; background: var(--wt-gray-light); overflow-y: auto; justify-content: flex-start; padding-top: 60px; }
+        /* ACT 1: ADVOCACY (LONG FORM + VOICE OVER PACE) */
+        .screen { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 35px; text-align: center; z-index: 1000; transition: opacity 0.6s; }
+        #act-intro { display: flex; z-index: 5000; background: var(--wt-gray-light); overflow-y: auto; justify-content: flex-start; padding-top: 80px; }
         
-        .quote-stack { display: flex; flex-direction: column; gap: 20px; width: 100%; align-items: center; }
-        .drifter { color: var(--wt-teal); font-size: 1.35rem; font-weight: 300; opacity: 0; transform: translateY(10px); transition: 1.5s cubic-bezier(0.4, 0, 0.2, 1); max-width: 90%; line-height: 1.4; }
+        .quote-stack { display: flex; flex-direction: column; gap: 25px; width: 100%; align-items: center; }
+        .drifter { color: var(--wt-teal); font-size: 1.35rem; font-weight: 300; opacity: 0; transform: translateY(10px); transition: 2s cubic-bezier(0.4, 0, 0.2, 1); max-width: 90%; line-height: 1.5; }
         .drifter.active { opacity: 1; transform: translateY(0); }
-        .stat-line { font-size: 0.75rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 4px; }
+        .stat-line { font-size: 0.8rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; display: block; margin-bottom: 6px; }
 
-        /* THE BRANDING REVELATION */
-        .briefcase { width: 60px; height: 45px; background: var(--wt-teal); border-radius: 12px; position: relative; margin-bottom: 20px; }
+        /* LOGO & BRANDING */
+        .logo-box { display: flex; align-items: center; gap: 12px; margin-bottom: 25px; }
+        .briefcase { width: 60px; height: 45px; background: var(--wt-teal); border-radius: 12px; position: relative; }
         .handle { width: 26px; height: 8px; border: 3.5px solid var(--wt-teal); border-bottom: none; border-radius: 6px 6px 0 0; position: absolute; top: -8px; left: 50%; transform: translateX(-50%); }
-        .timeline-line { position: absolute; width: 70%; height: 2px; background: white; top: 60%; left: 15%; display: flex; justify-content: space-between; align-items: center; }
+        .timeline-line { position: absolute; width: 75%; height: 2px; background: white; top: 60%; left: 12.5%; display: flex; justify-content: space-between; align-items: center; }
         .dot { width: 5px; height: 5px; background: white; border-radius: 50%; }
 
-        /* MAIN ENGINE DASHBOARD */
+        /* DASHBOARD */
         #main-app { display: none; flex-direction: column; height: 100dvh; background: var(--wt-gray-light); }
         .header { background: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
-        .blur-mode { filter: blur(50px) grayscale(100%); pointer-events: none; opacity: 0.4; }
-
-        /* MAC-STYLE TEAL SYMBOLS */
-        .mac-btn { width: 46px; height: 46px; background: var(--wt-teal); border-radius: 14px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
+        .mac-btn { width: 44px; height: 44px; background: var(--wt-teal); border-radius: 14px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .mac-svg { width: 22px; height: 22px; fill: white; }
 
         /* PRIVACY SWITCH */
         .sw-track { width: 48px; height: 24px; background: #cbd5e1; border-radius: 20px; position: relative; cursor: pointer; transition: 0.3s; }
         .sw-thumb { position: absolute; width: 20px; height: 20px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: 0.3s; }
         .sw-on { background: var(--wt-teal); } .sw-on .sw-thumb { left: 26px; }
+        .blur-mode { filter: blur(50px) grayscale(100%); pointer-events: none; opacity: 0.4; }
 
         /* TIMELINE DISPLAY */
         #timeline { flex-grow: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 12px; }
-        .entry { background: white; padding: 18px; border-radius: var(--mac-radius); border: 1px solid #e5e7eb; position: relative; animation: slideUp 0.4s ease; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .entry { background: white; padding: 18px; border-radius: var(--mac-radius); border: 1px solid #e5e7eb; position: relative; font-size: 0.95rem; line-height: 1.4; }
         .stamp { font-size: 0.6rem; color: var(--wt-teal); font-weight: 600; display: block; margin-bottom: 6px; }
 
-        /* FOOTER & BUTTONS */
+        /* FOOTER */
         .footer { background: white; padding: 20px; border-top: 1px solid #eee; }
-        textarea { width: 100%; height: 80px; border: none; background: #f8fafc; border-radius: 18px; padding: 15px; font-family: 'Outfit'; resize: none; margin-bottom: 15px; font-size: 1rem; }
-        .sq-btn { width: 100%; padding: 18px; border-radius: var(--mac-radius); border: none; font-weight: 600; cursor: pointer; color: white; background: var(--wt-teal); font-size: 0.9rem; transition: 0.4s; }
+        textarea { width: 100%; height: 80px; border: none; background: #f8fafc; border-radius: 18px; padding: 15px; font-family: 'Outfit'; resize: none; margin-bottom: 12px; font-size: 1rem; }
+        .sq-btn { width: 100%; padding: 18px; border-radius: var(--mac-radius); border: none; font-weight: 600; cursor: pointer; color: white; background: var(--wt-teal); font-size: 0.9rem; }
     </style>
 </head>
 <body onload="runAdvocacy()">
 
     <div id="act-intro" class="screen">
         <div class="quote-stack" id="stack-container"></div>
-        <button id="gate-btn" class="sq-btn" style="display:none; width: 220px; margin-top: 40px;" onclick="toBranding()">Continue</button>
+        <button id="gate-btn" class="sq-btn" style="display:none; width: 220px; margin-top: 50px;" onclick="toBranding()">Continue to Center</button>
     </div>
 
     <div id="act-branding" class="screen" style="background:white;">
-        <div class="briefcase"><div class="handle"></div><div class="timeline-line"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>
-        <h2 style="color:var(--wt-teal); margin:0; font-size: 1.6rem;">WorkTimeline™</h2>
-        <span style="font-size: 0.55rem; letter-spacing: 3px; font-weight: 600; color: #aaa;">INTAKE</span>
-        <p style="padding: 20px; line-height:1.7; font-size: 1.15rem; color: var(--wt-dark);">
+        <div class="logo-box">
+            <div class="briefcase"><div class="handle"></div><div class="timeline-line"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>
+            <div style="text-align:left;">
+                <h2 style="color:var(--wt-teal); margin:0;">WorkTimeline™</h2>
+                <span style="font-size: 0.55rem; letter-spacing: 3px; font-weight: 600; color: #aaa;">INTAKE</span>
+            </div>
+        </div>
+        <p style="padding: 0 20px; line-height:1.7; font-size: 1.15rem; color: var(--wt-dark);">
             "WorkTimeline™ brings the client one step forward to the center where they belong until the firm helps them never look back."
         </p>
         <button class="sq-btn" style="width: 200px; margin-top: 35px;" onclick="toLogin()">Enter Gateway</button>
@@ -79,35 +81,29 @@
 
     <div id="act-login" class="screen" style="background:white;">
         <h3 style="color:var(--wt-teal);">Secure Access</h3>
-        <input type="text" style="width:100%; max-width:300px; padding:18px; border-radius:18px; border:1px solid #ddd; margin-bottom:15px;" placeholder="Client ID">
+        <input type="text" style="width:100%; max-width:300px; padding:18px; border-radius:18px; border:1px solid #ddd; margin-bottom:12px;" placeholder="Client ID">
         <button class="sq-btn" style="width:300px;" onclick="startEngine()">SUBMIT</button>
-        <div style="margin: 20px 0; color: #ccc; font-size: 0.75rem; font-weight: 600;">OR</div>
+        <div style="margin: 20px 0; color: #ccc; font-size: 0.75rem;">OR</div>
         <button class="sq-btn" style="width:300px; background:var(--clio-blue);" onclick="startEngine()">SIGN IN WITH CLIO</button>
     </div>
 
     <div id="main-app">
         <header class="header">
-            <div style="display:flex; align-items:center; gap:12px;">
-                <div class="briefcase" style="width:38px; height:28px;"><div class="handle" style="width:16px; height:6px; top:-6px;"></div><div class="timeline-line"><div class="dot" style="width:3px; height:3px;"></div><div class="dot" style="width:3px; height:3px;"></div><div class="dot" style="width:3px; height:3px;"></div></div></div>
-                <h4 style="margin:0; color:var(--wt-teal); font-size:1rem;">WorkTimeline™</h4>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <div class="briefcase" style="width:34px; height:28px;"><div class="handle" style="width:14px; height:4px; top:-4px;"></div><div class="timeline-line"><div class="dot" style="width:2px; height:2px;"></div><div class="dot" style="width:2px; height:2px;"></div><div class="dot" style="width:2px; height:2px;"></div></div></div>
+                <h4 style="margin:0; color:var(--wt-teal); font-size:0.9rem;">WorkTimeline™</h4>
             </div>
             <div style="display:flex; gap:12px; align-items:center;">
                 <div id="privacy-sw" class="privacy-toggle" onclick="togglePrivacy()"></div>
-                <button class="mac-btn" style="width:38px; height:38px;"><svg class="mac-svg" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></button>
+                <button class="mac-btn" style="width:38px; height:38px;" onclick="alert('Message Bridge Active')"><svg class="mac-svg" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></button>
             </div>
         </header>
 
         <div style="display:flex; justify-content:space-around; padding: 15px; background: white; border-bottom: 1px solid #eee;">
             <button class="mac-btn" onclick="alert('Camera Active')"><svg class="mac-svg" viewBox="0 0 24 24"><path d="M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm9 3.5V6a2 2 0 0 0-2-2h-3.2l-1.3-1.7a1 1 0 0 0-.8-.3H9.3a1 1 0 0 0-.8.3L7.2 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5z"/></svg></button>
-            <button class="mac-btn" onclick="alert('Audio Active')"><svg class="mac-svg" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg></button>
+            <button class="mac-btn" onclick="alert('Mic Active')"><svg class="mac-svg" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg></button>
             <button class="mac-btn" onclick="alert('Docs Active')"><svg class="mac-svg" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6z"/></svg></button>
             <button class="mac-btn" onclick="alert('Bridge Active')"><svg class="mac-svg" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></button>
-        </div>
-
-        <div style="display:flex; gap:10px; overflow-x:auto; padding: 12px 15px; background: white; scrollbar-width: none;">
-            <div onclick="setIn('Witness Statement: ')" style="background:#f1f5f9; color:var(--wt-teal); padding:8px 18px; border-radius:20px; font-size:0.75rem; font-weight:600; white-space:nowrap; border:1px solid #e2e8f0;">Witness</div>
-            <div onclick="setIn('Intake Detail: ')" style="background:#f1f5f9; color:var(--wt-teal); padding:8px 18px; border-radius:20px; font-size:0.75rem; font-weight:600; white-space:nowrap; border:1px solid #e2e8f0;">Intake</div>
-            <div onclick="setIn('Setting Note: ')" style="background:#f1f5f9; color:var(--wt-teal); padding:8px 18px; border-radius:20px; font-size:0.75rem; font-weight:600; white-space:nowrap; border:1px solid #e2e8f0;">Setting</div>
         </div>
 
         <div id="timeline"></div>
@@ -118,19 +114,22 @@
                 <button class="sq-btn" onclick="add('T')">ADD TIMELINE</button>
                 <button class="sq-btn" style="background:#e5e7eb; color:var(--wt-dark);" onclick="add('N')">+ CON'D NOTES</button>
             </div>
-            <button id="lock-btn" class="sq-btn" style="width:100%; margin-top:12px; background:var(--wt-dark);" onclick="lock()">LOCK & SEND TO CLIO</button>
+            <button id="lock-btn" class="sq-btn" style="width:100%; margin-top:12px; background:var(--wt-dark);" onclick="alert('Sent to Clio Dashboard')">LOCK & SEND TO CLIO</button>
         </div>
     </div>
 
     <script>
         const quotes = [
-            {s: "Fact: 86% of legal problems go unmet.", t: "It's too expensive. It's too complex."},
-            {s: "Jack Newton (Clio): 'Bridging the Access Gap.'", t: "We level the playing field."},
-            {s: "They say you're invisible.", t: "You're not. We hear you. We see you."},
-            {s: "Kind of feels like a prison, right?", t: "It's not just the gray area."},
-            {s: "Feels like the walls are closing in.", t: "They're not. We're here to help you now."},
-            {s: "We're not here to tear down the walls...", t: "We're here to remind you..."},
-            {s: "Justice is now effortless.", t: "There are none."}
+            {s: "Jack Newton (Clio): '77% of legal needs go unmet.'", t: "Bridging the Access Gap."},
+            {s: "ROI: Intake is the #1 driver of firm success.", t: "Informatics, not just stories."},
+            {s: "The Gray Area: Where 90% of data is lost.", t: "Record the truth instantly."},
+            {s: "Jack Newton Philosophy: 'Level the playing field.'", t: "Truth requires zero effort."},
+            {s: "They think you're invisible.", t: "You're not. We see you. We hear you."},
+            {s: "Hey, hey. They say you're invisible.", t: "We know you're not. We hear you. We see you."},
+            {s: "Prison?", t: "It may seem like it, but there are no walls."},
+            {s: "It's just that gray area.", t: "Don't know what to do. Don't know where to go."},
+            {s: "It's okay. We got you.", t: "We're here to remind you..."},
+            {s: "There are no walls.", t: "There are none."}
         ];
         
         let qIdx = 0;
@@ -142,13 +141,11 @@
                 item.innerHTML = `<span class="stat-line">${quotes[qIdx].s}</span>${quotes[qIdx].t}`;
                 container.appendChild(item);
                 setTimeout(() => item.classList.add('active'), 100);
-                if(qIdx === quotes.length - 1) setTimeout(() => document.getElementById('act-intro').style.background="white", 1000);
+                if(qIdx === quotes.length - 1) setTimeout(() => document.getElementById('act-intro').style.background="white", 1500);
                 qIdx++;
-                setTimeout(runAdvocacy, 4800);
+                setTimeout(runAdvocacy, 6000); // 6 SECONDS FOR VOICE OVER SPACE
             } else { document.getElementById('gate-btn').style.display="block"; }
         }
-
-        function setIn(t) { document.getElementById('main-in').value = t; }
 
         function add(type) {
             const val = document.getElementById('main-in').value;
@@ -161,16 +158,7 @@
             document.getElementById('main-in').value = "";
         }
 
-        function togglePrivacy() {
-            document.getElementById('main-app').classList.toggle('blur-mode');
-            document.getElementById('privacy-sw').classList.toggle('p-on');
-        }
-
-        function lock() {
-            document.getElementById('lock-btn').style.backgroundColor = 'var(--clio-blue)';
-            alert("Pattern Recognition Summary:\nTimeline verified. Logic locked.\nHandshake sent to Clio Dashboard.");
-        }
-
+        function togglePrivacy() { document.getElementById('main-app').classList.toggle('blur-mode'); document.getElementById('privacy-sw').classList.toggle('sw-on'); }
         function toBranding() { document.getElementById('act-intro').style.display="none"; document.getElementById('act-branding').style.display="flex"; }
         function toLogin() { document.getElementById('act-branding').style.display="none"; document.getElementById('act-login').style.display="flex"; }
         function startEngine() { document.getElementById('act-login').style.display="none"; document.getElementById('main-app').style.display="flex"; }
