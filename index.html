@@ -12,110 +12,118 @@
         }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        /* HARD START: MEDIUM GRAY */
         body, html { 
             margin: 0; padding: 0; font-family: 'Outfit', sans-serif; 
-            background: var(--wt-gray-med); height: 100vh; width: 100vw; 
+            background: var(--wt-gray-med); height: 100dvh; width: 100vw; 
             overflow: hidden; color: white;
         }
 
         .screen { 
             position: fixed; inset: 0; display: none; 
             flex-direction: column; align-items: center; justify-content: center; 
-            padding: 30px; text-align: center; transition: opacity 0.5s;
+            padding: 25px; text-align: center; z-index: 1000;
         }
-        #act-1 { display: flex; z-index: 5000; } /* Start here */
+        #act-1 { display: flex; z-index: 5000; background: var(--wt-gray-med); }
 
-        /* TEXT DRIFTING */
-        .quote-box { height: 120px; display: flex; flex-direction: column; justify-content: center; }
-        .drifter { opacity: 0; transform: translateY(10px); transition: 1s ease; font-size: 1.4rem; font-weight: 300; }
-        .stat { font-size: 0.8rem; color: #ccc; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
-
-        /* THE WHITE FLASH */
-        .flash-white { background: white !important; color: var(--wt-teal) !important; }
-
-        /* LOGO: BRIEFCASE + 3 DOTS */
+        /* THE LOGO: BRIEFCASE + 3 DOTS */
+        .logo-row { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
         .briefcase { 
-            width: 80px; height: 60px; background: var(--wt-teal); 
-            border-radius: 10px; position: relative; margin-bottom: 20px; 
+            width: 50px; height: 38px; background: var(--wt-teal); 
+            border-radius: 6px; position: relative; flex-shrink: 0;
         }
         .handle { 
-            width: 30px; height: 10px; border: 3px solid var(--wt-teal); 
-            border-bottom: none; border-radius: 5px 5px 0 0; 
-            position: absolute; top: -10px; left: 50%; transform: translateX(-50%); 
+            width: 20px; height: 7px; border: 3px solid var(--wt-teal); 
+            border-bottom: none; border-radius: 4px 4px 0 0; 
+            position: absolute; top: -7px; left: 50%; transform: translateX(-50%); 
         }
-        .line-dots { 
-            position: absolute; width: 70%; height: 2px; background: white; 
-            top: 60%; left: 15%; display: flex; justify-content: space-between; 
+        .timeline-line { 
+            position: absolute; width: 80%; height: 1.5px; background: white; 
+            top: 55%; left: 10%; display: flex; justify-content: space-between; 
         }
-        .dot { width: 5px; height: 5px; background: white; border-radius: 50%; transform: translateY(-2px); }
+        .dot { width: 4px; height: 4px; background: white; border-radius: 50%; transform: translateY(-1.5px); }
 
-        /* DASHBOARD ELEMENTS */
-        .header { background: white; width: 100%; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
-        .mac-btn { width: 40px; height: 40px; background: var(--wt-teal); border-radius: 10px; border: none; display: flex; align-items: center; justify-content: center; }
-        .mac-svg { width: 20px; height: 20px; fill: white; }
+        /* TEXT DRIFTING */
+        .drifter { opacity: 0; transform: translateY(10px); transition: 1.2s ease; font-size: 1.3rem; font-weight: 300; color: white; }
+        .drifter.active { opacity: 1; transform: translateY(0); color: var(--wt-teal); }
+        .stat { font-size: 0.75rem; color: #aaa; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; }
+
+        /* DASHBOARD */
+        #main-app { display: none; flex-direction: column; height: 100dvh; background: var(--wt-gray-light); color: var(--wt-dark); }
+        .header { background: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
         
-        #timeline { flex-grow: 1; overflow-y: auto; width: 100%; padding: 15px; background: var(--wt-gray-light); display: flex; flex-direction: column; gap: 10px; }
-        .entry { background: white; padding: 15px; border-radius: 15px; border: 1px solid #ddd; position: relative; color: var(--wt-dark); text-align: left; }
-        .meta { font-size: 0.6rem; color: var(--wt-teal); font-weight: 600; margin-bottom: 4px; }
+        /* MAC STYLE ICONS */
+        .mac-btn { width: 40px; height: 40px; background: var(--wt-teal); border-radius: 10px; border: none; display: flex; align-items: center; justify-content: center; }
+        .mac-svg { width: 22px; height: 22px; fill: white; }
+        
+        .phone-bridge { width: 16px; height: 16px; border-radius: 50%; background: var(--wt-teal); box-shadow: 0 0 8px var(--wt-teal); cursor: pointer; }
+        .phone-pulse { animation: phoneGlow 1s infinite; background: var(--wt-red) !important; box-shadow: 0 0 15px var(--wt-red) !important; }
+        @keyframes phoneGlow { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.3); } }
+
+        /* TIMELINE */
+        #timeline { flex-grow: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+        .entry { background: white; padding: 12px; border-radius: 12px; border: 1px solid #ddd; position: relative; }
+        .entry-meta { font-size: 0.55rem; color: var(--wt-teal); font-weight: 600; }
 
         /* CON'D NOTES AREA */
-        .footer-input { background: white; padding: 15px; border-top: 1px solid #eee; width: 100%; }
-        textarea { width: 100%; height: 60px; border: none; background: #f0f0f0; border-radius: 10px; padding: 10px; font-family: 'Outfit'; margin-bottom: 10px; }
-        .btn-teal { background: var(--wt-teal); color: white; border: none; padding: 15px; border-radius: 10px; width: 100%; font-weight: 600; cursor: pointer; }
+        .footer { background: white; padding: 12px 15px; border-top: 1px solid #eee; }
+        textarea { width: 100%; height: 60px; border: none; background: #f0f0f0; border-radius: 10px; padding: 10px; font-family: 'Outfit'; resize: none; margin-bottom: 8px; }
+        .btn-teal { background: var(--wt-teal); color: white; border: none; padding: 14px; border-radius: 10px; width: 100%; font-weight: 600; font-size: 0.9rem; }
     </style>
 </head>
 <body>
 
-    <div id="act-1" class="screen" onclick="skipToDashboard()">
-        <div class="quote-box">
-            <span id="stat-el" class="stat"></span>
+    <div id="act-1" class="screen" onclick="forceDashboard()">
+        <div style="height: 150px;">
+            <span id="stat-el" class="stat"></span><br>
             <span id="text-el" class="drifter"></span>
         </div>
-        <p style="position:fixed; bottom:30px; font-size:0.6rem; opacity:0.5;">TAP TO SKIP INTRO</p>
+        <p style="position:fixed; bottom:40px; font-size:0.5rem; opacity:0.4;">TAP TO SKIP INTRO</p>
     </div>
 
     <div id="act-2" class="screen" style="background:white; color:var(--wt-teal);">
-        <div class="briefcase"><div class="handle"></div><div class="line-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>
-        <h2>WorkTimeline™</h2>
-        <p style="font-weight:300; padding: 0 20px;">"WorkTimeline™ helps the client take the first step towards the center where they belong until they find the firm that allows them to never look back."</p>
-        <p style="font-style:italic; font-size:0.9rem; margin-top:20px;">Justice should be effortless. Telling the truth shouldn't take effort.</p>
-        <button class="btn-teal" style="margin-top:30px; width:200px;" onclick="nextAct(2, 3)">Login</button>
+        <div class="logo-row">
+            <div class="briefcase"><div class="handle"></div><div class="timeline-line"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>
+            <h2 style="margin:0;">WorkTimeline™</h2>
+        </div>
+        <p style="font-weight:300; font-size:0.95rem; line-height:1.5;">"WorkTimeline™ helps the client take the first step towards the center where they belong until they find the firm that allows them to never look back."</p>
+        <p style="font-style:italic; font-size:0.85rem; margin-top:20px;">Justice should be effortless. Telling the truth shouldn't take effort.</p>
+        <button class="btn-teal" style="margin-top:30px; width:180px;" onclick="next(2, 3)">Enter</button>
     </div>
 
     <div id="act-3" class="screen" style="background:white; color:var(--wt-teal);">
         <h3>Secure Access</h3>
-        <p style="font-size:0.8rem; color:#666; margin-bottom:20px;">Select AI Intel Counsel</p>
-        <button class="btn-teal" onclick="nextAct(3, 4)">JORDAN (Analytical)</button>
-        <button class="btn-teal" style="margin-top:10px; background:var(--clio-blue);" onclick="nextAct(3, 4)">TAYLOR (Empathetic)</button>
-        <div style="margin:20px 0; color:#ccc;">OR</div>
-        <button class="btn-teal" style="background:var(--wt-dark);" onclick="nextAct(3, 4)">Login with Clio</button>
+        <button class="btn-teal" onclick="next(3, 4)">JORDAN AI (Analytical)</button>
+        <button class="btn-teal" style="margin-top:10px; background:#0056b3;" onclick="next(3, 4)">TAYLOR AI (Empathetic)</button>
+        <div style="margin:15px 0; color:#ccc; font-size:0.7rem;">OR</div>
+        <button class="btn-teal" style="background:var(--wt-dark);" onclick="next(3, 4)">Login with Clio</button>
     </div>
 
-    <div id="act-4" class="screen" style="padding:0; background:var(--wt-gray-light); justify-content: flex-start;">
+    <div id="act-4" class="screen" style="padding:0; justify-content: flex-start; z-index: 6000;">
         <header class="header">
-            <div style="text-align:left;">
-                <h4 style="margin:0; color:var(--wt-teal);">WorkTimeline™</h4>
-                <div style="display:flex; align-items:center; gap:5px;">
-                    <div style="width:10px; height:10px; border-radius:50%; background:var(--wt-teal); box-shadow:0 0 5px var(--wt-teal);"></div>
-                    <span style="font-size:0.5rem; color:#999; font-weight:600;">BRIDGE ACTIVE</span>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <div class="briefcase" style="width:34px; height:26px;"><div class="handle" style="width:14px; height:5px; top:-5px;"></div><div class="timeline-line"><div class="dot" style="width:2px; height:2px; transform:translateY(-1px);"></div><div class="dot" style="width:2px; height:2px; transform:translateY(-1px);"></div><div class="dot" style="width:2px; height:2px; transform:translateY(-1px);"></div></div></div>
+                <div>
+                    <h4 style="margin:0; color:var(--wt-teal); font-size:0.9rem;">WorkTimeline™</h4>
+                    <div style="display:flex; align-items:center; gap:5px;">
+                        <div id="phone-bridge" class="phone-bridge" onclick="this.classList.toggle('phone-pulse')"></div>
+                        <span style="font-size:0.45rem; color:#999; font-weight:600;">BRIDGE ACTIVE</span>
+                    </div>
                 </div>
             </div>
-            <div style="display:flex; gap:8px;">
-                <button class="mac-btn" onclick="alert('Camera Active')"><svg class="mac-svg" viewBox="0 0 24 24"><path d="M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm9 3.5V6a2 2 0 0 0-2-2h-3.2l-1.3-1.7a1 1 0 0 0-.8-.3H9.3a1 1 0 0 0-.8.3L7.2 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5z"/></svg></button>
-                <button class="mac-btn" onclick="alert('Doc Active')"><svg class="mac-svg" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6z"/></svg></button>
-                <button class="mac-btn" onclick="alert('Mic Active')"><svg class="mac-svg" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg></button>
+            <div class="header-icons" style="display:flex; gap:6px;">
+                <button class="mac-btn" onclick="alert('Camera')"><svg class="mac-svg" viewBox="0 0 24 24"><path d="M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm9 3.5V6a2 2 0 0 0-2-2h-3.2l-1.3-1.7a1 1 0 0 0-.8-.3H9.3a1 1 0 0 0-.8.3L7.2 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5z"/></svg></button>
+                <button class="mac-btn" onclick="alert('Doc')"><svg class="mac-svg" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6z"/></svg></button>
+                <button class="mac-btn" onclick="alert('Mic')"><svg class="mac-svg" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg></button>
             </div>
         </header>
 
-        <div id="timeline">
-            </div>
+        <div id="timeline"></div>
 
-        <div class="footer-input">
-            <span style="font-size:0.6rem; font-weight:600; color:var(--wt-teal); float:left; margin-bottom:5px;">CON'D NOTES (Contemporaneous)</span>
-            <textarea id="main-in" placeholder="Type here..."></textarea>
+        <div class="footer">
+            <span style="font-size:0.55rem; font-weight:600; color:var(--wt-teal); float:left; margin-bottom:4px;">CON'D NOTES (Contemporaneous)</span>
+            <textarea id="main-in" placeholder="Type truth here..."></textarea>
             <button class="btn-teal" onclick="addEntry()">+ SUBMIT TO TIMELINE</button>
-            <button class="btn-teal" style="background:var(--wt-dark); margin-top:5px;" onclick="alert('Locked and Sent to Clio')">LOCK & SEND TO CLIO</button>
+            <button class="btn-teal" style="background:var(--wt-dark); margin-top:5px; height:45px;" onclick="alert('Sent to Clio Summary')">LOCK & SEND TO CLIO</button>
         </div>
     </div>
 
@@ -126,7 +134,7 @@
             {s: "Fact: Silence empowers the status quo.", t: "I don't have enough evidence."},
             {s: "Justice should be effortless.", t: "Where's the proof?"},
             {s: "We translate experience into law.", t: "I don't know Latin."},
-            {s: "", t: "We're here to remind you..."},
+            {s: "The bridge to the center.", t: "We're here to remind you..."},
             {s: "Justice is now effortless.", t: "There are none."}
         ];
 
@@ -139,27 +147,31 @@
 
                 textEl.style.opacity = 0;
                 setTimeout(() => {
-                    if (i === content.length - 1) layer1.classList.add('flash-white');
+                    if (i === content.length - 1) {
+                        layer1.style.background = "white";
+                        textEl.style.color = "var(--wt-teal)";
+                    }
                     statEl.innerText = content[i].s;
                     textEl.innerText = content[i].t;
                     textEl.style.opacity = 1;
                     i++;
                     setTimeout(runIntro, 4000);
-                }, 500);
+                }, 600);
             } else {
-                nextAct(1, 2);
+                next(1, 2);
             }
         }
         runIntro();
 
-        function nextAct(curr, next) {
+        function next(curr, nextId) {
             document.getElementById('act-' + curr).style.display = 'none';
-            document.getElementById('act-' + next).style.display = 'flex';
+            document.getElementById('act-' + nextId).style.display = 'flex';
         }
 
-        function skipToDashboard() {
+        function forceDashboard() {
             document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
             document.getElementById('act-4').style.display = 'flex';
+            document.body.style.background = "var(--wt-gray-light)";
         }
 
         function addEntry() {
@@ -168,7 +180,7 @@
             const entry = document.createElement('div');
             entry.className = 'entry';
             const now = new Date();
-            entry.innerHTML = `<span class="meta">STAMPED: ${now.toLocaleTimeString()}</span><div style="font-size:0.9rem;">${val}</div>`;
+            entry.innerHTML = `<span style="float:right; color:red; font-size:0.5rem;" onclick="this.parentElement.remove()">DELETE</span><span class="meta">STAMPED: ${now.toLocaleTimeString()}</span><div style="font-size:0.8rem; line-height:1.4;">${val}</div>`;
             document.getElementById('timeline').prepend(entry);
             document.getElementById('main-in').value = '';
         }
