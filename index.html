@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeline™ | Master Engine</title>
+    <title>WorkTimeline™ | Functional Prototype</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
         :root { 
             --wt-teal: #167e7c; --wt-dark-teal: #0a2e2d; --wt-cream: #f8f5f1; 
@@ -16,97 +18,104 @@
         body, html { margin: 0; padding: 0; font-family: 'Outfit', sans-serif; background: white; overflow: hidden; height: 100%; }
 
         /* ACT 1: ADVOCACY LAYER (MEDIUM GRAY) */
-        #layer-advocacy { 
-            position: fixed; inset: 0; z-index: 1000; 
-            background: var(--wt-gray-med); 
-            display: flex; align-items: center; justify-content: center; transition: background 1.5s ease, opacity 1s ease; padding: 40px; text-align: center; 
+        #act-1 { 
+            position: fixed; inset: 0; z-index: 1000; background: var(--wt-gray-med); 
+            display: flex; align-items: center; justify-content: center; transition: 1s; padding: 40px; text-align: center; 
         }
-        .dialogue-text { color: var(--wt-teal); font-size: 2rem; font-weight: 300; line-height: 1.6; max-width: 850px; opacity: 1; transition: opacity 0.8s ease; }
+        .dialogue-text { color: var(--wt-teal); font-size: 2.2rem; font-weight: 300; line-height: 1.6; max-width: 850px; transition: opacity 0.5s; }
 
         /* ALL OTHER LAYERS (BRIGHT WHITE) */
-        .layer { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; transition: 1s ease; padding: 40px; text-align: center; background: white; z-index: 500; }
+        .layer { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; transition: 0.8s; padding: 40px; text-align: center; background: white; z-index: 500; }
         .hidden { opacity: 0; pointer-events: none; visibility: hidden; }
 
-        .card { background: white; padding: 50px; border-radius: 45px; width: 400px; box-shadow: 0 20px 60px rgba(0,0,0,0.08); border: 1px solid #f0f0f0; }
-        .input-field { width: 100%; padding: 18px; margin: 15px 0; border-radius: 50px; border: 1.5px solid #eee; text-align: center; font-family: 'Outfit'; font-size: 1rem; outline: none; }
-        .btn-wt { background: var(--wt-teal); color: white; border: none; padding: 18px; width: 100%; border-radius: 50px; cursor: pointer; font-weight: 600; transition: 0.3s; }
-        .btn-clio-blue { background: var(--clio-blue); color: white; border: none; padding: 18px; width: 100%; border-radius: 50px; cursor: pointer; font-weight: 600; margin-top: 15px; }
+        .card { background: white; padding: 50px; border-radius: 45px; width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,0.08); border: 1px solid #f0f0f0; }
+        .input-field { width: 100%; padding: 18px; margin: 15px 0; border-radius: 50px; border: 1.5px solid #eee; text-align: center; font-family: 'Outfit'; outline: none; }
+        .btn-wt { background: var(--wt-teal); color: white; border: none; padding: 18px; width: 100%; border-radius: 50px; cursor: pointer; font-weight: 600; }
+        .btn-clio { background: var(--clio-blue); color: white; border: none; padding: 18px; width: 100%; border-radius: 50px; cursor: pointer; font-weight: 600; margin-top: 15px; }
 
-        /* THE EXACT PROTOTYPE ENGINE */
-        #main-app { height: 100%; padding: 45px; box-sizing: border-box; overflow-y: auto; display: none; background: var(--wt-cream); }
-        .street-engine { display: flex; gap: 20px; padding: 85px 35px; background: var(--wt-gray-light); border-radius: 55px; justify-content: space-around; transition: 1.2s ease; margin-top: 40px; }
-        .street-engine.locked { background: var(--wt-teal); }
-        .street-engine.handshake { background: var(--wt-dark-teal); box-shadow: 0 0 65px rgba(22, 126, 124, 0.6); }
+        /* THE PROTOTYPE ENGINE (THE STREET) */
+        #main-app { height: 100%; padding: 45px; box-sizing: border-box; overflow-y: auto; display: none; background: var(--wt-cream); position: relative; z-index: 10; }
+        .street-container { 
+            display: flex; gap: 20px; padding: 90px 40px; background: var(--wt-gray-light); 
+            border-radius: 60px; justify-content: space-around; transition: 1s ease; margin-top: 40px;
+        }
+        .street-container.locked { background: var(--wt-teal); }
+        .street-container.handshake { background: var(--wt-dark-teal); box-shadow: 0 0 70px rgba(22, 126, 124, 0.6); }
 
-        .milestone { text-align: center; cursor: grab; width: 140px; }
-        .briefcase-svg { width: 70px; height: 70px; fill: white; }
-        .label-text { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; margin-top: 15px; color: white; letter-spacing: 2px; }
+        /* INTERACTIVE ELEMENTS */
+        .milestone { text-align: center; cursor: grab; width: 150px; transition: 0.3s; }
+        .milestone:active { cursor: grabbing; transform: scale(1.05); }
+        .briefcase-svg { width: 75px; height: 75px; fill: white; }
+        .label-text { font-size: 0.85rem; font-weight: 600; text-transform: uppercase; margin-top: 20px; color: white; letter-spacing: 2px; }
         
-        .pulse-ochre { filter: drop-shadow(0 0 15px var(--wt-ochre)); animation: pEng 2.5s infinite; }
-        @keyframes pEng { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        .pulse-ochre { filter: drop-shadow(0 0 15px var(--wt-ochre)); animation: pulse 2.5s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
 
-        .mac-light { width: 16px; height: 16px; border-radius: 50%; background: var(--wt-teal); box-shadow: 0 0 12px var(--wt-teal); cursor: pointer; }
+        .mac-light { width: 18px; height: 18px; border-radius: 50%; background: var(--wt-teal); box-shadow: 0 0 12px var(--wt-teal); cursor: pointer; }
         .tamper-red { background: var(--wt-red) !important; box-shadow: 0 0 20px var(--wt-red) !important; }
 
-        #intel-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 380px; background: white; padding: 40px; border-radius: 40px; box-shadow: 0 30px 100px rgba(0,0,0,0.3); display: none; z-index: 2000; }
+        /* SKIP BUTTON FOR VERIFICATION */
+        .skip-btn { position: fixed; bottom: 20px; right: 20px; background: none; border: 1px solid var(--wt-teal); color: var(--wt-teal); padding: 8px 15px; border-radius: 20px; cursor: pointer; z-index: 2000; font-size: 0.7rem; }
     </style>
 </head>
-<body onload="runAdvocacy()">
+<body>
 
-    <div id="layer-advocacy">
+    <button class="skip-btn" onclick="startEngine()">SKIP TO PROTOTYPE ENGINE</button>
+
+    <div id="act-1">
         <p class="dialogue-text" id="intro-text">"They think you're invisible."</p>
     </div>
 
-    <div id="act-branding" class="layer hidden">
+    <div id="act-2" class="layer hidden">
         <div style="text-align:center;">
-            <svg width="120" height="80" viewBox="0 0 120 80" style="margin-bottom:35px;">
+            <svg width="120" height="80" viewBox="0 0 120 80" style="margin-bottom:30px;">
                 <path fill="var(--wt-teal)" d="M90,25H30c-2.8,0-5,2.2-5,5v35c0,2.8,2.2,5,5,5h60c2.8,0,5-2.2,5-5V30C95,27.2,92.8,25,90,25z M45,20c0-2.8,2.2-5,5-5h20c2.8,0,5,2.2,5,5v5H45V20z"/>
                 <line x1="35" y1="50" x2="85" y2="50" stroke="white" stroke-width="2.5"/><circle cx="42" cy="50" r="3" fill="white"/><circle cx="60" cy="50" r="3" fill="white"/><circle cx="78" cy="50" r="5" fill="var(--wt-ochre)"/>
             </svg>
-            <h2 style="color:var(--wt-teal); font-size:2.5rem; font-weight:600; margin:0;">WorkTimeline™</h2>
-            <p style="color:var(--wt-teal); font-size:1.4rem; font-weight:300; max-width:650px; margin-top:25px; line-height:1.5;">
+            <h2 style="color:var(--wt-teal); font-size:2.4rem; font-weight:600; margin:0;">WorkTimeline™</h2>
+            <p style="color:var(--wt-teal); font-size:1.4rem; font-weight:300; max-width:600px; margin-top:20px; line-height:1.5;">
                 "Telling the truth takes no effort. It is effortless with WorkTimeline™."
             </p>
-            <button class="btn-wt" style="width:220px; margin-top:50px;" onclick="showAct('act-branding', 'act-login')">Enter Gateway</button>
+            <button class="btn-wt" style="width:200px; margin-top:40px;" onclick="showNext(2, 3)">Enter Gateway</button>
         </div>
     </div>
 
-    <div id="act-login" class="layer hidden">
+    <div id="act-3" class="layer hidden">
         <div class="card">
-            <h2 style="color:var(--wt-teal); font-weight:600;">Secure Access</h2>
-            <input type="text" class="input-field" placeholder="Client Reference ID">
-            <button class="btn-wt" onclick="showAct('act-login', 'act-legend')">Submit Reference</button>
-            <button class="btn-clio-blue" onclick="showAct('act-login', 'act-legend')">Firm Login with Clio</button>
+            <h2 style="color:var(--wt-teal); font-weight:600;">Secure Gateway</h2>
+            <input type="text" class="input-field" placeholder="Reference Number">
+            <button class="btn-wt" onclick="showNext(3, 4)">Submit Reference</button>
+            <button class="btn-clio" onclick="showNext(3, 4)">Login with Clio</button>
         </div>
     </div>
 
-    <div id="act-legend" class="layer hidden">
+    <div id="act-4" class="layer hidden">
         <div class="card" style="width:600px; text-align:left;">
-            <h3 style="color:var(--wt-teal); margin-bottom:30px;">Intelligence Legend</h3>
-            <div style="display:flex; align-items:center; gap:20px; margin-bottom:20px;">
-                <div style="width:20px; height:20px; border-radius:50%; background:var(--wt-gray-med);"></div>
+            <h3 style="color:var(--wt-teal); margin-bottom:25px;">Intelligence Legend</h3>
+            <div style="display:flex; align-items:center; gap:20px; margin-bottom:15px;">
+                <div style="width:18px; height:18px; border-radius:50%; background:var(--wt-gray-med);"></div>
                 <span><strong>Gray Area:</strong> Initial, unverified intake state.</span>
             </div>
-            <div style="display:flex; align-items:center; gap:20px; margin-bottom:20px;">
-                <div style="width:20px; height:20px; border-radius:50%; background:var(--wt-ochre); box-shadow:0 0 10px var(--wt-ochre);"></div>
-                <span><strong>Ochre Pulse:</strong> Pattern Recognition Engine mapping truth.</span>
+            <div style="display:flex; align-items:center; gap:20px; margin-bottom:15px;">
+                <div style="width:18px; height:18px; border-radius:50%; background:var(--wt-ochre); box-shadow:0 0 10px var(--wt-ochre);"></div>
+                <span><strong>Ochre Pulse:</strong> AI Pattern Recognition active.</span>
             </div>
-            <div style="display:flex; align-items:center; gap:20px; margin-bottom:20px;">
-                <div style="width:20px; height:20px; border-radius:50%; background:var(--wt-teal); box-shadow:0 0 10px var(--wt-teal);"></div>
-                <span><strong>Teal Momentum:</strong> Verified & Locked case logic.</span>
+            <div style="display:flex; align-items:center; gap:20px; margin-bottom:15px;">
+                <div style="width:18px; height:18px; border-radius:50%; background:var(--wt-teal); box-shadow:0 0 10px var(--wt-teal);"></div>
+                <span><strong>Teal Momentum:</strong> Locked & Verified Case Logic.</span>
             </div>
-            <div style="display:flex; align-items:center; gap:20px; margin-bottom:30px;">
-                <div style="width:20px; height:20px; border-radius:50%; background:var(--wt-red); box-shadow:0 0 15px var(--wt-red);"></div>
-                <span><strong>Tamper Red:</strong> Conflict detected. Counsel Bridge required.</span>
+            <div style="display:flex; align-items:center; gap:20px; margin-bottom:25px;">
+                <div style="width:18px; height:18px; border-radius:50%; background:var(--wt-red); box-shadow:0 0 15px var(--wt-red);"></div>
+                <span><strong>Tamper Red:</strong> Conflict detected. Contact Lawyer Bridge.</span>
             </div>
-            <button class="btn-wt" onclick="showAct('act-legend', 'act-ai')">Next: Select Counsel Bridge</button>
+            <button class="btn-wt" onclick="showNext(4, 5)">Next: Choose AI Counsel</button>
         </div>
     </div>
 
-    <div id="act-ai" class="layer hidden">
+    <div id="act-5" class="layer hidden">
         <div style="display:flex; gap:30px;">
-            <div class="card" style="cursor:pointer;" onclick="startEngine()"><h3>Jordan</h3><p style="font-size:0.85rem;">Steady & Analytical. Consistency focus.</p></div>
-            <div class="card" style="cursor:pointer;" onclick="startEngine()"><h3>Taylor</h3><p style="font-size:0.85rem;">Empathetic & Clear. Translation focus.</p></div>
+            <div class="card" style="cursor:pointer;" onclick="startEngine()"><h3>Jordan</h3><p style="font-size:0.85rem;">Analytical & Consistent.</p></div>
+            <div class="card" style="cursor:pointer;" onclick="startEngine()"><h3>Taylor</h3><p style="font-size:0.85rem;">Empathetic & Clear.</p></div>
         </div>
     </div>
 
@@ -116,36 +125,30 @@
                 <h2 style="color: var(--wt-teal); margin:0; font-weight:600;">WorkTimeline™</h2>
                 <div id="mac-light" class="mac-light" onclick="this.classList.toggle('tamper-red')"></div>
             </div>
-            <p style="font-size: 0.9rem; color: #444; margin-top: 15px; max-width: 750px; line-height: 1.6; font-style: italic;">
+            <p style="font-size: 0.9rem; color: #555; margin-top: 15px; max-width: 750px; line-height: 1.6; font-style: italic;">
                 "WorkTimeline™ helps the client take the first step to get to the center where they belong until they find the firm that makes them never look back."
             </p>
         </header>
 
-        <div id="street" class="street-engine">
-            <div class="milestone" onclick="openIntel('Prima Facie', 'Legal threshold recognized. Pattern consistent.')">
+        <div id="street" class="street-container">
+            <div class="milestone" data-id="intake">
                 <svg class="briefcase-svg" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg>
                 <div class="label-text">Intake</div>
             </div>
-            <div class="milestone" onclick="openIntel('Res Ipsa Loquitur', 'The facts of this pattern speak for themselves.')">
+            <div class="milestone" data-id="recognition">
                 <svg class="briefcase-svg pulse-ochre" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg>
-                <div class="label-text">Recognition</div>
+                <div class="label-text">Pattern Rec</div>
             </div>
-            <div class="milestone">
+            <div class="milestone" data-id="setting">
                 <svg class="briefcase-svg" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg>
                 <div class="label-text">Setting</div>
             </div>
         </div>
 
-        <button id="lock-btn" class="btn-wt" style="margin-top:50px; height:65px; font-size:1.1rem;" onclick="executeLock()">Lock Entry & Summarize</button>
+        <button id="lock-btn" class="btn-wt" style="margin-top:60px; height:65px; font-size:1.1rem;" onclick="executeLock()">Lock Entry & Summarize</button>
         <div id="summary-log" style="display:none; margin-top:40px; padding:35px; background:white; border-radius:35px; border:1px solid #eee;">
-            <p id="log-text" style="font-size:1rem; color:#444;">Synchronizing Verified Logic to Supabase...</p>
+            <p id="log-text" style="font-size:1rem; color:#444;">Synchronizing with Supabase & Clio...</p>
         </div>
-    </div>
-
-    <div id="intel-modal" onclick="this.style.display='none'">
-        <h3 id="intel-title" style="color:var(--wt-red); font-style:italic;">Latin Term</h3>
-        <p id="intel-body" style="font-size:1rem; color:#444; line-height:1.6;"></p>
-        <p style="font-size:0.75rem; color:var(--wt-teal); font-weight:600; margin-top:25px;">TAP TO ACKNOWLEDGE</p>
     </div>
 
     <script>
@@ -156,55 +159,46 @@
             "\"We're not here to help you tear down the walls.\"",
             "\"We're here to remind you... there are none.\""
         ];
+        let idx = 0;
+        const textEl = document.getElementById('intro-text');
+        const act1 = document.getElementById('act-1');
 
         function runAdvocacy() {
-            const textEl = document.getElementById('intro-text');
-            const layer = document.getElementById('layer-advocacy');
-            let i = 0;
-
-            function nextLine() {
-                if (i < script.length - 1) {
-                    i++;
-                    textEl.style.opacity = 0;
+            if (idx < script.length - 1) {
+                idx++;
+                textEl.style.opacity = 0;
+                setTimeout(() => {
+                    textEl.innerText = script[idx];
+                    textEl.style.opacity = 1;
+                    setTimeout(runAdvocacy, 4000);
+                }, 800);
+            } else {
+                setTimeout(() => {
+                    act1.style.background = "white"; // WHITE FLASH
                     setTimeout(() => {
-                        textEl.innerText = script[i];
-                        textEl.style.opacity = 1;
-                        setTimeout(nextLine, 4000); // 4 seconds per line
-                    }, 1000);
-                } else {
-                    // THE TRANSITION: FLASH TO BRIGHT WHITE
-                    setTimeout(() => {
-                        layer.style.background = "white"; 
-                        setTimeout(() => {
-                            layer.classList.add('hidden');
-                            document.getElementById('act-branding').classList.remove('hidden');
-                        }, 1200);
-                    }, 4000);
-                }
+                        act1.classList.add('hidden');
+                        document.getElementById('act-2').classList.remove('hidden');
+                    }, 1200);
+                }, 3500);
             }
-            // Start the sequence after reading the first line
-            setTimeout(nextLine, 4000);
         }
+        setTimeout(runAdvocacy, 4000);
 
-        function showAct(curr, next) {
-            document.getElementById(curr).classList.add('hidden');
+        function showNext(currNum, nextNum) {
+            document.getElementById('act-'+currNum).classList.add('hidden');
             setTimeout(() => {
-                document.getElementById(curr).style.display = 'none';
-                document.getElementById(next).classList.remove('hidden');
-                document.getElementById(next).style.display = 'flex';
-            }, 1000);
+                document.getElementById('act-'+currNum).style.display = 'none';
+                document.getElementById('act-'+nextNum).classList.remove('hidden');
+                document.getElementById('act-'+nextNum).style.display = 'flex';
+            }, 800);
         }
 
         function startEngine() {
             document.querySelectorAll('.layer').forEach(l => l.style.display = 'none');
+            document.getElementById('act-1').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
+            // THE ACTUAL INTERACTIVE ENGINE
             Sortable.create(document.getElementById('street'), { animation: 150 });
-        }
-
-        function openIntel(title, body) {
-            document.getElementById('intel-modal').style.display = 'block';
-            document.getElementById('intel-title').innerText = title;
-            document.getElementById('intel-body').innerText = body;
         }
 
         function executeLock() {
@@ -215,7 +209,7 @@
             btn.innerText = "Commit to Cloud Handshake";
             btn.onclick = function() {
                 street.classList.replace('locked', 'handshake');
-                document.getElementById('log-text').innerText = "HANDSHAKE VERIFIED: Data transmitted to Supabase and Clio.";
+                document.getElementById('log-text').innerText = "HANDSHAKE VERIFIED: Cloud Sync Complete.";
                 btn.style.display = 'none';
             };
         }
