@@ -13,14 +13,14 @@
         
         body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 10px; height: 100vh; overflow: hidden; color: var(--gray-dark); }
         
-        /* YOUR EXACT NARRATIVE */
+        /* THE EXACT ORIGINAL DIALOGUE */
         #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; box-sizing: border-box; transition: opacity 0.8s ease; }
         .story-text { font-size: 24px; font-weight: 800; color: var(--gray-dark); line-height: 1.4; opacity: 0; transition: opacity 0.8s; max-width: 340px; }
         .skip-btn { position: absolute; bottom: 80px; background: rgba(0,0,0,0.05); border: 1.5px solid var(--gray-dark); padding: 12px 24px; border-radius: 50px; font-weight: 900; font-size: 13px; cursor: pointer; color: var(--gray-dark); }
 
         .app-container { max-width: 500px; margin: auto; background: white; border-radius: 50px; height: 95vh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
         
-        /* GHOST MODE LAYER */
+        /* GHOST MODE BLUR LAYER */
         #blurBox { position: absolute; top: 85px; left: 0; right: 0; bottom: 0; z-index: 98; background: rgba(255,255,255,0.1); backdrop-filter: blur(0px); pointer-events: none; transition: backdrop-filter 0.3s ease; }
 
         .header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 2px solid var(--platinum); flex-shrink: 0; z-index: 100; background: white; }
@@ -28,7 +28,7 @@
         .input-area { padding: 15px; background: #fff; border-bottom: 2px solid var(--platinum); flex-shrink: 0; }
         #statusBox { width: 100%; height: 85px; padding: 15px; border-radius: 30px; border: 2px solid var(--platinum); box-sizing: border-box; font-family: inherit; margin-bottom: 12px; font-size: 16px; outline: none; background: #fbfdff; }
 
-        /* SOLID ICONS */
+        /* HARDWARE ICONS */
         .media-toolbar { display: flex; gap: 10px; margin-bottom: 12px; }
         .media-btn { flex: 1; background: var(--platinum); border: none; padding: 12px 5px; border-radius: 20px; display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; }
         .media-btn svg { width: 22px; height: 22px; fill: var(--teal); margin-bottom: 4px; }
@@ -41,7 +41,7 @@
         #legacyQuote { position: relative; margin-left: 55px; background: var(--glass); backdrop-filter: blur(10px); border: 1px solid rgba(0, 128, 128, 0.15); border-left: 6px solid var(--teal); padding: 20px; border-radius: 30px; margin-bottom: 25px; z-index: 2; transition: opacity 0.5s; }
 
         .entry { position: relative; margin-left: 55px; background: white; border: 1.5px solid var(--platinum); padding: 18px; border-radius: 30px; margin-bottom: 25px; z-index: 2; border-left: 6px solid var(--teal); }
-        .timestamp-full { font-size: 9px; font-weight: 900; color: var(--teal); display: block; margin-bottom: 5px; text-transform: uppercase; }
+        .timestamp-full { font-size: 10px; font-weight: 900; color: var(--teal); display: block; margin-bottom: 5px; text-transform: uppercase; }
 
         .sync-btn { background: var(--clio-blue); color: white; border: none; padding: 20px; border-radius: 30px; width: 90%; align-self: center; font-weight: 900; cursor: pointer; margin: 15px 0; flex-shrink: 0; }
 
@@ -79,7 +79,7 @@
             <textarea id="statusBox" placeholder="Start your intake entry..."></textarea>
             <div class="media-toolbar">
                 <button class="media-btn">
-                    <input type="file" accept="image/*" capture="camera" class="hidden-input" onchange="addEntry('📷 Evidence photo captured.')">
+                    <input type="file" accept="image/*" capture="camera" class="hidden-input" onchange="addEntry('📷 Evidence captured.')">
                     <svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-4c-1.1 0-2 .9-2 2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-5c0-1.1-.9-2-2-2z"/></svg>
                     <span>CAMERA</span>
                 </button>
@@ -166,7 +166,6 @@
         activeVault = cb.checked ? "NOTES" : "TIMELINE";
         document.body.classList.toggle('mode-notes', cb.checked);
         document.getElementById('folderLabel').innerText = cb.checked ? "Isolated Notes" : "WorkTimeline™";
-        document.getElementById('subLabel').innerText = cb.checked ? "Attorney Work Product" : "Taking an Intake...";
         document.getElementById('folderLabel').style.color = cb.checked ? "var(--clio-blue)" : "var(--teal)";
         document.getElementById('addBtn').style.background = cb.checked ? "var(--clio-blue)" : "var(--teal)";
         refreshVaultDisplay();
@@ -183,8 +182,18 @@
 
     function saveEntry(text) {
         const now = new Date();
-        // AM/PM PRECISION FIX
-        const stamp = now.toLocaleDateString() + ' @ ' + now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+        
+        // FORCED 12-HOUR AM/PM FORMAT
+        let hours = now.getHours();
+        let minutes = now.getMinutes();
+        const ampm = hours >= 12 ? 'P.M.' : 'A.M.';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        minutes = minutes < 10 ? '0'+minutes : minutes;
+        const strTime = hours + ':' + minutes + ' ' + ampm;
+        
+        const stamp = now.toLocaleDateString() + ' @ ' + strTime;
+        
         const entry = { text: text, stamp: stamp };
         if(activeVault === "TIMELINE") timelineVault.push(entry);
         else notesVault.push(entry);
