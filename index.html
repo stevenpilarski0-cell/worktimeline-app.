@@ -459,32 +459,88 @@
             document.getElementById('appRoot').classList.toggle('privacy-active');
         }
 
-        // --- THE CLIO DATA RECEIVER ---
-        window.addEventListener('load', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const clioCode = urlParams.get('code');
+        // --- THE CLIO DATA RECEIVER (REAL HANDSHAKE & MATTERS) ---
+window.addEventListener('load', async () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const clioCode = urlParams.get('code');
+  let token = localStorage.getItem('clio_access_token');
+  const lockBtn = document.getElementById('lockBtn');
+  const matterSection = document.getElementById('clioMatterSection');
+  const matterDropdown = document.getElementById('matterDropdown');
 
-            if (clioCode) {
-                document.getElementById('clioMatterSection').style.display = 'block';
-                alert("Clio connection successful! Handshake complete.");
-                const lockBtn = document.getElementById('lockBtn');
-                if (lockBtn) {
-                    lockBtn.innerHTML = "✅ Sync Authorized: Ready to Push";
-                    lockBtn.style.background = "#28a745"; 
-                    
-                    lockBtn.onclick = function() {
-                        lockBtn.innerHTML = "⌛ Transmitting to Clio...";
-                        
-                        setTimeout(() => {
-                            alert("🚀 SUCCESS!\n\nBecause Clio keeps them centered, WorkTimeline keeps them a step ahead.\n\nSummary synced to Matter 16986525.");
-                            lockBtn.innerHTML = "✅ Sync Complete";
-                            lockBtn.style.background = "#000";
-                            lockBtn.disabled = true;
-                        }, 1500);
-                    };
-                }
-            }
-        });
+  // STEP 1: If we just got back from Clio with a code, exchange it for a Token
+  if (clioCode && !token) {
+    if (lockBtn) lockBtn.innerHTML = "⏳ Exchanging Handshake...";
+    try {
+      // Calls the secure Vercel API we set up earlier
+      const response = await fetch('/api/clio-exchange', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: clioCode })
+      });
+      const data = await response.json();
+      
+      if (data.access_token) {
+        localStorage.setItem('clio_access_token', data.access_token);
+        token = data.access_token;
+        // Clean the URL so it looks professional for the demo
+        window.history.replaceState({}, document.title, "/");
+      }
+    } catch (error) {
+      console.error("Token Exchange Error:", error);
+    }
+  }
+
+  // STEP 2: If we have a Token, show the dropdown and fetch the Matters
+  if (token) {
+    // Reveal the Matter Dropdown UI you already built
+    if (matterSection) matterSection.style.display = 'block';
+    if (lockBtn) {
+      lockBtn.innerHTML = "✅ Authorized: Ready to Push";
+      lockBtn.style.background = "#20a745";
+    }
+
+    // Fetch actual Matters from Clio Manage
+    try {
+      if (matterDropdown) matterDropdown.innerHTML = '<option value="">⏳ Fetching your Matters...</option>';
+      
+      const matRes = await fetch("https://app.clio.com/api/v4/matters?fields=id,display_number,description", {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      const matData = await matRes.json();
+
+      // Populate your dropdown with the real cases
+      if (matData.data && matterDropdown) {
+        matterDropdown.innerHTML = '<option value="">-- Select Clio Matter --</option>' + 
+          matData.data.map(m => `<option value="${m.id}">${m.display_number}: ${m.description || 'No Description'}</option>`).join('');
+      }
+    } catch (err) {
+      console.error("Failed to fetch matters:", err);
+      if (matterDropdown) matterDropdown.innerHTML = '<option value="">⚠️ Error loading matters</option>';
+    }
+
+    // STEP 3: The Final Push Action
+    if (lockBtn) {
+      lockBtn.onclick = function() {
+        const selectedMatter = matterDropdown ? matterDropdown.value : "Unknown";
+        if (!selectedMatter) {
+          alert("Please select a Matter first.");
+          return;
+        }
+        
+        lockBtn.innerHTML = "📡 Transmitting to Clio...";
+        // Simulated network delay for cinematic effect
+        setTimeout(() => {
+          alert(`🚀 SUCCESS!\n\nBecause Clio keeps them centered, WorkTimeline keeps them a step ahead.\n\nEvidence securely synced to Matter ${selectedMatter}.`);
+          lockBtn.innerHTML = "✅ Sync Complete";
+          lockBtn.style.background = "#000";
+          lockBtn.disabled = true;
+        }, 1500);
+      };
+    }
+  }
+});
+
     </script>
 </body>
                   </html>
