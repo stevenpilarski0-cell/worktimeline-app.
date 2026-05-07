@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   params.append('grant_type', 'authorization_code');
   params.append('code', code);
   
-  // This ID matches your Dashboard screenshot character-for-character
+  // This ID now uses the double lowercase 'l' (PHYell)
   params.append('client_id', 'btscu9WmPHYellZtZA9slQfynBAQudwjaR7pEDdq');
   params.append('client_secret', 'kL0cWsjKkZTzWkdCVrcs7IktGIZeUj6pAvE2GJka');
   params.append('redirect_uri', 'https://worktimeline-app.vercel.app');
