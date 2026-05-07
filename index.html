@@ -9,7 +9,11 @@
         
         :root { 
             --teal: #008080; --clio-blue: #0076CE; --platinum: #e2e8f0; --gray-dark: #1e293b; --gray-light: #f8fafc;
-            --glass: rgba(0, 128, 128, 0.05); --round-main: 32px; --round-inner: 16px; 
+            --glass: rgba(0, 128, 128, 0.05); 
+            /* Enhanced Mac-like rounding */
+            --round-main: 40px; 
+            --round-inner: 24px; 
+            --round-pill: 999px;
         }
         body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #eef1f5; margin: 0; padding: 10px; height: 100vh; overflow: hidden; color: var(--gray-dark); }
         
@@ -26,16 +30,16 @@
         
         .template-chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: none; margin-bottom: 4px;}
         .template-chips::-webkit-scrollbar { display: none; }
-        .chip { background: white; color: var(--teal); font-size: 11px; font-weight: 700; padding: 8px 14px; border-radius: 12px; white-space: nowrap; cursor: pointer; transition: all 0.2s; border: 1px solid var(--platinum); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .chip { background: white; color: var(--teal); font-size: 11px; font-weight: 700; padding: 10px 16px; border-radius: var(--round-pill); white-space: nowrap; cursor: pointer; transition: all 0.2s; border: 1px solid var(--platinum); box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
         .chip:active { background: var(--teal); color: white; border-color: var(--teal); }
 
-        #statusBox { width: 100%; height: 90px; padding: 15px; border-radius: var(--round-inner); border: 1px solid var(--platinum); box-sizing: border-box; font-family: inherit; margin-bottom: 12px; font-size: 15px; outline: none; background: white; resize: none; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); transition: border-color 0.2s; }
+        #statusBox { width: 100%; height: 90px; padding: 16px; border-radius: var(--round-inner); border: 1px solid var(--platinum); box-sizing: border-box; font-family: inherit; margin-bottom: 12px; font-size: 15px; outline: none; background: white; resize: none; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); transition: border-color 0.2s; }
         #statusBox:focus { border-color: var(--teal); }
         
         .media-toolbar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
-        .media-btn { background: white; border: 1px solid var(--platinum); padding: 12px 2px; border-radius: var(--round-inner); display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; transition: all 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+        .media-btn { background: white; border: 1px solid var(--platinum); padding: 14px 2px; border-radius: var(--round-inner); display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
         .media-btn:active { background: var(--platinum); transform: translateY(1px); }
-        .media-btn svg { width: 20px; height: 20px; fill: var(--teal); margin-bottom: 6px; }
+        .media-btn svg { width: 22px; height: 22px; fill: var(--teal); margin-bottom: 6px; }
         .media-btn span { font-size: 9px; font-weight: 700; color: var(--gray-dark); text-transform: uppercase; letter-spacing: 0.5px; }
         .hidden-input { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; top: 0; left: 0; }
 
@@ -49,16 +53,16 @@
         .entry { position: relative; margin-left: 50px; background: white; border: 1px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; border-left: 4px solid var(--teal); box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
         .timestamp-full { font-size: 11px; font-weight: 700; color: var(--teal); display: block; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
         
-        #addBtn { background: var(--teal); color:white; border:none; padding:15px; border-radius: var(--round-inner); width:100%; font-weight:700; font-size: 15px; cursor:pointer; transition: opacity 0.2s; box-shadow: 0 4px 12px rgba(0, 128, 128, 0.2); }
+        #addBtn { background: var(--teal); color:white; border:none; padding:16px; border-radius: var(--round-pill); width:100%; font-weight:700; font-size: 15px; cursor:pointer; transition: opacity 0.2s; box-shadow: 0 4px 14px rgba(0, 128, 128, 0.25); }
         #addBtn:active { opacity: 0.8; }
         
-        .sync-btn { background: var(--clio-blue); color: white; border: none; padding: 18px; border-radius: var(--round-inner); width: 90%; align-self: center; font-weight: 700; font-size: 15px; cursor: pointer; margin: 15px 0; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0, 118, 206, 0.2); transition: transform 0.2s; }
+        .sync-btn { background: var(--clio-blue); color: white; border: none; padding: 18px; border-radius: var(--round-pill); width: 90%; align-self: center; font-weight: 700; font-size: 15px; cursor: pointer; margin: 15px 0; flex-shrink: 0; box-shadow: 0 4px 14px rgba(0, 118, 206, 0.25); transition: transform 0.2s; }
         .sync-btn:active { transform: scale(0.98); }
         
         /* TOGGLES */
         .switch { position: relative; display: inline-block; width: 36px; height: 20px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .4s; border-radius: 20px; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .4s; border-radius: var(--round-pill); }
         .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         input:checked + .slider { background-color: var(--clio-blue); }
         input:checked + .slider:before { transform: translateX(16px); }
@@ -81,19 +85,19 @@
     <div style="display: flex; flex-direction: column; height: 100%;">
         <div class="input-area">
             <div class="template-chips">
-                <span class="chip" onclick="useTemplate('📍 WITNESS LOCATION:\n- Name:\n- GPS/Address:\n- Proximity to Incident:')">📍 Location</span>
-                <span class="chip" onclick="useTemplate('⚖️ WITNESS STATEMENT:\n- Narrative:\n- Reliability:\n- Recorded?')">⚖️ Statement</span>
-                <span class="chip" onclick="useTemplate('🌆 INCIDENT SETTING:\n- Weather:\n- Lighting:\n- Road/Site Conditions:')">🌆 Setting</span>
-                <span class="chip" onclick="useTemplate('📁 EVIDENCE LOG:\n- Item Type:\n- Source/Chain:\n- Storage Location:')">📁 Evidence</span>
+                <span class="chip" onclick="useTemplate('WITNESS LOCATION:\n- Name:\n- GPS/Address:\n- Proximity to Incident:')">Location</span>
+                <span class="chip" onclick="useTemplate('WITNESS STATEMENT:\n- Narrative:\n- Reliability:\n- Recorded?')">Statement</span>
+                <span class="chip" onclick="useTemplate('INCIDENT SETTING:\n- Weather:\n- Lighting:\n- Road/Site Conditions:')">Setting</span>
+                <span class="chip" onclick="useTemplate('EVIDENCE LOG:\n- Item Type:\n- Source/Chain:\n- Storage Location:')">Evidence</span>
             </div>
 
             <textarea id="statusBox" placeholder="Tap a template above, or tell your truth here..."></textarea>
             
             <div class="media-toolbar">
-                <button class="media-btn"><input type="file" accept="image/*" capture="camera" class="hidden-input" onchange="addEntry('📷 Photo evidence secured.')"><svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-4c-1.1 0-2 .9-2 2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-5c0-1.1-.9-2-2-2z"/></svg><span>Camera</span></button>
-                <button class="media-btn"><input type="file" accept="audio/*" capture="microphone" class="hidden-input" onchange="addEntry('🎤 Audio recording captured.')"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg><span>Audio</span></button>
+                <button class="media-btn"><input type="file" accept="image/*" capture="camera" class="hidden-input" onchange="addEntry('Photo evidence secured.')"><svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-4c-1.1 0-2 .9-2 2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-5c0-1.1-.9-2-2-2z"/></svg><span>Camera</span></button>
+                <button class="media-btn"><input type="file" accept="audio/*" capture="microphone" class="hidden-input" onchange="addEntry('Audio recording captured.')"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg><span>Audio</span></button>
                 <button class="media-btn" onclick="window.location.href='sms:?body=WorkTimeline Update:'"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg><span>Text</span></button>
-                <button class="media-btn"><input type="file" class="hidden-input" onchange="addEntry('📄 Document verified.')"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg><span>Docs</span></button>
+                <button class="media-btn"><input type="file" class="hidden-input" onchange="addEntry('Document verified.')"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg><span>Docs</span></button>
             </div>
             <button id="addBtn" onclick="submitEntry()">Secure Entry & Build Timeline</button>
         </div>
@@ -138,9 +142,8 @@
 
     function runStory() {
         const el = document.getElementById('storyText'); let i = 0;
-        const lineDuration = 3000; // 15 lines x 3 seconds = 45 seconds perfectly
+        const lineDuration = 3000; 
         
-        // Populate the very first word instantly
         el.innerText = story[i++];
         el.style.opacity = 1;
 
