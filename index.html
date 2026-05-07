@@ -22,6 +22,7 @@
 
         .app-container { max-width: 500px; margin: auto; background: white; border-radius: var(--round-main); height: 95vh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
         #blurBox { position: absolute; top: 85px; left: 0; right: 0; bottom: 0; z-index: 98; background: rgba(255,255,255,0.05); backdrop-filter: blur(0px); pointer-events: none; transition: backdrop-filter 0.4s ease; }
+        
         .header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid var(--platinum); flex-shrink: 0; z-index: 100; background: white; }
 
         /* INPUT AREA & VISIBLE TEMPLATE CHIPS */
@@ -56,12 +57,35 @@
 
         .timestamp-full { font-size: 11px; font-weight: 700; color: var(--teal); display: block; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
         
+        /* SUBMIT TO TIMELINE BUTTON */
         #addBtn { background: var(--teal); color:white; border:none; padding:16px; border-radius: var(--round-pill); width:100%; font-weight:700; font-size: 15px; cursor:pointer; transition: opacity 0.2s; box-shadow: 0 4px 14px rgba(0, 128, 128, 0.25); }
         #addBtn:active { opacity: 0.8; }
         
-        #syncBtn { background: var(--gray-dark); color: white; border: none; padding: 18px; border-radius: var(--round-pill); width: 90%; align-self: center; font-weight: 700; font-size: 15px; cursor: pointer; margin: 15px 0; flex-shrink: 0; box-shadow: 0 4px 14px rgba(30, 41, 59, 0.25); transition: all 0.3s; }
-        #syncBtn:active { transform: scale(0.98); }
+        /* SECURE PADLOCK FOOTER (MAC STYLE) */
+        .footer-bar { padding: 15px 20px; background: white; border-top: 1px solid var(--platinum); flex-shrink: 0; z-index: 100; box-shadow: 0 -4px 15px rgba(0,0,0,0.02); }
         
+        #syncBtn { 
+            background: white; 
+            color: var(--gray-dark); 
+            border: 2px solid var(--platinum); 
+            padding: 12px; 
+            border-radius: var(--round-inner); 
+            width: 100%; 
+            font-weight: 800; 
+            font-size: 13px; 
+            cursor: pointer; 
+            box-shadow: 0 4px 14px rgba(0,0,0,0.04); 
+            transition: all 0.3s; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 6px; 
+        }
+        #syncBtn:active { transform: scale(0.98); background: var(--gray-light); }
+        #syncBtn svg { width: 26px; height: 26px; fill: var(--clio-blue); transition: fill 0.3s; }
+        #syncBtnText { letter-spacing: -0.2px; }
+
         /* TOGGLES */
         .switch { position: relative; display: inline-block; width: 36px; height: 20px; }
         .switch input { opacity: 0; width: 0; height: 0; }
@@ -85,7 +109,7 @@
         </div>
     </header>
 
-    <div style="display: flex; flex-direction: column; height: 100%;">
+    <div style="display: flex; flex-direction: column; height: 100%; overflow: hidden;">
         <div class="input-area" id="inputContainer">
             <div class="template-chips">
                 <span class="chip" onclick="useTemplate('WITNESS LOCATION:\n- Name:\n- GPS/Address:\n- Proximity to Incident:')">Location</span>
@@ -102,7 +126,7 @@
                 <button class="media-btn" onclick="window.location.href='sms:?body=WorkTimeline Update:'"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg><span>Text</span></button>
                 <button class="media-btn"><input type="file" class="hidden-input" onchange="addEntry('Document verified.')"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg><span>Docs</span></button>
             </div>
-            <button id="addBtn" onclick="submitEntry()">Secure Entry & Build Timeline</button>
+            <button id="addBtn" onclick="submitEntry()">Submit to Timeline</button>
         </div>
 
         <div id="timelineContainer">
@@ -116,8 +140,13 @@
                 </div>
             </div>
         </div>
+    </div>
 
-        <button id="syncBtn" onclick="lockAndSummarize()">Lock & Submit to Clio</button>
+    <div class="footer-bar">
+        <button id="syncBtn" onclick="lockAndSummarize()">
+            <svg id="syncIcon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+            <span id="syncBtnText">Lock & Submit to Clio</span>
+        </button>
     </div>
 </div>
 
@@ -221,26 +250,26 @@
     function lockAndSummarize() {
         const totalEntries = timelineVault.length + notesVault.length;
         
-        // 1. Lock the interface to prevent tampering
+        // 1. Lock the interface
         const inputContainer = document.getElementById('inputContainer');
         inputContainer.style.opacity = '0.3';
         inputContainer.style.pointerEvents = 'none';
         
         // 2. Change button state
         const syncBtn = document.getElementById('syncBtn');
-        syncBtn.innerText = "Summarizing Timeline...";
-        syncBtn.style.background = "var(--gray-dark)";
-        syncBtn.style.pointerEvents = "none"; // prevent double clicks
+        const syncText = document.getElementById('syncBtnText');
+        syncBtn.style.pointerEvents = "none";
+        syncBtn.style.borderColor = "var(--clio-blue)";
+        syncText.innerText = "Summarizing Timeline...";
 
-        // 3. Generate Summary after a short delay (for dramatic effect)
+        // 3. Generate Summary after a short delay
         setTimeout(() => {
             const list = document.getElementById('displayList');
             const summaryDiv = document.createElement('div');
             summaryDiv.className = 'entry summary-card';
             
-            // Generate dynamic text based on whether they actually entered data
             let summaryText = totalEntries > 0 
-                ? `Timeline Locked. Successfully compiled ${totalEntries} intake entries including mapped data, setting contexts, and evidence logs. Preparing clean data transfer to Clio.`
+                ? `Timeline Locked. Successfully compiled ${totalEntries} intake entries into a master summary for Clio. Mapped timeline facts, evidence logs, and witness data secured.`
                 : `Timeline Locked. No custom entries detected. Proceeding to authenticate blank slate with Clio.`;
 
             summaryDiv.innerHTML = `
@@ -251,16 +280,13 @@
             `;
             list.prepend(summaryDiv);
             
-            // Scroll to the top so they see the summary drop in
             document.getElementById('timelineContainer').scrollTop = 0;
-
-            syncBtn.innerText = "Connecting to Clio Secure Bridge...";
-            syncBtn.style.background = "var(--clio-blue)";
+            syncText.innerText = "Connecting to Clio Secure Bridge...";
             
             // 4. Fire the actual PKCE redirect
             setTimeout(() => {
                 syncToClio();
-            }, 2000);
+            }, 2500);
 
         }, 1200);
     }
