@@ -24,10 +24,10 @@
         .skip-btn { position: absolute; bottom: 80px; background: rgba(0,0,0,0.05); border: 1.5px solid var(--gray-dark); padding: 12px 24px; border-radius: 50px; font-weight: 900; font-size: 13px; cursor: pointer; color: var(--gray-dark); }
 
         /* THE APPLE CONTAINER */
-        .app-container { max-width: 500px; margin: auto; background: white; border-radius: 50px; height: 95vh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.1); transition: filter 0.4s ease; }
+        .app-container { max-width: 500px; margin: auto; background: white; border-radius: 50px; height: 95vh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
         
-        /* FIXED GHOST MODE: Blurs when body has class, returns when class is removed */
-        body.ghost-active .app-container { filter: blur(40px); pointer-events: none; }
+        /* CRITICAL GHOST FIX */
+        .ghost-hidden { filter: blur(50px) grayscale(1); pointer-events: none; transition: filter 0.3s ease; }
 
         .header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 2px solid var(--platinum); flex-shrink: 0; }
         .tagline { font-size: 11px; font-weight: 800; color: var(--clio-blue); font-style: italic; margin-top: -2px; }
@@ -41,7 +41,7 @@
 
         /* SOLID MAC HARDWARE TOOLBAR */
         .media-toolbar { display: flex; gap: 10px; margin-bottom: 12px; }
-        .media-btn { flex: 1; background: var(--platinum); border: none; padding: 15px 5px; border-radius: 25px; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: 0.1s; }
+        .media-btn { flex: 1; background: var(--platinum); border: none; padding: 15px 5px; border-radius: 25px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
         .media-btn svg { width: 26px; height: 26px; fill: var(--teal); margin-bottom: 5px; }
         .media-btn span { font-size: 9px; font-weight: 900; color: var(--gray-dark); }
 
@@ -80,7 +80,7 @@
         </div>
         <div style="display:flex; gap:10px; align-items: center;">
             <div style="text-align: center;"><label class="switch"><input type="checkbox" onchange="toggleVault(this)"><span class="slider"></span></label><div style="font-size: 7px; font-weight: 900;">CHRON</div></div>
-            <div style="text-align: center;"><label class="switch"><input type="checkbox" onchange="toggleGhost(this)"><span class="slider"></span></label><div style="font-size: 7px; font-weight: 900;">GHOST</div></div>
+            <div style="text-align: center;"><label class="switch"><input id="ghostToggle" type="checkbox" onchange="toggleGhost()"><span class="slider"></span></label><div style="font-size: 7px; font-weight: 900;">GHOST</div></div>
         </div>
     </header>
 
@@ -155,9 +155,15 @@
         if(s) { s.style.opacity = '0'; setTimeout(() => s.remove(), 1000); }
     }
 
-    function toggleGhost(cb) {
-        if(cb.checked) document.body.classList.add('ghost-active');
-        else document.body.classList.remove('ghost-active');
+    // THE FIXED GHOST TOGGLE
+    function toggleGhost() {
+        const app = document.getElementById('mainApp');
+        const isChecked = document.getElementById('ghostToggle').checked;
+        if(isChecked) {
+            app.classList.add('ghost-hidden');
+        } else {
+            app.classList.remove('ghost-hidden');
+        }
     }
 
     function toggleVault(cb) {
