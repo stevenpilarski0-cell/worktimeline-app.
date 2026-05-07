@@ -1,28 +1,14 @@
-export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).end();
-  
-  const { code } = req.body;
-  const params = new URLSearchParams();
-  params.append('grant_type', 'authorization_code');
-  params.append('code', code);
-  
-  // Character 10-11: Double lowercase L (ll)
-  params.append('client_id', 'btscu9WmPHYellZtZA9slQfynBAQudwjaR7pEDdq');
-  
-  // Character 3: ZERO (0)
-  params.append('client_secret', 'kL0cWsjKkZTzWkdCVrcs7IktGIZeUj6pAvE2GJka');
-  
-  params.append('redirect_uri', 'https://worktimeline-app.vercel.app');
-
-  try {
-    const clioResponse = await fetch('https://ca.app.clio.com/oauth/token', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: params,
-    });
-    const data = await clioResponse.json();
-    res.status(200).json(data);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to exchange token' });
-  }
-}
+// WorkTimeline™ | Production API Handshake
+export const CLIO_CONFIG = {
+    // Verified Client ID for Clio Grow
+    clientId: "18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s",
+    
+    // Verified Redirect URI (Matches Portal)
+    redirectUri: "https://worktimeline-app.vercel.app/index.html",
+    
+    // Regional Gateway (Canada)
+    authUrl: "https://ca.app.clio.com/oauth/authorize",
+    
+    // Permissions for Intake & Contacts
+    scopes: "leads_write contacts_write"
+};
