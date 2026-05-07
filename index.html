@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™ | Living Proof</title>
+    <title>WorkTimeline™ | Living Proof Build</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
         :root { 
@@ -12,6 +12,7 @@
         }
         body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 10px; height: 100vh; overflow: hidden; color: var(--gray-dark); }
         
+        /* 45-SECOND DEEP DIVE INTRO */
         #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; box-sizing: border-box; transition: opacity 1.2s ease; }
         .story-text { font-size: 19px; font-weight: 800; color: var(--gray-dark); line-height: 1.5; opacity: 0; transition: opacity 0.8s; max-width: 460px; }
 
@@ -19,28 +20,34 @@
         #blurBox { position: absolute; top: 85px; left: 0; right: 0; bottom: 0; z-index: 98; background: rgba(255,255,255,0.05); backdrop-filter: blur(0px); pointer-events: none; transition: backdrop-filter 0.4s ease; }
         .header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 2px solid var(--platinum); flex-shrink: 0; z-index: 100; background: white; }
 
+        /* INPUT AREA & TEMPLATE BUTTONS */
         .input-area { padding: 15px; background: #fff; border-bottom: 2px solid var(--platinum); flex-shrink: 0; }
-        #statusBox { width: 100%; height: 85px; padding: 15px; border-radius: var(--round-factor); border: 2px solid var(--platinum); box-sizing: border-box; font-family: inherit; margin-bottom: 12px; font-size: 16px; outline: none; background: #fbfdff; }
+        #statusBox { width: 100%; height: 100px; padding: 15px; border-radius: var(--round-factor); border: 2px solid var(--platinum); box-sizing: border-box; font-family: inherit; margin-bottom: 12px; font-size: 15px; outline: none; background: #fbfdff; resize: none; }
         
         .media-toolbar { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 12px; }
-        .media-btn { background: var(--platinum); border: none; padding: 10px 2px; border-radius: var(--round-factor); display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; }
+        .media-btn { background: var(--platinum); border: none; padding: 10px 2px; border-radius: var(--round-factor); display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; transition: background 0.2s; }
+        .media-btn:active { background: #cbd5e1; }
         .media-btn svg { width: 18px; height: 18px; fill: var(--teal); margin-bottom: 4px; }
         .media-btn span { font-size: 7px; font-weight: 900; color: var(--gray-dark); text-transform: uppercase; }
         .hidden-input { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; top: 0; left: 0; }
 
-        #addBtn { background: var(--teal); color:white; border:none; padding:15px; border-radius: var(--round-factor); width:100%; font-weight:900; cursor:pointer; }
+        /* TIMELINE DISPLAY */
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px; position: relative; background: #fdfdfd; }
         .timeline-spine { position: absolute; left: 35px; top: 0; bottom: 0; width: 8px; background: #cccccc; border-radius: 15px; z-index: 1; }
         
+        /* THE PERSONAL LETTER BOX */
         #legacyQuote { position: relative; margin-left: 55px; background: var(--glass); backdrop-filter: blur(10px); border: 1px solid rgba(0, 128, 128, 0.15); border-left: 6px solid var(--clio-blue); padding: 25px; border-radius: var(--round-factor); margin-bottom: 25px; z-index: 2; transition: opacity 0.5s; }
 
         .entry { position: relative; margin-left: 55px; background: white; border: 1.5px solid var(--platinum); padding: 18px; border-radius: var(--round-factor); margin-bottom: 25px; z-index: 2; border-left: 6px solid var(--teal); }
         .timestamp-full { font-size: 10px; font-weight: 900; color: var(--teal); display: block; margin-bottom: 5px; text-transform: uppercase; }
+        
+        #addBtn { background: var(--teal); color:white; border:none; padding:15px; border-radius: var(--round-factor); width:100%; font-weight:900; cursor:pointer; }
         .sync-btn { background: var(--clio-blue); color: white; border: none; padding: 20px; border-radius: var(--round-factor); width: 90%; align-self: center; font-weight: 900; cursor: pointer; margin: 15px 0; flex-shrink: 0; }
 
-        #templateMenu { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; z-index:10000; border-radius:30px; padding:20px; box-shadow:0 0 100px rgba(0,0,0,0.3); width:80%; max-width:300px; }
-        .temp-item { padding:12px; border-bottom:1px solid #eee; font-weight:800; cursor:pointer; color:var(--teal); }
-        
+        /* MODAL MENU FOR TEMPLATES */
+        #templateMenu { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; z-index:10001; border-radius:30px; padding:20px; box-shadow:0 0 100px rgba(0,0,0,0.3); width:85%; max-width:320px; }
+        .temp-item { padding:15px; border-bottom:1px solid #eee; font-weight:800; cursor:pointer; color:var(--teal); font-size: 14px; }
+        .temp-item:last-child { border: none; }
         .switch { position: relative; display: inline-block; width: 34px; height: 18px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 20px; }
@@ -54,17 +61,18 @@
 <div id="splashScreen"><h1 id="storyText" class="story-text">Welcome.</h1></div>
 
 <div id="templateMenu">
-    <div style="font-weight:900; font-size:14px; margin-bottom:10px;">Select Template</div>
-    <div class="temp-item" onclick="useTemplate('WITNESS LOCATION: \nName: \nContact: \nDescription: ')">📍 Witness Location</div>
-    <div class="temp-item" onclick="useTemplate('EVIDENCE LOG: \nItem: \nSource: \nStorage: ')">📁 Evidence Log</div>
-    <div class="temp-item" onclick="useTemplate('TIMELINE EVENT: \nDate of Incident: \nInvolved Parties: ')">🕒 Timeline Event</div>
-    <div class="temp-item" style="border:none; color:red;" onclick="toggleTemplates()">CANCEL</div>
+    <div style="font-weight:900; font-size:16px; margin-bottom:15px; text-align: center;">Quick-Capture Templates</div>
+    <div class="temp-item" onclick="useTemplate('📍 WITNESS LOCATION:\n- Name:\n- GPS/Address:\n- Proximity to Incident:')">📍 Witness Location</div>
+    <div class="temp-item" onclick="useTemplate('⚖️ WITNESS STATEMENT:\n- Narrative:\n- Reliability:\n- Recorded?')">⚖️ Witness Statement</div>
+    <div class="temp-item" onclick="useTemplate('🌆 INCIDENT SETTING:\n- Weather:\n- Lighting:\n- Road/Site Conditions:')">🌆 Incident Setting</div>
+    <div class="temp-item" onclick="useTemplate('📁 EVIDENCE LOG:\n- Item Type:\n- Source/Chain:\n- Storage Location:')">📁 Evidence Log</div>
+    <div class="temp-item" style="color:red; text-align:center; margin-top:10px;" onclick="toggleTemplates()">CLOSE</div>
 </div>
 
 <div class="app-container" id="mainApp">
     <div id="blurBox"></div>
     <header class="header">
-        <div><h1 id="folderLabel" style="color: var(--teal); margin:0; font-size: 18px; font-weight: 900;">WorkTimeline™</h1><div style="font-size: 11px; font-weight: 800; color: var(--clio-blue); font-style: italic;">Taking an Intake...</div></div>
+        <div><h1 id="folderLabel" style="color: var(--teal); margin:0; font-size: 18px; font-weight: 900;">WorkTimeline™</h1><div style="font-size: 11px; font-weight: 800; color: var(--clio-blue); font-style: italic;">Intake Engine...</div></div>
         <div style="display:flex; gap:10px; align-items: center;">
             <div style="text-align: center;"><label class="switch"><input type="checkbox" onchange="toggleVault(this)"><span class="slider"></span></label><div style="font-size: 7px; font-weight: 900;">CHRON</div></div>
             <div style="text-align: center;"><label class="switch"><input type="checkbox" id="gSwitch" onchange="toggleGhost()"><span class="slider"></span></label><div style="font-size: 7px; font-weight: 900;">GHOST</div></div>
@@ -73,15 +81,15 @@
 
     <div style="display: flex; flex-direction: column; height: 100%;">
         <div class="input-area">
-            <textarea id="statusBox" placeholder="Start your intake entry..."></textarea>
+            <textarea id="statusBox" placeholder="Tell your truth here..."></textarea>
             <div class="media-toolbar">
                 <button class="media-btn"><input type="file" accept="image/*" capture="camera" class="hidden-input" onchange="addEntry('📷 Photo evidence secured.')"><svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-4c-1.1 0-2 .9-2 2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-5c0-1.1-.9-2-2-2z"/></svg><span>CAMERA</span></button>
                 <button class="media-btn"><input type="file" accept="audio/*" capture="microphone" class="hidden-input" onchange="addEntry('🎤 Audio recording captured.')"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg><span>AUDIO</span></button>
-                <button class="media-btn" onclick="toggleTemplates()"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg><span>LAYOUT</span></button>
-                <button class="media-btn" onclick="window.location.href='sms:?body=Intake Update:'"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg><span>TEXT</span></button>
+                <button class="media-btn" onclick="toggleTemplates()"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg><span>TEMPLATES</span></button>
+                <button class="media-btn" onclick="window.location.href='sms:?body=WorkTimeline Update:'"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg><span>TEXT</span></button>
                 <button class="media-btn"><input type="file" class="hidden-input" onchange="addEntry('📄 Document verified.')"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg><span>DOCS</span></button>
             </div>
-            <button id="addBtn" onclick="submitEntry()">Add Entry & Secure</button>
+            <button id="addBtn" onclick="submitEntry()">Secure Entry & Build Timeline</button>
         </div>
 
         <div id="timelineContainer">
@@ -91,7 +99,7 @@
                     <h2 style="font-size: 16px; margin-bottom: 10px; color: var(--clio-blue);">Hi Clio Team,</h2>
                     <p style="font-size: 13px; line-height: 1.6; font-weight: 700; margin-bottom: 15px;">It's been an honor. I truly enjoy doing this, and thank you for the opportunity.</p>
                     <p style="font-size: 12px; line-height: 1.5; font-weight: 600;">I am part of that "invisible 60%," but I don't believe we are invisible—I believe we are trapped in a metaphorical prison. This is why I chose the transition from **Grey to Teal**, from the prison to the **Blue Sky**. By integrating Clio’s colors with WorkTimeline™, I’ve built a solution for that gap.</p>
-                    <p style="font-size: 12px; line-height: 1.5; font-weight: 600; margin-top: 10px;">I have **no coding experience**. I did this all by cell phone, myself, driven by motivation and the cross-referencing power of AI. I am living proof that Jack’s philosophy is true: Tell the truth, and the rest becomes effortless.</p>
+                    <p style="font-size: 12px; line-height: 1.5; font-weight: 600; margin-top: 10px;">I have **no coding experience**. I did this all by cell phone, myself, driven by motivation and the cross-referencing power of AI. I am living proof that Jack Newton’s philosophy is true: Telling the truth takes effort, but Justice is effortless if truth takes no effort.</p>
                 </div>
             </div>
         </div>
@@ -143,6 +151,7 @@
     function useTemplate(txt) {
         document.getElementById('statusBox').value = txt;
         toggleTemplates();
+        document.getElementById('statusBox').focus();
     }
 
     function toggleGhost() {
@@ -163,7 +172,6 @@
     function submitEntry() {
         const box = document.getElementById('statusBox'); if(!box.value.trim()) return;
         saveEntry(box.value); box.value = '';
-        // AUTOMATICALLY REMOVE THE HI CLIO MESSAGE ON FIRST ENTRY
         const q = document.getElementById('legacyQuote'); if(q) { q.style.opacity = '0'; setTimeout(() => q.remove(), 500); }
     }
 
@@ -187,11 +195,12 @@
         [...data].reverse().forEach(item => {
             const div = document.createElement('div'); div.className = 'entry';
             div.style.borderLeftColor = (activeVault === "NOTES") ? "var(--clio-blue)" : "var(--teal)";
-            div.innerHTML = `<span class="timestamp-full" style="color:${(activeVault === "NOTES") ? 'var(--clio-blue)' : 'var(--teal)'}">${item.stamp}</span><p style="margin:0; font-size:14px; font-weight:600;">${item.text}</p>`;
+            div.innerHTML = `<span class="timestamp-full" style="color:${(activeVault === "NOTES") ? 'var(--clio-blue)' : 'var(--teal)'}">${item.stamp}</span><p style="white-space: pre-wrap; margin:0; font-size:14px; font-weight:600;">${item.text}</p>`;
             list.appendChild(div);
         });
     }
 
+    // PKCE SECURE BRIDGE
     async function syncToClio() {
         const clientId = "18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s";
         const redirectUri = "https://worktimeline-app.vercel.app/index.html";
