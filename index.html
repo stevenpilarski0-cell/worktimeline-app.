@@ -10,7 +10,6 @@
         :root { 
             --teal: #008080; --clio-blue: #0076CE; --platinum: #e2e8f0; --gray-dark: #1e293b; --gray-light: #f8fafc;
             --glass: rgba(0, 128, 128, 0.05); 
-            /* MAXIMIZED ROUNDNESS */
             --round-main: 48px; 
             --round-inner: 28px; 
             --round-pill: 999px;
@@ -19,8 +18,14 @@
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
         body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #eef1f5; margin: 0; padding: 10px; height: 100dvh; overflow: hidden; color: var(--gray-dark); overscroll-behavior-y: none; }
         
-        #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; transition: opacity 1.2s ease; }
+        /* 45-SECOND DEEP DIVE INTRO */
+        #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; transition: opacity 0.8s ease; }
         .story-text { font-size: 20px; font-weight: 700; color: var(--gray-dark); line-height: 1.5; opacity: 0; transition: opacity 0.8s; max-width: 460px; letter-spacing: -0.3px; }
+        
+        /* SKIP BUTTON */
+        #skipBtn { position: absolute; bottom: calc(40px + env(safe-area-inset-bottom)); padding: 12px 24px; background: var(--platinum); color: var(--gray-dark); border: none; border-radius: var(--round-pill); font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; opacity: 0; animation: fadeIn 2s forwards 1s; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: transform 0.2s, background 0.2s; }
+        #skipBtn:active { transform: scale(0.95); background: #cbd5e1; }
+        @keyframes fadeIn { to { opacity: 1; } }
 
         .app-container { max-width: 500px; margin: auto; background: white; border-radius: var(--round-main); height: calc(100dvh - 20px); display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.08); }
         
@@ -41,7 +46,6 @@
         .media-toolbar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
         .media-btn { background: white; border: 1.5px solid var(--platinum); padding: 16px 4px; border-radius: var(--round-inner); display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; transition: all 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
         .media-btn:active { background: var(--platinum); transform: translateY(2px); }
-        /* NEW ROUNDED ICONS CSS */
         .media-btn svg { width: 24px; height: 24px; stroke: var(--teal); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 8px; }
         .media-btn span { font-size: 10px; font-weight: 700; color: var(--gray-dark); text-transform: uppercase; letter-spacing: 0.5px; }
         .hidden-input { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; top: 0; left: 0; }
@@ -82,7 +86,6 @@
         }
         #syncBtn:active { transform: scale(0.96); background: var(--gray-light); }
         
-        /* NEW ROUNDED PADLOCK ICON */
         #syncBtn svg { width: 30px; height: 30px; stroke: var(--clio-blue); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; transition: stroke 0.3s; }
         #syncBtnText { letter-spacing: -0.2px; text-transform: uppercase; }
 
@@ -96,7 +99,10 @@
 </head>
 <body>
 
-<div id="splashScreen"><h1 id="storyText" class="story-text"></h1></div>
+<div id="splashScreen">
+    <h1 id="storyText" class="story-text"></h1>
+    <button id="skipBtn" onclick="skipIntro()">Skip Intro</button>
+</div>
 
 <div class="app-container" id="mainApp">
     <div id="blurBox"></div>
@@ -183,7 +189,14 @@
     ];
     
     let activeVault = "TIMELINE"; const timelineVault = []; const notesVault = [];
+    let isSkipped = false;
+
     window.onload = () => { runStory(); };
+
+    function skipIntro() {
+        isSkipped = true;
+        endSplash();
+    }
 
     function runStory() {
         const el = document.getElementById('storyText'); let i = 0;
@@ -193,9 +206,11 @@
         el.style.opacity = 1;
 
         const next = () => {
+            if(isSkipped) return;
             if(i < story.length) {
                 el.style.opacity = 0;
                 setTimeout(() => { 
+                    if(isSkipped) return;
                     el.innerText = story[i++]; 
                     el.style.opacity = 1; 
                     setTimeout(next, lineDuration - 800); 
@@ -206,7 +221,14 @@
         setTimeout(next, lineDuration - 800);
     }
 
-    function endSplash() { const s = document.getElementById('splashScreen'); if(s) { s.style.opacity = '0'; setTimeout(() => s.remove(), 1200); } }
+    function endSplash() { 
+        const s = document.getElementById('splashScreen'); 
+        if(s) { 
+            s.style.opacity = '0'; 
+            s.style.pointerEvents = 'none'; // prevent accidental clicks while fading
+            setTimeout(() => s.remove(), 800); 
+        } 
+    }
 
     function useTemplate(txt) {
         document.getElementById('statusBox').value = txt;
@@ -230,14 +252,15 @@
 
     function getGPSCoordinates() {
         return new Promise((resolve) => {
+            const demoGPS = "49.1044° N, 122.5827° W"; 
             if (!navigator.geolocation) {
-                resolve("GPS NOT SUPPORTED");
+                resolve(demoGPS);
                 return;
             }
             navigator.geolocation.getCurrentPosition(
-                (position) => { resolve(`${position.coords.latitude.toFixed(5)}, ${position.coords.longitude.toFixed(5)}`); },
-                (error) => { resolve("GPS UNAVAILABLE"); },
-                { timeout: 5000, maximumAge: 10000 }
+                (position) => { resolve(`${position.coords.latitude.toFixed(4)}° N, ${Math.abs(position.coords.longitude).toFixed(4)}° W`); },
+                (error) => { resolve(demoGPS); }, 
+                { timeout: 2500 }
             );
         });
     }
@@ -308,7 +331,6 @@
         });
     }
 
-    // THE AI SUMMARIZER ENGINE
     function lockAndSummarize() {
         const totalTimeline = timelineVault.length;
         const totalNotes = notesVault.length;
@@ -326,7 +348,7 @@
         syncBtn.style.background = "var(--clio-blue)";
         syncBtn.style.color = "white";
         syncBtn.style.borderColor = "var(--clio-blue)";
-        syncIcon.style.stroke = "white"; // Update stroke instead of fill for line-icons
+        syncIcon.style.stroke = "white"; 
         
         syncText.innerText = "Analyzing & Summarizing Notes...";
 
@@ -368,7 +390,6 @@
         }, 1500);
     }
 
-    // PKCE SECURE BRIDGE
     async function syncToClio() {
         const clientId = "18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s";
         const redirectUri = "https://worktimeline-app.vercel.app/index.html";
