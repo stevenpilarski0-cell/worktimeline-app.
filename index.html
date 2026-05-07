@@ -2,273 +2,189 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™ | Case Architect</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>WorkTimeline™ | Master</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --teal-brand: #115e59;
-            --teal-bg: #f0fdfa;
-            --active-green: #22c55e;
-            --border-color: #cbd5e1;
-            --glass-yellow: rgba(250, 204, 21, 0.25);
-            --glass-red: rgba(239, 68, 68, 0.2);
-            --active-blue: #3b82f6;
+        :root { 
+            --wt-teal: #0d9488; --wt-gray-light: #f8fafc; --wt-dark: #0f172a; 
+            --wt-ochre: #d97706; --wt-red: #dc2626; --clio-blue: #0056b3;
+            --mac-radius: 22px;
         }
-
-        body { 
-            margin: 0; 
-            font-family: -apple-system, sans-serif; 
-            background: #ffffff; 
-            padding-bottom: 120px;
-        }
-
-        /* HEADER SECTION */
-        header {
-            padding: 25px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-
-        .left-header { display: flex; align-items: center; gap: 15px; }
-        .logo-box { width: 55px; height: 55px; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         
-        .brand-text h1 { 
-            margin: 0; 
-            font-size: 26px; 
-            color: var(--teal-brand); 
-            font-weight: 800;
-        }
-        .brand-text p { 
-            margin: 5px 0 0; 
-            font-style: italic; 
-            font-size: 14px; 
-            color: #64748b; 
+        body, html { 
+            margin: 0; padding: 0; font-family: 'Outfit', sans-serif; 
+            background: var(--wt-gray-light); height: 100dvh; width: 100vw; 
+            overflow: hidden; color: var(--wt-dark);
         }
 
-        .right-header { text-align: right; }
-        .status { 
-            font-size: 11px; 
-            font-weight: 900; 
-            color: var(--active-green); 
-            display: flex; 
-            align-items: center; 
-            justify-content: flex-end; 
-            gap: 5px; 
-            margin-bottom: 10px;
-        }
-        .status::before { content: ''; width: 8px; height: 8px; background: var(--active-green); border-radius: 50%; }
+        /* ACT 1: PRESENTATION (ONE PHRASE AT A TIME) */
+        .layer { position: fixed; inset: 0; z-index: 10000; background: var(--wt-gray-light); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; }
+        #stage { width: 100%; height: 350px; display: flex; align-items: center; justify-content: center; position: relative; }
+        .phrase { position: absolute; width: 100%; opacity: 0; transition: 1.5s ease-in-out; transform: translateY(20px); }
+        .phrase.active { opacity: 1; transform: translateY(0); }
+        .stat-tag { font-size: 0.9rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 20px; }
+        .main-quote { color: var(--wt-teal); font-size: 1.5rem; font-weight: 400; line-height: 1.4; }
 
-        .btn-header {
-            display: block;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 800;
-            background: #f1f5f9;
-            border: 1px solid var(--border-color);
-            margin-bottom: 6px;
-            color: #1e293b;
-            cursor: pointer;
-            text-transform: uppercase;
-        }
+        /* ACT 2: ENGINE */
+        #main-app { display: none; flex-direction: column; height: 100dvh; }
+        .header { background: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; z-index: 11000; }
+        
+        /* INFORMATICS LEGEND */
+        .legend { display: flex; gap: 15px; padding: 10px 20px; background: #f1f5f9; font-size: 0.65rem; font-weight: 600; color: #64748b; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; }
+        .ai-pulse { width: 10px; height: 10px; border-radius: 50%; background: var(--wt-teal); display: inline-block; margin-right: 5px; }
+        .pulse-warn { animation: glow 1.2s infinite; background: var(--wt-ochre) !important; }
+        .pulse-alert { animation: glow 0.6s infinite; background: var(--wt-red) !important; }
+        @keyframes glow { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.3); } }
 
-        /* SIGN-IN BOX */
-        .signin-box {
-            margin: 10px 20px;
-            background: #e6f4f1;
-            padding: 25px;
-            border-radius: 25px;
-        }
-        .signin-box label { 
-            display: block;
-            font-size: 12px; 
-            font-weight: 900;
-            color: var(--teal-brand); 
-            text-transform: uppercase; 
-            margin-bottom: 15px; 
-        }
-        select {
-            width: 100%;
-            padding: 16px;
-            border-radius: 15px;
-            border: 1px solid #fff;
-            background: #fff;
-            font-size: 15px;
-        }
+        /* PRIVACY */
+        .sw-track { width: 50px; height: 26px; background: #e2e8f0; border-radius: 30px; position: relative; cursor: pointer; }
+        .sw-thumb { position: absolute; width: 20px; height: 20px; background: white; border-radius: 50%; top: 3px; left: 3px; transition: 0.3s; }
+        .sw-on { background: var(--wt-teal); } .sw-on .sw-thumb { left: 27px; }
+        .blur-active { filter: blur(60px) grayscale(100%); pointer-events: none; opacity: 0.2; }
 
-        /* CATEGORY SCROLLER */
-        .scroller {
-            display: flex;
-            gap: 12px;
-            padding: 15px 20px;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-        .pill {
-            white-space: nowrap;
-            padding: 10px 20px;
-            border-radius: 25px;
-            border: 1.5px solid var(--border-color);
-            background: #fff;
-            color: var(--teal-brand);
-            font-weight: 700;
-            font-size: 13px;
-        }
+        /* MODES (TIMELINE / NOTES / CHAT) */
+        .mode-selector { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 12px; background: white; }
+        .mode-btn { padding: 12px; border-radius: 14px; border: 1.5px solid #eee; background: #fcfcfc; font-size: 0.65rem; font-weight: 800; color: #94a3b8; cursor: pointer; text-transform: uppercase; }
+        .mode-btn.active { background: var(--wt-teal); color: white; border-color: var(--wt-teal); }
 
-        /* TEXT INPUT AREA */
-        .input-wrap { padding: 0 20px; }
-        textarea {
-            width: 100%;
-            height: 150px;
-            border-radius: 25px;
-            border: none;
-            background: #e2e8f0;
-            padding: 20px;
-            font-size: 16px;
-            outline: none;
-            font-family: inherit;
-        }
+        /* TEMPLATES */
+        .chip-row { display: flex; gap: 8px; overflow-x: auto; padding: 0 12px 12px; background: white; scrollbar-width: none; }
+        .chip { background: #f1f5f9; color: var(--wt-teal); padding: 8px 15px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; white-space: nowrap; border: 1px solid #e2e8f0; cursor: pointer; }
 
-        /* ACTION GRID */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            padding: 25px 20px;
-        }
-        .card {
-            background: #f1f5f9;
-            border-radius: 25px;
-            padding: 22px 10px;
-            text-align: center;
-            cursor: pointer;
-        }
-        .card svg { width: 35px; height: 35px; fill: #64748b; margin-bottom: 10px; }
-        .card b { font-size: 11px; color: #64748b; text-transform: uppercase; display: block; }
+        /* PANE AREA */
+        .stage-area { flex-grow: 1; position: relative; overflow: hidden; background: #fcfcfc; }
+        .pane { position: absolute; inset: 0; padding: 15px; overflow-y: auto; display: none; flex-direction: column; gap: 12px; }
+        .pane.active { display: flex; }
+        .card { background: white; padding: 15px; border-radius: 18px; border: 1px solid #f1f5f9; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+        .timestamp { font-size: 0.55rem; color: var(--wt-teal); font-weight: 700; margin-bottom: 5px; display: block; }
 
-        /* TIMELINE DISPLAY */
-        .timeline { padding: 20px; }
-        .entry {
-            background: #fff;
-            border: 1px solid #f1f5f9;
-            padding: 20px;
-            border-radius: 20px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-            position: relative;
-        }
-        .entry::before { 
-            content: ''; position: absolute; left: -10px; top: 25px; width: 8px; height: 8px; background: #cbd5e1; border-radius: 50%;
-        }
-        .entry.active-node::before { background: var(--active-blue); }
-
-        /* DYNAMIC COLORS (AI & TAMPER) */
-        .hazard-highlight { background: var(--glass-yellow) !important; border: 1px solid #facc15 !important; }
-        .tamper-highlight { background: var(--glass-red) !important; border: 1px solid #ef4444 !important; color: #b91c1c; }
-        body.blurred .entry, body.blurred textarea { filter: blur(20px); pointer-events: none; }
-
-        /* LEGEND PULSE AREA */
-        .pulse-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-left: 5px; opacity: 0.2; }
-        .p-ai { background: #facc15; animation: pulseY 2s infinite; opacity: 1; }
-        .p-tm { background: #ef4444; animation: pulseR 0.8s infinite; opacity: 1; }
-        @keyframes pulseY { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
-        @keyframes pulseR { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+        /* FOOTER & BUTTONS */
+        .media-bar { display: flex; justify-content: space-around; padding: 15px; background: white; border-top: 1px solid #f1f5f9; }
+        .mac-icon { width: 48px; height: 48px; background: var(--wt-teal); border-radius: 16px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; fill: white; }
+        
+        .footer { background: white; padding: 20px; border-top: 1px solid #f1f5f9; }
+        textarea { width: 100%; height: 70px; border: 1.5px solid #f1f5f9; border-radius: 18px; padding: 15px; font-family: 'Outfit'; resize: none; margin-bottom: 12px; font-size: 0.95rem; }
+        .submit-btn { width: 100%; padding: 18px; border-radius: 18px; border: none; font-weight: 600; cursor: pointer; color: white; background: var(--clio-blue); font-size: 0.85rem; }
     </style>
 </head>
-<body>
+<body onload="runIntro()">
 
-<header>
-    <div class="left-header">
-        <div class="logo-box">
-            <svg viewBox="0 0 100 100"><rect x="15" y="30" width="70" height="50" rx="10" fill="none" stroke="#115e59" stroke-width="6"/><path d="M35 30 V28 Q35 15 50 15 Q65 15 65 20 V30" fill="none" stroke="#115e59" stroke-width="6"/><line x1="10" y1="55" x2="90" y2="55" stroke="#3b82f6" stroke-width="4" /></svg>
+    <div id="act-intro" class="layer">
+        <div id="stage"></div>
+        <button id="gate-btn" class="submit-btn" style="display:none; width: 220px;" onclick="enterApp()">CONTINUE</button>
+    </div>
+
+    <div id="main-app">
+        <header class="header">
+            <h4 style="margin:0; color:var(--wt-teal); font-weight:600;">WorkTimeline™</h4>
+            <div id="privacy-sw" class="sw-track" onclick="togglePrivacy()"><div class="sw-thumb"></div></div>
+        </header>
+
+        <div class="legend">
+            <div><div id="ai-status" class="ai-pulse"></div> AI PATTERN RECOGNITION</div>
+            <div>• TAMPER-PROOF TIME STAMP</div>
         </div>
-        <div class="brand-text">
-            <h1>WorkTimeline™</h1>
-            <p>"Justice is truth in action."</p>
+
+        <div id="app-shell" style="display:flex; flex-direction:column; flex-grow:1;">
+            <div class="mode-selector">
+                <button id="btn-T" class="mode-btn active" onclick="switchMode('T')">Timeline</button>
+                <button id="btn-N" class="mode-btn" onclick="switchMode('N')">Notes</button>
+                <button id="btn-C" class="mode-btn" onclick="switchMode('C')">Chat</button>
+            </div>
+
+            <div class="chip-row">
+                <div class="chip" onclick="applyTemplate('WITNESS: \nName: \nAccount: ')">Witness Template</div>
+                <div class="chip" onclick="applyTemplate('SETTING: \nLocation: \nObservations: ')">Setting Template</div>
+            </div>
+
+            <div class="stage-area">
+                <div id="pane-T" class="pane active"></div>
+                <div id="pane-N" class="pane"></div>
+                <div id="pane-C" class="pane"></div>
+            </div>
+
+            <div class="media-bar">
+                <button class="mac-icon" onclick="triggerSys('camera')"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm9 3.5V6a2 2 0 0 0-2-2h-3.2l-1.3-1.7a1 1 0 0 0-.8-.3H9.3a1 1 0 0 0-.8.3L7.2 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5z"/></svg></button>
+                <button class="mac-icon" onclick="alert('Mic Active')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg></button>
+                <button class="mac-icon" onclick="triggerSys('doc')"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6z"/></svg></button>
+                <button class="mac-icon" onclick="window.location.href='tel:1234567890'"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></button>
+            </div>
+
+            <div class="footer">
+                <textarea id="main-in" placeholder="Telling the truth takes no effort..." oninput="patternRec(this.value)"></textarea>
+                <button class="submit-btn" style="background:var(--wt-teal); margin-bottom:10px;" onclick="commit()">ADD TO TRACK</button>
+                <button id="clio-btn" class="submit-btn" onclick="summarizeForClio()">LOCK & SUMMARIZE FOR CLIO DUO</button>
+            </div>
         </div>
     </div>
-    <div class="right-header">
-        <div class="status">ACTIVE 
-            <span id="ai-light" class="pulse-dot"></span>
-            <span id="tm-light" class="pulse-dot"></span>
-        </div>
-        <button class="btn-header" onclick="document.body.classList.toggle('blurred')">PROTECT VIEW</button>
-        <button class="btn-header" style="border-style: dashed;">DB CONFIG</button>
-    </div>
-</header>
 
-<div class="signin-box">
-    <label>Professional Sign-In:</label>
-    <select>
-        <option>-- Select Professional --</option>
-        <option>Attorney</option>
-        <option>Lead Investigator</option>
-    </select>
-</div>
+    <input type="file" id="sys-cam" accept="image/*" capture="environment" style="display:none;" onchange="mediaDone('Photo')">
+    <input type="file" id="sys-doc" style="display:none;" onchange="mediaDone('Doc')">
 
-<div class="scroller">
-    <div class="pill">+ Site Observation</div>
-    <div class="pill">+ Witness Note</div>
-    <div class="pill">+ Incident</div>
-</div>
-
-<div class="input-wrap">
-    <textarea id="mainInput" placeholder="Enter case details here..."></textarea>
-    <button onclick="submitEntry()" style="width:100%; background:var(--teal-brand); color:white; border:none; padding:20px; border-radius:25px; margin-top:15px; font-weight:900; font-size:15px; cursor:pointer;">ARCHITECT RECORD</button>
-</div>
-
-<div class="grid">
-    <div class="card"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4V4zm12 8a4 4 0 11-8 0 4 4 0 018 0z"/></svg><b>CAMERA</b></div>
-    <div class="card"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg><b>AUDIO</b></div>
-    <div class="card"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6z"/></svg><b>DOC</b></div>
-</div>
-
-<div id="tl" class="timeline"></div>
-
-<script>
-    let aiCount = 0;
-    let sealed = false;
-
-    function submitEntry() {
-        const box = document.getElementById('mainInput');
-        const val = box.value.trim();
-        if(!val) return;
-
-        const low = val.toLowerCase();
+    <script>
+        const script = [
+            {s: "Jack Newton (Clio): '77% of legal needs go unmet.'", t: "Bridging the Access Gap."},
+            {s: "ROI: Lawyers save $4,200 per case.", t: "Quality intake drives success."},
+            {s: "They say you're invisible. You're not.", t: "We hear you. We see you."},
+            {s: "Prison?", t: "It's just that gray area. No walls."},
+            {s: "WorkTimeline™ helps you take that first step...", t: "Towards the center where you belong."}
+        ];
         
-        // Lock trigger for demo
-        if(low === 'lock and sync') {
-            sealed = true;
-            document.getElementById('tm-light').classList.add('p-tm');
-            alert("Vault Sealed to Clio.");
-            box.value = ""; return;
+        let pIdx = 0, currentMode = 'T';
+
+        function runIntro() {
+            const stage = document.getElementById('stage');
+            if (pIdx < script.length) {
+                stage.innerHTML = '';
+                const el = document.createElement('div'); el.className = 'phrase';
+                el.innerHTML = `<span class="stat-tag">${script[pIdx].s}</span><span class="main-quote">${script[pIdx].t}</span>`;
+                stage.appendChild(el);
+                setTimeout(() => el.classList.add('active'), 100);
+                setTimeout(() => {
+                    el.classList.remove('active');
+                    setTimeout(() => { pIdx++; runIntro(); }, 1200);
+                }, 6000);
+            } else { document.getElementById('gate-btn').style.display = 'block'; }
         }
 
-        const div = document.createElement('div');
-        div.className = 'entry active-node';
-        
-        // AI Logic
-        if(low.includes('hazard') || low.includes('mock')) {
-            aiCount++;
-            div.classList.add('hazard-highlight');
-            if(aiCount >= 3) {
-                document.getElementById('ai-light').classList.add('p-ai');
-            }
+        function summarizeForClio() {
+            const tCount = document.getElementById('list-T').children.length;
+            const nCount = document.getElementById('list-N').children.length;
+            alert(`Clio Duo Summary:\n\n- Events Logged: ${tCount}\n- Notes Processed: ${nCount}\n- GPS & Tamper-Proof Stamping: Verified\n- Handshake Status: 100%`);
+            document.getElementById('clio-btn').innerText = "CONNECTED TO CLIO";
         }
 
-        // Tamper Logic
-        if(sealed) div.classList.add('tamper-highlight');
+        function switchMode(m) {
+            currentMode = m;
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+            document.getElementById('btn-' + m).classList.add('active');
+            document.getElementById('pane-' + m).classList.add('active');
+        }
 
-        const now = new Date();
-        const stamp = now.toLocaleDateString() + " " + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-        div.innerHTML = `<div style="font-size:10px; font-weight:900; color:var(--teal-brand); margin-bottom:10px;">${stamp} • VERIFIED</div>${val}`;
-        
-        const tl = document.getElementById('tl');
-        tl.insertBefore(div, tl.firstChild);
-        box.value = "";
-    }
-</script>
+        function commit() {
+            const val = document.getElementById('main-in').value; if(!val) return;
+            const now = new Date();
+            const stamp = `${now.toLocaleDateString()} @ ${now.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit', second:'2-digit'})}`;
+            const card = document.createElement('div'); card.className = 'card';
+            card.innerHTML = `<span class="timestamp">${currentMode === 'T' ? 'TIMELINE' : 'NOTE'} • ${stamp}</span>${val}`;
+            document.getElementById('pane-' + currentMode).prepend(card);
+            document.getElementById('main-in').value = "";
+            document.getElementById('ai-status').className = 'ai-pulse';
+        }
 
+        function applyTemplate(t) { document.getElementById('main-in').value = t; }
+        function triggerSys(a) { if(a === 'camera') document.getElementById('sys-cam').click(); else document.getElementById('sys-doc').click(); }
+        function mediaDone(t) { switchMode('T'); document.getElementById('main-in').value = `[${t} Attached]`; commit(); }
+        function patternRec(v) {
+            const ai = document.getElementById('ai-status');
+            if(v.toLowerCase().includes('hazard') || v.toLowerCase().includes('threat')) ai.className = 'ai-pulse pulse-alert';
+            else ai.className = 'ai-pulse';
+        }
+        function enterApp() { document.getElementById('act-intro').style.display = 'none'; document.getElementById('main-app').style.display = 'flex'; }
+        function togglePrivacy() { document.getElementById('app-shell').classList.toggle('blur-active'); document.getElementById('privacy-sw').classList.toggle('sw-on'); }
+    </script>
 </body>
 </html>
