@@ -447,8 +447,10 @@
             lockBtn.style.background = "var(--clio-blue)";
 
             lockBtn.onclick = function() {
-                const clientId = 'btscu9WmPHYelIZtZA9sIQfynBAQudwjaR7pEDdq'; 
+                
                 const redirectUri = 'https://worktimeline-app.vercel.app'; 
+                const clientId = 'btscu9WmPHYellZtZA9sIQfynBAQudwjaR7pEDdq';
+
                 const authUrl = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
 
                 window.location.href = authUrl;
