@@ -248,7 +248,7 @@
 </div>
 
 <script>
-    const introTexts = [
+        const introTexts = [
         "Feel invisible?",
         "Trapped in a cycle of 'what ifs'?",
         "You are not alone. 60% of people with legal issues never seek help because they fear the cost or the complexity.",
@@ -290,14 +290,12 @@
         const div = document.createElement('div');
         div.className = 'entry';
         const now = new Date();
-        const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
         const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-        div.innerHTML = `<span class="timestamp-box">${dateStr} at ${timeStr}</span><p style="margin:5px 0 0 0; color: #2c3e50; font-weight: 600;">${txt}</p><span class="geo-tag">🌍 GPS SECURED</span>`;
-        if (sys) { div.style.backgroundColor = "var(--platinum-bg)"; }
+        div.innerHTML = `<span class="timestamp-box">${timeStr}</span><p style="margin:5px 0 0 0; color: #2c3e50; font-weight: 600;">${txt}</p>`;
         document.getElementById('timeline').prepend(div);
     }
 
-    async function submitEntry() {
+    function submitEntry() {
         const text = document.getElementById('statusBox').value.trim();
         if (!text) return;
         addEntry(text, false);
@@ -330,6 +328,6 @@
 </script>
 </body>
 </html>
-    
+
     
     
