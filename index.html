@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™ | Prototype 2.0</title>
+    <title>WorkTimeline™ | Master Prototype 2.0</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
         
         :root { 
-            --teal: #008080; --teal-soft: #e0f2f1; --clio-blue: #0076CE;
+            --teal: #008080; --teal-soft: #e0f2f1; --clio-blue: #0076CE; --clio-green: #00a859;
             --platinum-bg: #d8e2ea; --platinum-mid: #eef1f5; --platinum-dark: #7a8b9e;
             --gray-dark: #2c3e50; 
         }
@@ -23,18 +23,31 @@
             overflow: hidden; 
         }
 
-        /* --- THE CINEMATIC LAYER (FIXED) --- */
+        /* --- THE CINEMATIC LAYER --- */
         .splash-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--platinum-bg); z-index: 99999 !important;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 1s ease-out; padding: 30px; box-sizing: border-box; text-align: center;
+            transition: opacity 1s ease-out; padding: 40px; box-sizing: border-box; text-align: center;
         }
+
+        .logo-box { opacity: 0; transition: opacity 1.5s ease-in; margin-bottom: 20px; }
+        .philosophy-quote { font-style: italic; font-size: 16px; color: var(--platinum-dark); margin-top: 15px; opacity: 0; transition: opacity 1s ease-in; }
+        .wt-answer { font-weight: 900; font-size: 18px; color: var(--teal); margin-top: 10px; opacity: 0; transition: opacity 1s ease-in; }
+
+        .clio-check-pop {
+            width: 70px; height: 70px; background: var(--clio-green); color: white; 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 40px; opacity: 0; transform: scale(0);
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-top: 30px; box-shadow: 0 10px 25px rgba(0, 168, 89, 0.4);
+        }
+        .clio-check-pop.pop { opacity: 1; transform: scale(1); }
 
         /* --- UI COMPONENTS --- */
         .header-container { display: flex; align-items: center; padding: 30px 20px; border-bottom: 3px solid var(--platinum-bg); }
         .lawyer-box { background: var(--teal-soft); padding: 15px; border-radius: 20px; margin-bottom: 15px; }
-        .template-chip { background: #ffffff; border: 2px solid var(--teal-soft); color: var(--teal); padding: 8px 12px; border-radius: 50px; font-size: 11px; font-weight: 800; cursor: pointer; white-space: nowrap; }
+        .template-chip { background: #ffffff; border: 2px solid var(--teal-soft); color: var(--teal); padding: 8px 12px; border-radius: 50px; font-size: 11px; font-weight: 800; cursor: pointer; border: none; }
         
         #statusBox { width: 100%; height: 120px; border-radius: 20px; border: 2px solid var(--platinum-mid); background: var(--platinum-bg); padding: 15px; font-size: 16px; margin-bottom: 15px; resize: none; font-family: inherit; box-sizing: border-box; }
         
@@ -43,7 +56,7 @@
         .media-btn svg { width: 24px; height: 24px; fill: var(--teal); }
         .media-btn span { font-size: 9px; font-weight: 900; margin-top: 4px; color: var(--platinum-dark); }
 
-        .submit-main { width: 100%; background: var(--teal); color: white; border: none; padding: 18px; border-radius: 25px; font-weight: 900; font-size: 16px; cursor: pointer; box-shadow: 0 4px 12px rgba(0, 128, 128, 0.2); }
+        .submit-main { width: 100%; background: var(--teal); color: white; border: none; padding: 18px; border-radius: 25px; font-weight: 900; font-size: 16px; cursor: pointer; }
         .entry { background: #ffffff; border: 2px solid var(--platinum-mid); padding: 15px; border-radius: 20px; margin-bottom: 12px; position: relative; }
         .timestamp-box { color: var(--teal); font-size: 10px; font-weight: 900; background: var(--teal-soft); padding: 4px 10px; border-radius: 8px; margin-bottom: 8px; display: inline-block; }
         
@@ -59,8 +72,23 @@
 <div id="appRoot" class="app-container">
     <div id="splashScreen" class="splash-screen">
         <div id="story-container">
-            <h1 id="story-text" style="font-size: 22px; line-height: 1.4; color: var(--gray-dark);">Initialising...</h1>
+            <h1 id="story-text" style="font-size: 24px; line-height: 1.5; color: var(--gray-dark); transition: opacity 0.8s; font-weight: 800;">Initialising...</h1>
         </div>
+
+        <div id="branding-final" style="display: none; flex-direction: column; align-items: center;">
+            <div id="logo-wrap" class="logo-box">
+                <svg width="80" height="60" viewBox="0 0 100 80">
+                    <rect x="10" y="20" width="80" height="55" rx="8" fill="none" stroke="#008080" stroke-width="6"/>
+                    <path d="M35 20 V10 Q35 5 40 5 H60 Q65 5 65 10 V20" fill="none" stroke="#008080" stroke-width="6"/>
+                    <line x1="5" y1="48" x2="95" y2="48" stroke="#5dade2" stroke-width="6" stroke-linecap="round"/>
+                </svg>
+                <h2 style="color: var(--teal); margin: 5px 0 0 0; font-weight: 900;">WorkTimeline™</h2>
+            </div>
+            <p id="jack-quote" class="philosophy-quote">"Justice should be effortless." — Jack Newton</p>
+            <p id="wt-answer" class="wt-answer">It can be... if being honest takes no effort.</p>
+        </div>
+
+        <div id="clioCheck" class="clio-check-pop">✓</div>
     </div>
 
     <header class="header-container">
@@ -88,7 +116,7 @@
         </div>
 
         <div id="patternAlert" class="pattern-alert">
-            🔍 <strong>Clio Duo Pattern Detected:</strong> Risk keywords identifying. Generating Risk Assessment...
+            🔍 <strong>Clio Duo Pattern Detected:</strong> Risk identified. Generating Assessment...
         </div>
 
         <div style="display: flex; gap: 5px; margin-bottom: 10px;">
@@ -113,9 +141,9 @@
     <div id="warningModal" class="modal-overlay">
         <div class="modal-content">
             <h3 style="margin-top:0;">⚠️ Finalize Timeline?</h3>
-            <p style="font-size:13px; color:var(--platinum-dark);">Entries will be transmitted to Clio Grow Canada.</p>
-            <button onclick="syncToClio()" style="width:100%; background:var(--teal); color:white; padding:15px; border-radius:15px; border:none; font-weight:800; cursor:pointer;">CONFIRM & SYNC</button>
-            <button onclick="closeWarning()" style="margin-top:10px; background:none; border:none; color:var(--platinum-dark); cursor:pointer;">Cancel</button>
+            <p style="font-size:13px; color:var(--platinum-dark);">Transmitting to Clio Grow Canada...</p>
+            <button onclick="syncToClio()" style="width:100%; background:var(--teal); color:white; padding:15px; border-radius:15px; border:none; font-weight:800;">CONFIRM & SYNC</button>
+            <button onclick="closeWarning()" style="margin-top:10px; background:none; border:none; color:var(--platinum-dark);">Cancel</button>
         </div>
     </div>
 </div>
@@ -125,31 +153,60 @@
     let hazardCount = 0;
 
     const introTexts = [
-        "Feel invisible?", "Trapped in a cycle of 'what ifs'?",
-        "You are not alone. 60% of people never seek help because they fear complexity.",
-        "The 'Justice Gap' is real: Millions choose silence over a system that feels built for someone else.",
-        "Lawyers lose billions every year in wasted intake hours—time spent on cases that aren't the right fit.",
-        "Intake fees aren't a barrier; they value the time experts give to your story.",
-        "WorkTimeLine guides you...", "Enjoy the first step.", "Welcome to the sky."
+        "Feel invisble?", "Your not", "We hear you", "We see you", "You feel stuck", "Cant get out", "Feels like prison...",
+        "But its not", "You may feel trapped in a grey area", "Its ok",
+        "WorkTimeline is here to guide your first few steps towards freedom",
+        "So you can be at the centre",
+        "And find the firm that will make you never look back.",
+        "77% of legal needs never reach a lawyer. Jack Newton calls this the 'Invisible Group.'",
+        "Lawyers lose billions to unorganized files and turn down clients because of the time intake takes.",
+        "WorkTimeline is a tool for equality and fair justice.",
+        "It allows YOU to be part of the process.",
+        "It gives lawyers a tool to prepare potential clients and never turn them down.",
+        "We are here to tear down the grey wall.",
+        "So you can see the teal sky again.",
+        "Bringing clients and lawyers closer together."
     ];
 
     function showIntro() {
         const introDiv = document.getElementById('splashScreen');
         const textEl = document.getElementById('story-text');
+        const branding = document.getElementById('branding-final');
+        const logo = document.getElementById('logo-wrap');
+        const jack = document.getElementById('jack-quote');
+        const wt = document.getElementById('wt-answer');
+        const checkEl = document.getElementById('clioCheck');
+        
         let current = 0;
+
         function next() {
             if (current < introTexts.length) {
                 textEl.style.opacity = 0;
                 setTimeout(() => {
                     textEl.innerHTML = introTexts[current];
                     textEl.style.opacity = 1;
-                    let displayTime = (current >= 2 && current <= 5) ? 15000 : 4000;
+                    let displayTime = 2200; 
+                    if (current >= 13 && current <= 16) displayTime = 7000; 
+                    if (current >= 17) displayTime = 3500; 
                     current++;
                     setTimeout(next, displayTime);
                 }, 800);
             } else {
-                introDiv.style.opacity = 0;
-                setTimeout(() => introDiv.style.display = 'none', 1000);
+                textEl.style.opacity = 0;
+                setTimeout(() => {
+                    textEl.style.display = 'none';
+                    branding.style.display = 'flex';
+                    setTimeout(() => { logo.style.opacity = 1; }, 500);
+                    setTimeout(() => { jack.style.opacity = 1; }, 2000);
+                    setTimeout(() => { wt.style.opacity = 1; }, 4500);
+                    setTimeout(() => {
+                        checkEl.classList.add('pop');
+                        setTimeout(() => {
+                            introDiv.style.opacity = 0;
+                            setTimeout(() => introDiv.style.display = 'none', 1000);
+                        }, 2500);
+                    }, 7500);
+                }, 1000);
             }
         }
         next();
@@ -157,13 +214,12 @@
 
     function initSupabase() {
         const u = localStorage.getItem('sb_url'), k = localStorage.getItem('sb_key');
-        if (u && k) sb = supabase.createClient(u, k);
+        if (u && k && typeof supabase !== 'undefined') sb = supabase.createClient(u, k);
     }
 
     function saveDbKeys() {
         localStorage.setItem('sb_url', document.getElementById('dbUrl').value);
         localStorage.setItem('sb_key', document.getElementById('dbKey').value);
-        alert('DB Linked. Reloading...');
         location.reload();
     }
 
