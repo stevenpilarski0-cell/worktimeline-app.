@@ -9,7 +9,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
         
         :root { 
-            --teal: #008080; --teal-soft: #e0f2f1; --clio-blue: #0076CE; --clio-green: #00a859;
+            --teal: #008080; --teal-soft: #e0f2f1; --clio-green: #00a859;
             --platinum-bg: #d8e2ea; --platinum-mid: #eef1f5; --platinum-dark: #7a8b9e;
             --gray-dark: #2c3e50; 
         }
@@ -57,12 +57,8 @@
         .media-btn span { font-size: 9px; font-weight: 900; margin-top: 4px; color: var(--platinum-dark); }
 
         .submit-main { width: 100%; background: var(--teal); color: white; border: none; padding: 18px; border-radius: 25px; font-weight: 900; font-size: 16px; cursor: pointer; }
-        .entry { background: #ffffff; border: 2px solid var(--platinum-mid); padding: 15px; border-radius: 20px; margin-bottom: 12px; position: relative; }
-        .timestamp-box { color: var(--teal); font-size: 10px; font-weight: 900; background: var(--teal-soft); padding: 4px 10px; border-radius: 8px; margin-bottom: 8px; display: inline-block; }
-        
-        .pattern-alert { background: #fff3e0; border: 2px solid #ff9800; border-radius: 15px; padding: 15px; margin-bottom: 15px; color: #e65100; font-size: 12px; font-weight: 800; display: none; }
+        .entry { background: #ffffff; border: 2px solid var(--platinum-mid); padding: 15px; border-radius: 20px; margin-bottom: 12px; }
         .lock-footer { background: var(--gray-dark); color: white; border: none; border-radius: 25px; padding: 20px; width: 100%; font-weight: 900; margin-top: auto; cursor: pointer; }
-
         .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; backdrop-filter: blur(15px); background: rgba(255,255,255,0.7); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
         .modal-content { background: white; border-radius: 25px; padding: 25px; text-align: center; border: 2px solid var(--platinum-mid); width: 80%; }
     </style>
@@ -87,7 +83,6 @@
             <p id="jack-quote" class="philosophy-quote">"Justice should be effortless." — Jack Newton</p>
             <p id="wt-answer" class="wt-answer">It can be... if being honest takes no effort.</p>
         </div>
-
         <div id="clioCheck" class="clio-check-pop">✓</div>
     </div>
 
@@ -100,23 +95,12 @@
     </header>
 
     <div style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto;">
-        
-        <div id="dbConfig" style="display:none; background:#f4f4f4; padding:10px; border-radius:10px; margin-bottom:10px; font-size:11px;">
-            <input type="text" id="dbUrl" placeholder="Supabase URL" style="width:100%; margin-bottom:5px;">
-            <input type="text" id="dbKey" placeholder="Anon Key" style="width:100%;">
-            <button onclick="saveDbKeys()" style="margin-top:5px; width:100%;">Link Supabase</button>
-        </div>
-
         <div class="lawyer-box">
             <select id="lawyerSelect" onchange="saveLawyer()" style="width: 100%; border:none; background:none; font-weight:800; font-family: inherit;">
                 <option value="none">-- Select Professional --</option>
                 <option value="Marcus Thorne, Esq.">Marcus Thorne, Esq.</option>
                 <option value="Sarah Jenkins, JD">Sarah Jenkins, JD</option>
             </select>
-        </div>
-
-        <div id="patternAlert" class="pattern-alert">
-            🔍 <strong>Clio Duo Pattern Detected:</strong> Risk identified. Generating Assessment...
         </div>
 
         <div style="display: flex; gap: 5px; margin-bottom: 10px;">
@@ -141,7 +125,6 @@
     <div id="warningModal" class="modal-overlay">
         <div class="modal-content">
             <h3 style="margin-top:0;">⚠️ Finalize Timeline?</h3>
-            <p style="font-size:13px; color:var(--platinum-dark);">Transmitting to Clio Grow Canada...</p>
             <button onclick="syncToClio()" style="width:100%; background:var(--teal); color:white; padding:15px; border-radius:15px; border:none; font-weight:800;">CONFIRM & SYNC</button>
             <button onclick="closeWarning()" style="margin-top:10px; background:none; border:none; color:var(--platinum-dark);">Cancel</button>
         </div>
@@ -150,21 +133,18 @@
 
 <script>
     let sb = null;
-    let hazardCount = 0;
-
     const introTexts = [
         "Feel invisble?", "Your not", "We hear you", "We see you", "You feel stuck", "Cant get out", "Feels like prison...",
         "But its not", "You may feel trapped in a grey area", "Its ok",
         "WorkTimeline is here to guide your first few steps towards freedom",
         "So you can be at the centre",
         "And find the firm that will make you never look back.",
-        "77% of legal needs never reach a lawyer. Jack Newton calls this the 'Invisible Group.'",
-        "Lawyers lose billions to unorganized files and turn down clients because of the time intake takes.",
+        "77% of legal needs never reach a lawyer. This is the 'Invisible Group.'",
+        "Lawyers lose billions to unorganized files and turn down clients due to intake time.",
         "WorkTimeline is a tool for equality and fair justice.",
         "It allows YOU to be part of the process.",
-        "It gives lawyers a tool to prepare potential clients and never turn them down.",
-        "We are here to tear down the grey wall.",
-        "So you can see the teal sky again.",
+        "It gives lawyers a tool to prepare clients and never turn them down.",
+        "We are here to tear down the grey wall.", "So you can see the teal sky again.",
         "Bringing clients and lawyers closer together."
     ];
 
@@ -178,7 +158,6 @@
         const checkEl = document.getElementById('clioCheck');
         
         let current = 0;
-
         function next() {
             if (current < introTexts.length) {
                 textEl.style.opacity = 0;
@@ -217,26 +196,14 @@
         if (u && k && typeof supabase !== 'undefined') sb = supabase.createClient(u, k);
     }
 
-    function saveDbKeys() {
-        localStorage.setItem('sb_url', document.getElementById('dbUrl').value);
-        localStorage.setItem('sb_key', document.getElementById('dbKey').value);
-        location.reload();
-    }
-
     function addTemplate(t) { document.getElementById('statusBox').value += t; document.getElementById('statusBox').focus(); }
-
     async function submitEntry() {
         const txt = document.getElementById('statusBox').value.trim();
         if(!txt) return;
-        if(txt.toLowerCase().includes('hazard')) {
-            hazardCount++;
-            if(hazardCount >= 2) document.getElementById('patternAlert').style.display = 'block';
-        }
         if(sb) await sb.from('timeline_entries').insert([{ entry_text: txt, lawyer_name: localStorage.getItem('lawyer') }]);
         addEntryToUI(txt);
         document.getElementById('statusBox').value = '';
     }
-
     function addEntryToUI(txt, sys=false) {
         const div = document.createElement('div');
         div.className = 'entry';
@@ -245,7 +212,6 @@
         if(sys) div.style.background = 'var(--platinum-bg)';
         document.getElementById('timeline').prepend(div);
     }
-
     function logMedia(type) { addEntryToUI(`🔒 ${type} encrypted and attached.`, true); }
     function saveLawyer() { localStorage.setItem('lawyer', document.getElementById('lawyerSelect').value); }
     function toggleDbPanel() { const p = document.getElementById('dbConfig'); p.style.display = p.style.display === 'none' ? 'block' : 'none'; }
@@ -253,11 +219,7 @@
     function closeWarning() { document.getElementById('warningModal').style.display = 'none'; }
     function syncToClio() { window.location.href = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=btscu9WmPHYellZtZA9slQfynBAQudwjaR7pEDdq&redirect_uri=${encodeURIComponent(window.location.href)}`; }
 
-    window.onload = () => {
-        showIntro();
-        initSupabase();
-        if(localStorage.getItem('sb_url')) document.getElementById('dbUrl').value = localStorage.getItem('sb_url');
-    };
+    window.onload = () => { showIntro(); initSupabase(); };
 </script>
 </body>
 </html>
