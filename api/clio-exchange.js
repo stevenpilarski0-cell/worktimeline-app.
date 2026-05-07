@@ -1,11 +1,17 @@
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
+  
   const { code } = req.body;
   const params = new URLSearchParams();
   params.append('grant_type', 'authorization_code');
   params.append('code', code);
+  
+  // Character 10-11: Double lowercase L (ll)
   params.append('client_id', 'btscu9WmPHYellZtZA9slQfynBAQudwjaR7pEDdq');
+  
+  // Character 3: ZERO (0)
   params.append('client_secret', 'kL0cWsjKkZTzWkdCVrcs7IktGIZeUj6pAvE2GJka');
+  
   params.append('redirect_uri', 'https://worktimeline-app.vercel.app');
 
   try {
