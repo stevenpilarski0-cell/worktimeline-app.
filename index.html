@@ -9,108 +9,92 @@
         
         :root { 
             --teal: #008080; --clio-blue: #0076CE; --platinum: #e2e8f0; --gray-dark: #1e293b; --gray-light: #f8fafc;
-            --glass: rgba(0, 128, 128, 0.05); 
-            --round-main: 48px; 
-            --round-inner: 28px; 
-            --round-pill: 999px;
+            --round-main: 48px; --round-inner: 24px; --round-pill: 999px;
         }
         
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
-        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #eef1f5; margin: 0; padding: 10px; height: 100dvh; overflow: hidden; color: var(--gray-dark); overscroll-behavior-y: none; }
+        body { font-family: 'Inter', sans-serif; background: #eef1f5; margin: 0; padding: 10px; height: 100dvh; overflow: hidden; color: var(--gray-dark); overscroll-behavior-y: none; }
         
-        /* 45-SECOND DEEP DIVE INTRO */
+        /* INTRO */
         #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; transition: opacity 0.8s ease; }
-        .story-text { font-size: 20px; font-weight: 700; color: var(--gray-dark); line-height: 1.5; opacity: 0; transition: opacity 0.8s; max-width: 460px; letter-spacing: -0.3px; }
-        
-        /* THE HIGHLY VISIBLE SKIP BUTTON */
-        #skipBtn { 
-            position: absolute; 
-            bottom: calc(50px + env(safe-area-inset-bottom)); 
-            padding: 14px 28px; 
-            background: white; 
-            color: var(--clio-blue); 
-            border: 2px solid var(--clio-blue); 
-            border-radius: var(--round-pill); 
-            font-family: 'Inter', sans-serif; 
-            font-size: 14px; 
-            font-weight: 800; 
-            cursor: pointer; 
-            box-shadow: 0 8px 20px rgba(0, 118, 206, 0.15); 
-            transition: transform 0.2s, background 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            z-index: 100001;
-        }
-        #skipBtn:active { transform: scale(0.95); background: var(--gray-light); }
-        #skipBtn svg { width: 16px; height: 16px; fill: var(--clio-blue); }
+        .story-text { font-size: 20px; font-weight: 700; color: var(--gray-dark); line-height: 1.5; opacity: 0; transition: opacity 0.8s; max-width: 460px; }
+        #skipBtn { position: absolute; bottom: calc(50px + env(safe-area-inset-bottom)); padding: 14px 28px; background: white; color: var(--clio-blue); border: 2px solid var(--clio-blue); border-radius: var(--round-pill); font-size: 14px; font-weight: 800; cursor: pointer; z-index: 100001; }
 
         .app-container { max-width: 500px; margin: auto; background: white; border-radius: var(--round-main); height: calc(100dvh - 20px); display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.08); }
         
-        #blurBox { position: absolute; top: 85px; left: 0; right: 0; bottom: 0; z-index: 98; background: rgba(255,255,255,0.05); backdrop-filter: blur(0px); pointer-events: none; transition: backdrop-filter 0.4s ease; }
-        
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 22px 28px; border-bottom: 1px solid var(--platinum); flex-shrink: 0; z-index: 100; background: white; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 22px 28px; border-bottom: 1px solid var(--platinum); flex-shrink: 0; background: white; z-index: 101; }
 
-        .input-area { padding: 20px 24px; background: var(--gray-light); border-bottom: 1px solid var(--platinum); flex-shrink: 0; display: flex; flex-direction: column; transition: opacity 0.5s ease; }
-        
-        .template-chips { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 14px; scrollbar-width: none; margin-bottom: 6px; overscroll-behavior-x: contain; }
-        .template-chips::-webkit-scrollbar { display: none; }
-        .chip { background: white; color: var(--teal); font-size: 12px; font-weight: 700; padding: 12px 20px; border-radius: var(--round-pill); white-space: nowrap; cursor: pointer; transition: all 0.2s; border: 1.5px solid var(--platinum); box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-        .chip:active { background: var(--teal); color: white; border-color: var(--teal); transform: scale(0.96); }
-
-        #statusBox { width: 100%; height: 95px; padding: 18px; border-radius: var(--round-inner); border: 1.5px solid var(--platinum); font-family: inherit; margin-bottom: 16px; font-size: 15px; outline: none; background: white; resize: none; box-shadow: inset 0 2px 6px rgba(0,0,0,0.02); transition: border-color 0.2s; line-height: 1.4; }
-        #statusBox:focus { border-color: var(--teal); }
-        
-        .media-toolbar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
-        .media-btn { background: white; border: 1.5px solid var(--platinum); padding: 16px 4px; border-radius: var(--round-inner); display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; transition: all 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-        .media-btn:active { background: var(--platinum); transform: translateY(2px); }
-        .media-btn svg { width: 24px; height: 24px; stroke: var(--teal); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 8px; }
-        .media-btn span { font-size: 10px; font-weight: 700; color: var(--gray-dark); text-transform: uppercase; letter-spacing: 0.5px; }
-        .hidden-input { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; top: 0; left: 0; }
-
-        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px; position: relative; background: #fff; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
-        .timeline-spine { position: absolute; left: 35px; top: 0; bottom: 0; width: 4px; background: var(--platinum); border-radius: 4px; z-index: 1; }
-        
-        #legacyQuote { position: relative; margin-left: 50px; background: var(--glass); border: 1.5px solid var(--platinum); border-left: 5px solid var(--clio-blue); padding: 25px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; transition: opacity 0.5s; box-shadow: 0 6px 16px rgba(0,0,0,0.04); }
-
-        .entry { position: relative; margin-left: 50px; background: white; border: 1.5px solid var(--platinum); padding: 22px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; border-left: 5px solid var(--teal); box-shadow: 0 6px 16px rgba(0,0,0,0.04); }
-        
-        .summary-card { border-left: 5px solid var(--gray-dark) !important; background: var(--gray-light) !important; }
-
-        .timestamp-full { font-size: 10px; font-weight: 800; color: var(--teal); display: block; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.4; }
-        
-        #addBtn { background: var(--teal); color:white; border:none; padding:18px; border-radius: var(--round-pill); width:100%; font-weight:700; font-size: 16px; cursor:pointer; transition: background 0.3s, opacity 0.2s, transform 0.1s; box-shadow: 0 8px 20px rgba(0, 128, 128, 0.25); }
-        #addBtn:active { opacity: 0.8; transform: scale(0.97); }
-        
-        .footer-bar { padding: 20px 24px calc(20px + env(safe-area-inset-bottom)); background: white; border-top: 1px solid var(--platinum); flex-shrink: 0; z-index: 100; box-shadow: 0 -10px 30px rgba(0,0,0,0.04); }
-        
-        #syncBtn { 
-            background: white; 
-            color: var(--clio-blue); 
-            border: 2.5px solid var(--clio-blue); 
-            padding: 18px; 
-            border-radius: var(--round-inner); 
-            width: 100%; 
-            font-weight: 800; 
-            font-size: 15px; 
-            cursor: pointer; 
-            box-shadow: 0 8px 20px rgba(0, 118, 206, 0.15); 
-            transition: all 0.3s; 
+        /* THE EXPANDABLE INPUT AREA */
+        .input-area { 
+            padding: 0 24px 20px 24px; 
+            background: var(--gray-light); 
+            border-bottom: 1px solid var(--platinum); 
+            flex-shrink: 0; 
             display: flex; 
             flex-direction: column; 
-            justify-content: center; 
-            align-items: center; 
-            gap: 10px; 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 500px;
+            overflow: hidden;
         }
-        #syncBtn:active { transform: scale(0.96); background: var(--gray-light); }
         
-        #syncBtn svg { width: 30px; height: 30px; stroke: var(--clio-blue); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; transition: stroke 0.3s; }
-        #syncBtnText { letter-spacing: -0.2px; text-transform: uppercase; }
+        /* COLLAPSED STATE STYLES */
+        .app-container.collapsed .input-area { max-height: 65px; padding-bottom: 0; }
+        .app-container.collapsed #statusBox, 
+        .app-container.collapsed #addBtn,
+        .app-container.collapsed .template-chips { display: none; }
+        
+        /* TOOLBAR ICON ROW (Only visible when collapsed) */
+        .mini-toolbar { 
+            display: none; 
+            justify-content: space-around; 
+            padding: 10px 0; 
+            width: 100%;
+        }
+        .app-container.collapsed .mini-toolbar { display: flex; }
+
+        /* THE TOGGLE ARROW */
+        .collapse-trigger { 
+            width: 100%; 
+            display: flex; 
+            justify-content: center; 
+            padding: 8px 0; 
+            cursor: pointer;
+        }
+        .collapse-trigger svg { 
+            width: 24px; height: 24px; stroke: #94a3b8; transition: transform 0.3s; 
+        }
+        .app-container.collapsed .collapse-trigger svg { transform: rotate(180deg); }
+
+        .template-chips { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 14px; scrollbar-width: none; }
+        .chip { background: white; color: var(--teal); font-size: 12px; font-weight: 700; padding: 10px 18px; border-radius: var(--round-pill); white-space: nowrap; border: 1.5px solid var(--platinum); }
+
+        #statusBox { width: 100%; height: 90px; padding: 16px; border-radius: var(--round-inner); border: 1.5px solid var(--platinum); font-family: inherit; font-size: 15px; outline: none; background: white; resize: none; margin-bottom: 12px; }
+        
+        .media-toolbar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 12px; }
+        .media-btn { background: white; border: 1.5px solid var(--platinum); padding: 12px 4px; border-radius: var(--round-inner); display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+        .media-btn svg { width: 22px; height: 22px; stroke: var(--teal); fill: none; stroke-width: 2.2; margin-bottom: 6px; }
+        .media-btn span { font-size: 9px; font-weight: 700; text-transform: uppercase; }
+
+        /* MINI VERSION OF BUTTONS */
+        .mini-btn { background: white; border: 1px solid var(--platinum); padding: 8px; border-radius: 12px; }
+        .mini-btn svg { width: 20px; height: 20px; stroke: var(--teal); fill: none; stroke-width: 2.2; }
+
+        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px; position: relative; background: #fff; scroll-behavior: smooth; }
+        .timeline-spine { position: absolute; left: 35px; top: 0; bottom: 0; width: 4px; background: var(--platinum); border-radius: 4px; }
+        
+        .entry { position: relative; margin-left: 50px; background: white; border: 1.5px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; border-left: 5px solid var(--teal); box-shadow: 0 6px 16px rgba(0,0,0,0.04); }
+        .timestamp-full { font-size: 10px; font-weight: 800; color: var(--teal); display: block; margin-bottom: 8px; text-transform: uppercase; }
+        
+        #addBtn { background: var(--teal); color:white; border:none; padding:16px; border-radius: var(--round-pill); width:100%; font-weight:700; font-size: 15px; cursor:pointer; }
+        
+        .footer-bar { padding: 20px 24px calc(20px + env(safe-area-inset-bottom)); background: white; border-top: 1px solid var(--platinum); flex-shrink: 0; }
+        #syncBtn { background: white; color: var(--clio-blue); border: 2.5px solid var(--clio-blue); padding: 18px; border-radius: var(--round-inner); width: 100%; font-weight: 800; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; }
+        #syncBtn svg { width: 28px; height: 28px; stroke: var(--clio-blue); fill: none; stroke-width: 2.5; }
 
         .switch { position: relative; display: inline-block; width: 42px; height: 24px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .4s; border-radius: var(--round-pill); }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--clio-blue); }
         input:checked + .slider:before { transform: translateX(18px); }
     </style>
@@ -119,51 +103,45 @@
 
 <div id="splashScreen">
     <h1 id="storyText" class="story-text"></h1>
-    <button id="skipBtn" onclick="skipIntro()">
-        Skip Intro 
-        <svg viewBox="0 0 24 24"><path d="M4 4l10 8-10 8zm10 0l10 8-10 8z" style="stroke:none;"/></svg>
-    </button>
+    <button id="skipBtn" onclick="skipIntro()">Skip Intro ➔</button>
 </div>
 
 <div class="app-container" id="mainApp">
-    <div id="blurBox"></div>
     <header class="header">
-        <div><h1 id="folderLabel" style="color: var(--teal); margin:0; font-size: 20px; font-weight: 800; letter-spacing: -0.5px;">WorkTimeline™</h1><div style="font-size: 12px; font-weight: 600; color: var(--clio-blue); margin-top:2px;">Intake Engine...</div></div>
+        <div><h1 id="folderLabel" style="color: var(--teal); margin:0; font-size: 19px; font-weight: 800;">WorkTimeline™</h1><div style="font-size: 11px; font-weight: 600; color: var(--clio-blue);">Intake Engine...</div></div>
         <div style="display:flex; gap:16px; align-items: center;">
-            <div style="text-align: center;"><label class="switch"><input type="checkbox" onchange="toggleVault(this)"><span class="slider"></span></label><div style="font-size: 10px; font-weight: 700; margin-top: 6px;">CHRON</div></div>
-            <div style="text-align: center;"><label class="switch"><input type="checkbox" id="gSwitch" onchange="toggleGhost()"><span class="slider"></span></label><div style="font-size: 10px; font-weight: 700; margin-top: 6px;">GHOST</div></div>
+            <div style="text-align: center;"><label class="switch"><input type="checkbox" onchange="toggleVault(this)"><span class="slider"></span></label><div style="font-size: 9px; font-weight: 700;">CHRON</div></div>
+            <div style="text-align: center;"><label class="switch"><input type="checkbox" id="gSwitch" onchange="toggleGhost()"><span class="slider"></span></label><div style="font-size: 9px; font-weight: 700;">GHOST</div></div>
         </div>
     </header>
 
     <div style="display: flex; flex-direction: column; height: 100%; overflow: hidden;">
-        
         <div class="input-area" id="inputContainer">
-            <div class="template-chips">
-                <span class="chip" onclick="useTemplate('WITNESS LOCATION:\n- Name:\n- Notes:\n(GPS Auto-Captured on Submit)')">Location</span>
-                <span class="chip" onclick="useTemplate('WITNESS STATEMENT:\n- Narrative:\n- Reliability:\n- Recorded?')">Statement</span>
-                <span class="chip" onclick="useTemplate('INCIDENT SETTING:\n- Weather:\n- Lighting:\n- Road/Site Conditions:')">Setting</span>
-                <span class="chip" onclick="useTemplate('EVIDENCE LOG:\n- Item Type:\n- Source/Chain:\n- Storage Location:')">Evidence</span>
+            <div class="collapse-trigger" onclick="toggleCollapse()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
             </div>
 
-            <textarea id="statusBox" placeholder="Tap a template above, or tell your truth here..."></textarea>
+            <div class="template-chips">
+                <span class="chip" onclick="useTemplate('LOCATION:\n(GPS Auto-Captured)')">Location</span>
+                <span class="chip" onclick="useTemplate('STATEMENT:\n- Narrative:')">Statement</span>
+                <span class="chip" onclick="useTemplate('SETTING:\n- Environment:')">Setting</span>
+                <span class="chip" onclick="useTemplate('EVIDENCE:\n- Source:')">Evidence</span>
+            </div>
+
+            <textarea id="statusBox" placeholder="Tell your truth..."></textarea>
             
-            <div class="media-toolbar">
-                <button class="media-btn"><input type="file" accept="image/*" capture="camera" class="hidden-input" onchange="addEntry('Photo evidence secured.')">
-                    <svg viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
-                    <span>Camera</span>
-                </button>
-                <button class="media-btn"><input type="file" accept="audio/*" capture="microphone" class="hidden-input" onchange="addEntry('Audio recording captured.')">
-                    <svg viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
-                    <span>Audio</span>
-                </button>
-                <button class="media-btn" onclick="window.location.href='sms:?body=WorkTimeline Update:'">
-                    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                    <span>Text</span>
-                </button>
-                <button class="media-btn"><input type="file" class="hidden-input" onchange="addEntry('Document verified.')">
-                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                    <span>Docs</span>
-                </button>
+            <div class="media-toolbar" id="fullToolbar">
+                <button class="media-btn" onclick="addEntry('Photo evidence added.')"><svg viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg><span>Camera</span></button>
+                <button class="media-btn" onclick="addEntry('Audio recording captured.')"><svg viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg><span>Audio</span></button>
+                <button class="media-btn" onclick="addEntry('Text log verified.')"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>Text</span></button>
+                <button class="media-btn" onclick="addEntry('Document attached.')"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>Docs</span></button>
+            </div>
+
+            <div class="mini-toolbar">
+                <div class="mini-btn"><svg viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg></div>
+                <div class="mini-btn"><svg viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg></div>
+                <div class="mini-btn"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+                <div style="color: var(--teal); font-weight: 800; font-size: 12px; align-self: center;">TIMELINE VIEW</div>
             </div>
             
             <button id="addBtn" onclick="submitEntry()">Submit to Timeline</button>
@@ -171,14 +149,7 @@
 
         <div id="timelineContainer">
             <div class="timeline-spine"></div>
-            <div id="displayList">
-                <div id="legacyQuote">
-                    <h2 style="font-size: 17px; margin-bottom: 12px; color: var(--clio-blue); font-weight: 800;">Hi Clio Team,</h2>
-                    <p style="font-size: 14px; line-height: 1.6; font-weight: 600; margin-bottom: 16px; color: var(--gray-dark);">It's been an honor. I truly enjoy doing this, and thank you for the opportunity.</p>
-                    <p style="font-size: 14px; line-height: 1.6; font-weight: 500; margin-bottom: 16px; color: #475569;">I am part of that "invisible 60%," but I don't believe we are invisible—I believe we are trapped in a metaphorical prison. This is why I chose the transition from <strong style="color:var(--gray-dark);">Grey to Teal</strong>, from the prison to the <strong style="color:var(--clio-blue);">Blue Sky</strong>. By integrating Clio’s colors with WorkTimeline™, I’ve built a solution for that gap.</p>
-                    <p style="font-size: 14px; line-height: 1.6; font-weight: 500; color: #475569;">I have <strong style="color:var(--gray-dark);">no coding experience</strong>. I did this all by cell phone, myself, driven by motivation and the cross-referencing power of AI. I am living proof that Jack Newton’s philosophy is true: Telling the truth takes effort, but Justice is effortless if truth takes no effort.</p>
-                </div>
-            </div>
+            <div id="displayList"></div>
         </div>
     </div>
 
@@ -192,223 +163,77 @@
 
 <script>
     const story = [
-        "We see you. We hear you.",
-        "We know you're there. You're not invisible.",
-        "You're just stuck trapped in that grey area—a prison.",
-        "But we're here to get you out, one step at a time.",
-        "Towards the center where you belong with Clio.",
-        "Where a firm will make sure you never look back.",
-        "You are the 60%. The people who feel unseen and are too cautious to come forward.",
-        "And lawyers want to help, but messy, unorganized intake is a massive barrier.",
-        "Messy files drain 40% of a firm's time and resources.",
-        "Because of this chaos, lawyers are forced to turn away 3 out of 5 potential clients.",
-        "But clean, organized intake drives a 60% higher probability of case success.",
-        "If everyone was organized, it would save time and drop legal costs by 25%.",
-        "WorkTimeline benefits both the client and the firm, bringing perfect data straight into Clio.",
-        "“Jack Newton said that Justice should be effortless.”",
-        "WorkTimeline's key: Justice can be effortless now, if telling the truth takes no effort."
+        "We see you. We hear you.", "We know you're there. You're not invisible.",
+        "Trapped in the grey area.", "We're here to get you out.",
+        "One step at a time.", "Where you belong with Clio.",
+        "The invisible 60%.", "Justice should be effortless.", "If telling the truth takes no effort."
     ];
     
     let activeVault = "TIMELINE"; const timelineVault = []; const notesVault = [];
     let isSkipped = false;
 
     window.onload = () => { runStory(); };
-
-    function skipIntro() {
-        isSkipped = true;
-        endSplash();
-    }
-
+    function skipIntro() { isSkipped = true; endSplash(); }
     function runStory() {
         const el = document.getElementById('storyText'); let i = 0;
-        const lineDuration = 3000; 
-        
-        el.innerText = story[i++];
-        el.style.opacity = 1;
-
         const next = () => {
-            if(isSkipped) return;
-            if(i < story.length) {
-                el.style.opacity = 0;
-                setTimeout(() => { 
-                    if(isSkipped) return;
-                    el.innerText = story[i++]; 
-                    el.style.opacity = 1; 
-                    setTimeout(next, lineDuration - 800); 
-                }, 800);
-            } else endSplash();
+            if(isSkipped || i >= story.length) { endSplash(); return; }
+            el.style.opacity = 0;
+            setTimeout(() => { if(isSkipped) return; el.innerText = story[i++]; el.style.opacity = 1; setTimeout(next, 2500); }, 800);
         };
-        
-        setTimeout(next, lineDuration - 800);
+        next();
+    }
+    function endSplash() { const s = document.getElementById('splashScreen'); if(s) { s.style.opacity = '0'; setTimeout(() => s.remove(), 800); } }
+
+    function toggleCollapse() {
+        document.getElementById('mainApp').classList.toggle('collapsed');
     }
 
-    function endSplash() { 
-        const s = document.getElementById('splashScreen'); 
-        if(s) { 
-            s.style.opacity = '0'; 
-            s.style.pointerEvents = 'none';
-            setTimeout(() => s.remove(), 800); 
-        } 
-    }
-
-    function useTemplate(txt) {
-        document.getElementById('statusBox').value = txt;
-        document.getElementById('statusBox').focus();
-    }
-
-    function toggleGhost() {
-        const box = document.getElementById('blurBox'); const sw = document.getElementById('gSwitch');
-        if(sw.checked) { box.style.backdropFilter = "blur(50px) grayscale(1)"; box.style.pointerEvents = "all"; }
-        else { box.style.backdropFilter = "blur(0px) grayscale(0)"; box.style.pointerEvents = "none"; }
+    function useTemplate(txt) { 
+        if(document.getElementById('mainApp').classList.contains('collapsed')) toggleCollapse();
+        document.getElementById('statusBox').value = txt; 
+        document.getElementById('statusBox').focus(); 
     }
 
     function toggleVault(cb) {
         activeVault = cb.checked ? "NOTES" : "TIMELINE";
-        document.body.classList.toggle('mode-notes', cb.checked);
         document.getElementById('folderLabel').innerText = cb.checked ? "Isolated Notes" : "WorkTimeline™";
-        document.getElementById('folderLabel').style.color = cb.checked ? "var(--clio-blue)" : "var(--teal)";
         document.getElementById('addBtn').style.background = cb.checked ? "var(--clio-blue)" : "var(--teal)";
         refreshVaultDisplay();
     }
 
-    function getGPSCoordinates() {
-        return new Promise((resolve) => {
-            const demoGPS = "49.1044° N, 122.5827° W"; 
-            if (!navigator.geolocation) {
-                resolve(demoGPS);
-                return;
-            }
-            navigator.geolocation.getCurrentPosition(
-                (position) => { resolve(`${position.coords.latitude.toFixed(4)}° N, ${Math.abs(position.coords.longitude).toFixed(4)}° W`); },
-                (error) => { resolve(demoGPS); }, 
-                { timeout: 2500 }
-            );
-        });
-    }
-
     async function submitEntry() {
         const box = document.getElementById('statusBox'); if(!box.value.trim()) return;
-        
-        const btn = document.getElementById('addBtn');
-        const originalText = btn.innerText;
-        btn.innerText = "Acquiring GPS & Securing...";
-        btn.style.pointerEvents = "none";
-        btn.style.background = "var(--gray-dark)";
-        
-        await saveEntry(box.value); 
+        addEntry(box.value);
         box.value = '';
-        
-        btn.innerText = originalText;
-        btn.style.pointerEvents = "auto";
-        btn.style.background = activeVault === "NOTES" ? "var(--clio-blue)" : "var(--teal)";
-
-        const q = document.getElementById('legacyQuote'); if(q) { q.style.opacity = '0'; setTimeout(() => q.remove(), 500); }
     }
 
-    async function saveEntry(text) {
-        const now = new Date(); 
-        let hours = now.getHours(); let minutes = now.getMinutes();
-        const ampm = hours >= 12 ? 'P.M.' : 'A.M.'; hours = hours % 12 || 12;
-        minutes = minutes < 10 ? '0'+minutes : minutes;
-        
-        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        const dayName = days[now.getDay()];
-        
-        const dateStr = dayName.toUpperCase() + ', ' + (now.getMonth()+1) + '/' + now.getDate() + '/' + now.getFullYear() + ' @ ' + hours + ':' + minutes + ' ' + ampm;
-        
-        const gps = await getGPSCoordinates();
-        const stamp = `${dateStr} | GPS: ${gps}`;
-
-        const entry = { text: text, stamp: stamp };
+    function addEntry(txt) {
+        const now = new Date();
+        const stamp = `${now.toLocaleTimeString()} | GPS: 49.1044° N, 122.5827° W`;
+        const entry = { text: txt, stamp: stamp };
         if(activeVault === "TIMELINE") timelineVault.push(entry); else notesVault.push(entry);
         refreshVaultDisplay();
     }
 
-    async function addEntry(text) { 
-        const btn = document.getElementById('addBtn');
-        const originalText = btn.innerText;
-        btn.innerText = "Acquiring GPS & Securing Media...";
-        btn.style.pointerEvents = "none";
-        btn.style.background = "var(--gray-dark)";
-        
-        await saveEntry(text); 
-        
-        btn.innerText = originalText;
-        btn.style.pointerEvents = "auto";
-        btn.style.background = activeVault === "NOTES" ? "var(--clio-blue)" : "var(--teal)";
-        const q = document.getElementById('legacyQuote'); if(q) { q.style.opacity = '0'; setTimeout(() => q.remove(), 500); }
-    }
-
     function refreshVaultDisplay() {
-        const list = document.getElementById('displayList'); const quote = document.getElementById('legacyQuote');
-        list.innerHTML = '';
-        if(quote && timelineVault.length === 0 && notesVault.length === 0) list.appendChild(quote);
+        const list = document.getElementById('displayList'); list.innerHTML = '';
         const data = (activeVault === "TIMELINE") ? timelineVault : notesVault;
         [...data].reverse().forEach(item => {
             const div = document.createElement('div'); div.className = 'entry';
             div.style.borderLeftColor = (activeVault === "NOTES") ? "var(--clio-blue)" : "var(--teal)";
-            div.innerHTML = `<span class="timestamp-full" style="color:${(activeVault === "NOTES") ? 'var(--clio-blue)' : 'var(--teal)'}">${item.stamp}</span><p style="white-space: pre-wrap; margin:0; font-size:15px; font-weight:500; line-height: 1.5;">${item.text}</p>`;
+            div.innerHTML = `<span class="timestamp-full">${item.stamp}</span><p style="font-size:14px; line-height: 1.5;">${item.text}</p>`;
             list.appendChild(div);
         });
     }
 
     function lockAndSummarize() {
-        const totalTimeline = timelineVault.length;
-        const totalNotes = notesVault.length;
-        const totalEntries = totalTimeline + totalNotes;
-        
-        const inputContainer = document.getElementById('inputContainer');
-        inputContainer.style.opacity = '0.3';
-        inputContainer.style.pointerEvents = 'none';
-        
         const syncBtn = document.getElementById('syncBtn');
-        const syncText = document.getElementById('syncBtnText');
-        const syncIcon = document.getElementById('syncIcon');
-        
-        syncBtn.style.pointerEvents = "none";
-        syncBtn.style.background = "var(--clio-blue)";
-        syncBtn.style.color = "white";
-        syncBtn.style.borderColor = "var(--clio-blue)";
-        syncIcon.style.stroke = "white"; 
-        
-        syncText.innerText = "Analyzing & Summarizing Notes...";
-
+        syncBtn.style.background = "var(--clio-blue)"; syncBtn.style.color = "white";
+        document.getElementById('syncBtnText').innerText = "Analyzing & Summarizing...";
         setTimeout(() => {
-            const list = document.getElementById('displayList');
-            const summaryDiv = document.createElement('div');
-            summaryDiv.className = 'entry summary-card';
-            
-            let summaryText = "";
-            
-            if (totalEntries > 0) {
-                let allText = [...timelineVault, ...notesVault].map(e => e.text).join(" ");
-                let words = allText.match(/\b[a-zA-Z]{5,}\b/g) || [];
-                let uniqueWords = [...new Set(words.map(w => w.toLowerCase()))];
-                let keywords = uniqueWords.slice(0, 4).map(w => w.charAt(0).toUpperCase() + w.slice(1));
-                let keywordStr = keywords.length > 0 ? `<br><br><strong style="color:var(--clio-blue);">Key Data Extracted:</strong> ${keywords.join(", ")}` : "";
-
-                summaryText = `WorkTimeline™ AI has successfully processed and summarized ${totalTimeline} Timeline events and ${totalNotes} Ghost notes.${keywordStr}<br><br>Preparing clean data transfer to Clio Matter...`;
-            } else {
-                summaryText = `No custom entries detected. Proceeding to authenticate blank slate with Clio.`;
-            }
-
-            summaryDiv.innerHTML = `
-                <span class="timestamp-full" style="color: var(--gray-dark)">AI Summary Generated</span>
-                <p style="margin:0; font-size:14px; font-weight:600; line-height: 1.5; color: var(--gray-dark);">
-                    [LOCKED] ${summaryText}
-                </p>
-            `;
-            list.prepend(summaryDiv);
-            
-            document.getElementById('timelineContainer').scrollTop = 0;
-            
-            syncText.innerText = "Connecting to Secure Bridge...";
-            
-            setTimeout(() => {
-                syncToClio();
-            }, 3500); 
-
-        }, 1500);
+            syncToClio();
+        }, 2000);
     }
 
     async function syncToClio() {
@@ -416,23 +241,21 @@
         const redirectUri = "https://worktimeline-app.vercel.app/index.html";
         const clioBase = "https://ca.app.clio.com"; 
 
-        const generateRandomString = (length) => {
-            const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
-            let text = '';
-            for (let i = 0; i < length; i++) { text += possible.charAt(Math.floor(Math.random() * possible.length)); }
-            return text;
+        const generateRandomString = (l) => {
+            let t = ''; const p = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            for (let i = 0; i < l; i++) t += p.charAt(Math.floor(Math.random() * p.length));
+            return t;
         };
 
-        const pkceChallengeFromVerifier = async (v) => {
-            const hashed = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(v));
-            return btoa(String.fromCharCode.apply(null, new Uint8Array(hashed)))
-                .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        const pkceChallenge = async (v) => {
+            const h = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(v));
+            return btoa(String.fromCharCode.apply(null, new Uint8Array(h))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
         };
 
-        const codeVerifier = generateRandomString(128);
-        const codeChallenge = await pkceChallengeFromVerifier(codeVerifier);
-        sessionStorage.setItem('clio_code_verifier', codeVerifier);
-        window.location.href = `${clioBase}/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=leads_write%20contacts_write&code_challenge=${codeChallenge}&code_challenge_method=S256`;
+        const verifier = generateRandomString(128);
+        const challenge = await pkceChallenge(verifier);
+        sessionStorage.setItem('clio_code_verifier', verifier);
+        window.location.href = `${clioBase}/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=leads_write%20contacts_write&code_challenge=${challenge}&code_challenge_method=S256`;
     }
 </script>
 </body>
