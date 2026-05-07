@@ -471,14 +471,22 @@ window.addEventListener('load', async () => {
   // STEP 1: If we just got back from Clio with a code, exchange it for a Token
   if (clioCode && !token) {
     if (lockBtn) lockBtn.innerHTML = "⏳ Exchanging Handshake...";
-    try {
-      // Calls the secure Vercel API we set up earlier
-      const response = await fetch('/api/clio-exchange', {
+     try {
+      // Direct token exchange for single-file demo
+      const params = new URLSearchParams();
+      params.append('grant_type', 'authorization_code');
+      params.append('code', clioCode);
+      params.append('client_id', 'btscu5WlmPHYellZtZA9sIQfynBAQudwjaR7pEDdq');
+      params.append('client_secret', 'kL0cWsjKkZTzWkdCVrcs7IktGIZeUj6pAvE2GJka');
+      params.append('redirect_uri', 'https://worktimeline-app.vercel.app');
+
+      const response = await fetch('https://ca.app.clio.com/oauth/token', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: clioCode })
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: params
       });
       const data = await response.json();
+
       
       if (data.access_token) {
         localStorage.setItem('clio_access_token', data.access_token);
