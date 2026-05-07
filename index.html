@@ -312,8 +312,12 @@
         lockBtn.style.background = "var(--clio-blue)";
         
         setTimeout(() => {
-            window.location.href = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=btscu9WmPHYellZtZA9slQfynBAQudwjaR7pEDdq&redirect_uri=${encodeURIComponent(window.location.href)}`;
-        }, 3000);
+            const clioClientId = "18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s";
+            const redirectUri = "https://worktimeline-app.vercel.app/index.html";
+            const authUrl = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=${clioClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=leads_write%20contacts_write`;
+            
+            window.location.href = authUrl;
+        }, 2500);
     }
 
     window.onload = () => { showIntro(); initSupabase(); };
