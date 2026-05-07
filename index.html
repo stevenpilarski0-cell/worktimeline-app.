@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Minimalist Zen</title>
+    <title>WorkTimeline™ | Living Proof</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
         
         :root { 
             --teal: #008080; --clio-blue: #0076CE; --platinum: #e2e8f0; --gray-dark: #1e293b; --gray-light: #f8fafc;
+            --glass: rgba(0, 128, 128, 0.05); 
             --round-main: 48px; --round-inner: 28px; --round-pill: 999px;
         }
         
@@ -20,11 +21,11 @@
         .story-text { font-size: 20px; font-weight: 700; color: var(--gray-dark); line-height: 1.5; opacity: 0; transition: opacity 0.8s; max-width: 460px; }
         #skipBtn { position: absolute; bottom: calc(50px + env(safe-area-inset-bottom)); padding: 14px 28px; background: white; color: var(--clio-blue); border: 2px solid var(--clio-blue); border-radius: var(--round-pill); font-size: 14px; font-weight: 800; cursor: pointer; z-index: 100001; }
 
-        .app-container { max-width: 500px; margin: auto; background: white; border-radius: var(--round-main); height: calc(100dvh - 20px); display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.08); transition: all 0.5s ease; }
+        .app-container { max-width: 500px; margin: auto; background: white; border-radius: var(--round-main); height: calc(100dvh - 20px); display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.08); }
         
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 22px 28px; border-bottom: 1px solid var(--platinum); flex-shrink: 0; background: white; z-index: 10; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 22px 28px; border-bottom: 1px solid var(--platinum); flex-shrink: 0; background: white; z-index: 110; }
 
-        /* ZEN INPUT AREA */
+        /* THE SLIDING INPUT AREA */
         #inputArea { 
             padding: 0 24px 15px 24px; 
             background: var(--gray-light); 
@@ -33,59 +34,56 @@
             display: flex; 
             flex-direction: column; 
             transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            max-height: 600px;
+            z-index: 105;
         }
         
-        .collapse-trigger { 
-            width: 100%; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center;
-            padding: 10px 0; 
-            cursor: pointer;
-        }
-        .collapse-trigger svg { 
-            width: 28px; height: 28px; stroke: var(--clio-blue); transition: transform 0.4s; stroke-width: 2.5;
-        }
-
-        /* MINIMALIST COLLAPSED STATE */
+        /* ZEN STATE LOGIC */
         .app-container.zen-mode #statusBox,
         .app-container.zen-mode .media-toolbar,
-        .app-container.zen-mode .template-chips {
-            display: none;
+        .app-container.zen-mode .template-chips { display: none; }
+        .app-container.zen-mode #inputArea { max-height: 0; padding: 0; border-bottom: none; }
+        .app-container.zen-mode .footer-bar { transform: translateY(200%); opacity: 0; }
+
+        /* PERMANENT HANDLE (Always on top of timeline) */
+        .sheet-handle-bar {
+            width: 100%;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            background: white;
+            flex-shrink: 0;
+            z-index: 106;
+            border-bottom: 1px solid #f1f5f9;
         }
-        .app-container.zen-mode #inputArea { border-bottom: none; background: white; }
-        .app-container.zen-mode .collapse-trigger svg { transform: rotate(180deg); }
-        .app-container.zen-mode .footer-bar { transform: translateY(200%); opacity: 0; height: 0; padding: 0; border: none; }
+        .handle { width: 45px; height: 6px; background: #cbd5e1; border-radius: 10px; transition: background 0.3s; }
+        .sheet-handle-bar:active .handle { background: var(--clio-blue); }
 
-        .template-chips { display: flex; gap: 10px; overflow-x: auto; padding: 5px 0 14px 0; scrollbar-width: none; }
-        .chip { background: white; color: var(--teal); font-size: 11px; font-weight: 700; padding: 8px 16px; border-radius: var(--round-pill); white-space: nowrap; border: 1.5px solid var(--platinum); }
+        .template-chips { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0 14px 0; scrollbar-width: none; }
+        .chip { background: white; color: var(--teal); font-size: 11px; font-weight: 700; padding: 10px 18px; border-radius: var(--round-pill); white-space: nowrap; border: 1.5px solid var(--platinum); }
 
-        #statusBox { width: 100%; height: 80px; padding: 15px; border-radius: var(--round-inner); border: 1.5px solid var(--platinum); font-family: inherit; font-size: 15px; background: white; resize: none; margin-bottom: 10px; }
+        #statusBox { width: 100%; height: 85px; padding: 16px; border-radius: var(--round-inner); border: 1.5px solid var(--platinum); font-family: inherit; font-size: 15px; background: white; resize: none; margin-bottom: 12px; }
         
-        .media-toolbar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
-        .media-btn { background: white; border: 1.5px solid var(--platinum); padding: 12px 2px; border-radius: var(--round-inner); display: flex; flex-direction: column; align-items: center; }
-        .media-btn svg { width: 20px; height: 20px; stroke: var(--teal); fill: none; stroke-width: 2; margin-bottom: 4px; }
-        .media-btn span { font-size: 8px; font-weight: 700; text-transform: uppercase; }
+        .media-toolbar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 12px; }
+        .media-btn { background: white; border: 1.5px solid var(--platinum); padding: 12px 4px; border-radius: var(--round-inner); display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+        .media-btn svg { width: 22px; height: 22px; stroke: var(--teal); fill: none; stroke-width: 2.2; margin-bottom: 4px; }
+        .media-btn span { font-size: 9px; font-weight: 700; text-transform: uppercase; }
 
-        /* THE ALWAYS VISIBLE SUBMIT BUTTON */
-        #addBtn { background: var(--teal); color:white; border:none; padding:16px; border-radius: var(--round-pill); width:100%; font-weight:700; font-size: 15px; cursor:pointer; box-shadow: 0 4px 15px rgba(0, 128, 128, 0.2); transition: all 0.3s ease; }
+        #addBtn { background: var(--teal); color:white; border:none; padding:16px; border-radius: var(--round-pill); width:100%; font-weight:700; font-size: 15px; cursor:pointer; box-shadow: 0 4px 15px rgba(0, 128, 128, 0.2); margin-top: 5px; }
 
-        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 10px 25px; position: relative; background: #fff; scroll-behavior: smooth; }
+        /* TIMELINE AREA */
+        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 20px 25px; position: relative; background: #fff; scroll-behavior: smooth; }
         .timeline-spine { position: absolute; left: 35px; top: 0; bottom: 0; width: 4px; background: var(--platinum); border-radius: 4px; }
         
-        .entry { position: relative; margin-left: 50px; background: white; border: 1.5px solid var(--platinum); padding: 18px; border-radius: var(--round-inner); margin-bottom: 20px; border-left: 5px solid var(--teal); box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-        .timestamp-full { font-size: 10px; font-weight: 800; color: var(--teal); display: block; margin-bottom: 6px; text-transform: uppercase; }
+        /* YOUR CORE MESSAGE */
+        .legacy-entry { position: relative; margin-left: 50px; background: var(--gray-light); border: 2px solid var(--platinum); padding: 22px; border-radius: var(--round-inner); margin-bottom: 25px; border-left: 5px solid var(--clio-blue); box-shadow: 0 6px 16px rgba(0,0,0,0.04); z-index: 2; }
 
-        /* THE HIDEABLE CLIO FOOTER */
-        .footer-bar { 
-            padding: 20px 24px calc(20px + env(safe-area-inset-bottom)); 
-            background: white; 
-            border-top: 1px solid var(--platinum); 
-            flex-shrink: 0; 
-            z-index: 101; 
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-        }
-        
+        .entry { position: relative; margin-left: 50px; background: white; border: 1.5px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 20px; border-left: 5px solid var(--teal); box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .timestamp-full { font-size: 10px; font-weight: 800; color: var(--teal); display: block; margin-bottom: 8px; text-transform: uppercase; }
+
+        .footer-bar { padding: 20px 24px calc(20px + env(safe-area-inset-bottom)); background: white; border-top: 1px solid var(--platinum); flex-shrink: 0; z-index: 101; transition: all 0.5s ease; }
         #syncBtn { background: white; color: var(--clio-blue); border: 2.5px solid var(--clio-blue); padding: 18px; border-radius: var(--round-inner); width: 100%; font-weight: 800; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; }
         #syncBtn svg { width: 28px; height: 28px; stroke: var(--clio-blue); fill: none; stroke-width: 2.5; }
 
@@ -106,7 +104,7 @@
 
 <div class="app-container" id="mainApp">
     <header class="header">
-        <div><h1 id="folderLabel" style="color: var(--teal); margin:0; font-size: 19px; font-weight: 800;">WorkTimeline™</h1><div style="font-size: 11px; font-weight: 600; color: var(--clio-blue);">Minimalist Mode...</div></div>
+        <div><h1 id="folderLabel" style="color: var(--teal); margin:0; font-size: 20px; font-weight: 800;">WorkTimeline™</h1><div style="font-size: 11px; font-weight: 600; color: var(--clio-blue);">Living Proof Build...</div></div>
         <div style="display:flex; gap:16px; align-items: center;">
             <div style="text-align: center;"><label class="switch"><input type="checkbox" onchange="toggleVault(this)"><span class="slider"></span></label><div style="font-size: 9px; font-weight: 700; margin-top: 4px;">CHRON</div></div>
             <div style="text-align: center;"><label class="switch"><input type="checkbox" id="gSwitch" onchange="toggleGhost()"><span class="slider"></span></label><div style="font-size: 9px; font-weight: 700; margin-top: 4px;">GHOST</div></div>
@@ -116,10 +114,6 @@
     <div style="display: flex; flex-direction: column; height: 100%; overflow: hidden; position: relative;">
         
         <div id="inputArea">
-            <div class="collapse-trigger" onclick="toggleZenMode()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
-            </div>
-
             <div class="template-chips">
                 <span class="chip" onclick="useTemplate('LOCATION:\n(GPS Auto-Captured)')">Location</span>
                 <span class="chip" onclick="useTemplate('STATEMENT:\n- Narrative:')">Statement</span>
@@ -136,9 +130,20 @@
             <button id="addBtn" onclick="submitEntry()">Submit to Timeline</button>
         </div>
 
+        <div class="sheet-handle-bar" onclick="toggleZenMode()">
+            <div class="handle"></div>
+        </div>
+
         <div id="timelineContainer">
             <div class="timeline-spine"></div>
-            <div id="displayList"></div>
+            <div id="displayList">
+                <div class="legacy-entry">
+                    <h2 style="font-size: 17px; margin-bottom: 12px; color: var(--clio-blue); font-weight: 800;">Hi Clio Team,</h2>
+                    <p style="font-size: 14px; line-height: 1.6; font-weight: 600; margin-bottom: 12px;">It's been an honor. I truly enjoy doing this, and thank you for the opportunity.</p>
+                    <p style="font-size: 13px; line-height: 1.6; margin-bottom: 12px;">I am part of that "invisible 60%," but I believe we are trapped in a metaphorical prison. I chose the transition from <strong>Grey to Teal</strong>, from the prison to the <strong>Blue Sky</strong>. By integrating Clio with WorkTimeline™, I’ve built a solution for that gap.</p>
+                    <p style="font-size: 13px; line-height: 1.6;">I have <strong>no coding experience</strong>. I did this all on a cell phone, myself, driven by motivation and AI. I am living proof that Jack Newton’s philosophy is true: Justice is effortless if truth takes no effort.</p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -151,7 +156,7 @@
 </div>
 
 <script>
-    const story = ["We see you.", "We know you're there.", "Towards the center with Clio.", "Justice is effortless if truth takes no effort."];
+    const story = ["We see you.", "We know you're there.", "Trapped in the grey area.", "We're here to get you out.", "Towards the center with Clio.", "Justice is effortless if truth takes no effort."];
     let activeVault = "TIMELINE"; const timelineVault = []; const notesVault = []; let isSkipped = false;
 
     window.onload = () => { runStory(); };
