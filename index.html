@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™ | Public Handshake</title>
+    <title>WorkTimeline™ | Living Proof</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
         :root { 
@@ -13,7 +13,7 @@
         body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 10px; height: 100vh; overflow: hidden; color: var(--gray-dark); }
         
         #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; box-sizing: border-box; transition: opacity 1.2s ease; }
-        .story-text { font-size: 22px; font-weight: 800; color: var(--gray-dark); line-height: 1.5; opacity: 0; transition: opacity 0.8s; max-width: 420px; }
+        .story-text { font-size: 19px; font-weight: 800; color: var(--gray-dark); line-height: 1.5; opacity: 0; transition: opacity 0.8s; max-width: 460px; }
 
         .app-container { max-width: 500px; margin: auto; background: white; border-radius: 50px; height: 95vh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
         #blurBox { position: absolute; top: 85px; left: 0; right: 0; bottom: 0; z-index: 98; background: rgba(255,255,255,0.05); backdrop-filter: blur(0px); pointer-events: none; transition: backdrop-filter 0.4s ease; }
@@ -22,22 +22,25 @@
         .input-area { padding: 15px; background: #fff; border-bottom: 2px solid var(--platinum); flex-shrink: 0; }
         #statusBox { width: 100%; height: 85px; padding: 15px; border-radius: var(--round-factor); border: 2px solid var(--platinum); box-sizing: border-box; font-family: inherit; margin-bottom: 12px; font-size: 16px; outline: none; background: #fbfdff; }
         
-        .media-toolbar { display: flex; gap: 10px; margin-bottom: 12px; }
-        .media-btn { flex: 1; background: var(--platinum); border: none; padding: 12px 5px; border-radius: var(--round-factor); display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; }
-        .media-btn svg { width: 22px; height: 22px; fill: var(--teal); margin-bottom: 4px; }
-        .media-btn span { font-size: 8px; font-weight: 900; color: var(--gray-dark); }
+        .media-toolbar { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 12px; }
+        .media-btn { background: var(--platinum); border: none; padding: 10px 2px; border-radius: var(--round-factor); display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; }
+        .media-btn svg { width: 18px; height: 18px; fill: var(--teal); margin-bottom: 4px; }
+        .media-btn span { font-size: 7px; font-weight: 900; color: var(--gray-dark); text-transform: uppercase; }
         .hidden-input { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; top: 0; left: 0; }
 
         #addBtn { background: var(--teal); color:white; border:none; padding:15px; border-radius: var(--round-factor); width:100%; font-weight:900; cursor:pointer; }
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px; position: relative; background: #fdfdfd; }
         .timeline-spine { position: absolute; left: 35px; top: 0; bottom: 0; width: 8px; background: #cccccc; border-radius: 15px; z-index: 1; }
-        #legacyQuote { position: relative; margin-left: 55px; background: var(--glass); backdrop-filter: blur(10px); border: 1px solid rgba(0, 128, 128, 0.15); border-left: 6px solid var(--teal); padding: 20px; border-radius: var(--round-factor); margin-bottom: 25px; z-index: 2; transition: opacity 0.5s; }
-        .stat-star { font-size: 13px; font-weight: 800; margin: 5px 0; color: var(--gray-dark); }
+        
+        #legacyQuote { position: relative; margin-left: 55px; background: var(--glass); backdrop-filter: blur(10px); border: 1px solid rgba(0, 128, 128, 0.15); border-left: 6px solid var(--clio-blue); padding: 25px; border-radius: var(--round-factor); margin-bottom: 25px; z-index: 2; transition: opacity 0.5s; }
 
         .entry { position: relative; margin-left: 55px; background: white; border: 1.5px solid var(--platinum); padding: 18px; border-radius: var(--round-factor); margin-bottom: 25px; z-index: 2; border-left: 6px solid var(--teal); }
         .timestamp-full { font-size: 10px; font-weight: 900; color: var(--teal); display: block; margin-bottom: 5px; text-transform: uppercase; }
         .sync-btn { background: var(--clio-blue); color: white; border: none; padding: 20px; border-radius: var(--round-factor); width: 90%; align-self: center; font-weight: 900; cursor: pointer; margin: 15px 0; flex-shrink: 0; }
 
+        #templateMenu { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; z-index:10000; border-radius:30px; padding:20px; box-shadow:0 0 100px rgba(0,0,0,0.3); width:80%; max-width:300px; }
+        .temp-item { padding:12px; border-bottom:1px solid #eee; font-weight:800; cursor:pointer; color:var(--teal); }
+        
         .switch { position: relative; display: inline-block; width: 34px; height: 18px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 20px; }
@@ -49,6 +52,14 @@
 <body>
 
 <div id="splashScreen"><h1 id="storyText" class="story-text">Welcome.</h1></div>
+
+<div id="templateMenu">
+    <div style="font-weight:900; font-size:14px; margin-bottom:10px;">Select Template</div>
+    <div class="temp-item" onclick="useTemplate('WITNESS LOCATION: \nName: \nContact: \nDescription: ')">📍 Witness Location</div>
+    <div class="temp-item" onclick="useTemplate('EVIDENCE LOG: \nItem: \nSource: \nStorage: ')">📁 Evidence Log</div>
+    <div class="temp-item" onclick="useTemplate('TIMELINE EVENT: \nDate of Incident: \nInvolved Parties: ')">🕒 Timeline Event</div>
+    <div class="temp-item" style="border:none; color:red;" onclick="toggleTemplates()">CANCEL</div>
+</div>
 
 <div class="app-container" id="mainApp">
     <div id="blurBox"></div>
@@ -64,10 +75,11 @@
         <div class="input-area">
             <textarea id="statusBox" placeholder="Start your intake entry..."></textarea>
             <div class="media-toolbar">
-                <button class="media-btn"><input type="file" accept="image/*" capture="camera" class="hidden-input" onchange="addEntry('📷 Evidence captured.')"><svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-4c-1.1 0-2 .9-2 2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-5c0-1.1-.9-2-2-2z"/></svg><span>CAMERA</span></button>
+                <button class="media-btn"><input type="file" accept="image/*" capture="camera" class="hidden-input" onchange="addEntry('📷 Photo evidence secured.')"><svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-4c-1.1 0-2 .9-2 2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-5c0-1.1-.9-2-2-2z"/></svg><span>CAMERA</span></button>
                 <button class="media-btn"><input type="file" accept="audio/*" capture="microphone" class="hidden-input" onchange="addEntry('🎤 Audio recording captured.')"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg><span>AUDIO</span></button>
+                <button class="media-btn" onclick="toggleTemplates()"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg><span>LAYOUT</span></button>
                 <button class="media-btn" onclick="window.location.href='sms:?body=Intake Update:'"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg><span>TEXT</span></button>
-                <button class="media-btn"><input type="file" class="hidden-input" onchange="addEntry('📄 Document verification secured.')"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg><span>DOCS</span></button>
+                <button class="media-btn"><input type="file" class="hidden-input" onchange="addEntry('📄 Document verified.')"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg><span>DOCS</span></button>
             </div>
             <button id="addBtn" onclick="submitEntry()">Add Entry & Secure</button>
         </div>
@@ -76,10 +88,10 @@
             <div class="timeline-spine"></div>
             <div id="displayList">
                 <div id="legacyQuote">
-                    <span style="font-size: 10px; font-weight: 900; color: var(--teal); text-transform: uppercase;">Star List Data: Intake Efficiency</span>
-                    <div class="stat-star">⭐ Messy intake drains 40% of law firm time and resources.</div>
-                    <div class="stat-star">⭐ Organized intake drives a 60% higher probability of case success.</div>
-                    <div class="stat-star">⭐ Faster intake allows lawyers to lower rates and serve more clients.</div>
+                    <h2 style="font-size: 16px; margin-bottom: 10px; color: var(--clio-blue);">Hi Clio Team,</h2>
+                    <p style="font-size: 13px; line-height: 1.6; font-weight: 700; margin-bottom: 15px;">It's been an honor. I truly enjoy doing this, and thank you for the opportunity.</p>
+                    <p style="font-size: 12px; line-height: 1.5; font-weight: 600;">I am part of that "invisible 60%," but I don't believe we are invisible—I believe we are trapped in a metaphorical prison. This is why I chose the transition from **Grey to Teal**, from the prison to the **Blue Sky**. By integrating Clio’s colors with WorkTimeline™, I’ve built a solution for that gap.</p>
+                    <p style="font-size: 12px; line-height: 1.5; font-weight: 600; margin-top: 10px;">I have **no coding experience**. I did this all by cell phone, myself, driven by motivation and the cross-referencing power of AI. I am living proof that Jack’s philosophy is true: Tell the truth, and the rest becomes effortless.</p>
                 </div>
             </div>
         </div>
@@ -91,14 +103,17 @@
 <script>
     const story = [
         "When you're invisible, people don't know you're there.",
-        "In that grey area, people know you're there but don't know how to help.",
-        "They are too cautious and don't believe they can get help.",
-        "WorkTimeline is here to help.",
-        "The grey area can feel like a prison, but it's not.",
-        "WorkTimeline guides you through that grey area...",
-        "Giving you the strength and confidence to take your first few steps.",
-        "Not to escape, but to get ahead.",
-        "So you can be at the center with Clio and find those firms that will make you never look back.",
+        "They are too afraid to come forward. They think they don't have a voice.",
+        "In that grey area, people see you, but they don't know how to help.",
+        "Lawyers want to help, but messy, unorganized intake is a barrier.",
+        "Messy files drain 40% of a firm's time and resources.",
+        "Because of this chaos, lawyers turn away 3 out of 5 potential clients.",
+        "But organized intake drives a 60% higher probability of success.",
+        "If everyone was organized, legal costs would drop by 25%.",
+        "WorkTimeline is here to bridge that gap.",
+        "Guiding you through the grey area with strength and confidence.",
+        "Take your first few steps toward the center with Clio...",
+        "Where firms can secure your future so you never look back.",
         "“Jack Newton said that Justice should be effortless.”",
         "WorkTimeline's key: Justice can be effortless now, if telling the truth takes no effort."
     ];
@@ -108,21 +123,27 @@
 
     function runStory() {
         const el = document.getElementById('storyText'); let i = 0;
-        const lineDuration = 4050; 
+        const lineDuration = 3210; 
         const next = () => {
             if(i < story.length) {
                 el.style.opacity = 0;
-                setTimeout(() => { 
-                    el.innerText = story[i++]; 
-                    el.style.opacity = 1; 
-                    setTimeout(next, lineDuration - 800); 
-                }, 800);
+                setTimeout(() => { el.innerText = story[i++]; el.style.opacity = 1; setTimeout(next, lineDuration - 800); }, 800);
             } else endSplash();
         };
         next();
     }
 
     function endSplash() { const s = document.getElementById('splashScreen'); if(s) { s.style.opacity = '0'; setTimeout(() => s.remove(), 1200); } }
+
+    function toggleTemplates() {
+        const m = document.getElementById('templateMenu');
+        m.style.display = (m.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function useTemplate(txt) {
+        document.getElementById('statusBox').value = txt;
+        toggleTemplates();
+    }
 
     function toggleGhost() {
         const box = document.getElementById('blurBox'); const sw = document.getElementById('gSwitch');
@@ -142,6 +163,7 @@
     function submitEntry() {
         const box = document.getElementById('statusBox'); if(!box.value.trim()) return;
         saveEntry(box.value); box.value = '';
+        // AUTOMATICALLY REMOVE THE HI CLIO MESSAGE ON FIRST ENTRY
         const q = document.getElementById('legacyQuote'); if(q) { q.style.opacity = '0'; setTimeout(() => q.remove(), 500); }
     }
 
@@ -170,7 +192,6 @@
         });
     }
 
-    // --- SECURE PKCE HANDSHAKE Logic ---
     async function syncToClio() {
         const clientId = "18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s";
         const redirectUri = "https://worktimeline-app.vercel.app/index.html";
@@ -179,9 +200,7 @@
         const generateRandomString = (length) => {
             const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
             let text = '';
-            for (let i = 0; i < length; i++) {
-                text += possible.charAt(Math.floor(Math.random() * possible.length));
-            }
+            for (let i = 0; i < length; i++) { text += possible.charAt(Math.floor(Math.random() * possible.length)); }
             return text;
         };
 
@@ -193,10 +212,7 @@
 
         const codeVerifier = generateRandomString(128);
         const codeChallenge = await pkceChallengeFromVerifier(codeVerifier);
-
-        // Store verifier for retrieval after redirect
         sessionStorage.setItem('clio_code_verifier', codeVerifier);
-
         window.location.href = `${clioBase}/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=leads_write%20contacts_write&code_challenge=${codeChallenge}&code_challenge_method=S256`;
     }
 </script>
