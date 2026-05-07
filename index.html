@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™ | Master Prototype 2.0</title>
+    <title>WorkTimeline™ | Prototype 2.0</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
@@ -23,7 +23,7 @@
             overflow: hidden; 
         }
 
-        /* --- CINEMATIC OVERLAY --- */
+        /* --- THE CINEMATIC LAYER (FIXED) --- */
         .splash-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--platinum-bg); z-index: 99999 !important;
@@ -36,14 +36,14 @@
         .lawyer-box { background: var(--teal-soft); padding: 15px; border-radius: 20px; margin-bottom: 15px; }
         .template-chip { background: #ffffff; border: 2px solid var(--teal-soft); color: var(--teal); padding: 8px 12px; border-radius: 50px; font-size: 11px; font-weight: 800; cursor: pointer; white-space: nowrap; }
         
-        #statusBox { width: 100%; height: 120px; border-radius: 20px; border: 2px solid var(--platinum-mid); background: var(--platinum-bg); padding: 15px; font-size: 16px; margin-bottom: 15px; resize: none; font-family: inherit; }
+        #statusBox { width: 100%; height: 120px; border-radius: 20px; border: 2px solid var(--platinum-mid); background: var(--platinum-bg); padding: 15px; font-size: 16px; margin-bottom: 15px; resize: none; font-family: inherit; box-sizing: border-box; }
         
         .media-toolbar { display: flex; gap: 10px; margin-bottom: 15px; }
-        .media-btn { background: var(--platinum-bg); border-radius: 20px; flex: 1; padding: 12px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+        .media-btn { background: var(--platinum-bg); border-radius: 20px; flex: 1; padding: 12px; display: flex; flex-direction: column; align-items: center; cursor: pointer; border: none; }
         .media-btn svg { width: 24px; height: 24px; fill: var(--teal); }
         .media-btn span { font-size: 9px; font-weight: 900; margin-top: 4px; color: var(--platinum-dark); }
 
-        .submit-main { width: 100%; background: var(--teal); color: white; border: none; padding: 18px; border-radius: 25px; font-weight: 900; font-size: 16px; cursor: pointer; }
+        .submit-main { width: 100%; background: var(--teal); color: white; border: none; padding: 18px; border-radius: 25px; font-weight: 900; font-size: 16px; cursor: pointer; box-shadow: 0 4px 12px rgba(0, 128, 128, 0.2); }
         .entry { background: #ffffff; border: 2px solid var(--platinum-mid); padding: 15px; border-radius: 20px; margin-bottom: 12px; position: relative; }
         .timestamp-box { color: var(--teal); font-size: 10px; font-weight: 900; background: var(--teal-soft); padding: 4px 10px; border-radius: 8px; margin-bottom: 8px; display: inline-block; }
         
@@ -51,15 +51,15 @@
         .lock-footer { background: var(--gray-dark); color: white; border: none; border-radius: 25px; padding: 20px; width: 100%; font-weight: 900; margin-top: auto; cursor: pointer; }
 
         .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; backdrop-filter: blur(15px); background: rgba(255,255,255,0.7); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
-        .modal-content { background: white; border-radius: 25px; padding: 25px; text-align: center; border: 2px solid var(--platinum-mid); }
+        .modal-content { background: white; border-radius: 25px; padding: 25px; text-align: center; border: 2px solid var(--platinum-mid); width: 80%; }
     </style>
 </head>
 <body>
 
 <div id="appRoot" class="app-container">
     <div id="splashScreen" class="splash-screen">
-        <div id="step1">
-            <h1 style="font-size: 22px; line-height: 1.4; color: var(--gray-dark);">Initialising WorkTimeline...</h1>
+        <div id="story-container">
+            <h1 id="story-text" style="font-size: 22px; line-height: 1.4; color: var(--gray-dark);">Initialising...</h1>
         </div>
     </div>
 
@@ -68,15 +68,15 @@
             <h1 style="color: var(--teal); margin: 0; font-size: 22px; font-weight: 900;">WorkTimeline™</h1>
             <p style="margin:0; font-style: italic; color: var(--platinum-dark); font-size: 11px;">"Justice is truth in action."</p>
         </div>
-        <button onclick="toggleDbPanel()" style="font-size: 9px; padding: 5px; background: none; border: 1px dashed var(--teal); border-radius: 5px;">DB CONFIG</button>
+        <button onclick="toggleDbPanel()" style="font-size: 8px; padding: 5px; background: none; border: 1px dashed var(--teal); border-radius: 5px;">DB CONFIG</button>
     </header>
 
     <div style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto;">
         
-        <div id="dbConfig" style="display:none; background:#f9f9f9; padding:10px; border-radius:10px; margin-bottom:10px; font-size:11px;">
-            <input type="text" id="dbUrl" placeholder="Supabase URL" style="width:90%; margin-bottom:5px;">
-            <input type="text" id="dbKey" placeholder="Anon Key" style="width:90%;">
-            <button onclick="saveDbKeys()" style="margin-top:5px;">Link DB</button>
+        <div id="dbConfig" style="display:none; background:#f4f4f4; padding:10px; border-radius:10px; margin-bottom:10px; font-size:11px;">
+            <input type="text" id="dbUrl" placeholder="Supabase URL" style="width:100%; margin-bottom:5px;">
+            <input type="text" id="dbKey" placeholder="Anon Key" style="width:100%;">
+            <button onclick="saveDbKeys()" style="margin-top:5px; width:100%;">Link Supabase</button>
         </div>
 
         <div class="lawyer-box">
@@ -88,13 +88,13 @@
         </div>
 
         <div id="patternAlert" class="pattern-alert">
-            🔍 <strong>Clio Duo Pattern Detected:</strong> High-risk keywords identified. Generating Risk Assessment...
+            🔍 <strong>Clio Duo Pattern Detected:</strong> Risk keywords identifying. Generating Risk Assessment...
         </div>
 
-        <div style="display: flex; gap: 5px; margin-bottom: 10px; overflow-x: auto;">
-            <div class="template-chip" onclick="addTemplate('📍 [SITE]: ')">+ Site</div>
-            <div class="template-chip" onclick="addTemplate('👤 [WITNESS]: ')">+ Witness</div>
-            <div class="template-chip" onclick="addTemplate('📋 [INTAKE]: ')">+ Intake</div>
+        <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+            <button class="template-chip" onclick="addTemplate('📍 [SITE]: ')">+ Site</button>
+            <button class="template-chip" onclick="addTemplate('👤 [WITNESS]: ')">+ Witness</button>
+            <button class="template-chip" onclick="addTemplate('📋 [INTAKE]: ')">+ Intake</button>
         </div>
 
         <textarea id="statusBox" placeholder="Describe event..."></textarea>
@@ -113,9 +113,9 @@
     <div id="warningModal" class="modal-overlay">
         <div class="modal-content">
             <h3 style="margin-top:0;">⚠️ Finalize Timeline?</h3>
-            <p style="font-size:13px; color:var(--platinum-dark);">This will securely transmit entries to Clio Grow.</p>
-            <button onclick="syncToClio()" style="width:100%; background:var(--teal); color:white; padding:15px; border-radius:15px; border:none; font-weight:800;">CONFIRM & SYNC</button>
-            <button onclick="closeWarning()" style="margin-top:10px; background:none; border:none; color:var(--platinum-dark);">Cancel</button>
+            <p style="font-size:13px; color:var(--platinum-dark);">Entries will be transmitted to Clio Grow Canada.</p>
+            <button onclick="syncToClio()" style="width:100%; background:var(--teal); color:white; padding:15px; border-radius:15px; border:none; font-weight:800; cursor:pointer;">CONFIRM & SYNC</button>
+            <button onclick="closeWarning()" style="margin-top:10px; background:none; border:none; color:var(--platinum-dark); cursor:pointer;">Cancel</button>
         </div>
     </div>
 </div>
@@ -135,14 +135,14 @@
 
     function showIntro() {
         const introDiv = document.getElementById('splashScreen');
-        const step1 = document.getElementById('step1');
+        const textEl = document.getElementById('story-text');
         let current = 0;
         function next() {
             if (current < introTexts.length) {
-                step1.style.opacity = 0;
+                textEl.style.opacity = 0;
                 setTimeout(() => {
-                    step1.innerHTML = `<h1 style="font-size:20px; padding:20px;">${introTexts[current]}</h1>`;
-                    step1.style.opacity = 1;
+                    textEl.innerHTML = introTexts[current];
+                    textEl.style.opacity = 1;
                     let displayTime = (current >= 2 && current <= 5) ? 15000 : 4000;
                     current++;
                     setTimeout(next, displayTime);
@@ -163,10 +163,11 @@
     function saveDbKeys() {
         localStorage.setItem('sb_url', document.getElementById('dbUrl').value);
         localStorage.setItem('sb_key', document.getElementById('dbKey').value);
+        alert('DB Linked. Reloading...');
         location.reload();
     }
 
-    function addTemplate(t) { document.getElementById('statusBox').value += t; }
+    function addTemplate(t) { document.getElementById('statusBox').value += t; document.getElementById('statusBox').focus(); }
 
     async function submitEntry() {
         const txt = document.getElementById('statusBox').value.trim();
@@ -189,7 +190,7 @@
         document.getElementById('timeline').prepend(div);
     }
 
-    function logMedia(type) { addEntryToUI(`🔒 ${type} encrypted and attached to timeline.`, true); }
+    function logMedia(type) { addEntryToUI(`🔒 ${type} encrypted and attached.`, true); }
     function saveLawyer() { localStorage.setItem('lawyer', document.getElementById('lawyerSelect').value); }
     function toggleDbPanel() { const p = document.getElementById('dbConfig'); p.style.display = p.style.display === 'none' ? 'block' : 'none'; }
     function showWarning() { document.getElementById('warningModal').style.display = 'flex'; }
