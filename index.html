@@ -369,17 +369,7 @@
             document.getElementById('statusBox').value = "";
  function addEntry(txt, sys) {
     const div = document.createElement('div'); 
-    div.className = 'entry';
-    const now = new Date();
-    const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
-    const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-    const geo = "🌍 LAT: 49.2827° N | LON: 123.1207° W";
-    div.innerHTML = `<span class="timestamp-box">${dateStr} at ${timeStr}</span><p style="margin:5px 0 0 0; color: #2c3e50; font-weight: 600; line-height: 1.5;">${txt}</p><span class="geo-tag">${geo}</span>`;
-    if (sys) { 
-        div.style.backgroundColor = "var(--platinum-bg)"; 
-        div.style.borderColor = "var(--teal-soft)"; 
-    }
-    document.getElementById('timeline').prepend(div);
+        };
 }
 
 const introTexts = [
@@ -395,8 +385,7 @@ const introTexts = [
     "Welcome to the sky.",
     "Towards the center."
 ];
-
-function showIntro() {
+ function showIntro() {
     const introDiv = document.getElementById('splashScreen');
     const step1 = document.getElementById('step1');
     let current = 0;
@@ -407,6 +396,7 @@ function showIntro() {
             setTimeout(() => {
                 step1.innerHTML = `<h1 style="font-size: 22px; line-height: 1.4; color: #2c3e50; padding: 20px;">${introTexts[current]}</h1>`;
                 step1.style.opacity = 1;
+                // Stat slides get 15 seconds, others get 4
                 let displayTime = (current >= 2 && current <= 5) ? 15000 : 4000;
                 current++;
                 setTimeout(next, displayTime);
@@ -424,9 +414,10 @@ function showWarning() {
         alert("Please select a Professional first! 👩‍⚖️"); 
         return; 
     }
-    function closeWarning() { 
-    document.getElementById('warningModal').style.display = "none"; 
+    document.getElementById('warningModal').style.display = "flex";
 }
+
+function closeWarning() { document.getElementById('warningModal').style.display = "none"; }
 
 function proceedToSummary() {
     closeWarning();
@@ -447,59 +438,11 @@ function proceedToSummary() {
     };
 }
 
-const introTexts = [
-    "Feel invisible?",
-    "Trapped in a cycle of 'what ifs'?",
-    "You are not alone. 60% of people with legal issues never seek help because they fear the cost or the complexity.",
-    "The 'Justice Gap' is real: Millions feel paralyzed, choosing silence over a system that feels built for someone else.",
-    "Lawyers lose billions every year in wasted intake hours—time spent on cases that aren't the right fit.",
-    "This is why intake fees exist. It's not a barrier; it's a way for experts to value the time they give to your story.",
-    "WorkTimeLine guides you for your first few steps...",
-    "It’s okay. WorkTimeLine’s got you. Let us guide you...",
-    "Enjoy the first step.",
-    "Welcome to the sky.",
-    "Towards the center."
-];
-
-function showIntro() {
-    const introDiv = document.getElementById('splashScreen');
-    const step1 = document.getElementById('step1');
-    let current = 0;
-
-    function next() {
-        if (current < introTexts.length) {
-            step1.style.opacity = 0;
-            setTimeout(() => {
-                step1.innerHTML = `<h1 style="font-size: 22px; line-height: 1.4; color: #2c3e50; padding: 20px;">${introTexts[current]}</h1>`;
-                step1.style.opacity = 1;
-                let displayTime = (current >= 2 && current <= 5) ? 15000 : 4000;
-                current++;
-                setTimeout(next, displayTime);
-            }, 1000);
-        } else {
-            introDiv.style.opacity = 0;
-            setTimeout(() => introDiv.style.display = 'none', 1000);
-        }
-    }
-    next();
-}
-
 window.addEventListener('load', async () => {
     showIntro();
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code');
-    if (code) {
-        const res = await fetch('/api/clio-exchange', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ code })
-        });
-        const data = await res.json();
-        if (data.access_token) {
-            localStorage.setItem('clio_access_token', data.access_token);
-            location.href = "/";
-        }
-    }
+    if (localStorage.getItem('sb_url')) document.getElementById('dbUrl').value = localStorage.getItem('sb_url');
+    if (localStorage.getItem('sb_key')) document.getElementById('dbKey').value = localStorage.getItem('sb_key');
+    initSupabase();
 });
 
 function togglePrivacy() {
@@ -509,7 +452,3 @@ function togglePrivacy() {
 </body>
 </html>
 
-
-    
-
-        
