@@ -1,4 +1,4 @@
-
+ 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -468,28 +468,38 @@ window.addEventListener('load', async () => {
   const matterSection = document.getElementById('clioMatterSection');
   const matterDropdown = document.getElementById('matterDropdown');
 
-  // STEP 1: If we just got back from Clio with a code, exchange it for a Token
+    // STEP 1: If we just got back from Clio with a code, exchange it for a Token
   if (clioCode && !token) {
     if (lockBtn) lockBtn.innerHTML = "⏳ Exchanging Handshake...";
-         try {
-      // Calls our new secure Vercel API
+    try {
       const response = await fetch('/api/clio-exchange', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code: clioCode })
       });
-      const data = await response.json();
+      
+      // If the API file is missing or broken, tell us:
+      if (!response.ok) {
+        if (lockBtn) lockBtn.innerHTML = "❌ API Error: " + response.status;
+        return;
+      }
 
+      const data = await response.json();
+      
+      // If Clio gave us the token, success!
       if (data.access_token) {
         localStorage.setItem('clio_access_token', data.access_token);
         token = data.access_token;
-        // Clean the URL so it looks professional for the demo
         window.history.replaceState({}, document.title, "/");
+      } else {
+        // If Clio rejected the trade, print Clio's exact complaint!
+        if (lockBtn) lockBtn.innerHTML = "❌ Clio Error: " + (data.error_description || data.error || "Unknown Error");
       }
     } catch (error) {
-      console.error("Token Exchange Error:", error);
+      if (lockBtn) lockBtn.innerHTML = "❌ Network Crash: " + error.message;
     }
   }
+
 
   // STEP 2: If we have a Token, show the dropdown and fetch the Matters
   if (token) {
