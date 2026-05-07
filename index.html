@@ -3,45 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™ | Pro Hardware Build</title>
+    <title>WorkTimeline™ | Visual Progress Build</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
-        :root { --teal: #008080; --teal-soft: #e0f2f1; --platinum: #d8e2ea; --gray-dark: #2c3e50; }
+        :root { 
+            --teal: #008080; 
+            --clio-blue: #0076CE;
+            --teal-soft: #e0f2f1; 
+            --platinum: #d8e2ea; 
+            --gray-dark: #2c3e50; 
+            --gray-light: #cccccc;
+        }
         
-        body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 10px; transition: filter 0.3s ease; }
+        body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 10px; transition: filter 0.3s ease; height: 100vh; overflow: hidden; }
         
-        /* MODES */
+        /* GHOST & CHRON MODES */
         body.ghost-mode #mainContent { filter: blur(25px); pointer-events: none; }
-        body.chron-view .entry { border-left: 2px solid #ccc; border-radius: 0; padding: 10px; background: #fafafa; }
-        body.chron-view .media-toolbar, body.chron-view .template-row { display: none; }
+        body.chron-view .entry { border-radius: 0; margin-left: 20px; }
+        body.chron-view .timeline-spine { display: none; }
 
-        .app-container { max-width: 500px; margin: auto; background: white; border-radius: 35px; min-height: 95vh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .app-container { max-width: 500px; margin: auto; background: white; border-radius: 35px; height: 95vh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         
-        /* HEADER & SWITCHES */
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 2px solid var(--platinum); }
-        .toggle-group { display: flex; gap: 15px; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 2px solid var(--platinum); flex-shrink: 0; }
+        
+        /* INPUT SECTION - TIGHTER TO LEAVE ROOM FOR TIMELINE */
+        .input-area { padding: 15px; background: #fff; border-bottom: 2px solid var(--platinum); flex-shrink: 0; }
+        #statusBox { width: 100%; height: 80px; padding: 12px; border-radius: 15px; border: 2px solid var(--platinum); box-sizing: border-box; font-family: inherit; margin-bottom: 10px; font-size: 15px; outline: none; }
+
+        .template-row { display: flex; gap: 6px; margin-bottom: 10px; overflow-x: auto; white-space: nowrap; }
+        .template-chip { background: var(--teal-soft); color: var(--teal); border: none; padding: 6px 12px; border-radius: 50px; font-size: 10px; font-weight: 800; cursor: pointer; }
+
+        /* HARDWARE TOOLBAR */
+        .media-toolbar { display: flex; gap: 8px; margin-bottom: 10px; }
+        .media-btn { flex: 1; background: var(--platinum); border: none; padding: 10px; border-radius: 15px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+        .media-btn svg { width: 22px; height: 22px; fill: var(--teal); margin-bottom: 3px; }
+        .media-btn span { font-size: 8px; font-weight: 900; color: var(--gray-dark); }
+
+        /* --- THE VISUAL TIMELINE --- */
+        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 20px; position: relative; background: #fdfdfd; }
+        
+        /* The Actual Line (Spine) */
+        .timeline-spine { 
+            position: absolute; left: 30px; top: 0; bottom: 0; width: 6px; 
+            background: var(--gray-light); border-radius: 10px; z-index: 1;
+            transition: background 1s ease;
+        }
+        /* The Progress Glow on the line */
+        .timeline-progress { 
+            position: absolute; left: 0; top: 0; width: 100%; height: 0%; 
+            background: linear-gradient(to bottom, var(--teal), var(--clio-blue));
+            border-radius: 10px; transition: height 0.5s ease;
+        }
+
+        .entry { 
+            position: relative; margin-left: 45px; background: white; 
+            border: 1.5px solid var(--platinum); padding: 15px; border-radius: 20px; 
+            margin-bottom: 25px; z-index: 2; box-shadow: 0 4px 12px rgba(0,0,0,0.03); 
+        }
+        /* The Dot on the line */
+        .entry::before { 
+            content: ''; position: absolute; left: -24px; top: 22px; 
+            width: 14px; height: 14px; background: var(--teal); 
+            border: 3px solid white; border-radius: 50%; z-index: 3;
+            box-shadow: 0 0 8px rgba(0,128,128,0.4);
+        }
+
+        .timestamp-full { font-size: 9px; font-weight: 900; color: var(--teal); display: block; margin-bottom: 5px; }
+
+        .sync-btn { background: var(--gray-dark); color: white; border: none; padding: 18px; border-radius: 25px; width: 90%; align-self: center; font-weight: 900; cursor: pointer; margin: 15px 0; flex-shrink: 0; }
+        
         .switch { position: relative; display: inline-block; width: 34px; height: 18px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 20px; }
         .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--teal); }
         input:checked + .slider:before { transform: translateX(16px); }
-
-        /* TEMPLATE CHIPS */
-        .template-row { display: flex; gap: 8px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 5px; }
-        .template-chip { background: var(--teal-soft); color: var(--teal); border: none; padding: 8px 14px; border-radius: 50px; font-size: 11px; font-weight: 800; white-space: nowrap; cursor: pointer; }
-
-        /* SOLID TEAL HARDWARE ICONS */
-        .media-toolbar { display: flex; gap: 12px; margin-bottom: 15px; }
-        .media-btn { flex: 1; background: var(--platinum); border: none; padding: 15px 10px; border-radius: 20px; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: background 0.2s; }
-        .media-btn:active { background: #cbd5e0; }
-        .media-btn svg { width: 28px; height: 28px; fill: var(--teal); margin-bottom: 6px; }
-        .media-btn span { font-size: 10px; font-weight: 900; color: var(--gray-dark); letter-spacing: 0.5px; }
-
-        #statusBox { width: 100%; height: 110px; padding: 15px; border-radius: 20px; border: 2px solid var(--platinum); box-sizing: border-box; font-family: inherit; margin-bottom: 12px; font-size: 16px; outline: none; }
-        .entry { background: white; border: 1.5px solid var(--platinum); padding: 15px; border-radius: 22px; margin-bottom: 12px; border-left: 6px solid var(--teal); position: relative; }
-        .timestamp-full { font-size: 10px; font-weight: 900; color: var(--teal); background: var(--teal-soft); padding: 5px 12px; border-radius: 10px; display: inline-block; margin-bottom: 8px; text-transform: uppercase; }
-        .sync-btn { background: var(--gray-dark); color: white; border: none; padding: 22px; border-radius: 30px; width: 100%; font-weight: 900; cursor: pointer; margin-top: auto; font-size: 16px; }
     </style>
 </head>
 <body>
@@ -49,60 +85,71 @@
 <div class="app-container">
     <header class="header">
         <div><h1 style="color: var(--teal); margin:0; font-size: 18px; font-weight: 900;">WorkTimeline™</h1></div>
-        <div class="toggle-group">
+        <div style="display:flex; gap:12px;">
             <div style="text-align: center;"><label class="switch"><input type="checkbox" onchange="toggleChron()"><span class="slider"></span></label><div style="font-size: 7px; font-weight: 900;">CHRON</div></div>
             <div style="text-align: center;"><label class="switch"><input type="checkbox" onchange="togglePrivacy()"><span class="slider"></span></label><div style="font-size: 7px; font-weight: 900;">GHOST</div></div>
         </div>
     </header>
 
-    <div id="mainContent" style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column;">
-        
-        <div class="template-row">
-            <button class="template-chip" onclick="addText('📍 [LOCATION]: ')">LOCATION</button>
-            <button class="template-chip" onclick="addText('👤 [WITNESS]: ')">WITNESS</button>
-            <button class="template-chip" onclick="addText('⚠️ [HAZARD]: ')">HAZARD</button>
-            <button class="template-chip" onclick="addText('📅 [DEADLINE]: ')">DEADLINE</button>
+    <div id="mainContent" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="input-area">
+            <div class="template-row">
+                <button class="template-chip" onclick="addText('📍 LOCATION: ')">LOCATION</button>
+                <button class="template-chip" onclick="addText('👤 WITNESS: ')">WITNESS</button>
+                <button class="template-chip" onclick="addText('⚠️ HAZARD: ')">HAZARD</button>
+                <button class="template-chip" onclick="addText('💬 TEXT: ')">MESSAGE</button>
+            </div>
+            
+            <textarea id="statusBox" placeholder="Document the truth..."></textarea>
+
+            <div class="media-toolbar">
+                <button class="media-btn" onclick="document.getElementById('camInput').click()">
+                    <svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-4c-1.1 0-2 .9-2 2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-5c0-1.1-.9-2-2-2z"/></svg>
+                    <span>CAMERA</span>
+                </button>
+                <button class="media-btn" onclick="document.getElementById('micInput').click()">
+                    <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                    <span>AUDIO</span>
+                </button>
+                <button class="media-btn" onclick="sendLawyerMessage()">
+                    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+                    <span>TEXT</span>
+                </button>
+            </div>
+
+            <button onclick="submitEntry()" style="background: var(--teal); color:white; border:none; padding:15px; border-radius:18px; width:100%; font-weight:900; cursor: pointer;">Add to Timeline</button>
         </div>
 
-        <textarea id="statusBox" placeholder="What happened?"></textarea>
-
-        <div class="media-toolbar">
-            <button class="media-btn" onclick="document.getElementById('camInput').click()">
-                <svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-4c-1.1 0-2 .9-2 2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-5c0-1.1-.9-2-2-2z"/></svg>
-                <span>CAMERA</span>
-            </button>
-            <button class="media-btn" onclick="document.getElementById('micInput').click()">
-                <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-                <span>AUDIO</span>
-            </button>
-            <button class="media-btn" onclick="document.getElementById('docInput').click()">
-                <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg>
-                <span>DOCS</span>
-            </button>
+        <div id="timelineContainer">
+            <div class="timeline-spine">
+                <div id="progressFill" class="timeline-progress"></div>
+            </div>
+            <div id="timelineList"></div>
         </div>
 
-        <input type="file" id="camInput" accept="image/*" capture="environment" style="display:none" onchange="addEntry('📷 High-res photo secured to timeline.')">
-        <input type="file" id="micInput" accept="audio/*" capture="microphone" style="display:none" onchange="addEntry('🎤 Audio recording encrypted and saved.')">
-        <input type="file" id="docInput" style="display:none" onchange="addEntry('📄 Document verification complete.')">
-
-        <button onclick="submitEntry()" style="background: var(--teal); color:white; border:none; padding:18px; border-radius:20px; font-weight:900; font-size: 15px; cursor: pointer;">Add Entry & Secure</button>
-        
-        <div id="timeline" style="margin-top: 20px; overflow-y: auto; flex-grow: 1;"></div>
-        
         <button id="lockBtn" class="sync-btn" onclick="syncToClio()">Finalize & Sync to Clio</button>
     </div>
 </div>
 
+<input type="file" id="camInput" accept="image/*" capture="environment" style="display:none" onchange="addEntry('📷 Photo secured.')">
+<input type="file" id="micInput" accept="audio/*" capture="microphone" style="display:none" onchange="addEntry('🎤 Audio recording saved.')">
+
 <script>
+    let entryCount = 0;
+
     function addText(t) { const b = document.getElementById('statusBox'); b.value += t; b.focus(); }
     function togglePrivacy() { document.body.classList.toggle('ghost-mode'); }
     function toggleChron() { document.body.classList.toggle('chron-view'); }
+    
+    function sendLawyerMessage() {
+        const msg = encodeURIComponent("Update from WorkTimeline: New evidence documented.");
+        window.location.href = `sms:?body=${msg}`;
+    }
 
     function getSuperTimestamp() {
         const now = new Date();
-        const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-        const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-        return `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()} | ${now.toLocaleTimeString()}`;
+        const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+        return now.toLocaleDateString('en-US', options);
     }
 
     function submitEntry() {
@@ -111,15 +158,18 @@
     }
 
     function addEntry(text) {
-        const id = "WT-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+        entryCount++;
         const div = document.createElement('div');
         div.className = 'entry';
         div.innerHTML = `
-            <div class="timestamp-full">🕒 ${getSuperTimestamp()}</div>
-            <p style="margin:0; font-size:15px; font-weight:600; color:var(--gray-dark);">${text}</p>
-            <span style="font-size:8px; color:#aaa; display:block; margin-top:10px; font-family: monospace;">🔒 SEAL: ${id}</span>
+            <span class="timestamp-full">${getSuperTimestamp()}</span>
+            <p style="margin:0; font-size:14px; font-weight:600; color:var(--gray-dark);">${text}</p>
         `;
-        document.getElementById('timeline').prepend(div);
+        document.getElementById('timelineList').prepend(div);
+        
+        // Update Visual Progress Line
+        const progress = Math.min(entryCount * 15, 100); // Increases 15% each time
+        document.getElementById('progressFill').style.height = progress + '%';
     }
 
     function syncToClio() {
