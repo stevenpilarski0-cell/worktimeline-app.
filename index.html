@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™ | Taking an Intake</title>
+    <title>WorkTimeline™ | Ultimate Master Build</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
         :root { 
@@ -13,36 +13,38 @@
         
         body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 10px; height: 100vh; overflow: hidden; }
         
-        /* GHOST & CHRON MODES */
+        /* GHOST MODE (PRIVACY) */
         body.ghost-mode #mainContent { filter: blur(25px); pointer-events: none; }
-        body.chron-view .entry { border-radius: 0; margin-left: 20px; border-left: 2px solid #ccc; }
+        
+        /* CHRON VIEW */
+        body.chron-view .entry { border-radius: 0; margin-left: 20px; border-left: 2px solid #ccc; box-shadow: none; }
         body.chron-view .timeline-spine { display: none; }
+        body.chron-view .media-toolbar, body.chron-view .template-row { display: none; }
 
         .app-container { max-width: 500px; margin: auto; background: white; border-radius: 35px; height: 95vh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         
-        /* HEADER SECTION */
+        /* HEADER AREA */
         .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 2px solid var(--platinum); flex-shrink: 0; }
-        .logo-area { display: flex; flex-direction: column; }
         .tagline { font-size: 10px; font-weight: 800; color: var(--clio-blue); font-style: italic; margin-top: -2px; }
 
-        /* MESSAGE ICON IN HEADER */
-        .msg-link { background: var(--teal-soft); padding: 8px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; border: none; }
+        /* HEADER TEXT ICON */
+        .msg-link { background: var(--teal-soft); padding: 8px; border-radius: 12px; cursor: pointer; border: none; display: flex; align-items: center; justify-content: center; }
         .msg-link svg { width: 20px; height: 20px; fill: var(--teal); }
 
         /* INPUT AREA */
         .input-area { padding: 15px; background: #fff; border-bottom: 2px solid var(--platinum); flex-shrink: 0; }
         #statusBox { width: 100%; height: 75px; padding: 12px; border-radius: 15px; border: 2px solid var(--platinum); box-sizing: border-box; font-family: inherit; margin-bottom: 10px; font-size: 15px; outline: none; }
 
-        .template-row { display: flex; gap: 6px; margin-bottom: 10px; overflow-x: auto; white-space: nowrap; }
+        .template-row { display: flex; gap: 6px; margin-bottom: 10px; overflow-x: auto; white-space: nowrap; padding-bottom: 5px; }
         .template-chip { background: var(--teal-soft); color: var(--teal); border: none; padding: 6px 12px; border-radius: 50px; font-size: 10px; font-weight: 800; cursor: pointer; }
 
-        /* HARDWARE TOOLBAR (SOLID TEAL) */
+        /* SOLID TEAL HARDWARE TOOLBAR */
         .media-toolbar { display: flex; gap: 8px; margin-bottom: 10px; }
         .media-btn { flex: 1; background: var(--platinum); border: none; padding: 12px 5px; border-radius: 15px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
         .media-btn svg { width: 24px; height: 24px; fill: var(--teal); margin-bottom: 4px; }
         .media-btn span { font-size: 9px; font-weight: 900; color: var(--gray-dark); }
 
-        /* VISUAL TIMELINE */
+        /* THE VISUAL TIMELINE LINE */
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 20px; position: relative; background: #fdfdfd; }
         .timeline-spine { position: absolute; left: 30px; top: 0; bottom: 0; width: 6px; background: var(--gray-light); border-radius: 10px; z-index: 1; }
         .timeline-progress { position: absolute; left: 0; top: 0; width: 100%; height: 0%; background: linear-gradient(to bottom, var(--teal), var(--clio-blue)); border-radius: 10px; transition: height 0.5s ease; }
@@ -51,8 +53,10 @@
         .entry::before { content: ''; position: absolute; left: -24px; top: 20px; width: 14px; height: 14px; background: var(--teal); border: 3px solid white; border-radius: 50%; z-index: 3; }
 
         .timestamp-full { font-size: 9px; font-weight: 900; color: var(--teal); display: block; margin-bottom: 5px; text-transform: uppercase; }
+        
         .sync-btn { background: var(--gray-dark); color: white; border: none; padding: 18px; border-radius: 25px; width: 90%; align-self: center; font-weight: 900; cursor: pointer; margin: 10px 0; flex-shrink: 0; }
         
+        /* SWITCH STYLING */
         .switch { position: relative; display: inline-block; width: 34px; height: 18px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 20px; }
@@ -87,7 +91,7 @@
                 <button class="template-chip" onclick="addText('💼 [EMPLOYER]: ')">EMPLOYER</button>
             </div>
             
-            <textarea id="statusBox" placeholder="Log details for your lawyer..."></textarea>
+            <textarea id="statusBox" placeholder="Log details for your intake..."></textarea>
 
             <div class="media-toolbar">
                 <button class="media-btn" onclick="document.getElementById('camInput').click()">
@@ -108,7 +112,9 @@
         </div>
 
         <div id="timelineContainer">
-            <div class="timeline-spine"><div id="progressFill" class="timeline-progress"></div></div>
+            <div class="timeline-spine">
+                <div id="progressFill" class="timeline-progress"></div>
+            </div>
             <div id="timelineList"></div>
         </div>
 
@@ -116,16 +122,19 @@
     </div>
 </div>
 
-<input type="file" id="camInput" accept="image/*" capture="environment" style="display:none" onchange="addEntry('📷 Evidence photo secured.')">
-<input type="file" id="micInput" accept="audio/*" capture="microphone" style="display:none" onchange="addEntry('🎤 Statement audio recorded.')">
-<input type="file" id="docInput" style="display:none" onchange="addEntry('📄 Document uploaded for review.')">
+<input type="file" id="camInput" accept="image/*" capture="environment" style="display:none" onchange="addEntry('📷 Photo secured.')">
+<input type="file" id="micInput" accept="audio/*" capture="microphone" style="display:none" onchange="addEntry('🎤 Audio recording saved.')">
+<input type="file" id="docInput" style="display:none" onchange="addEntry('📄 Document uploaded.')">
 
 <script>
     let entryCount = 0;
     function addText(t) { const b = document.getElementById('statusBox'); b.value += t; b.focus(); }
     function togglePrivacy() { document.body.classList.toggle('ghost-mode'); }
     function toggleChron() { document.body.classList.toggle('chron-view'); }
-    function sendLawyerMessage() { window.location.href = `sms:?body=${encodeURIComponent("Updated my WorkTimeline. Taking an intake...")}`; }
+    
+    function sendLawyerMessage() { 
+        window.location.href = `sms:?body=${encodeURIComponent("Updated my WorkTimeline. Taking an intake...")}`; 
+    }
 
     function getSuperTimestamp() {
         const now = new Date();
@@ -144,6 +153,8 @@
         div.className = 'entry';
         div.innerHTML = `<span class="timestamp-full">${getSuperTimestamp()}</span><p style="margin:0; font-size:14px; font-weight:600;">${text}</p>`;
         document.getElementById('timelineList').prepend(div);
+        
+        // Progress Spine Update
         document.getElementById('progressFill').style.height = Math.min(entryCount * 12, 100) + '%';
     }
 
