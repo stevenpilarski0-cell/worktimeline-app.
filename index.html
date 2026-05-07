@@ -3,72 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™ | Legacy & Justice</title>
+    <title>WorkTimeline™ | Pro Glass Build</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
         :root { 
-            --teal: #008080; --clio-blue: #0076CE; --teal-soft: #e0f2f1; 
-            --platinum: #d8e2ea; --gray-dark: #2c3e50; --gray-light: #cccccc;
+            --teal: #008080; --clio-blue: #0076CE; --teal-glass: rgba(0, 128, 128, 0.08); 
+            --platinum: #e2e8f0; --gray-dark: #2c3e50; --gray-light: #cbd5e0;
         }
         
-        body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 10px; height: 100vh; overflow: hidden; }
+        body { font-family: 'Nunito', sans-serif; background: #f4f7f9; margin: 0; padding: 10px; height: 100vh; overflow: hidden; }
         
         /* GHOST & CHRON MODES */
         body.ghost-mode #mainContent { filter: blur(25px); pointer-events: none; }
-        body.chron-view .entry, body.chron-view #legacyQuote { border-radius: 0; margin-left: 20px; border-left: 2px solid #ccc; box-shadow: none; }
-        body.chron-view .timeline-spine { display: none; }
+        body.chron-view .entry, body.chron-view #legacyQuote { border-radius: 10px; border-left: 2px solid #ccc; }
 
-        .app-container { max-width: 500px; margin: auto; background: white; border-radius: 35px; height: 95vh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .app-container { max-width: 500px; margin: auto; background: white; border-radius: 40px; height: 95vh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.3); }
         
         /* HEADER AREA */
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 2px solid var(--platinum); flex-shrink: 0; }
-        .tagline { font-size: 10px; font-weight: 800; color: var(--clio-blue); font-style: italic; margin-top: -2px; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid var(--platinum); flex-shrink: 0; }
+        .tagline { font-size: 11px; font-weight: 800; color: var(--clio-blue); font-style: italic; margin-top: -2px; }
 
-        /* HEADER TEXT ICON */
-        .msg-link { background: var(--teal-soft); padding: 8px; border-radius: 12px; cursor: pointer; border: none; display: flex; align-items: center; justify-content: center; }
-        .msg-link svg { width: 20px; height: 20px; fill: var(--teal); }
+        /* MAC-STYLE ROUNDED BOXES */
+        #statusBox { width: 100%; height: 85px; padding: 15px; border-radius: 22px; border: 1.5px solid var(--platinum); background: #f9fbff; font-family: inherit; margin-bottom: 12px; font-size: 16px; outline: none; transition: 0.3s; }
+        #statusBox:focus { border-color: var(--teal); box-shadow: 0 0 0 4px rgba(0,128,128,0.1); }
 
-        /* INPUT AREA */
-        .input-area { padding: 15px; background: #fff; border-bottom: 2px solid var(--platinum); flex-shrink: 0; }
-        #statusBox { width: 100%; height: 75px; padding: 12px; border-radius: 15px; border: 2px solid var(--platinum); box-sizing: border-box; font-family: inherit; margin-bottom: 10px; font-size: 15px; outline: none; }
+        .template-chip { background: var(--teal-glass); color: var(--teal); border: none; padding: 8px 16px; border-radius: 30px; font-size: 10px; font-weight: 900; cursor: pointer; transition: 0.2s; }
+        .template-chip:hover { background: rgba(0,128,128,0.15); }
 
-        .template-row { display: flex; gap: 6px; margin-bottom: 10px; overflow-x: auto; white-space: nowrap; padding-bottom: 5px; }
-        .template-chip { background: var(--teal-soft); color: var(--teal); border: none; padding: 6px 12px; border-radius: 50px; font-size: 10px; font-weight: 800; cursor: pointer; }
-
-        /* HARDWARE TOOLBAR */
-        .media-toolbar { display: flex; gap: 8px; margin-bottom: 10px; }
-        .media-btn { flex: 1; background: var(--platinum); border: none; padding: 12px 5px; border-radius: 15px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
-        .media-btn svg { width: 22px; height: 22px; fill: var(--teal); margin-bottom: 4px; }
+        /* HARDWARE BUTTONS - ROUNDED PRO */
+        .media-btn { flex: 1; background: #f0f4f8; border: none; padding: 14px 5px; border-radius: 22px; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: 0.2s; }
+        .media-btn:active { transform: scale(0.95); background: #e2e8f0; }
+        .media-btn svg { width: 24px; height: 24px; fill: var(--teal); margin-bottom: 4px; }
         .media-btn span { font-size: 8px; font-weight: 900; color: var(--gray-dark); }
 
-        /* VISUAL TIMELINE */
-        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 20px; position: relative; background: #fdfdfd; }
-        .timeline-spine { position: absolute; left: 30px; top: 0; bottom: 0; width: 6px; background: var(--gray-light); border-radius: 10px; z-index: 1; }
-        .timeline-progress { position: absolute; left: 0; top: 0; width: 100%; height: 0%; background: linear-gradient(to bottom, var(--teal), var(--clio-blue)); border-radius: 10px; transition: height 0.5s ease; }
-
-        /* THE LEGACY QUOTE BOX (GOLD STYLE) */
+        /* --- THE TRANSPARENT TEAL QUOTE BOX --- */
         #legacyQuote { 
-            position: relative; margin-left: 45px; background: #fffdf2; 
-            border: 1.5px solid #e6d08a; border-left: 5px solid #e6d08a;
-            padding: 18px; border-radius: 20px; margin-bottom: 25px; z-index: 2; 
-            transition: opacity 0.6s, transform 0.6s;
+            position: relative; margin-left: 45px; 
+            background: rgba(0, 128, 128, 0.05); /* Transparent Teal */
+            backdrop-filter: blur(10px); /* Frosted Glass Effect */
+            border: 1px solid rgba(0, 128, 128, 0.2);
+            border-left: 6px solid var(--teal);
+            padding: 20px; border-radius: 25px; margin-bottom: 25px; z-index: 2; 
+            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        #legacyQuote::before { content: ''; position: absolute; left: -24px; top: 22px; width: 14px; height: 14px; background: #e6d08a; border: 3px solid white; border-radius: 50%; z-index: 3; }
+        #legacyQuote::before { content: ''; position: absolute; left: -25px; top: 24px; width: 14px; height: 14px; background: var(--teal); border: 3px solid white; border-radius: 50%; z-index: 3; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 
-        /* USER ENTRIES */
-        .entry { position: relative; margin-left: 45px; background: white; border: 1.5px solid var(--platinum); padding: 15px; border-radius: 20px; margin-bottom: 20px; z-index: 2; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border-left: 5px solid var(--teal); }
-        .entry::before { content: ''; position: absolute; left: -24px; top: 20px; width: 14px; height: 14px; background: var(--teal); border: 3px solid white; border-radius: 50%; z-index: 3; }
+        /* USER ENTRIES - ROUNDED MAC STYLE */
+        .entry { position: relative; margin-left: 45px; background: white; border: 1px solid var(--platinum); padding: 18px; border-radius: 25px; margin-bottom: 20px; z-index: 2; box-shadow: 0 8px 20px rgba(0,0,0,0.04); border-left: 6px solid var(--teal); }
+        .entry::before { content: ''; position: absolute; left: -25px; top: 24px; width: 14px; height: 14px; background: var(--teal); border: 3px solid white; border-radius: 50%; z-index: 3; }
 
-        .ai-label { font-size: 8px; font-weight: 900; color: #fff; background: var(--clio-blue); padding: 2px 6px; border-radius: 4px; margin-bottom: 5px; display: inline-block; }
-        .timestamp-full { font-size: 9px; font-weight: 900; color: var(--teal); display: block; margin-bottom: 5px; text-transform: uppercase; }
+        .ai-label { font-size: 8px; font-weight: 900; color: #fff; background: var(--clio-blue); padding: 3px 8px; border-radius: 6px; margin-bottom: 6px; display: inline-block; letter-spacing: 0.5px; }
+        .timestamp-full { font-size: 9px; font-weight: 900; color: var(--teal); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
         
-        /* CLIO BLUE SYNC BUTTON */
-        .sync-btn { background: var(--clio-blue); color: white; border: none; padding: 18px; border-radius: 25px; width: 90%; align-self: center; font-weight: 900; cursor: pointer; margin: 10px 0; flex-shrink: 0; box-shadow: 0 4px 15px rgba(0, 118, 206, 0.3); }
+        .sync-btn { background: var(--clio-blue); color: white; border: none; padding: 20px; border-radius: 28px; width: 90%; align-self: center; font-weight: 900; cursor: pointer; margin: 15px 0; flex-shrink: 0; box-shadow: 0 10px 25px rgba(0, 118, 206, 0.3); font-size: 15px; }
 
-        .switch { position: relative; display: inline-block; width: 34px; height: 18px; }
+        /* ROUNDED MAC SWITCHES */
+        .switch { position: relative; display: inline-block; width: 36px; height: 20px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 20px; }
-        .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e0; transition: .4s; border-radius: 20px; }
+        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         input:checked + .slider { background-color: var(--teal); }
         input:checked + .slider:before { transform: translateX(16px); }
     </style>
@@ -78,30 +71,30 @@
 <div class="app-container">
     <header class="header">
         <div class="logo-area">
-            <h1 style="color: var(--teal); margin:0; font-size: 18px; font-weight: 900;">WorkTimeline™</h1>
+            <h1 style="color: var(--teal); margin:0; font-size: 20px; font-weight: 900;">WorkTimeline™</h1>
             <span class="tagline">Taking an Intake...</span>
         </div>
-        <div style="display:flex; gap:10px; align-items: center;">
-            <button class="msg-link" onclick="sendLawyerMessage()">
-                <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+        <div style="display:flex; gap:12px; align-items: center;">
+            <button style="background: var(--teal-glass); padding: 9px; border-radius: 14px; border:none; cursor:pointer;" onclick="sendLawyerMessage()">
+                <svg viewBox="0 0 24 24" style="width:20px; height:20px; fill:var(--teal);"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
             </button>
-            <div style="text-align: center;"><label class="switch"><input type="checkbox" onchange="toggleChron()"><span class="slider"></span></label><div style="font-size: 7px; font-weight: 900;">CHRON</div></div>
-            <div style="text-align: center;"><label class="switch"><input type="checkbox" onchange="togglePrivacy()"><span class="slider"></span></label><div style="font-size: 7px; font-weight: 900;">GHOST</div></div>
+            <div style="text-align: center;"><label class="switch"><input type="checkbox" onchange="toggleChron()"><span class="slider"></span></label><div style="font-size: 7px; font-weight: 900; margin-top:2px;">CHRON</div></div>
+            <div style="text-align: center;"><label class="switch"><input type="checkbox" onchange="togglePrivacy()"><span class="slider"></span></label><div style="font-size: 7px; font-weight: 900; margin-top:2px;">GHOST</div></div>
         </div>
     </header>
 
     <div id="mainContent" style="display: flex; flex-direction: column; height: 100%;">
-        <div class="input-area">
-            <div class="template-row">
+        <div style="padding: 15px; border-bottom: 1px solid var(--platinum);">
+            <div class="template-row" style="display:flex; gap:8px; overflow-x:auto; margin-bottom:12px; padding-bottom:5px;">
                 <button class="template-chip" onclick="addText('📍 [LOCATION]: ')">LOCATION</button>
                 <button class="template-chip" onclick="addText('👤 [WITNESS]: ')">WITNESS</button>
                 <button class="template-chip" onclick="addText('⚠️ [HAZARD]: ')">HAZARD</button>
                 <button class="template-chip" onclick="addText('💼 [EMPLOYER]: ')">EMPLOYER</button>
             </div>
             
-            <textarea id="statusBox" placeholder="Document your truth..."></textarea>
+            <textarea id="statusBox" placeholder="Document your intake..."></textarea>
 
-            <div class="media-toolbar">
+            <div style="display:flex; gap:10px; margin-bottom:12px;">
                 <button class="media-btn" onclick="document.getElementById('camInput').click()">
                     <svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-4c-1.1 0-2 .9-2 2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-5c0-1.1-.9-2-2-2z"/></svg>
                     <span>CAMERA</span>
@@ -115,17 +108,16 @@
                     <span>DOCS</span>
                 </button>
             </div>
-
-            <button onclick="submitEntry()" style="background: var(--teal); color:white; border:none; padding:15px; border-radius:18px; width:100%; font-weight:900; cursor: pointer;">Add Entry & Secure</button>
+            <button onclick="submitEntry()" style="background: var(--teal); color:white; border:none; padding:16px; border-radius:22px; width:100%; font-weight:900; cursor:pointer;">Secure to Timeline</button>
         </div>
 
-        <div id="timelineContainer">
-            <div class="timeline-spine"><div id="progressFill" class="timeline-progress"></div></div>
+        <div id="timelineContainer" style="flex-grow:1; overflow-y:auto; padding:20px; position:relative;">
+            <div style="position:absolute; left:30px; top:0; bottom:0; width:6px; background:var(--platinum); border-radius:10px;"><div id="progressFill" style="width:100%; height:0%; background:linear-gradient(to bottom, var(--teal), var(--clio-blue)); border-radius:10px; transition:0.5s;"></div></div>
             <div id="timelineList">
                 <div id="legacyQuote">
-                    <span style="font-size: 8px; font-weight: 900; color: #b89a3d; text-transform: uppercase; letter-spacing: 1px;">Legacy of Justice</span>
-                    <p id="quoteText" style="margin: 10px 0; font-size: 15px; font-weight: 700; color: #5c4b1a; font-style: italic; line-height: 1.4;">"Injustice anywhere is a threat to justice everywhere."</p>
-                    <span id="quoteAuthor" style="font-size: 11px; font-weight: 900; color: #b89a3d;">- Martin Luther King Jr.</span>
+                    <span style="font-size: 8px; font-weight: 900; color: var(--teal); text-transform: uppercase; letter-spacing: 1px;">Legacy of Justice</span>
+                    <p id="quoteText" style="margin: 10px 0; font-size: 15px; font-weight: 700; color: var(--gray-dark); font-style: italic; line-height: 1.4;">"Injustice anywhere is a threat to justice everywhere."</p>
+                    <span id="quoteAuthor" style="font-size: 11px; font-weight: 900; color: var(--teal);">— Martin Luther King Jr.</span>
                 </div>
             </div>
         </div>
@@ -139,21 +131,18 @@
 <input type="file" id="docInput" style="display:none" onchange="addEntry('📄 Document uploaded.')">
 
 <script>
-    const legacyQuotes = [
-        { q: '"Injustice anywhere is a threat to justice everywhere."', a: "- Martin Luther King Jr." },
-        { q: '"Equal justice under law is not just a caption on the Supreme Court building; it is a shield for the citizen."', a: "- William Orville Douglas" },
-        { q: '"The law is not a end in itself, nor a institution of the government. It is a shield for the weak."', a: "- Unknown" },
-        { q: '"Laws are like cobwebs, which may catch small flies, but let wasps and hornets break through."', a: "- Jonathan Swift" },
-        { q: '"The first duty of society is justice."', a: "- Alexander Hamilton" }
+    const quotes = [
+        { q: '"Injustice anywhere is a threat to justice everywhere."', a: "Martin Luther King Jr." },
+        { q: '"Equal justice under law is not just a caption on the Supreme Court building; it is a shield for the citizen."', a: "William Orville Douglas" },
+        { q: '"The law is a shield for the weak."', a: "Unknown" },
+        { q: '"The first duty of society is justice."', a: "Alexander Hamilton" }
     ];
 
     let entryCount = 0;
-
-    // Load a random quote on start
     window.onload = () => {
-        const rand = legacyQuotes[Math.floor(Math.random() * legacyQuotes.length)];
+        const rand = quotes[Math.floor(Math.random() * quotes.length)];
         document.getElementById('quoteText').innerText = rand.q;
-        document.getElementById('quoteAuthor').innerText = rand.a;
+        document.getElementById('quoteAuthor').innerText = "— " + rand.a;
     };
 
     function addText(t) { const b = document.getElementById('statusBox'); b.value += t; b.focus(); }
@@ -161,49 +150,35 @@
     function toggleChron() { document.body.classList.toggle('chron-view'); }
     function sendLawyerMessage() { window.location.href = `sms:?body=${encodeURIComponent("Urgent update from WorkTimeline. Taking an intake...")}`; }
 
-    function getSuperTimestamp() {
-        const now = new Date();
-        const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-        return now.toLocaleDateString('en-US', options);
-    }
-
     function submitEntry() {
         const text = document.getElementById('statusBox').value.trim();
         if(text) { addEntry(text); document.getElementById('statusBox').value = ''; }
     }
 
     function addEntry(text) {
-        // HIDE QUOTE BOX ON FIRST ENTRY
         if(entryCount === 0) {
-            const quote = document.getElementById('legacyQuote');
-            quote.style.opacity = '0';
-            quote.style.transform = 'translateY(-20px)';
-            setTimeout(() => { quote.style.display = 'none'; }, 600);
+            const q = document.getElementById('legacyQuote');
+            q.style.opacity = '0';
+            q.style.transform = 'scale(0.95)';
+            setTimeout(() => q.style.display = 'none', 700);
         }
-
         entryCount++;
+        const now = new Date();
+        const ts = `${now.toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric', year:'numeric'})} | ${now.toLocaleTimeString()}`;
         
-        let aiLabel = "General Log";
-        if (text.toLowerCase().includes('hazard')) aiLabel = "AI: PRIORITY HAZARD";
-        else if (text.toLowerCase().includes('witness')) aiLabel = "AI: WITNESS IDENTIFIED";
+        let ai = "General Log";
+        if (text.toLowerCase().includes('hazard')) ai = "AI: PRIORITY HAZARD";
+        else if (text.toLowerCase().includes('witness')) ai = "AI: WITNESS IDENTIFIED";
 
         const div = document.createElement('div');
         div.className = 'entry';
-        div.innerHTML = `
-            <div class="ai-label">${aiLabel}</div>
-            <span class="timestamp-full">${getSuperTimestamp()}</span>
-            <p style="margin:0; font-size:14px; font-weight:600;">${text}</p>
-        `;
+        div.innerHTML = `<div class="ai-label">${ai}</div><span class="timestamp-full">${ts}</span><p style="margin:0; font-size:15px; font-weight:600; color:var(--gray-dark);">${text}</p>`;
         document.getElementById('timelineList').prepend(div);
-        
-        // Update visual line
         document.getElementById('progressFill').style.height = Math.min(entryCount * 12, 100) + '%';
     }
 
     function syncToClio() {
-        const clioClientId = "18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s";
-        const redirectUri = "https://worktimeline-app.vercel.app/index.html";
-        window.location.href = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=${clioClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=leads_write%20contacts_write`;
+        window.location.href = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s&redirect_uri=https://worktimeline-app.vercel.app/index.html&scope=leads_write%20contacts_write`;
     }
 </script>
 </body>
