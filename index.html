@@ -10,59 +10,47 @@
         :root { 
             --teal: #008080; --clio-blue: #0076CE; --clio-green: #2ecc71; --platinum: #e2e8f0; --gray-dark: #1e293b; --gray-light: #f8fafc;
             --glass: rgba(255, 255, 255, 0.7); 
-            --round-main: 32px; 
-            --round-inner: 20px; 
-            --round-pill: 999px;
+            --round-main: 32px; --round-inner: 20px; --round-pill: 999px;
             --mac-shadow: 0 20px 40px rgba(0,0,0,0.1);
         }
         body { font-family: 'Inter', sans-serif; background: #f0f2f5; margin: 0; padding: 12px; height: 100vh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
         
-        /* SPLASH SCREEN & SKIP BTN */
-        #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f0f2f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; box-sizing: border-box; transition: opacity 0.8s ease; }
-        .story-text { font-size: 20px; font-weight: 700; color: var(--gray-dark); line-height: 1.5; opacity: 0; transition: opacity 0.6s; max-width: 460px; }
-        #skipBtn { position: absolute; bottom: 40px; background: rgba(0,0,0,0.05); border: 1px solid var(--platinum); padding: 12px 24px; border-radius: var(--round-pill); font-size: 12px; font-weight: 800; color: var(--gray-dark); cursor: pointer; backdrop-filter: blur(10px); transition: all 0.2s; }
-        #skipBtn:active { transform: scale(0.95); background: var(--platinum); }
+        /* INTRO STORY BOX */
+        #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f0f2f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; box-sizing: border-box; transition: opacity 1s ease; }
+        .story-text { font-size: 22px; font-weight: 700; color: var(--gray-dark); line-height: 1.5; opacity: 0; transition: opacity 0.8s; max-width: 480px; letter-spacing: -0.5px; }
+        #skipBtn { position: absolute; bottom: 40px; background: rgba(0,0,0,0.05); border: 1px solid var(--platinum); padding: 12px 24px; border-radius: var(--round-pill); font-size: 12px; font-weight: 800; color: var(--gray-dark); cursor: pointer; backdrop-filter: blur(10px); }
 
         /* MAC-LIKE CONTAINER */
         .app-container { max-width: 500px; margin: auto; background: white; border-radius: var(--round-main); height: 94vh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: var(--mac-shadow); border: 1px solid rgba(255,255,255,0.4); }
-        
-        /* GHOST MODE */
-        #blurBox { position: absolute; top: 125px; left: 0; right: 0; bottom: 0; z-index: 98; backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px); pointer-events: none; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        #blurBox { position: absolute; top: 145px; left: 0; right: 0; bottom: 0; z-index: 98; backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px); pointer-events: none; transition: all 0.5s ease; }
         body.ghost-active #blurBox { backdrop-filter: blur(40px) grayscale(1); -webkit-backdrop-filter: blur(40px) grayscale(1); background: rgba(240, 242, 245, 0.7); pointer-events: all; }
 
-        /* CERTIFIED HEADER */
-        .certified-badge { background: var(--gray-light); padding: 8px 16px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 11px; font-weight: 800; color: var(--clio-green); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--platinum); }
+        /* CERTIFIED BADGE */
+        .certified-badge { background: var(--gray-light); padding: 8px 16px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 11px; font-weight: 800; color: var(--clio-green); text-transform: uppercase; border-bottom: 1px solid var(--platinum); }
         .check-mark { width: 14px; height: 14px; background: var(--clio-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 9px; }
 
         /* BRANDING AREA */
-        .header { padding: 20px; border-bottom: 1px solid var(--platinum); background: white; z-index: 100; }
-        .logo-box { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-bottom: 15px; }
-        .briefcase-icon { position: relative; width: 44px; height: 32px; border: 3px solid var(--teal); border-radius: 8px; }
-        .briefcase-icon::after { content: ''; position: absolute; top: 50%; left: -8px; right: -8px; height: 3px; background: var(--clio-blue); border-radius: 2px; transform: translateY(-50%); }
+        .header { padding: 20px; border-bottom: 1px solid var(--platinum); background: white; z-index: 100; text-align: center; }
+        .logo-container { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-bottom: 15px; }
         
-        /* INPUT AREA */
-        .input-area { padding: 15px 20px; background: var(--gray-light); border-bottom: 1px solid var(--platinum); flex-shrink: 0; }
-        .chip { background: white; color: var(--teal); font-size: 11px; font-weight: 800; padding: 10px 18px; border-radius: var(--round-pill); border: 1px solid var(--platinum); display: inline-block; margin-right: 8px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        /* UPDATED BRIEFCASE LOGO */
+        .briefcase { position: relative; width: 52px; height: 36px; border: 3px solid var(--gray-dark); border-radius: 8px; }
+        .briefcase-handle { position: absolute; top: -11px; left: 50%; transform: translateX(-50%); width: 20px; height: 8px; border: 3px solid var(--gray-dark); border-bottom: none; border-radius: 5px 5px 0 0; }
+        .teal-spine { position: absolute; top: 55%; left: -18px; right: -18px; height: 3px; background: var(--teal); border-radius: 2px; }
+        .teal-dots { position: absolute; top: 55%; left: 50%; transform: translate(-50%, -50%); display: flex; gap: 4px; }
+        .dot { width: 7px; height: 7px; background: var(--teal); border-radius: 50%; border: 1.5px solid white; }
 
-        #statusBox { width: 100%; height: 90px; padding: 16px; border-radius: var(--round-inner); border: 1px solid var(--platinum); box-sizing: border-box; font-family: inherit; font-size: 15px; outline: none; background: white; resize: none; }
-        
-        .media-toolbar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 12px 0; }
-        .media-btn { background: white; border: 1px solid var(--platinum); padding: 12px 2px; border-radius: var(--round-inner); display: flex; flex-direction: column; align-items: center; }
-
-        /* TIMELINE */
-        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px; background: white; position: relative; }
-        .timeline-spine { position: absolute; left: 35px; top: 0; bottom: 0; width: 3px; background: var(--platinum); }
-        .entry { position: relative; margin-left: 50px; background: white; border: 1px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 20px; border-left: 5px solid var(--teal); box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
-        
+        .input-area { padding: 15px 20px; background: var(--gray-light); border-bottom: 1px solid var(--platinum); }
+        #statusBox { width: 100%; height: 90px; padding: 16px; border-radius: var(--round-inner); border: 1px solid var(--platinum); font-family: inherit; font-size: 15px; outline: none; resize: none; }
         .sync-btn { background: var(--clio-blue); color: white; border: none; padding: 18px; border-radius: var(--round-pill); width: 90%; align-self: center; font-weight: 800; font-size: 15px; margin: 15px 0; box-shadow: 0 10px 20px rgba(0, 118, 206, 0.2); }
-
+        
         /* TOGGLES */
-        .switch { position: relative; display: inline-block; width: 40px; height: 22px; }
+        .switch { position: relative; display: inline-block; width: 36px; height: 20px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .4s; border-radius: var(--round-pill); }
-        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--clio-blue); }
-        input:checked + .slider:before { transform: translateX(18px); }
+        input:checked + .slider:before { transform: translateX(16px); }
     </style>
 </head>
 <body>
@@ -73,20 +61,21 @@
 </div>
 
 <div class="app-container">
-    <div class="certified-badge">
-        <div class="check-mark">✓</div> Clio Developer Certified
-    </div>
-    
+    <div class="certified-badge"><div class="check-mark">✓</div> Clio Developer Certified</div>
     <div id="blurBox"></div>
     
     <header class="header">
-        <div class="logo-box">
-            <div class="briefcase-icon"></div>
-            <h1 style="color: var(--teal); margin:0; font-size: 20px; font-weight: 800; letter-spacing: -1px;">WorkTimeline™</h1>
-            <div style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Taking in intakes, decided.</div>
+        <div class="logo-container">
+            <div class="briefcase">
+                <div class="briefcase-handle"></div>
+                <div class="teal-spine"></div>
+                <div class="teal-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+            </div>
+            <h1 style="color: var(--teal); margin:4px 0 0; font-size: 22px; font-weight: 800; letter-spacing: -1px;">WorkTimeline™</h1>
+            <div style="font-size: 10px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Taking in intakes, decided.</div>
         </div>
         
-        <div style="display:flex; justify-content: space-between; align-items: center;">
+        <div style="display:flex; justify-content: space-between; align-items: center; padding: 0 10px;">
             <div style="display:flex; gap:15px;">
                 <div style="text-align: center;"><label class="switch"><input type="checkbox" onchange="toggleVault(this)"><span class="slider"></span></label><div style="font-size: 8px; font-weight: 800; margin-top: 4px;">CHRON</div></div>
                 <div style="text-align: center;"><label class="switch"><input type="checkbox" id="gSwitch" onchange="toggleGhost()"><span class="slider"></span></label><div style="font-size: 8px; font-weight: 800; margin-top: 4px;">GHOST</div></div>
@@ -96,23 +85,11 @@
     </header>
 
     <div class="input-area">
-        <div style="overflow-x: auto; white-space: nowrap; margin-bottom: 10px;">
-            <span class="chip" onclick="useTemplate('WITNESS LOCATION:\n- Name:\n- GPS/Address:')">Location</span>
-            <span class="chip" onclick="useTemplate('WITNESS STATEMENT:\n- Narrative:\n- Reliability:')">Statement</span>
-            <span class="chip" onclick="useTemplate('EVIDENCE LOG:\n- Item Type:\n- Source:')">Evidence</span>
-        </div>
-        <textarea id="statusBox" placeholder="Start your truth here..."></textarea>
-        <div class="media-toolbar">
-            <button class="media-btn"><svg viewBox="0 0 24 24" width="20" fill="var(--teal)"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-4c-1.1 0-2 .9-2 2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-5c0-1.1-.9-2-2-2z"/></svg><span>Camera</span></button>
-            <button class="media-btn"><svg viewBox="0 0 24 24" width="20" fill="var(--teal)"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg><span>Audio</span></button>
-            <button class="media-btn"><svg viewBox="0 0 24 24" width="20" fill="var(--teal)"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg><span>Text</span></button>
-            <button class="media-btn"><svg viewBox="0 0 24 24" width="20" fill="var(--teal)"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6z"/></svg><span>Docs</span></button>
-        </div>
-        <button id="addBtn" onclick="submitEntry()" style="background: var(--teal); color:white; border:none; padding:16px; border-radius: var(--round-pill); width:100%; font-weight:800; cursor:pointer;">Secure Entry</button>
+        <textarea id="statusBox" placeholder="Tell your truth here..."></textarea>
+        <button id="addBtn" onclick="submitEntry()" style="background: var(--teal); color:white; border:none; padding:16px; border-radius: var(--round-pill); width:100%; font-weight:800; margin-top:12px; transition: 0.3s;">Secure Entry & Build Timeline</button>
     </div>
 
-    <div id="timelineContainer">
-        <div class="timeline-spine"></div>
+    <div id="timelineContainer" style="flex-grow:1; overflow-y:auto; padding:20px; position:relative;">
         <div id="displayList"></div>
     </div>
 
@@ -120,12 +97,21 @@
 </div>
 
 <script>
-    const story = ["We see you.", "Justice should be effortless.", "Telling the truth takes effort.", "But not here.", "Welcome to WorkTimeline."];
-    let activeVault = "TIMELINE"; const timelineVault = []; const notesVault = [];
-    const clientId = "18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s";
-    const redirectUri = "https://worktimeline-app.vercel.app/index.html"; 
-    const clioBase = "https://ca.app.clio.com";
-
+    const story = [
+        "We see you. We hear you.",
+        "You're not invisible.",
+        "You're just stuck. Lost. Don't know what to do. Don't know where to go.",
+        "Trapped in that gray area... trapped in what feels like a prison.",
+        "Jack Newton calls you the 'Invisible 60%.'",
+        "Law firms turn away 3 out of 5 people because messy data is too costly to fix.",
+        "Messy files drain 40% of a lawyer's resources every single day.",
+        "But clean, organized intake boosts your case success rate by 60%.",
+        "We aren't here to build a wage bridge.",
+        "We are here to tear down the prison walls.",
+        "WorkTimeline™ brings lawyers and clients together through the power of truth.",
+        "Let's bridge the gap."
+    ];
+    
     let splashTimer;
     window.onload = () => { runStory(); handleClioReturn(); };
 
@@ -136,8 +122,8 @@
                 el.innerText = story[i++]; el.style.opacity = 1;
                 splashTimer = setTimeout(() => { 
                     el.style.opacity = 0; 
-                    splashTimer = setTimeout(showLine, 800); 
-                }, 2200);
+                    splashTimer = setTimeout(showLine, 1000); 
+                }, 3200); 
             } else endSplash();
         };
         showLine();
@@ -146,34 +132,16 @@
     function endSplash() {
         clearTimeout(splashTimer);
         const s = document.getElementById('splashScreen');
-        if(s) { s.style.opacity = '0'; setTimeout(() => s.remove(), 800); }
+        if(s) { s.style.opacity = '0'; setTimeout(() => s.remove(), 1000); }
     }
 
     function toggleGhost() { document.body.classList.toggle('ghost-active', document.getElementById('gSwitch').checked); }
+    
     function toggleVault(cb) {
-        activeVault = cb.checked ? "NOTES" : "TIMELINE";
+        const activeVault = cb.checked ? "NOTES" : "TIMELINE";
         document.getElementById('folderLabel').innerText = cb.checked ? "Isolated Notes" : "WorkTimeline™";
         document.getElementById('folderLabel').style.color = cb.checked ? "var(--clio-blue)" : "var(--teal)";
         document.getElementById('addBtn').style.background = cb.checked ? "var(--clio-blue)" : "var(--teal)";
-        refreshVaultDisplay();
-    }
-    function useTemplate(t) { document.getElementById('statusBox').value = t; document.getElementById('statusBox').focus(); }
-    function submitEntry() {
-        const box = document.getElementById('statusBox'); if(!box.value.trim()) return;
-        const now = new Date(); const stamp = (now.getMonth()+1) + '/' + now.getDate() + ' @ ' + now.getHours() + ':' + (now.getMinutes()<10?'0':'') + now.getMinutes();
-        const entry = { text: box.value, stamp: stamp };
-        if(activeVault === "TIMELINE") timelineVault.push(entry); else notesVault.push(entry);
-        box.value = ''; refreshVaultDisplay();
-    }
-    function refreshVaultDisplay() {
-        const list = document.getElementById('displayList'); list.innerHTML = '';
-        const data = (activeVault === "TIMELINE") ? timelineVault : notesVault;
-        [...data].reverse().forEach(item => {
-            const div = document.createElement('div'); div.className = 'entry';
-            div.style.borderLeftColor = (activeVault === "NOTES") ? "var(--clio-blue)" : "var(--teal)";
-            div.innerHTML = `<span style="font-size:10px; font-weight:800; color:#64748b;">${item.stamp}</span><p style="margin:5px 0 0; font-size:14px; font-weight:500;">${item.text}</p>`;
-            list.appendChild(div);
-        });
     }
 
     async function syncToClio() {
@@ -181,20 +149,30 @@
         sessionStorage.setItem('clio_code_verifier', verifier);
         const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier));
         const challenge = btoa(String.fromCharCode(...new Uint8Array(hash))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-        window.location.href = `${clioBase}/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=leads_write%20contacts_write%20notes_write&code_challenge=${challenge}&code_challenge_method=S256`;
+        window.location.href = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s&redirect_uri=https://worktimeline-app.vercel.app/index.html&scope=leads_write%20contacts_write%20notes_write&code_challenge=${challenge}&code_challenge_method=S256`;
     }
 
     async function handleClioReturn() {
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code'); const verifier = sessionStorage.getItem('clio_code_verifier');
         if (code && verifier) {
-            const resp = await fetch(`${clioBase}/oauth/token`, {
+            const resp = await fetch(`https://ca.app.clio.com/oauth/token`, {
                 method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: new URLSearchParams({ grant_type: "authorization_code", code, client_id: clientId, redirect_uri: redirectUri, code_verifier: verifier })
+                body: new URLSearchParams({ grant_type: "authorization_code", code, client_id: "18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s", redirect_uri: "https://worktimeline-app.vercel.app/index.html", code_verifier: verifier })
             });
             const data = await resp.json();
             if (data.access_token) { localStorage.setItem('clio_access_token', data.access_token); window.history.replaceState({}, '', "/index.html"); alert("Connected to Clio."); }
         }
+    }
+
+    function submitEntry() {
+        const box = document.getElementById('statusBox'); if(!box.value.trim()) return;
+        const list = document.getElementById('displayList');
+        const div = document.createElement('div');
+        div.style.cssText = "background:white; border:1px solid #e2e8f0; padding:15px; border-radius:15px; margin-bottom:15px; border-left:5px solid var(--teal);";
+        div.innerHTML = `<p style="margin:0; font-size:14px; font-weight:500;">${box.value}</p>`;
+        list.prepend(div);
+        box.value = '';
     }
 </script>
 </body>
