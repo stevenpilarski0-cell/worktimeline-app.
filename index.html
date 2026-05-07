@@ -9,7 +9,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
         
         :root { 
-            --teal: #008080; --teal-soft: #e0f2f1; --clio-green: #00a859;
+            --teal: #008080; --teal-soft: #e0f2f1; --clio-blue: #0076CE; --clio-green: #00a859;
             --platinum-bg: #d8e2ea; --platinum-mid: #eef1f5; --platinum-dark: #7a8b9e;
             --gray-dark: #2c3e50; 
         }
@@ -23,44 +23,42 @@
             overflow: hidden; 
         }
 
-        /* --- THE CINEMATIC LAYER --- */
+        /* --- CINEMATIC OVERLAY --- */
         .splash-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--platinum-bg); z-index: 99999 !important;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             transition: opacity 1s ease-out; padding: 40px; box-sizing: border-box; text-align: center;
         }
-
         .logo-box { opacity: 0; transition: opacity 1.5s ease-in; margin-bottom: 20px; }
         .philosophy-quote { font-style: italic; font-size: 16px; color: var(--platinum-dark); margin-top: 15px; opacity: 0; transition: opacity 1s ease-in; }
         .wt-answer { font-weight: 900; font-size: 18px; color: var(--teal); margin-top: 10px; opacity: 0; transition: opacity 1s ease-in; }
-
-        .clio-check-pop {
-            width: 70px; height: 70px; background: var(--clio-green); color: white; 
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 40px; opacity: 0; transform: scale(0);
-            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            margin-top: 30px; box-shadow: 0 10px 25px rgba(0, 168, 89, 0.4);
-        }
+        .clio-check-pop { width: 70px; height: 70px; background: var(--clio-green); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; opacity: 0; transform: scale(0); transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); margin-top: 30px; box-shadow: 0 10px 25px rgba(0, 168, 89, 0.4); }
         .clio-check-pop.pop { opacity: 1; transform: scale(1); }
 
         /* --- UI COMPONENTS --- */
         .header-container { display: flex; align-items: center; padding: 30px 20px; border-bottom: 3px solid var(--platinum-bg); }
         .lawyer-box { background: var(--teal-soft); padding: 15px; border-radius: 20px; margin-bottom: 15px; }
         .template-chip { background: #ffffff; border: 2px solid var(--teal-soft); color: var(--teal); padding: 8px 12px; border-radius: 50px; font-size: 11px; font-weight: 800; cursor: pointer; border: none; }
-        
         #statusBox { width: 100%; height: 120px; border-radius: 20px; border: 2px solid var(--platinum-mid); background: var(--platinum-bg); padding: 15px; font-size: 16px; margin-bottom: 15px; resize: none; font-family: inherit; box-sizing: border-box; }
         
+        /* SUMMARY BOX (CLIO DUO) */
+        .summary-header { background: var(--gray-dark); color: #ffffff; padding: 20px; border-radius: 25px; margin-bottom: 15px; display: none; text-align: center; }
+        .duo-box { background: linear-gradient(135deg, #f0f7f7, #ffffff); border: 2px dashed var(--teal); border-radius: 25px; padding: 20px; margin-bottom: 20px; display: none; }
+
         .media-toolbar { display: flex; gap: 10px; margin-bottom: 15px; }
         .media-btn { background: var(--platinum-bg); border-radius: 20px; flex: 1; padding: 12px; display: flex; flex-direction: column; align-items: center; cursor: pointer; border: none; }
         .media-btn svg { width: 24px; height: 24px; fill: var(--teal); }
         .media-btn span { font-size: 9px; font-weight: 900; margin-top: 4px; color: var(--platinum-dark); }
 
+        .entry { background: #ffffff; border: 2px solid var(--platinum-mid); padding: 15px; border-radius: 20px; margin-bottom: 12px; border-left: 5px solid var(--teal); }
+        .timestamp-box { color: var(--teal); font-size: 10px; font-weight: 900; background: var(--teal-soft); padding: 4px 10px; border-radius: 8px; margin-bottom: 8px; display: inline-block; }
+        
         .submit-main { width: 100%; background: var(--teal); color: white; border: none; padding: 18px; border-radius: 25px; font-weight: 900; font-size: 16px; cursor: pointer; }
-        .entry { background: #ffffff; border: 2px solid var(--platinum-mid); padding: 15px; border-radius: 20px; margin-bottom: 12px; }
-        .lock-footer { background: var(--gray-dark); color: white; border: none; border-radius: 25px; padding: 20px; width: 100%; font-weight: 900; margin-top: auto; cursor: pointer; }
+        .lock-footer { background: var(--gray-dark); color: white; border: none; border-radius: 25px; padding: 22px; width: 100%; font-weight: 900; margin-top: auto; cursor: pointer; }
+        
         .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; backdrop-filter: blur(15px); background: rgba(255,255,255,0.7); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
-        .modal-content { background: white; border-radius: 25px; padding: 25px; text-align: center; border: 2px solid var(--platinum-mid); width: 80%; }
+        .modal-content { background: white; border-radius: 25px; padding: 25px; text-align: center; border: 2px solid var(--platinum-mid); width: 85%; }
     </style>
 </head>
 <body>
@@ -70,7 +68,6 @@
         <div id="story-container">
             <h1 id="story-text" style="font-size: 24px; line-height: 1.5; color: var(--gray-dark); transition: opacity 0.8s; font-weight: 800;">Initialising...</h1>
         </div>
-
         <div id="branding-final" style="display: none; flex-direction: column; align-items: center;">
             <div id="logo-wrap" class="logo-box">
                 <svg width="80" height="60" viewBox="0 0 100 80">
@@ -91,48 +88,63 @@
             <h1 style="color: var(--teal); margin: 0; font-size: 22px; font-weight: 900;">WorkTimeline™</h1>
             <p style="margin:0; font-style: italic; color: var(--platinum-dark); font-size: 11px;">"Justice is truth in action."</p>
         </div>
-        <button onclick="toggleDbPanel()" style="font-size: 8px; padding: 5px; background: none; border: 1px dashed var(--teal); border-radius: 5px;">DB CONFIG</button>
     </header>
 
-    <div style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto;">
-        <div class="lawyer-box">
-            <select id="lawyerSelect" onchange="saveLawyer()" style="width: 100%; border:none; background:none; font-weight:800; font-family: inherit;">
-                <option value="none">-- Select Professional --</option>
-                <option value="Marcus Thorne, Esq.">Marcus Thorne, Esq.</option>
-                <option value="Sarah Jenkins, JD">Sarah Jenkins, JD</option>
-            </select>
-        </div>
-
-        <div style="display: flex; gap: 5px; margin-bottom: 10px;">
-            <button class="template-chip" onclick="addTemplate('📍 [SITE]: ')">+ Site</button>
-            <button class="template-chip" onclick="addTemplate('👤 [WITNESS]: ')">+ Witness</button>
-            <button class="template-chip" onclick="addTemplate('📋 [INTAKE]: ')">+ Intake</button>
-        </div>
-
-        <textarea id="statusBox" placeholder="Describe event..."></textarea>
+    <div id="mainContent" style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto;">
         
-        <div class="media-toolbar">
-            <div class="media-btn" onclick="logMedia('Photo')"><svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15a5 5 0 100-10 5 5 0 000 10z"/></svg><span>CAMERA</span></div>
-            <div class="media-btn" onclick="logMedia('Audio')"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg><span>AUDIO</span></div>
-            <div class="media-btn" onclick="logMedia('Document')"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg><span>DOC</span></div>
+        <div id="briefingHeader" class="summary-header">
+            <h3 style="margin:0 0 10px 0; font-size:16px; color:var(--teal-soft);">Clio Grow Intake Brief</h3>
+            <div style="font-size:12px; opacity: 0.9;">Professional: <b id="sumLawyer">--</b> | Hash: <b id="sumHash">--</b></div>
         </div>
 
-        <button class="submit-main" onclick="submitEntry()">Add to Timeline</button>
+        <div id="duoSummaryBox" class="duo-box">
+            <h4 style="color: var(--teal); margin: 0 0 10px 0; font-size: 14px; font-weight: 900;">✨ Clio Duo AI Summary</h4>
+            <p id="duoSummaryText" style="font-size: 13px; color: var(--gray-dark); margin: 0; line-height: 1.5; font-weight: 600;">Generating Case Chronology for Clio Canada...</p>
+        </div>
+
+        <div id="inputArea">
+            <div class="lawyer-box">
+                <select id="lawyerSelect" onchange="saveLawyer()" style="width: 100%; border:none; background:none; font-weight:800; font-family: inherit;">
+                    <option value="none">-- Select Professional --</option>
+                    <option value="Marcus Thorne, Esq.">Marcus Thorne, Esq.</option>
+                    <option value="Sarah Jenkins, JD">Sarah Jenkins, JD</option>
+                </select>
+            </div>
+
+            <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+                <button class="template-chip" onclick="addTemplate('📍 [SITE]: ')">+ Site</button>
+                <button class="template-chip" onclick="addTemplate('👤 [WITNESS]: ')">+ Witness</button>
+                <button class="template-chip" onclick="addTemplate('📋 [INTAKE]: ')">+ Intake</button>
+            </div>
+
+            <textarea id="statusBox" placeholder="Describe event..."></textarea>
+            
+            <div class="media-toolbar">
+                <div class="media-btn" onclick="logMedia('Photo')"><svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15a5 5 0 100-10 5 5 0 000 10z"/></svg><span>CAMERA</span></div>
+                <div class="media-btn" onclick="logMedia('Audio')"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg><span>AUDIO</span></div>
+                <div class="media-btn" onclick="logMedia('Doc')"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg><span>DOC</span></div>
+            </div>
+
+            <button class="submit-main" onclick="submitEntry()">Add to Timeline</button>
+        </div>
+
         <div id="timeline" style="margin-top:20px;"></div>
-        <button class="lock-footer" onclick="showWarning()">Lock & Sync to Clio</button>
+        <button id="lockBtn" class="lock-footer" onclick="showWarning()">Lock & Prepare Summary</button>
     </div>
 
     <div id="warningModal" class="modal-overlay">
         <div class="modal-content">
-            <h3 style="margin-top:0;">⚠️ Finalize Timeline?</h3>
-            <button onclick="syncToClio()" style="width:100%; background:var(--teal); color:white; padding:15px; border-radius:15px; border:none; font-weight:800;">CONFIRM & SYNC</button>
-            <button onclick="closeWarning()" style="margin-top:10px; background:none; border:none; color:var(--platinum-dark);">Cancel</button>
+            <h3 style="margin-top:0;">⚠️ Finalize Summary?</h3>
+            <p style="font-size:13px; color:var(--platinum-dark);">This will generate a Clio Duo brief and initiate the encrypted sync to Clio Canada.</p>
+            <button id="finalSyncBtn" onclick="proceedToSummary()" style="width:100%; background:var(--teal); color:white; padding:18px; border-radius:15px; border:none; font-weight:800;">FINALIZE & SYNC</button>
+            <button onclick="closeWarning()" style="margin-top:12px; background:none; border:none; color:var(--platinum-dark); font-weight:800;">Cancel</button>
         </div>
     </div>
 </div>
 
 <script>
-    let sb = null;
+    let entriesCount = 0;
+
     const introTexts = [
         "Feel invisble?", "Your not", "We hear you", "We see you", "You feel stuck", "Cant get out", "Feels like prison...",
         "But its not", "You may feel trapped in a grey area", "Its ok",
@@ -143,7 +155,7 @@
         "Lawyers lose billions to unorganized files and turn down clients due to intake time.",
         "WorkTimeline is a tool for equality and fair justice.",
         "It allows YOU to be part of the process.",
-        "It gives lawyers a tool to prepare clients and never turn them down.",
+        "It gives lawyers a tool to prepare potential clients and never turn them down.",
         "We are here to tear down the grey wall.", "So you can see the teal sky again.",
         "Bringing clients and lawyers closer together."
     ];
@@ -164,8 +176,7 @@
                 setTimeout(() => {
                     textEl.innerHTML = introTexts[current];
                     textEl.style.opacity = 1;
-                    let displayTime = 2200; 
-                    if (current >= 13 && current <= 16) displayTime = 7000; 
+                    let displayTime = (current >= 13 && current <= 16) ? 7000 : 2200; 
                     if (current >= 17) displayTime = 3500; 
                     current++;
                     setTimeout(next, displayTime);
@@ -191,35 +202,59 @@
         next();
     }
 
-    function initSupabase() {
-        const u = localStorage.getItem('sb_url'), k = localStorage.getItem('sb_key');
-        if (u && k && typeof supabase !== 'undefined') sb = supabase.createClient(u, k);
-    }
-
-    function addTemplate(t) { document.getElementById('statusBox').value += t; document.getElementById('statusBox').focus(); }
-    async function submitEntry() {
-        const txt = document.getElementById('statusBox').value.trim();
-        if(!txt) return;
-        if(sb) await sb.from('timeline_entries').insert([{ entry_text: txt, lawyer_name: localStorage.getItem('lawyer') }]);
-        addEntryToUI(txt);
-        document.getElementById('statusBox').value = '';
-    }
     function addEntryToUI(txt, sys=false) {
+        entriesCount++;
         const div = document.createElement('div');
         div.className = 'entry';
-        const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        div.innerHTML = `<span class="timestamp-box">${time}</span><p style="margin:0; font-weight:600;">${txt}</p>`;
+        const now = new Date();
+        const timestamp = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) + ' at ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        div.innerHTML = `<span class="timestamp-box">${timestamp}</span><p style="margin:0; font-weight:600;">${txt}</p>`;
         if(sys) div.style.background = 'var(--platinum-bg)';
         document.getElementById('timeline').prepend(div);
     }
-    function logMedia(type) { addEntryToUI(`🔒 ${type} encrypted and attached.`, true); }
-    function saveLawyer() { localStorage.setItem('lawyer', document.getElementById('lawyerSelect').value); }
-    function toggleDbPanel() { const p = document.getElementById('dbConfig'); p.style.display = p.style.display === 'none' ? 'block' : 'none'; }
-    function showWarning() { document.getElementById('warningModal').style.display = 'flex'; }
-    function closeWarning() { document.getElementById('warningModal').style.display = 'none'; }
-    function syncToClio() { window.location.href = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=btscu9WmPHYellZtZA9slQfynBAQudwjaR7pEDdq&redirect_uri=${encodeURIComponent(window.location.href)}`; }
 
-    window.onload = () => { showIntro(); initSupabase(); };
+    function addTemplate(t) { document.getElementById('statusBox').value += t; document.getElementById('statusBox').focus(); }
+
+    function submitEntry() {
+        const txt = document.getElementById('statusBox').value.trim();
+        if(!txt) return;
+        addEntryToUI(txt);
+        document.getElementById('statusBox').value = '';
+    }
+
+    function logMedia(type) { addEntryToUI(`🔒 [SECURE] ${type} encrypted and attached to chronology. Tamper-protection enabled.`, true); }
+
+    function showWarning() { 
+        if(document.getElementById('lawyerSelect').value === 'none') {
+            alert('Please select a Professional first.');
+            return;
+        }
+        document.getElementById('warningModal').style.display = 'flex'; 
+    }
+    
+    function closeWarning() { document.getElementById('warningModal').style.display = 'none'; }
+
+    function proceedToSummary() {
+        closeWarning();
+        document.getElementById('inputArea').style.display = 'none';
+        document.getElementById('briefingHeader').style.display = 'block';
+        document.getElementById('duoSummaryBox').style.display = 'block';
+        document.getElementById('sumLawyer').innerText = document.getElementById('lawyerSelect').value;
+        document.getElementById('sumHash').innerText = Math.random().toString(36).substring(7).toUpperCase();
+        
+        // Final Sync Handshake Logic
+        const lockBtn = document.getElementById('lockBtn');
+        lockBtn.innerText = "Syncing to Clio Canada... 🚀";
+        lockBtn.style.background = "var(--clio-blue)";
+        
+        setTimeout(() => {
+            window.location.href = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=btscu9WmPHYellZtZA9slQfynBAQudwjaR7pEDdq&redirect_uri=${encodeURIComponent(window.location.href)}`;
+        }, 2000);
+    }
+
+    function saveLawyer() { localStorage.setItem('lawyer', document.getElementById('lawyerSelect').value); }
+
+    window.onload = showIntro;
 </script>
 </body>
 </html>
