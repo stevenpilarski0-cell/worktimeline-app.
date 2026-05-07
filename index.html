@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WorkTimeline™ | The Truth Handshake</title>
     <style>
-        /* Switched from Nunito to Inter: The perfect balance of accessible clarity and professional trust */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
         
         :root { 
@@ -67,7 +66,7 @@
 </head>
 <body>
 
-<div id="splashScreen"><h1 id="storyText" class="story-text">Welcome.</h1></div>
+<div id="splashScreen"><h1 id="storyText" class="story-text"></h1></div>
 
 <div class="app-container" id="mainApp">
     <div id="blurBox"></div>
@@ -117,9 +116,12 @@
 
 <script>
     const story = [
-        "We know you're there. We see you. We hear you. You're not invisible.",
-        "You're just stuck trapped in that grey area—a prison. But we're here to get you out, one step at a time.",
-        "Towards the center where you belong with Clio. Where a firm will make sure you never look back.",
+        "We see you. We hear you.",
+        "We know you're there. You're not invisible.",
+        "You're just stuck trapped in that grey area—a prison.",
+        "But we're here to get you out, one step at a time.",
+        "Towards the center where you belong with Clio.",
+        "Where a firm will make sure you never look back.",
         "You are the 60%. The people who feel unseen and are too cautious to come forward.",
         "And lawyers want to help, but messy, unorganized intake is a massive barrier.",
         "Messy files drain 40% of a firm's time and resources.",
@@ -136,14 +138,24 @@
 
     function runStory() {
         const el = document.getElementById('storyText'); let i = 0;
-        const lineDuration = 3750; // Total 12 lines * 3.75s = exactly 45 seconds
+        const lineDuration = 3000; // 15 lines x 3 seconds = 45 seconds perfectly
+        
+        // Populate the very first word instantly
+        el.innerText = story[i++];
+        el.style.opacity = 1;
+
         const next = () => {
             if(i < story.length) {
                 el.style.opacity = 0;
-                setTimeout(() => { el.innerText = story[i++]; el.style.opacity = 1; setTimeout(next, lineDuration - 800); }, 800);
+                setTimeout(() => { 
+                    el.innerText = story[i++]; 
+                    el.style.opacity = 1; 
+                    setTimeout(next, lineDuration - 800); 
+                }, 800);
             } else endSplash();
         };
-        next();
+        
+        setTimeout(next, lineDuration - 800);
     }
 
     function endSplash() { const s = document.getElementById('splashScreen'); if(s) { s.style.opacity = '0'; setTimeout(() => s.remove(), 1200); } }
