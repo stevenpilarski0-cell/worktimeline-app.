@@ -1,10 +1,13 @@
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
+  
   const { code } = req.body;
   const params = new URLSearchParams();
   params.append('grant_type', 'authorization_code');
   params.append('code', code);
-  params.append('client_id', 'btscu9WmPHYelIZtZA9slQfynBAQudwjaR7pEDdq');
+  
+  // This ID matches your Dashboard screenshot character-for-character
+  params.append('client_id', 'btscu9WmPHYellZtZA9slQfynBAQudwjaR7pEDdq');
   params.append('client_secret', 'kL0cWsjKkZTzWkdCVrcs7IktGIZeUj6pAvE2GJka');
   params.append('redirect_uri', 'https://worktimeline-app.vercel.app');
 
