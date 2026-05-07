@@ -395,157 +395,111 @@
 
             addEntry(text, false);
             document.getElementById('statusBox').value = "";
+ function addEntry(txt, sys) {
+    const div = document.createElement('div'); 
+    div.className = 'entry';
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+    const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    const geo = "🌍 LAT: 49.2827° N | LON: 123.1207° W";
+    div.innerHTML = `<span class="timestamp-box">${dateStr} at ${timeStr}</span><p style="margin:5px 0 0 0; color: #2c3e50; font-weight: 600; line-height: 1.5;">${txt}</p><span class="geo-tag">${geo}</span>`;
+    if (sys) { 
+        div.style.backgroundColor = "var(--platinum-bg)"; 
+        div.style.borderColor = "var(--teal-soft)"; 
+    }
+    document.getElementById('timeline').prepend(div);
+}
+
+const introTexts = [
+    "Feel invisible?",
+    "Trapped in a cycle of 'what ifs'?",
+    "You are not alone. 60% of people with legal issues never seek help because they fear the cost or the complexity.",
+    "The 'Justice Gap' is real: Millions feel paralyzed, choosing silence over a system that feels built for someone else.",
+    "Lawyers lose billions every year in wasted intake hours—time spent on cases that aren't the right fit.",
+    "This is why intake fees exist. It's not a barrier; it's a way for experts to value the time they give to your story.",
+    "WorkTimeLine guides you for your first few steps...",
+    "It’s okay. WorkTimeLine’s got you. Let us guide you...",
+    "Enjoy the first step.",
+    "Welcome to the sky.",
+    "Towards the center."
+];
+
+function showIntro() {
+    const introDiv = document.getElementById('splashScreen');
+    const step1 = document.getElementById('step1');
+    let current = 0;
+
+    function next() {
+        if (current < introTexts.length) {
+            step1.style.opacity = 0;
+            setTimeout(() => {
+                step1.innerHTML = `<h1 style="font-size: 22px; line-height: 1.4; color: #2c3e50; padding: 20px;">${introTexts[current]}</h1>`;
+                step1.style.opacity = 1;
+                let displayTime = (current >= 2 && current <= 5) ? 15000 : 4000;
+                current++;
+                setTimeout(next, displayTime);
+            }, 1000);
+        } else {
+            introDiv.style.opacity = 0;
+            setTimeout(() => introDiv.style.display = 'none', 1000);
         }
+    }
+    next();
+}
 
-        function addEntry(txt, sys) {
-            const div = document.createElement('div'); 
-            div.className = 'entry';
-            const now = new Date();
-            const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
-            const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-            const geo = "🌍 LAT: 49.2827° N | LON: 123.1207° W";
-            
-            div.innerHTML = `<span class="timestamp-box">${dateStr} at ${timeStr}</span><p style="margin:5px 0 0 0; color: #2c3e50; font-weight: 600; line-height: 1.5;">${txt}</p><span class="geo-tag">${geo}</span>`;
-            if (sys) { 
-                div.style.backgroundColor = "var(--platinum-bg)"; 
-                div.style.borderColor = "var(--teal-soft)"; 
-            }
-            document.getElementById('timeline').prepend(div);
-        }
+function showWarning() {
+    if (document.getElementById('lawyerSelect').value === "none") { 
+        alert("Please select a Professional first! 👩‍⚖️"); 
+        return; 
+    }
+    document.getElementById('warningModal').style.display = "flex";
+}
 
-        function showWarning() {
-            if (document.getElementById('lawyerSelect').value === "none") { 
-                alert("Please select a Professional first! 👩‍⚖️"); 
-                return; 
-            }
-            document.getElementById('warningModal').style.display = "flex";
-        }
+function closeWarning() { document.getElementById('warningModal').style.display = "none"; }
 
-        function closeWarning() { 
-            document.getElementById('warningModal').style.display = "none"; 
-        }
+function proceedToSummary() {
+    closeWarning();
+    isLocked = true;
+    document.getElementById('briefingHeader').style.display = 'block';
+    document.getElementById('mainInputArea').style.display = 'none';
+    document.getElementById('duoSummaryBox').style.display = 'block';
+    document.getElementById('sumLawyer').innerText = localStorage.getItem('lawyer');
+    document.getElementById('sumHash').innerText = Math.random().toString(36).substring(7).toUpperCase();
 
-        function proceedToSummary() {
-            closeWarning();
-            isLocked = true;
-            document.getElementById('briefingHeader').style.display = 'block';
-            document.getElementById('mainInputArea').style.display = 'none';
-            document.getElementById('duoSummaryBox').style.display = 'block';
+    const lockBtn = document.getElementById('lockBtn');
+    lockBtn.innerHTML = "Approve Summary & Sync To Clio";
+    lockBtn.style.background = "var(--clio-blue)";
+    lockBtn.onclick = function() {
+        const clientId = 'btscu9WmPHYellZtZA9slQfynBAQudwjaR7pEDdq';
+        const redirectUri = 'https://worktimeline-app.vercel.app';
+        window.location.href = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+    };
+}
 
-            // Set Summary Details (Lawyer name and a unique Hash ID)
-            document.getElementById('sumLawyer').innerText = localStorage.getItem('lawyer') || "Marcus Thorne, Esq.";
-            document.getElementById('sumHash').innerText = Math.random().toString(36).substring(2, 8).toUpperCase();
-
-            const lockBtn = document.getElementById('lockBtn');
-            lockBtn.innerHTML = "Approve Summary & Sync To Clio 🚀";
-            lockBtn.style.background = "var(--clio-blue)";
-
-            lockBtn.onclick = function() {
-                
-                const redirectUri = 'https://worktimeline-app.vercel.app'; 
-                const clientId = 'btscu9WmPHshoLlZtZA9slQfynBAQudwjaR7pEDdq';
-                const authUrl = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
-
-                window.location.href = authUrl;
-            };
-        }
-
-        function togglePrivacy() {
-            document.getElementById('appRoot').classList.toggle('privacy-active');
-        }
-
-        // --- THE CLIO DATA RECEIVER (REAL HANDSHAKE & MATTERS) ---
 window.addEventListener('load', async () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const clioCode = urlParams.get('code');
-  let token = localStorage.getItem('clio_access_token');
-  const lockBtn = document.getElementById('lockBtn');
-  const matterSection = document.getElementById('clioMatterSection');
-  const matterDropdown = document.getElementById('matterDropdown');
-
-    // STEP 1: If we just got back from Clio with a code, exchange it for a Token
-  if (clioCode && !token) {
-    if (lockBtn) lockBtn.innerHTML = "⏳ Exchanging Handshake...";
-    try {
-      const response = await fetch('/api/clio-exchange', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: clioCode })
-      });
-      
-      // If the API file is missing or broken, tell us:
-      if (!response.ok) {
-        if (lockBtn) lockBtn.innerHTML = "❌ API Error: " + response.status;
-        return;
-      }
-
-      const data = await response.json();
-      
-      // If Clio gave us the token, success!
-      if (data.access_token) {
-        localStorage.setItem('clio_access_token', data.access_token);
-        token = data.access_token;
-        window.history.replaceState({}, document.title, "/");
-      } else {
-        // If Clio rejected the trade, print Clio's exact complaint!
-        if (lockBtn) lockBtn.innerHTML = "❌ Clio Error: " + (data.error_description || data.error || "Unknown Error");
-      }
-    } catch (error) {
-      if (lockBtn) lockBtn.innerHTML = "❌ Network Crash: " + error.message;
-    }
-  }
-
-
-  // STEP 2: If we have a Token, show the dropdown and fetch the Matters
-  if (token) {
-    // Reveal the Matter Dropdown UI you already built
-    if (matterSection) matterSection.style.display = 'block';
-    if (lockBtn) {
-      lockBtn.innerHTML = "✅ Authorized: Ready to Push";
-      lockBtn.style.background = "#20a745";
-    }
-
-    // Fetch actual Matters from Clio Manage
-    try {
-      if (matterDropdown) matterDropdown.innerHTML = '<option value="">⏳ Fetching your Matters...</option>';
-      
-      const matRes = await fetch("https://app.clio.com/api/v4/matters?fields=id,display_number,description", {
-        headers: { "Authorization": `Bearer ${token}` }
-      });
-      const matData = await matRes.json();
-
-      // Populate your dropdown with the real cases
-      if (matData.data && matterDropdown) {
-        matterDropdown.innerHTML = '<option value="">-- Select Clio Matter --</option>' + 
-          matData.data.map(m => `<option value="${m.id}">${m.display_number}: ${m.description || 'No Description'}</option>`).join('');
-      }
-    } catch (err) {
-      console.error("Failed to fetch matters:", err);
-      if (matterDropdown) matterDropdown.innerHTML = '<option value="">⚠️ Error loading matters</option>';
-    }
-
-    // STEP 3: The Final Push Action
-    if (lockBtn) {
-      lockBtn.onclick = function() {
-        const selectedMatter = matterDropdown ? matterDropdown.value : "Unknown";
-        if (!selectedMatter) {
-          alert("Please select a Matter first.");
-          return;
+    showIntro();
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    if (code) {
+        const res = await fetch('/api/clio-exchange', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code })
+        });
+        const data = await res.json();
+        if (data.access_token) {
+            localStorage.setItem('clio_access_token', data.access_token);
+            location.href = "/";
         }
-        
-        lockBtn.innerHTML = "📡 Transmitting to Clio...";
-        // Simulated network delay for cinematic effect
-        setTimeout(() => {
-          alert(`🚀 SUCCESS!\n\nBecause Clio keeps them centered, WorkTimeline keeps them a step ahead.\n\nEvidence securely synced to Matter ${selectedMatter}.`);
-          lockBtn.innerHTML = "✅ Sync Complete";
-          lockBtn.style.background = "#000";
-          lockBtn.disabled = true;
-        }, 1500);
-      };
     }
-  }
 });
 
-    </script>
+function togglePrivacy() {
+    document.getElementById('appRoot').classList.toggle('privacy-active');
+}
+</script>
 </body>
-                  </html>
+</html>
+
+
+        
