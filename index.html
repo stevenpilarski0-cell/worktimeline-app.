@@ -9,6 +9,7 @@
         
         :root { 
             --teal: #008080; --clio-blue: #0076CE; --platinum: #e2e8f0; --gray-dark: #1e293b; --gray-light: #f8fafc;
+            --glass: rgba(0, 128, 128, 0.05); 
             --round-main: 48px; --round-inner: 28px; --round-pill: 999px;
         }
         
@@ -20,49 +21,51 @@
         .story-text { font-size: 20px; font-weight: 700; color: var(--gray-dark); line-height: 1.5; opacity: 0; transition: opacity 0.8s; max-width: 460px; }
         #skipBtn { position: absolute; bottom: calc(50px + env(safe-area-inset-bottom)); padding: 14px 28px; background: white; color: var(--clio-blue); border: 2px solid var(--clio-blue); border-radius: var(--round-pill); font-size: 14px; font-weight: 800; cursor: pointer; z-index: 100001; }
 
-        /* MAIN APP CONTAINER */
+        /* APP CONTAINER */
         .app-container { max-width: 500px; margin: auto; background: white; border-radius: var(--round-main); height: calc(100dvh - 20px); display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.08); }
         
         /* HEADER STYLING */
         .header { display: flex; justify-content: space-between; align-items: center; padding: 22px 24px; border-bottom: 1px solid var(--platinum); flex-shrink: 0; background: white; z-index: 110; }
         .logo-container { display: flex; align-items: center; gap: 12px; }
         
-        /* THE CUSTOM BRIEFCASE ICON */
+        /* CUSTOM ICON */
         .wt-icon { width: 32px; height: 32px; position: relative; }
-        .wt-icon svg { width: 100%; height: 100%; fill: none; stroke: var(--teal); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .wt-icon svg { width: 100%; height: 100%; fill: none; stroke: var(--teal); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 
-        /* INPUT AREA & ZEN LOGIC */
+        /* SLIDING INPUT AREA */
         #inputArea { padding: 0 24px 15px 24px; background: var(--gray-light); border-bottom: 1px solid var(--platinum); flex-shrink: 0; display: flex; flex-direction: column; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.1); max-height: 600px; z-index: 105; }
         .app-container.zen-scroll #inputArea { max-height: 0; padding: 0; border-bottom: none; opacity: 0; pointer-events: none; }
         .app-container.zen-scroll .footer-bar { transform: translateY(200%); opacity: 0; }
 
-        /* THE DRAGGABLE HANDLE */
+        /* DRAGGABLE HANDLE */
         .sheet-handle-bar { width: 100%; height: 44px; display: flex; justify-content: center; align-items: center; cursor: pointer; background: white; flex-shrink: 0; z-index: 106; border-bottom: 1px solid #f1f5f9; }
         .handle { width: 45px; height: 6px; background: #cbd5e1; border-radius: 10px; }
 
-        /* UI COMPONENTS */
+        /* UI ELEMENTS */
         .template-chips { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0 14px 0; scrollbar-width: none; }
-        .chip { background: white; color: var(--teal); font-size: 11px; font-weight: 700; padding: 10px 18px; border-radius: var(--round-pill); white-space: nowrap; border: 1.5px solid var(--platinum); }
+        .chip { background: white; color: var(--teal); font-size: 11px; font-weight: 700; padding: 10px 18px; border-radius: var(--round-pill); white-space: nowrap; border: 1.5px solid var(--platinum); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         #statusBox { width: 100%; height: 85px; padding: 16px; border-radius: var(--round-inner); border: 1.5px solid var(--platinum); font-family: inherit; font-size: 15px; background: white; resize: none; margin-bottom: 12px; }
         .media-toolbar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 12px; }
-        .media-btn { background: white; border: 1.5px solid var(--platinum); padding: 12px 4px; border-radius: var(--round-inner); display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+        .media-btn { background: white; border: 1.5px solid var(--platinum); padding: 12px 4px; border-radius: var(--round-inner); display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: 0.2s; }
+        .media-btn:active { background: var(--gray-light); transform: translateY(1px); }
         .media-btn svg { width: 22px; height: 22px; stroke: var(--teal); fill: none; stroke-width: 2.2; margin-bottom: 4px; }
         .media-btn span { font-size: 9px; font-weight: 700; text-transform: uppercase; }
         #addBtn { background: var(--teal); color:white; border:none; padding:18px; border-radius: var(--round-pill); width:100%; font-weight:700; font-size: 15px; cursor:pointer; box-shadow: 0 4px 15px rgba(0, 128, 128, 0.2); margin-top: 5px; }
 
-        /* TIMELINE DISPLAY */
+        /* TIMELINE */
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 20px 25px 120px 25px; position: relative; background: #fff; scroll-behavior: smooth; }
         .timeline-spine { position: absolute; left: 35px; top: 0; bottom: 0; width: 4px; background: var(--platinum); border-radius: 4px; }
         .legacy-entry { position: relative; margin-left: 50px; background: var(--gray-light); border: 2px solid var(--platinum); padding: 22px; border-radius: var(--round-inner); margin-bottom: 25px; border-left: 5px solid var(--clio-blue); box-shadow: 0 6px 16px rgba(0,0,0,0.04); z-index: 2; }
         .entry { position: relative; margin-left: 50px; background: white; border: 1px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 20px; border-left: 5px solid var(--teal); box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
         .timestamp-full { font-size: 10px; font-weight: 800; color: var(--teal); display: block; margin-bottom: 8px; text-transform: uppercase; }
 
-        /* FOOTER CLIO BRIDGE */
+        /* CLIO FOOTER */
         .footer-bar { padding: 20px 24px calc(20px + env(safe-area-inset-bottom)); background: white; border-top: 1px solid var(--platinum); flex-shrink: 0; z-index: 101; transition: all 0.5s ease; }
-        #syncBtn { background: white; color: var(--clio-blue); border: 2.5px solid var(--clio-blue); padding: 18px; border-radius: var(--round-inner); width: 100%; font-weight: 800; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; }
+        #syncBtn { background: white; color: var(--clio-blue); border: 2.5px solid var(--clio-blue); padding: 18px; border-radius: var(--round-inner); width: 100%; font-weight: 800; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; transition: 0.3s; }
+        #syncBtn:active { transform: scale(0.97); }
         #syncBtn svg { width: 28px; height: 28px; stroke: var(--clio-blue); fill: none; stroke-width: 2.5; }
 
-        /* SWITCHES */
+        /* TOGGLES */
         .switch { position: relative; display: inline-block; width: 42px; height: 24px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .4s; border-radius: var(--round-pill); }
@@ -129,9 +132,9 @@
             <div id="displayList">
                 <div class="legacy-entry">
                     <h2 style="font-size: 17px; margin-bottom: 12px; color: var(--clio-blue); font-weight: 800;">Hi Clio Team,</h2>
-                    <p style="font-size: 14px; line-height: 1.6; font-weight: 600; margin-bottom: 12px;">It's been an honor. Thank you for the opportunity.</p>
-                    <p style="font-size: 13px; line-height: 1.6; margin-bottom: 12px;">I am part of that "invisible 60%," but I believe we are trapped in a metaphorical prison. I chose the transition from <strong>Grey to Teal</strong>, from the prison to the <strong>Blue Sky</strong>.</p>
-                    <p style="font-size: 13px; line-height: 1.6;">Built on a cell phone, no coding experience. Proof that Jack Newton’s philosophy is true: Justice is effortless if truth takes no effort.</p>
+                    <p style="font-size: 14px; line-height: 1.6; font-weight: 600;">It's been an honor. Thank you for the opportunity.</p>
+                    <p style="font-size: 13px; line-height: 1.6;">I am part of that "invisible 60%," but I believe we are trapped in a metaphorical prison. I chose the transition from <strong>Grey to Teal</strong>, from the prison to the <strong>Blue Sky</strong>.</p>
+                    <p style="font-size: 13px; line-height: 1.6;">Built on a cell phone, no coding experience. Living proof: Justice is effortless if truth takes no effort.</p>
                 </div>
             </div>
         </div>
@@ -164,13 +167,19 @@
 
     function toggleZenScroll() { document.getElementById('mainApp').classList.toggle('zen-scroll'); }
     function useTemplate(txt) { if(document.getElementById('mainApp').classList.contains('zen-scroll')) toggleZenScroll(); document.getElementById('statusBox').value = txt; document.getElementById('statusBox').focus(); }
+    
     function toggleVault(cb) {
         activeVault = cb.checked ? "NOTES" : "TIMELINE";
         document.getElementById('folderLabel').innerText = cb.checked ? "Isolated Notes" : "WorkTimeline™";
         document.getElementById('addBtn').style.background = cb.checked ? "var(--clio-blue)" : "var(--teal)";
         refreshVaultDisplay();
     }
-    function submitEntry() { const box = document.getElementById('statusBox'); if(!box.value.trim()) return; addEntry(box.value); box.value = ''; }
+
+    function submitEntry() {
+        const box = document.getElementById('statusBox'); if(!box.value.trim()) return;
+        addEntry(box.value); box.value = '';
+    }
+
     function addEntry(txt) {
         const now = new Date();
         const stamp = `${now.toLocaleTimeString()} | GPS: 49.1044° N, 122.5827° W`;
@@ -178,6 +187,7 @@
         if(activeVault === "TIMELINE") timelineVault.push(entry); else notesVault.push(entry);
         refreshVaultDisplay();
     }
+
     function refreshVaultDisplay() {
         const list = document.getElementById('displayList'); list.innerHTML = '';
         const data = (activeVault === "TIMELINE") ? timelineVault : notesVault;
@@ -188,19 +198,33 @@
             list.appendChild(div);
         });
     }
+
     function lockAndSummarize() {
         const syncBtn = document.getElementById('syncBtn');
         syncBtn.style.background = "var(--clio-blue)"; syncBtn.style.color = "white";
         document.getElementById('syncBtnText').innerText = "Analyzing & Summarizing...";
         setTimeout(() => { syncToClio(); }, 2000);
     }
+
     async function syncToClio() {
+        // CANADIAN SETTINGS
         const clientId = "18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s";
         const redirectUri = "https://worktimeline-app.vercel.app/index.html";
         const clioBase = "https://ca.app.clio.com"; 
-        const generateRandomString = (l) => { let t = ''; const p = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'; for (let i = 0; i < l; i++) t += p.charAt(Math.floor(Math.random() * p.length)); return t; };
-        const pkceChallenge = async (v) => { const h = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(v)); return btoa(String.fromCharCode.apply(null, new Uint8Array(h))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); };
-        const verifier = generateRandomString(128); const challenge = await pkceChallenge(verifier);
+
+        const generateRandomString = (l) => {
+            let t = ''; const p = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            for (let i = 0; i < l; i++) t += p.charAt(Math.floor(Math.random() * p.length));
+            return t;
+        };
+
+        const pkceChallenge = async (v) => {
+            const h = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(v));
+            return btoa(String.fromCharCode.apply(null, new Uint8Array(h))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        };
+
+        const verifier = generateRandomString(128);
+        const challenge = await pkceChallenge(verifier);
         sessionStorage.setItem('clio_code_verifier', verifier);
         window.location.href = `${clioBase}/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=leads_write%20contacts_write&code_challenge=${challenge}&code_challenge_method=S256`;
     }
