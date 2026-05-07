@@ -1,195 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™ | Apple Template Silver</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
-        :root { 
-            --teal: #008080; 
-            --clio-blue: #0076CE; 
-            --silver: #e2e8f0; 
-            --glass: rgba(0, 128, 128, 0.05); 
-            --platinum: #d8e2ea; 
-            --gray-dark: #2c3e50;
-        }
-        
-        body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 10px; height: 100vh; overflow: hidden; }
-        
-        /* GHOST & CHRON MODES */
-        body.ghost-mode #mainContent { filter: blur(25px); pointer-events: none; }
-        body.chron-view .entry { border-radius: 15px; border-left: 2px solid #ccc; box-shadow: none; margin-left: 15px; }
-        body.chron-view .timeline-spine { display: none; }
-        /* Switch label to 'NOTES' in Chron View */
-        body.chron-view .ai-badge::after { content: "NOTES"; }
-        body.chron-view .ai-badge span { display: none; }
+<style>
+    /* New Reset Button Style */
+    .reset-btn {
+        background: none;
+        border: 1.5px solid var(--gray-light);
+        color: #94a3b8;
+        padding: 10px 20px;
+        border-radius: 50px;
+        font-size: 10px;
+        font-weight: 800;
+        cursor: pointer;
+        align-self: center;
+        margin-bottom: 20px;
+        transition: 0.3s;
+    }
+    .reset-btn:hover {
+        background: #fff5f5;
+        color: #e74c3c;
+        border-color: #e74c3c;
+    }
+</style>
 
-        .app-container { max-width: 500px; margin: auto; background: white; border-radius: 50px; height: 95vh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
-        
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 2px solid var(--platinum); flex-shrink: 0; }
-        .tagline { font-size: 11px; font-weight: 800; color: var(--clio-blue); font-style: italic; margin-top: -2px; }
-
-        /* BUBBLY INPUT */
-        .input-area { padding: 15px; background: #fff; border-bottom: 2px solid var(--platinum); flex-shrink: 0; }
-        #statusBox { width: 100%; height: 85px; padding: 15px; border-radius: 30px; border: 2px solid var(--platinum); box-sizing: border-box; font-family: inherit; margin-bottom: 12px; font-size: 16px; outline: none; background: #fbfdff; }
-
-        .template-chip { background: var(--teal-soft); color: var(--teal); border: none; padding: 8px 16px; border-radius: 50px; font-size: 10px; font-weight: 900; cursor: pointer; }
-
-        /* HARDWARE TOOLBAR */
-        .media-toolbar { display: flex; gap: 10px; margin-bottom: 12px; }
-        .media-btn { flex: 1; background: var(--platinum); border: none; padding: 15px 5px; border-radius: 25px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
-        .media-btn svg { width: 26px; height: 26px; fill: var(--teal); margin-bottom: 5px; }
-        .media-btn span { font-size: 9px; font-weight: 900; color: var(--gray-dark); }
-
-        /* TIMELINE LINE */
-        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px; position: relative; }
-        .timeline-spine { position: absolute; left: 35px; top: 0; bottom: 0; width: 8px; background: #cccccc; border-radius: 15px; z-index: 1; }
-        .timeline-progress { position: absolute; left: 0; top: 0; width: 100%; height: 0%; background: linear-gradient(to bottom, var(--teal), var(--clio-blue)); border-radius: 15px; transition: height 0.6s ease; }
-
-        /* THE FROSTED QUOTE BOX */
-        #legacyQuote { 
-            position: relative; margin-left: 55px; 
-            background: var(--glass);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(0, 128, 128, 0.15);
-            border-left: 6px solid var(--teal);
-            padding: 20px; border-radius: 30px; margin-bottom: 25px; z-index: 2; 
-        }
-        #legacyQuote::before { content: ''; position: absolute; left: -29px; top: 22px; width: 16px; height: 16px; background: var(--teal); border: 4px solid white; border-radius: 50%; z-index: 3; }
-
-        /* THE SILVER BADGE */
-        .ai-badge { 
-            font-size: 8px; font-weight: 900; color: #555; 
-            background: var(--silver); /* LIGHT SILVER/GRAY */
-            padding: 4px 10px; border-radius: 10px; 
-            margin-bottom: 8px; display: inline-block; 
-            text-transform: uppercase; letter-spacing: 0.5px; 
-        }
-
-        .entry { position: relative; margin-left: 55px; background: white; border: 1.5px solid var(--platinum); padding: 18px; border-radius: 30px; margin-bottom: 25px; z-index: 2; border-left: 6px solid var(--teal); }
-        .entry::before { content: ''; position: absolute; left: -29px; top: 22px; width: 16px; height: 16px; background: var(--teal); border: 4px solid white; border-radius: 50%; z-index: 3; }
-
-        .timestamp-full { font-size: 9px; font-weight: 900; color: var(--teal); display: block; margin-bottom: 5px; text-transform: uppercase; }
-        
-        .sync-btn { background: var(--clio-blue); color: white; border: none; padding: 20px; border-radius: 30px; width: 90%; align-self: center; font-weight: 900; cursor: pointer; margin: 15px 0; }
-        
-        .switch { position: relative; display: inline-block; width: 34px; height: 18px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 20px; }
-        .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--teal); }
-        input:checked + .slider:before { transform: translateX(16px); }
-    </style>
-</head>
-<body>
-
-<div class="app-container">
-    <header class="header">
-        <div class="logo-area">
-            <h1 style="color: var(--teal); margin:0; font-size: 18px; font-weight: 900;">WorkTimeline™</h1>
-            <span class="tagline">Taking an Intake...</span>
-        </div>
-        <div style="display:flex; gap:10px; align-items: center;">
-            <button style="background: var(--silver); padding: 9px; border-radius: 15px; border:none; cursor:pointer;" onclick="sendLawyerMessage()">
-                <svg viewBox="0 0 24 24" style="width:20px; height:20px; fill:var(--teal);"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-            </button>
-            <div style="text-align: center;"><label class="switch"><input type="checkbox" onchange="toggleChron()"><span class="slider"></span></label><div style="font-size: 7px; font-weight: 900;">CHRON</div></div>
-            <div style="text-align: center;"><label class="switch"><input type="checkbox" onchange="togglePrivacy()"><span class="slider"></span></label><div style="font-size: 7px; font-weight: 900;">GHOST</div></div>
-        </div>
-    </header>
-
-    <div id="mainContent" style="display: flex; flex-direction: column; height: 100%;">
-        <div class="input-area">
-            <div style="display:flex; gap:8px; overflow-x:auto; margin-bottom:12px; padding-bottom:5px;">
-                <button class="template-chip" onclick="addText('📍 [LOCATION]: ')">LOCATION</button>
-                <button class="template-chip" onclick="addText('👤 [WITNESS]: ')">WITNESS</button>
-                <button class="template-chip" onclick="addText('⚠️ [HAZARD]: ')">HAZARD</button>
-                <button class="template-chip" onclick="addText('💼 [EMPLOYER]: ')">EMPLOYER</button>
-            </div>
-            <textarea id="statusBox" placeholder="Start typing your intake log..."></textarea>
-            <div class="media-toolbar">
-                <button class="media-btn" onclick="document.getElementById('camInput').click()">
-                    <svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-4c-1.1 0-2 .9-2 2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-5c0-1.1-.9-2-2-2z"/></svg>
-                    <span>CAMERA</span>
-                </button>
-                <button class="media-btn" onclick="document.getElementById('micInput').click()">
-                    <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-                    <span>AUDIO</span>
-                </button>
-                <button class="media-btn" onclick="document.getElementById('docInput').click()">
-                    <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg>
-                    <span>DOCS</span>
-                </button>
-            </div>
-            <button onclick="submitEntry()" style="background: var(--teal); color:white; border:none; padding:15px; border-radius:20px; width:100%; font-weight:900; cursor: pointer;">Add Entry & Secure</button>
-        </div>
-
-        <div id="timelineContainer">
-            <div class="timeline-spine"><div id="progressFill" class="timeline-progress"></div></div>
-            <div id="timelineList">
-                <div id="legacyQuote">
-                    <span style="font-size: 8px; font-weight: 900; color: var(--teal); text-transform: uppercase;">Legacy of Justice</span>
-                    <p id="quoteText" style="margin: 10px 0; font-size: 15px; font-weight: 700; color: var(--gray-dark); font-style: italic; line-height: 1.4;"></p>
-                    <span id="quoteAuthor" style="font-size: 11px; font-weight: 900; color: var(--teal);"></span>
-                </div>
-            </div>
-        </div>
-
-        <button id="lockBtn" class="sync-btn" onclick="syncToClio()">Finalize & Sync to Clio</button>
-    </div>
-</div>
-
-<input type="file" id="camInput" accept="image/*" capture="environment" style="display:none" onchange="addEntry('📷 Evidence captured.')">
-<input type="file" id="micInput" accept="audio/*" capture="microphone" style="display:none" onchange="addEntry('🎤 Statement recorded.')">
-<input type="file" id="docInput" style="display:none" onchange="addEntry('📄 Document uploaded.')">
+<button class="reset-btn" onclick="safeReset()">RESET SESSION</button>
 
 <script>
-    const legacyQuotes = [
-        { q: '"Injustice anywhere is a threat to justice everywhere."', a: "Martin Luther King Jr." },
-        { q: '"The first duty of society is justice."', a: "Alexander Hamilton" },
-        { q: '"The law is a shield for the weak."', a: "Unknown" }
-    ];
-
-    let entryCount = 0;
-    
-    window.onload = () => {
-        const rand = legacyQuotes[Math.floor(Math.random() * legacyQuotes.length)];
-        document.getElementById('quoteText').innerText = rand.q;
-        document.getElementById('quoteAuthor').innerText = "— " + rand.a;
-    };
-
-    function addText(t) { const b = document.getElementById('statusBox'); b.value += t; b.focus(); }
-    function togglePrivacy() { document.body.classList.toggle('ghost-mode'); }
-    function toggleChron() { document.body.classList.toggle('chron-view'); }
-    function sendLawyerMessage() { window.location.href = `sms:?body=${encodeURIComponent("Update from WorkTimeline. Taking an intake...")}`; }
-
-    function submitEntry() {
-        const text = document.getElementById('statusBox').value.trim();
-        if(text) { addEntry(text); document.getElementById('statusBox').value = ''; }
-    }
-
-    function addEntry(text) {
-        if(entryCount === 0) {
-            const q = document.getElementById('legacyQuote');
-            q.style.opacity = '0';
-            setTimeout(() => q.style.display = 'none', 500);
+    function safeReset() {
+        const confirmClear = confirm("⚠️ WARNING: This will clear your current timeline. This cannot be undone. Are you sure?");
+        if (confirmClear) {
+            document.getElementById('timelineList').innerHTML = '';
+            entryCount = 0;
+            document.getElementById('progressFill').style.height = '0%';
+            // Optional: Reload the page to bring back the Legacy Quote
+            location.reload(); 
         }
-        entryCount++;
-        const now = new Date();
-        const ts = `${now.toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric', year:'numeric'})} | ${now.toLocaleTimeString()}`;
-        
-        const div = document.createElement('div');
-        div.className = 'entry';
-        // The Label logic: Displays 'TIMELINE' by default, 'NOTES' in Chron view via CSS
-        div.innerHTML = `<div class="ai-badge"><span>TIMELINE</span></div><span class="timestamp-full">${ts}</span><p style="margin:0; font-size:14px; font-weight:600; color:var(--gray-dark);">${text}</p>`;
-        document.getElementById('timelineList').prepend(div);
-        document.getElementById('progressFill').style.height = Math.min(entryCount * 12, 100) + '%';
-    }
-
-    function syncToClio() {
-        window.location.href = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s&redirect_uri=https://worktimeline-app.vercel.app/index.html&scope=leads_write%20contacts_write`;
     }
 </script>
-</body>
-</html>
