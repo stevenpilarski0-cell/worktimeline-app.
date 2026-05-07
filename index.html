@@ -3,95 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™ | Final Handshake</title>
+    <title>WorkTimeline™ | The Truth Handshake</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        
         :root { 
-            --teal: #008080; --clio-blue: #0076CE; --platinum: #d8e2ea; --gray-dark: #2c3e50; 
-            --glass: rgba(0, 128, 128, 0.1); --round-factor: 35px; 
+            --teal: #008080; --clio-blue: #0076CE; --platinum: #e2e8f0; --gray-dark: #1e293b; --gray-light: #f8fafc;
+            --glass: rgba(0, 128, 128, 0.05); 
+            /* Enhanced Mac-like rounding */
+            --round-main: 40px; 
+            --round-inner: 24px; 
+            --round-pill: 999px;
         }
-        body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 10px; height: 100vh; overflow: hidden; color: var(--gray-dark); }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #eef1f5; margin: 0; padding: 10px; height: 100vh; overflow: hidden; color: var(--gray-dark); }
         
-        /* 45-SECOND CINEMATIC INTRO */
+        /* 45-SECOND DEEP DIVE INTRO */
         #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; box-sizing: border-box; transition: opacity 1.2s ease; }
-        .story-text { font-size: 22px; font-weight: 800; color: var(--gray-dark); line-height: 1.5; opacity: 0; transition: opacity 0.8s; max-width: 420px; }
+        .story-text { font-size: 20px; font-weight: 700; color: var(--gray-dark); line-height: 1.5; opacity: 0; transition: opacity 0.8s; max-width: 460px; letter-spacing: -0.3px; }
 
-        /* THE PROTOTYPE SHELL */
-        .app-container { max-width: 500px; margin: auto; background: white; border-radius: 50px; height: 95vh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
+        .app-container { max-width: 500px; margin: auto; background: white; border-radius: var(--round-main); height: 95vh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
         
-        /* GHOST MODE BLUR BOX (HARD TOGGLE) */
-        #blurBox { position: absolute; top: 85px; left: 0; right: 0; bottom: 0; z-index: 98; background: rgba(255,255,255,0.05); backdrop-filter: blur(0px); pointer-events: none; transition: backdrop-filter 0.4s ease; }
+        /* GHOST MODE BLUR BOX - FIXED FOR iOS MOBILE */
+        #blurBox { position: absolute; top: 85px; left: 0; right: 0; bottom: 0; z-index: 98; background: rgba(255,255,255,0); backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px); pointer-events: none; transition: all 0.4s ease; }
+        body.ghost-active #blurBox { backdrop-filter: blur(35px) grayscale(1); -webkit-backdrop-filter: blur(35px) grayscale(1); background: rgba(238, 241, 245, 0.75); pointer-events: all; }
 
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 2px solid var(--platinum); flex-shrink: 0; z-index: 100; background: white; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid var(--platinum); flex-shrink: 0; z-index: 100; background: white; }
 
-        /* MATCHED ROUNDNESS INPUT */
-        .input-area { padding: 15px; background: #fff; border-bottom: 2px solid var(--platinum); flex-shrink: 0; }
-        #statusBox { width: 100%; height: 85px; padding: 15px; border-radius: var(--round-factor); border: 2px solid var(--platinum); box-sizing: border-box; font-family: inherit; margin-bottom: 12px; font-size: 16px; outline: none; background: #fbfdff; }
+        /* INPUT AREA & VISIBLE TEMPLATE CHIPS */
+        .input-area { padding: 15px 20px; background: var(--gray-light); border-bottom: 1px solid var(--platinum); flex-shrink: 0; display: flex; flex-direction: column; }
         
-        /* MATCHED ROUNDNESS HARDWARE ICONS */
-        .media-toolbar { display: flex; gap: 10px; margin-bottom: 12px; }
-        .media-btn { flex: 1; background: var(--platinum); border: none; padding: 12px 5px; border-radius: var(--round-factor); display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; }
-        .media-btn svg { width: 22px; height: 22px; fill: var(--teal); margin-bottom: 4px; }
-        .media-btn span { font-size: 8px; font-weight: 900; color: var(--gray-dark); }
+        .template-chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: none; margin-bottom: 4px;}
+        .template-chips::-webkit-scrollbar { display: none; }
+        .chip { background: white; color: var(--teal); font-size: 11px; font-weight: 700; padding: 10px 16px; border-radius: var(--round-pill); white-space: nowrap; cursor: pointer; transition: all 0.2s; border: 1px solid var(--platinum); box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        .chip:active { background: var(--teal); color: white; border-color: var(--teal); }
+
+        #statusBox { width: 100%; height: 90px; padding: 16px; border-radius: var(--round-inner); border: 1px solid var(--platinum); box-sizing: border-box; font-family: inherit; margin-bottom: 12px; font-size: 15px; outline: none; background: white; resize: none; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); transition: border-color 0.2s; }
+        #statusBox:focus { border-color: var(--teal); }
+        
+        .media-toolbar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
+        .media-btn { background: white; border: 1px solid var(--platinum); padding: 14px 2px; border-radius: var(--round-inner); display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        .media-btn:active { background: var(--platinum); transform: translateY(1px); }
+        .media-btn svg { width: 22px; height: 22px; fill: var(--teal); margin-bottom: 6px; }
+        .media-btn span { font-size: 9px; font-weight: 700; color: var(--gray-dark); text-transform: uppercase; letter-spacing: 0.5px; }
         .hidden-input { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; top: 0; left: 0; }
 
-        #addBtn { background: var(--teal); color:white; border:none; padding:15px; border-radius: var(--round-factor); width:100%; font-weight:900; cursor:pointer; transition: transform 0.1s; }
-        #addBtn:active { transform: scale(0.98); }
-
-        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px; position: relative; background: #fdfdfd; }
-        .timeline-spine { position: absolute; left: 35px; top: 0; bottom: 0; width: 8px; background: #cccccc; border-radius: 15px; z-index: 1; }
+        /* TIMELINE DISPLAY */
+        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px; position: relative; background: #fff; }
+        .timeline-spine { position: absolute; left: 35px; top: 0; bottom: 0; width: 4px; background: var(--platinum); border-radius: 4px; z-index: 1; }
         
-        /* MATCHED ROUNDNESS ANALYTICS BOX */
-        #legacyQuote { position: relative; margin-left: 55px; background: var(--glass); backdrop-filter: blur(10px); border: 1px solid rgba(0, 128, 128, 0.15); border-left: 6px solid var(--teal); padding: 20px; border-radius: var(--round-factor); margin-bottom: 25px; z-index: 2; transition: opacity 0.5s; }
-        .stat-star { font-size: 13px; font-weight: 800; margin: 5px 0; color: var(--gray-dark); }
+        /* THE PERSONAL LETTER BOX */
+        #legacyQuote { position: relative; margin-left: 50px; background: var(--glass); border: 1px solid var(--platinum); border-left: 4px solid var(--clio-blue); padding: 25px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; transition: opacity 0.5s; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
 
-        .entry { position: relative; margin-left: 55px; background: white; border: 1.5px solid var(--platinum); padding: 18px; border-radius: var(--round-factor); margin-bottom: 25px; z-index: 2; border-left: 6px solid var(--teal); }
-        .timestamp-full { font-size: 10px; font-weight: 900; color: var(--teal); display: block; margin-bottom: 5px; text-transform: uppercase; }
+        .entry { position: relative; margin-left: 50px; background: white; border: 1px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; border-left: 4px solid var(--teal); box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .timestamp-full { font-size: 11px; font-weight: 700; color: var(--teal); display: block; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
         
-        .sync-btn { background: var(--clio-blue); color: white; border: none; padding: 20px; border-radius: var(--round-factor); width: 90%; align-self: center; font-weight: 900; cursor: pointer; margin: 15px 0; flex-shrink: 0; }
-
-        .switch { position: relative; display: inline-block; width: 34px; height: 18px; }
+        #addBtn { background: var(--teal); color:white; border:none; padding:16px; border-radius: var(--round-pill); width:100%; font-weight:700; font-size: 15px; cursor:pointer; transition: opacity 0.2s; box-shadow: 0 4px 14px rgba(0, 128, 128, 0.25); }
+        #addBtn:active { opacity: 0.8; }
+        
+        .sync-btn { background: var(--clio-blue); color: white; border: none; padding: 18px; border-radius: var(--round-pill); width: 90%; align-self: center; font-weight: 700; font-size: 15px; cursor: pointer; margin: 15px 0; flex-shrink: 0; box-shadow: 0 4px 14px rgba(0, 118, 206, 0.25); transition: transform 0.2s; }
+        .sync-btn:active { transform: scale(0.98); }
+        
+        /* TOGGLES */
+        .switch { position: relative; display: inline-block; width: 36px; height: 20px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 20px; }
-        .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .4s; border-radius: var(--round-pill); }
+        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         input:checked + .slider { background-color: var(--clio-blue); }
         input:checked + .slider:before { transform: translateX(16px); }
     </style>
 </head>
 <body>
 
-<div id="splashScreen"><h1 id="storyText" class="story-text">Welcome.</h1></div>
+<div id="splashScreen"><h1 id="storyText" class="story-text"></h1></div>
 
 <div class="app-container" id="mainApp">
     <div id="blurBox"></div>
     <header class="header">
-        <div><h1 id="folderLabel" style="color: var(--teal); margin:0; font-size: 18px; font-weight: 900;">WorkTimeline™</h1><div style="font-size: 11px; font-weight: 800; color: var(--clio-blue); font-style: italic;">Taking an Intake...</div></div>
-        <div style="display:flex; gap:10px; align-items: center;">
-            <div style="text-align: center;"><label class="switch"><input type="checkbox" onchange="toggleVault(this)"><span class="slider"></span></label><div style="font-size: 7px; font-weight: 900;">CHRON</div></div>
-            <div style="text-align: center;"><label class="switch"><input type="checkbox" id="gSwitch" onchange="toggleGhost()"><span class="slider"></span></label><div style="font-size: 7px; font-weight: 900;">GHOST</div></div>
+        <div style="display:flex; align-items: center; gap: 12px;">
+            <div style="width: 32px; height: 32px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="7" width="18" height="13" rx="2" ry="2"></rect>
+                    <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"></path>
+                    <line x1="3" y1="13" x2="21" y2="13" stroke-width="2.5"></line>
+                    <circle cx="8" cy="17" r="0.5" fill="currentColor"></circle>
+                    <circle cx="12" cy="17" r="0.5" fill="currentColor"></circle>
+                    <circle cx="16" cy="17" r="0.5" fill="currentColor"></circle>
+                </svg>
+            </div>
+            <div>
+                <h1 id="folderLabel" style="color: var(--teal); margin:0; font-size: 18px; font-weight: 800; letter-spacing: -0.5px;">WorkTimeline™</h1>
+                <div style="font-size: 12px; font-weight: 600; color: var(--clio-blue);">Intake Engine...</div>
+            </div>
+        </div>
+        <div style="display:flex; gap:12px; align-items: center;">
+            <div style="text-align: center;"><label class="switch"><input type="checkbox" onchange="toggleVault(this)"><span class="slider"></span></label><div style="font-size: 8px; font-weight: 700; margin-top: 4px;">CHRON</div></div>
+            <div style="text-align: center;"><label class="switch"><input type="checkbox" id="gSwitch" onchange="toggleGhost()"><span class="slider"></span></label><div style="font-size: 8px; font-weight: 700; margin-top: 4px;">GHOST</div></div>
         </div>
     </header>
 
     <div style="display: flex; flex-direction: column; height: 100%;">
         <div class="input-area">
-            <textarea id="statusBox" placeholder="Start your intake entry..."></textarea>
-            <div class="media-toolbar">
-                <button class="media-btn"><input type="file" accept="image/*" capture="camera" class="hidden-input" onchange="addEntry('📷 Photo evidence captured.')"><svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-4c-1.1 0-2 .9-2 2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-5c0-1.1-.9-2-2-2z"/></svg><span>CAMERA</span></button>
-                <button class="media-btn"><input type="file" accept="audio/*" capture="microphone" class="hidden-input" onchange="addEntry('🎤 Audio recording captured.')"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg><span>AUDIO</span></button>
-                <button class="media-btn" onclick="window.location.href='sms:?body=Intake Update:'"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg><span>TEXT</span></button>
-                <button class="media-btn"><input type="file" class="hidden-input" onchange="addEntry('📄 Document verification secured.')"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg><span>DOCS</span></button>
+            <div class="template-chips">
+                <span class="chip" onclick="useTemplate('WITNESS LOCATION:\n- Name:\n- GPS/Address:\n- Proximity to Incident:')">Location</span>
+                <span class="chip" onclick="useTemplate('WITNESS STATEMENT:\n- Narrative:\n- Reliability:\n- Recorded?')">Statement</span>
+                <span class="chip" onclick="useTemplate('INCIDENT SETTING:\n- Weather:\n- Lighting:\n- Road/Site Conditions:')">Setting</span>
+                <span class="chip" onclick="useTemplate('EVIDENCE LOG:\n- Item Type:\n- Source/Chain:\n- Storage Location:')">Evidence</span>
             </div>
-            <button id="addBtn" onclick="submitEntry()">Add Entry & Secure</button>
+
+            <textarea id="statusBox" placeholder="Tap a template above, or tell your truth here..."></textarea>
+            
+            <div class="media-toolbar">
+                <button class="media-btn"><input type="file" accept="image/*" capture="camera" class="hidden-input" onchange="addEntry('Photo evidence secured.')"><svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-4c-1.1 0-2 .9-2 2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-5c0-1.1-.9-2-2-2z"/></svg><span>Camera</span></button>
+                <button class="media-btn"><input type="file" accept="audio/*" capture="microphone" class="hidden-input" onchange="addEntry('Audio recording captured.')"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg><span>Audio</span></button>
+                <button class="media-btn" onclick="window.location.href='sms:?body=WorkTimeline Update:'"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg><span>Text</span></button>
+                <button class="media-btn"><input type="file" class="hidden-input" onchange="addEntry('Document verified.')"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg><span>Docs</span></button>
+            </div>
+            <button id="addBtn" onclick="submitEntry()">Secure Entry & Build Timeline</button>
         </div>
 
         <div id="timelineContainer">
             <div class="timeline-spine"></div>
             <div id="displayList">
                 <div id="legacyQuote">
-                    <span style="font-size: 10px; font-weight: 900; color: var(--teal); text-transform: uppercase;">Star List Data: Intake Efficiency</span>
-                    <div class="stat-star">⭐ Messy intake drains 40% of law firm time and resources.</div>
-                    <div class="stat-star">⭐ Organized intake drives a 60% higher probability of case success.</div>
-                    <div class="stat-star">⭐ Faster intake allows lawyers to lower rates and serve more clients.</div>
+                    <h2 style="font-size: 16px; margin-bottom: 12px; color: var(--clio-blue); font-weight: 800;">Hi Clio Team,</h2>
+                    <p style="font-size: 14px; line-height: 1.6; font-weight: 600; margin-bottom: 15px; color: var(--gray-dark);">It's been an honor. I truly enjoy doing this, and thank you for the opportunity.</p>
+                    <p style="font-size: 13px; line-height: 1.6; font-weight: 500; margin-bottom: 15px; color: #475569;">I am part of that "invisible 60%," but I don't believe we are invisible—I believe we are trapped in a metaphorical prison. This is why I chose the transition from <strong style="color:var(--gray-dark);">Grey to Teal</strong>, from the prison to the <strong style="color:var(--clio-blue);">Blue Sky</strong>. By integrating Clio’s colors with WorkTimeline™, I’ve built a solution for that gap.</p>
+                    <p style="font-size: 13px; line-height: 1.6; font-weight: 500; color: #475569;">I have <strong style="color:var(--gray-dark);">no coding experience</strong>. I did this all by cell phone, myself, driven by motivation and the cross-referencing power of AI. I am living proof that Jack Newton’s philosophy is true: Telling the truth takes effort, but Justice is effortless if truth takes no effort.</p>
                 </div>
             </div>
         </div>
@@ -102,25 +139,43 @@
 
 <script>
     const story = [
-        "When you're invisible, people don't know you're there.",
-        "In that grey area, people know you're there but don't know how to help.",
-        "They are too cautious and don't believe they can get help.",
-        "WorkTimeline is here to help.",
-        "The grey area can feel like a prison, but it's not.",
-        "WorkTimeline guides you through that grey area...",
-        "Giving you the strength and confidence to take your first few steps.",
-        "Not to escape, but to get ahead.",
-        "So you can be at the center with Clio and find those firms that will make you never look back.",
+        "We see you. We hear you.",
+        "We know you're there. You're not invisible.",
+        "You're just stuck trapped in that grey area—a prison.",
+        "But we're here to get you out, one step at a time.",
+        "Towards the center where you belong with Clio.",
+        "Where a firm will make sure you never look back.",
+        "You are the 60%. The people who feel unseen and are too cautious to come forward.",
+        "And lawyers want to help, but messy, unorganized intake is a massive barrier.",
+        "Messy files drain 40% of a firm's time and resources.",
+        "Because of this chaos, lawyers are forced to turn away 3 out of 5 potential clients.",
+        "But clean, organized intake drives a 60% higher probability of case success.",
+        "If everyone was organized, it would save time and drop legal costs by 25%.",
+        "WorkTimeline benefits both the client and the firm, bringing perfect data straight into Clio.",
         "“Jack Newton said that Justice should be effortless.”",
         "WorkTimeline's key: Justice can be effortless now, if telling the truth takes no effort."
     ];
     
-    let activeVault = "TIMELINE"; const timelineVault = []; const notesVault = [];
-    window.onload = () => { runStory(); };
+    let activeVault = "TIMELINE"; 
+    const timelineVault = []; 
+    const notesVault = [];
 
+    // SETTINGS - Double check these in your Clio Dev Portal!
+    const clientId = "18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s";
+    const redirectUri = "https://worktimeline-app.vercel.app/index.html"; 
+    const clioBase = "https://ca.app.clio.com"; // Using Canadian Sandbox
+
+    window.onload = () => { 
+        runStory(); 
+        handleClioReturn(); 
+    };
+
+    // --- UI & GHOST LOGIC ---
     function runStory() {
         const el = document.getElementById('storyText'); let i = 0;
-        const lineDuration = 4050; // Total timing approx 45 seconds
+        const lineDuration = 3000; 
+        el.innerText = story[i++];
+        el.style.opacity = 1;
         const next = () => {
             if(i < story.length) {
                 el.style.opacity = 0;
@@ -131,20 +186,26 @@
                 }, 800);
             } else endSplash();
         };
-        next();
+        setTimeout(next, lineDuration - 800);
     }
 
-    function endSplash() { const s = document.getElementById('splashScreen'); if(s) { s.style.opacity = '0'; setTimeout(() => s.remove(), 1200); } }
+    function endSplash() { 
+        const s = document.getElementById('splashScreen'); 
+        if(s) { s.style.opacity = '0'; setTimeout(() => s.remove(), 1200); } 
+    }
 
     function toggleGhost() {
-        const box = document.getElementById('blurBox'); const sw = document.getElementById('gSwitch');
-        if(sw.checked) { box.style.backdropFilter = "blur(50px) grayscale(1)"; box.style.pointerEvents = "all"; }
-        else { box.style.backdropFilter = "blur(0px) grayscale(0)"; box.style.pointerEvents = "none"; }
+        const sw = document.getElementById('gSwitch');
+        document.body.classList.toggle('ghost-active', sw.checked);
+    }
+
+    function useTemplate(txt) {
+        document.getElementById('statusBox').value = txt;
+        document.getElementById('statusBox').focus();
     }
 
     function toggleVault(cb) {
         activeVault = cb.checked ? "NOTES" : "TIMELINE";
-        document.body.classList.toggle('mode-notes', cb.checked);
         document.getElementById('folderLabel').innerText = cb.checked ? "Isolated Notes" : "WorkTimeline™";
         document.getElementById('folderLabel').style.color = cb.checked ? "var(--clio-blue)" : "var(--teal)";
         document.getElementById('addBtn').style.background = cb.checked ? "var(--clio-blue)" : "var(--teal)";
@@ -152,16 +213,22 @@
     }
 
     function submitEntry() {
-        const box = document.getElementById('statusBox'); if(!box.value.trim()) return;
-        saveEntry(box.value); box.value = '';
-        const q = document.getElementById('legacyQuote'); if(q) { q.style.opacity = '0'; setTimeout(() => q.remove(), 500); }
+        const box = document.getElementById('statusBox'); 
+        if(!box.value.trim()) return;
+        saveEntry(box.value); 
+        box.value = '';
+        const q = document.getElementById('legacyQuote'); 
+        if(q) { q.style.opacity = '0'; setTimeout(() => q.remove(), 500); }
     }
 
     function saveEntry(text) {
-        const now = new Date(); let hours = now.getHours(); let minutes = now.getMinutes();
-        const ampm = hours >= 12 ? 'P.M.' : 'A.M.'; hours = hours % 12 || 12;
+        const now = new Date(); 
+        let hours = now.getHours(); 
+        let minutes = now.getMinutes();
+        const ampm = hours >= 12 ? 'P.M.' : 'A.M.'; 
+        hours = hours % 12 || 12;
         minutes = minutes < 10 ? '0'+minutes : minutes;
-        const stamp = now.toLocaleDateString() + ' @ ' + hours + ':' + minutes + ' ' + ampm;
+        const stamp = (now.getMonth()+1) + '/' + now.getDate() + '/' + now.getFullYear() + ' @ ' + hours + ':' + minutes + ' ' + ampm;
         const entry = { text: text, stamp: stamp };
         if(activeVault === "TIMELINE") timelineVault.push(entry); else notesVault.push(entry);
         refreshVaultDisplay();
@@ -170,20 +237,77 @@
     function addEntry(text) { saveEntry(text); }
 
     function refreshVaultDisplay() {
-        const list = document.getElementById('displayList'); const quote = document.getElementById('legacyQuote');
+        const list = document.getElementById('displayList'); 
         list.innerHTML = '';
-        if(quote && timelineVault.length === 0 && notesVault.length === 0) list.appendChild(quote);
         const data = (activeVault === "TIMELINE") ? timelineVault : notesVault;
         [...data].reverse().forEach(item => {
-            const div = document.createElement('div'); div.className = 'entry';
+            const div = document.createElement('div'); 
+            div.className = 'entry';
             div.style.borderLeftColor = (activeVault === "NOTES") ? "var(--clio-blue)" : "var(--teal)";
-            div.innerHTML = `<span class="timestamp-full" style="color:${(activeVault === "NOTES") ? 'var(--clio-blue)' : 'var(--teal)'}">${item.stamp}</span><p style="margin:0; font-size:14px; font-weight:600;">${item.text}</p>`;
+            div.innerHTML = `<span class="timestamp-full" style="color:${(activeVault === "NOTES") ? 'var(--clio-blue)' : 'var(--teal)'}">${item.stamp}</span><p style="white-space: pre-wrap; margin:0; font-size:14px; font-weight:500; line-height: 1.5;">${item.text}</p>`;
             list.appendChild(div);
         });
     }
 
-    function syncToClio() {
-        window.location.href = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s&redirect_uri=https://worktimeline-app.vercel.app/index.html&scope=leads_write%20contacts_write`;
+    // --- CLIO HANDSHAKE (THE BRIDGE) ---
+    async function syncToClio() {
+        // Generate PKCE Verifier
+        const verifier = Array.from(crypto.getRandomValues(new Uint8Array(32)))
+            .map(b => b.toString(16).padStart(2, '0')).join('');
+        sessionStorage.setItem('clio_code_verifier', verifier);
+
+        // Generate Challenge
+        const encoder = new TextEncoder();
+        const data = encoder.encode(verifier);
+        const hash = await crypto.subtle.digest('SHA-256', data);
+        const challenge = btoa(String.fromCharCode(...new Uint8Array(hash)))
+            .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+
+        // Redirect to Clio
+        const authUrl = `${clioBase}/oauth/authorize?` + new URLSearchParams({
+            response_type: 'code',
+            client_id: clientId,
+            redirect_uri: redirectUri,
+            scope: 'leads_write contacts_write notes_write',
+            code_challenge: challenge,
+            code_challenge_method: 'S256'
+        });
+        window.location.href = authUrl;
+    }
+
+    async function handleClioReturn() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const authCode = urlParams.get('code');
+        const storedVerifier = sessionStorage.getItem('clio_code_verifier');
+
+        if (authCode && storedVerifier) {
+            try {
+                const response = await fetch(`${clioBase}/oauth/token`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: new URLSearchParams({
+                        grant_type: "authorization_code",
+                        code: authCode,
+                        client_id: clientId,
+                        redirect_uri: redirectUri,
+                        code_verifier: storedVerifier
+                    })
+                });
+
+                const data = await response.json();
+                if (data.access_token) {
+                    localStorage.setItem('clio_access_token', data.access_token);
+                    // Clear the URL for a clean UI
+                    window.history.replaceState({}, document.title, "/index.html");
+                    alert("Handshake Perfected. WorkTimeline is now connected to Clio.");
+                } else {
+                    alert("Clio Error: " + (data.error_description || data.error));
+                }
+            } catch (err) {
+                alert("Connection Failed: Ensure your redirect URI in Clio matches exactly.");
+                console.error(err);
+            }
+        }
     }
 </script>
 </body>
