@@ -1,4 +1,4 @@
- 
+ù 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -424,10 +424,9 @@ function showWarning() {
         alert("Please select a Professional first! 👩‍⚖️"); 
         return; 
     }
-    document.getElementById('warningModal').style.display = "flex";
+    function closeWarning() { 
+    document.getElementById('warningModal').style.display = "none"; 
 }
-
-function closeWarning() { document.getElementById('warningModal').style.display = "none"; }
 
 function proceedToSummary() {
     closeWarning();
@@ -435,8 +434,33 @@ function proceedToSummary() {
     document.getElementById('briefingHeader').style.display = 'block';
     document.getElementById('mainInputArea').style.display = 'none';
     document.getElementById('duoSummaryBox').style.display = 'block';
-    document.getElementById('sumLawyer').innerText = localStorage.getItem('lawyer');
+    document.getElementById('sumLawyer').innerText = localStorage.getItem('lawyer') || "Marcus Thorne, Esq.";
     document.getElementById('sumHash').innerText = Math.random().toString(36).substring(7).toUpperCase();
+
+    const lockBtn = document.getElementById('lockBtn');
+    lockBtn.innerHTML = "Approve Summary & Sync To Clio 🚀";
+    lockBtn.style.background = "var(--clio-blue)";
+    lockBtn.onclick = function() {
+        const clientId = 'btscu9WmPHYellZtZA9slQfynBAQudwjaR7pEDdq';
+        const redirectUri = 'https://worktimeline-app.vercel.app';
+        window.location.href = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+    };
+}
+
+const introTexts = [
+    "Feel invisible?",
+    "Trapped in a cycle of 'what ifs'?",
+    "You are not alone. 60% of people with legal issues never seek help because they fear the cost or the complexity.",
+    "The 'Justice Gap' is real: Millions feel paralyzed, choosing silence over a system that feels built for someone else.",
+    "Lawyers lose billions every year in wasted intake hours—time spent on cases that aren't the right fit.",
+    "This is why intake fees exist. It's not a barrier; it's a way for experts to value the time they give to your story.",
+    "WorkTimeLine guides you for your first few steps...",
+    "It’s okay. WorkTimeLine’s got you. Let us guide you...",
+    "Enjoy the first step.",
+    "Welcome to the sky.",
+    "Towards the center."
+];
+
 function showIntro() {
     const introDiv = document.getElementById('splashScreen');
     const step1 = document.getElementById('step1');
@@ -448,7 +472,6 @@ function showIntro() {
             setTimeout(() => {
                 step1.innerHTML = `<h1 style="font-size: 22px; line-height: 1.4; color: #2c3e50; padding: 20px;">${introTexts[current]}</h1>`;
                 step1.style.opacity = 1;
-                // Stats get 15 seconds, others get 4
                 let displayTime = (current >= 2 && current <= 5) ? 15000 : 4000;
                 current++;
                 setTimeout(next, displayTime);
@@ -485,6 +508,7 @@ function togglePrivacy() {
 </script>
 </body>
 </html>
+
 
     
 
