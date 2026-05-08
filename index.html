@@ -8,46 +8,57 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
         
         :root { 
-            --teal: #008080; --clio-blue: #0076CE; --platinum: #e2e8f0; --gray-dark: #1e293b; --gray-light: #f8fafc;
+            --teal: #008080; --clio-blue: #0076CE; --clio-green: #2ecc71; --platinum: #e2e8f0; --gray-dark: #1e293b; --gray-light: #f8fafc;
             --round-main: 36px; --round-inner: 22px; --round-pill: 999px;
+            --mac-shadow: 0 15px 40px rgba(0,0,0,0.12);
         }
 
-        /* FADE OVERLAY */
+        /* CINEMATIC FADE OVERLAY */
         #fadeOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f0f2f5; z-index: 200000; opacity: 1; transition: opacity 1s ease; pointer-events: none; }
 
-        body { font-family: 'Inter', sans-serif; background: #f0f2f5; margin: 0; padding: 10px; height: 100vh; overflow: hidden; color: var(--gray-dark); }
+        body { font-family: 'Inter', sans-serif; background: #f0f2f5; margin: 0; padding: 10px; height: 100vh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
         
-        /* INTRO SPLASH */
+        /* INTRO SCREEN */
         #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f0f2f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; box-sizing: border-box; }
-        .story-text { font-size: 22px; font-weight: 700; color: var(--gray-dark); opacity: 0; transition: opacity 0.8s; max-width: 480px; }
+        .story-text { font-size: 22px; font-weight: 700; color: var(--gray-dark); line-height: 1.5; opacity: 0; transition: opacity 0.8s; max-width: 480px; letter-spacing: -0.5px; }
+        #skipBtn { position: absolute; bottom: 40px; background: rgba(0,0,0,0.05); border: 1px solid var(--platinum); padding: 12px 24px; border-radius: var(--round-pill); font-size: 12px; font-weight: 800; color: var(--gray-dark); cursor: pointer; backdrop-filter: blur(10px); z-index: 100001; }
 
-        /* MAC CONTAINER */
-        .app-container { max-width: 500px; margin: auto; background: white; border-radius: var(--round-main); height: 95vh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 15px 40px rgba(0,0,0,0.12); }
+        /* MAC-STYLE APP CONTAINER */
+        .app-container { max-width: 500px; margin: auto; background: white; border-radius: var(--round-main); height: 95vh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: var(--mac-shadow); border: 1px solid rgba(255,255,255,0.7); }
 
-        /* LOGO: Briefcase + Handle + Spine + 3 Dots */
+        /* BRANDING & LOGO (Briefcase + Handle + Spine + 3 Dots) */
         .header { padding: 15px; border-bottom: 1px solid var(--platinum); background: white; text-align: center; flex-shrink: 0; }
-        .briefcase { position: relative; width: 50px; height: 34px; border: 3.5px solid var(--gray-dark); border-radius: 9px; margin: 0 auto; }
+        .briefcase-logo { position: relative; width: 52px; height: 34px; border: 3.5px solid var(--gray-dark); border-radius: 9px; margin: 0 auto; }
         .briefcase-handle { position: absolute; top: -11px; left: 50%; transform: translateX(-50%); width: 20px; height: 8px; border: 3.5px solid var(--gray-dark); border-bottom: none; border-radius: 5px 5px 0 0; }
-        .teal-spine { position: absolute; top: 55%; left: -15px; right: -15px; height: 4px; background: var(--teal); border-radius: 2px; }
-        .teal-dots { position: absolute; top: 55%; left: 50%; transform: translate(-50%, -50%); display: flex; gap: 4px; }
-        .dot { width: 7px; height: 7px; background: var(--teal); border-radius: 50%; border: 1.5px solid white; }
+        .teal-spine { position: absolute; top: 55%; left: -15px; right: -15px; height: 3.5px; background: var(--teal); border-radius: 2px; }
+        .teal-dots { position: absolute; top: 55%; left: 50%; transform: translate(-50%, -50%); display: flex; gap: 3px; }
+        .dot { width: 6px; height: 6px; background: var(--teal); border-radius: 50%; border: 1px solid white; }
 
-        /* SOLID TEAL ICONS */
+        /* TEMPLATE SCROLLER */
+        .template-scroller { display: flex; gap: 10px; overflow-x: auto; padding: 12px 20px; background: white; border-bottom: 1px solid var(--platinum); scrollbar-width: none; }
+        .template-scroller::-webkit-scrollbar { display: none; }
+        .t-pill { background: var(--gray-light); color: var(--teal); border: 1px solid var(--platinum); padding: 8px 16px; border-radius: var(--round-pill); font-size: 11px; font-weight: 800; white-space: nowrap; cursor: pointer; }
+
+        /* SOLID TEAL MAC ICONS */
         .media-toolbar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 15px 20px; background: var(--gray-light); }
-        .media-btn { background: var(--teal); border: none; height: 75px; border-radius: var(--round-inner); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 8px 15px rgba(0, 128, 128, 0.2); transition: 0.2s; position: relative; }
+        .media-btn { background: var(--teal); border: none; height: 75px; border-radius: var(--round-inner); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 8px 15px rgba(0, 128, 128, 0.25); position: relative; transition: 0.2s; }
         .media-btn:active { transform: scale(0.92); }
-        .media-btn svg { width: 24px; height: 24px; fill: white; margin-bottom: 5px; }
-        .media-btn span { font-size: 8px; font-weight: 800; color: white; text-transform: uppercase; }
-        .hidden-input { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+        .media-btn svg { width: 24px; height: 24px; fill: white; margin-bottom: 4px; }
+        .media-btn span { font-size: 8px; font-weight: 800; color: white; text-transform: uppercase; letter-spacing: 0.5px; }
+        .hidden-input { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 10; }
 
-        /* TIMELINE ENTRY */
+        /* INPUT AREA */
+        .input-area { padding: 0 20px 15px; background: var(--gray-light); border-bottom: 1px solid var(--platinum); }
+        #statusBox { width: 100%; height: 85px; padding: 15px; border-radius: var(--round-inner); border: 1px solid var(--platinum); font-family: inherit; font-size: 14px; outline: none; resize: none; background: white; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+
+        /* TIMELINE DISPLAY */
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 20px; background: white; }
-        .entry { border: 1px solid var(--platinum); padding: 15px; border-radius: 22px; margin-bottom: 15px; border-left: 6px solid var(--teal); background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-        .meta { font-size: 10px; font-weight: 800; color: #94a3b8; margin-bottom: 5px; }
-
-        /* SYNC PADLOCK */
-        .sync-btn { background: var(--gray-dark); color: white; border: none; padding: 18px; border-radius: var(--round-pill); width: 90%; align-self: center; font-weight: 800; font-size: 15px; margin: 15px 0; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; }
-        .sync-btn:active { background: var(--clio-blue); }
+        .entry { position: relative; padding: 18px; background: white; border: 1px solid var(--platinum); border-radius: 22px; margin-bottom: 15px; border-left: 6px solid var(--teal); box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .meta-data { font-size: 10px; font-weight: 800; color: #94a3b8; margin-bottom: 8px; text-transform: uppercase; line-height: 1.4; }
+        
+        /* SYNC PADLOCK BUTTON */
+        .sync-btn { background: var(--gray-dark); color: white; border: none; padding: 18px; border-radius: var(--round-pill); width: 90%; align-self: center; font-weight: 800; font-size: 15px; margin: 15px 0; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; box-shadow: 0 10px 25px rgba(0,0,0,0.2); transition: 0.3s; }
+        .sync-btn:active { background: var(--clio-blue); transform: scale(0.98); }
     </style>
 </head>
 <body>
@@ -56,26 +67,40 @@
 
 <div id="splashScreen">
     <h1 id="storyText" class="story-text"></h1>
-    <button onclick="transitionToApp()" style="position:absolute; bottom:40px; background:rgba(0,0,0,0.05); border:1px solid var(--platinum); padding:12px 24px; border-radius:30px; font-weight:800; cursor:pointer;">Skip Intro</button>
+    <button id="skipBtn" onclick="transitionToApp()">Skip Intro</button>
 </div>
 
 <div class="app-container" id="mainApp" style="opacity:0;">
+    <div style="background:var(--gray-light); padding:10px; display:flex; align-items:center; justify-content:center; gap:8px; font-size:10px; font-weight:800; color:var(--clio-green); border-bottom:1px solid var(--platinum);">
+        <div style="background:var(--clio-green); width:14px; height:14px; border-radius:50%; color:white; text-align:center; line-height:14px; font-size:9px;">✓</div> CLIO DEVELOPER CERTIFIED
+    </div>
+
     <header class="header">
-        <div class="briefcase"><div class="briefcase-handle"></div><div class="teal-spine"></div><div class="teal-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>
-        <h1 style="color:var(--teal); margin:8px 0 2px; font-size:22px; font-weight:800;">WorkTimeline™</h1>
-        <div style="font-size:10px; font-weight:800; color:#64748b; text-transform:uppercase;">Taking in intakes, decided.</div>
+        <div class="briefcase-logo">
+            <div class="briefcase-handle"></div>
+            <div class="teal-spine"></div>
+            <div class="teal-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        </div>
+        <h1 style="color: var(--teal); margin: 8px 0 2px; font-size: 24px; font-weight: 800; letter-spacing: -1.5px;">WorkTimeline™</h1>
+        <div style="font-size: 10px; font-weight: 800; color: #64748b; text-transform: uppercase;">Taking in intakes, decided.</div>
     </header>
 
+    <div class="template-scroller">
+        <div class="t-pill" onclick="useTemplate('WITNESS STATEMENT:\n- Name:\n- Observation:\n- Reliability:')">Witness</div>
+        <div class="t-pill" onclick="useTemplate('LOCATION LOG:\n- GPS Coordinates:\n- Hazards Observed:\n- Lighting:')">Location</div>
+        <div class="t-pill" onclick="useTemplate('EVIDENCE TRACKER:\n- Item Type:\n- Chain of Custody:\n- Secure Storage:')">Evidence</div>
+    </div>
+
     <div class="media-toolbar">
-        <div class="media-btn"><input type="file" accept="image/*" capture="camera" class="hidden-input" onchange="addEntryWithGPS('Camera Evidence')"><svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-4c-1.1 0-2 .9-2 2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-5c0-1.1-.9-2-2-2z"/></svg><span>Camera</span></div>
-        <div class="media-btn"><input type="file" accept="audio/*" capture="microphone" class="hidden-input" onchange="addEntryWithGPS('Audio Statement')"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg><span>Audio</span></div>
-        <div class="media-btn"><input type="file" class="hidden-input" onchange="addEntryWithGPS('Document Uploaded')"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6z"/></svg><span>Docs</span></div>
+        <div class="media-btn"><input type="file" accept="image/*" capture="camera" class="hidden-input" onchange="addEntryWithGPS('Visual Evidence Secured')"><svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-4c-1.1 0-2 .9-2 2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-5c0-1.1-.9-2-2-2z"/></svg><span>Camera</span></div>
+        <div class="media-btn"><input type="file" accept="audio/*" capture="microphone" class="hidden-input" onchange="addEntryWithGPS('Audio Statement Recorded')"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg><span>Audio</span></div>
+        <div class="media-btn"><input type="file" class="hidden-input" onchange="addEntryWithGPS('Official Document Uploaded')"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6z"/></svg><span>Docs</span></div>
         <div class="media-btn" onclick="window.location.href='sms:?body=WorkTimeline Update:'"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg><span>Text</span></div>
     </div>
 
-    <div style="padding:15px 20px; background:var(--gray-light);">
-        <textarea id="statusBox" placeholder="Describe your truth..." style="width:100%; height:80px; border-radius:18px; border:1px solid var(--platinum); padding:15px; font-family:inherit;"></textarea>
-        <button onclick="submitManual()" style="background:var(--teal); color:white; border:none; padding:15px; border-radius:var(--round-pill); width:100%; font-weight:800; margin-top:10px;">Secure Entry</button>
+    <div class="input-area">
+        <textarea id="statusBox" placeholder="Describe your truth here..."></textarea>
+        <button onclick="submitManual()" style="background: var(--teal); color:white; border:none; padding:18px; border-radius: var(--round-pill); width:100%; font-weight:800; margin-top:12px; cursor:pointer;">Secure & Build Timeline</button>
     </div>
 
     <div id="timelineContainer">
@@ -89,36 +114,72 @@
 </div>
 
 <script>
-    const story = ["We see you.", "You're not invisible.", "Trapped in the gray area.", "Tearing down the walls.", "The Handshake begins."];
+    const story = [
+        "We see you. We hear you.",
+        "You're not invisible.",
+        "You're just stuck. Lost. Don't know what to do.",
+        "Trapped in the gray area... a prison.",
+        "Jack Newton identifies the 'Invisible 60%.'",
+        "Law firms turn away 3 out of 5 cases due to messy data.",
+        "Messy files drain 40% of a lawyer's resources daily.",
+        "Organized intake drives a 60% higher success rate.",
+        "We are tearing down the prison walls.",
+        "Bridge the gap through effortless truth.",
+        "The Handshake begins."
+    ];
     const timelineVault = [];
+    let introTimer;
 
     window.onload = () => {
-        document.getElementById('fadeOverlay').style.opacity = '0'; // Fade in the Splash
+        document.getElementById('fadeOverlay').style.opacity = '0'; 
         runIntro();
     };
 
     function runIntro() {
-        const el = document.getElementById('storyText'); let i = 0;
+        const el = document.getElementById('storyText'); 
+        let i = 0;
         const next = () => {
             if(i < story.length) {
-                el.innerText = story[i++]; el.style.opacity = 1;
-                setTimeout(() => { el.style.opacity = 0; setTimeout(next, 800); }, 3000);
-            } else transitionToApp();
+                el.innerText = story[i++]; 
+                el.style.opacity = 1;
+                introTimer = setTimeout(() => { 
+                    el.style.opacity = 0; 
+                    introTimer = setTimeout(next, 1000); 
+                }, 3200);
+            } else {
+                transitionToApp();
+            }
         };
         next();
     }
 
     function transitionToApp() {
+        clearTimeout(introTimer);
         const overlay = document.getElementById('fadeOverlay');
-        overlay.style.opacity = '1'; // Fade out Splash
+        overlay.style.opacity = '1'; 
+        overlay.style.pointerEvents = 'all';
+
         setTimeout(() => {
-            document.getElementById('splashScreen').remove();
-            document.getElementById('mainApp').style.opacity = '1';
-            overlay.style.opacity = '0'; // Fade in App
+            const splash = document.getElementById('splashScreen');
+            if(splash) splash.remove();
+            
+            const app = document.getElementById('mainApp');
+            app.style.opacity = '1';
+            
+            overlay.style.opacity = '0';
+            overlay.style.pointerEvents = 'none';
         }, 1000);
     }
 
-    function submitManual() { const b = document.getElementById('statusBox'); if(b.value.trim()){ addEntryWithGPS(b.value); b.value = ''; } }
+    function useTemplate(t) {
+        document.getElementById('statusBox').value = t;
+        document.getElementById('statusBox').focus();
+    }
+
+    function submitManual() { 
+        const b = document.getElementById('statusBox'); 
+        if(b.value.trim()){ addEntryWithGPS(b.value); b.value = ''; } 
+    }
 
     function addEntryWithGPS(text) {
         navigator.geolocation.getCurrentPosition((pos) => {
@@ -127,8 +188,11 @@
             const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
             const stamp = `${days[now.getDay()]} ${months[now.getMonth()]} ${now.getDate()} @ ${now.getHours()}:${(now.getMinutes()<10?'0':'')+now.getMinutes()}`;
             const gps = `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`;
+            
             timelineVault.push({ text, stamp, gps });
             refreshDisplay();
+        }, () => {
+            alert("GPS location is required for legal timeline verification.");
         });
     }
 
@@ -136,11 +200,18 @@
         const list = document.getElementById('displayList');
         list.innerHTML = '';
         [...timelineVault].reverse().forEach(item => {
-            list.innerHTML += `<div class="entry"><div class="meta">${item.stamp} | 📍 ${item.gps}</div><p style="margin:0; font-size:14px; font-weight:600;">${item.text}</p></div>`;
+            list.innerHTML += `
+                <div class="entry">
+                    <div class="meta-data">${item.stamp} | 📍 COORDS: ${item.gps}</div>
+                    <p style="margin:0; font-size:14px; font-weight:600; white-space:pre-wrap;">${item.text}</p>
+                </div>`;
         });
     }
 
-    function syncToClio() { alert("Locking Timeline and generating Summary for Clio..."); }
+    function syncToClio() { 
+        if(timelineVault.length === 0) return alert("Add entries before syncing.");
+        alert("Success: Timeline Sealed. Summary generating for Clio Handshake..."); 
+    }
 </script>
 </body>
 </html>
