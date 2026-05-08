@@ -6,7 +6,7 @@
     <title>WorkTimeline™ | Final Handshake</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@500;700&display=swap'); /* For the data terminal */
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@500;700&display=swap');
         
         :root { 
             --teal: #008080; --clio-blue: #0076CE; --platinum: #d8e2ea; --gray-dark: #2c3e50; 
@@ -29,7 +29,7 @@
         }
 
         /* GHOST MODE BLUR BOX */
-        #blurBox { position: absolute; top: 95px; left: 0; right: 0; bottom: 0; z-index: 98; background: rgba(255,255,255,0.05); backdrop-filter: blur(0px); pointer-events: none; transition: backdrop-filter 0.4s ease; }
+        #blurBox { position: absolute; top: 110px; left: 0; right: 0; bottom: 0; z-index: 98; background: rgba(255,255,255,0.05); backdrop-filter: blur(0px); pointer-events: none; transition: backdrop-filter 0.4s ease; }
 
         /* HEADER & BRIEFCASE LOGO */
         .header { display: flex; justify-content: space-between; align-items: center; padding: calc(15px + env(safe-area-inset-top)) 25px 15px; border-bottom: 2px solid var(--platinum); flex-shrink: 0; z-index: 100; background: white; }
@@ -47,6 +47,9 @@
         }
         .clio-certified { display: flex; align-items: center; gap: 6px; font-size: 9px; font-weight: 900; color: #16a34a; background: #dcfce7; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid #bbf7d0; }
         .pulse-dot { width: 6px; height: 6px; background-color: #22c55e; border-radius: 50%; animation: pulseGreen 2s infinite; }
+
+        /* BUBBLY TAKING-INTAKE-OUT TAG */
+        .bubbly-tag { font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 900; color: var(--clio-blue); background: #e0f2fe; padding: 4px 12px; border-radius: 99px; letter-spacing: -0.2px; }
 
         /* SUMMARY WARNING MODAL WITH HANDSHAKE DATA */
         #summaryModal { position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: rgba(0,0,0,0.6); z-index: 200000; display: none; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; backdrop-filter: blur(8px); }
@@ -146,16 +149,16 @@
     <div id="blurBox"></div>
     <header class="header">
         <div style="display:flex; flex-direction:column; align-items:flex-start;">
-            <div style="display:flex; align-items: center; gap: 10px;">
+            <div style="display:flex; align-items: center; gap: 12px; margin-bottom: 8px;">
                 <div class="briefcase-logo">
                     <div class="briefcase-handle"></div>
                     <div class="teal-spine"></div>
                     <div class="teal-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
                 </div>
-                <div style="font-size: 13px; font-weight: 800; color: var(--clio-blue); font-style: italic;">taking-intake-out</div>
+                <div class="bubbly-tag">taking-intake-out</div>
             </div>
             
-            <div style="display:flex; align-items: center; gap: 10px; margin-top: 6px;">
+            <div style="display:flex; align-items: center; gap: 10px;">
                 <h1 id="folderLabel" style="color: var(--teal); margin: 0; font-size: 22px; font-weight: 900; letter-spacing: -0.5px;">WorkTimeline™</h1>
                 <div class="clio-certified">
                     <div class="pulse-dot"></div> CLIO CERTIFIED OK
