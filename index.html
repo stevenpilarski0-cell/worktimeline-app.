@@ -5,92 +5,99 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WorkTimeline™ | Final Handshake</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
         :root { 
             --teal: #008080; --clio-blue: #0076CE; --platinum: #d8e2ea; --gray-dark: #2c3e50; 
-            --glass: rgba(0, 128, 128, 0.08); --round-factor: 45px; --round-inner: 24px;
+            --glass: rgba(0, 128, 128, 0.1); --round-factor: 35px; --round-inner: 24px;
         }
-        body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 12px; height: 100vh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
+        body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 10px; height: 100vh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased;}
         
         /* 45-SECOND CINEMATIC INTRO */
         #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; box-sizing: border-box; transition: opacity 1.2s ease; }
-        .story-text { font-size: 24px; font-weight: 900; color: var(--gray-dark); line-height: 1.4; opacity: 0; transition: opacity 0.8s; max-width: 420px; letter-spacing: -0.5px; }
-        #skipBtn { position: absolute; bottom: 40px; padding: 14px 28px; border: 3px solid var(--teal); border-radius: 99px; background: white; color: var(--teal); font-weight: 900; font-size: 13px; cursor: pointer; text-transform: uppercase; letter-spacing: 1.5px; box-shadow: 0 8px 20px rgba(0, 128, 128, 0.15); transition: transform 0.2s; }
-        #skipBtn:active { transform: scale(0.92); background: var(--teal); color: white; }
+        .story-text { font-size: 22px; font-weight: 800; color: var(--gray-dark); line-height: 1.5; opacity: 0; transition: opacity 0.8s; max-width: 420px; }
 
-        /* THE PROTOTYPE SHELL - BUBBLY, CRISP, MAC-LIKE */
-        .app-container { width: 100%; max-width: 500px; margin: auto; background: white; border-radius: var(--round-factor); height: 95vh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.12); box-sizing: border-box; border: 1px solid rgba(255,255,255,0.8); }
+        /* THE PROTOTYPE SHELL */
+        .app-container { max-width: 500px; margin: auto; background: white; border-radius: 45px; height: 95vh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.1); box-sizing: border-box; border: 1px solid rgba(255,255,255,0.8); }
         
         /* GHOST MODE BLUR BOX */
         #blurBox { position: absolute; top: 85px; left: 0; right: 0; bottom: 0; z-index: 98; background: rgba(255,255,255,0.05); backdrop-filter: blur(0px); pointer-events: none; transition: backdrop-filter 0.4s ease; }
 
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 22px 25px; border-bottom: 2px solid var(--platinum); flex-shrink: 0; z-index: 100; background: white; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 20px 25px; border-bottom: 2px solid var(--platinum); flex-shrink: 0; z-index: 100; background: white; }
 
-        /* COMPACT INPUT AREA WITH PLUS BUTTON */
-        .input-area { padding: 20px 20px 15px; background: #fff; border-bottom: 2px solid var(--platinum); flex-shrink: 0; }
-        
+        /* SUMMARY WARNING MODAL */
+        #summaryModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 200000; display: none; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; backdrop-filter: blur(8px); }
+        .modal-card { background: white; border-radius: var(--round-factor); padding: 30px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
+        .modal-btn { background: var(--clio-blue); color: white; border: none; padding: 18px; border-radius: var(--round-inner); width: 100%; font-size: 16px; font-weight: 900; cursor: pointer; margin-top: 15px; transition: transform 0.1s; }
+        .modal-btn:active { transform: scale(0.96); }
+
+        /* COMPACT INPUT AREA & PLUS BUTTON */
+        .input-area { padding: 15px 20px; background: #fff; border-bottom: 2px solid var(--platinum); flex-shrink: 0; }
         .input-row { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
-        #statusBox { flex-grow: 1; height: 75px; padding: 16px; border-radius: var(--round-inner); border: 2.5px solid var(--platinum); box-sizing: border-box; font-family: inherit; font-size: 16px; font-weight: 600; outline: none; background: #f8fafc; color: var(--gray-dark); transition: border-color 0.3s; resize: none; }
-        #statusBox:focus { border-color: var(--teal); background: white; }
-        #statusBox::placeholder { color: #94a3b8; font-weight: 600; }
         
-        /* THE NEW "+" ADD BUTTON */
-        .add-sq { width: 75px; height: 75px; background: var(--teal); border: none; border-radius: var(--round-inner); color: white; font-size: 38px; font-weight: 400; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; box-shadow: 0 10px 25px rgba(0, 128, 128, 0.25); transition: transform 0.15s, background 0.15s; }
+        #statusBox { flex-grow: 1; height: 75px; padding: 15px; border-radius: var(--round-inner); border: 2px solid var(--platinum); box-sizing: border-box; font-family: inherit; font-size: 16px; font-weight: 600; outline: none; background: #fbfdff; resize: none; transition: border-color 0.3s; }
+        #statusBox:focus { border-color: var(--teal); background: white; }
+        
+        .add-sq { width: 75px; height: 75px; background: var(--teal); border: none; border-radius: var(--round-inner); color: white; font-size: 38px; font-weight: 400; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; box-shadow: 0 8px 20px rgba(0, 128, 128, 0.2); transition: transform 0.1s, background 0.2s; }
         .add-sq:active { transform: scale(0.92); }
-
-        /* MATCHED ROUNDNESS HARDWARE ICONS - BUBBLY */
-        .media-toolbar { display: flex; gap: 12px; }
-        .media-btn { flex: 1; background: var(--platinum); border: none; padding: 12px 5px; border-radius: 18px; display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; transition: transform 0.15s, background 0.15s; }
-        .media-btn:active { transform: scale(0.95); background: #cbd5e1; }
+        
+        /* MATCHED ROUNDNESS HARDWARE ICONS */
+        .media-toolbar { display: flex; gap: 10px; }
+        .media-btn { flex: 1; background: var(--platinum); border: none; padding: 12px 5px; border-radius: var(--round-inner); display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; transition: transform 0.1s; }
+        .media-btn:active { transform: scale(0.95); }
         .media-btn svg { width: 22px; height: 22px; fill: var(--teal); margin-bottom: 4px; }
-        .media-btn span { font-size: 9px; font-weight: 900; color: var(--gray-dark); letter-spacing: 0.5px; }
+        .media-btn span { font-size: 8px; font-weight: 900; color: var(--gray-dark); }
         .hidden-input { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; top: 0; left: 0; }
 
-        /* TIMELINE (MAXIMIZED WHITE SPACE) */
+        /* TIMELINE DISPLAY */
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px 20px; position: relative; background: #fdfdfd; }
-        .timeline-spine { position: absolute; left: 35px; top: 0; bottom: 0; width: 6px; background: var(--platinum); border-radius: 15px; z-index: 1; }
+        .timeline-spine { position: absolute; left: 35px; top: 0; bottom: 0; width: 6px; background: #cccccc; border-radius: 15px; z-index: 1; }
         
         /* ABOUT ME BOX */
-        #legacyQuote { position: relative; margin-left: 55px; background: var(--glass); backdrop-filter: blur(10px); border: 2px solid rgba(0, 128, 128, 0.1); border-left: 6px solid var(--teal); padding: 22px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; transition: opacity 0.5s; box-shadow: 0 10px 25px rgba(0,0,0,0.03); }
-        .stat-star { font-size: 14px; font-weight: 700; margin: 10px 0; color: var(--gray-dark); line-height: 1.5; }
+        #legacyQuote { position: relative; margin-left: 55px; background: var(--glass); backdrop-filter: blur(10px); border: 1px solid rgba(0, 128, 128, 0.15); border-left: 6px solid var(--teal); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; transition: opacity 0.5s; }
+        .stat-star { font-size: 13px; font-weight: 800; margin: 10px 0; color: var(--gray-dark); line-height: 1.5; }
 
-        .entry { position: relative; margin-left: 55px; background: white; border: 2px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; border-left: 6px solid var(--teal); box-shadow: 0 8px 20px rgba(0,0,0,0.04); }
+        .entry { position: relative; margin-left: 55px; background: white; border: 1.5px solid var(--platinum); padding: 18px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; border-left: 6px solid var(--teal); box-shadow: 0 6px 15px rgba(0,0,0,0.04); }
         .timestamp-full { font-size: 11px; font-weight: 900; color: var(--teal); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
         
         /* MINIMALIST CLIO PADLOCK FOOTER */
         .footer-action { padding: 15px; background: white; border-top: 2px solid var(--platinum); display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
         .clio-unit { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; transition: transform 0.15s; }
         .clio-unit:active { transform: scale(0.92); }
-        .padlock-sq { width: 65px; height: 65px; background: var(--clio-blue); border-radius: 22px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0, 118, 206, 0.25); }
+        .padlock-sq { width: 65px; height: 65px; background: var(--clio-blue); border-radius: 22px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0, 118, 206, 0.25); }
         .padlock-sq svg { width: 28px; height: 28px; fill: white; }
         .clio-text { font-size: 12px; font-weight: 900; color: var(--clio-blue); letter-spacing: 1.5px; text-transform: uppercase; }
 
-        /* SWITCHES */
-        .switch { position: relative; display: inline-block; width: 40px; height: 22px; }
+        .switch { position: relative; display: inline-block; width: 34px; height: 18px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--platinum); transition: .4s; border-radius: 30px; }
-        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 20px; }
+        .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--clio-blue); }
-        input:checked + .slider:before { transform: translateX(18px); }
+        input:checked + .slider:before { transform: translateX(16px); }
     </style>
 </head>
 <body>
 
-<div id="splashScreen">
-    <h1 id="storyText" class="story-text">Welcome.</h1>
-    <button id="skipBtn" onclick="endSplash()">Skip Intro</button>
+<div id="splashScreen"><h1 id="storyText" class="story-text">Welcome.</h1></div>
+
+<div id="summaryModal">
+    <div class="modal-card">
+        <div style="background: var(--clio-blue); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+            <svg width="30" height="30" fill="white" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/></svg>
+        </div>
+        <h2 style="color:var(--gray-dark); margin-bottom: 10px;">Lock and Sync Timeline</h2>
+        <p id="modalSummary" style="font-size: 15px; color: #64748b; margin-bottom: 25px; line-height: 1.5; font-weight: 600;"></p>
+        <button class="modal-btn" onclick="executeClioSync()">Confirm & Send to Clio</button>
+        <button onclick="closeModal()" style="background: transparent; color: #94a3b8; border: none; margin-top: 15px; font-weight: 800; font-size: 14px; cursor: pointer;">Cancel</button>
+    </div>
 </div>
 
 <div class="app-container" id="mainApp">
     <div id="blurBox"></div>
     <header class="header">
-        <div>
-            <h1 id="folderLabel" style="color: var(--teal); margin:0; font-size: 22px; font-weight: 900; letter-spacing: -0.5px;">WorkTimeline™</h1>
-            <div style="font-size: 12px; font-weight: 800; color: var(--clio-blue);">Taking an Intake...</div>
-        </div>
+        <div><h1 id="folderLabel" style="color: var(--teal); margin:0; font-size: 20px; font-weight: 900;">WorkTimeline™</h1><div style="font-size: 12px; font-weight: 800; color: var(--clio-blue); font-style: italic;">Taking an Intake...</div></div>
         <div style="display:flex; gap:12px; align-items: center;">
-            <div style="text-align: center;"><label class="switch"><input type="checkbox" onchange="toggleVault(this)"><span class="slider"></span></label><div style="font-size: 8px; font-weight: 900; margin-top: 4px; color: var(--gray-dark);">CHRON</div></div>
-            <div style="text-align: center;"><label class="switch"><input type="checkbox" id="gSwitch" onchange="toggleGhost()"><span class="slider"></span></label><div style="font-size: 8px; font-weight: 900; margin-top: 4px; color: var(--gray-dark);">GHOST</div></div>
+            <div style="text-align: center;"><label class="switch"><input type="checkbox" onchange="toggleVault(this)"><span class="slider"></span></label><div style="font-size: 8px; font-weight: 900; margin-top: 4px;">CHRON</div></div>
+            <div style="text-align: center;"><label class="switch"><input type="checkbox" id="gSwitch" onchange="toggleGhost()"><span class="slider"></span></label><div style="font-size: 8px; font-weight: 900; margin-top: 4px;">GHOST</div></div>
         </div>
     </header>
 
@@ -98,13 +105,13 @@
         <div class="input-area">
             <div class="input-row">
                 <textarea id="statusBox" placeholder="Start your intake entry..."></textarea>
-                <button class="add-sq" onclick="submitEntry()">+</button>
+                <button id="addBtn" class="add-sq" onclick="submitEntry()">+</button>
             </div>
             <div class="media-toolbar">
-                <button class="media-btn"><input type="file" accept="image/*" capture="camera" class="hidden-input" onchange="addEntry('📷 Photo evidence captured.')"><svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-4c-1.1 0-2 .9-2 2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-5c0-1.1-.9-2-2-2z"/></svg><span>CAMERA</span></button>
-                <button class="media-btn"><input type="file" accept="audio/*" capture="microphone" class="hidden-input" onchange="addEntry('🎤 Audio recording captured.')"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg><span>AUDIO</span></button>
+                <button class="media-btn"><input type="file" accept="image/*" capture="camera" class="hidden-input" onchange="addMediaEntry('📷 Photo evidence captured.')"><svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-4c-1.1 0-2 .9-2 2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-5c0-1.1-.9-2-2-2z"/></svg><span>CAMERA</span></button>
+                <button class="media-btn"><input type="file" accept="audio/*" capture="microphone" class="hidden-input" onchange="addMediaEntry('🎤 Audio recording captured.')"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg><span>AUDIO</span></button>
                 <button class="media-btn" onclick="window.location.href='sms:?body=Intake Update:'"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg><span>TEXT</span></button>
-                <button class="media-btn"><input type="file" class="hidden-input" onchange="addEntry('📄 Document verification secured.')"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg><span>DOCS</span></button>
+                <button class="media-btn"><input type="file" class="hidden-input" onchange="addMediaEntry('📄 Document verification secured.')"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg><span>DOCS</span></button>
             </div>
         </div>
 
@@ -112,7 +119,7 @@
             <div class="timeline-spine"></div>
             <div id="displayList">
                 <div id="legacyQuote">
-                    <span style="font-size: 12px; font-weight: 900; color: var(--teal); text-transform: uppercase; letter-spacing: 0.5px;">About My Journey</span>
+                    <span style="font-size: 11px; font-weight: 900; color: var(--teal); text-transform: uppercase; letter-spacing: 0.5px;">About My Journey</span>
                     <div class="stat-star">It has been a great experience and I am deeply thankful. I share the same visions and values as Jack Newton.</div>
                     <div class="stat-star">I am living proof his concept is right, having navigated this firsthand. Using AI and pattern recognition, I stand as an example of what he believes in.</div>
                     <div class="stat-star">This is my very first time coding, built entirely on my cell phone. I have an adjustment disorder, but when I looked at the numbers and saw the system, I knew something had to be done.</div>
@@ -121,7 +128,7 @@
         </div>
 
         <div class="footer-action">
-            <div class="clio-unit" onclick="syncToClio()">
+            <div class="clio-unit" onclick="openSyncSummary()">
                 <div class="padlock-sq">
                     <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/></svg>
                 </div>
@@ -153,7 +160,7 @@
 
     function runStory() {
         const el = document.getElementById('storyText'); let i = 0;
-        const lineDuration = 4050; 
+        const lineDuration = 4050; // Total timing approx 45 seconds
         const next = () => {
             if(i < story.length) {
                 el.style.opacity = 0;
@@ -185,45 +192,78 @@
         document.body.classList.toggle('mode-notes', cb.checked);
         document.getElementById('folderLabel').innerText = cb.checked ? "Isolated Notes" : "WorkTimeline™";
         document.getElementById('folderLabel').style.color = cb.checked ? "var(--clio-blue)" : "var(--teal)";
-        
-        // Ensure + button changes to blue when in Notes mode
-        const addBtn = document.querySelector('.add-sq');
-        addBtn.style.background = cb.checked ? "var(--clio-blue)" : "var(--teal)";
+        document.getElementById('addBtn').style.background = cb.checked ? "var(--clio-blue)" : "var(--teal)";
         refreshVaultDisplay();
     }
 
     function submitEntry() {
         const box = document.getElementById('statusBox'); if(!box.value.trim()) return;
-        saveEntry(box.value); box.value = '';
+        logEntryWithGPS(box.value); box.value = '';
         const q = document.getElementById('legacyQuote'); if(q) { q.style.opacity = '0'; setTimeout(() => q.remove(), 500); }
     }
 
-    function saveEntry(text) {
-        const now = new Date(); let hours = now.getHours(); let minutes = now.getMinutes();
+    function addMediaEntry(text) {
+        logEntryWithGPS(text);
+        const q = document.getElementById('legacyQuote'); if(q) { q.style.opacity = '0'; setTimeout(() => q.remove(), 500); }
+    }
+
+    function logEntryWithGPS(text) {
+        navigator.geolocation.getCurrentPosition((pos) => {
+            const gps = `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`;
+            saveEntry(text, gps);
+        }, () => {
+            saveEntry(text, "GPS Unavailable");
+        });
+    }
+
+    function saveEntry(text, gpsCoords) {
+        const now = new Date();
+        const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+        const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        
+        const dayName = days[now.getDay()];
+        const monthName = months[now.getMonth()];
+        const dayNum = now.getDate();
+        const year = now.getFullYear();
+        
+        let hours = now.getHours(); let minutes = now.getMinutes();
         const ampm = hours >= 12 ? 'P.M.' : 'A.M.'; hours = hours % 12 || 12;
         minutes = minutes < 10 ? '0'+minutes : minutes;
-        const stamp = now.toLocaleDateString() + ' @ ' + hours + ':' + minutes + ' ' + ampm;
-        const entry = { text: text, stamp: stamp };
+        
+        const stamp = `${dayName}, ${monthName} ${dayNum}, ${year} @ ${hours}:${minutes} ${ampm}`;
+        const entry = { text: text, stamp: stamp, gps: gpsCoords };
+        
         if(activeVault === "TIMELINE") timelineVault.push(entry); else notesVault.push(entry);
         refreshVaultDisplay();
     }
-
-    function addEntry(text) { saveEntry(text); }
 
     function refreshVaultDisplay() {
         const list = document.getElementById('displayList'); const quote = document.getElementById('legacyQuote');
         list.innerHTML = '';
         if(quote && timelineVault.length === 0 && notesVault.length === 0) list.appendChild(quote);
         const data = (activeVault === "TIMELINE") ? timelineVault : notesVault;
+        const colorCode = (activeVault === "NOTES") ? 'var(--clio-blue)' : 'var(--teal)';
+        
         [...data].reverse().forEach(item => {
             const div = document.createElement('div'); div.className = 'entry';
-            div.style.borderLeftColor = (activeVault === "NOTES") ? "var(--clio-blue)" : "var(--teal)";
-            div.innerHTML = `<span class="timestamp-full" style="color:${(activeVault === "NOTES") ? 'var(--clio-blue)' : 'var(--teal)'}">${item.stamp}</span><p style="margin:0; font-size:15px; font-weight:700;">${item.text}</p>`;
+            div.style.borderLeftColor = colorCode;
+            div.innerHTML = `<span class="timestamp-full" style="color:${colorCode}">${item.stamp} | 📍 ${item.gps}</span><p style="margin:0; font-size:15px; font-weight:700;">${item.text}</p>`;
             list.appendChild(div);
         });
     }
 
-    function syncToClio() {
+    function openSyncSummary() {
+        const total = timelineVault.length + notesVault.length;
+        if(total === 0) return alert("Your timeline is currently empty. Please add entries before syncing.");
+        document.getElementById('modalSummary').innerText = `Warning: You are about to lock and sync a summary containing ${timelineVault.length} timeline entries and ${notesVault.length} private notes. This data will be securely transmitted to your law firm's Clio dashboard.`;
+        document.getElementById('summaryModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('summaryModal').style.display = 'none';
+    }
+
+    function executeClioSync() {
         window.location.href = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s&redirect_uri=https://worktimeline-app.vercel.app/index.html&scope=leads_write%20contacts_write`;
     }
 </script>
