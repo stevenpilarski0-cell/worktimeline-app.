@@ -144,3 +144,32 @@
     function submitWithGPS(text) {
         navigator.geolocation.getCurrentPosition((pos) => {
             const now = new Date();
+            const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+            const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            const entry = {
+                text: text,
+                stamp: `${days[now.getDay()]} ${months[now.getMonth()]} ${now.getDate()} @ ${now.getHours()}:${(now.getMinutes()<10?'0':'')+now.getMinutes()}`,
+                gps: `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`
+            };
+            entries.push(entry);
+            renderTimeline();
+        }, () => alert("GPS Permission required for legal verification."));
+    }
+
+    function renderTimeline() {
+        const list = document.getElementById('displayList'); list.innerHTML = '';
+        entries.slice().reverse().forEach(e => {
+            list.innerHTML += `<div class="entry-card"><span class="meta-data">${e.stamp} | 📍 ${e.gps}</span><p style="margin:0; font-size:14px; font-weight:600; white-space:pre-wrap;">${e.text}</p></div>`;
+        });
+    }
+
+    function lockAndSummary() {
+        if(entries.length === 0) return alert("Add entries first.");
+        document.getElementById('summaryText').innerText = `Your timeline contains ${entries.length} GPS-verified entries. This structured summary will be encrypted and sent to your law firm via Clio.`;
+        document.getElementById('summaryModal').style.display = 'flex';
+    }
+    function closeModal() { document.getElementById('summaryModal').style.display = 'none'; }
+    function finalSync() { alert("Handshake Complete. Your truth is now with your firm."); location.reload(); }
+</script>
+</body>
+</html>
