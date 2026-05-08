@@ -13,7 +13,7 @@
         }
         body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 0; height: 100dvh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
         
-        /* GHOST MODE */
+        /* GHOST MODE BLUR */
         .ghost-active #timelineContainer, .ghost-active #utilityDrawer { 
             filter: blur(15px); opacity: 0.6; pointer-events: none; 
         }
@@ -41,26 +41,14 @@
         input:checked + .slider { background-color: var(--teal); }
         input:checked + .slider:before { transform: translateX(16px); }
 
-        /* INDEPENDENT DRAGGABLE SQUARES */
+        /* INDEPENDENT DRAGGABLES */
         .draggable-btn { 
-            position: absolute; 
-            z-index: 2000; 
-            touch-action: none; 
-            cursor: grab;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border: none;
-            width: 65px; 
-            height: 65px; 
-            border-radius: 20px;
-            color: white;
+            position: absolute; z-index: 2000; touch-action: none; cursor: grab;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border: none; width: 65px; height: 65px; border-radius: 20px; color: white;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
         }
-        .draggable-btn:active { cursor: grabbing; scale: 0.95; }
-
-        #addBtn { right: 20px; top: 125px; background: var(--teal); font-size: 40px; }
+        #addBtn { right: 20px; top: 125px; background: var(--teal); font-size: 40px; font-weight: 300; }
         #syncBtn { right: 20px; top: 205px; background: var(--clio-blue); }
 
         /* DRAWER & TEMPLATES */
@@ -69,11 +57,17 @@
         .drag-handle-zone { width: 100%; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-top: 1px solid #f0f0f0; }
         .handle-pill { width: 40px; height: 6px; background: var(--platinum); border-radius: 10px; }
 
-        .template-bar { display: flex; gap: 8px; width: 75%; overflow-x: auto; margin-bottom: 10px; padding-bottom: 5px; }
+        .template-bar { display: flex; gap: 8px; width: 75%; overflow-x: auto; margin-bottom: 12px; }
         .template-chip { background: var(--glass); border: 1.5px solid var(--teal); padding: 6px 12px; border-radius: 12px; font-size: 9px; font-weight: 900; color: var(--teal); white-space: nowrap; cursor: pointer; }
 
-        .firm-dropdown { width: 75%; padding: 12px; border-radius: 15px; border: 2px solid var(--platinum); margin-bottom: 10px; font-weight: 800; }
+        .firm-dropdown { width: 75%; padding: 12px; border-radius: 15px; border: 2px solid var(--platinum); margin-bottom: 10px; font-weight: 800; font-family: inherit; }
         #statusBox { width: 75%; height: 75px; padding: 12px; border-radius: 15px; border: 2px solid var(--platinum); resize: none; font-family: inherit; font-weight: 600; }
+
+        /* THE RESTORED MEDIA BUTTONS (WRITING ONLY) */
+        .media-toolbar { display: flex; gap: 10px; width: 75%; margin-top: 10px; }
+        .media-btn { flex: 1; background: transparent; border: 2.5px solid var(--platinum); padding: 14px 5px; border-radius: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
+        .media-btn span { font-size: 9px; font-weight: 900; color: var(--gray-dark); letter-spacing: 0.5px; }
+        .media-btn:active { background: #f1f5f9; }
 
         /* TIMELINE */
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px 20px; position: relative; background: #fdfdfd; }
@@ -99,7 +93,6 @@
     </header>
 
     <button id="addBtn" class="draggable-btn" onclick="submitEntry()">+</button>
-    
     <button id="syncBtn" class="draggable-btn" onclick="openSync()">
         <svg viewBox="0 0 24 24" width="22" height="22"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="white" stroke-width="2.5" fill="none"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="white" stroke-width="2.5" fill="none"/></svg>
         <span style="font-size:8px; font-weight:900; margin-top:2px;">CLIO</span>
@@ -121,6 +114,12 @@
             </div>
 
             <textarea id="statusBox" placeholder="Describe the event..."></textarea>
+            
+            <div class="media-toolbar">
+                <button class="media-btn" onclick="addMedia('📷 CAMERA: Photo evidence captured.')"><span>CAMERA</span></button>
+                <button class="media-btn" onclick="addMedia('🎤 AUDIO: Voice recording secured.')"><span>AUDIO</span></button>
+                <button class="media-btn" onclick="addMedia('📄 DOCS: Document proof uploaded.')"><span>DOCS</span></button>
+            </div>
         </div>
         <div class="drag-handle-zone" id="dragZone">
             <div class="handle-pill"></div>
@@ -141,34 +140,24 @@
     const timelineVault = [];
     const isolatedVault = [];
 
-    // INDEPENDENT DRAG LOGIC
+    // DRAG LOGIC
     function makeDraggable(el) {
-        let offsetTop = 0, offsetLeft = 0;
-        let isDragging = false;
-
+        let offsetTop = 0, offsetLeft = 0, isDragging = false;
         el.addEventListener('touchstart', (e) => {
-            isDragging = false; // Reset dragging flag on start
+            isDragging = false;
             const touch = e.touches[0];
             offsetLeft = touch.clientX - el.offsetLeft;
             offsetTop = touch.clientY - el.offsetTop;
         }, {passive: true});
-
         el.addEventListener('touchmove', (e) => {
-            isDragging = true; // Set flag if movement occurs
+            isDragging = true;
             const touch = e.touches[0];
             el.style.left = (touch.clientX - offsetLeft) + 'px';
             el.style.top = (touch.clientY - offsetTop) + 'px';
             el.style.right = 'auto'; 
         }, {passive: true});
-
-        // Ensure clicks only trigger if NOT dragging
-        el.addEventListener('touchend', (e) => {
-            if (isDragging) {
-                e.preventDefault();
-            }
-        });
+        el.addEventListener('touchend', (e) => { if (isDragging) e.preventDefault(); });
     }
-
     makeDraggable(document.getElementById('addBtn'));
     makeDraggable(document.getElementById('syncBtn'));
 
@@ -217,6 +206,8 @@
         saveEntry(box.value);
         box.value = '';
     }
+
+    function addMedia(msg) { saveEntry(msg); }
 
     function saveEntry(text) {
         navigator.geolocation.getCurrentPosition(pos => {
