@@ -13,7 +13,7 @@
         }
         body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 0; height: 100dvh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
         
-        /* GHOST MODE */
+        /* GHOST MODE BLUR */
         .ghost-active #timelineContainer, .ghost-active #utilityDrawer { filter: blur(18px); opacity: 0.6; pointer-events: none; }
 
         /* CINEMATIC INTRO */
@@ -26,7 +26,7 @@
         /* HEADER & CLIO PULSE */
         .header { display: flex; justify-content: space-between; align-items: center; padding: calc(10px + env(safe-area-inset-top)) 25px 12px; border-bottom: 2px solid var(--platinum); flex-shrink: 0; z-index: 3000; background: white; }
         .pulse-box { display: flex; align-items: center; gap: 8px; }
-        .green-pulse { width: 10px; height: 10px; background: var(--clio-green); border-radius: 50%; display: none; /* Only show when authorized */ box-shadow: 0 0 0 rgba(46, 204, 113, 0.4); animation: throb 1.8s infinite; }
+        .green-pulse { width: 10px; height: 10px; background: var(--clio-green); border-radius: 50%; display: none; box-shadow: 0 0 0 rgba(46, 204, 113, 0.4); animation: throb 1.8s infinite; }
         @keyframes throb { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
 
         .briefcase-logo { position: relative; width: 38px; height: 26px; border: 3.5px solid var(--gray-dark); border-radius: 8px; }
@@ -122,7 +122,6 @@
     const timelineVault = [];
     const isolatedVault = [];
 
-    // Check for authorization (Simulated for this prototype)
     const urlParams = new URLSearchParams(window.location.search);
     if(urlParams.get('code')) document.getElementById('clioPulse').style.display = 'block';
 
