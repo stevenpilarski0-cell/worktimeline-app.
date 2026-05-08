@@ -2,103 +2,283 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>WorkTimeline™ | Master Build</title>
     <style>
-        /* YOUR ORIGINAL MASTER PROTOTYPE CSS - RESTORED */
-        body, html {
-            margin: 0;
-            padding: 0;
-            background-color: #121212;
-            color: #e0e0e0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
-            height: 100%;
-            overflow: hidden;
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap');
+        
+        :root { 
+            --teal: #008080; --clio-blue: #0076CE; --platinum: #d8e2ea; --gray-dark: #2c3e50; 
+            --clio-green: #2ecc71; --round-inner: 24px; --glass: rgba(255, 255, 255, 0.95);
         }
+        body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 0; height: 100dvh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
+        
+        .ghost-active #timelineContainer, .ghost-active #utilityDrawer, .ghost-active #workspaceTablet { filter: blur(18px); opacity: 0.6; pointer-events: none; }
 
-        /* ONLY ADDITION: Floating Green Light (Absolute position so it doesn't shift layout) */
-        .clio-status-corner {
+        #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; box-sizing: border-box; transition: opacity 1.2s ease; }
+        .story-text { font-size: 24px; font-weight: 900; color: var(--gray-dark); line-height: 1.4; opacity: 0; transition: opacity 0.8s; max-width: 420px; }
+        #skipBtn { position: absolute; bottom: calc(40px + env(safe-area-inset-bottom)); padding: 14px 28px; border: 3px solid var(--teal); border-radius: 99px; background: white; color: var(--teal); font-weight: 900; font-size: 13px; cursor: pointer; z-index: 100001; }
+
+        .app-container { width: 100%; max-width: 500px; margin: 0 auto; background: white; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.12); }
+
+        /* INCREASED Z-INDEX TO FLOAT ABOVE TABLET */
+        .header { display: flex; justify-content: space-between; align-items: center; padding: calc(10px + env(safe-area-inset-top)) 25px 12px; border-bottom: 2px solid var(--platinum); flex-shrink: 0; z-index: 6500; background: white; position: relative; }
+        
+        .pulse-box { display: flex; align-items: center; gap: 8px; }
+        .green-pulse { width: 10px; height: 10px; background: var(--clio-green); border-radius: 50%; display: none; box-shadow: 0 0 0 rgba(46, 204, 113, 0.4); animation: throb 1.8s infinite; }
+        @keyframes throb { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
+
+        .briefcase-logo { position: relative; width: 38px; height: 26px; border: 3.5px solid var(--gray-dark); border-radius: 8px; }
+        .briefcase-handle { position: absolute; top: -8.5px; left: 50%; transform: translateX(-50%); width: 14px; height: 5px; border: 3.5px solid var(--gray-dark); border-bottom: none; border-radius: 4px 4px 0 0; }
+        .teal-spine { position: absolute; top: 50%; left: -8px; right: -8px; height: 3.5px; background: var(--teal); border-radius: 2px; transform: translateY(-50%); }
+        .teal-dots { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; gap: 3px; }
+        .dot { width: 4px; height: 4px; background: var(--teal); border-radius: 50%; border: 1px solid white; }
+
+        .switch-group { display: flex; gap: 12px; align-items: center; }
+        .switch { position: relative; display: inline-block; width: 34px; height: 18px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--platinum); transition: .4s; border-radius: 30px; }
+        .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--teal); }
+        input:checked + .slider:before { transform: translateX(16px); }
+
+        .draggable-btn { position: absolute; z-index: 5000; touch-action: none; cursor: grab; display: flex; flex-direction: column; align-items: center; justify-content: center; border: none; width: 65px; height: 65px; border-radius: 20px; color: white; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25); }
+        #addBtn { right: 20px; top: 160px; background: var(--teal); font-size: 40px; }
+        #syncBtn { right: 20px; top: 240px; background: var(--clio-blue); }
+
+        /* INCREASED Z-INDEX TO FLOAT ABOVE TABLET */
+        #utilityDrawer { width: 100%; background: var(--glass); backdrop-filter: blur(12px); border-bottom: 2px solid var(--platinum); z-index: 6000; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); position: relative; }
+        
+        .drawer-content { padding: 15px 20px; }
+        .drag-handle-zone { width: 100%; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .handle-pill { width: 50px; height: 6px; background: var(--platinum); border-radius: 10px; }
+        .template-bar { display: flex; gap: 10px; width: 100%; overflow-x: auto; margin-bottom: 12px; scrollbar-width: none; }
+        .template-chip { background: white; border: 2px solid var(--teal); padding: 8px 16px; border-radius: 15px; font-size: 10px; font-weight: 900; color: var(--teal); white-space: nowrap; cursor: pointer; }
+        #statusBox { width: 100%; height: 85px; padding: 14px; border-radius: 18px; border: 2.5px solid var(--platinum); resize: none; font-family: inherit; font-weight: 600; background: #f8fafc; box-sizing: border-box; }
+
+        .media-toolbar { display: flex; gap: 10px; width: 100%; margin-top: 12px; }
+        .media-btn { flex: 1; position: relative; background: white; border: 2.5px solid var(--platinum); padding: 15px 5px; border-radius: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .media-btn span { font-size: 10px; font-weight: 900; color: var(--gray-dark); letter-spacing: 0.5px; }
+        .media-btn input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+
+        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px 15px; position: relative; background: #fdfdfd; z-index: 100; transition: all 0.4s ease; padding-bottom: 80px; }
+        .timeline-spine { position: absolute; left: 30px; top: -200dvh; bottom: 0; width: 6px; background: var(--platinum); z-index: 1; border-radius: 10px; }
+        .entry { position: relative; margin-left: 45px; background: white; border: 2px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; border-left: 8px solid var(--teal); box-shadow: 0 5px 15px rgba(0,0,0,0.03); width: calc(100% - 60px); box-sizing: border-box; }
+        .vault-label { font-size: 11px; font-weight: 900; color: #94a3b8; text-transform: uppercase; margin-bottom: 25px; display: block; text-align: center; letter-spacing: 1.5px; }
+
+        /* --- NEW TABLET OVERLAY STYLES --- */
+        #workspaceTablet {
             position: absolute;
-            top: 20px;
-            right: 25px;
-            z-index: 9999;
-            pointer-events: none;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: calc(100dvh - 300px); /* Leaves exact space for drawer to show text input */
+            background: #fdfdfd;
+            border-radius: 35px 35px 0 0;
+            box-shadow: 0 -15px 40px rgba(0,0,0,0.12);
+            z-index: 5500; /* Covers timeline and floating buttons, but sits UNDER utilityDrawer */
+            transform: translateY(calc(100% - 45px)); /* Only 45px peeking out default */
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            border-top: 2px solid var(--platinum);
         }
-        .green-pulse-light {
-            width: 14px;
-            height: 14px;
-            background: #2ecc71;
-            border-radius: 50%;
-            display: none; /* Shows after handshake */
-            box-shadow: 0 0 0 rgba(46, 204, 113, 0.4);
-            animation: pulse-throb 1.8s infinite;
+        #workspaceTablet.lifted {
+            transform: translateY(0);
         }
-        @keyframes pulse-throb {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
-            70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+        .tablet-handle-zone {
+            width: 100%;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: white;
+            border-radius: 35px 35px 0 0;
+            border-bottom: 2px solid var(--platinum);
+            flex-shrink: 0;
         }
+        .tablet-handle-zone span {
+            position: absolute;
+            left: 25px;
+            font-size: 10px;
+            font-weight: 900;
+            color: #94a3b8;
+            letter-spacing: 1px;
+        }
+        .tablet-content-area {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            background: #f8fafc;
+        }
+        .big-action-btn {
+            width: 110px;
+            height: 110px;
+            border-radius: 30px;
+            border: none;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.18);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .big-action-btn:active { transform: scale(0.92); }
+        .btn-clio-lock { background: var(--clio-blue); }
+        .btn-clio-lock span { font-size: 11px; font-weight: 900; margin-top: 8px; letter-spacing: 0.5px; }
+        .btn-add-giant { background: var(--teal); font-size: 60px; font-weight: 900; line-height: 1; padding-bottom: 8px; }
 
-        /* YOUR ORIGINAL APP CONTAINER & GANTT LAYOUT */
-        #splashScreen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: black;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            z-index: 10000;
-            transition: opacity 0.8s ease;
-        }
-        .app-container { display: flex; flex-direction: column; height: 100%; }
-        .header { padding: 20px; border-bottom: 1px solid #333; }
-        .timeline-container { flex: 1; padding: 20px; overflow-y: auto; }
-        /* Keeping your original sidebar and grid logic */
-        .gantt-grid { display: grid; grid-template-columns: 150px 1fr; gap: 10px; }
     </style>
 </head>
-<body>
+<body id="appBody">
 
-    <div class="clio-status-corner">
-        <div id="clioPulseLight" class="green-pulse-light"></div>
+<div id="splashScreen"><h1 id="storyText" class="story-text">Welcome.</h1><button id="skipBtn" onclick="endSplash()">Skip Intro</button></div>
+
+<div class="app-container">
+    <header class="header">
+        <div style="display:flex; align-items:center; gap:10px;">
+            <div class="briefcase-logo">
+                <div class="briefcase-handle"></div><div class="teal-spine"></div>
+                <div class="teal-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+            </div>
+            <h1 style="color:var(--teal); margin:0; font-size:18px; font-weight:900;">WorkTimeline™</h1>
+        </div>
+        <div class="pulse-box">
+            <div id="clioPulse" class="green-pulse"></div>
+            <div class="switch-group">
+                <div style="text-align:center;"><label class="switch"><input type="checkbox" onchange="toggleGhost(this)"><span class="slider"></span></label><div style="font-size:7px; font-weight:900;">GHOST</div></div>
+                <div style="text-align:center;"><label class="switch"><input type="checkbox" onchange="toggleVault(this)"><span class="slider"></span></label><div style="font-size:7px; font-weight:900;">CHRON</div></div>
+            </div>
+        </div>
+    </header>
+
+    <button id="addBtn" class="draggable-btn" onclick="submitEntry()">+</button>
+    <button id="syncBtn" class="draggable-btn" onclick="openSync()">
+        <svg viewBox="0 0 24 24" width="22" height="22"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="white" stroke-width="2.5" fill="none"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="white" stroke-width="2.5" fill="none"/></svg>
+        <span style="font-size:8px; font-weight:900; margin-top:2px;">CLIO</span>
+    </button>
+
+    <div id="utilityDrawer">
+        <div class="drawer-content" id="drawerContent">
+            <div class="template-bar">
+                <div class="template-chip" onclick="useTemplate('WITNESS: ')">WITNESS</div>
+                <div class="template-chip" onclick="useTemplate('LOCATION: ')">LOCATION</div>
+                <div class="template-chip" onclick="useTemplate('EVIDENCE: ')">EVIDENCE</div>
+                <div class="template-chip" onclick="useTemplate('INTEREST: ')">INTEREST</div>
+            </div>
+            <textarea id="statusBox" placeholder="Start your entry..."></textarea>
+            <div class="media-toolbar">
+                <div class="media-btn"><span>CAMERA</span><input type="file" accept="image/*" capture="camera" onchange="addMedia('📷 PHOTO Captured.')"></div>
+                <div class="media-btn"><span>AUDIO</span><input type="file" accept="audio/*" capture="microphone" onchange="addMedia('🎤 AUDIO Recorded.')"></div>
+                <div class="media-btn"><span>DOCS</span><input type="file" accept=".pdf,.doc,.docx,image/*" onchange="addMedia('📄 DOCS Uploaded.')"></div>
+            </div>
+        </div>
+        <div class="drag-handle-zone" id="dragZone"><div class="handle-pill"></div></div>
     </div>
 
-    <div id="splashScreen">
-        <h1 style="font-size: 3rem; margin-bottom: 0;">WorkTimeline™</h1>
-        <p style="font-size: 1.2rem; color: #888; margin-top: 10px;">Capturing the Invisible 60%</p>
-        <button id="skipBtn" style="margin-top: 40px; padding: 15px 45px; border-radius: 30px; border: none; background: white; color: black; font-weight: bold; font-size: 1rem;" onclick="endSplash()">Skip</button>
+    <div id="timelineContainer">
+        <span id="currentVaultLabel" class="vault-label">WorkTimeline™ Ledger</span>
+        <div class="timeline-spine"></div>
+        <div id="displayList"></div>
     </div>
 
-    <div class="app-container">
-        <header class="header">
-            <h2 style="margin: 0;">WorkTimeline</h2>
-            <p style="margin: 5px 0 0; font-size: 0.8rem; color: #666;">One-Man Firm • Canada Region</p>
-        </header>
-        
-        <main class="timeline-container">
-            </main>
+    <div id="workspaceTablet">
+        <div class="tablet-handle-zone" onclick="toggleTablet()">
+            <span>WORKSPACE</span>
+            <div class="handle-pill"></div>
+        </div>
+        <div class="tablet-content-area">
+            <button class="big-action-btn btn-clio-lock" onclick="openSync()">
+                <svg viewBox="0 0 24 24" width="36" height="36"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="white" stroke-width="2.5" fill="none"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="white" stroke-width="2.5" fill="none"/></svg>
+                <span>SYNC</span>
+            </button>
+            <button class="big-action-btn btn-add-giant" onclick="submitTabletEntry()">+</button>
+        </div>
     </div>
 
-    <script>
-        // YOUR ORIGINAL LOGIC - FIXED
-        function endSplash() {
-            const splash = document.getElementById('splashScreen');
-            if (splash) {
-                splash.style.opacity = '0';
-                setTimeout(() => { splash.style.display = 'none'; }, 800);
-            }
-        }
+</div>
 
-        // HANDSHAKE DETECTION (Fixes the "Freeze")
-        window.onload = function() {
-            const params = new URLSearchParams(window.location.search);
-            if (params.get('code')) {
-                // Verified: Show light
-                document.getElementById('clioPulseLight').style.display = 'block';
-                // Verified: Auto-bypass splash
-                const splash = document.getElementById('splashScreen');
-                if (splash) splash.style.display = 'none';
-            }
-        };
-    </script>
+<script>
+    const story = ["The Invisible 60%...", "Document the Truth.", "WorkTimeline bridges the gap.", "Justice should feel effortless."];
+    let isDrawerOpen = true;
+    let activeVault = "TIMELINE";
+    const timelineVault = [];
+    const isolatedVault = [];
+
+    const urlParams = new URLSearchParams(window.location.search);
+    if(urlParams.get('code')) document.getElementById('clioPulse').style.display = 'block';
+
+    function makeDraggable(el) {
+        let offsetTop = 0, offsetLeft = 0, isDragging = false;
+        el.addEventListener('touchstart', (e) => { isDragging = false; const touch = e.touches[0]; offsetLeft = touch.clientX - el.offsetLeft; offsetTop = touch.clientY - el.offsetTop; }, {passive: true});
+        el.addEventListener('touchmove', (e) => { isDragging = true; const touch = e.touches[0]; el.style.left = (touch.clientX - offsetLeft) + 'px'; el.style.top = (touch.clientY - offsetTop) + 'px'; el.style.right = 'auto'; }, {passive: true});
+        el.addEventListener('touchend', (e) => { if (isDragging) e.preventDefault(); });
+    }
+    makeDraggable(document.getElementById('addBtn')); makeDraggable(document.getElementById('syncBtn'));
+
+    function toggleGhost(cb) { if(cb.checked) document.getElementById('appBody').classList.add('ghost-active'); else document.getElementById('appBody').classList.remove('ghost-active'); }
+    function toggleVault(cb) { activeVault = cb.checked ? "ISOLATED" : "TIMELINE"; document.getElementById('currentVaultLabel').innerText = cb.checked ? "Isolated Notes Ledger" : "WorkTimeline™ Ledger"; refreshDisplay(); }
+    function useTemplate(prefix) { const box = document.getElementById('statusBox'); box.value = prefix; box.focus(); }
+
+    document.getElementById('dragZone').onclick = () => {
+        const drawer = document.getElementById('utilityDrawer'); const content = document.getElementById('drawerContent'); const timeline = document.getElementById('timelineContainer');
+        if(isDrawerOpen) { drawer.style.transform = `translateY(-${content.offsetHeight}px)`; timeline.style.marginTop = `-${content.offsetHeight}px`; isDrawerOpen = false; }
+        else { drawer.style.transform = `translateY(0)`; timeline.style.marginTop = `0px`; isDrawerOpen = true; }
+    };
+
+    /* NEW FUNCTION TO LIFT TABLET */
+    function toggleTablet() {
+        document.getElementById('workspaceTablet').classList.toggle('lifted');
+    }
+
+    function runStory() {
+        const el = document.getElementById('storyText'); let i = 0;
+        const next = () => { if(i < story.length) { el.style.opacity = 0; setTimeout(() => { el.innerText = story[i++]; el.style.opacity = 1; setTimeout(next, 2500); }, 800); } else endSplash(); };
+        next();
+    }
+    window.onload = runStory;
+    function endSplash() { document.getElementById('splashScreen').style.opacity = '0'; setTimeout(() => document.getElementById('splashScreen').remove(), 1000); }
+
+    function submitEntry() { const box = document.getElementById('statusBox'); if(!box.value.trim()) return; saveEntry(box.value); box.value = ''; }
+    
+    /* ADDED DEDICATED FUNCTION FOR TABLET BUTTON SO IT CLOSES THE TABLET AFTER SUBMITTING */
+    function submitTabletEntry() { 
+        submitEntry(); 
+        document.getElementById('workspaceTablet').classList.remove('lifted'); 
+    }
+
+    function addMedia(msg) { saveEntry(msg); }
+
+    function saveEntry(text) {
+        navigator.geolocation.getCurrentPosition(pos => {
+            const now = new Date(); const stamp = now.toLocaleDateString() + ' @ ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+            const entry = { text: text, stamp: stamp, gps: `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}` };
+            if(activeVault === "TIMELINE") timelineVault.push(entry); else isolatedVault.push(entry);
+            refreshDisplay();
+        });
+    }
+
+    function refreshDisplay() {
+        const list = document.getElementById('displayList'); list.innerHTML = '';
+        const data = (activeVault === "TIMELINE") ? timelineVault : isolatedVault;
+        [...data].reverse().forEach(item => {
+            const div = document.createElement('div'); div.className = 'entry';
+            div.innerHTML = `<span style="font-size:10px; color:var(--teal); font-weight:900; letter-spacing:0.8px;">📍 ${item.gps} | ${item.stamp}</span><p style="margin:10px 0 0; font-weight:700; line-height:1.5;">${item.text}</p>`;
+            list.appendChild(div);
+        });
+    }
+
+    function openSync() { 
+        const clientId = "18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s";
+        const redirectUri = encodeURIComponent("https://worktimeline-app.vercel.app/index.html");
+        const scope = encodeURIComponent("identity leads_read leads_write contacts_write");
+        window.location.href = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`; 
+    }
+</script>
 </body>
 </html>
