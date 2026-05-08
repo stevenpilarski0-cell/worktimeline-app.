@@ -9,52 +9,59 @@
         
         :root { 
             --teal: #008080; --clio-blue: #0076CE; --platinum: #e2e8f0; --gray-dark: #1e293b; --gray-light: #f8fafc;
-            --round-main: 40px; --round-inner: 24px; --round-pill: 999px;
-            --mac-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            --glass: rgba(0, 128, 128, 0.05); --round-main: 32px; --round-inner: 16px; 
         }
-
-        body { font-family: 'Inter', sans-serif; background: #eef1f5; margin: 0; padding: 12px; height: 100vh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #eef1f5; margin: 0; padding: 10px; height: 100vh; overflow: hidden; color: var(--gray-dark); }
         
-        /* GHOST MODE CSS */
-        body.ghost-active #timelineContainer { opacity: 0; transform: translateY(20px); pointer-events: none; }
-        body.ghost-active #statusBox, body.ghost-active .media-toolbar { filter: blur(10px); pointer-events: none; opacity: 0.3; }
+        /* 45-SECOND DEEP DIVE INTRO */
+        #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; box-sizing: border-box; transition: opacity 1.2s ease; }
+        .story-text { font-size: 20px; font-weight: 700; color: var(--gray-dark); line-height: 1.5; opacity: 0; transition: opacity 0.8s; max-width: 460px; letter-spacing: -0.3px; }
 
-        #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f0f2f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; box-sizing: border-box; transition: opacity 1s ease; }
-        .story-text { font-size: 24px; font-weight: 700; color: var(--gray-dark); line-height: 1.5; opacity: 0; transition: opacity 0.8s; max-width: 500px; }
+        .app-container { max-width: 500px; margin: auto; background: white; border-radius: var(--round-main); height: 95vh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+        #blurBox { position: absolute; top: 85px; left: 0; right: 0; bottom: 0; z-index: 98; background: rgba(255,255,255,0.05); backdrop-filter: blur(0px); pointer-events: none; transition: backdrop-filter 0.4s ease; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid var(--platinum); flex-shrink: 0; z-index: 100; background: white; }
 
-        .app-container { max-width: 500px; margin: auto; background: white; border-radius: var(--round-main); height: 94vh; display: none; flex-direction: column; overflow: hidden; position: relative; box-shadow: var(--mac-shadow); border: 1px solid rgba(255,255,255,0.8); opacity: 0; transition: all 1s ease; }
-
-        /* CONTROL DASHBOARD */
-        .dashboard { background: var(--gray-light); padding: 15px 20px; border-bottom: 1px solid var(--platinum); display: flex; flex-direction: column; gap: 12px; z-index: 101; }
+        /* INPUT AREA & VISIBLE TEMPLATE CHIPS */
+        .input-area { padding: 15px 20px; background: var(--gray-light); border-bottom: 1px solid var(--platinum); flex-shrink: 0; display: flex; flex-direction: column; }
         
-        .mode-switch { background: #e2e8f0; padding: 4px; border-radius: var(--round-pill); display: flex; position: relative; cursor: pointer; }
-        .mode-btn { flex: 1; text-align: center; padding: 8px; font-size: 10px; font-weight: 800; z-index: 2; transition: color 0.3s; color: #64748b; }
-        .mode-btn.active { color: white; }
-        .mode-slider { position: absolute; top: 4px; left: 4px; width: calc(50% - 4px); height: calc(100% - 8px); background: var(--teal); border-radius: var(--round-pill); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1; }
+        .template-chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: none; margin-bottom: 4px;}
+        .template-chips::-webkit-scrollbar { display: none; }
+        .chip { background: white; color: var(--teal); font-size: 11px; font-weight: 700; padding: 8px 14px; border-radius: 12px; white-space: nowrap; cursor: pointer; transition: all 0.2s; border: 1px solid var(--platinum); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .chip:active { background: var(--teal); color: white; border-color: var(--teal); }
 
-        .ghost-row { display: flex; justify-content: space-between; align-items: center; padding: 0 5px; }
-        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        #statusBox { width: 100%; height: 90px; padding: 15px; border-radius: var(--round-inner); border: 1px solid var(--platinum); box-sizing: border-box; font-family: inherit; margin-bottom: 12px; font-size: 15px; outline: none; background: white; resize: none; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); transition: border-color 0.2s; }
+        #statusBox:focus { border-color: var(--teal); }
+        
+        .media-toolbar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
+        .media-btn { background: white; border: 1px solid var(--platinum); padding: 12px 2px; border-radius: var(--round-inner); display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; transition: all 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+        .media-btn:active { background: var(--platinum); transform: translateY(1px); }
+        .media-btn svg { width: 20px; height: 20px; fill: var(--teal); margin-bottom: 6px; }
+        .media-btn span { font-size: 9px; font-weight: 700; color: var(--gray-dark); text-transform: uppercase; letter-spacing: 0.5px; }
+        .hidden-input { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; top: 0; left: 0; }
+
+        /* TIMELINE DISPLAY */
+        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px; position: relative; background: #fff; }
+        .timeline-spine { position: absolute; left: 35px; top: 0; bottom: 0; width: 4px; background: var(--platinum); border-radius: 4px; z-index: 1; }
+        
+        /* THE PERSONAL LETTER BOX */
+        #legacyQuote { position: relative; margin-left: 50px; background: var(--glass); border: 1px solid var(--platinum); border-left: 4px solid var(--clio-blue); padding: 25px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; transition: opacity 0.5s; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+
+        .entry { position: relative; margin-left: 50px; background: white; border: 1px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; border-left: 4px solid var(--teal); box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .timestamp-full { font-size: 11px; font-weight: 700; color: var(--teal); display: block; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        #addBtn { background: var(--teal); color:white; border:none; padding:15px; border-radius: var(--round-inner); width:100%; font-weight:700; font-size: 15px; cursor:pointer; transition: opacity 0.2s; box-shadow: 0 4px 12px rgba(0, 128, 128, 0.2); }
+        #addBtn:active { opacity: 0.8; }
+        
+        .sync-btn { background: var(--clio-blue); color: white; border: none; padding: 18px; border-radius: var(--round-inner); width: 90%; align-self: center; font-weight: 700; font-size: 15px; cursor: pointer; margin: 15px 0; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0, 118, 206, 0.2); transition: transform 0.2s; }
+        .sync-btn:active { transform: scale(0.98); }
+        
+        /* TOGGLES */
+        .switch { position: relative; display: inline-block; width: 36px; height: 20px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: #000; }
-        input:checked + .slider:before { transform: translateX(20px); }
-
-        .header { padding: 10px; background: white; text-align: center; flex-shrink: 0; }
-        .briefcase { position: relative; width: 48px; height: 32px; border: 3.5px solid var(--gray-dark); border-radius: 9px; margin: 0 auto; }
-        .briefcase-handle { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 18px; height: 7px; border: 3.5px solid var(--gray-dark); border-bottom: none; border-radius: 4px 4px 0 0; }
-        .teal-spine { position: absolute; top: 55%; left: -12px; right: -12px; height: 3.5px; background: var(--teal); border-radius: 2px; }
-
-        .media-toolbar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 15px 20px; background: var(--gray-light); transition: all 0.4s; }
-        .media-btn { background: var(--teal); border: none; height: 70px; border-radius: var(--round-inner); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; box-shadow: 0 8px 15px rgba(0, 128, 128, 0.15); }
-        .media-btn svg { width: 22px; height: 22px; fill: white; margin-bottom: 4px; }
-        .media-btn span { font-size: 8px; font-weight: 800; color: white; text-transform: uppercase; }
-
-        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 20px; background: white; position: relative; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
-        .entry { position: relative; padding: 18px; background: white; border: 1px solid var(--platinum); border-radius: var(--round-inner); margin-bottom: 15px; border-left: 6px solid var(--teal); box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
-        .meta-data { font-size: 10px; font-weight: 800; color: #94a3b8; margin-bottom: 6px; text-transform: uppercase; }
-        
-        .sync-btn { background: var(--gray-dark); color: white; border: none; padding: 18px; border-radius: var(--round-pill); width: 90%; align-self: center; font-weight: 800; font-size: 15px; margin: 15px 0; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .4s; border-radius: 20px; }
+        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        input:checked + .slider { background-color: var(--clio-blue); }
+        input:checked + .slider:before { transform: translateX(16px); }
     </style>
 </head>
 <body>
@@ -62,102 +69,171 @@
 <div id="splashScreen"><h1 id="storyText" class="story-text"></h1></div>
 
 <div class="app-container" id="mainApp">
-    <div class="dashboard">
-        <div class="mode-switch" onclick="toggleVault()">
-            <div id="slider" class="mode-slider"></div>
-            <div id="chronBtn" class="mode-btn active">CHRON</div>
-            <div id="notesBtn" class="mode-btn">NOTES</div>
-        </div>
-        <div class="ghost-row">
-            <span style="font-size: 10px; font-weight: 800; color: #64748b; letter-spacing: 1px;">GHOST MODE (INVISIBILITY)</span>
-            <label class="switch"><input type="checkbox" onchange="toggleGhost(this)"><span class="slider"></span></label>
-        </div>
-    </div>
-
+    <div id="blurBox"></div>
     <header class="header">
-        <div class="briefcase"><div class="briefcase-handle"></div><div class="teal-spine"></div></div>
-        <h1 id="appLabel" style="color: var(--teal); margin: 8px 0 0; font-size: 20px; font-weight: 800;">WorkTimeline™</h1>
+        <div><h1 id="folderLabel" style="color: var(--teal); margin:0; font-size: 18px; font-weight: 800; letter-spacing: -0.5px;">WorkTimeline™</h1><div style="font-size: 12px; font-weight: 600; color: var(--clio-blue);">Intake Engine...</div></div>
+        <div style="display:flex; gap:12px; align-items: center;">
+            <div style="text-align: center;"><label class="switch"><input type="checkbox" onchange="toggleVault(this)"><span class="slider"></span></label><div style="font-size: 8px; font-weight: 700; margin-top: 4px;">CHRON</div></div>
+            <div style="text-align: center;"><label class="switch"><input type="checkbox" id="gSwitch" onchange="toggleGhost()"><span class="slider"></span></label><div style="font-size: 8px; font-weight: 700; margin-top: 4px;">GHOST</div></div>
+        </div>
     </header>
 
-    <div class="media-toolbar">
-        <div class="media-btn"><input type="file" accept="image/*" capture="camera" style="position:absolute;width:100%;height:100%;opacity:0;" onchange="addEntryWithGPS('Visual Evidence')"><svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-4c-1.1 0-2 .9-2 2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-5c0-1.1-.9-2-2-2z"/></svg><span>Camera</span></div>
-        <div class="media-btn"><input type="file" accept="audio/*" capture="microphone" style="position:absolute;width:100%;height:100%;opacity:0;" onchange="addEntryWithGPS('Audio Recorded')"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg><span>Audio</span></div>
-        <div class="media-btn"><input type="file" style="position:absolute;width:100%;height:100%;opacity:0;" onchange="addEntryWithGPS('Doc Uploaded')"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6z"/></svg><span>Docs</span></div>
-        <div class="media-btn" onclick="window.location.href='sms:?body=Timeline Update:'"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg><span>Text</span></div>
+    <div style="display: flex; flex-direction: column; height: 100%;">
+        <div class="input-area">
+            <div class="template-chips">
+                <span class="chip" onclick="useTemplate('📍 WITNESS LOCATION:\n- Name:\n- GPS/Address:\n- Proximity to Incident:')">📍 Location</span>
+                <span class="chip" onclick="useTemplate('⚖️ WITNESS STATEMENT:\n- Narrative:\n- Reliability:\n- Recorded?')">⚖️ Statement</span>
+                <span class="chip" onclick="useTemplate('🌆 INCIDENT SETTING:\n- Weather:\n- Lighting:\n- Road/Site Conditions:')">🌆 Setting</span>
+                <span class="chip" onclick="useTemplate('📁 EVIDENCE LOG:\n- Item Type:\n- Source/Chain:\n- Storage Location:')">📁 Evidence</span>
+            </div>
+
+            <textarea id="statusBox" placeholder="Tap a template above, or tell your truth here..."></textarea>
+            
+            <div class="media-toolbar">
+                <button class="media-btn"><input type="file" accept="image/*" capture="camera" class="hidden-input" onchange="addEntry('📷 Photo evidence secured.')"><svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-4c-1.1 0-2 .9-2 2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-5c0-1.1-.9-2-2-2z"/></svg><span>Camera</span></button>
+                <button class="media-btn"><input type="file" accept="audio/*" capture="microphone" class="hidden-input" onchange="addEntry('🎤 Audio recording captured.')"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg><span>Audio</span></button>
+                <button class="media-btn" onclick="window.location.href='sms:?body=WorkTimeline Update:'"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg><span>Text</span></button>
+                <button class="media-btn"><input type="file" class="hidden-input" onchange="addEntry('📄 Document verified.')"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg><span>Docs</span></button>
+            </div>
+            <button id="addBtn" onclick="submitEntry()">Secure Entry & Build Timeline</button>
+        </div>
+
+        <div id="timelineContainer">
+            <div class="timeline-spine"></div>
+            <div id="displayList">
+                <div id="legacyQuote">
+                    <h2 style="font-size: 16px; margin-bottom: 12px; color: var(--clio-blue); font-weight: 800;">Hi Clio Team,</h2>
+                    <p style="font-size: 14px; line-height: 1.6; font-weight: 600; margin-bottom: 15px; color: var(--gray-dark);">It's been an honor. I truly enjoy doing this, and thank you for the opportunity.</p>
+                    <p style="font-size: 13px; line-height: 1.6; font-weight: 500; margin-bottom: 15px; color: #475569;">I am part of that "invisible 60%," but I don't believe we are invisible—I believe we are trapped in a metaphorical prison. This is why I chose the transition from <strong style="color:var(--gray-dark);">Grey to Teal</strong>, from the prison to the <strong style="color:var(--clio-blue);">Blue Sky</strong>. By integrating Clio’s colors with WorkTimeline™, I’ve built a solution for that gap.</p>
+                    <p style="font-size: 13px; line-height: 1.6; font-weight: 500; color: #475569;">I have <strong style="color:var(--gray-dark);">no coding experience</strong>. I did this all by cell phone, myself, driven by motivation and the cross-referencing power of AI. I am living proof that Jack Newton’s philosophy is true: Telling the truth takes effort, but Justice is effortless if truth takes no effort.</p>
+                </div>
+            </div>
+        </div>
+
+        <button class="sync-btn" onclick="syncToClio()">Finalize & Sync to Clio</button>
     </div>
-
-    <div style="padding: 0 20px 15px; background: var(--gray-light); border-bottom: 1px solid var(--platinum);">
-        <textarea id="statusBox" placeholder="Tell your truth here..." style="width:100%; height:75px; border-radius:18px; border:1px solid var(--platinum); padding:15px; font-family:inherit; outline:none; resize:none;"></textarea>
-        <button onclick="submitManual()" style="background: var(--teal); color:white; border:none; padding:15px; border-radius:var(--round-pill); width:100%; font-weight:800; margin-top:10px;">Secure Entry</button>
-    </div>
-
-    <div id="timelineContainer"><div id="displayList"></div></div>
-
-    <button class="sync-btn" onclick="syncToClio()">
-        <svg width="20" height="20" fill="white" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6z"/></svg>
-        LOCK & SYNC TO CLIO
-    </button>
 </div>
 
 <script>
-    const story = ["We see you.", "You're not invisible.", "Trapped in the gray area.", "Tearing down the walls.", "The Handshake begins."];
-    const timelineVault = []; const notesVault = [];
-    let currentMode = "CHRON";
+    const story = [
+        "We see you. We hear you.",
+        "We know you're there. You're not invisible.",
+        "You're just stuck trapped in that grey area—a prison.",
+        "But we're here to get you out, one step at a time.",
+        "Towards the center where you belong with Clio.",
+        "Where a firm will make sure you never look back.",
+        "You are the 60%. The people who feel unseen and are too cautious to come forward.",
+        "And lawyers want to help, but messy, unorganized intake is a massive barrier.",
+        "Messy files drain 40% of a firm's time and resources.",
+        "Because of this chaos, lawyers are forced to turn away 3 out of 5 potential clients.",
+        "But clean, organized intake drives a 60% higher probability of case success.",
+        "If everyone was organized, it would save time and drop legal costs by 25%.",
+        "WorkTimeline benefits both the client and the firm, bringing perfect data straight into Clio.",
+        "“Jack Newton said that Justice should be effortless.”",
+        "WorkTimeline's key: Justice can be effortless now, if telling the truth takes no effort."
+    ];
+    
+    let activeVault = "TIMELINE"; const timelineVault = []; const notesVault = [];
+    window.onload = () => { runStory(); };
 
-    window.onload = () => { runIntro(); };
-
-    function runIntro() {
+    function runStory() {
         const el = document.getElementById('storyText'); let i = 0;
+        const lineDuration = 3000; 
+        
+        el.innerText = story[i++];
+        el.style.opacity = 1;
+
         const next = () => {
-            if(i < story.length) { el.innerText = story[i++]; el.style.opacity = 1; setTimeout(() => { el.style.opacity = 0; setTimeout(next, 1000); }, 3000); }
-            else showApp();
+            if(i < story.length) {
+                el.style.opacity = 0;
+                setTimeout(() => { 
+                    el.innerText = story[i++]; 
+                    el.style.opacity = 1; 
+                    setTimeout(next, lineDuration - 800); 
+                }, 800);
+            } else endSplash();
         };
-        next();
+        
+        setTimeout(next, lineDuration - 800);
     }
 
-    function showApp() {
-        const splash = document.getElementById('splashScreen'); const app = document.getElementById('mainApp');
-        splash.style.opacity = '0';
-        setTimeout(() => { splash.remove(); app.style.display = 'flex'; setTimeout(() => { app.style.opacity = '1'; }, 50); }, 1000);
+    function endSplash() { const s = document.getElementById('splashScreen'); if(s) { s.style.opacity = '0'; setTimeout(() => s.remove(), 1200); } }
+
+    function useTemplate(txt) {
+        document.getElementById('statusBox').value = txt;
+        document.getElementById('statusBox').focus();
     }
 
-    function toggleGhost(cb) { document.body.classList.toggle('ghost-active', cb.checked); }
-
-    function toggleVault() {
-        const slider = document.getElementById('slider'); const label = document.getElementById('appLabel');
-        if (currentMode === "CHRON") {
-            currentMode = "NOTES"; slider.style.left = "calc(50% + 0px)"; slider.style.background = "var(--clio-blue)";
-            document.getElementById('notesBtn').classList.add('active'); document.getElementById('chronBtn').classList.remove('active');
-            label.innerText = "Isolated Notes"; label.style.color = "var(--clio-blue)";
-        } else {
-            currentMode = "CHRON"; slider.style.left = "4px"; slider.style.background = "var(--teal)";
-            document.getElementById('chronBtn').classList.add('active'); document.getElementById('notesBtn').classList.remove('active');
-            label.innerText = "WorkTimeline™"; label.style.color = "var(--teal)";
-        }
-        refreshDisplay();
+    function toggleGhost() {
+        const box = document.getElementById('blurBox'); const sw = document.getElementById('gSwitch');
+        if(sw.checked) { box.style.backdropFilter = "blur(50px) grayscale(1)"; box.style.pointerEvents = "all"; }
+        else { box.style.backdropFilter = "blur(0px) grayscale(0)"; box.style.pointerEvents = "none"; }
     }
 
-    function submitManual() { const b = document.getElementById('statusBox'); if(b.value.trim()){ addEntryWithGPS(b.value); b.value = ''; } }
-
-    function addEntryWithGPS(text) {
-        navigator.geolocation.getCurrentPosition((pos) => {
-            const now = new Date(); const stamp = (now.getMonth()+1)+'/'+now.getDate()+' @ '+now.getHours()+':'+(now.getMinutes()<10?'0':'')+now.getMinutes();
-            const gps = `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`;
-            const entry = { text, stamp, gps };
-            if(currentMode === "CHRON") timelineVault.push(entry); else notesVault.push(entry);
-            refreshDisplay();
-        }, () => alert("GPS Permission Denied."));
+    function toggleVault(cb) {
+        activeVault = cb.checked ? "NOTES" : "TIMELINE";
+        document.body.classList.toggle('mode-notes', cb.checked);
+        document.getElementById('folderLabel').innerText = cb.checked ? "Isolated Notes" : "WorkTimeline™";
+        document.getElementById('folderLabel').style.color = cb.checked ? "var(--clio-blue)" : "var(--teal)";
+        document.getElementById('addBtn').style.background = cb.checked ? "var(--clio-blue)" : "var(--teal)";
+        refreshVaultDisplay();
     }
 
-    function refreshDisplay() {
-        const list = document.getElementById('displayList'); list.innerHTML = '';
-        const data = currentMode === "CHRON" ? timelineVault : notesVault;
+    function submitEntry() {
+        const box = document.getElementById('statusBox'); if(!box.value.trim()) return;
+        saveEntry(box.value); box.value = '';
+        const q = document.getElementById('legacyQuote'); if(q) { q.style.opacity = '0'; setTimeout(() => q.remove(), 500); }
+    }
+
+    function saveEntry(text) {
+        const now = new Date(); let hours = now.getHours(); let minutes = now.getMinutes();
+        const ampm = hours >= 12 ? 'P.M.' : 'A.M.'; hours = hours % 12 || 12;
+        minutes = minutes < 10 ? '0'+minutes : minutes;
+        const stamp = (now.getMonth()+1) + '/' + now.getDate() + '/' + now.getFullYear() + ' @ ' + hours + ':' + minutes + ' ' + ampm;
+        const entry = { text: text, stamp: stamp };
+        if(activeVault === "TIMELINE") timelineVault.push(entry); else notesVault.push(entry);
+        refreshVaultDisplay();
+    }
+
+    function addEntry(text) { saveEntry(text); }
+
+    function refreshVaultDisplay() {
+        const list = document.getElementById('displayList'); const quote = document.getElementById('legacyQuote');
+        list.innerHTML = '';
+        if(quote && timelineVault.length === 0 && notesVault.length === 0) list.appendChild(quote);
+        const data = (activeVault === "TIMELINE") ? timelineVault : notesVault;
         [...data].reverse().forEach(item => {
-            list.innerHTML += `<div class="entry" style="border-left-color: ${currentMode === 'CHRON' ? 'var(--teal)' : 'var(--clio-blue)'}"><div class="meta-data">${item.stamp} | 📍 ${item.gps}</div><p style="margin:0; font-size:14px; font-weight:600; white-space: pre-wrap;">${item.text}</p></div>`;
+            const div = document.createElement('div'); div.className = 'entry';
+            div.style.borderLeftColor = (activeVault === "NOTES") ? "var(--clio-blue)" : "var(--teal)";
+            div.innerHTML = `<span class="timestamp-full" style="color:${(activeVault === "NOTES") ? 'var(--clio-blue)' : 'var(--teal)'}">${item.stamp}</span><p style="white-space: pre-wrap; margin:0; font-size:14px; font-weight:500; line-height: 1.5;">${item.text}</p>`;
+            list.appendChild(div);
         });
     }
 
-    function syncToClio() { alert("Timeline Sealed. Sending to Clio..."); }
+    // PKCE SECURE BRIDGE
+    async function syncToClio() {
+        const clientId = "18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s";
+        const redirectUri = "https://worktimeline-app.vercel.app/index.html";
+        const clioBase = "https://ca.app.clio.com"; 
+
+        const generateRandomString = (length) => {
+            const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+            let text = '';
+            for (let i = 0; i < length; i++) { text += possible.charAt(Math.floor(Math.random() * possible.length)); }
+            return text;
+        };
+
+        const pkceChallengeFromVerifier = async (v) => {
+            const hashed = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(v));
+            return btoa(String.fromCharCode.apply(null, new Uint8Array(hashed)))
+                .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        };
+
+        const codeVerifier = generateRandomString(128);
+        const codeChallenge = await pkceChallengeFromVerifier(codeVerifier);
+        sessionStorage.setItem('clio_code_verifier', codeVerifier);
+        window.location.href = `${clioBase}/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=leads_write%20contacts_write&code_challenge=${codeChallenge}&code_challenge_method=S256`;
+    }
 </script>
 </body>
 </html>
