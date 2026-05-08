@@ -8,20 +8,28 @@
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap');
         
         :root { 
-            --teal: #008080; --clio-blue: #0076CE; --platinum: #d8e2ea; --gray-dark: #2c3e50; 
-            --clio-green: #2ecc71; --round-inner: 24px; --glass: rgba(255, 255, 255, 0.95);
+            /* THE NEW COLORS: Piercing Teal against Ghost Gray */
+            --teal: #00a8a8; 
+            --clio-blue: #0076CE; 
+            --platinum: #d8e2ea; 
+            --gray-dark: #2c3e50; 
+            --clio-green: #2ecc71; 
+            --round-inner: 24px; 
+            --glass: rgba(255, 255, 255, 0.95);
         }
-        body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 0; height: 100dvh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
+        
+        /* The Ghost Gray Background representing the "Gray Area" */
+        body { font-family: 'Nunito', sans-serif; background: #f4f4f5; margin: 0; padding: 0; height: 100dvh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
         
         .ghost-active #timelineContainer, .ghost-active #utilityDrawer, .ghost-active #workspaceTablet { filter: blur(18px); opacity: 0.6; pointer-events: none; }
 
-        #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; box-sizing: border-box; transition: opacity 1.2s ease; }
+        /* Splash Screen background matches the icy gray */
+        #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: #f4f4f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; box-sizing: border-box; transition: opacity 1.2s ease; }
         .story-text { font-size: 24px; font-weight: 900; color: var(--gray-dark); line-height: 1.4; opacity: 0; transition: opacity 0.8s; max-width: 420px; }
         #skipBtn { position: absolute; bottom: calc(40px + env(safe-area-inset-bottom)); padding: 14px 28px; border: 3px solid var(--teal); border-radius: 99px; background: white; color: var(--teal); font-weight: 900; font-size: 13px; cursor: pointer; z-index: 100001; }
 
         .app-container { width: 100%; max-width: 500px; margin: 0 auto; background: white; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.12); }
 
-        /* INCREASED Z-INDEX TO FLOAT ABOVE TABLET */
         .header { display: flex; justify-content: space-between; align-items: center; padding: calc(10px + env(safe-area-inset-top)) 25px 12px; border-bottom: 2px solid var(--platinum); flex-shrink: 0; z-index: 6500; background: white; position: relative; }
         
         .pulse-box { display: flex; align-items: center; gap: 8px; }
@@ -46,7 +54,6 @@
         #addBtn { right: 20px; top: 160px; background: var(--teal); font-size: 40px; }
         #syncBtn { right: 20px; top: 240px; background: var(--clio-blue); }
 
-        /* INCREASED Z-INDEX TO FLOAT ABOVE TABLET */
         #utilityDrawer { width: 100%; background: var(--glass); backdrop-filter: blur(12px); border-bottom: 2px solid var(--platinum); z-index: 6000; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); position: relative; }
         
         .drawer-content { padding: 15px 20px; }
@@ -61,73 +68,33 @@
         .media-btn span { font-size: 10px; font-weight: 900; color: var(--gray-dark); letter-spacing: 0.5px; }
         .media-btn input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
 
-        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px 15px; position: relative; background: #fdfdfd; z-index: 100; transition: all 0.4s ease; padding-bottom: 80px; }
+        /* The Ghost Gray background applied to the timeline to represent the "gray area" */
+        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px 15px; position: relative; background: #f4f4f5; z-index: 100; transition: all 0.4s ease; padding-bottom: 80px; }
         .timeline-spine { position: absolute; left: 30px; top: -200dvh; bottom: 0; width: 6px; background: var(--platinum); z-index: 1; border-radius: 10px; }
         .entry { position: relative; margin-left: 45px; background: white; border: 2px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; border-left: 8px solid var(--teal); box-shadow: 0 5px 15px rgba(0,0,0,0.03); width: calc(100% - 60px); box-sizing: border-box; }
         .vault-label { font-size: 11px; font-weight: 900; color: #94a3b8; text-transform: uppercase; margin-bottom: 25px; display: block; text-align: center; letter-spacing: 1.5px; }
 
-        /* --- NEW TABLET OVERLAY STYLES --- */
         #workspaceTablet {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: calc(100dvh - 300px); /* Leaves exact space for drawer to show text input */
+            height: calc(100dvh - 300px); 
             background: #fdfdfd;
             border-radius: 35px 35px 0 0;
             box-shadow: 0 -15px 40px rgba(0,0,0,0.12);
-            z-index: 5500; /* Covers timeline and floating buttons, but sits UNDER utilityDrawer */
-            transform: translateY(calc(100% - 45px)); /* Only 45px peeking out default */
+            z-index: 5500; 
+            transform: translateY(calc(100% - 45px)); 
             transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             display: flex;
             flex-direction: column;
             border-top: 2px solid var(--platinum);
         }
-        #workspaceTablet.lifted {
-            transform: translateY(0);
-        }
-        .tablet-handle-zone {
-            width: 100%;
-            height: 45px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            background: white;
-            border-radius: 35px 35px 0 0;
-            border-bottom: 2px solid var(--platinum);
-            flex-shrink: 0;
-        }
-        .tablet-handle-zone span {
-            position: absolute;
-            left: 25px;
-            font-size: 10px;
-            font-weight: 900;
-            color: #94a3b8;
-            letter-spacing: 1px;
-        }
-        .tablet-content-area {
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 30px;
-            background: #f8fafc;
-        }
-        .big-action-btn {
-            width: 110px;
-            height: 110px;
-            border-radius: 30px;
-            border: none;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.18);
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
+        #workspaceTablet.lifted { transform: translateY(0); }
+        .tablet-handle-zone { width: 100%; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; background: white; border-radius: 35px 35px 0 0; border-bottom: 2px solid var(--platinum); flex-shrink: 0; }
+        .tablet-handle-zone span { position: absolute; left: 25px; font-size: 10px; font-weight: 900; color: #94a3b8; letter-spacing: 1px; }
+        .tablet-content-area { flex-grow: 1; display: flex; align-items: center; justify-content: center; gap: 30px; background: #f8fafc; }
+        .big-action-btn { width: 110px; height: 110px; border-radius: 30px; border: none; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 15px 35px rgba(0,0,0,0.18); cursor: pointer; transition: transform 0.2s; }
         .big-action-btn:active { transform: scale(0.92); }
         .btn-clio-lock { background: var(--clio-blue); }
         .btn-clio-lock span { font-size: 11px; font-weight: 900; margin-top: 8px; letter-spacing: 0.5px; }
@@ -137,7 +104,7 @@
 </head>
 <body id="appBody">
 
-<div id="splashScreen"><h1 id="storyText" class="story-text">Welcome.</h1><button id="skipBtn" onclick="endSplash()">Skip Intro</button></div>
+<div id="splashScreen"><h1 id="storyText" class="story-text"></h1><button id="skipBtn" onclick="endSplash()">Skip Intro</button></div>
 
 <div class="app-container">
     <header class="header">
@@ -200,11 +167,21 @@
             <button class="big-action-btn btn-add-giant" onclick="submitTabletEntry()">+</button>
         </div>
     </div>
-
 </div>
 
 <script>
-    const story = ["The Invisible 60%...", "Document the Truth.", "WorkTimeline bridges the gap.", "Justice should feel effortless."];
+    // UPDATED STORY LOGIC WITH TIMINGS AND PAUSES
+    const storySequence = [
+        { text: "Clio team, thank you for the opportunity.", duration: 3000 },
+        { text: "I hope you enjoy.", duration: 2500 },
+        { text: "", duration: 2500 }, // Cinematic long pause
+        { text: "The Invisible 60%...", duration: 2500 },
+        { text: "Not invisible. Just caught behind the gray area.", duration: 3500 },
+        { text: "Document the Truth.", duration: 2500 },
+        { text: "WorkTimeline bridges the gap.", duration: 2500 },
+        { text: "Justice should feel effortless.", duration: 3000 }
+    ];
+    
     let isDrawerOpen = true;
     let activeVault = "TIMELINE";
     const timelineVault = [];
@@ -231,27 +208,33 @@
         else { drawer.style.transform = `translateY(0)`; timeline.style.marginTop = `0px`; isDrawerOpen = true; }
     };
 
-    /* NEW FUNCTION TO LIFT TABLET */
-    function toggleTablet() {
-        document.getElementById('workspaceTablet').classList.toggle('lifted');
-    }
+    function toggleTablet() { document.getElementById('workspaceTablet').classList.toggle('lifted'); }
 
+    // NEW CUSTOM SPLASH SCREEN RUNNER
     function runStory() {
-        const el = document.getElementById('storyText'); let i = 0;
-        const next = () => { if(i < story.length) { el.style.opacity = 0; setTimeout(() => { el.innerText = story[i++]; el.style.opacity = 1; setTimeout(next, 2500); }, 800); } else endSplash(); };
+        const el = document.getElementById('storyText'); 
+        let i = 0;
+        const next = () => { 
+            if(i < storySequence.length) { 
+                el.style.opacity = 0; 
+                setTimeout(() => { 
+                    el.innerText = storySequence[i].text; 
+                    el.style.opacity = 1; 
+                    setTimeout(next, storySequence[i].duration); 
+                    i++;
+                }, 800); 
+            } else { 
+                endSplash(); 
+            } 
+        };
         next();
     }
     window.onload = runStory;
+    
     function endSplash() { document.getElementById('splashScreen').style.opacity = '0'; setTimeout(() => document.getElementById('splashScreen').remove(), 1000); }
 
     function submitEntry() { const box = document.getElementById('statusBox'); if(!box.value.trim()) return; saveEntry(box.value); box.value = ''; }
-    
-    /* ADDED DEDICATED FUNCTION FOR TABLET BUTTON SO IT CLOSES THE TABLET AFTER SUBMITTING */
-    function submitTabletEntry() { 
-        submitEntry(); 
-        document.getElementById('workspaceTablet').classList.remove('lifted'); 
-    }
-
+    function submitTabletEntry() { submitEntry(); document.getElementById('workspaceTablet').classList.remove('lifted'); }
     function addMedia(msg) { saveEntry(msg); }
 
     function saveEntry(text) {
