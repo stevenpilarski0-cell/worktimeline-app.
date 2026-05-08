@@ -8,7 +8,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap');
         
         :root { 
-            /* THE NEW COLORS: Piercing Teal against Ghost Gray */
+            /* Piercing Teal against the Ghost Gray */
             --teal: #00a8a8; 
             --clio-blue: #0076CE; 
             --platinum: #d8e2ea; 
@@ -170,16 +170,19 @@
 </div>
 
 <script>
-    // UPDATED STORY LOGIC WITH TIMINGS AND PAUSES
+    // NEW POWERFUL STORY NARRATIVE IN THE APP PROTOTYPE
     const storySequence = [
         { text: "Clio team, thank you for the opportunity.", duration: 3000 },
         { text: "I hope you enjoy.", duration: 2500 },
-        { text: "", duration: 2500 }, // Cinematic long pause
-        { text: "The Invisible 60%...", duration: 2500 },
-        { text: "Not invisible. Just caught behind the gray area.", duration: 3500 },
-        { text: "Document the Truth.", duration: 2500 },
-        { text: "WorkTimeline bridges the gap.", duration: 2500 },
-        { text: "Justice should feel effortless.", duration: 3000 }
+        { text: "", duration: 3000 }, // Cinematic long pause
+        { text: "The Invisible 60%...", duration: 3000 },
+        { text: "They are not invisible.", duration: 2500 },
+        { text: "Just caught behind the gray area.", duration: 3000 },
+        { text: "A prison of stigma and misconception.", duration: 3500 },
+        { text: "This app is built on that gray.", duration: 3000 },
+        { text: "But the truth—the Teal—cuts through.", duration: 3500 },
+        { text: "WorkTimeline bridges the gap.", duration: 3000 },
+        { text: "Justice should feel effortless.", duration: 3500 }
     ];
     
     let isDrawerOpen = true;
@@ -210,7 +213,7 @@
 
     function toggleTablet() { document.getElementById('workspaceTablet').classList.toggle('lifted'); }
 
-    // NEW CUSTOM SPLASH SCREEN RUNNER
+    // SPLASH SCREEN RUNNER
     function runStory() {
         const el = document.getElementById('storyText'); 
         let i = 0;
