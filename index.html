@@ -3,27 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Ghost Mode Handshake</title>
+    <title>WorkTimeline™ | Final Handshake</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@500;700&display=swap');
         
         :root { 
             --teal: #008080; --clio-blue: #0076CE; --platinum: #d8e2ea; --gray-dark: #2c3e50; 
-            --glass: rgba(0, 128, 128, 0.08); --round-inner: 24px;
+            --glass: rgba(0, 128, 128, 0.08); --round-factor: 45px; --round-inner: 24px;
         }
         body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 0; height: 100dvh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
         
         /* PRIVACY BLUR (GHOST MODE) */
-        .ghost-active #timelineContainer, .ghost-active .drawer-content { 
-            filter: blur(12px); 
-            pointer-events: none; /* Prevents accidental clicks while blurred */
+        .ghost-active #timelineContainer, 
+        .ghost-active .drawer-content, 
+        .ghost-active .input-row { 
+            filter: blur(15px) grayscale(1); 
+            opacity: 0.6;
+            pointer-events: none; 
             user-select: none;
         }
 
         /* CINEMATIC INTRO */
         #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; box-sizing: border-box; transition: opacity 1.2s ease; }
         .story-text { font-size: 24px; font-weight: 900; color: var(--gray-dark); line-height: 1.4; opacity: 0; transition: opacity 0.8s; max-width: 420px; letter-spacing: -0.5px; }
-        #skipBtn { position: absolute; bottom: calc(40px + env(safe-area-inset-bottom)); padding: 14px 28px; border: 3px solid var(--teal); border-radius: 99px; background: white; color: var(--teal); font-weight: 900; font-size: 13px; cursor: pointer; text-transform: uppercase; letter-spacing: 1.5px; box-shadow: 0 8px 20px rgba(0, 128, 128, 0.15); }
+        #skipBtn { position: absolute; bottom: calc(40px + env(safe-area-inset-bottom)); padding: 14px 28px; border: 3px solid var(--teal); border-radius: 99px; background: white; color: var(--teal); font-weight: 900; font-size: 13px; cursor: pointer; text-transform: uppercase; letter-spacing: 1.5px; box-shadow: 0 8px 20px rgba(0, 128, 128, 0.15); transition: transform 0.2s; }
 
         .app-container { width: 100%; max-width: 500px; margin: 0 auto; background: white; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.12); box-sizing: border-box; }
 
@@ -34,6 +38,7 @@
         .teal-spine { position: absolute; top: 50%; left: -8px; right: -8px; height: 3.5px; background: var(--teal); border-radius: 2px; transform: translateY(-50%); }
         .teal-dots { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; gap: 3px; }
         .dot { width: 4px; height: 4px; background: var(--teal); border-radius: 50%; border: 1px solid white; }
+        
         .clio-certified { display: flex; align-items: center; gap: 6px; font-size: 9px; font-weight: 900; color: #16a34a; text-transform: uppercase; }
         .pulse-dot { width: 6px; height: 6px; background-color: #22c55e; border-radius: 50%; animation: pulseGreen 2s infinite; }
         @keyframes pulseGreen { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 70% { box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
@@ -52,19 +57,27 @@
         .drag-handle-zone { width: 100%; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; background: #fff; border-top: 1px solid #f0f0f0; }
         .handle-pill { width: 40px; height: 6px; background: var(--platinum); border-radius: 10px; }
 
-        /* INPUTS */
+        /* INPUT AREA */
         .firm-dropdown { width: 100%; padding: 14px 20px; border-radius: var(--round-inner); border: 2.5px solid var(--platinum); font-family: inherit; font-size: 15px; font-weight: 800; color: var(--gray-dark); background-color: #f8fafc; margin-bottom: 12px; appearance: none; }
-        #statusBox { width: 100%; height: 80px; padding: 15px; border-radius: var(--round-inner); border: 2.5px solid var(--platinum); box-sizing: border-box; font-family: inherit; font-size: 16px; font-weight: 600; outline: none; background: #f8fafc; resize: none; margin-bottom: 12px; }
+        .input-row { display: flex; gap: 12px; align-items: stretch; margin-bottom: 12px; transition: filter 0.3s; }
+        #statusBox { flex-grow: 1; height: 75px; padding: 15px; border-radius: var(--round-inner); border: 2.5px solid var(--platinum); box-sizing: border-box; font-family: inherit; font-size: 16px; font-weight: 600; outline: none; background: #f8fafc; resize: none; }
+        .add-sq { width: 65px; background: var(--teal); border: none; border-radius: 20px; color: white; font-size: 40px; font-weight: 300; cursor: pointer; box-shadow: 0 10px 20px rgba(0, 128, 128, 0.2); }
 
-        /* FLOATING ACTION COLUMN */
-        .floating-actions { position: absolute; right: 20px; top: 125px; display: flex; flex-direction: column; gap: 15px; z-index: 800; transition: top 0.4s ease; }
-        .add-sq { width: 65px; height: 65px; background: var(--teal); border: none; border-radius: 20px; color: white; font-size: 40px; cursor: pointer; box-shadow: 0 10px 20px rgba(0, 128, 128, 0.3); }
-        .sync-sq { width: 65px; height: 65px; background: var(--clio-blue); border: none; border-radius: 20px; color: white; cursor: pointer; box-shadow: 0 10px 20px rgba(0, 118, 206, 0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        /* TOOLBAR */
+        .media-toolbar { display: flex; gap: 10px; }
+        .media-btn { flex: 1; background: transparent; border: 2.5px solid var(--platinum); padding: 12px 5px; border-radius: 18px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+        .media-btn svg { width: 22px; height: 22px; fill: none; stroke: var(--teal); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 4px; }
+        .media-btn span { font-size: 8px; font-weight: 900; }
 
         /* TIMELINE */
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px 20px; position: relative; background: #fdfdfd; transition: filter 0.3s; }
         .timeline-spine { position: absolute; left: 35px; top: 0; bottom: 0; width: 6px; background: var(--platinum); z-index: 1; }
         .entry { position: relative; margin-left: 55px; background: white; border: 2px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; border-left: 6px solid var(--teal); }
+
+        /* FOOTER ACTION */
+        .footer-action { padding: 15px; border-top: 2px solid var(--platinum); display: flex; flex-direction: column; align-items: center; background: white; flex-shrink: 0; }
+        .sync-sq { width: 60px; height: 60px; background: var(--clio-blue); border: none; border-radius: 20px; color: white; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .sync-sq span { font-size: 9px; font-weight: 900; margin-top: 4px; }
 
         /* MODAL */
         #summaryModal { position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: rgba(0,0,0,0.6); z-index: 200000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
@@ -97,21 +110,10 @@
             </div>
         </div>
         <div style="text-align: center;">
-            <label class="switch">
-                <input type="checkbox" onchange="toggleGhostMode(this)">
-                <span class="slider"></span>
-            </label>
+            <label class="switch"><input type="checkbox" onchange="toggleGhostMode(this)"><span class="slider"></span></label>
             <div style="font-size: 8px; font-weight: 900; margin-top: 2px;">GHOST</div>
         </div>
     </header>
-
-    <div class="floating-actions" id="floatingActions">
-        <button class="add-sq" onclick="submitEntry()">+</button>
-        <button class="sync-sq" onclick="openSyncSummary()">
-            <svg viewBox="0 0 24 24" width="24" height="24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="white" stroke-width="2.5" fill="none"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="white" stroke-width="2.5" fill="none"/></svg>
-            <span style="font-size: 8px; font-weight: 900; color: white;">CLIO</span>
-        </button>
-    </div>
 
     <div id="utilityDrawer">
         <div class="drawer-content" id="drawerContent">
@@ -120,11 +122,14 @@
                 <option>Newton & Co. Law</option>
                 <option>Pilarski Legal Group</option>
             </select>
-            <textarea id="statusBox" placeholder="Start your intake entry..."></textarea>
-            <div style="display:flex; gap:10px;">
-               <div style="flex:1; border:2px solid var(--platinum); border-radius:15px; padding:10px; text-align:center; font-size:8px; font-weight:900;">CAMERA</div>
-               <div style="flex:1; border:2px solid var(--platinum); border-radius:15px; padding:10px; text-align:center; font-size:8px; font-weight:900;">AUDIO</div>
-               <div style="flex:1; border:2px solid var(--platinum); border-radius:15px; padding:10px; text-align:center; font-size:8px; font-weight:900;">DOCS</div>
+            <div class="input-row">
+                <textarea id="statusBox" placeholder="Start your intake entry..."></textarea>
+                <button class="add-sq" onclick="submitEntry()">+</button>
+            </div>
+            <div class="media-toolbar">
+                <button class="media-btn"><svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>CAMERA</span></button>
+                <button class="media-btn"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18v4M8 22h8"/></svg><span>AUDIO</span></button>
+                <button class="media-btn"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>DOCS</span></button>
             </div>
         </div>
         <div class="drag-handle-zone" id="dragZone">
@@ -136,9 +141,16 @@
         <div class="timeline-spine"></div>
         <div id="displayList">
             <div class="entry" id="initialBio">
-                <p style="font-weight:700;">Privacy First: Use GHOST mode to document evidence safely in public.</p>
+                <p style="font-weight:700;">Justice should feel effortless. Use GHOST mode to document sensitive data privately.</p>
             </div>
         </div>
+    </div>
+
+    <div class="footer-action">
+        <button class="sync-sq" onclick="openSyncSummary()">
+            <svg viewBox="0 0 24 24" width="22" height="22"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="white" stroke-width="2.5" fill="none"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="white" stroke-width="2.5" fill="none"/></svg>
+            <span>CLIO</span>
+        </button>
     </div>
 </div>
 
@@ -147,7 +159,8 @@
         "In that grey area, people know you're there but don't know how to help.",
         "They are too cautious and don't believe they can get help.",
         "WorkTimeline guides you through that grey area...",
-        "Justice should feel effortless. - Jack Newton"
+        "Justice should feel effortless. - Jack Newton",
+        "It can, if telling the truth takes no effort. - WorkTimeline"
     ];
 
     let isDrawerOpen = true;
@@ -158,17 +171,14 @@
 
     const drawer = document.getElementById('utilityDrawer');
     const dragZone = document.getElementById('dragZone');
-    const floatActions = document.getElementById('floatingActions');
 
     dragZone.onclick = () => {
         const content = document.getElementById('drawerContent');
         if(isDrawerOpen) {
             drawer.style.transform = `translateY(-${content.offsetHeight}px)`;
-            floatActions.style.top = "85px";
             isDrawerOpen = false;
         } else {
             drawer.style.transform = `translateY(0)`;
-            floatActions.style.top = "125px";
             isDrawerOpen = true;
         }
     };
