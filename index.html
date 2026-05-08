@@ -15,9 +15,11 @@
         /* 45-SECOND CINEMATIC INTRO */
         #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; box-sizing: border-box; transition: opacity 1.2s ease; }
         .story-text { font-size: 22px; font-weight: 800; color: var(--gray-dark); line-height: 1.5; opacity: 0; transition: opacity 0.8s; max-width: 420px; }
+        #skipBtn { position: absolute; bottom: 40px; padding: 12px 24px; border: 2px solid var(--teal); border-radius: 99px; background: white; color: var(--teal); font-weight: 800; font-size: 12px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 12px rgba(0, 128, 128, 0.15); transition: transform 0.2s; }
+        #skipBtn:active { transform: scale(0.95); background: var(--teal); color: white; }
 
-        /* THE PROTOTYPE SHELL */
-        .app-container { max-width: 500px; margin: auto; background: white; border-radius: 50px; height: 95vh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
+        /* THE PROTOTYPE SHELL - ADJUSTED FOR CELL PHONE USE */
+        .app-container { width: 100%; max-width: 500px; margin: auto; background: white; border-radius: 50px; height: 95vh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.1); box-sizing: border-box; }
         
         /* GHOST MODE BLUR BOX (HARD TOGGLE) */
         #blurBox { position: absolute; top: 85px; left: 0; right: 0; bottom: 0; z-index: 98; background: rgba(255,255,255,0.05); backdrop-filter: blur(0px); pointer-events: none; transition: backdrop-filter 0.4s ease; }
@@ -60,7 +62,10 @@
 </head>
 <body>
 
-<div id="splashScreen"><h1 id="storyText" class="story-text">Welcome.</h1></div>
+<div id="splashScreen">
+    <h1 id="storyText" class="story-text">Welcome.</h1>
+    <button id="skipBtn" onclick="endSplash()">Skip Intro</button>
+</div>
 
 <div class="app-container" id="mainApp">
     <div id="blurBox"></div>
@@ -116,6 +121,8 @@
     ];
     
     let activeVault = "TIMELINE"; const timelineVault = []; const notesVault = [];
+    let storyTimer1, storyTimer2;
+    
     window.onload = () => { runStory(); };
 
     function runStory() {
@@ -124,17 +131,22 @@
         const next = () => {
             if(i < story.length) {
                 el.style.opacity = 0;
-                setTimeout(() => { 
+                storyTimer1 = setTimeout(() => { 
                     el.innerText = story[i++]; 
                     el.style.opacity = 1; 
-                    setTimeout(next, lineDuration - 800); 
+                    storyTimer2 = setTimeout(next, lineDuration - 800); 
                 }, 800);
             } else endSplash();
         };
         next();
     }
 
-    function endSplash() { const s = document.getElementById('splashScreen'); if(s) { s.style.opacity = '0'; setTimeout(() => s.remove(), 1200); } }
+    function endSplash() { 
+        clearTimeout(storyTimer1);
+        clearTimeout(storyTimer2);
+        const s = document.getElementById('splashScreen'); 
+        if(s) { s.style.opacity = '0'; setTimeout(() => s.remove(), 1200); } 
+    }
 
     function toggleGhost() {
         const box = document.getElementById('blurBox'); const sw = document.getElementById('gSwitch');
