@@ -3,21 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Final Handshake</title>
+    <title>WorkTimeline™ | Ghost Mode Handshake</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@500;700&display=swap');
         
         :root { 
             --teal: #008080; --clio-blue: #0076CE; --platinum: #d8e2ea; --gray-dark: #2c3e50; 
-            --glass: rgba(0, 128, 128, 0.08); --round-factor: 45px; --round-inner: 24px;
+            --glass: rgba(0, 128, 128, 0.08); --round-inner: 24px;
         }
         body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 0; height: 100dvh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
         
+        /* PRIVACY BLUR (GHOST MODE) */
+        .ghost-active #timelineContainer, .ghost-active .drawer-content { 
+            filter: blur(12px); 
+            pointer-events: none; /* Prevents accidental clicks while blurred */
+            user-select: none;
+        }
+
         /* CINEMATIC INTRO */
         #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; box-sizing: border-box; transition: opacity 1.2s ease; }
         .story-text { font-size: 24px; font-weight: 900; color: var(--gray-dark); line-height: 1.4; opacity: 0; transition: opacity 0.8s; max-width: 420px; letter-spacing: -0.5px; }
-        #skipBtn { position: absolute; bottom: calc(40px + env(safe-area-inset-bottom)); padding: 14px 28px; border: 3px solid var(--teal); border-radius: 99px; background: white; color: var(--teal); font-weight: 900; font-size: 13px; cursor: pointer; text-transform: uppercase; letter-spacing: 1.5px; box-shadow: 0 8px 20px rgba(0, 128, 128, 0.15); transition: transform 0.2s; }
+        #skipBtn { position: absolute; bottom: calc(40px + env(safe-area-inset-bottom)); padding: 14px 28px; border: 3px solid var(--teal); border-radius: 99px; background: white; color: var(--teal); font-weight: 900; font-size: 13px; cursor: pointer; text-transform: uppercase; letter-spacing: 1.5px; box-shadow: 0 8px 20px rgba(0, 128, 128, 0.15); }
 
         .app-container { width: 100%; max-width: 500px; margin: 0 auto; background: white; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.12); box-sizing: border-box; }
 
@@ -32,9 +38,17 @@
         .pulse-dot { width: 6px; height: 6px; background-color: #22c55e; border-radius: 50%; animation: pulseGreen 2s infinite; }
         @keyframes pulseGreen { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 70% { box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
 
+        /* PRIVACY SWITCHES */
+        .switch { position: relative; display: inline-block; width: 40px; height: 22px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--platinum); transition: .4s; border-radius: 30px; }
+        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--teal); }
+        input:checked + .slider:before { transform: translateX(18px); }
+
         /* DRAGGABLE UTILITY DRAWER */
         #utilityDrawer { width: 100%; background: white; border-bottom: 2px solid var(--platinum); z-index: 500; transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); position: relative; flex-shrink: 0; }
-        .drawer-content { padding: 15px 20px; }
+        .drawer-content { padding: 15px 20px; transition: filter 0.3s; }
         .drag-handle-zone { width: 100%; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; background: #fff; border-top: 1px solid #f0f0f0; }
         .handle-pill { width: 40px; height: 6px; background: var(--platinum); border-radius: 10px; }
 
@@ -42,20 +56,13 @@
         .firm-dropdown { width: 100%; padding: 14px 20px; border-radius: var(--round-inner); border: 2.5px solid var(--platinum); font-family: inherit; font-size: 15px; font-weight: 800; color: var(--gray-dark); background-color: #f8fafc; margin-bottom: 12px; appearance: none; }
         #statusBox { width: 100%; height: 80px; padding: 15px; border-radius: var(--round-inner); border: 2.5px solid var(--platinum); box-sizing: border-box; font-family: inherit; font-size: 16px; font-weight: 600; outline: none; background: #f8fafc; resize: none; margin-bottom: 12px; }
 
-        /* MEDIA TOOLBAR */
-        .media-toolbar { display: flex; gap: 10px; }
-        .media-btn { flex: 1; background: transparent; border: 2.5px solid var(--platinum); padding: 12px 5px; border-radius: 18px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
-        .media-btn svg { width: 24px; height: 24px; fill: none; stroke: var(--teal); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 4px; }
-        .media-btn span { font-size: 8px; font-weight: 900; }
-
         /* FLOATING ACTION COLUMN */
         .floating-actions { position: absolute; right: 20px; top: 125px; display: flex; flex-direction: column; gap: 15px; z-index: 800; transition: top 0.4s ease; }
         .add-sq { width: 65px; height: 65px; background: var(--teal); border: none; border-radius: 20px; color: white; font-size: 40px; cursor: pointer; box-shadow: 0 10px 20px rgba(0, 128, 128, 0.3); }
         .sync-sq { width: 65px; height: 65px; background: var(--clio-blue); border: none; border-radius: 20px; color: white; cursor: pointer; box-shadow: 0 10px 20px rgba(0, 118, 206, 0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .sync-sq span { font-size: 9px; font-weight: 900; margin-top: 2px; }
 
         /* TIMELINE */
-        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px 20px; position: relative; background: #fdfdfd; }
+        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px 20px; position: relative; background: #fdfdfd; transition: filter 0.3s; }
         .timeline-spine { position: absolute; left: 35px; top: 0; bottom: 0; width: 6px; background: var(--platinum); z-index: 1; }
         .entry { position: relative; margin-left: 55px; background: white; border: 2px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; border-left: 6px solid var(--teal); }
 
@@ -64,7 +71,7 @@
         .modal-card { background: white; border-radius: 30px; padding: 30px; width: 85%; text-align: center; }
     </style>
 </head>
-<body>
+<body id="appBody">
 
 <div id="splashScreen"><h1 id="storyText" class="story-text">Welcome.</h1><button id="skipBtn" onclick="endSplash()">Skip Intro</button></div>
 
@@ -86,8 +93,15 @@
             </div>
             <div style="display:flex; align-items:center; gap:10px;">
                 <h1 style="color:var(--teal); margin:0; font-size:22px; font-weight:900;">WorkTimeline™</h1>
-                <div class="clio-certified"><div class="pulse-dot"></div> CLIO CERTIFIED OK</div>
+                <div class="clio-certified"><div class="pulse-dot"></div> CLIO OK</div>
             </div>
+        </div>
+        <div style="text-align: center;">
+            <label class="switch">
+                <input type="checkbox" onchange="toggleGhostMode(this)">
+                <span class="slider"></span>
+            </label>
+            <div style="font-size: 8px; font-weight: 900; margin-top: 2px;">GHOST</div>
         </div>
     </header>
 
@@ -95,22 +109,22 @@
         <button class="add-sq" onclick="submitEntry()">+</button>
         <button class="sync-sq" onclick="openSyncSummary()">
             <svg viewBox="0 0 24 24" width="24" height="24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="white" stroke-width="2.5" fill="none"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="white" stroke-width="2.5" fill="none"/></svg>
-            <span>CLIO</span>
+            <span style="font-size: 8px; font-weight: 900; color: white;">CLIO</span>
         </button>
     </div>
 
     <div id="utilityDrawer">
-        <div class="drawer-content">
+        <div class="drawer-content" id="drawerContent">
             <select id="firmSelect" class="firm-dropdown">
                 <option value="" disabled selected>Select Your Law Firm...</option>
                 <option>Newton & Co. Law</option>
                 <option>Pilarski Legal Group</option>
             </select>
             <textarea id="statusBox" placeholder="Start your intake entry..."></textarea>
-            <div class="media-toolbar">
-                <button class="media-btn"><svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>CAMERA</span></button>
-                <button class="media-btn"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18v4M8 22h8"/></svg><span>AUDIO</span></button>
-                <button class="media-btn"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>DOCS</span></button>
+            <div style="display:flex; gap:10px;">
+               <div style="flex:1; border:2px solid var(--platinum); border-radius:15px; padding:10px; text-align:center; font-size:8px; font-weight:900;">CAMERA</div>
+               <div style="flex:1; border:2px solid var(--platinum); border-radius:15px; padding:10px; text-align:center; font-size:8px; font-weight:900;">AUDIO</div>
+               <div style="flex:1; border:2px solid var(--platinum); border-radius:15px; padding:10px; text-align:center; font-size:8px; font-weight:900;">DOCS</div>
             </div>
         </div>
         <div class="drag-handle-zone" id="dragZone">
@@ -122,7 +136,7 @@
         <div class="timeline-spine"></div>
         <div id="displayList">
             <div class="entry" id="initialBio">
-                <p style="font-weight:700;">Justice should feel effortless. Use the drawer above to begin your contemporaneous record.</p>
+                <p style="font-weight:700;">Privacy First: Use GHOST mode to document evidence safely in public.</p>
             </div>
         </div>
     </div>
@@ -130,28 +144,31 @@
 
 <script>
     const story = [
-        "When you're invisible, people don't know you're there.",
+        "In that grey area, people know you're there but don't know how to help.",
         "They are too cautious and don't believe they can get help.",
-        "Justice should feel effortless. - Jack Newton",
-        "It can, if telling the truth takes no effort. - WorkTimeline"
+        "WorkTimeline guides you through that grey area...",
+        "Justice should feel effortless. - Jack Newton"
     ];
 
     let isDrawerOpen = true;
+    function toggleGhostMode(cb) {
+        if(cb.checked) document.getElementById('appBody').classList.add('ghost-active');
+        else document.getElementById('appBody').classList.remove('ghost-active');
+    }
+
     const drawer = document.getElementById('utilityDrawer');
     const dragZone = document.getElementById('dragZone');
     const floatActions = document.getElementById('floatingActions');
 
-    // DRAWER TOGGLE LOGIC
     dragZone.onclick = () => {
+        const content = document.getElementById('drawerContent');
         if(isDrawerOpen) {
-            // Calculate how much to hide (the content minus the handle)
-            const contentHeight = document.querySelector('.drawer-content').offsetHeight;
-            drawer.style.transform = `translateY(-${contentHeight}px)`;
-            floatActions.style.top = "85px"; // Move buttons up when drawer is hidden
+            drawer.style.transform = `translateY(-${content.offsetHeight}px)`;
+            floatActions.style.top = "85px";
             isDrawerOpen = false;
         } else {
             drawer.style.transform = `translateY(0)`;
-            floatActions.style.top = "125px"; // Return buttons to original position
+            floatActions.style.top = "125px";
             isDrawerOpen = true;
         }
     };
@@ -161,17 +178,12 @@
         const next = () => {
             if(i < story.length) { 
                 el.style.opacity = 0; 
-                setTimeout(() => { 
-                    el.innerText = story[i++]; 
-                    el.style.opacity = 1; 
-                    setTimeout(next, 3000); 
-                }, 800); 
+                setTimeout(() => { el.innerText = story[i++]; el.style.opacity = 1; setTimeout(next, 3000); }, 800); 
             } else endSplash();
         };
         next();
     }
     window.onload = runStory;
-
     function endSplash() { document.getElementById('splashScreen').style.opacity = '0'; setTimeout(() => document.getElementById('splashScreen').remove(), 1000); }
 
     const timelineVault = [];
@@ -190,24 +202,20 @@
         const list = document.getElementById('displayList'); list.innerHTML = '';
         [...timelineVault].reverse().forEach(item => {
             const div = document.createElement('div'); div.className = 'entry';
-            div.innerHTML = `<span style="font-size:10px; color:var(--teal); font-weight:900;">📍 ${item.gps} | Recorded: ${item.stamp}</span><p style="margin:5px 0 0; font-weight:700;">${item.text}</p>`;
+            div.innerHTML = `<span style="font-size:10px; color:var(--teal); font-weight:900;">📍 ${item.gps} | ${item.stamp}</span><p style="margin:5px 0 0; font-weight:700;">${item.text}</p>`;
             list.appendChild(div);
         });
     }
 
     function openSyncSummary() { 
         const firm = document.getElementById('firmSelect').value;
-        if(!firm) return alert("Select a firm first.");
-        document.getElementById('modalSummary').innerText = `Bridging ${timelineVault.length} entries to ${firm}`;
+        if(!firm) return alert("Select firm.");
+        document.getElementById('modalSummary').innerText = `Syncing to ${firm}`;
         document.getElementById('summaryModal').style.display = 'flex';
     }
     function closeModal() { document.getElementById('summaryModal').style.display = 'none'; }
-
     function executeClioSync() { 
-        const clientId = "18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s";
-        const redirectUri = encodeURIComponent("https://worktimeline-app.vercel.app/index.html");
-        const scopes = encodeURIComponent("leads_read leads_write contacts_write");
-        window.location.href = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes}`; 
+        window.location.href = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s&redirect_uri=https://worktimeline-app.vercel.app/index.html&scope=leads_read%20leads_write%20contacts_write`; 
     }
 </script>
 </body>
