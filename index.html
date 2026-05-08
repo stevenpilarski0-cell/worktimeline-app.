@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Draggable Pro Build</title>
+    <title>WorkTimeline™ | Independent Draggables</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap');
         
@@ -41,22 +41,27 @@
         input:checked + .slider { background-color: var(--teal); }
         input:checked + .slider:before { transform: translateX(16px); }
 
-        /* DRAGGABLE FLOATING ACTIONS (The Squares) */
-        #floatingActions { 
+        /* INDEPENDENT DRAGGABLE SQUARES */
+        .draggable-btn { 
             position: absolute; 
-            right: 20px; 
-            top: 130px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 15px; 
             z-index: 2000; 
-            touch-action: none; /* Required for dragging */
+            touch-action: none; 
             cursor: grab;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            width: 65px; 
+            height: 65px; 
+            border-radius: 20px;
+            color: white;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
         }
-        #floatingActions:active { cursor: grabbing; }
+        .draggable-btn:active { cursor: grabbing; scale: 0.95; }
 
-        .add-sq { width: 65px; height: 65px; background: var(--teal); border: none; border-radius: 20px; color: white; font-size: 40px; cursor: pointer; box-shadow: 0 10px 20px rgba(0, 128, 128, 0.3); }
-        .sync-sq { width: 65px; height: 65px; background: var(--clio-blue); border: none; border-radius: 20px; color: white; cursor: pointer; box-shadow: 0 10px 20px rgba(0, 118, 206, 0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        #addBtn { right: 20px; top: 125px; background: var(--teal); font-size: 40px; }
+        #syncBtn { right: 20px; top: 205px; background: var(--clio-blue); }
 
         /* DRAWER & TEMPLATES */
         #utilityDrawer { width: 100%; background: white; border-bottom: 2px solid var(--platinum); z-index: 500; transition: transform 0.4s ease; position: relative; }
@@ -64,11 +69,11 @@
         .drag-handle-zone { width: 100%; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-top: 1px solid #f0f0f0; }
         .handle-pill { width: 40px; height: 6px; background: var(--platinum); border-radius: 10px; }
 
-        .template-bar { display: flex; gap: 8px; width: 80%; overflow-x: auto; margin-bottom: 10px; padding-bottom: 5px; }
+        .template-bar { display: flex; gap: 8px; width: 75%; overflow-x: auto; margin-bottom: 10px; padding-bottom: 5px; }
         .template-chip { background: var(--glass); border: 1.5px solid var(--teal); padding: 6px 12px; border-radius: 12px; font-size: 9px; font-weight: 900; color: var(--teal); white-space: nowrap; cursor: pointer; }
 
-        .firm-dropdown { width: 80%; padding: 12px; border-radius: 15px; border: 2px solid var(--platinum); margin-bottom: 10px; font-weight: 800; }
-        #statusBox { width: 80%; height: 75px; padding: 12px; border-radius: 15px; border: 2px solid var(--platinum); resize: none; font-family: inherit; font-weight: 600; }
+        .firm-dropdown { width: 75%; padding: 12px; border-radius: 15px; border: 2px solid var(--platinum); margin-bottom: 10px; font-weight: 800; }
+        #statusBox { width: 75%; height: 75px; padding: 12px; border-radius: 15px; border: 2px solid var(--platinum); resize: none; font-family: inherit; font-weight: 600; }
 
         /* TIMELINE */
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px 20px; position: relative; background: #fdfdfd; }
@@ -93,13 +98,12 @@
         </div>
     </header>
 
-    <div id="floatingActions">
-        <button class="add-sq" onclick="submitEntry()">+</button>
-        <button class="sync-sq" onclick="openSync()">
-            <svg viewBox="0 0 24 24" width="22" height="22"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="white" stroke-width="2.5" fill="none"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="white" stroke-width="2.5" fill="none"/></svg>
-            <span style="font-size:8px; font-weight:900; margin-top:2px;">CLIO</span>
-        </button>
-    </div>
+    <button id="addBtn" class="draggable-btn" onclick="submitEntry()">+</button>
+    
+    <button id="syncBtn" class="draggable-btn" onclick="openSync()">
+        <svg viewBox="0 0 24 24" width="22" height="22"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="white" stroke-width="2.5" fill="none"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="white" stroke-width="2.5" fill="none"/></svg>
+        <span style="font-size:8px; font-weight:900; margin-top:2px;">CLIO</span>
+    </button>
 
     <div id="utilityDrawer">
         <div class="drawer-content" id="drawerContent">
@@ -137,22 +141,36 @@
     const timelineVault = [];
     const isolatedVault = [];
 
-    // DRAG LOGIC FOR ACTION SQUARES
-    const actionBox = document.getElementById('floatingActions');
-    let offsetTop = 0, offsetLeft = 0;
+    // INDEPENDENT DRAG LOGIC
+    function makeDraggable(el) {
+        let offsetTop = 0, offsetLeft = 0;
+        let isDragging = false;
 
-    actionBox.addEventListener('touchstart', (e) => {
-        const touch = e.touches[0];
-        offsetLeft = touch.clientX - actionBox.offsetLeft;
-        offsetTop = touch.clientY - actionBox.offsetTop;
-    }, {passive: true});
+        el.addEventListener('touchstart', (e) => {
+            isDragging = false; // Reset dragging flag on start
+            const touch = e.touches[0];
+            offsetLeft = touch.clientX - el.offsetLeft;
+            offsetTop = touch.clientY - el.offsetTop;
+        }, {passive: true});
 
-    actionBox.addEventListener('touchmove', (e) => {
-        const touch = e.touches[0];
-        actionBox.style.left = (touch.clientX - offsetLeft) + 'px';
-        actionBox.style.top = (touch.clientY - offsetTop) + 'px';
-        actionBox.style.right = 'auto'; // Break the fixed right alignment
-    }, {passive: true});
+        el.addEventListener('touchmove', (e) => {
+            isDragging = true; // Set flag if movement occurs
+            const touch = e.touches[0];
+            el.style.left = (touch.clientX - offsetLeft) + 'px';
+            el.style.top = (touch.clientY - offsetTop) + 'px';
+            el.style.right = 'auto'; 
+        }, {passive: true});
+
+        // Ensure clicks only trigger if NOT dragging
+        el.addEventListener('touchend', (e) => {
+            if (isDragging) {
+                e.preventDefault();
+            }
+        });
+    }
+
+    makeDraggable(document.getElementById('addBtn'));
+    makeDraggable(document.getElementById('syncBtn'));
 
     function toggleGhost(cb) {
         if(cb.checked) document.getElementById('appBody').classList.add('ghost-active');
@@ -203,8 +221,7 @@
     function saveEntry(text) {
         navigator.geolocation.getCurrentPosition(pos => {
             const now = new Date();
-            const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: true };
-            const stamp = now.toLocaleDateString() + ' @ ' + now.toLocaleTimeString([], timeOptions);
+            const stamp = now.toLocaleDateString() + ' @ ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
             const entry = { text: text, stamp: stamp, gps: `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}` };
             if(activeVault === "TIMELINE") timelineVault.push(entry);
             else isolatedVault.push(entry);
