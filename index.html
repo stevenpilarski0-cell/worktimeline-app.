@@ -9,245 +9,56 @@
         
         :root { 
             --teal: #008080; --clio-blue: #0076CE; --platinum: #e2e8f0; --gray-dark: #1e293b; --gray-light: #f8fafc;
-            --glass: rgba(0, 128, 128, 0.05); 
-            /* Mac-Style Ultra Rounding */
-            --round-main: 50px; 
-            --round-inner: 28px; 
-            --round-pill: 999px;
+            --round-main: 50px; --round-inner: 28px; --round-pill: 999px;
         }
         
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; outline: none; }
+        body { font-family: 'Inter', sans-serif; background: #eef1f5; margin: 0; padding: 10px; height: 100vh; overflow: hidden; color: var(--gray-dark); }
         
-        body { 
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
-            background: #eef1f5; 
-            margin: 0; 
-            padding: 10px; 
-            height: 100vh; 
-            overflow: hidden; 
-            color: var(--gray-dark); 
-        }
+        /* CINEMATIC INTRO */
+        #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; transition: opacity 1.2s ease; }
+        .story-text { font-size: 22px; font-weight: 700; color: var(--gray-dark); line-height: 1.5; opacity: 0; transition: opacity 0.8s; max-width: 460px; letter-spacing: -0.5px; }
+
+        #skipBtn { position: absolute; bottom: 60px; padding: 14px 28px; background: white; color: var(--clio-blue); border: 2px solid var(--clio-blue); border-radius: var(--round-pill); font-size: 14px; font-weight: 800; cursor: pointer; z-index: 100001; }
+
+        .app-container { max-width: 500px; margin: auto; background: white; border-radius: var(--round-main); height: 95vh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.1); }
         
-        /* 45-SECOND DEEP DIVE INTRO */
-        #splashScreen { 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            background: #eef1f5; 
-            z-index: 100000; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            text-align: center; 
-            padding: 40px; 
-            box-sizing: border-box; 
-            transition: opacity 1.2s ease; 
-        }
-        
-        .story-text { 
-            font-size: 22px; 
-            font-weight: 700; 
-            color: var(--gray-dark); 
-            line-height: 1.5; 
-            opacity: 0; 
-            transition: opacity 0.8s; 
-            max-width: 460px; 
-            letter-spacing: -0.5px; 
-        }
+        /* GHOST BLUR */
+        #blurBox { position: absolute; top: 85px; left: 0; right: 0; bottom: 0; z-index: 98; background: rgba(255,255,255,0.01); backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px); pointer-events: none; transition: 0.5s ease; }
+        body.ghost-active #blurBox { backdrop-filter: blur(40px) grayscale(1); -webkit-backdrop-filter: blur(40px) grayscale(1); pointer-events: all; background: rgba(238, 241, 245, 0.7); }
 
-        #skipBtn {
-            position: absolute;
-            bottom: calc(60px + env(safe-area-inset-bottom));
-            padding: 14px 28px;
-            background: white;
-            color: var(--clio-blue);
-            border: 2px solid var(--clio-blue);
-            border-radius: var(--round-pill);
-            font-size: 14px;
-            font-weight: 800;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            z-index: 100001;
-            transition: transform 0.2s, opacity 0.3s;
-        }
-        #skipBtn:active { transform: scale(0.95); }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 24px; border-bottom: 1px solid var(--platinum); flex-shrink: 0; z-index: 100; background: white; }
 
-        .app-container { 
-            max-width: 500px; 
-            margin: auto; 
-            background: white; 
-            border-radius: var(--round-main); 
-            height: 95vh; 
-            display: flex; 
-            flex-direction: column; 
-            overflow: hidden; 
-            position: relative; 
-            box-shadow: 0 20px 60px rgba(0,0,0,0.1); 
-        }
+        /* PULSING GREEN OKAY LIGHT */
+        .status-dot { width: 10px; height: 10px; background: #2ecc71; border-radius: 50%; display: inline-block; margin-right: 6px; box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); animation: pulse-green 2s infinite; }
+        @keyframes pulse-green { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
 
-        #blurBox { 
-            position: absolute; 
-            top: 85px; 
-            left: 0; 
-            right: 0; 
-            bottom: 0; 
-            z-index: 98; 
-            background: rgba(255,255,255,0.01); 
-            backdrop-filter: blur(0px); 
-            -webkit-backdrop-filter: blur(0px); 
-            pointer-events: none; 
-            transition: backdrop-filter 0.5s ease, -webkit-backdrop-filter 0.5s ease; 
-        }
-        
-        body.ghost-active #blurBox { 
-            backdrop-filter: blur(40px) grayscale(1); 
-            -webkit-backdrop-filter: blur(40px) grayscale(1); 
-            pointer-events: all; 
-        }
-
-        .header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 24px; 
-            border-bottom: 1px solid var(--platinum); 
-            flex-shrink: 0; 
-            z-index: 100; 
-            background: white; 
-        }
-
-        .input-area { 
-            padding: 20px; 
-            background: var(--gray-light); 
-            border-bottom: 1px solid var(--platinum); 
-            flex-shrink: 0; 
-            display: flex; 
-            flex-direction: column; 
-        }
-        
-        .template-chips { 
-            display: flex; 
-            gap: 10px; 
-            overflow-x: auto; 
-            padding-bottom: 15px; 
-            scrollbar-width: none; 
-        }
+        .input-area { padding: 20px; background: var(--gray-light); border-bottom: 1px solid var(--platinum); flex-shrink: 0; }
+        .template-chips { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: none; }
         .template-chips::-webkit-scrollbar { display: none; }
-        
-        .chip { 
-            background: white; 
-            color: var(--teal); 
-            font-size: 11px; 
-            font-weight: 800; 
-            padding: 12px 18px; 
-            border-radius: var(--round-pill); 
-            white-space: nowrap; 
-            cursor: pointer; 
-            border: 1.5px solid var(--platinum); 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-            transition: all 0.2s;
-        }
-        .chip:active { transform: scale(0.96); background: var(--teal); color: white; }
+        .chip { background: white; color: var(--teal); font-size: 11px; font-weight: 800; padding: 12px 18px; border-radius: var(--round-pill); border: 1.5px solid var(--platinum); cursor: pointer; white-space: nowrap; }
 
-        #statusBox { 
-            width: 100%; 
-            height: 95px; 
-            padding: 18px; 
-            border-radius: var(--round-inner); 
-            border: 1.5px solid var(--platinum); 
-            box-sizing: border-box; 
-            font-family: inherit; 
-            margin-bottom: 15px; 
-            font-size: 15px; 
-            outline: none; 
-            background: white; 
-            resize: none; 
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.02); 
-        }
+        #statusBox { width: 100%; height: 95px; padding: 18px; border-radius: var(--round-inner); border: 1.5px solid var(--platinum); font-family: inherit; font-size: 15px; outline: none; background: white; resize: none; margin-bottom: 15px; }
         
-        .media-toolbar { 
-            display: grid; 
-            grid-template-columns: repeat(4, 1fr); 
-            gap: 12px; 
-            margin-bottom: 15px; 
-        }
-        
-        .media-btn { 
-            background: white; 
-            border: 1.5px solid var(--platinum); 
-            padding: 15px 2px; 
-            border-radius: var(--round-inner); 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            cursor: pointer; 
-            position: relative; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-        }
+        .media-toolbar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 15px; }
+        .media-btn { background: white; border: 1.5px solid var(--platinum); padding: 15px 2px; border-radius: var(--round-inner); display: flex; flex-direction: column; align-items: center; cursor: pointer; }
         .media-btn svg { width: 24px; height: 24px; fill: var(--teal); margin-bottom: 6px; }
         .media-btn span { font-size: 9px; font-weight: 800; color: var(--gray-dark); text-transform: uppercase; }
 
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px; position: relative; background: #fff; }
         .timeline-spine { position: absolute; left: 35px; top: 0; bottom: 0; width: 5px; background: var(--platinum); border-radius: 10px; z-index: 1; }
         
-        #legacyQuote { 
-            position: relative; 
-            margin-left: 55px; 
-            background: var(--glass); 
-            border: 1.5px solid var(--platinum); 
-            border-left: 6px solid var(--clio-blue); 
-            padding: 25px; 
-            border-radius: var(--round-inner); 
-            margin-bottom: 25px; 
-            z-index: 2; 
-        }
-
-        .entry { 
-            position: relative; 
-            margin-left: 55px; 
-            background: white; 
-            border: 1.5px solid var(--platinum); 
-            padding: 22px; 
-            border-radius: var(--round-inner); 
-            margin-bottom: 25px; 
-            z-index: 2; 
-            border-left: 6px solid var(--teal); 
-            box-shadow: 0 6px 15px rgba(0,0,0,0.04); 
-        }
-        
+        #legacyQuote { position: relative; margin-left: 55px; background: var(--glass); border: 1.5px solid var(--platinum); border-left: 6px solid var(--clio-blue); padding: 25px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; }
+        .entry { position: relative; margin-left: 55px; background: white; border: 1.5px solid var(--platinum); padding: 22px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; border-left: 6px solid var(--teal); box-shadow: 0 6px 15px rgba(0,0,0,0.04); }
         .timestamp-full { font-size: 11px; font-weight: 800; color: var(--teal); display: block; margin-bottom: 8px; text-transform: uppercase; }
         
-        #addBtn { 
-            background: var(--teal); 
-            color:white; 
-            border:none; 
-            padding:18px; 
-            border-radius: var(--round-pill); 
-            width:100%; 
-            font-weight:800; 
-            font-size: 15px; 
-            cursor:pointer; 
-            box-shadow: 0 6px 20px rgba(0, 128, 128, 0.2); 
-        }
+        #addBtn { background: var(--teal); color:white; border:none; padding:18px; border-radius: var(--round-pill); width:100%; font-weight:800; font-size: 15px; cursor:pointer; }
         
-        .sync-btn { 
-            background: var(--clio-blue); 
-            color: white; 
-            border: none; 
-            padding: 20px; 
-            border-radius: var(--round-pill); 
-            width: 90%; 
-            align-self: center; 
-            font-weight: 800; 
-            font-size: 16px; 
-            cursor: pointer; 
-            margin: 20px 0; 
-            flex-shrink: 0; 
-            box-shadow: 0 6px 20px rgba(0, 118, 206, 0.2); 
-        }
+        /* MAC STYLE LOCK BUTTON */
+        .footer-bar { padding: 20px 24px; background: white; border-top: 1px solid var(--platinum); display: flex; justify-content: center; }
+        #syncBtn { background: white; color: var(--clio-blue); border: 3px solid var(--clio-blue); padding: 20px; border-radius: var(--round-inner); width: 100%; font-weight: 800; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; transition: 0.3s; }
+        #syncBtn:active { transform: scale(0.96); background: var(--clio-blue); color: white; }
+        #syncBtn svg { width: 32px; height: 32px; fill: none; stroke: currentColor; stroke-width: 2.5; }
 
         .switch { position: relative; display: inline-block; width: 40px; height: 22px; }
         .switch input { opacity: 0; width: 0; height: 0; }
@@ -269,8 +80,8 @@
     <header class="header">
         <div style="display:flex; align-items: center; gap: 14px;">
             <div style="width: 34px; height: 34px;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="7" width="18" height="13" rx="2" ry="2"></rect>
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.2">
+                    <rect x="3" y="7" width="18" height="13" rx="2"></rect>
                     <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"></path>
                     <line x1="3" y1="13" x2="21" y2="13" stroke-width="2.5"></line>
                     <circle cx="8" cy="17" r="0.5" fill="currentColor"></circle>
@@ -280,7 +91,10 @@
             </div>
             <div>
                 <h1 id="folderLabel" style="color: var(--teal); margin:0; font-size: 20px; font-weight: 800; letter-spacing: -0.5px;">WorkTimeline™</h1>
-                <div style="font-size: 12px; font-weight: 700; color: var(--clio-blue);">Intake Engine...</div>
+                <div style="display:flex; align-items:center;">
+                    <span class="status-dot"></span>
+                    <div style="font-size: 11px; font-weight: 800; color: var(--clio-blue); text-transform: uppercase;">Clio Handshake Active</div>
+                </div>
             </div>
         </div>
         <div style="display:flex; gap:14px; align-items: center;">
@@ -292,14 +106,128 @@
     <div style="display: flex; flex-direction: column; height: 100%;">
         <div class="input-area">
             <div class="template-chips">
-                <span class="chip" onclick="useTemplate('WITNESS LOCATION:\n- Name:\n- GPS/Address:\n- Proximity to Incident:')">Location</span>
-                <span class="chip" onclick="useTemplate('WITNESS STATEMENT:\n- Narrative:\n- Reliability:\n- Recorded?')">Statement</span>
-                <span class="chip" onclick="useTemplate('INCIDENT SETTING:\n- Weather:\n- Lighting:\n- Road/Site Conditions:')">Setting</span>
-                <span class="chip" onclick="useTemplate('EVIDENCE LOG:\n- Item Type:\n- Source/Chain:\n- Storage Location:')">Evidence</span>
+                <span class="chip" onclick="useTemplate('WITNESS LOCATION:\n- Name:\n- GPS/Address:')">Location</span>
+                <span class="chip" onclick="useTemplate('WITNESS STATEMENT:\n- Narrative:\n- Reliability:')">Statement</span>
+                <span class="chip" onclick="useTemplate('INCIDENT SETTING:\n- Weather:\n- Lighting:')">Setting</span>
+                <span class="chip" onclick="useTemplate('EVIDENCE LOG:\n- Item Type:\n- Storage:')">Evidence</span>
             </div>
-
             <textarea id="statusBox" placeholder="Tell your truth here..."></textarea>
-            
             <div class="media-toolbar">
-                <button class="media-btn"><input type="file" accept="image/*" capture="camera" class="hidden-input" onchange="addEntry('Photo evidence secured.')"><svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-4c-1.1 0-2 .9-2 2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-5c0-1.1-.9-2-2-2z"/></svg><span>Camera</span></button>
-                <button class="media-btn"><input type="file" accept="audio/*" capture
+                <div class="media-btn" onclick="addEntry('📷 Photo captured.')"><svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-4c-1.1 0-2 .9-2 2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-5c0-1.1-.9-2-2-2z"/></svg><span>Camera</span></div>
+                <div class="media-btn" onclick="addEntry('🎤 Audio captured.')"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg><span>Audio</span></div>
+                <div class="media-btn" onclick="addEntry('💬 Text log added.')"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg><span>Text</span></div>
+                <div class="media-btn" onclick="addEntry('📄 Document verified.')"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg><span>Docs</span></div>
+            </div>
+            <button id="addBtn" onclick="submitEntry()">Secure Entry & Build Timeline</button>
+        </div>
+
+        <div id="timelineContainer">
+            <div class="timeline-spine"></div>
+            <div id="displayList">
+                <div id="legacyQuote">
+                    <h2 style="font-size: 17px; margin-bottom: 14px; color: var(--clio-blue); font-weight: 800;">Hi Clio Team,</h2>
+                    <p style="font-size: 14px; line-height: 1.6; font-weight: 600; margin-bottom: 15px; color: var(--gray-dark);">I have <strong style="color:var(--gray-dark);">no coding experience</strong>. I built this entirely by cell phone. Living proof: Telling the truth takes effort, but Justice is effortless if truth takes no effort.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bar">
+            <button id="syncBtn" onclick="lockAndSync()">
+                <svg viewBox="0 0 24 24"><path d="M7 11V7a5 5 0 0 1 10 0v4"></path><rect x="3" y="11" width="18" height="11" rx="4"></rect></svg>
+                <span id="syncBtnText" style="text-transform: uppercase;">Lock & Send to Clio</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const story = [
+        "Are you there? Are you listening?",
+        "We see you. We hear you.",
+        "You're just stuck trapped in that grey area—a prison.",
+        "But we're here to get you out, one step at a time.",
+        "Towards the center where you belong with Clio.",
+        "You are the 60%. The people who feel unseen.",
+        "Messy files drain 40% of a firm's resources.",
+        "“Jack Newton said that Justice should be effortless.”",
+        "WorkTimeline's key: Justice is effortless if truth takes no effort."
+    ];
+    
+    let activeVault = "TIMELINE"; const timelineVault = []; const notesVault = []; let isSkipped = false;
+
+    window.onload = () => { runStory(); };
+
+    function runStory() {
+        const el = document.getElementById('storyText'); let i = 0;
+        const next = () => {
+            if(isSkipped || i >= story.length) { endSplash(); return; }
+            el.style.opacity = 0;
+            setTimeout(() => { 
+                if(isSkipped) return;
+                el.innerText = story[i++]; 
+                el.style.opacity = 1; 
+                setTimeout(next, 3200); 
+            }, 800);
+        };
+        next();
+    }
+
+    function endSplash() { 
+        isSkipped = true;
+        const s = document.getElementById('splashScreen'); 
+        if(s) { s.style.opacity = '0'; setTimeout(() => s.remove(), 1000); } 
+    }
+
+    function useTemplate(txt) { document.getElementById('statusBox').value = txt; document.getElementById('statusBox').focus(); }
+    function toggleGhost() { document.body.classList.toggle('ghost-active', document.getElementById('gSwitch').checked); }
+
+    function toggleVault(cb) {
+        activeVault = cb.checked ? "NOTES" : "TIMELINE";
+        document.getElementById('folderLabel').innerText = cb.checked ? "Isolated Notes" : "WorkTimeline™";
+        document.getElementById('addBtn').style.background = cb.checked ? "var(--clio-blue)" : "var(--teal)";
+        refreshVaultDisplay();
+    }
+
+    function submitEntry() {
+        const box = document.getElementById('statusBox'); if(!box.value.trim()) return;
+        addEntry(box.value); box.value = '';
+        const q = document.getElementById('legacyQuote'); if(q) { q.style.opacity = '0'; setTimeout(() => q.remove(), 500); }
+    }
+
+    function addEntry(text) {
+        const now = new Date();
+        const stamp = (now.getMonth()+1) + '/' + now.getDate() + ' @ ' + now.toLocaleTimeString();
+        const entry = { text: text, stamp: stamp };
+        if(activeVault === "TIMELINE") timelineVault.push(entry); else notesVault.push(entry);
+        refreshVaultDisplay();
+    }
+
+    function refreshVaultDisplay() {
+        const list = document.getElementById('displayList'); list.innerHTML = '';
+        const data = (activeVault === "TIMELINE") ? timelineVault : notesVault;
+        [...data].reverse().forEach(item => {
+            const div = document.createElement('div'); div.className = 'entry';
+            div.style.borderLeftColor = (activeVault === "NOTES") ? "var(--clio-blue)" : "var(--teal)";
+            div.innerHTML = `<span class="timestamp-full">${item.stamp}</span><p style="margin:0; font-size:14px; font-weight:500;">${item.text}</p>`;
+            list.appendChild(div);
+        });
+    }
+
+    function lockAndSync() {
+        const btn = document.getElementById('syncBtn');
+        const txt = document.getElementById('syncBtnText');
+        btn.style.background = "var(--clio-blue)"; btn.style.color = "white";
+        txt.innerText = "Summarizing Timeline...";
+        
+        setTimeout(() => {
+            txt.innerText = "Securing Protocol...";
+            setTimeout(() => {
+                const clientId = "18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s";
+                const redirectUri = encodeURIComponent("https://worktimeline-app.vercel.app/index.html");
+                window.location.href = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&scope=leads_write%20contacts_write`;
+            }, 1500);
+        }, 1500);
+    }
+</script>
+</body>
+</html>
