@@ -8,76 +8,86 @@
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
         :root { 
             --teal: #008080; --clio-blue: #0076CE; --platinum: #d8e2ea; --gray-dark: #2c3e50; 
-            --glass: rgba(0, 128, 128, 0.1); --round-factor: 35px; --round-inner: 24px;
+            --glass: rgba(0, 128, 128, 0.08); --round-factor: 45px; --round-inner: 22px;
         }
-        body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 10px; height: 100vh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased;}
+        body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 12px; height: 100vh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
         
         /* 45-SECOND CINEMATIC INTRO */
         #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; box-sizing: border-box; transition: opacity 1.2s ease; }
-        .story-text { font-size: 22px; font-weight: 800; color: var(--gray-dark); line-height: 1.5; opacity: 0; transition: opacity 0.8s; max-width: 420px; }
+        .story-text { font-size: 24px; font-weight: 900; color: var(--gray-dark); line-height: 1.4; opacity: 0; transition: opacity 0.8s; max-width: 420px; letter-spacing: -0.5px; }
+        #skipBtn { position: absolute; bottom: 40px; padding: 14px 28px; border: 3px solid var(--teal); border-radius: 99px; background: white; color: var(--teal); font-weight: 900; font-size: 13px; cursor: pointer; text-transform: uppercase; letter-spacing: 1.5px; box-shadow: 0 8px 20px rgba(0, 128, 128, 0.15); }
 
         /* THE PROTOTYPE SHELL */
-        .app-container { max-width: 500px; margin: auto; background: white; border-radius: 45px; height: 95vh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.1); box-sizing: border-box; border: 1px solid rgba(255,255,255,0.8); }
+        .app-container { width: 100%; max-width: 500px; margin: auto; background: white; border-radius: var(--round-factor); height: 95vh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.12); box-sizing: border-box; border: 1px solid rgba(255,255,255,0.8); }
         
         /* GHOST MODE BLUR BOX */
-        #blurBox { position: absolute; top: 85px; left: 0; right: 0; bottom: 0; z-index: 98; background: rgba(255,255,255,0.05); backdrop-filter: blur(0px); pointer-events: none; transition: backdrop-filter 0.4s ease; }
+        #blurBox { position: absolute; top: 95px; left: 0; right: 0; bottom: 0; z-index: 98; background: rgba(255,255,255,0.05); backdrop-filter: blur(0px); pointer-events: none; transition: backdrop-filter 0.4s ease; }
 
+        /* HEADER & BRIEFCASE LOGO */
         .header { display: flex; justify-content: space-between; align-items: center; padding: 20px 25px; border-bottom: 2px solid var(--platinum); flex-shrink: 0; z-index: 100; background: white; }
+        .briefcase-logo { position: relative; width: 38px; height: 26px; border: 3px solid var(--gray-dark); border-radius: 8px; margin-bottom: 5px; }
+        .briefcase-handle { position: absolute; top: -8px; left: 50%; transform: translateX(-50%); width: 14px; height: 5px; border: 3px solid var(--gray-dark); border-bottom: none; border-radius: 4px 4px 0 0; }
+        .teal-spine { position: absolute; top: 50%; left: -8px; right: -8px; height: 3px; background: var(--teal); border-radius: 2px; transform: translateY(-50%); }
+        .teal-dots { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; gap: 3px; }
+        .dot { width: 4px; height: 4px; background: var(--teal); border-radius: 50%; border: 1px solid white; }
 
         /* SUMMARY WARNING MODAL */
         #summaryModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 200000; display: none; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; backdrop-filter: blur(8px); }
         .modal-card { background: white; border-radius: var(--round-factor); padding: 30px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
-        .modal-btn { background: var(--clio-blue); color: white; border: none; padding: 18px; border-radius: var(--round-inner); width: 100%; font-size: 16px; font-weight: 900; cursor: pointer; margin-top: 15px; transition: transform 0.1s; }
-        .modal-btn:active { transform: scale(0.96); }
+        .modal-btn { background: var(--clio-blue); color: white; border: none; padding: 18px; border-radius: var(--round-inner); width: 100%; font-size: 16px; font-weight: 900; cursor: pointer; margin-top: 15px; }
 
-        /* COMPACT INPUT AREA & PLUS BUTTON */
+        /* COMPACT INPUT AREA (WITH PLUS SIGN) */
         .input-area { padding: 15px 20px; background: #fff; border-bottom: 2px solid var(--platinum); flex-shrink: 0; }
-        .input-row { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
-        
-        #statusBox { flex-grow: 1; height: 75px; padding: 15px; border-radius: var(--round-inner); border: 2px solid var(--platinum); box-sizing: border-box; font-family: inherit; font-size: 16px; font-weight: 600; outline: none; background: #fbfdff; resize: none; transition: border-color 0.3s; }
+        .input-row { display: flex; gap: 12px; align-items: stretch; margin-bottom: 12px; }
+        #statusBox { flex-grow: 1; height: 70px; padding: 15px; border-radius: var(--round-inner); border: 2.5px solid var(--platinum); box-sizing: border-box; font-family: inherit; font-size: 16px; font-weight: 600; outline: none; background: #f8fafc; color: var(--gray-dark); resize: none; transition: 0.3s; }
         #statusBox:focus { border-color: var(--teal); background: white; }
         
-        .add-sq { width: 75px; height: 75px; background: var(--teal); border: none; border-radius: var(--round-inner); color: white; font-size: 38px; font-weight: 400; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; box-shadow: 0 8px 20px rgba(0, 128, 128, 0.2); transition: transform 0.1s, background 0.2s; }
+        /* SOLID TEAL "+" ADD BUTTON */
+        .add-sq { width: 70px; background: var(--teal); border: none; border-radius: var(--round-inner); color: white; font-size: 40px; font-weight: 300; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; box-shadow: 0 8px 20px rgba(0, 128, 128, 0.2); transition: 0.15s; }
         .add-sq:active { transform: scale(0.92); }
-        
+
         /* MATCHED ROUNDNESS HARDWARE ICONS */
         .media-toolbar { display: flex; gap: 10px; }
-        .media-btn { flex: 1; background: var(--platinum); border: none; padding: 12px 5px; border-radius: var(--round-inner); display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; transition: transform 0.1s; }
-        .media-btn:active { transform: scale(0.95); }
+        .media-btn { flex: 1; background: var(--platinum); border: none; padding: 12px 5px; border-radius: 18px; display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; }
         .media-btn svg { width: 22px; height: 22px; fill: var(--teal); margin-bottom: 4px; }
         .media-btn span { font-size: 8px; font-weight: 900; color: var(--gray-dark); }
         .hidden-input { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; top: 0; left: 0; }
 
         /* TIMELINE DISPLAY */
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px 20px; position: relative; background: #fdfdfd; }
-        .timeline-spine { position: absolute; left: 35px; top: 0; bottom: 0; width: 6px; background: #cccccc; border-radius: 15px; z-index: 1; }
+        .timeline-spine { position: absolute; left: 35px; top: 0; bottom: 0; width: 6px; background: var(--platinum); border-radius: 15px; z-index: 1; }
         
         /* ABOUT ME BOX */
-        #legacyQuote { position: relative; margin-left: 55px; background: var(--glass); backdrop-filter: blur(10px); border: 1px solid rgba(0, 128, 128, 0.15); border-left: 6px solid var(--teal); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; transition: opacity 0.5s; }
-        .stat-star { font-size: 13px; font-weight: 800; margin: 10px 0; color: var(--gray-dark); line-height: 1.5; }
+        #legacyQuote { position: relative; margin-left: 55px; background: var(--glass); backdrop-filter: blur(10px); border: 2px solid rgba(0, 128, 128, 0.1); border-left: 6px solid var(--teal); padding: 22px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; box-shadow: 0 10px 25px rgba(0,0,0,0.03); }
+        .stat-star { font-size: 14px; font-weight: 700; margin: 10px 0; color: var(--gray-dark); line-height: 1.5; }
 
-        .entry { position: relative; margin-left: 55px; background: white; border: 1.5px solid var(--platinum); padding: 18px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; border-left: 6px solid var(--teal); box-shadow: 0 6px 15px rgba(0,0,0,0.04); }
+        .entry { position: relative; margin-left: 55px; background: white; border: 2px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; border-left: 6px solid var(--teal); box-shadow: 0 8px 20px rgba(0,0,0,0.04); }
         .timestamp-full { font-size: 11px; font-weight: 900; color: var(--teal); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
         
         /* MINIMALIST CLIO PADLOCK FOOTER */
         .footer-action { padding: 15px; background: white; border-top: 2px solid var(--platinum); display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
         .clio-unit { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; transition: transform 0.15s; }
         .clio-unit:active { transform: scale(0.92); }
-        .padlock-sq { width: 65px; height: 65px; background: var(--clio-blue); border-radius: 22px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0, 118, 206, 0.25); }
+        
+        /* SOLID BLUE PADLOCK BUTTON */
+        .padlock-sq { width: 65px; height: 65px; background: var(--clio-blue); border-radius: 22px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0, 118, 206, 0.25); }
         .padlock-sq svg { width: 28px; height: 28px; fill: white; }
         .clio-text { font-size: 12px; font-weight: 900; color: var(--clio-blue); letter-spacing: 1.5px; text-transform: uppercase; }
 
-        .switch { position: relative; display: inline-block; width: 34px; height: 18px; }
+        .switch { position: relative; display: inline-block; width: 40px; height: 22px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 20px; }
-        .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--platinum); transition: .4s; border-radius: 30px; }
+        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         input:checked + .slider { background-color: var(--clio-blue); }
-        input:checked + .slider:before { transform: translateX(16px); }
+        input:checked + .slider:before { transform: translateX(18px); }
     </style>
 </head>
 <body>
 
-<div id="splashScreen"><h1 id="storyText" class="story-text">Welcome.</h1></div>
+<div id="splashScreen">
+    <h1 id="storyText" class="story-text">Welcome.</h1>
+    <button id="skipBtn" onclick="endSplash()">Skip Intro</button>
+</div>
 
 <div id="summaryModal">
     <div class="modal-card">
@@ -94,10 +104,17 @@
 <div class="app-container" id="mainApp">
     <div id="blurBox"></div>
     <header class="header">
-        <div><h1 id="folderLabel" style="color: var(--teal); margin:0; font-size: 20px; font-weight: 900;">WorkTimeline™</h1><div style="font-size: 12px; font-weight: 800; color: var(--clio-blue); font-style: italic;">Taking an Intake...</div></div>
+        <div style="display:flex; flex-direction:column; align-items:flex-start;">
+            <div class="briefcase-logo">
+                <div class="briefcase-handle"></div>
+                <div class="teal-spine"></div>
+                <div class="teal-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+            </div>
+            <h1 id="folderLabel" style="color: var(--teal); margin: 5px 0 0; font-size: 22px; font-weight: 900; letter-spacing: -0.5px;">WorkTimeline™</h1>
+        </div>
         <div style="display:flex; gap:12px; align-items: center;">
-            <div style="text-align: center;"><label class="switch"><input type="checkbox" onchange="toggleVault(this)"><span class="slider"></span></label><div style="font-size: 8px; font-weight: 900; margin-top: 4px;">CHRON</div></div>
-            <div style="text-align: center;"><label class="switch"><input type="checkbox" id="gSwitch" onchange="toggleGhost()"><span class="slider"></span></label><div style="font-size: 8px; font-weight: 900; margin-top: 4px;">GHOST</div></div>
+            <div style="text-align: center;"><label class="switch"><input type="checkbox" onchange="toggleVault(this)"><span class="slider"></span></label><div style="font-size: 8px; font-weight: 900; margin-top: 4px; color: var(--gray-dark);">CHRON</div></div>
+            <div style="text-align: center;"><label class="switch"><input type="checkbox" id="gSwitch" onchange="toggleGhost()"><span class="slider"></span></label><div style="font-size: 8px; font-weight: 900; margin-top: 4px; color: var(--gray-dark);">GHOST</div></div>
         </div>
     </header>
 
@@ -119,7 +136,7 @@
             <div class="timeline-spine"></div>
             <div id="displayList">
                 <div id="legacyQuote">
-                    <span style="font-size: 11px; font-weight: 900; color: var(--teal); text-transform: uppercase; letter-spacing: 0.5px;">About My Journey</span>
+                    <span style="font-size: 12px; font-weight: 900; color: var(--teal); text-transform: uppercase; letter-spacing: 0.5px;">About My Journey</span>
                     <div class="stat-star">It has been a great experience and I am deeply thankful. I share the same visions and values as Jack Newton.</div>
                     <div class="stat-star">I am living proof his concept is right, having navigated this firsthand. Using AI and pattern recognition, I stand as an example of what he believes in.</div>
                     <div class="stat-star">This is my very first time coding, built entirely on my cell phone. I have an adjustment disorder, but when I looked at the numbers and saw the system, I knew something had to be done.</div>
@@ -160,7 +177,7 @@
 
     function runStory() {
         const el = document.getElementById('storyText'); let i = 0;
-        const lineDuration = 4050; // Total timing approx 45 seconds
+        const lineDuration = 4050; 
         const next = () => {
             if(i < story.length) {
                 el.style.opacity = 0;
@@ -192,7 +209,9 @@
         document.body.classList.toggle('mode-notes', cb.checked);
         document.getElementById('folderLabel').innerText = cb.checked ? "Isolated Notes" : "WorkTimeline™";
         document.getElementById('folderLabel').style.color = cb.checked ? "var(--clio-blue)" : "var(--teal)";
-        document.getElementById('addBtn').style.background = cb.checked ? "var(--clio-blue)" : "var(--teal)";
+        
+        const addBtn = document.getElementById('addBtn');
+        addBtn.style.background = cb.checked ? "var(--clio-blue)" : "var(--teal)";
         refreshVaultDisplay();
     }
 
