@@ -174,7 +174,13 @@
         });
     }
 
-    function openSync() { window.location.href = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s&redirect_uri=https://worktimeline-app.vercel.app/index.html&scope=leads_read%20leads_write%20contacts_write`; }
+    function openSync() { 
+        const clientId = "18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s";
+        const redirectUri = encodeURIComponent("https://worktimeline-app.vercel.app/index.html");
+        // Handshake Scopes aligned with Portal: identity + leads + contacts
+        const scope = encodeURIComponent("identity leads_read leads_write contacts_write");
+        window.location.href = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`; 
+    }
 </script>
 </body>
 </html>
