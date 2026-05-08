@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Final Authorized Build</title>
+    <title>WorkTimeline™ | Master Build</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap');
         
@@ -13,17 +13,14 @@
         }
         body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 0; height: 100dvh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
         
-        /* GHOST MODE BLUR */
         .ghost-active #timelineContainer, .ghost-active #utilityDrawer { filter: blur(18px); opacity: 0.6; pointer-events: none; }
 
-        /* CINEMATIC INTRO */
         #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; box-sizing: border-box; transition: opacity 1.2s ease; }
         .story-text { font-size: 24px; font-weight: 900; color: var(--gray-dark); line-height: 1.4; opacity: 0; transition: opacity 0.8s; max-width: 420px; }
         #skipBtn { position: absolute; bottom: calc(40px + env(safe-area-inset-bottom)); padding: 14px 28px; border: 3px solid var(--teal); border-radius: 99px; background: white; color: var(--teal); font-weight: 900; font-size: 13px; cursor: pointer; z-index: 100001; }
 
         .app-container { width: 100%; max-width: 500px; margin: 0 auto; background: white; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.12); }
 
-        /* HEADER & CLIO PULSE */
         .header { display: flex; justify-content: space-between; align-items: center; padding: calc(10px + env(safe-area-inset-top)) 25px 12px; border-bottom: 2px solid var(--platinum); flex-shrink: 0; z-index: 3000; background: white; }
         .pulse-box { display: flex; align-items: center; gap: 8px; }
         .green-pulse { width: 10px; height: 10px; background: var(--clio-green); border-radius: 50%; display: none; box-shadow: 0 0 0 rgba(46, 204, 113, 0.4); animation: throb 1.8s infinite; }
@@ -35,12 +32,18 @@
         .teal-dots { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; gap: 3px; }
         .dot { width: 4px; height: 4px; background: var(--teal); border-radius: 50%; border: 1px solid white; }
 
-        /* INDEPENDENT DRAGGABLES */
+        .switch-group { display: flex; gap: 12px; align-items: center; }
+        .switch { position: relative; display: inline-block; width: 34px; height: 18px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--platinum); transition: .4s; border-radius: 30px; }
+        .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--teal); }
+        input:checked + .slider:before { transform: translateX(16px); }
+
         .draggable-btn { position: absolute; z-index: 5000; touch-action: none; cursor: grab; display: flex; flex-direction: column; align-items: center; justify-content: center; border: none; width: 65px; height: 65px; border-radius: 20px; color: white; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25); }
         #addBtn { right: 20px; top: 160px; background: var(--teal); font-size: 40px; }
         #syncBtn { right: 20px; top: 240px; background: var(--clio-blue); }
 
-        /* SLIDING DRAWER */
         #utilityDrawer { width: 100%; background: var(--glass); backdrop-filter: blur(12px); border-bottom: 2px solid var(--platinum); z-index: 2500; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); position: relative; }
         .drawer-content { padding: 15px 20px; }
         .drag-handle-zone { width: 100%; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
@@ -49,13 +52,11 @@
         .template-chip { background: white; border: 2px solid var(--teal); padding: 8px 16px; border-radius: 15px; font-size: 10px; font-weight: 900; color: var(--teal); white-space: nowrap; cursor: pointer; }
         #statusBox { width: 100%; height: 85px; padding: 14px; border-radius: 18px; border: 2.5px solid var(--platinum); resize: none; font-family: inherit; font-weight: 600; background: #f8fafc; box-sizing: border-box; }
 
-        /* FUNCTIONAL MEDIA ACTION BUTTONS */
         .media-toolbar { display: flex; gap: 10px; width: 100%; margin-top: 12px; }
         .media-btn { flex: 1; position: relative; background: white; border: 2.5px solid var(--platinum); padding: 15px 5px; border-radius: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .media-btn span { font-size: 10px; font-weight: 900; color: var(--gray-dark); letter-spacing: 0.5px; }
         .media-btn input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
 
-        /* INFINITE LEDGER */
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px 15px; position: relative; background: #fdfdfd; z-index: 100; transition: all 0.4s ease; }
         .timeline-spine { position: absolute; left: 30px; top: -200dvh; bottom: 0; width: 6px; background: var(--platinum); z-index: 1; border-radius: 10px; }
         .entry { position: relative; margin-left: 45px; background: white; border: 2px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; border-left: 8px solid var(--teal); box-shadow: 0 5px 15px rgba(0,0,0,0.03); width: calc(100% - 60px); box-sizing: border-box; }
