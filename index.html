@@ -228,8 +228,8 @@
         "WorkTimeline guides you through that grey area...",
         "Giving you the strength and confidence to take your first few steps.",
         "Not to escape, but to get ahead.",
-        "So you can be at the center with Clio and find those firms that will make you never look back.",
-        "\"Justice should feel effortless\" - Jack Newton",
+        "So you can be at the center with <span style='color: var(--clio-blue);'>Clio</span> and find those firms that will make you never look back.",
+        "\"Justice should feel effortless\" - <span style='color: var(--clio-blue);'>Jack Newton</span>",
         "It can if telling the truth takes no effort. - Stephen Pilarski, founder of WorkTimeline"
     ];
     
@@ -245,7 +245,7 @@
             if(i < story.length) {
                 el.style.opacity = 0;
                 storyTimer1 = setTimeout(() => { 
-                    el.innerText = story[i++]; 
+                    el.innerHTML = story[i++]; 
                     el.style.opacity = 1; 
                     storyTimer2 = setTimeout(next, lineDuration - 800); 
                 }, 800);
