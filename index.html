@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>WorkTimeline™ | The Truth Handshake</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
@@ -10,77 +10,265 @@
         :root { 
             --teal: #008080; --clio-blue: #0076CE; --platinum: #e2e8f0; --gray-dark: #1e293b; --gray-light: #f8fafc;
             --glass: rgba(0, 128, 128, 0.05); 
-            /* Enhanced Mac-like rounding */
-            --round-main: 40px; 
-            --round-inner: 24px; 
+            /* Mac-Style Ultra Rounding */
+            --round-main: 50px; 
+            --round-inner: 28px; 
             --round-pill: 999px;
         }
-        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #eef1f5; margin: 0; padding: 10px; height: 100vh; overflow: hidden; color: var(--gray-dark); }
+        
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; outline: none; }
+        
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+            background: #eef1f5; 
+            margin: 0; 
+            padding: 10px; 
+            height: 100vh; 
+            overflow: hidden; 
+            color: var(--gray-dark); 
+        }
         
         /* 45-SECOND DEEP DIVE INTRO */
-        #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; box-sizing: border-box; transition: opacity 1.2s ease; }
-        .story-text { font-size: 20px; font-weight: 700; color: var(--gray-dark); line-height: 1.5; opacity: 0; transition: opacity 0.8s; max-width: 460px; letter-spacing: -0.3px; }
-
-        .app-container { max-width: 500px; margin: auto; background: white; border-radius: var(--round-main); height: 95vh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+        #splashScreen { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: #eef1f5; 
+            z-index: 100000; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            text-align: center; 
+            padding: 40px; 
+            box-sizing: border-box; 
+            transition: opacity 1.2s ease; 
+        }
         
-        /* GHOST MODE BLUR BOX - FIXED FOR iOS MOBILE */
-        #blurBox { position: absolute; top: 85px; left: 0; right: 0; bottom: 0; z-index: 98; background: rgba(255,255,255,0); backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px); pointer-events: none; transition: all 0.4s ease; }
-        body.ghost-active #blurBox { backdrop-filter: blur(35px) grayscale(1); -webkit-backdrop-filter: blur(35px) grayscale(1); background: rgba(238, 241, 245, 0.75); pointer-events: all; }
+        .story-text { 
+            font-size: 22px; 
+            font-weight: 700; 
+            color: var(--gray-dark); 
+            line-height: 1.5; 
+            opacity: 0; 
+            transition: opacity 0.8s; 
+            max-width: 460px; 
+            letter-spacing: -0.5px; 
+        }
 
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid var(--platinum); flex-shrink: 0; z-index: 100; background: white; }
+        #skipBtn {
+            position: absolute;
+            bottom: calc(60px + env(safe-area-inset-bottom));
+            padding: 14px 28px;
+            background: white;
+            color: var(--clio-blue);
+            border: 2px solid var(--clio-blue);
+            border-radius: var(--round-pill);
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            z-index: 100001;
+            transition: transform 0.2s, opacity 0.3s;
+        }
+        #skipBtn:active { transform: scale(0.95); }
 
-        /* INPUT AREA & VISIBLE TEMPLATE CHIPS */
-        .input-area { padding: 15px 20px; background: var(--gray-light); border-bottom: 1px solid var(--platinum); flex-shrink: 0; display: flex; flex-direction: column; }
+        .app-container { 
+            max-width: 500px; 
+            margin: auto; 
+            background: white; 
+            border-radius: var(--round-main); 
+            height: 95vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+            position: relative; 
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1); 
+        }
+
+        #blurBox { 
+            position: absolute; 
+            top: 85px; 
+            left: 0; 
+            right: 0; 
+            bottom: 0; 
+            z-index: 98; 
+            background: rgba(255,255,255,0.01); 
+            backdrop-filter: blur(0px); 
+            -webkit-backdrop-filter: blur(0px); 
+            pointer-events: none; 
+            transition: backdrop-filter 0.5s ease, -webkit-backdrop-filter 0.5s ease; 
+        }
         
-        .template-chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: none; margin-bottom: 4px;}
+        body.ghost-active #blurBox { 
+            backdrop-filter: blur(40px) grayscale(1); 
+            -webkit-backdrop-filter: blur(40px) grayscale(1); 
+            pointer-events: all; 
+        }
+
+        .header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 24px; 
+            border-bottom: 1px solid var(--platinum); 
+            flex-shrink: 0; 
+            z-index: 100; 
+            background: white; 
+        }
+
+        .input-area { 
+            padding: 20px; 
+            background: var(--gray-light); 
+            border-bottom: 1px solid var(--platinum); 
+            flex-shrink: 0; 
+            display: flex; 
+            flex-direction: column; 
+        }
+        
+        .template-chips { 
+            display: flex; 
+            gap: 10px; 
+            overflow-x: auto; 
+            padding-bottom: 15px; 
+            scrollbar-width: none; 
+        }
         .template-chips::-webkit-scrollbar { display: none; }
-        .chip { background: white; color: var(--teal); font-size: 11px; font-weight: 700; padding: 10px 16px; border-radius: var(--round-pill); white-space: nowrap; cursor: pointer; transition: all 0.2s; border: 1px solid var(--platinum); box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
-        .chip:active { background: var(--teal); color: white; border-color: var(--teal); }
-
-        #statusBox { width: 100%; height: 90px; padding: 16px; border-radius: var(--round-inner); border: 1px solid var(--platinum); box-sizing: border-box; font-family: inherit; margin-bottom: 12px; font-size: 15px; outline: none; background: white; resize: none; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); transition: border-color 0.2s; }
-        #statusBox:focus { border-color: var(--teal); }
         
-        .media-toolbar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
-        .media-btn { background: white; border: 1px solid var(--platinum); padding: 14px 2px; border-radius: var(--round-inner); display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
-        .media-btn:active { background: var(--platinum); transform: translateY(1px); }
-        .media-btn svg { width: 22px; height: 22px; fill: var(--teal); margin-bottom: 6px; }
-        .media-btn span { font-size: 9px; font-weight: 700; color: var(--gray-dark); text-transform: uppercase; letter-spacing: 0.5px; }
-        .hidden-input { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; top: 0; left: 0; }
+        .chip { 
+            background: white; 
+            color: var(--teal); 
+            font-size: 11px; 
+            font-weight: 800; 
+            padding: 12px 18px; 
+            border-radius: var(--round-pill); 
+            white-space: nowrap; 
+            cursor: pointer; 
+            border: 1.5px solid var(--platinum); 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+            transition: all 0.2s;
+        }
+        .chip:active { transform: scale(0.96); background: var(--teal); color: white; }
 
-        /* TIMELINE DISPLAY */
+        #statusBox { 
+            width: 100%; 
+            height: 95px; 
+            padding: 18px; 
+            border-radius: var(--round-inner); 
+            border: 1.5px solid var(--platinum); 
+            box-sizing: border-box; 
+            font-family: inherit; 
+            margin-bottom: 15px; 
+            font-size: 15px; 
+            outline: none; 
+            background: white; 
+            resize: none; 
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.02); 
+        }
+        
+        .media-toolbar { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 12px; 
+            margin-bottom: 15px; 
+        }
+        
+        .media-btn { 
+            background: white; 
+            border: 1.5px solid var(--platinum); 
+            padding: 15px 2px; 
+            border-radius: var(--round-inner); 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            cursor: pointer; 
+            position: relative; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
+        .media-btn svg { width: 24px; height: 24px; fill: var(--teal); margin-bottom: 6px; }
+        .media-btn span { font-size: 9px; font-weight: 800; color: var(--gray-dark); text-transform: uppercase; }
+
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px; position: relative; background: #fff; }
-        .timeline-spine { position: absolute; left: 35px; top: 0; bottom: 0; width: 4px; background: var(--platinum); border-radius: 4px; z-index: 1; }
+        .timeline-spine { position: absolute; left: 35px; top: 0; bottom: 0; width: 5px; background: var(--platinum); border-radius: 10px; z-index: 1; }
         
-        /* THE PERSONAL LETTER BOX */
-        #legacyQuote { position: relative; margin-left: 50px; background: var(--glass); border: 1px solid var(--platinum); border-left: 4px solid var(--clio-blue); padding: 25px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; transition: opacity 0.5s; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        #legacyQuote { 
+            position: relative; 
+            margin-left: 55px; 
+            background: var(--glass); 
+            border: 1.5px solid var(--platinum); 
+            border-left: 6px solid var(--clio-blue); 
+            padding: 25px; 
+            border-radius: var(--round-inner); 
+            margin-bottom: 25px; 
+            z-index: 2; 
+        }
 
-        .entry { position: relative; margin-left: 50px; background: white; border: 1px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; border-left: 4px solid var(--teal); box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-        .timestamp-full { font-size: 11px; font-weight: 700; color: var(--teal); display: block; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .entry { 
+            position: relative; 
+            margin-left: 55px; 
+            background: white; 
+            border: 1.5px solid var(--platinum); 
+            padding: 22px; 
+            border-radius: var(--round-inner); 
+            margin-bottom: 25px; 
+            z-index: 2; 
+            border-left: 6px solid var(--teal); 
+            box-shadow: 0 6px 15px rgba(0,0,0,0.04); 
+        }
         
-        #addBtn { background: var(--teal); color:white; border:none; padding:16px; border-radius: var(--round-pill); width:100%; font-weight:700; font-size: 15px; cursor:pointer; transition: opacity 0.2s; box-shadow: 0 4px 14px rgba(0, 128, 128, 0.25); }
-        #addBtn:active { opacity: 0.8; }
+        .timestamp-full { font-size: 11px; font-weight: 800; color: var(--teal); display: block; margin-bottom: 8px; text-transform: uppercase; }
         
-        .sync-btn { background: var(--clio-blue); color: white; border: none; padding: 18px; border-radius: var(--round-pill); width: 90%; align-self: center; font-weight: 700; font-size: 15px; cursor: pointer; margin: 15px 0; flex-shrink: 0; box-shadow: 0 4px 14px rgba(0, 118, 206, 0.25); transition: transform 0.2s; }
-        .sync-btn:active { transform: scale(0.98); }
+        #addBtn { 
+            background: var(--teal); 
+            color:white; 
+            border:none; 
+            padding:18px; 
+            border-radius: var(--round-pill); 
+            width:100%; 
+            font-weight:800; 
+            font-size: 15px; 
+            cursor:pointer; 
+            box-shadow: 0 6px 20px rgba(0, 128, 128, 0.2); 
+        }
         
-        /* TOGGLES */
-        .switch { position: relative; display: inline-block; width: 36px; height: 20px; }
+        .sync-btn { 
+            background: var(--clio-blue); 
+            color: white; 
+            border: none; 
+            padding: 20px; 
+            border-radius: var(--round-pill); 
+            width: 90%; 
+            align-self: center; 
+            font-weight: 800; 
+            font-size: 16px; 
+            cursor: pointer; 
+            margin: 20px 0; 
+            flex-shrink: 0; 
+            box-shadow: 0 6px 20px rgba(0, 118, 206, 0.2); 
+        }
+
+        .switch { position: relative; display: inline-block; width: 40px; height: 22px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .4s; border-radius: var(--round-pill); }
-        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .4s; border-radius: 20px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--clio-blue); }
-        input:checked + .slider:before { transform: translateX(16px); }
+        input:checked + .slider:before { transform: translateX(18px); }
     </style>
 </head>
 <body>
 
-<div id="splashScreen"><h1 id="storyText" class="story-text"></h1></div>
+<div id="splashScreen">
+    <h1 id="storyText" class="story-text"></h1>
+    <button id="skipBtn" onclick="endSplash()">Skip Intro ➔</button>
+</div>
 
 <div class="app-container" id="mainApp">
     <div id="blurBox"></div>
     <header class="header">
-        <div style="display:flex; align-items: center; gap: 12px;">
-            <div style="width: 32px; height: 32px;">
+        <div style="display:flex; align-items: center; gap: 14px;">
+            <div style="width: 34px; height: 34px;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="3" y="7" width="18" height="13" rx="2" ry="2"></rect>
                     <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"></path>
@@ -91,13 +279,13 @@
                 </svg>
             </div>
             <div>
-                <h1 id="folderLabel" style="color: var(--teal); margin:0; font-size: 18px; font-weight: 800; letter-spacing: -0.5px;">WorkTimeline™</h1>
-                <div style="font-size: 12px; font-weight: 600; color: var(--clio-blue);">Intake Engine...</div>
+                <h1 id="folderLabel" style="color: var(--teal); margin:0; font-size: 20px; font-weight: 800; letter-spacing: -0.5px;">WorkTimeline™</h1>
+                <div style="font-size: 12px; font-weight: 700; color: var(--clio-blue);">Intake Engine...</div>
             </div>
         </div>
-        <div style="display:flex; gap:12px; align-items: center;">
-            <div style="text-align: center;"><label class="switch"><input type="checkbox" onchange="toggleVault(this)"><span class="slider"></span></label><div style="font-size: 8px; font-weight: 700; margin-top: 4px;">CHRON</div></div>
-            <div style="text-align: center;"><label class="switch"><input type="checkbox" id="gSwitch" onchange="toggleGhost()"><span class="slider"></span></label><div style="font-size: 8px; font-weight: 700; margin-top: 4px;">GHOST</div></div>
+        <div style="display:flex; gap:14px; align-items: center;">
+            <div style="text-align: center;"><label class="switch"><input type="checkbox" onchange="toggleVault(this)"><span class="slider"></span></label><div style="font-size: 8px; font-weight: 800; margin-top: 4px;">CHRON</div></div>
+            <div style="text-align: center;"><label class="switch"><input type="checkbox" id="gSwitch" onchange="toggleGhost()"><span class="slider"></span></label><div style="font-size: 8px; font-weight: 800; margin-top: 4px;">GHOST</div></div>
         </div>
     </header>
 
@@ -110,152 +298,8 @@
                 <span class="chip" onclick="useTemplate('EVIDENCE LOG:\n- Item Type:\n- Source/Chain:\n- Storage Location:')">Evidence</span>
             </div>
 
-            <textarea id="statusBox" placeholder="Tap a template above, or tell your truth here..."></textarea>
+            <textarea id="statusBox" placeholder="Tell your truth here..."></textarea>
             
             <div class="media-toolbar">
                 <button class="media-btn"><input type="file" accept="image/*" capture="camera" class="hidden-input" onchange="addEntry('Photo evidence secured.')"><svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-4c-1.1 0-2 .9-2 2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-5c0-1.1-.9-2-2-2z"/></svg><span>Camera</span></button>
-                <button class="media-btn"><input type="file" accept="audio/*" capture="microphone" class="hidden-input" onchange="addEntry('Audio recording captured.')"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg><span>Audio</span></button>
-                <button class="media-btn" onclick="window.location.href='sms:?body=WorkTimeline Update:'"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg><span>Text</span></button>
-                <button class="media-btn"><input type="file" class="hidden-input" onchange="addEntry('Document verified.')"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg><span>Docs</span></button>
-            </div>
-            <button id="addBtn" onclick="submitEntry()">Secure Entry & Build Timeline</button>
-        </div>
-
-        <div id="timelineContainer">
-            <div class="timeline-spine"></div>
-            <div id="displayList">
-                <div id="legacyQuote">
-                    <h2 style="font-size: 16px; margin-bottom: 12px; color: var(--clio-blue); font-weight: 800;">Hi Clio Team,</h2>
-                    <p style="font-size: 14px; line-height: 1.6; font-weight: 600; margin-bottom: 15px; color: var(--gray-dark);">It's been an honor. I truly enjoy doing this, and thank you for the opportunity.</p>
-                    <p style="font-size: 13px; line-height: 1.6; font-weight: 500; margin-bottom: 15px; color: #475569;">I am part of that "invisible 60%," but I don't believe we are invisible—I believe we are trapped in a metaphorical prison. This is why I chose the transition from <strong style="color:var(--gray-dark);">Grey to Teal</strong>, from the prison to the <strong style="color:var(--clio-blue);">Blue Sky</strong>. By integrating Clio’s colors with WorkTimeline™, I’ve built a solution for that gap.</p>
-                    <p style="font-size: 13px; line-height: 1.6; font-weight: 500; color: #475569;">I have <strong style="color:var(--gray-dark);">no coding experience</strong>. I did this all by cell phone, myself, driven by motivation and the cross-referencing power of AI. I am living proof that Jack Newton’s philosophy is true: Telling the truth takes effort, but Justice is effortless if truth takes no effort.</p>
-                </div>
-            </div>
-        </div>
-
-        <button class="sync-btn" onclick="syncToClio()">Finalize & Sync to Clio</button>
-    </div>
-</div>
-
-<script>
-    const story = [
-        "We see you. We hear you.",
-        "We know you're there. You're not invisible.",
-        "You're just stuck trapped in that grey area—a prison.",
-        "But we're here to get you out, one step at a time.",
-        "Towards the center where you belong with Clio.",
-        "Where a firm will make sure you never look back.",
-        "You are the 60%. The people who feel unseen and are too cautious to come forward.",
-        "And lawyers want to help, but messy, unorganized intake is a massive barrier.",
-        "Messy files drain 40% of a firm's time and resources.",
-        "Because of this chaos, lawyers are forced to turn away 3 out of 5 potential clients.",
-        "But clean, organized intake drives a 60% higher probability of case success.",
-        "If everyone was organized, it would save time and drop legal costs by 25%.",
-        "WorkTimeline benefits both the client and the firm, bringing perfect data straight into Clio.",
-        "“Jack Newton said that Justice should be effortless.”",
-        "WorkTimeline's key: Justice can be effortless now, if telling the truth takes no effort."
-    ];
-    
-    let activeVault = "TIMELINE"; const timelineVault = []; const notesVault = [];
-    window.onload = () => { runStory(); };
-
-    function runStory() {
-        const el = document.getElementById('storyText'); let i = 0;
-        const lineDuration = 3000; 
-        
-        el.innerText = story[i++];
-        el.style.opacity = 1;
-
-        const next = () => {
-            if(i < story.length) {
-                el.style.opacity = 0;
-                setTimeout(() => { 
-                    el.innerText = story[i++]; 
-                    el.style.opacity = 1; 
-                    setTimeout(next, lineDuration - 800); 
-                }, 800);
-            } else endSplash();
-        };
-        
-        setTimeout(next, lineDuration - 800);
-    }
-
-    function endSplash() { const s = document.getElementById('splashScreen'); if(s) { s.style.opacity = '0'; setTimeout(() => s.remove(), 1200); } }
-
-    function useTemplate(txt) {
-        document.getElementById('statusBox').value = txt;
-        document.getElementById('statusBox').focus();
-    }
-
-    function toggleGhost() {
-        const sw = document.getElementById('gSwitch');
-        document.body.classList.toggle('ghost-active', sw.checked);
-    }
-
-    function toggleVault(cb) {
-        activeVault = cb.checked ? "NOTES" : "TIMELINE";
-        document.body.classList.toggle('mode-notes', cb.checked);
-        document.getElementById('folderLabel').innerText = cb.checked ? "Isolated Notes" : "WorkTimeline™";
-        document.getElementById('folderLabel').style.color = cb.checked ? "var(--clio-blue)" : "var(--teal)";
-        document.getElementById('addBtn').style.background = cb.checked ? "var(--clio-blue)" : "var(--teal)";
-        refreshVaultDisplay();
-    }
-
-    function submitEntry() {
-        const box = document.getElementById('statusBox'); if(!box.value.trim()) return;
-        saveEntry(box.value); box.value = '';
-        const q = document.getElementById('legacyQuote'); if(q) { q.style.opacity = '0'; setTimeout(() => q.remove(), 500); }
-    }
-
-    function saveEntry(text) {
-        const now = new Date(); let hours = now.getHours(); let minutes = now.getMinutes();
-        const ampm = hours >= 12 ? 'P.M.' : 'A.M.'; hours = hours % 12 || 12;
-        minutes = minutes < 10 ? '0'+minutes : minutes;
-        const stamp = (now.getMonth()+1) + '/' + now.getDate() + '/' + now.getFullYear() + ' @ ' + hours + ':' + minutes + ' ' + ampm;
-        const entry = { text: text, stamp: stamp };
-        if(activeVault === "TIMELINE") timelineVault.push(entry); else notesVault.push(entry);
-        refreshVaultDisplay();
-    }
-
-    function addEntry(text) { saveEntry(text); }
-
-    function refreshVaultDisplay() {
-        const list = document.getElementById('displayList'); const quote = document.getElementById('legacyQuote');
-        list.innerHTML = '';
-        if(quote && timelineVault.length === 0 && notesVault.length === 0) list.appendChild(quote);
-        const data = (activeVault === "TIMELINE") ? timelineVault : notesVault;
-        [...data].reverse().forEach(item => {
-            const div = document.createElement('div'); div.className = 'entry';
-            div.style.borderLeftColor = (activeVault === "NOTES") ? "var(--clio-blue)" : "var(--teal)";
-            div.innerHTML = `<span class="timestamp-full" style="color:${(activeVault === "NOTES") ? 'var(--clio-blue)' : 'var(--teal)'}">${item.stamp}</span><p style="white-space: pre-wrap; margin:0; font-size:14px; font-weight:500; line-height: 1.5;">${item.text}</p>`;
-            list.appendChild(div);
-        });
-    }
-
-    // PKCE SECURE BRIDGE
-    async function syncToClio() {
-        const clientId = "18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s";
-        const redirectUri = "https://worktimeline-app.vercel.app/index.html";
-        const clioBase = "https://ca.app.clio.com"; 
-
-        const generateRandomString = (length) => {
-            const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
-            let text = '';
-            for (let i = 0; i < length; i++) { text += possible.charAt(Math.floor(Math.random() * possible.length)); }
-            return text;
-        };
-
-        const pkceChallengeFromVerifier = async (v) => {
-            const hashed = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(v));
-            return btoa(String.fromCharCode.apply(null, new Uint8Array(hashed)))
-                .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-        };
-
-        const codeVerifier = generateRandomString(128);
-        const codeChallenge = await pkceChallengeFromVerifier(codeVerifier);
-        sessionStorage.setItem('clio_code_verifier', codeVerifier);
-        window.location.href = `${clioBase}/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=leads_write%20contacts_write&code_challenge=${codeChallenge}&code_challenge_method=S256`;
-    }
-</script>
-</body>
-</html>
+                <button class="media-btn"><input type="file" accept="audio/*" capture
