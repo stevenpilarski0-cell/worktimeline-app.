@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Branding Locked</title>
+    <title>WorkTimeline™ | Isolated Vaults</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap');
         
@@ -13,7 +13,7 @@
         }
         body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 0; height: 100dvh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
         
-        /* GHOST MODE */
+        /* GHOST MODE PRIVACY */
         .ghost-active #timelineContainer, .ghost-active #utilityDrawer { 
             filter: blur(15px); opacity: 0.6; pointer-events: none; 
         }
@@ -25,16 +25,14 @@
 
         .app-container { width: 100%; max-width: 500px; margin: 0 auto; background: white; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.12); }
 
-        /* HEADER & BRANDING (3 DOTS INCLUDED) */
+        /* HEADER & BRANDING (3 DOTS) */
         .header { display: flex; justify-content: space-between; align-items: center; padding: calc(10px + env(safe-area-inset-top)) 25px 12px; border-bottom: 2px solid var(--platinum); flex-shrink: 0; z-index: 1000; background: white; }
         .briefcase-logo { position: relative; width: 38px; height: 26px; border: 3.5px solid var(--gray-dark); border-radius: 8px; }
         .briefcase-handle { position: absolute; top: -8.5px; left: 50%; transform: translateX(-50%); width: 14px; height: 5px; border: 3.5px solid var(--gray-dark); border-bottom: none; border-radius: 4px 4px 0 0; }
         .teal-spine { position: absolute; top: 50%; left: -8px; right: -8px; height: 3.5px; background: var(--teal); border-radius: 2px; transform: translateY(-50%); }
-        
-        /* THE THREE DOTS BRANDING */
         .teal-dots { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; gap: 3px; }
         .dot { width: 4px; height: 4px; background: var(--teal); border-radius: 50%; border: 1px solid white; }
-
+        
         .switch-group { display: flex; gap: 12px; align-items: center; }
         .switch { position: relative; display: inline-block; width: 34px; height: 18px; }
         .switch input { opacity: 0; width: 0; height: 0; }
@@ -57,10 +55,17 @@
         .firm-dropdown { width: 80%; padding: 12px; border-radius: 15px; border: 2px solid var(--platinum); margin-bottom: 10px; font-weight: 800; }
         #statusBox { width: 80%; height: 80px; padding: 12px; border-radius: 15px; border: 2px solid var(--platinum); resize: none; font-family: inherit; font-weight: 600; }
 
+        /* MEDIA TOOLBAR (RESTORED) */
+        .media-toolbar { display: flex; gap: 10px; width: 80%; margin-top: 10px; }
+        .media-btn { flex: 1; background: transparent; border: 2px solid var(--platinum); padding: 10px 5px; border-radius: 18px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+        .media-btn svg { width: 22px; height: 22px; fill: none; stroke: var(--teal); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 4px; }
+        .media-btn span { font-size: 8px; font-weight: 900; }
+
         /* TIMELINE */
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px 20px; position: relative; background: #fdfdfd; }
         .timeline-spine { position: absolute; left: 35px; top: 0; bottom: 0; width: 6px; background: var(--platinum); z-index: 1; }
         .entry { position: relative; margin-left: 55px; background: white; border: 2px solid var(--platinum); padding: 18px; border-radius: var(--round-inner); margin-bottom: 20px; z-index: 2; border-left: 6px solid var(--teal); }
+        .vault-label { font-size: 10px; font-weight: 900; color: #64748b; text-transform: uppercase; margin-bottom: 15px; display: block; text-align: center; }
     </style>
 </head>
 <body id="appBody">
@@ -70,20 +75,12 @@
 <div class="app-container">
     <header class="header">
         <div style="display:flex; align-items:center; gap:10px;">
-            <div class="briefcase-logo">
-                <div class="briefcase-handle"></div>
-                <div class="teal-spine"></div>
-                <div class="teal-dots">
-                    <div class="dot"></div>
-                    <div class="dot"></div>
-                    <div class="dot"></div>
-                </div>
-            </div>
-            <h1 style="color:var(--teal); margin:0; font-size:20px; font-weight:900;">WorkTimeline™</h1>
+            <div class="briefcase-logo"><div class="briefcase-handle"></div><div class="teal-spine"></div><div class="teal-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>
+            <h1 style="color:var(--teal); margin:0; font-size:18px; font-weight:900;">WorkTimeline™</h1>
         </div>
         <div class="switch-group">
             <div style="text-align:center;"><label class="switch"><input type="checkbox" onchange="toggleGhost(this)"><span class="slider"></span></label><div style="font-size:7px; font-weight:900;">GHOST</div></div>
-            <div style="text-align:center;"><label class="switch"><input type="checkbox"><span class="slider"></span></label><div style="font-size:7px; font-weight:900;">CHRON</div></div>
+            <div style="text-align:center;"><label class="switch"><input type="checkbox" onchange="toggleVault(this)"><span class="slider"></span></label><div style="font-size:7px; font-weight:900;">CHRON</div></div>
         </div>
     </header>
 
@@ -103,6 +100,11 @@
                 <option>Pilarski Legal Group</option>
             </select>
             <textarea id="statusBox" placeholder="Describe the event..."></textarea>
+            <div class="media-toolbar">
+                <button class="media-btn" onclick="addMedia('📷 Photo evidence secured.')"><svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>CAMERA</span></button>
+                <button class="media-btn" onclick="addMedia('🎤 Audio record locked.')"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18v4M8 22h8"/></svg><span>AUDIO</span></button>
+                <button class="media-btn" onclick="addMedia('📄 Document verification upload.')"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>DOCS</span></button>
+            </div>
         </div>
         <div class="drag-handle-zone" id="dragZone">
             <div class="handle-pill"></div>
@@ -110,20 +112,29 @@
     </div>
 
     <div id="timelineContainer">
+        <span id="currentVaultLabel" class="vault-label">WorkTimeline™ Main Vault</span>
         <div class="timeline-spine"></div>
-        <div id="displayList">
-            <div class="entry"><p style="font-weight:700;">Start your timeline...</p></div>
-        </div>
+        <div id="displayList"></div>
     </div>
 </div>
 
 <script>
-    const story = ["The Invisible 60%...", "Trapped in the Grey...", "WorkTimeline guides you.", "Justice should feel effortless."];
+    const story = ["The Invisible 60%...", "Trapped in the Grey...", "Moving to the Blue Sky.", "Justice should feel effortless."];
     let isDrawerOpen = true;
+    let activeVault = "TIMELINE"; // Global flag to separate data
+    const timelineVault = []; // Main timeline data
+    const isolatedVault = []; // CHRON/Notes data
 
     function toggleGhost(cb) {
         if(cb.checked) document.getElementById('appBody').classList.add('ghost-active');
         else document.getElementById('appBody').classList.remove('ghost-active');
+    }
+
+    // FIXED: Vault separation logic
+    function toggleVault(cb) {
+        activeVault = cb.checked ? "ISOLATED" : "TIMELINE";
+        document.getElementById('currentVaultLabel').innerText = cb.checked ? "Isolated Notes Vault" : "WorkTimeline™ Main Vault";
+        refreshDisplay();
     }
 
     document.getElementById('dragZone').onclick = () => {
@@ -149,22 +160,33 @@
     window.onload = runStory;
     function endSplash() { document.getElementById('splashScreen').style.opacity = '0'; setTimeout(() => document.getElementById('splashScreen').remove(), 1000); }
 
-    const timelineVault = [];
     function submitEntry() {
         const box = document.getElementById('statusBox'); if(!box.value.trim()) return;
+        saveEntry(box.value);
+        box.value = '';
+    }
+
+    function addMedia(msg) { saveEntry(msg); }
+
+    function saveEntry(text) {
         navigator.geolocation.getCurrentPosition(pos => {
             const now = new Date();
-            const stamp = now.toLocaleDateString() + ' @ ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
-            const entry = { text: box.value, stamp: stamp, gps: `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}` };
-            timelineVault.push(entry);
-            refreshTimeline();
-            box.value = '';
+            const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: true };
+            const stamp = now.toLocaleDateString() + ' @ ' + now.toLocaleTimeString([], timeOptions);
+            const entry = { text: text, stamp: stamp, gps: `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}` };
+            
+            // Separation logic: Data goes into different arrays based on switch
+            if(activeVault === "TIMELINE") timelineVault.push(entry);
+            else isolatedVault.push(entry);
+            
+            refreshDisplay();
         });
     }
 
-    function refreshTimeline() {
+    function refreshDisplay() {
         const list = document.getElementById('displayList'); list.innerHTML = '';
-        [...timelineVault].reverse().forEach(item => {
+        const data = (activeVault === "TIMELINE") ? timelineVault : isolatedVault;
+        [...data].reverse().forEach(item => {
             const div = document.createElement('div'); div.className = 'entry';
             div.innerHTML = `<span style="font-size:9px; color:var(--teal); font-weight:900;">📍 ${item.gps} | ${item.stamp}</span><p style="margin:5px 0 0; font-weight:700;">${item.text}</p>`;
             list.appendChild(div);
@@ -173,6 +195,7 @@
 
     function openSync() { 
         if(!document.getElementById('firmSelect').value) return alert("Select firm.");
+        // Direct link to your Canadian Manage Handshake
         window.location.href = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s&redirect_uri=https://worktimeline-app.vercel.app/index.html&scope=leads_read%20leads_write%20contacts_write`; 
     }
 </script>
