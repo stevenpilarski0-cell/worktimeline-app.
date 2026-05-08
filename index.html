@@ -2,29 +2,36 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>WorkTimeline™ | Final Handshake</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap');
         :root { 
             --teal: #008080; --clio-blue: #0076CE; --platinum: #d8e2ea; --gray-dark: #2c3e50; 
-            --glass: rgba(0, 128, 128, 0.08); --round-factor: 45px; --round-inner: 22px;
+            --glass: rgba(0, 128, 128, 0.08); --round-factor: 45px; --round-inner: 24px;
         }
-        body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 12px; height: 100vh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
+        body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 0; height: 100dvh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
         
         /* 45-SECOND CINEMATIC INTRO */
-        #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; box-sizing: border-box; transition: opacity 1.2s ease; }
+        #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; box-sizing: border-box; transition: opacity 1.2s ease; }
         .story-text { font-size: 24px; font-weight: 900; color: var(--gray-dark); line-height: 1.4; opacity: 0; transition: opacity 0.8s; max-width: 420px; letter-spacing: -0.5px; }
-        #skipBtn { position: absolute; bottom: 40px; padding: 14px 28px; border: 3px solid var(--teal); border-radius: 99px; background: white; color: var(--teal); font-weight: 900; font-size: 13px; cursor: pointer; text-transform: uppercase; letter-spacing: 1.5px; box-shadow: 0 8px 20px rgba(0, 128, 128, 0.15); }
+        #skipBtn { position: absolute; bottom: calc(40px + env(safe-area-inset-bottom)); padding: 14px 28px; border: 3px solid var(--teal); border-radius: 99px; background: white; color: var(--teal); font-weight: 900; font-size: 13px; cursor: pointer; text-transform: uppercase; letter-spacing: 1.5px; box-shadow: 0 8px 20px rgba(0, 128, 128, 0.15); transition: transform 0.2s; }
+        #skipBtn:active { transform: scale(0.92); background: var(--teal); color: white; }
 
-        /* THE PROTOTYPE SHELL */
-        .app-container { width: 100%; max-width: 500px; margin: auto; background: white; border-radius: var(--round-factor); height: 95vh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.12); box-sizing: border-box; border: 1px solid rgba(255,255,255,0.8); }
+        /* THE PROTOTYPE SHELL - CELL PHONE OPTIMIZED */
+        .app-container { width: 100%; max-width: 500px; margin: 0 auto; background: white; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.12); box-sizing: border-box; }
         
+        /* Desktop view gets rounded corners, Mobile snaps edge-to-edge */
+        @media (min-width: 501px) {
+            body { padding: 2vh; }
+            .app-container { height: 96vh; border-radius: var(--round-factor); border: 1px solid rgba(255,255,255,0.8); }
+        }
+
         /* GHOST MODE BLUR BOX */
         #blurBox { position: absolute; top: 95px; left: 0; right: 0; bottom: 0; z-index: 98; background: rgba(255,255,255,0.05); backdrop-filter: blur(0px); pointer-events: none; transition: backdrop-filter 0.4s ease; }
 
         /* HEADER & BRIEFCASE LOGO */
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 20px 25px; border-bottom: 2px solid var(--platinum); flex-shrink: 0; z-index: 100; background: white; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: calc(15px + env(safe-area-inset-top)) 25px 15px; border-bottom: 2px solid var(--platinum); flex-shrink: 0; z-index: 100; background: white; }
         .briefcase-logo { position: relative; width: 38px; height: 26px; border: 3px solid var(--gray-dark); border-radius: 8px; margin-bottom: 5px; }
         .briefcase-handle { position: absolute; top: -8px; left: 50%; transform: translateX(-50%); width: 14px; height: 5px; border: 3px solid var(--gray-dark); border-bottom: none; border-radius: 4px 4px 0 0; }
         .teal-spine { position: absolute; top: 50%; left: -8px; right: -8px; height: 3px; background: var(--teal); border-radius: 2px; transform: translateY(-50%); }
@@ -32,7 +39,7 @@
         .dot { width: 4px; height: 4px; background: var(--teal); border-radius: 50%; border: 1px solid white; }
 
         /* SUMMARY WARNING MODAL */
-        #summaryModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 200000; display: none; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; backdrop-filter: blur(8px); }
+        #summaryModal { position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: rgba(0,0,0,0.6); z-index: 200000; display: none; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; backdrop-filter: blur(8px); }
         .modal-card { background: white; border-radius: var(--round-factor); padding: 30px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
         .modal-btn { background: var(--clio-blue); color: white; border: none; padding: 18px; border-radius: var(--round-inner); width: 100%; font-size: 16px; font-weight: 900; cursor: pointer; margin-top: 15px; }
 
@@ -65,7 +72,7 @@
         .timestamp-full { font-size: 11px; font-weight: 900; color: var(--teal); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
         
         /* MINIMALIST CLIO PADLOCK FOOTER */
-        .footer-action { padding: 15px; background: white; border-top: 2px solid var(--platinum); display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+        .footer-action { padding: 15px 15px calc(15px + env(safe-area-inset-bottom)); background: white; border-top: 2px solid var(--platinum); display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
         .clio-unit { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; transition: transform 0.15s; }
         .clio-unit:active { transform: scale(0.92); }
         
@@ -136,7 +143,7 @@
             <div class="timeline-spine"></div>
             <div id="displayList">
                 <div id="legacyQuote">
-                    <span style="font-size: 12px; font-weight: 900; color: var(--teal); text-transform: uppercase; letter-spacing: 0.5px;">About My Journey</span>
+                    <span style="font-size: 11px; font-weight: 900; color: var(--teal); text-transform: uppercase; letter-spacing: 0.5px;">About My Journey</span>
                     <div class="stat-star">It has been a great experience and I am deeply thankful. I share the same visions and values as Jack Newton.</div>
                     <div class="stat-star">I am living proof his concept is right, having navigated this firsthand. Using AI and pattern recognition, I stand as an example of what he believes in.</div>
                     <div class="stat-star">This is my very first time coding, built entirely on my cell phone. I have an adjustment disorder, but when I looked at the numbers and saw the system, I knew something had to be done.</div>
@@ -177,7 +184,7 @@
 
     function runStory() {
         const el = document.getElementById('storyText'); let i = 0;
-        const lineDuration = 4050; 
+        const lineDuration = 4050; // Total timing approx 45 seconds
         const next = () => {
             if(i < story.length) {
                 el.style.opacity = 0;
