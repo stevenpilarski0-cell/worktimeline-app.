@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Full-Width Cinematic Build</title>
+    <title>WorkTimeline™ | Infinite Ledger Build</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap');
         
@@ -13,12 +13,12 @@
         }
         body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 0; height: 100dvh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
         
-        /* GHOST MODE */
+        /* GHOST MODE BLUR */
         .ghost-active #timelineContainer, .ghost-active #utilityDrawer { 
             filter: blur(18px); opacity: 0.6; pointer-events: none; 
         }
 
-        /* INTRO */
+        /* CINEMATIC INTRO */
         #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; box-sizing: border-box; transition: opacity 1.2s ease; }
         .story-text { font-size: 24px; font-weight: 900; color: var(--gray-dark); line-height: 1.4; opacity: 0; transition: opacity 0.8s; max-width: 420px; }
         #skipBtn { position: absolute; bottom: calc(40px + env(safe-area-inset-bottom)); padding: 14px 28px; border: 3px solid var(--teal); border-radius: 99px; background: white; color: var(--teal); font-weight: 900; font-size: 13px; cursor: pointer; z-index: 100001; }
@@ -41,9 +41,9 @@
         input:checked + .slider { background-color: var(--teal); }
         input:checked + .slider:before { transform: translateX(16px); }
 
-        /* INDEPENDENT DRAGGABLES */
+        /* INDEPENDENT DRAGGABLES (Z-INDEX HIGHEST) */
         .draggable-btn { 
-            position: absolute; z-index: 4000; touch-action: none; cursor: grab;
+            position: absolute; z-index: 5000; touch-action: none; cursor: grab;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             border: none; width: 65px; height: 65px; border-radius: 20px; color: white;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
@@ -51,28 +51,28 @@
         #addBtn { right: 20px; top: 160px; background: var(--teal); font-size: 40px; font-weight: 300; }
         #syncBtn { right: 20px; top: 240px; background: var(--clio-blue); }
 
-        /* FULL-WIDTH UTILITY DRAWER */
-        #utilityDrawer { width: 100%; background: var(--glass); backdrop-filter: blur(12px); border-bottom: 2px solid var(--platinum); z-index: 2500; transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1); position: relative; }
+        /* SLIDING UTILITY DRAWER */
+        #utilityDrawer { width: 100%; background: var(--glass); backdrop-filter: blur(12px); border-bottom: 2px solid var(--platinum); z-index: 2500; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); position: relative; }
         .drawer-content { padding: 15px 20px; }
-        .drag-handle-zone { width: 100%; height: 35px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .handle-pill { width: 45px; height: 5px; background: var(--platinum); border-radius: 10px; }
+        .drag-handle-zone { width: 100%; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .handle-pill { width: 50px; height: 6px; background: var(--platinum); border-radius: 10px; }
 
-        .template-bar { display: flex; gap: 10px; width: 100%; overflow-x: auto; margin-bottom: 12px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+        .template-bar { display: flex; gap: 10px; width: 100%; overflow-x: auto; margin-bottom: 12px; scrollbar-width: none; }
         .template-chip { background: white; border: 2px solid var(--teal); padding: 8px 16px; border-radius: 15px; font-size: 10px; font-weight: 900; color: var(--teal); white-space: nowrap; cursor: pointer; }
 
         .firm-dropdown { width: 100%; padding: 14px; border-radius: 18px; border: 2.5px solid var(--platinum); margin-bottom: 12px; font-weight: 800; background: #f8fafc; font-family: inherit; box-sizing: border-box; }
         #statusBox { width: 100%; height: 85px; padding: 14px; border-radius: 18px; border: 2.5px solid var(--platinum); resize: none; font-family: inherit; font-weight: 600; background: #f8fafc; box-sizing: border-box; }
 
-        /* FUNCTIONAL MEDIA TOOLBAR */
+        /* MEDIA ACTION BUTTONS */
         .media-toolbar { display: flex; gap: 10px; width: 100%; margin-top: 12px; }
         .media-btn { flex: 1; position: relative; background: white; border: 2.5px solid var(--platinum); padding: 15px 5px; border-radius: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .media-btn span { font-size: 10px; font-weight: 900; color: var(--gray-dark); letter-spacing: 0.5px; }
         .media-btn input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
 
-        /* FULL-WIDTH TIMELINE */
-        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px 15px; position: relative; background: #fdfdfd; z-index: 100; }
-        .timeline-spine { position: absolute; left: 30px; top: -100dvh; bottom: 0; width: 6px; background: var(--platinum); z-index: 1; border-radius: 10px; }
-        .entry { position: relative; margin-left: 45px; background: white; border: 2px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; border-left: 8px solid var(--teal); box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
+        /* FULL-HEIGHT TIMELINE */
+        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px 15px; position: relative; background: #fdfdfd; z-index: 100; transition: all 0.4s ease; }
+        .timeline-spine { position: absolute; left: 30px; top: -200dvh; bottom: 0; width: 6px; background: var(--platinum); z-index: 1; border-radius: 10px; }
+        .entry { position: relative; margin-left: 45px; background: white; border: 2px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; border-left: 8px solid var(--teal); box-shadow: 0 5px 15px rgba(0,0,0,0.03); width: calc(100% - 60px); box-sizing: border-box; }
         .vault-label { font-size: 11px; font-weight: 900; color: #94a3b8; text-transform: uppercase; margin-bottom: 25px; display: block; text-align: center; letter-spacing: 1.5px; }
     </style>
 </head>
@@ -132,7 +132,9 @@
     <div id="timelineContainer">
         <span id="currentVaultLabel" class="vault-label">WorkTimeline™ Ledger</span>
         <div class="timeline-spine"></div>
-        <div id="displayList"></div>
+        <div id="displayList">
+            <div class="entry"><p style="font-weight:700;">Record the truth as it happens. Use the drawer handle to maximize your view.</p></div>
+        </div>
     </div>
 </div>
 
@@ -184,11 +186,16 @@
     document.getElementById('dragZone').onclick = () => {
         const drawer = document.getElementById('utilityDrawer');
         const content = document.getElementById('drawerContent');
+        const timeline = document.getElementById('timelineContainer');
+        
         if(isDrawerOpen) {
             drawer.style.transform = `translateY(-${content.offsetHeight}px)`;
+            // Expand timeline space immediately
+            timeline.style.marginTop = `-${content.offsetHeight}px`;
             isDrawerOpen = false;
         } else {
             drawer.style.transform = `translateY(0)`;
+            timeline.style.marginTop = `0px`;
             isDrawerOpen = true;
         }
     };
