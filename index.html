@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Final Functional Prototype</title>
+    <title>WorkTimeline™ | Aesthetic Steady Build</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap');
         
         :root { 
             --teal: #008080; --clio-blue: #0076CE; --platinum: #d8e2ea; --gray-dark: #2c3e50; 
-            --round-inner: 24px; --glass: rgba(0, 128, 128, 0.08);
+            --round-inner: 24px; --glass: rgba(255, 255, 255, 0.9);
         }
         body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 0; height: 100dvh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
         
@@ -21,11 +21,11 @@
         /* CINEMATIC INTRO */
         #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; box-sizing: border-box; transition: opacity 1.2s ease; }
         .story-text { font-size: 24px; font-weight: 900; color: var(--gray-dark); line-height: 1.4; opacity: 0; transition: opacity 0.8s; max-width: 420px; }
-        #skipBtn { position: absolute; bottom: calc(40px + env(safe-area-inset-bottom)); padding: 14px 28px; border: 3px solid var(--teal); border-radius: 99px; background: white; color: var(--teal); font-weight: 900; font-size: 13px; cursor: pointer; }
+        #skipBtn { position: absolute; bottom: calc(40px + env(safe-area-inset-bottom)); padding: 14px 28px; border: 3px solid var(--teal); border-radius: 99px; background: white; color: var(--teal); font-weight: 900; font-size: 13px; cursor: pointer; z-index: 100001; }
 
         .app-container { width: 100%; max-width: 500px; margin: 0 auto; background: white; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.12); }
 
-        /* HEADER & BRANDING (3 DOTS) */
+        /* HEADER */
         .header { display: flex; justify-content: space-between; align-items: center; padding: calc(10px + env(safe-area-inset-top)) 25px 12px; border-bottom: 2px solid var(--platinum); flex-shrink: 0; z-index: 1000; background: white; }
         .briefcase-logo { position: relative; width: 38px; height: 26px; border: 3.5px solid var(--gray-dark); border-radius: 8px; }
         .briefcase-handle { position: absolute; top: -8.5px; left: 50%; transform: translateX(-50%); width: 14px; height: 5px; border: 3.5px solid var(--gray-dark); border-bottom: none; border-radius: 4px 4px 0 0; }
@@ -43,37 +43,37 @@
 
         /* INDEPENDENT DRAGGABLES */
         .draggable-btn { 
-            position: absolute; z-index: 2000; touch-action: none; cursor: grab;
+            position: absolute; z-index: 3000; touch-action: none; cursor: grab;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             border: none; width: 65px; height: 65px; border-radius: 20px; color: white;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
-        #addBtn { right: 20px; top: 125px; background: var(--teal); font-size: 40px; font-weight: 300; }
-        #syncBtn { right: 20px; top: 205px; background: var(--clio-blue); }
+        #addBtn { right: 20px; top: 150px; background: var(--teal); font-size: 40px; font-weight: 300; }
+        #syncBtn { right: 20px; top: 230px; background: var(--clio-blue); }
 
-        /* DRAWER & TEMPLATES */
-        #utilityDrawer { width: 100%; background: white; border-bottom: 2px solid var(--platinum); z-index: 500; transition: transform 0.4s ease; position: relative; }
+        /* AESTHETIC UTILITY DRAWER */
+        #utilityDrawer { width: 100%; background: var(--glass); backdrop-filter: blur(10px); border-bottom: 2px solid var(--platinum); z-index: 2000; transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1); position: relative; }
         .drawer-content { padding: 15px 20px; }
-        .drag-handle-zone { width: 100%; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-top: 1px solid #f0f0f0; }
-        .handle-pill { width: 40px; height: 6px; background: var(--platinum); border-radius: 10px; }
+        .drag-handle-zone { width: 100%; height: 35px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .handle-pill { width: 45px; height: 5px; background: var(--platinum); border-radius: 10px; }
 
-        .template-bar { display: flex; gap: 8px; width: 75%; overflow-x: auto; margin-bottom: 12px; }
-        .template-chip { background: var(--glass); border: 1.5px solid var(--teal); padding: 6px 12px; border-radius: 12px; font-size: 9px; font-weight: 900; color: var(--teal); white-space: nowrap; cursor: pointer; }
+        .template-bar { display: flex; gap: 8px; width: 80%; overflow-x: auto; margin-bottom: 12px; scrollbar-width: none; }
+        .template-chip { background: white; border: 1.5px solid var(--teal); padding: 7px 14px; border-radius: 14px; font-size: 10px; font-weight: 900; color: var(--teal); white-space: nowrap; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
 
-        .firm-dropdown { width: 75%; padding: 12px; border-radius: 15px; border: 2px solid var(--platinum); margin-bottom: 10px; font-weight: 800; }
-        #statusBox { width: 75%; height: 75px; padding: 12px; border-radius: 15px; border: 2px solid var(--platinum); resize: none; font-family: inherit; font-weight: 600; }
+        .firm-dropdown { width: 80%; padding: 14px; border-radius: 18px; border: 2px solid var(--platinum); margin-bottom: 12px; font-weight: 800; background: #f8fafc; font-family: inherit; }
+        #statusBox { width: 80%; height: 80px; padding: 14px; border-radius: 18px; border: 2px solid var(--platinum); resize: none; font-family: inherit; font-weight: 600; background: #f8fafc; }
 
-        /* MEDIA ACTION BUTTONS (Functional Pro Inputs) */
-        .media-toolbar { display: flex; gap: 10px; width: 75%; margin-top: 10px; }
-        .media-btn { flex: 1; position: relative; background: transparent; border: 2.5px solid var(--platinum); padding: 14px 5px; border-radius: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; }
-        .media-btn span { font-size: 9px; font-weight: 900; color: var(--gray-dark); letter-spacing: 0.5px; pointer-events: none; }
+        /* FUNCTIONAL MEDIA TRIGGERS */
+        .media-toolbar { display: flex; gap: 10px; width: 80%; margin-top: 12px; }
+        .media-btn { flex: 1; position: relative; background: white; border: 2.5px solid var(--platinum); padding: 14px 5px; border-radius: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .media-btn span { font-size: 10px; font-weight: 900; color: var(--gray-dark); letter-spacing: 0.5px; }
         .media-btn input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
 
-        /* TIMELINE */
-        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px 20px; position: relative; background: #fdfdfd; }
-        .timeline-spine { position: absolute; left: 35px; top: 0; bottom: 0; width: 6px; background: var(--platinum); z-index: 1; }
-        .entry { position: relative; margin-left: 55px; background: white; border: 2px solid var(--platinum); padding: 18px; border-radius: var(--round-inner); margin-bottom: 20px; z-index: 2; border-left: 6px solid var(--teal); }
-        .vault-label { font-size: 10px; font-weight: 900; color: #64748b; text-transform: uppercase; margin-bottom: 15px; display: block; text-align: center; }
+        /* STEADY TIMELINE CONTAINER */
+        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 30px 20px; position: relative; background: #fdfdfd; z-index: 100; }
+        .timeline-spine { position: absolute; left: 35px; top: -100dvh; bottom: 0; width: 6px; background: var(--platinum); z-index: 1; border-radius: 10px; }
+        .entry { position: relative; margin-left: 55px; background: white; border: 2px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; border-left: 6px solid var(--teal); box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .vault-label { font-size: 11px; font-weight: 900; color: #94a3b8; text-transform: uppercase; margin-bottom: 20px; display: block; text-align: center; letter-spacing: 1px; }
     </style>
 </head>
 <body id="appBody">
@@ -119,18 +119,9 @@
             <textarea id="statusBox" placeholder="Describe the event..."></textarea>
             
             <div class="media-toolbar">
-                <div class="media-btn">
-                    <span>CAMERA</span>
-                    <input type="file" accept="image/*" capture="camera" onchange="addMedia('📷 PHOTO: Evidence captured via camera.')">
-                </div>
-                <div class="media-btn">
-                    <span>AUDIO</span>
-                    <input type="file" accept="audio/*" capture="microphone" onchange="addMedia('🎤 AUDIO: Voice record secured via microphone.')">
-                </div>
-                <div class="media-btn">
-                    <span>DOCS</span>
-                    <input type="file" accept=".pdf,.doc,.docx,image/*" onchange="addMedia('📄 DOCS: Document proof uploaded from device.')">
-                </div>
+                <div class="media-btn"><span>CAMERA</span><input type="file" accept="image/*" capture="camera" onchange="addMedia('📷 PHOTO: Captured.')"></div>
+                <div class="media-btn"><span>AUDIO</span><input type="file" accept="audio/*" capture="microphone" onchange="addMedia('🎤 AUDIO: Recorded.')"></div>
+                <div class="media-btn"><span>DOCS</span><input type="file" accept=".pdf,.doc,.docx,image/*" onchange="addMedia('📄 DOCS: Uploaded.')"></div>
             </div>
         </div>
         <div class="drag-handle-zone" id="dragZone">
@@ -152,7 +143,6 @@
     const timelineVault = [];
     const isolatedVault = [];
 
-    // INDEPENDENT DRAG LOGIC
     function makeDraggable(el) {
         let offsetTop = 0, offsetLeft = 0, isDragging = false;
         el.addEventListener('touchstart', (e) => {
@@ -237,7 +227,7 @@
         const data = (activeVault === "TIMELINE") ? timelineVault : isolatedVault;
         [...data].reverse().forEach(item => {
             const div = document.createElement('div'); div.className = 'entry';
-            div.innerHTML = `<span style="font-size:9px; color:var(--teal); font-weight:900;">📍 ${item.gps} | ${item.stamp}</span><p style="margin:5px 0 0; font-weight:700;">${item.text}</p>`;
+            div.innerHTML = `<span style="font-size:10px; color:var(--teal); font-weight:900; letter-spacing:0.5px;">📍 ${item.gps} | ${item.stamp}</span><p style="margin:8px 0 0; font-weight:700; line-height:1.4;">${item.text}</p>`;
             list.appendChild(div);
         });
     }
