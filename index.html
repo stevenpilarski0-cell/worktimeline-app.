@@ -34,7 +34,7 @@
             color: var(--gray-dark); 
         }
         
-        /* CINEMATIC INTRO - FULL SCRIPT VERSION */
+        /* CINEMATIC INTRO */
         #splashScreen { 
             position: fixed; 
             top: 0; 
@@ -50,7 +50,8 @@
             text-align: center; 
             padding: 40px; 
             opacity: 1; 
-            transition: opacity 1s ease; 
+            visibility: visible;
+            transition: opacity 1s ease, visibility 1s ease; 
         }
 
         .story-text { 
@@ -59,7 +60,7 @@
             color: var(--gray-dark); 
             line-height: 1.5; 
             opacity: 0; 
-            transition: opacity 0.8s; 
+            transition: opacity 0.8s ease-in-out; 
             max-width: 460px; 
             letter-spacing: -0.5px; 
         }
@@ -126,7 +127,6 @@
             background: white; 
         }
 
-        /* PULSING GREEN STATUS LIGHT */
         .status-dot { 
             width: 10px; 
             height: 10px; 
@@ -144,7 +144,6 @@
             100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } 
         }
 
-        /* INPUT AREA */
         .input-area { 
             padding: 20px; 
             background: var(--gray-light); 
@@ -159,8 +158,6 @@
             padding-bottom: 15px; 
             scrollbar-width: none; 
         }
-
-        .template-chips::-webkit-scrollbar { display: none; }
 
         .chip { 
             background: white; 
@@ -208,21 +205,9 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.02); 
         }
 
-        .media-btn svg { 
-            width: 24px; 
-            height: 24px; 
-            fill: var(--teal); 
-            margin-bottom: 6px; 
-        }
+        .media-btn svg { width: 24px; height: 24px; fill: var(--teal); margin-bottom: 6px; }
+        .media-btn span { font-size: 9px; font-weight: 800; color: var(--gray-dark); text-transform: uppercase; }
 
-        .media-btn span { 
-            font-size: 9px; 
-            font-weight: 800; 
-            color: var(--gray-dark); 
-            text-transform: uppercase; 
-        }
-
-        /* TIMELINE AREA */
         #timelineContainer { 
             flex-grow: 1; 
             overflow-y: auto; 
@@ -290,7 +275,6 @@
             box-shadow: 0 4px 14px rgba(0, 128, 128, 0.25); 
         }
         
-        /* FOOTER / LOCK BUTTON */
         .footer-bar { 
             padding: 20px 24px; 
             background: white; 
@@ -317,56 +301,13 @@
             box-shadow: 0 4px 14px rgba(0, 118, 206, 0.2); 
         }
 
-        #syncBtn:active { 
-            transform: scale(0.96); 
-            background: var(--clio-blue); 
-            color: white; 
-        }
+        #syncBtn svg { width: 32px; height: 32px; fill: none; stroke: currentColor; stroke-width: 2.5; }
 
-        #syncBtn svg { 
-            width: 32px; 
-            height: 32px; 
-            fill: none; 
-            stroke: currentColor; 
-            stroke-width: 2.5; 
-        }
-
-        /* TOGGLE STYLES */
-        .switch { 
-            position: relative; 
-            display: inline-block; 
-            width: 40px; 
-            height: 22px; 
-        }
-
+        .switch { position: relative; display: inline-block; width: 40px; height: 22px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-
-        .slider { 
-            position: absolute; 
-            cursor: pointer; 
-            top: 0; 
-            left: 0; 
-            right: 0; 
-            bottom: 0; 
-            background-color: #cbd5e1; 
-            transition: .4s; 
-            border-radius: 20px; 
-        }
-
-        .slider:before { 
-            position: absolute; 
-            content: ""; 
-            height: 16px; 
-            width: 16px; 
-            left: 3px; 
-            bottom: 3px; 
-            background-color: white; 
-            transition: .4s; 
-            border-radius: 50%; 
-        }
-
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .4s; border-radius: 20px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--clio-blue); }
-        input:checked + .slider:before { transform: translateX(18px); }
     </style>
 </head>
 <body>
@@ -376,40 +317,164 @@
     <button id="skipBtn" onclick="endSplash()">Skip Intro ➔</button>
 </div>
 
-<div class="app-container" id="mainApp">
+<div class="app-container">
     <div id="blurBox"></div>
     <header class="header">
         <div style="display:flex; align-items: center; gap: 14px;">
             <div style="width: 34px; height: 34px;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="7" width="18" height="13" rx="2" ry="2"></rect>
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.2">
+                    <rect x="3" y="7" width="18" height="13" rx="2"></rect>
                     <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"></path>
-                    <line x1="3" y1="13" x2="21" y2="13" stroke-width="2.5"></line>
+                    <line x1="3" y1="13" x2="21" y2="13"></line>
                     <circle cx="8" cy="17" r="0.5" fill="currentColor"></circle>
                     <circle cx="12" cy="17" r="0.5" fill="currentColor"></circle>
                     <circle cx="16" cy="17" r="0.5" fill="currentColor"></circle>
                 </svg>
             </div>
             <div>
-                <h1 id="folderLabel" style="color: var(--teal); margin:0; font-size: 20px; font-weight: 800; letter-spacing: -0.5px;">WorkTimeline™</h1>
+                <h1 id="folderLabel" style="color: var(--teal); margin:0; font-size: 20px; font-weight: 800;">WorkTimeline™</h1>
                 <div style="display:flex; align-items:center;">
                     <span class="status-dot"></span>
-                    <div style="font-size: 11px; font-weight: 800; color: var(--clio-blue); text-transform: uppercase;">Clio Handshake Active</div>
+                    <div style="font-size: 11px; font-weight: 800; color: var(--clio-blue); text-transform: uppercase;">Handshake Active</div>
                 </div>
             </div>
         </div>
         <div style="display:flex; gap:14px; align-items: center;">
-            <div style="text-align: center;"><label class="switch"><input type="checkbox" onchange="toggleVault(this)"><span class="slider"></span></label><div style="font-size: 8px; font-weight: 800; margin-top: 4px;">CHRON</div></div>
-            <div style="text-align: center;"><label class="switch"><input type="checkbox" id="gSwitch" onchange="toggleGhost()"><span class="slider"></span></label><div style="font-size: 8px; font-weight: 800; margin-top: 4px;">GHOST</div></div>
+            <label class="switch"><input type="checkbox" onchange="toggleVault(this)"><span class="slider"></span></label>
+            <label class="switch"><input type="checkbox" id="gSwitch" onchange="toggleGhost()"><span class="slider"></span></label>
         </div>
     </header>
 
     <div style="display: flex; flex-direction: column; height: 100%;">
         <div class="input-area">
             <div class="template-chips">
-                <span class="chip" onclick="useTemplate('WITNESS LOCATION:\n- Name:\n- GPS/Address:')">Location</span>
+                <span class="chip" onclick="useTemplate('WITNESS LOCATION:\n- Name:')">Location</span>
                 <span class="chip" onclick="useTemplate('WITNESS STATEMENT:\n- Narrative:')">Statement</span>
-                <span class="chip" onclick="useTemplate('INCIDENT SETTING:\n- Weather:')">Setting</span>
                 <span class="chip" onclick="useTemplate('EVIDENCE LOG:\n- Type:')">Evidence</span>
             </div>
-            <textarea id="statusBox" placeholder="Tell your truth
+            <textarea id="statusBox" placeholder="Tell your truth here..."></textarea>
+            <div class="media-toolbar">
+                <div class="media-btn" onclick="addEntry('📷 Photo captured.')"><svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-4c-1.1 0-2 .9-2 2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-5c0-1.1-.9-2-2-2z"/></svg><span>Camera</span></div>
+                <div class="media-btn" onclick="addEntry('🎤 Audio captured.')"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg><span>Audio</span></div>
+                <div class="media-btn" onclick="addEntry('💬 Text log added.')"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg><span>Text</span></div>
+                <div class="media-btn" onclick="addEntry('📄 Document verified.')"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg><span>Docs</span></div>
+            </div>
+            <button id="addBtn" onclick="submitEntry()">Secure Entry & Build Timeline</button>
+        </div>
+
+        <div id="timelineContainer">
+            <div class="timeline-spine"></div>
+            <div id="displayList">
+                <div id="legacyQuote">
+                    <h2 style="font-size: 17px; margin-bottom: 14px; color: var(--clio-blue); font-weight: 800;">Hi Clio Team,</h2>
+                    <p style="font-size: 14px; line-height: 1.6; font-weight: 600; margin-bottom: 15px; color: var(--gray-dark);">I built this entirely by cell phone. Justice is effortless if truth takes no effort.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bar">
+            <button id="syncBtn" onclick="lockAndSync()">
+                <svg viewBox="0 0 24 24"><path d="M7 11V7a5 5 0 0 1 10 0v4"></path><rect x="3" y="11" width="18" height="11" rx="4" ry="4"></rect></svg>
+                <span id="syncBtnText" style="text-transform: uppercase; margin-top: 5px;">Lock & Send to Clio</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const story = [
+        "Are you there? Are you listening?",
+        "We see you. We hear you.",
+        "You're just stuck trapped in that grey area—a prison.",
+        "But we're here to get you out, one step at a time.",
+        "Towards the center where you belong with Clio.",
+        "You are the 60%. The people who feel unseen.",
+        "“Jack Newton said that Justice should be effortless.”",
+        "Justice is effortless if truth takes no effort."
+    ];
+    
+    let activeVault = "TIMELINE"; 
+    const timelineVault = []; 
+    const notesVault = []; 
+    let isSkipped = false;
+    let storyIndex = 0;
+
+    // FORCED RUN LOGIC
+    function runStory() {
+        const el = document.getElementById('storyText'); 
+        if(!el || isSkipped) return;
+
+        if(storyIndex < story.length) {
+            el.style.opacity = 0;
+            setTimeout(() => {
+                if(isSkipped) return;
+                el.innerText = story[storyIndex++];
+                el.style.opacity = 1;
+                setTimeout(runStory, 3000);
+            }, 800);
+        } else {
+            endSplash();
+        }
+    }
+
+    function endSplash() {
+        isSkipped = true;
+        const s = document.getElementById('splashScreen');
+        if(s) {
+            s.style.opacity = '0';
+            setTimeout(() => { s.style.visibility = 'hidden'; }, 1000);
+        }
+    }
+
+    // Auto-start on load
+    window.onload = runStory;
+
+    function useTemplate(txt) { document.getElementById('statusBox').value = txt; document.getElementById('statusBox').focus(); }
+    function toggleGhost() { document.body.classList.toggle('ghost-active', document.getElementById('gSwitch').checked); }
+
+    function toggleVault(cb) {
+        activeVault = cb.checked ? "NOTES" : "TIMELINE";
+        document.getElementById('folderLabel').innerText = cb.checked ? "Isolated Notes" : "WorkTimeline™";
+        document.getElementById('addBtn').style.background = cb.checked ? "var(--clio-blue)" : "var(--teal)";
+        refreshVaultDisplay();
+    }
+
+    function submitEntry() {
+        const box = document.getElementById('statusBox'); if(!box.value.trim()) return;
+        addEntry(box.value); box.value = '';
+        const q = document.getElementById('legacyQuote'); if(q) { q.style.opacity = '0'; setTimeout(() => q.remove(), 500); }
+    }
+
+    function addEntry(text) {
+        const now = new Date();
+        const stamp = (now.getMonth()+1) + '/' + now.getDate() + ' @ ' + now.toLocaleTimeString();
+        const entry = { text: text, stamp: stamp };
+        if(activeVault === "TIMELINE") timelineVault.push(entry); else notesVault.push(entry);
+        refreshVaultDisplay();
+    }
+
+    function refreshVaultDisplay() {
+        const list = document.getElementById('displayList'); list.innerHTML = '';
+        const data = (activeVault === "TIMELINE") ? timelineVault : notesVault;
+        [...data].reverse().forEach(item => {
+            const div = document.createElement('div'); div.className = 'entry';
+            div.style.borderLeftColor = (activeVault === "NOTES") ? "var(--clio-blue)" : "var(--teal)";
+            div.innerHTML = `<span class="timestamp-full">${item.stamp}</span><p style="margin:0; font-size:14px; font-weight:500;">${item.text}</p>`;
+            list.appendChild(div);
+        });
+    }
+
+    function lockAndSync() {
+        const btn = document.getElementById('syncBtn');
+        const txt = document.getElementById('syncBtnText');
+        btn.style.background = "var(--clio-blue)"; btn.style.color = "white";
+        txt.innerText = "Analyzing Timeline...";
+        setTimeout(() => {
+            const clientId = "18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s";
+            const redirectUri = encodeURIComponent("https://worktimeline-app.vercel.app/index.html");
+            window.location.href = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&scope=leads_write%20contacts_write`;
+        }, 2000);
+    }
+</script>
+</body>
+</html>
