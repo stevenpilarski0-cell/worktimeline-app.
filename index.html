@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Aesthetic Steady Build</title>
+    <title>WorkTimeline™ | Full-Width Cinematic Build</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap');
         
         :root { 
             --teal: #008080; --clio-blue: #0076CE; --platinum: #d8e2ea; --gray-dark: #2c3e50; 
-            --round-inner: 24px; --glass: rgba(255, 255, 255, 0.9);
+            --round-inner: 24px; --glass: rgba(255, 255, 255, 0.95);
         }
         body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 0; height: 100dvh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
         
-        /* GHOST MODE BLUR */
+        /* GHOST MODE */
         .ghost-active #timelineContainer, .ghost-active #utilityDrawer { 
-            filter: blur(15px); opacity: 0.6; pointer-events: none; 
+            filter: blur(18px); opacity: 0.6; pointer-events: none; 
         }
 
-        /* CINEMATIC INTRO */
+        /* INTRO */
         #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; box-sizing: border-box; transition: opacity 1.2s ease; }
         .story-text { font-size: 24px; font-weight: 900; color: var(--gray-dark); line-height: 1.4; opacity: 0; transition: opacity 0.8s; max-width: 420px; }
         #skipBtn { position: absolute; bottom: calc(40px + env(safe-area-inset-bottom)); padding: 14px 28px; border: 3px solid var(--teal); border-radius: 99px; background: white; color: var(--teal); font-weight: 900; font-size: 13px; cursor: pointer; z-index: 100001; }
@@ -26,7 +26,7 @@
         .app-container { width: 100%; max-width: 500px; margin: 0 auto; background: white; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.12); }
 
         /* HEADER */
-        .header { display: flex; justify-content: space-between; align-items: center; padding: calc(10px + env(safe-area-inset-top)) 25px 12px; border-bottom: 2px solid var(--platinum); flex-shrink: 0; z-index: 1000; background: white; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: calc(10px + env(safe-area-inset-top)) 25px 12px; border-bottom: 2px solid var(--platinum); flex-shrink: 0; z-index: 3000; background: white; }
         .briefcase-logo { position: relative; width: 38px; height: 26px; border: 3.5px solid var(--gray-dark); border-radius: 8px; }
         .briefcase-handle { position: absolute; top: -8.5px; left: 50%; transform: translateX(-50%); width: 14px; height: 5px; border: 3.5px solid var(--gray-dark); border-bottom: none; border-radius: 4px 4px 0 0; }
         .teal-spine { position: absolute; top: 50%; left: -8px; right: -8px; height: 3.5px; background: var(--teal); border-radius: 2px; transform: translateY(-50%); }
@@ -43,37 +43,37 @@
 
         /* INDEPENDENT DRAGGABLES */
         .draggable-btn { 
-            position: absolute; z-index: 3000; touch-action: none; cursor: grab;
+            position: absolute; z-index: 4000; touch-action: none; cursor: grab;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             border: none; width: 65px; height: 65px; border-radius: 20px; color: white;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
         }
-        #addBtn { right: 20px; top: 150px; background: var(--teal); font-size: 40px; font-weight: 300; }
-        #syncBtn { right: 20px; top: 230px; background: var(--clio-blue); }
+        #addBtn { right: 20px; top: 160px; background: var(--teal); font-size: 40px; font-weight: 300; }
+        #syncBtn { right: 20px; top: 240px; background: var(--clio-blue); }
 
-        /* AESTHETIC UTILITY DRAWER */
-        #utilityDrawer { width: 100%; background: var(--glass); backdrop-filter: blur(10px); border-bottom: 2px solid var(--platinum); z-index: 2000; transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1); position: relative; }
+        /* FULL-WIDTH UTILITY DRAWER */
+        #utilityDrawer { width: 100%; background: var(--glass); backdrop-filter: blur(12px); border-bottom: 2px solid var(--platinum); z-index: 2500; transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1); position: relative; }
         .drawer-content { padding: 15px 20px; }
         .drag-handle-zone { width: 100%; height: 35px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .handle-pill { width: 45px; height: 5px; background: var(--platinum); border-radius: 10px; }
 
-        .template-bar { display: flex; gap: 8px; width: 80%; overflow-x: auto; margin-bottom: 12px; scrollbar-width: none; }
-        .template-chip { background: white; border: 1.5px solid var(--teal); padding: 7px 14px; border-radius: 14px; font-size: 10px; font-weight: 900; color: var(--teal); white-space: nowrap; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .template-bar { display: flex; gap: 10px; width: 100%; overflow-x: auto; margin-bottom: 12px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+        .template-chip { background: white; border: 2px solid var(--teal); padding: 8px 16px; border-radius: 15px; font-size: 10px; font-weight: 900; color: var(--teal); white-space: nowrap; cursor: pointer; }
 
-        .firm-dropdown { width: 80%; padding: 14px; border-radius: 18px; border: 2px solid var(--platinum); margin-bottom: 12px; font-weight: 800; background: #f8fafc; font-family: inherit; }
-        #statusBox { width: 80%; height: 80px; padding: 14px; border-radius: 18px; border: 2px solid var(--platinum); resize: none; font-family: inherit; font-weight: 600; background: #f8fafc; }
+        .firm-dropdown { width: 100%; padding: 14px; border-radius: 18px; border: 2.5px solid var(--platinum); margin-bottom: 12px; font-weight: 800; background: #f8fafc; font-family: inherit; box-sizing: border-box; }
+        #statusBox { width: 100%; height: 85px; padding: 14px; border-radius: 18px; border: 2.5px solid var(--platinum); resize: none; font-family: inherit; font-weight: 600; background: #f8fafc; box-sizing: border-box; }
 
-        /* FUNCTIONAL MEDIA TRIGGERS */
-        .media-toolbar { display: flex; gap: 10px; width: 80%; margin-top: 12px; }
-        .media-btn { flex: 1; position: relative; background: white; border: 2.5px solid var(--platinum); padding: 14px 5px; border-radius: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        /* FUNCTIONAL MEDIA TOOLBAR */
+        .media-toolbar { display: flex; gap: 10px; width: 100%; margin-top: 12px; }
+        .media-btn { flex: 1; position: relative; background: white; border: 2.5px solid var(--platinum); padding: 15px 5px; border-radius: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .media-btn span { font-size: 10px; font-weight: 900; color: var(--gray-dark); letter-spacing: 0.5px; }
         .media-btn input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
 
-        /* STEADY TIMELINE CONTAINER */
-        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 30px 20px; position: relative; background: #fdfdfd; z-index: 100; }
-        .timeline-spine { position: absolute; left: 35px; top: -100dvh; bottom: 0; width: 6px; background: var(--platinum); z-index: 1; border-radius: 10px; }
-        .entry { position: relative; margin-left: 55px; background: white; border: 2px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; border-left: 6px solid var(--teal); box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
-        .vault-label { font-size: 11px; font-weight: 900; color: #94a3b8; text-transform: uppercase; margin-bottom: 20px; display: block; text-align: center; letter-spacing: 1px; }
+        /* FULL-WIDTH TIMELINE */
+        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px 15px; position: relative; background: #fdfdfd; z-index: 100; }
+        .timeline-spine { position: absolute; left: 30px; top: -100dvh; bottom: 0; width: 6px; background: var(--platinum); z-index: 1; border-radius: 10px; }
+        .entry { position: relative; margin-left: 45px; background: white; border: 2px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; border-left: 8px solid var(--teal); box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
+        .vault-label { font-size: 11px; font-weight: 900; color: #94a3b8; text-transform: uppercase; margin-bottom: 25px; display: block; text-align: center; letter-spacing: 1.5px; }
     </style>
 </head>
 <body id="appBody">
@@ -116,12 +116,12 @@
                 <div class="template-chip" onclick="useTemplate('INTEREST: ')">INTEREST</div>
             </div>
 
-            <textarea id="statusBox" placeholder="Describe the event..."></textarea>
+            <textarea id="statusBox" placeholder="Start your entry..."></textarea>
             
             <div class="media-toolbar">
-                <div class="media-btn"><span>CAMERA</span><input type="file" accept="image/*" capture="camera" onchange="addMedia('📷 PHOTO: Captured.')"></div>
-                <div class="media-btn"><span>AUDIO</span><input type="file" accept="audio/*" capture="microphone" onchange="addMedia('🎤 AUDIO: Recorded.')"></div>
-                <div class="media-btn"><span>DOCS</span><input type="file" accept=".pdf,.doc,.docx,image/*" onchange="addMedia('📄 DOCS: Uploaded.')"></div>
+                <div class="media-btn"><span>CAMERA</span><input type="file" accept="image/*" capture="camera" onchange="addMedia('📷 PHOTO Captured.')"></div>
+                <div class="media-btn"><span>AUDIO</span><input type="file" accept="audio/*" capture="microphone" onchange="addMedia('🎤 AUDIO Recorded.')"></div>
+                <div class="media-btn"><span>DOCS</span><input type="file" accept=".pdf,.doc,.docx,image/*" onchange="addMedia('📄 DOCS Uploaded.')"></div>
             </div>
         </div>
         <div class="drag-handle-zone" id="dragZone">
@@ -130,19 +130,20 @@
     </div>
 
     <div id="timelineContainer">
-        <span id="currentVaultLabel" class="vault-label">WorkTimeline™ Main Vault</span>
+        <span id="currentVaultLabel" class="vault-label">WorkTimeline™ Ledger</span>
         <div class="timeline-spine"></div>
         <div id="displayList"></div>
     </div>
 </div>
 
 <script>
-    const story = ["The Invisible 60%...", "Trapped in the Grey...", "WorkTimeline guides you.", "Justice should feel effortless."];
+    const story = ["The Invisible 60%...", "Document the Truth.", "WorkTimeline bridges the gap.", "Justice should feel effortless."];
     let isDrawerOpen = true;
     let activeVault = "TIMELINE";
     const timelineVault = [];
     const isolatedVault = [];
 
+    // INDEPENDENT DRAG
     function makeDraggable(el) {
         let offsetTop = 0, offsetLeft = 0, isDragging = false;
         el.addEventListener('touchstart', (e) => {
@@ -170,7 +171,7 @@
 
     function toggleVault(cb) {
         activeVault = cb.checked ? "ISOLATED" : "TIMELINE";
-        document.getElementById('currentVaultLabel').innerText = cb.checked ? "Isolated Notes Vault" : "WorkTimeline™ Main Vault";
+        document.getElementById('currentVaultLabel').innerText = cb.checked ? "Isolated Notes Ledger" : "WorkTimeline™ Ledger";
         refreshDisplay();
     }
 
@@ -227,7 +228,7 @@
         const data = (activeVault === "TIMELINE") ? timelineVault : isolatedVault;
         [...data].reverse().forEach(item => {
             const div = document.createElement('div'); div.className = 'entry';
-            div.innerHTML = `<span style="font-size:10px; color:var(--teal); font-weight:900; letter-spacing:0.5px;">📍 ${item.gps} | ${item.stamp}</span><p style="margin:8px 0 0; font-weight:700; line-height:1.4;">${item.text}</p>`;
+            div.innerHTML = `<span style="font-size:10px; color:var(--teal); font-weight:900; letter-spacing:0.8px;">📍 ${item.gps} | ${item.stamp}</span><p style="margin:10px 0 0; font-weight:700; line-height:1.5;">${item.text}</p>`;
             list.appendChild(div);
         });
     }
