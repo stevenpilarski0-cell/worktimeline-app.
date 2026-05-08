@@ -199,12 +199,25 @@
     const timelineVault = [];
     function submitEntry() {
         const box = document.getElementById('statusBox'); if(!box.value.trim()) return;
+        saveEntry(box.value);
+        box.value = '';
+        document.getElementById('initialBio')?.remove();
+    }
+
+    // FIXED: Ensured timestamp includes AM/PM for legal clarity
+    function saveEntry(text) {
         navigator.geolocation.getCurrentPosition(pos => {
-            const entry = { text: box.value, stamp: new Date().toLocaleString(), gps: `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}` };
+            const now = new Date();
+            const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: true };
+            const stamp = now.toLocaleDateString() + ' @ ' + now.toLocaleTimeString([], timeOptions);
+            
+            const entry = { 
+                text: text, 
+                stamp: stamp, 
+                gps: `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}` 
+            };
             timelineVault.push(entry);
             refreshTimeline();
-            box.value = '';
-            document.getElementById('initialBio')?.remove();
         });
     }
 
