@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Isolated Vaults</title>
+    <title>WorkTimeline™ | Template Build</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap');
         
@@ -53,10 +53,14 @@
         .handle-pill { width: 40px; height: 6px; background: var(--platinum); border-radius: 10px; }
 
         .firm-dropdown { width: 80%; padding: 12px; border-radius: 15px; border: 2px solid var(--platinum); margin-bottom: 10px; font-weight: 800; }
-        #statusBox { width: 80%; height: 80px; padding: 12px; border-radius: 15px; border: 2px solid var(--platinum); resize: none; font-family: inherit; font-weight: 600; }
+        #statusBox { width: 80%; height: 70px; padding: 12px; border-radius: 15px; border: 2px solid var(--platinum); resize: none; font-family: inherit; font-weight: 600; }
 
-        /* MEDIA TOOLBAR (RESTORED) */
-        .media-toolbar { display: flex; gap: 10px; width: 80%; margin-top: 10px; }
+        /* QUICK TEMPLATES TAB */
+        .template-bar { display: flex; gap: 8px; width: 80%; overflow-x: auto; margin-bottom: 10px; padding-bottom: 5px; -webkit-overflow-scrolling: touch; }
+        .template-chip { background: var(--glass); border: 1.5px solid var(--teal); padding: 6px 12px; border-radius: 12px; font-size: 9px; font-weight: 900; color: var(--teal); white-space: nowrap; cursor: pointer; }
+
+        /* MEDIA TOOLBAR */
+        .media-toolbar { display: flex; gap: 10px; width: 80%; }
         .media-btn { flex: 1; background: transparent; border: 2px solid var(--platinum); padding: 10px 5px; border-radius: 18px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
         .media-btn svg { width: 22px; height: 22px; fill: none; stroke: var(--teal); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 4px; }
         .media-btn span { font-size: 8px; font-weight: 900; }
@@ -99,7 +103,16 @@
                 <option>Newton & Co. Law</option>
                 <option>Pilarski Legal Group</option>
             </select>
+            
+            <div class="template-bar">
+                <div class="template-chip" onclick="useTemplate('WITNESS: ')">WITNESS</div>
+                <div class="template-chip" onclick="useTemplate('LOCATION: ')">LOCATION</div>
+                <div class="template-chip" onclick="useTemplate('EVIDENCE: ')">EVIDENCE</div>
+                <div class="template-chip" onclick="useTemplate('INTEREST: ')">OBJECT OF INTEREST</div>
+            </div>
+
             <textarea id="statusBox" placeholder="Describe the event..."></textarea>
+            
             <div class="media-toolbar">
                 <button class="media-btn" onclick="addMedia('📷 Photo evidence secured.')"><svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>CAMERA</span></button>
                 <button class="media-btn" onclick="addMedia('🎤 Audio record locked.')"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18v4M8 22h8"/></svg><span>AUDIO</span></button>
@@ -119,22 +132,28 @@
 </div>
 
 <script>
-    const story = ["The Invisible 60%...", "Trapped in the Grey...", "Moving to the Blue Sky.", "Justice should feel effortless."];
+    const story = ["The Invisible 60%...", "Trapped in the Grey...", "WorkTimeline guides you.", "Justice should feel effortless."];
     let isDrawerOpen = true;
-    let activeVault = "TIMELINE"; // Global flag to separate data
-    const timelineVault = []; // Main timeline data
-    const isolatedVault = []; // CHRON/Notes data
+    let activeVault = "TIMELINE";
+    const timelineVault = [];
+    const isolatedVault = [];
 
     function toggleGhost(cb) {
         if(cb.checked) document.getElementById('appBody').classList.add('ghost-active');
         else document.getElementById('appBody').classList.remove('ghost-active');
     }
 
-    // FIXED: Vault separation logic
     function toggleVault(cb) {
         activeVault = cb.checked ? "ISOLATED" : "TIMELINE";
         document.getElementById('currentVaultLabel').innerText = cb.checked ? "Isolated Notes Vault" : "WorkTimeline™ Main Vault";
         refreshDisplay();
+    }
+
+    // QUICK TEMPLATE LOGIC
+    function useTemplate(prefix) {
+        const box = document.getElementById('statusBox');
+        box.value = prefix;
+        box.focus();
     }
 
     document.getElementById('dragZone').onclick = () => {
@@ -175,7 +194,6 @@
             const stamp = now.toLocaleDateString() + ' @ ' + now.toLocaleTimeString([], timeOptions);
             const entry = { text: text, stamp: stamp, gps: `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}` };
             
-            // Separation logic: Data goes into different arrays based on switch
             if(activeVault === "TIMELINE") timelineVault.push(entry);
             else isolatedVault.push(entry);
             
@@ -195,7 +213,6 @@
 
     function openSync() { 
         if(!document.getElementById('firmSelect').value) return alert("Select firm.");
-        // Direct link to your Canadian Manage Handshake
         window.location.href = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s&redirect_uri=https://worktimeline-app.vercel.app/index.html&scope=leads_read%20leads_write%20contacts_write`; 
     }
 </script>
