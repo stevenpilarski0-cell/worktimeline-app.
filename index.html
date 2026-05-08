@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Stable Build</title>
+    <title>WorkTimeline™ | Branding Locked</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap');
         
@@ -13,7 +13,7 @@
         }
         body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 0; height: 100dvh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
         
-        /* GHOST MODE PRIVACY */
+        /* GHOST MODE */
         .ghost-active #timelineContainer, .ghost-active #utilityDrawer { 
             filter: blur(15px); opacity: 0.6; pointer-events: none; 
         }
@@ -25,12 +25,16 @@
 
         .app-container { width: 100%; max-width: 500px; margin: 0 auto; background: white; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.12); }
 
-        /* HEADER & SWITCHES (Fixed in Header) */
+        /* HEADER & BRANDING (3 DOTS INCLUDED) */
         .header { display: flex; justify-content: space-between; align-items: center; padding: calc(10px + env(safe-area-inset-top)) 25px 12px; border-bottom: 2px solid var(--platinum); flex-shrink: 0; z-index: 1000; background: white; }
         .briefcase-logo { position: relative; width: 38px; height: 26px; border: 3.5px solid var(--gray-dark); border-radius: 8px; }
         .briefcase-handle { position: absolute; top: -8.5px; left: 50%; transform: translateX(-50%); width: 14px; height: 5px; border: 3.5px solid var(--gray-dark); border-bottom: none; border-radius: 4px 4px 0 0; }
         .teal-spine { position: absolute; top: 50%; left: -8px; right: -8px; height: 3.5px; background: var(--teal); border-radius: 2px; transform: translateY(-50%); }
         
+        /* THE THREE DOTS BRANDING */
+        .teal-dots { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; gap: 3px; }
+        .dot { width: 4px; height: 4px; background: var(--teal); border-radius: 50%; border: 1px solid white; }
+
         .switch-group { display: flex; gap: 12px; align-items: center; }
         .switch { position: relative; display: inline-block; width: 34px; height: 18px; }
         .switch input { opacity: 0; width: 0; height: 0; }
@@ -39,19 +43,19 @@
         input:checked + .slider { background-color: var(--teal); }
         input:checked + .slider:before { transform: translateX(16px); }
 
-        /* FIXED FLOATING ACTION BUTTONS (The "Right Spot") */
+        /* FIXED BUTTONS */
         .floating-actions { position: absolute; right: 20px; top: 125px; display: flex; flex-direction: column; gap: 15px; z-index: 800; }
         .add-sq { width: 65px; height: 65px; background: var(--teal); border: none; border-radius: 20px; color: white; font-size: 40px; cursor: pointer; box-shadow: 0 10px 20px rgba(0, 128, 128, 0.3); }
         .sync-sq { width: 65px; height: 65px; background: var(--clio-blue); border: none; border-radius: 20px; color: white; cursor: pointer; box-shadow: 0 10px 20px rgba(0, 118, 206, 0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; }
 
-        /* SLIDING DRAWER (Only inputs slide) */
+        /* SLIDING DRAWER */
         #utilityDrawer { width: 100%; background: white; border-bottom: 2px solid var(--platinum); z-index: 500; transition: transform 0.4s ease; position: relative; }
         .drawer-content { padding: 15px 20px; }
         .drag-handle-zone { width: 100%; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-top: 1px solid #f0f0f0; }
         .handle-pill { width: 40px; height: 6px; background: var(--platinum); border-radius: 10px; }
 
-        .firm-dropdown { width: 85%; padding: 12px; border-radius: 15px; border: 2px solid var(--platinum); margin-bottom: 10px; font-weight: 800; }
-        #statusBox { width: 85%; height: 80px; padding: 12px; border-radius: 15px; border: 2px solid var(--platinum); resize: none; font-family: inherit; font-weight: 600; }
+        .firm-dropdown { width: 80%; padding: 12px; border-radius: 15px; border: 2px solid var(--platinum); margin-bottom: 10px; font-weight: 800; }
+        #statusBox { width: 80%; height: 80px; padding: 12px; border-radius: 15px; border: 2px solid var(--platinum); resize: none; font-family: inherit; font-weight: 600; }
 
         /* TIMELINE */
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px 20px; position: relative; background: #fdfdfd; }
@@ -66,7 +70,15 @@
 <div class="app-container">
     <header class="header">
         <div style="display:flex; align-items:center; gap:10px;">
-            <div class="briefcase-logo"><div class="briefcase-handle"></div><div class="teal-spine"></div></div>
+            <div class="briefcase-logo">
+                <div class="briefcase-handle"></div>
+                <div class="teal-spine"></div>
+                <div class="teal-dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+            </div>
             <h1 style="color:var(--teal); margin:0; font-size:20px; font-weight:900;">WorkTimeline™</h1>
         </div>
         <div class="switch-group">
@@ -100,13 +112,13 @@
     <div id="timelineContainer">
         <div class="timeline-spine"></div>
         <div id="displayList">
-            <div class="entry"><p style="font-weight:700;">contemporaneous record starts here...</p></div>
+            <div class="entry"><p style="font-weight:700;">Start your timeline...</p></div>
         </div>
     </div>
 </div>
 
 <script>
-    const story = ["The Invisible 60%...", "Trapped in the Grey...", "Moving to the Blue Sky.", "Justice should feel effortless."];
+    const story = ["The Invisible 60%...", "Trapped in the Grey...", "WorkTimeline guides you.", "Justice should feel effortless."];
     let isDrawerOpen = true;
 
     function toggleGhost(cb) {
