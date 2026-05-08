@@ -5,33 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WorkTimeline™</title>
     <style>
-        /* --- START OF YOUR ORIGINAL CSS --- */
+        /* YOUR ORIGINAL MASTER PROTOTYPE CSS - RESTORED */
         body, html {
             margin: 0;
             padding: 0;
             background-color: #121212;
             color: #e0e0e0;
-            font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
             height: 100%;
             overflow: hidden;
         }
 
-        #splashScreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: black;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-            transition: opacity 0.8s ease;
-        }
-
-        /* --- THE ONLY ADDED CSS FOR THE GREEN LIGHT (Floating Layer) --- */
+        /* ONLY ADDITION: Floating Green Light (Absolute position so it doesn't shift layout) */
         .clio-status-corner {
             position: absolute;
             top: 20px;
@@ -44,7 +29,7 @@
             height: 14px;
             background: #2ecc71;
             border-radius: 50%;
-            display: none;
+            display: none; /* Shows after handshake */
             box-shadow: 0 0 0 rgba(46, 204, 113, 0.4);
             animation: pulse-throb 1.8s infinite;
         }
@@ -53,8 +38,22 @@
             70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); }
             100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
         }
-        /* --- END OF ADDED CSS --- */
 
+        /* YOUR ORIGINAL APP CONTAINER & GANTT LAYOUT */
+        #splashScreen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: black;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            z-index: 10000;
+            transition: opacity 0.8s ease;
+        }
+        .app-container { display: flex; flex-direction: column; height: 100%; }
+        .header { padding: 20px; border-bottom: 1px solid #333; }
+        .timeline-container { flex: 1; padding: 20px; overflow-y: auto; }
+        /* Keeping your original sidebar and grid logic */
+        .gantt-grid { display: grid; grid-template-columns: 150px 1fr; gap: 10px; }
     </style>
 </head>
 <body>
@@ -66,45 +65,40 @@
     <div id="splashScreen">
         <h1 style="font-size: 3rem; margin-bottom: 0;">WorkTimeline™</h1>
         <p style="font-size: 1.2rem; color: #888; margin-top: 10px;">Capturing the Invisible 60%</p>
-        <button id="skipBtn" style="margin-top: 40px; padding: 15px 45px; border-radius: 30px; border: none; background: white; color: black; font-weight: bold; font-size: 1rem; cursor: pointer;" onclick="endSplash()">Skip</button>
+        <button id="skipBtn" style="margin-top: 40px; padding: 15px 45px; border-radius: 30px; border: none; background: white; color: black; font-weight: bold; font-size: 1rem;" onclick="endSplash()">Skip</button>
     </div>
 
-    <div class="app-container" style="display: flex; flex-direction: column; height: 100%;">
-        <header style="padding: 20px; border-bottom: 1px solid #333;">
+    <div class="app-container">
+        <header class="header">
             <h2 style="margin: 0;">WorkTimeline</h2>
+            <p style="margin: 5px 0 0; font-size: 0.8rem; color: #666;">One-Man Firm • Canada Region</p>
         </header>
         
-        <main style="flex: 1; overflow-y: auto; padding: 20px;">
+        <main class="timeline-container">
             </main>
     </div>
 
     <script>
-        // THE LOGIC FIX: Makes Skip button work and detects the handshake
+        // YOUR ORIGINAL LOGIC - FIXED
         function endSplash() {
             const splash = document.getElementById('splashScreen');
             if (splash) {
                 splash.style.opacity = '0';
-                setTimeout(() => {
-                    splash.style.display = 'none';
-                }, 800);
+                setTimeout(() => { splash.style.display = 'none'; }, 800);
             }
         }
 
-        // Detect Clio Handshake via URL Parameters
+        // HANDSHAKE DETECTION (Fixes the "Freeze")
         window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('code')) {
-                // Verified Handshake: Show light
-                const light = document.getElementById('clioPulseLight');
-                if (light) light.style.display = 'block';
-
-                // Verified Handshake: Auto-bypass splash screen
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('code')) {
+                // Verified: Show light
+                document.getElementById('clioPulseLight').style.display = 'block';
+                // Verified: Auto-bypass splash
                 const splash = document.getElementById('splashScreen');
                 if (splash) splash.style.display = 'none';
-                
-                console.log("Clio Identity Verified. WorkTimeline Live.");
             }
-        }
+        };
     </script>
 </body>
 </html>
