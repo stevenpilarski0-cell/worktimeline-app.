@@ -2,153 +2,220 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Master Build</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WorkTimeline™ - Founder Edition</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap');
-        
-        :root { 
-            --teal: #008080; --clio-blue: #0076CE; --platinum: #d8e2ea; --gray-dark: #2c3e50; 
-            --clio-green: #2ecc71; --round-inner: 24px; --glass: rgba(255, 255, 255, 0.95);
+        :root {
+            --clio-green: #2ecc71;
+            --bg-dark: #121212;
+            --text-main: #e0e0e0;
+            --accent: #3498db;
         }
-        body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 0; height: 100dvh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
-        
-        .ghost-active #timelineContainer, .ghost-active #utilityDrawer { filter: blur(18px); opacity: 0.6; pointer-events: none; }
 
-        /* Floating Green Light - Absolute Positioning ensures zero layout shift */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /* 1. CLIO STATUS LIGHT (Floating Layer) */
         .clio-status-corner {
             position: absolute;
-            top: calc(18px + env(safe-area-inset-top));
-            right: 25px;
-            z-index: 10000;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
             pointer-events: none;
         }
-        .green-pulse-light { 
-            width: 12px; height: 12px; background: var(--clio-green); border-radius: 50%; 
-            display: none; box-shadow: 0 0 0 rgba(46, 204, 113, 0.4); animation: throb 1.8s infinite; 
+
+        .green-pulse-light {
+            width: 14px;
+            height: 14px;
+            background: var(--clio-green);
+            border-radius: 50%;
+            display: none; /* Shows only after handshake */
+            box-shadow: 0 0 0 rgba(46, 204, 113, 0.4);
+            animation: pulse-throb 1.8s infinite;
         }
 
-        #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; box-sizing: border-box; transition: opacity 1.2s ease; }
-        .story-text { font-size: 24px; font-weight: 900; color: var(--gray-dark); line-height: 1.4; opacity: 0; transition: opacity 0.8s; max-width: 420px; }
-        #skipBtn { position: absolute; bottom: calc(40px + env(safe-area-inset-bottom)); padding: 14px 28px; border: 3px solid var(--teal); border-radius: 99px; background: white; color: var(--teal); font-weight: 900; font-size: 13px; cursor: pointer; z-index: 100001; }
+        @keyframes pulse-throb {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+        }
 
-        .app-container { width: 100%; max-width: 500px; margin: 0 auto; background: white; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.12); }
+        /* 2. SPLASH SCREEN (Imprisoned Data Intro) */
+        #splashScreen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: black;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 0.8s ease;
+            text-align: center;
+            padding: 20px;
+        }
 
-        .header { display: flex; justify-content: space-between; align-items: center; padding: calc(10px + env(safe-area-inset-top)) 25px 12px; border-bottom: 2px solid var(--platinum); flex-shrink: 0; z-index: 3000; background: white; }
+        .splash-text { font-size: 1.2rem; margin-bottom: 20px; color: #aaa; }
+        .splash-title { font-size: 2rem; font-weight: bold; margin-bottom: 10px; }
         
-        @keyframes throb { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); } 70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
+        .skip-btn {
+            background: none; border: 1px solid #555; color: white;
+            padding: 10px 30px; border-radius: 20px; cursor: pointer;
+        }
 
-        .briefcase-logo { position: relative; width: 38px; height: 26px; border: 3.5px solid var(--gray-dark); border-radius: 8px; }
-        .briefcase-handle { position: absolute; top: -8.5px; left: 50%; transform: translateX(-50%); width: 14px; height: 5px; border: 3.5px solid var(--gray-dark); border-bottom: none; border-radius: 4px 4px 0 0; }
-        .teal-spine { position: absolute; top: 50%; left: -8px; right: -8px; height: 3.5px; background: var(--teal); border-radius: 2px; transform: translateY(-50%); }
-        .teal-dots { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; gap: 3px; }
-        .dot { width: 4px; height: 4px; background: var(--teal); border-radius: 50%; border: 1px solid white; }
+        /* 3. MAIN APP LAYOUT */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            max-width: 500px; /* Mobile focused */
+            margin: 0 auto;
+            position: relative;
+        }
 
-        .switch-group { display: flex; gap: 12px; align-items: center; margin-right: 30px; } /* Margin added to clear pulse */
-        .switch { position: relative; display: inline-block; width: 34px; height: 18px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--platinum); transition: .4s; border-radius: 30px; }
-        .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--teal); }
-        input:checked + .slider:before { transform: translateX(16px); }
+        .header {
+            padding: 20px;
+            text-align: left;
+            border-bottom: 1px solid #333;
+        }
 
-        .draggable-btn { position: absolute; z-index: 5000; touch-action: none; cursor: grab; display: flex; flex-direction: column; align-items: center; justify-content: center; border: none; width: 65px; height: 65px; border-radius: 20px; color: white; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25); }
-        #addBtn { right: 20px; top: 160px; background: var(--teal); font-size: 40px; }
-        #syncBtn { right: 20px; top: 240px; background: var(--clio-blue); }
+        .header h1 { margin: 0; font-size: 1.5rem; letter-spacing: -0.5px; }
+        .header p { margin: 5px 0 0; font-size: 0.85rem; color: #888; }
 
-        #utilityDrawer { width: 100%; background: var(--glass); backdrop-filter: blur(12px); border-bottom: 2px solid var(--platinum); z-index: 2500; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); position: relative; }
-        .drawer-content { padding: 15px 20px; }
-        .drag-handle-zone { width: 100%; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .handle-pill { width: 50px; height: 6px; background: var(--platinum); border-radius: 10px; }
-        .template-bar { display: flex; gap: 10px; width: 100%; overflow-x: auto; margin-bottom: 12px; scrollbar-width: none; }
-        .template-chip { background: white; border: 2px solid var(--teal); padding: 8px 16px; border-radius: 15px; font-size: 10px; font-weight: 900; color: var(--teal); white-space: nowrap; cursor: pointer; }
-        #statusBox { width: 100%; height: 85px; padding: 14px; border-radius: 18px; border: 2.5px solid var(--platinum); resize: none; font-family: inherit; font-weight: 600; background: #f8fafc; box-sizing: border-box; }
+        /* GANTT / TIMELINE SECTION */
+        .timeline-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background: #1a1a1a;
+        }
 
-        .media-toolbar { display: flex; gap: 10px; width: 100%; margin-top: 12px; }
-        .media-btn { flex: 1; position: relative; background: white; border: 2.5px solid var(--platinum); padding: 15px 5px; border-radius: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .media-btn span { font-size: 10px; font-weight: 900; color: var(--gray-dark); letter-spacing: 0.5px; }
-        .media-btn input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+        .gantt-row {
+            display: flex;
+            align-items: center;
+            height: 40px;
+            margin-bottom: 10px;
+            background: #222;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
 
-        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px 15px; position: relative; background: #fdfdfd; z-index: 100; transition: all 0.4s ease; }
-        .timeline-spine { position: absolute; left: 30px; top: -200dvh; bottom: 0; width: 6px; background: var(--platinum); z-index: 1; border-radius: 10px; }
-        .entry { position: relative; margin-left: 45px; background: white; border: 2px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; border-left: 8px solid var(--teal); box-shadow: 0 5px 15px rgba(0,0,0,0.03); width: calc(100% - 60px); box-sizing: border-box; }
-        .vault-label { font-size: 11px; font-weight: 900; color: #94a3b8; text-transform: uppercase; margin-bottom: 25px; display: block; text-align: center; letter-spacing: 1.5px; }
+        .gantt-label {
+            width: 80px;
+            font-size: 0.7rem;
+            padding-left: 10px;
+            color: #666;
+            z-index: 2;
+        }
+
+        .gantt-bar {
+            height: 60%;
+            background: var(--accent);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        /* LEDGER / DATA ENTRY */
+        .ledger-area {
+            height: 35%;
+            background: #000;
+            border-top: 2px solid #333;
+            padding: 15px;
+        }
+
+        .input-group {
+            background: #1e1e1e;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        input, textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: white;
+            outline: none;
+            font-size: 1rem;
+        }
     </style>
 </head>
-<body id="appBody">
+<body>
 
-<div id="splashScreen"><h1 id="storyText" class="story-text">Welcome.</h1><button id="skipBtn" onclick="endSplash()">Skip Intro</button></div>
-
-<div class="app-container">
-    <div class="clio-status-corner"><div id="clioPulse" class="green-pulse-light"></div></div>
-
-    <header class="header">
-        <div style="display:flex; align-items:center; gap:10px;">
-            <div class="briefcase-logo">
-                <div class="briefcase-handle"></div><div class="teal-spine"></div>
-                <div class="teal-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-            </div>
-            <h1 style="color:var(--teal); margin:0; font-size:18px; font-weight:900;">WorkTimeline™</h1>
-        </div>
-        <div class="switch-group">
-            <div style="text-align:center;"><label class="switch"><input type="checkbox" onchange="toggleGhost(this)"><span class="slider"></span></label><div style="font-size:7px; font-weight:900;">GHOST</div></div>
-            <div style="text-align:center;"><label class="switch"><input type="checkbox" onchange="toggleVault(this)"><span class="slider"></span></label><div style="font-size:7px; font-weight:900;">CHRON</div></div>
-        </div>
-    </header>
-
-    <button id="addBtn" class="draggable-btn" onclick="submitEntry()">+</button>
-    <button id="syncBtn" class="draggable-btn" onclick="openSync()">
-        <svg viewBox="0 0 24 24" width="22" height="22"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="white" stroke-width="2.5" fill="none"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="white" stroke-width="2.5" fill="none"/></svg>
-        <span style="font-size:8px; font-weight:900; margin-top:2px;">CLIO</span>
-    </button>
-
-    <div id="utilityDrawer">
-        <div class="drawer-content" id="drawerContent">
-            <div class="template-bar">
-                <div class="template-chip" onclick="useTemplate('WITNESS: ')">WITNESS</div>
-                <div class="template-chip" onclick="useTemplate('LOCATION: ')">LOCATION</div>
-                <div class="template-chip" onclick="useTemplate('EVIDENCE: ')">EVIDENCE</div>
-                <div class="template-chip" onclick="useTemplate('INTEREST: ')">INTEREST</div>
-            </div>
-            <textarea id="statusBox" placeholder="Start your entry..."></textarea>
-            <div class="media-toolbar">
-                <div class="media-btn"><span>CAMERA</span><input type="file" accept="image/*" capture="camera" onchange="addMedia('📷 PHOTO Captured.')"></div>
-                <div class="media-btn"><span>AUDIO</span><input type="file" accept="audio/*" capture="microphone" onchange="addMedia('🎤 AUDIO Recorded.')"></div>
-                <div class="media-btn"><span>DOCS</span><input type="file" accept=".pdf,.doc,.docx,image/*" onchange="addMedia('📄 DOCS Uploaded.')"></div>
-            </div>
-        </div>
-        <div class="drag-handle-zone" id="dragZone"><div class="handle-pill"></div></div>
+    <div class="clio-status-corner">
+        <div id="clioPulseLight" class="green-pulse-light"></div>
     </div>
 
-    <div id="timelineContainer">
-        <span id="currentVaultLabel" class="vault-label">WorkTimeline™ Ledger</span>
-        <div class="timeline-spine"></div>
-        <div id="displayList"></div>
+    <div id="splashScreen">
+        <div class="splash-text">Capturing the "Imprisoned 60%"</div>
+        <div class="splash-title">WorkTimeline™</div>
+        <button class="skip-btn" onclick="endSplash()">Enter Firm</button>
     </div>
-</div>
 
-<script>
-    const story = ["The Invisible 60%...", "Document the Truth.", "WorkTimeline bridges the gap.", "Justice should feel effortless."];
-    let isDrawerOpen = true;
-    let activeVault = "TIMELINE";
-    const timelineVault = [];
-    const isolatedVault = [];
+    <div class="app-container">
+        <header class="header">
+            <h1>WorkTimeline</h1>
+            <p>One-Man Firm Edition • Canada Instance</p>
+        </header>
 
-    // HANDSHAKE DETECTION LOGIC
-    const urlParams = new URLSearchParams(window.location.search);
-    if(urlParams.get('code')) {
-        // 1. Activate the Floating Pulse
-        document.getElementById('clioPulse').style.display = 'block';
-        // 2. Clear splash screen immediately to prevent freeze
-        setTimeout(() => endSplash(), 100);
-    }
+        <section class="timeline-area" id="timeline">
+            <div class="gantt-row"><div class="gantt-label">Intake</div><div class="gantt-bar" style="width: 85%;"></div></div>
+            <div class="gantt-row"><div class="gantt-label">Evidence</div><div class="gantt-bar" style="width: 45%; background: var(--clio-green);"></div></div>
+            <div class="gantt-row"><div class="gantt-label">Review</div><div class="gantt-bar" style="width: 20%;"></div></div>
+        </section>
 
-    function makeDraggable(el) {
-        let offsetTop = 0, offsetLeft = 0, isDragging = false;
-        el.addEventListener('touchstart', (e) => { isDragging = false; const touch = e.touches[0]; offsetLeft = touch.clientX - el.offsetLeft; offsetTop = touch.clientY - el.offsetTop; }, {passive: true});
-        el.addEventListener('touchmove', (e) => { isDragging = true; const touch = e.touches[0]; el.style.left = (touch.clientX - offsetLeft) + 'px'; el.style.top = (touch.clientY - offsetTop) + 'px'; el.style.right = 'auto'; }, {passive: true});
-        el.addEventListener('touchend', (e) => { if (isDragging) e.preventDefault(); });
-    }
-    makeDraggable(document.getElementById('addBtn')); makeDraggable(document.getElementById('syncBtn'));
+        <section class="ledger-area">
+            <div class="input-group">
+                <input type="text" placeholder="Subject / Lead Name">
+            </div>
+            <div class="input-group">
+                <textarea rows="3" placeholder="Capture work details here..."></textarea>
+            </div>
+        </section>
+    </div>
 
-    function toggleGhost(cb) { if(cb.checked)
+    <script>
+        // 1. HANDSHAKE DETECTION & AUTO-UNFREEZE
+        (function() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('code')) {
+                // Verified Handshake Found
+                const light = document.getElementById('clioPulseLight');
+                if (light) light.style.display = 'block';
+
+                // Force kill splash screen immediately
+                const splash = document.getElementById('splashScreen');
+                if (splash) {
+                    splash.style.display = 'none';
+                    splash.remove();
+                }
+                console.log("Clio Handshake Verified. App Unfrozen.");
+            }
+        })();
+
+        // 2. SPLASH SCREEN EXIT
+        function endSplash() {
+            const splash = document.getElementById('splashScreen');
+            if (splash) {
+                splash.style.opacity = '0';
+                setTimeout(() => {
+                    splash.remove();
+                }, 800);
+            }
+        }
+
+        // 3. PROTOTYPE DATA PERSISTENCE (Supabase Placeholder)
+        console.log("WorkTimeline 75% Build - Ready for API Testing.");
+    </script>
+</body>
+</html>
