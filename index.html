@@ -24,10 +24,10 @@
         @media (min-width: 501px) { body { padding: 2vh; } .app-container { height: 96vh; border-radius: var(--round-factor); border: 1px solid rgba(255,255,255,0.8); } }
 
         /* HEADER & LOGO */
-        .header { display: flex; justify-content: space-between; align-items: center; padding: calc(15px + env(safe-area-inset-top)) 25px 12px; border-bottom: 2px solid var(--platinum); flex-shrink: 0; z-index: 100; background: white; }
-        .briefcase-logo { position: relative; width: 38px; height: 26px; border: 3px solid var(--gray-dark); border-radius: 8px; flex-shrink: 0; }
-        .briefcase-handle { position: absolute; top: -8px; left: 50%; transform: translateX(-50%); width: 14px; height: 5px; border: 3px solid var(--gray-dark); border-bottom: none; border-radius: 4px 4px 0 0; }
-        .teal-spine { position: absolute; top: 50%; left: -8px; right: -8px; height: 3px; background: var(--teal); border-radius: 2px; transform: translateY(-50%); }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: calc(10px + env(safe-area-inset-top)) 25px 12px; border-bottom: 2px solid var(--platinum); flex-shrink: 0; z-index: 100; background: white; }
+        .briefcase-logo { position: relative; width: 38px; height: 26px; border: 3.5px solid var(--gray-dark); border-radius: 8px; flex-shrink: 0; }
+        .briefcase-handle { position: absolute; top: -8.5px; left: 50%; transform: translateX(-50%); width: 14px; height: 5px; border: 3.5px solid var(--gray-dark); border-bottom: none; border-radius: 4px 4px 0 0; }
+        .teal-spine { position: absolute; top: 50%; left: -8px; right: -8px; height: 3.5px; background: var(--teal); border-radius: 2px; transform: translateY(-50%); }
         .teal-dots { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; gap: 3px; }
         .dot { width: 4px; height: 4px; background: var(--teal); border-radius: 50%; border: 1px solid white; }
 
@@ -43,11 +43,11 @@
         #statusBox { flex-grow: 1; height: 70px; padding: 15px; border-radius: var(--round-inner); border: 2.5px solid var(--platinum); box-sizing: border-box; font-family: inherit; font-size: 16px; font-weight: 600; outline: none; background: #f8fafc; resize: none; }
         .add-sq { width: 70px; background: var(--teal); border: none; border-radius: var(--round-inner); color: white; font-size: 40px; font-weight: 300; cursor: pointer; flex-shrink: 0; box-shadow: 0 8px 20px rgba(0, 128, 128, 0.2); }
 
-        /* MATCHED ICONS STYLE */
+        /* MATCHED ICONS STYLE (BOLD STROKE) */
         .media-toolbar { display: flex; gap: 10px; }
         .media-btn { flex: 1; background: transparent; border: 2.5px solid var(--platinum); padding: 12px 5px; border-radius: 18px; display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; transition: 0.2s; }
         .media-btn:active { background: var(--platinum); }
-        .media-btn svg { width: 24px; height: 24px; fill: none; stroke: var(--teal); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 4px; }
+        .media-btn svg { width: 24px; height: 24px; fill: none; stroke: var(--teal); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 4px; }
         .media-btn span { font-size: 8px; font-weight: 900; color: var(--gray-dark); }
         .hidden-input { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; top: 0; left: 0; }
 
@@ -105,7 +105,7 @@
         <div style="display:flex; flex-direction:column;">
             <div style="display:flex; align-items: center; gap: 10px; margin-bottom: 2px;">
                 <div class="briefcase-logo"><div class="briefcase-handle"></div><div class="teal-spine"></div><div class="teal-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>
-                <div style="font-size: 13px; font-weight: 800; color: var(--teal); font-style: italic;">taking-intake-out</div>
+                <div style="font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800; color: var(--teal); font-style: italic; letter-spacing: -0.2px;">Take-in-Take</div>
             </div>
             <div style="display:flex; align-items: center; gap: 10px;">
                 <h1 style="color: var(--teal); margin: 0; font-size: 22px; font-weight: 900;">WorkTimeline™</h1>
@@ -204,6 +204,7 @@
         logEntryWithGPS(box.value); box.value = '';
         const q = document.getElementById('legacyQuote'); if(q) q.remove();
     }
+    function addMediaEntry(text) { logEntryWithGPS(text); const q = document.getElementById('legacyQuote'); if(q) q.remove(); }
     function logEntryWithGPS(text) {
         navigator.geolocation.getCurrentPosition((pos) => {
             saveEntry(text, `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`);
