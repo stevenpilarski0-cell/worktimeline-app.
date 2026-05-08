@@ -9,53 +9,54 @@
         
         :root { 
             --teal: #008080; --clio-blue: #0076CE; --platinum: #e2e8f0; --gray-dark: #1e293b; --gray-light: #f8fafc;
-            --glass: rgba(0, 128, 128, 0.05); --round-main: 32px; --round-inner: 16px; 
+            --round-main: 32px; --round-inner: 16px; 
         }
-        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #eef1f5; margin: 0; padding: 10px; height: 100vh; overflow: hidden; color: var(--gray-dark); }
+        body { font-family: 'Inter', sans-serif; background: #eef1f5; margin: 0; padding: 0; height: 100vh; overflow: hidden; color: var(--gray-dark); }
         
-        /* CINEMATIC INTRO */
-        #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; box-sizing: border-box; transition: opacity 1.2s ease; }
-        .story-text { font-size: 20px; font-weight: 700; color: var(--gray-dark); line-height: 1.5; opacity: 0; transition: opacity 0.8s; max-width: 460px; letter-spacing: -0.3px; }
-        #skipBtn { position: absolute; bottom: 40px; padding: 12px 24px; border: 2px solid var(--teal); border-radius: 99px; background: white; color: var(--teal); font-weight: 800; font-size: 12px; cursor: pointer; z-index: 100001; }
+        /* 45-SECOND CINEMATIC INTRO */
+        #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #eef1f5; z-index: 200000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; box-sizing: border-box; transition: opacity 1.2s ease; }
+        .story-text { font-size: 20px; font-weight: 700; color: var(--gray-dark); line-height: 1.5; opacity: 0; transition: opacity 0.8s; max-width: 460px; }
+        #skipBtn { position: absolute; bottom: 40px; padding: 12px 24px; border: 2px solid var(--teal); border-radius: 99px; background: white; color: var(--teal); font-weight: 800; font-size: 12px; cursor: pointer; }
 
-        .app-container { max-width: 500px; margin: auto; background: white; border-radius: var(--round-main); height: 95vh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
-        #privacyOverlay { position: absolute; top: 85px; left: 0; right: 0; bottom: 0; z-index: 98; backdrop-filter: blur(0px); pointer-events: none; transition: backdrop-filter 0.4s ease; background: rgba(255,255,255,0.01); }
+        /* ONE-PAGE MOBILE APP CONTAINER */
+        .app-container { width: 100%; height: 100vh; background: white; display: flex; flex-direction: column; overflow: hidden; position: relative; }
         
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid var(--platinum); flex-shrink: 0; z-index: 100; background: white; }
+        /* GHOST/PRIVACY BLUR */
+        #privacyOverlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 150000; backdrop-filter: blur(0px); pointer-events: none; transition: backdrop-filter 0.4s ease; background: rgba(255,255,255,0.01); }
 
-        /* INPUT AREA */
-        .input-area { padding: 15px 20px; background: var(--gray-light); border-bottom: 1px solid var(--platinum); flex-shrink: 0; display: flex; flex-direction: column; }
-        .template-chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: none; margin-bottom: 4px;}
-        .template-chips::-webkit-scrollbar { display: none; }
-        .chip { background: white; color: var(--teal); font-size: 11px; font-weight: 700; padding: 8px 14px; border-radius: 12px; white-space: nowrap; cursor: pointer; border: 1px solid var(--platinum); }
+        .header { padding: 15px 20px; border-bottom: 1px solid var(--platinum); display: flex; justify-content: space-between; align-items: center; background: white; z-index: 1000; }
+
+        /* INPUT AREA - SCROLLABLE */
+        .scroll-content { flex-grow: 1; overflow-y: auto; padding-bottom: 100px; /* Space for fixed footer */ }
+        .input-area { padding: 15px 20px; background: var(--gray-light); border-bottom: 1px solid var(--platinum); }
         
-        #statusBox { width: 100%; height: 90px; padding: 15px; border-radius: var(--round-inner); border: 1px solid var(--platinum); box-sizing: border-box; font-family: inherit; margin-bottom: 12px; font-size: 15px; outline: none; background: white; resize: none; }
+        .template-chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: none; }
+        .chip { background: white; color: var(--teal); font-size: 11px; font-weight: 700; padding: 8px 14px; border-radius: 12px; white-space: nowrap; border: 1px solid var(--platinum); cursor: pointer; }
+
+        #statusBox { width: 100%; height: 80px; padding: 12px; border-radius: 12px; border: 1px solid var(--platinum); font-family: inherit; font-size: 15px; outline: none; background: white; resize: none; margin-bottom: 10px; }
         
-        .media-toolbar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
-        .media-btn { background: white; border: 1px solid var(--platinum); padding: 12px 2px; border-radius: var(--round-inner); display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; }
-        .media-btn svg { width: 20px; height: 20px; fill: var(--teal); margin-bottom: 6px; }
-        .media-btn span { font-size: 9px; font-weight: 700; color: var(--gray-dark); text-transform: uppercase; letter-spacing: 0.5px; }
+        .media-toolbar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 10px; }
+        .media-btn { background: white; border: 1px solid var(--platinum); padding: 10px 2px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; }
+        .media-btn svg { width: 18px; height: 18px; fill: var(--teal); margin-bottom: 4px; }
+        .media-btn span { font-size: 8px; font-weight: 800; text-transform: uppercase; }
 
         /* TIMELINE DISPLAY */
-        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px; position: relative; background: #fff; }
-        .timeline-spine { position: absolute; left: 35px; top: 0; bottom: 0; width: 4px; background: var(--platinum); border-radius: 4px; z-index: 1; }
-        .entry { position: relative; margin-left: 50px; background: white; border: 1px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; border-left: 4px solid var(--teal); }
-        .timestamp-full { font-size: 11px; font-weight: 700; color: var(--teal); display: block; margin-bottom: 8px; text-transform: uppercase; }
-        
-        /* SYNC PADLOCK FOOTER */
-        .footer-sync { padding: 20px; background: var(--gray-light); border-top: 1px solid var(--platinum); text-align: center; }
-        .lock-send-btn { background: var(--gray-dark); color: white; border: none; padding: 15px 30px; border-radius: var(--round-inner); width: 100%; font-weight: 800; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; transition: background 0.3s; }
-        .lock-send-btn:active { background: var(--clio-blue); }
-        .lock-send-btn svg { width: 20px; height: 20px; fill: white; }
+        .entry { position: relative; margin-left: 20px; margin-right: 20px; background: white; border: 1px solid var(--platinum); padding: 15px; border-radius: 16px; margin-bottom: 15px; border-left: 4px solid var(--teal); }
+        .timestamp { font-size: 10px; font-weight: 800; color: var(--teal); display: block; margin-bottom: 5px; text-transform: uppercase; }
 
-        /* MODAL NOTIFICATION */
-        #summaryModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 200000; display: none; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; backdrop-filter: blur(10px); }
-        .modal-card { background: white; border-radius: var(--round-main); padding: 30px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
-        
-        .switch { position: relative; display: inline-block; width: 36px; height: 20px; }
+        /* FIXED MOBILE FOOTER: LOCK & SEND */
+        .footer-action { position: fixed; bottom: 0; left: 0; width: 100%; padding: 15px 20px; background: white; border-top: 1px solid var(--platinum); box-sizing: border-box; z-index: 1000; }
+        .lock-btn { background: var(--gray-dark); color: white; border: none; padding: 16px; border-radius: 16px; width: 100%; font-weight: 800; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .lock-btn:active { background: var(--clio-blue); }
+
+        /* MODAL */
+        #summaryModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 300000; display: none; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; backdrop-filter: blur(8px); }
+        .modal-card { background: white; border-radius: 24px; padding: 25px; width: 100%; max-width: 350px; text-align: center; }
+
+        .switch { position: relative; display: inline-block; width: 34px; height: 18px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .4s; border-radius: 20px; }
-        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--clio-blue); }
         input:checked + .slider:before { transform: translateX(16px); }
     </style>
@@ -69,138 +70,106 @@
 
 <div id="summaryModal">
     <div class="modal-card">
-        <div style="background: var(--clio-blue); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
-            <svg width="30" height="30" fill="white" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/></svg>
+        <div style="background: var(--clio-blue); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
+            <svg width="24" height="24" fill="white" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/></svg>
         </div>
-        <h2 style="margin-bottom: 10px; color: var(--gray-dark);">Sealing Timeline</h2>
-        <p id="modalStats" style="font-size: 14px; color: #64748b; margin-bottom: 25px; line-height: 1.5;"></p>
-        <button onclick="finalSync()" style="background: var(--clio-blue); color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: 800; cursor: pointer;">Send to Clio Now</button>
-        <button onclick="closeModal()" style="background: transparent; color: #94a3b8; border: none; margin-top: 15px; font-weight: 700; cursor: pointer;">Cancel</button>
+        <h2 style="font-size: 18px; margin-bottom: 10px;">Seal & Sync</h2>
+        <p id="modalSummary" style="font-size: 13px; color: #64748b; margin-bottom: 20px; line-height: 1.5;"></p>
+        <button onclick="finalSync()" style="background: var(--clio-blue); color: white; border: none; padding: 14px; border-radius: 12px; width: 100%; font-weight: 800; cursor: pointer;">Finalize to Clio</button>
+        <button onclick="closeModal()" style="background: transparent; color: #94a3b8; border: none; margin-top: 10px; font-weight: 700; cursor: pointer;">Go Back</button>
     </div>
 </div>
 
-<div class="app-container" id="mainApp">
+<div class="app-container">
     <div id="privacyOverlay"></div>
     <header class="header">
-        <div><h1 id="folderLabel" style="color: var(--teal); margin:0; font-size: 18px; font-weight: 800;">WorkTimeline™</h1><div style="font-size: 11px; font-weight: 700; color: var(--clio-blue);">Intake Engine</div></div>
-        <div style="display:flex; gap:12px; align-items: center;">
-            <div style="text-align: center;"><label class="switch"><input type="checkbox" onchange="toggleVault(this)"><span class="slider"></span></label><div style="font-size: 7px; font-weight: 800; margin-top: 4px;">CHRON</div></div>
-            <div style="text-align: center;"><label class="switch"><input type="checkbox" id="pSwitch" onchange="togglePrivacy()"><span class="slider"></span></label><div style="font-size: 7px; font-weight: 800; margin-top: 4px;">PRIVACY</div></div>
+        <div><h1 id="folderLabel" style="color: var(--teal); margin:0; font-size: 18px; font-weight: 800;">WorkTimeline™</h1></div>
+        <div style="display:flex; gap:10px;">
+            <div style="text-align: center;"><label class="switch"><input type="checkbox" onchange="toggleVault(this)"><span class="slider"></span></label><div style="font-size: 7px; font-weight: 800;">CHRON</div></div>
+            <div style="text-align: center;"><label class="switch"><input type="checkbox" id="pSwitch" onchange="togglePrivacy()"><span class="slider"></span></label><div style="font-size: 7px; font-weight: 800;">PRIVACY</div></div>
         </div>
     </header>
 
-    <div class="input-area">
-        <div class="template-chips">
-            <span class="chip" onclick="useTemplate('WITNESS LOCATION:\n- Name:\n- Address:\n- Distance from event:')">Location</span>
-            <span class="chip" onclick="useTemplate('WITNESS STATEMENT:\n- Narrative:\n- Reliability:')">Statement</span>
-            <span class="chip" onclick="useTemplate('INCIDENT SETTING:\n- Lighting:\n- Hazards:')">Setting</span>
-            <span class="chip" onclick="useTemplate('EVIDENCE:\n- Item:\n- Stored at:')">Evidence</span>
+    <div class="scroll-content">
+        <div class="input-area">
+            <div class="template-chips">
+                <span class="chip" onclick="useT('LOCATION:\n- Name:\n- GPS:\n- Hazards:')">Location</span>
+                <span class="chip" onclick="useT('WITNESS:\n- Narrative:\n- Reliability:')">Statement</span>
+                <span class="chip" onclick="useT('EVIDENCE:\n- Type:\n- Storage:')">Evidence</span>
+            </div>
+            <textarea id="statusBox" placeholder="Describe the truth..."></textarea>
+            <div class="media-toolbar">
+                <div class="media-btn"><input type="file" accept="image/*" capture="camera" style="position:absolute;width:100%;height:100%;opacity:0;" onchange="logMedia('📷 Photo logged')"><svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-4c-1.1 0-2 .9-2 2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-5c0-1.1-.9-2-2-2z"/></svg><span>Camera</span></div>
+                <div class="media-btn"><input type="file" accept="audio/*" capture="microphone" style="position:absolute;width:100%;height:100%;opacity:0;" onchange="logMedia('🎤 Audio logged')"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg><span>Audio</span></div>
+                <div class="media-btn" onclick="window.location.href='sms:?body=Timeline Update:'"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg><span>Text</span></div>
+                <div class="media-btn"><input type="file" style="position:absolute;width:100%;height:100%;opacity:0;" onchange="logMedia('📄 Doc logged')"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6z"/></svg><span>Docs</span></div>
+            </div>
+            <button onclick="submitE()" style="background:var(--teal); color:white; border:none; padding:15px; border-radius:12px; width:100%; font-weight:800;">Secure Entry</button>
         </div>
-        <textarea id="statusBox" placeholder="Describe the truth..."></textarea>
-        <div class="media-toolbar">
-            <button class="media-btn"><input type="file" accept="image/*" capture="camera" class="hidden-input" onchange="addEntry('📷 Media: Photo evidence logged.')"><svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-4c-1.1 0-2 .9-2 2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-5c0-1.1-.9-2-2-2z"/></svg><span>Camera</span></button>
-            <button class="media-btn"><input type="file" accept="audio/*" capture="microphone" class="hidden-input" onchange="addEntry('🎤 Media: Audio statement logged.')"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg><span>Audio</span></button>
-            <button class="media-btn" onclick="window.location.href='sms:?body=WorkTimeline Update:'"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg><span>Text</span></button>
-            <button class="media-btn"><input type="file" class="hidden-input" onchange="addEntry('📄 Media: Document verified.')"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6z"/></svg><span>Docs</span></button>
-        </div>
-        <button id="addBtn" onclick="submitEntry()" style="background:var(--teal); color:white; border:none; padding:15px; border-radius:12px; width:100%; font-weight:800; cursor:pointer;">Secure Entry</button>
-    </div>
-
-    <div id="timelineContainer">
-        <div class="timeline-spine"></div>
         <div id="displayList"></div>
     </div>
 
-    <div class="footer-sync">
-        <button class="lock-send-btn" onclick="openLockSummary()">
-            <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/></svg>
+    <div class="footer-action">
+        <button class="lock-btn" onclick="openLock()">
+            <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6z"/></svg>
             LOCK & SEND TO CLIO
         </button>
     </div>
 </div>
 
 <script>
-    const story = [
-        "We see you. We hear you.", "You're not invisible.", "Trapped in the grey area—a prison.",
-        "We're here to get you out.", "Towards the center where you belong with Clio.",
-        "Lawyers lose 40% of their time to messy intake.", "3 out of 5 clients are turned away due to chaos.",
-        "Organized intake drives a 60% higher success rate.", "Justice is effortless if truth takes no effort."
-    ];
-    let activeVault = "TIMELINE"; const timelineVault = []; const notesVault = [];
-    let storyIndex = 0; let storyTimer;
+    const story = ["We see you. We hear you.", "You're not invisible.", "Trapped in the grey area—a prison.", "Messy files drain 40% of resources.", "Justice is effortless if truth takes no effort."];
+    let activeV = "TIMELINE"; const timelineV = []; const notesV = [];
+    let sIdx = 0; let sTimer;
 
-    window.onload = () => runStory();
+    window.onload = () => runS();
 
-    function runStory() {
+    function runS() {
         const el = document.getElementById('storyText');
         const next = () => {
-            if(storyIndex < story.length) {
+            if(sIdx < story.length) {
                 el.style.opacity = 0;
-                storyTimer = setTimeout(() => {
-                    el.innerText = story[storyIndex++];
-                    el.style.opacity = 1;
-                    storyTimer = setTimeout(next, 3000);
-                }, 800);
+                sTimer = setTimeout(() => { el.innerText = story[sIdx++]; el.style.opacity = 1; sTimer = setTimeout(next, 3000); }, 800);
             } else endSplash();
         };
         next();
     }
-
-    function endSplash() { clearTimeout(storyTimer); const s = document.getElementById('splashScreen'); if(s) { s.style.opacity = '0'; setTimeout(() => s.remove(), 1000); } }
-
-    function useTemplate(txt) { document.getElementById('statusBox').value = txt; document.getElementById('statusBox').focus(); }
-
-    function togglePrivacy() {
-        const overlay = document.getElementById('privacyOverlay'); const sw = document.getElementById('pSwitch');
-        overlay.style.backdropFilter = sw.checked ? "blur(60px) grayscale(1)" : "blur(0px)";
-        overlay.style.pointerEvents = sw.checked ? "all" : "none";
-    }
+    function endSplash() { clearTimeout(sTimer); const s = document.getElementById('splashScreen'); if(s) { s.style.opacity = '0'; setTimeout(() => s.remove(), 1000); } }
 
     function toggleVault(cb) {
-        activeVault = cb.checked ? "NOTES" : "TIMELINE";
+        activeV = cb.checked ? "NOTES" : "TIMELINE";
         document.getElementById('folderLabel').innerText = cb.checked ? "Isolated Notes" : "WorkTimeline™";
         document.getElementById('folderLabel').style.color = cb.checked ? "var(--clio-blue)" : "var(--teal)";
-        document.getElementById('addBtn').style.background = cb.checked ? "var(--clio-blue)" : "var(--teal)";
-        refreshVaultDisplay();
+        refreshD();
     }
-
-    function submitEntry() {
-        const box = document.getElementById('statusBox'); if(!box.value.trim()) return;
-        saveEntry(box.value); box.value = ''; refreshVaultDisplay();
+    function togglePrivacy() {
+        const ov = document.getElementById('privacyOverlay'); const sw = document.getElementById('pSwitch');
+        ov.style.backdropFilter = sw.checked ? "blur(60px) grayscale(1)" : "blur(0px)";
+        ov.style.pointerEvents = sw.checked ? "all" : "none";
     }
-
-    function saveEntry(text) {
+    function useT(t) { document.getElementById('statusBox').value = t; document.getElementById('statusBox').focus(); }
+    function submitE() { const b = document.getElementById('statusBox'); if(!b.value.trim()) return; logMedia(b.value); b.value = ''; }
+    function logMedia(txt) {
         const now = new Date(); const stamp = (now.getMonth()+1) + '/' + now.getDate() + ' @ ' + now.getHours() + ':' + now.getMinutes().toString().padStart(2, '0');
-        const entry = { text, stamp };
-        if(activeVault === "TIMELINE") timelineVault.push(entry); else notesVault.push(entry);
+        const entry = { txt, stamp };
+        if(activeV === "TIMELINE") timelineV.push(entry); else notesV.push(entry);
+        refreshD();
     }
-
-    function addEntry(text) { saveEntry(text); refreshVaultDisplay(); }
-
-    function refreshVaultDisplay() {
+    function refreshD() {
         const list = document.getElementById('displayList'); list.innerHTML = '';
-        const data = (activeVault === "TIMELINE") ? timelineVault : notesVault;
-        [...data].reverse().forEach(item => {
-            const div = document.createElement('div'); div.className = 'entry';
-            div.style.borderLeftColor = (activeVault === "NOTES") ? "var(--clio-blue)" : "var(--teal)";
-            div.innerHTML = `<span class="timestamp-full" style="color:${(activeVault === "NOTES") ? 'var(--clio-blue)' : 'var(--teal)'}">${item.stamp}</span><p style="white-space: pre-wrap; margin:0; font-size:14px; font-weight:500;">${item.text}</p>`;
-            list.appendChild(div);
+        const data = (activeV === "TIMELINE") ? timelineV : notesV;
+        [...data].reverse().forEach(i => {
+            list.innerHTML += `<div class="entry" style="border-left-color:${activeV === "NOTES" ? "var(--clio-blue)" : "var(--teal)"}"><span class="timestamp">${i.stamp}</span><p style="white-space:pre-wrap; margin:0; font-size:14px; font-weight:500;">${i.txt}</p></div>`;
         });
     }
-
-    function openLockSummary() {
-        const total = timelineVault.length + notesVault.length;
+    function openLock() {
+        const total = timelineV.length + notesV.length;
         if(total === 0) return alert("Nothing to seal.");
-        document.getElementById('modalStats').innerText = `You are about to lock ${timelineVault.length} timeline entries and ${notesVault.length} notes. This structured evidence will be sent directly to your firm's Clio dashboard.`;
+        document.getElementById('modalSummary').innerText = `Syncing ${timelineV.length} timeline entries and ${notesV.length} private notes to your attorney's Clio account.`;
         document.getElementById('summaryModal').style.display = 'flex';
     }
-
     function closeModal() { document.getElementById('summaryModal').style.display = 'none'; }
-
-    async function finalSync() {
-        alert("Notification: Timeline sealed and sent to Clio.");
-        window.location.href = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s&redirect_uri=https://worktimeline-app.vercel.app/index.html&scope=leads_write%20contacts_write`;
-    }
+    function finalSync() { alert("Syncing data to Clio..."); window.location.href = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s&redirect_uri=https://worktimeline-app.vercel.app/index.html&scope=leads_write%20contacts_write`; }
 </script>
 </body>
 </html>
