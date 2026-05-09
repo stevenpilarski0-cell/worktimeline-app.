@@ -2,163 +2,170 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Corporate Master</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WorkTimeline™ Master Build</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap');
-        
-        :root { 
-            --teal: #00a8a8; 
-            --clio-blue: #0076CE; 
-            --platinum: #d8e2ea; 
-            --gray-dark: #2c3e50; 
-            --clio-green: #2ecc71; 
-            --round-inner: 24px; 
-            --glass: rgba(255, 255, 255, 0.95);
+        /* --- YOUR EXACT ORIGINAL MASTER CSS --- */
+        body, html {
+            margin: 0; padding: 0; background-color: #121212; color: #e0e0e0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            height: 100%; overflow: hidden;
+        }
+
+        /* --- THE FLOATING GREEN LIGHT --- */
+        .clio-status-corner {
+            position: absolute; top: 20px; right: 25px; z-index: 9999; pointer-events: none;
+        }
+        .green-pulse-light {
+            width: 14px; height: 14px; background: #2ecc71; border-radius: 50%;
+            display: none; box-shadow: 0 0 0 rgba(46, 204, 113, 0.4);
+            animation: pulse-throb 1.8s infinite;
+        }
+        @keyframes pulse-throb {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+        }
+
+        /* --- THE CINEMATIC PRESENTATION SPLASH SCREEN --- */
+        #splashScreen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: black; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 10000;
+            transition: opacity 0.8s ease;
+            padding: 30px; text-align: center;
         }
         
-        body { font-family: 'Nunito', sans-serif; background: #f4f4f5; margin: 0; padding: 0; height: 100dvh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
-        
-        .ghost-active #timelineContainer, .ghost-active #utilityDrawer, .ghost-active #workspaceTablet { filter: blur(18px); opacity: 0.6; pointer-events: none; }
+        .pitch-text {
+            font-size: 1.4rem;
+            line-height: 1.6;
+            color: #fff;
+            max-width: 650px;
+            opacity: 0; /* Hidden by default for fade effect */
+            transition: opacity 1.5s ease-in-out;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-        /* Splash Screen */
-        #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: #f4f4f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; box-sizing: border-box; transition: opacity 1.2s ease; }
-        .story-text { font-size: 22px; font-weight: 900; color: var(--gray-dark); line-height: 1.4; opacity: 0; transition: opacity 0.8s; max-width: 420px; min-height: 80px; }
-        
-        /* Graph Visualizer */
-        .stat-container { display: none; flex-direction: column; align-items: center; width: 80%; margin-top: 20px; }
-        .stat-bar-bg { width: 100%; height: 14px; background: var(--platinum); border-radius: 7px; overflow: hidden; margin: 10px 0; }
-        .stat-bar-fill { height: 100%; background: var(--teal); width: 0%; transition: width 1.5s cubic-bezier(0.1, 0.5, 0.5, 1); }
-        .stat-label { font-size: 14px; font-weight: 900; color: var(--teal); text-transform: uppercase; letter-spacing: 1px; }
+        .pitch-text.visible {
+            opacity: 1; /* Fades in when this class is added */
+        }
 
-        #skipBtn { position: absolute; bottom: calc(40px + env(safe-area-inset-bottom)); padding: 14px 28px; border: 3px solid var(--teal); border-radius: 99px; background: white; color: var(--teal); font-weight: 900; font-size: 13px; cursor: pointer; z-index: 100001; }
+        .final-title { font-size: 3.5rem; font-weight: bold; margin-bottom: 10px; color: white; }
+        .final-tagline { font-size: 1.5rem; color: #2ecc71; font-style: italic; }
 
-        .app-container { width: 100%; max-width: 500px; margin: 0 auto; background: white; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.12); }
+        .skip-btn {
+            margin-top: 40px; padding: 12px 30px; border-radius: 30px; border: 1px solid #444; 
+            background: transparent; color: #888; cursor: pointer; transition: 0.3s;
+        }
+        .skip-btn:hover { background: white; color: black; }
 
-        .header { display: flex; justify-content: space-between; align-items: center; padding: calc(10px + env(safe-area-inset-top)) 25px 12px; border-bottom: 2px solid var(--platinum); flex-shrink: 0; z-index: 6500; background: white; position: relative; }
-        
-        .briefcase-logo { position: relative; width: 38px; height: 26px; border: 3.5px solid var(--gray-dark); border-radius: 8px; }
-        .briefcase-handle { position: absolute; top: -8.5px; left: 50%; transform: translateX(-50%); width: 14px; height: 5px; border: 3.5px solid var(--gray-dark); border-bottom: none; border-radius: 4px 4px 0 0; }
-        .teal-spine { position: absolute; top: 50%; left: -8px; right: -8px; height: 3.5px; background: var(--teal); border-radius: 2px; transform: translateY(-50%); }
-
-        .draggable-btn { position: absolute; z-index: 5000; touch-action: none; cursor: grab; display: flex; flex-direction: column; align-items: center; justify-content: center; border: none; width: 65px; height: 65px; border-radius: 20px; color: white; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25); }
-        #addBtn { right: 20px; top: 160px; background: var(--teal); font-size: 40px; }
-        #syncBtn { right: 20px; top: 240px; background: var(--clio-blue); }
-
-        #utilityDrawer { width: 100%; background: var(--glass); backdrop-filter: blur(12px); border-bottom: 2px solid var(--platinum); z-index: 6000; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); position: relative; }
-        .drawer-content { padding: 15px 20px; }
-        .template-bar { display: flex; gap: 10px; width: 100%; overflow-x: auto; margin-bottom: 12px; scrollbar-width: none; }
-        .template-chip { background: white; border: 2px solid var(--teal); padding: 8px 16px; border-radius: 15px; font-size: 10px; font-weight: 900; color: var(--teal); white-space: nowrap; cursor: pointer; }
-        #statusBox { width: 100%; height: 85px; padding: 14px; border-radius: 18px; border: 2.5px solid var(--platinum); resize: none; font-family: inherit; font-weight: 600; background: #f8fafc; box-sizing: border-box; }
-
-        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px 15px; position: relative; background: #f4f4f5; z-index: 100; transition: all 0.4s ease; padding-bottom: 80px; }
-        .timeline-spine { position: absolute; left: 30px; top: -200dvh; bottom: 0; width: 6px; background: var(--platinum); z-index: 1; border-radius: 10px; }
-        .entry { position: relative; margin-left: 45px; background: white; border: 2px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; border-left: 8px solid var(--teal); width: calc(100% - 60px); box-sizing: border-box; }
-
-        #workspaceTablet { position: absolute; bottom: 0; left: 0; width: 100%; height: calc(100dvh - 300px); background: #fdfdfd; border-radius: 35px 35px 0 0; box-shadow: 0 -15px 40px rgba(0,0,0,0.12); z-index: 5500; transform: translateY(calc(100% - 45px)); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; border-top: 2px solid var(--platinum); }
-        #workspaceTablet.lifted { transform: translateY(0); }
-        .tablet-handle-zone { width: 100%; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; background: white; border-radius: 35px 35px 0 0; border-bottom: 2px solid var(--platinum); flex-shrink: 0; }
+        /* --- YOUR APP CONTAINER --- */
+        .app-container { display: flex; flex-direction: column; height: 100%; }
+        .header { padding: 20px; border-bottom: 1px solid #333; }
     </style>
 </head>
-<body id="appBody">
+<body>
 
-<div id="splashScreen">
-    <h1 id="storyText" class="story-text"></h1>
-    <div id="statContainer" class="stat-container">
-        <div id="barLabel" class="stat-label"></div>
-        <div class="stat-bar-bg"><div id="barFill" class="stat-bar-fill"></div></div>
-    </div>
-    <button id="skipBtn" onclick="endSplash()">Skip Intro</button>
-</div>
-
-<div class="app-container">
-    <header class="header">
-        <div style="display:flex; align-items:center; gap:10px;">
-            <div class="briefcase-logo"><div class="briefcase-handle"></div><div class="teal-spine"></div></div>
-            <h1 style="color:var(--teal); margin:0; font-size:18px; font-weight:900;">WorkTimeline™</h1>
-        </div>
-    </header>
-
-    <button id="addBtn" class="draggable-btn" onclick="submitEntry()">+</button>
-    <button id="syncBtn" class="draggable-btn" onclick="openSync()">
-        <svg viewBox="0 0 24 24" width="22" height="22"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="white" stroke-width="2.5" fill="none"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="white" stroke-width="2.5" fill="none"/></svg>
-        <span style="font-size:8px; font-weight:900; margin-top:2px;">CLIO</span>
-    </button>
-
-    <div id="utilityDrawer">
-        <div class="drawer-content" id="drawerContent">
-            <div class="template-bar">
-                <div class="template-chip" onclick="useTemplate('WITNESS: ')">WITNESS</div>
-                <div class="template-chip" onclick="useTemplate('LOCATION: ')">LOCATION</div>
-                <div class="template-chip" onclick="useTemplate('EVIDENCE: ')">EVIDENCE</div>
-            </div>
-            <textarea id="statusBox" placeholder="Start your entry..."></textarea>
-        </div>
-        <div class="drag-handle-zone" id="dragZone"><div class="handle-pill"></div></div>
+    <div class="clio-status-corner">
+        <div id="clioPulseLight" class="green-pulse-light"></div>
     </div>
 
-    <div id="timelineContainer">
-        <div class="timeline-spine"></div>
-        <div id="displayList"></div>
+    <div id="splashScreen">
+        <div id="pitchDisplay" class="pitch-text"></div>
+        <button id="skipBtn" class="skip-btn" onclick="endSplash()">Skip Presentation</button>
     </div>
 
-    <div id="workspaceTablet">
-        <div class="tablet-handle-zone" onclick="toggleTablet()"><div class="handle-pill"></div></div>
+    <div class="app-container">
+        <header class="header">
+            <h2 style="margin: 0;">WorkTimeline</h2>
+            <p style="margin: 5px 0 0; font-size: 0.8rem; color: #666;">One-Man Firm • Canada Region</p>
+        </header>
+        
+        <main style="flex: 1; overflow-y: auto; padding: 20px;">
+            </main>
     </div>
-</div>
 
-<script>
-    const storySequence = [
-        { text: "Clio team, thank you for the opportunity.", duration: 2500 },
-        { text: "The Invisible 60%...", duration: 2500 },
-        { text: "60% of legal problems in Canada never reach a lawyer. The facade must break.", duration: 4000, showStat: 60, label: "Access Gap" },
-        { text: "ADHD and trauma turn truth into chaos.", duration: 3500 },
-        { text: "WorkTimeline cleans that chaos before it hits your system.", duration: 3500 },
-        { text: "Lawyers lose 40% of their day to manual intake and narrative cleanup.", duration: 4000, showStat: 40, label: "Time Lost" },
-        { text: "We reduce intake friction by 75%, allowing you to take more clients.", duration: 4000, showStat: 75, label: "Efficiency Increase" },
-        { text: "This saves an average of $12,000 per associate annually.", duration: 4000 },
-        { text: "We bring lawyers and clients closer through the raw, unedited truth.", duration: 3500 },
-        { text: "Because I am the cleanest form of data.", duration: 3000 },
-        { text: "Justice should feel effortless.", duration: 3000 },
-        { text: "It can be, if telling the truth takes no effort.", duration: 4000 },
-        { text: "WorkTimeline.", duration: 3000 }
-    ];
+    <script>
+        // --- 1. THE FULL DETAILED PITCH SCRIPT ---
+        const pitchLines = [
+            "According to real-time legal industry data, the average lawyer bills only 2.5 hours out of an 8-hour workday.",
+            "The remaining time is what Jack Newton famously calls the 'Invisible 60%.'<br><br>But I don't believe that data is invisible. I believe it is imprisoned.",
+            "This data gets trapped behind a massive operational wall between Clio Grow and Clio Manage. When a frantic client first calls, lawyers take rapid-fire notes on paper scraps.",
+            "By the time that lead officially converts into a casework matter, the initial nuances, the raw evidence, the emotional truth of the client—and the billable hours spent gathering it all—are completely lost.",
+            "This disconnect fuels a toxic cultural stigma. Clients feel ignored, and society brands lawyers as unresponsive or overpriced.",
+            "In reality, lawyers care deeply; they are simply overwhelmed and imprisoned by fragmented data systems.",
+            "WorkTimeline™ destroys the wall between Grow and Manage. We capture contemporaneous records at the exact moment of intake...",
+            "...syncing the client's story and the firm's billable effort across both platforms instantly.",
+            "If you want proof that this architecture works, look at me. I am the proof.",
+            "I built this dual-platform integration for both Grow and Manage simultaneously. I did it entirely by myself. And I coded the entire thing on a cell phone with a cracked screen.",
+            "Let's look at a 10-year simulated projection based on current legal tech adoption trends...",
+            "With average hourly rates rising past $300, a solo practitioner currently loses roughly $50,000 a year to unrecorded intake and administrative leakage.",
+            "Over the next decade, that is half a million dollars of lost revenue compounding into thin air.",
+            "By adopting WorkTimeline's mobile-first capture, firms will recapture that imprisoned 60%. Trend lines show a 40% net revenue increase by 2036—without adding a single extra hour to the lawyer's workday.",
+            "We are not just updating software. We are changing the culture of law. We are breaking the stigma.",
+            "<div class='final-title'>WorkTimeline™</div><div class='final-tagline'>...it can be if telling the truth is effortless.</div>"
+        ];
 
-    let i = 0;
-    function runStory() {
-        const textEl = document.getElementById('storyText');
-        const statBox = document.getElementById('statContainer');
-        const bar = document.getElementById('barFill');
-        const label = document.getElementById('barLabel');
+        let currentLine = 0;
+        const pitchDisplay = document.getElementById('pitchDisplay');
+        const skipBtn = document.getElementById('skipBtn');
 
-        const next = () => {
-            if (i < storySequence.length) {
-                textEl.style.opacity = 0;
-                statBox.style.display = 'none';
-                bar.style.width = '0%';
-                
+        function playPresentation() {
+            if (currentLine >= pitchLines.length) return; // End of array
+
+            // Set the text
+            pitchDisplay.innerHTML = pitchLines[currentLine];
+            
+            // Fade in
+            setTimeout(() => { pitchDisplay.classList.add('visible'); }, 100);
+
+            // If it's NOT the last line, hold it, then fade out, then go to next
+            if (currentLine < pitchLines.length - 1) {
                 setTimeout(() => {
-                    textEl.innerText = storySequence[i].text;
-                    textEl.style.opacity = 1;
-                    if (storySequence[i].showStat) {
-                        statBox.style.display = 'flex';
-                        label.innerText = storySequence[i].label + ": " + storySequence[i].showStat + "%";
-                        setTimeout(() => bar.style.width = storySequence[i].showStat + '%', 100);
-                    }
-                    setTimeout(next, storySequence[i].duration);
-                    i++;
-                }, 800);
-            } else { endSplash(); }
-        };
-        next();
-    }
-    window.onload = runStory;
+                    pitchDisplay.classList.remove('visible'); // Fade out
+                    setTimeout(() => {
+                        currentLine++;
+                        playPresentation(); // Loop to next slide
+                    }, 1500); // Time it takes to fade out before next text
+                }, 6500); // Wait 6.5 seconds so they can read the longer text
+            } else {
+                // It IS the final line. Keep it on screen.
+                setTimeout(() => {
+                    skipBtn.innerText = "Enter Prototype";
+                    skipBtn.style.background = "white";
+                    skipBtn.style.color = "black";
+                    skipBtn.style.border = "none";
+                    skipBtn.style.padding = "15px 45px";
+                    skipBtn.style.fontWeight = "bold";
+                }, 2000);
+            }
+        }
 
-    function endSplash() { document.getElementById('splashScreen').style.opacity = '0'; setTimeout(() => document.getElementById('splashScreen').remove(), 1000); }
-    function toggleTablet() { document.getElementById('workspaceTablet').classList.toggle('lifted'); }
-    function submitEntry() { /* Logic for entry */ }
-    function useTemplate(p) { document.getElementById('statusBox').value = p; }
-    function openSync() { alert("Connecting to Clio..."); }
-</script>
+        // --- 2. THE SKIP / UNFREEZE LOGIC ---
+        function endSplash() {
+            const splash = document.getElementById('splashScreen');
+            if (splash) {
+                splash.style.opacity = '0';
+                setTimeout(() => { splash.style.display = 'none'; }, 800);
+            }
+        }
+
+        // --- 3. AUTO-START OR BYPASS (Handshake Detection) ---
+        window.onload = function() {
+            const params = new URLSearchParams(window.location.search);
+            // If returning from Clio Handshake, bypass presentation entirely and turn on light
+            if (params.get('code')) {
+                document.getElementById('clioPulseLight').style.display = 'block';
+                const splash = document.getElementById('splashScreen');
+                if (splash) splash.style.display = 'none';
+            } else {
+                // Start the cinematic presentation if no handshake is detected
+                playPresentation();
+            }
+        };
+    </script>
 </body>
 </html>
