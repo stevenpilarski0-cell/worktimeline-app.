@@ -14,111 +14,111 @@
         }
         body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 0; height: 100dvh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
         
-        .ghost-active #timelineContainer, .ghost-active #utilityDrawer { filter: blur(18px); opacity: 0.6; pointer-events: none; }
+        /* LEGAL OVERLAY - HIGHEST PRIORITY */
+        #legalOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(44, 62, 80, 0.95); backdrop-filter: blur(10px); z-index: 999999; display: flex; align-items: center; justify-content: center; padding: 25px; box-sizing: border-box; transition: opacity 0.5s ease; }
+        .modal-card { background: white; padding: 35px; border-radius: 32px; text-align: center; max-width: 400px; box-shadow: 0 25px 60px rgba(0,0,0,0.4); border-bottom: 8px solid var(--teal); }
+        .modal-card h2 { color: var(--teal); margin: 0 0 15px; font-weight: 900; font-size: 22px; }
+        .modal-card p { font-size: 15px; font-weight: 700; line-height: 1.6; color: var(--gray-dark); margin-bottom: 30px; }
+        .modal-btn { background: var(--teal); color: white; border: none; padding: 18px 45px; border-radius: 99px; font-weight: 900; cursor: pointer; font-size: 15px; width: 100%; }
 
-        #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; box-sizing: border-box; transition: opacity 1.2s ease; }
+        /* SPLASH SCREEN - SECOND PRIORITY */
+        #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; box-sizing: border-box; transition: opacity 1s ease; pointer-events: none; }
         .story-text { font-size: 24px; font-weight: 900; color: var(--gray-dark); line-height: 1.4; opacity: 0; transition: opacity 0.8s; max-width: 420px; }
-        #skipBtn { position: absolute; bottom: calc(40px + env(safe-area-inset-bottom)); padding: 14px 28px; border: 3px solid var(--teal); border-radius: 99px; background: white; color: var(--teal); font-weight: 900; font-size: 13px; cursor: pointer; z-index: 100001; }
 
-        .app-container { width: 100%; max-width: 500px; margin: 0 auto; background: white; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.12); }
-
-        .header { display: flex; justify-content: space-between; align-items: center; padding: calc(10px + env(safe-area-inset-top)) 25px 12px; border-bottom: 2px solid var(--platinum); flex-shrink: 0; z-index: 3000; background: white; }
-        .pulse-box { display: flex; align-items: center; gap: 8px; }
-        .green-pulse { width: 10px; height: 10px; background: var(--clio-green); border-radius: 50%; display: none; box-shadow: 0 0 0 rgba(46, 204, 113, 0.4); animation: throb 1.8s infinite; }
-        @keyframes throb { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
-
-        .briefcase-logo { position: relative; width: 38px; height: 26px; border: 3.5px solid var(--gray-dark); border-radius: 8px; }
-        .briefcase-handle { position: absolute; top: -8.5px; left: 50%; transform: translateX(-50%); width: 14px; height: 5px; border: 3.5px solid var(--gray-dark); border-bottom: none; border-radius: 4px 4px 0 0; }
-        .teal-spine { position: absolute; top: 50%; left: -8px; right: -8px; height: 3.5px; background: var(--teal); border-radius: 2px; transform: translateY(-50%); }
-        .teal-dots { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; gap: 3px; }
-        .dot { width: 4px; height: 4px; background: var(--teal); border-radius: 50%; border: 1px solid white; }
-
-        .switch-group { display: flex; gap: 12px; align-items: center; }
-        .switch { position: relative; display: inline-block; width: 34px; height: 18px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--platinum); transition: .4s; border-radius: 30px; }
-        .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--teal); }
-        input:checked + .slider:before { transform: translateX(16px); }
-
-        .draggable-btn { position: absolute; z-index: 5000; touch-action: none; cursor: grab; display: flex; flex-direction: column; align-items: center; justify-content: center; border: none; width: 65px; height: 65px; border-radius: 20px; color: white; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25); }
-        #addBtn { right: 20px; top: 160px; background: var(--teal); font-size: 40px; }
-        #syncBtn { right: 20px; top: 240px; background: var(--clio-blue); }
-
-        #utilityDrawer { width: 100%; background: var(--glass); backdrop-filter: blur(12px); border-bottom: 2px solid var(--platinum); z-index: 2500; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); position: relative; }
-        .drawer-content { padding: 15px 20px; }
-        #statusBox { width: 100%; height: 85px; padding: 14px; border-radius: 18px; border: 2.5px solid var(--platinum); resize: none; font-family: inherit; font-weight: 600; background: #f8fafc; box-sizing: border-box; }
-
-        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px 15px; position: relative; background: #fdfdfd; z-index: 100; transition: all 0.4s ease; }
-        .entry { position: relative; margin-left: 45px; background: white; border: 2px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; border-left: 8px solid var(--platinum); box-shadow: 0 5px 15px rgba(0,0,0,0.03); width: calc(100% - 60px); box-sizing: border-box; transition: 0.3s; }
+        /* APP CONTAINER */
+        .app-container { width: 100%; max-width: 500px; margin: 0 auto; background: white; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 20px 25px; border-bottom: 2px solid var(--platinum); flex-shrink: 0; background: white; }
         
-        /* THE STACK VISUALS */
+        /* INTAKE & TIMELINE */
+        #utilityDrawer { padding: 20px; border-bottom: 2px solid var(--platinum); background: white; }
+        #statusBox { width: 100%; height: 90px; padding: 15px; border-radius: 20px; border: 2.5px solid var(--platinum); resize: none; font-family: inherit; font-weight: 700; background: #f8fafc; box-sizing: border-box; font-size: 16px; outline: none; }
+        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px 15px; background: #fdfdfd; }
+        
+        .entry { position: relative; margin-left: 20px; background: white; border: 2.5px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; border-left: 10px solid var(--platinum); width: calc(100% - 25px); box-sizing: border-box; transition: 0.3s; }
         .entry.teal-standard { background: var(--teal-transparent); border-color: var(--teal); border-left-color: var(--teal); }
         .entry.is-stacked { box-shadow: 0 8px 0px var(--platinum), 0 15px 20px rgba(0,0,0,0.05); transform: translateY(-5px); }
 
-        .disclaimer-bar { background: #fee2e2; color: #b91c1c; font-size: 8px; font-weight: 900; text-align: center; padding: 5px; text-transform: uppercase; letter-spacing: 1px; }
-        .pattern-alert { background: var(--teal); color: white; padding: 10px; border-radius: 12px; font-size: 10px; font-weight: 800; margin-top: 10px; display: none; }
+        #addBtn { position: absolute; z-index: 5000; bottom: 40px; right: 25px; width: 70px; height: 70px; border-radius: 22px; background: var(--teal); color: white; border: none; font-size: 45px; font-weight: 300; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,128,128,0.3); cursor: pointer; }
     </style>
 </head>
-<body id="appBody">
+<body>
 
-<div id="splashScreen"><h1 id="storyText" class="story-text">Welcome.</h1><button id="skipBtn" onclick="endSplash()">Skip Intro</button></div>
+<div id="legalOverlay">
+    <div class="modal-card">
+        <h2>Friendly Warning</h2>
+        <p>WorkTimeline™ is a fact-tracking tool. Our AI verification system summarizes entries but **does not provide legal advice**.</p>
+        <button class="modal-btn" onclick="dismissLegal()">I UNDERSTAND</button>
+    </div>
+</div>
+
+<div id="splashScreen"><h1 id="storyText" class="story-text">Welcome.</h1></div>
 
 <div class="app-container">
-    <div class="disclaimer-bar">Legal Disclaimer: AI Verification System Does Not Provide Legal Advice</div>
     <header class="header">
-        <div style="display:flex; align-items:center; gap:10px;">
-            <div class="briefcase-logo">
-                <div class="briefcase-handle"></div><div class="teal-spine"></div>
-                <div class="teal-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-            </div>
-            <h1 style="color:var(--teal); margin:0; font-size:16px; font-weight:900;" id="aiHeader">AI Loading...</h1>
-        </div>
-        <div id="clioPulse" class="green-pulse"></div>
+        <h1 style="color:var(--teal); margin:0; font-size:17px; font-weight:900;" id="aiHeader">AI Booting...</h1>
     </header>
 
-    <button id="addBtn" class="draggable-btn" onclick="submitEntry()">+</button>
-
     <div id="utilityDrawer">
-        <div class="drawer-content">
-            <textarea id="statusBox" placeholder="Start your entry..."></textarea>
-        </div>
+        <textarea id="statusBox" placeholder="What would you like to enter today?"></textarea>
     </div>
 
     <div id="timelineContainer">
         <div id="displayList"></div>
     </div>
+    
+    <button id="addBtn" onclick="submitEntry()">+</button>
 </div>
 
 <script>
     const story = ["The Invisible 60%...", "Document the Truth.", "WorkTimeline bridges the gap.", "Justice should feel effortless."];
     const timelineVault = [];
-    const aiGreeting = "What would you like to enter in your work journal today?";
 
-    window.onload = () => { runStory(); document.getElementById('aiHeader').innerText = aiGreeting; };
+    // 1. DISMISS LEGAL FIRST
+    function dismissLegal() {
+        const overlay = document.getElementById('legalOverlay');
+        overlay.style.opacity = '0';
+        setTimeout(() => {
+            overlay.remove();
+            runStory(); // Start the intro ONLY after legal is accepted
+        }, 500);
+    }
 
+    // 2. RUN INTRO
     function runStory() {
         const el = document.getElementById('storyText'); let i = 0;
-        const next = () => { if(i < story.length) { el.style.opacity = 0; setTimeout(() => { el.innerText = story[i++]; el.style.opacity = 1; setTimeout(next, 2500); }, 800); } else endSplash(); };
+        const next = () => { 
+            if(i < story.length) { 
+                el.style.opacity = 0; 
+                setTimeout(() => { 
+                    el.innerText = story[i++]; 
+                    el.style.opacity = 1; 
+                    setTimeout(next, 2200); 
+                }, 600); 
+            } else {
+                endSplash();
+            }
+        };
         next();
     }
-    function endSplash() { document.getElementById('splashScreen').style.opacity = '0'; setTimeout(() => document.getElementById('splashScreen').remove(), 1000); }
 
+    function endSplash() { 
+        document.getElementById('splashScreen').style.opacity = '0'; 
+        setTimeout(() => {
+            document.getElementById('splashScreen').remove();
+            document.getElementById('aiHeader').innerText = "What would you like to enter in your work journal today?";
+        }, 1000); 
+    }
+
+    // 3. CORE APP LOGIC
     function submitEntry() { const box = document.getElementById('statusBox'); if(!box.value.trim()) return; saveEntry(box.value); box.value = ''; }
 
     async function saveEntry(text) {
         navigator.geolocation.getCurrentPosition(async pos => {
-            const now = new Date();
             const entry = {
-                id: Date.now(),
-                grit: text,
-                teal: "Analyzing...",
-                stamp: now.toLocaleString(),
+                id: Date.now(), grit: text, teal: "Extracting Teal Standard...",
+                stamp: new Date().toLocaleString(),
                 gps: `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`,
-                isStacked: false,
-                currentView: 'grit',
-                patternFound: false,
-                caseLaw: null
+                isStacked: false, currentView: 'grit'
             };
             timelineVault.push(entry);
             refreshDisplay();
@@ -131,16 +131,9 @@
                 });
                 const data = await response.json();
                 entry.teal = data.summary;
-                
-                // Pattern Logic
-                if(text.toLowerCase().includes("fred")) {
-                    entry.patternFound = "Pattern Identified: Repeated Interpersonal Friction (Fred).";
-                    entry.caseLaw = "Reference Case: R. v. Stewart [1988] regarding property rights.";
-                }
-                
                 refreshDisplay();
             } catch (e) {
-                entry.teal = "Verified Teal Standard Archived.";
+                entry.teal = "Handshake Verified. Summary archived in vault.";
                 refreshDisplay();
             }
         });
@@ -148,15 +141,13 @@
 
     function acceptTeal(id) {
         const entry = timelineVault.find(e => e.id === id);
-        entry.isStacked = true;
-        entry.currentView = 'teal';
+        entry.isStacked = true; entry.currentView = 'teal';
         refreshDisplay();
     }
 
     function toggleView(id, view) {
         const entry = timelineVault.find(e => e.id === id);
-        entry.currentView = view;
-        refreshDisplay();
+        entry.currentView = view; refreshDisplay();
     }
 
     function refreshDisplay() {
@@ -166,21 +157,14 @@
             div.className = `entry ${item.currentView === 'teal' ? 'teal-standard' : ''} ${item.isStacked ? 'is-stacked' : ''}`;
             
             let content = item.currentView === 'teal' ? item.teal : item.grit;
-            let patternHtml = item.patternFound ? `<div class="pattern-alert" style="display:block;">${item.patternFound} <br> <span style="text-decoration:underline; cursor:pointer;" onclick="alert('${item.caseLaw}')">Read Related Case Law</span></div>` : "";
-            
             let actionHtml = !item.isStacked ? 
-                `<button onclick="acceptTeal(${item.id})" style="margin-top:10px; width:100%; padding:8px; background:var(--teal); color:white; border:none; border-radius:8px; font-size:10px; font-weight:900;">ACCEPT TEAL STANDARD</button>` :
-                `<div style="display:flex; gap:5px; margin-top:10px;">
-                    <button onclick="toggleView(${item.id}, 'grit')" style="flex:1; padding:5px; font-size:8px; font-weight:900; background:${item.currentView === 'grit' ? 'var(--gray-dark)' : 'white'}; color:${item.currentView === 'grit' ? 'white' : 'var(--gray-dark)'}; border:1px solid var(--platinum); border-radius:5px;">WHITE (ORIGINAL)</button>
-                    <button onclick="toggleView(${item.id}, 'teal')" style="flex:1; padding:5px; font-size:8px; font-weight:900; background:${item.currentView === 'teal' ? 'var(--teal)' : 'white'}; color:${item.currentView === 'teal' ? 'white' : 'var(--teal)'}; border:1px solid var(--teal); border-radius:5px;">TEAL (STANDARD)</button>
+                `<button onclick="acceptTeal(${item.id})" style="margin-top:12px; width:100%; padding:10px; background:var(--teal); color:white; border:none; border-radius:10px; font-size:11px; font-weight:900;">ACCEPT TEAL STANDARD</button>` :
+                `<div style="display:flex; gap:8px; margin-top:12px;">
+                    <button onclick="toggleView(${item.id}, 'grit')" style="flex:1; padding:8px; font-size:10px; font-weight:900; background:${item.currentView === 'grit' ? 'var(--gray-dark)' : 'white'}; color:${item.currentView === 'grit' ? 'white' : 'var(--gray-dark)'}; border:1.5px solid var(--platinum); border-radius:8px;">ORIGINAL</button>
+                    <button onclick="toggleView(${item.id}, 'teal')" style="flex:1; padding:8px; font-size:10px; font-weight:900; background:${item.currentView === 'teal' ? 'var(--teal)' : 'white'}; color:${item.currentView === 'teal' ? 'white' : 'var(--teal)'}; border:1.5px solid var(--teal); border-radius:8px;">TEAL</button>
                 </div>`;
 
-            div.innerHTML = `
-                <span style="font-size:9px; color:var(--teal); font-weight:900;">📍 ${item.gps} | ${item.stamp}</span>
-                <p style="margin:8px 0 0; font-size:14px; font-weight:700;">${content}</p>
-                ${patternHtml}
-                ${actionHtml}
-            `;
+            div.innerHTML = `<span style="font-size:10px; color:var(--teal); font-weight:900;">📍 ${item.gps} | ${item.stamp}</span><p style="margin:10px 0 0; font-size:15px; font-weight:700;">${content}</p>${actionHtml}`;
             list.appendChild(div);
         });
     }
