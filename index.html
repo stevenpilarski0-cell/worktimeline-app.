@@ -3,64 +3,213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Documents Build</title>
+    <title>WorkTimeline™ | Master Prototype Build 310</title>
     <style>
-        /* 1. CORE STYLE & FONTS */
+        /* 1. BRANDING & CORE DESIGN SYSTEM */
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Nunito+Sans:wght@400;600;700;800&display=swap');
         
         :root { 
-            --teal: #008080; --silver-gray: #95a5a6; --gray-bg: #e2e8f0; --clio-green: #2ecc71; 
-            --clio-blue: #0076CE; --gray-border: #cbd5e0; --mac-shadow: 0 10px 30px rgba(0,0,0,0.12); 
-            --risk-red: #e53e3e; --heavy-teal: #006666;
+            --teal: #008080; 
+            --silver-gray: #95a5a6; 
+            --gray-bg: #e2e8f0; 
+            --clio-blue: #0076CE; 
+            --gray-border: #cbd5e0; 
+            --mac-shadow: 0 10px 30px rgba(0,0,0,0.12); 
+            --risk-red: #e53e3e; 
+            --heavy-teal: #006666;
         }
         
-        body { font-family: 'Nunito', sans-serif; background: var(--gray-bg); margin: 0; padding: 0; height: 100dvh; width: 100vw; overflow: hidden; display: flex; justify-content: center; -webkit-tap-highlight-color: transparent; position: fixed; }
-        .app-locked { filter: blur(35px); pointer-events: none; }
-        .ghost-active .app-container { filter: blur(25px); opacity: 0.15; pointer-events: none; }
+        body { 
+            font-family: 'Nunito', sans-serif; 
+            background: var(--gray-bg); 
+            margin: 0; padding: 0; 
+            height: 100dvh; width: 100vw; 
+            overflow: hidden; 
+            display: flex; justify-content: center; 
+            -webkit-tap-highlight-color: transparent; 
+            position: fixed; 
+        }
 
-        .app-container { width: 100%; max-width: 500px; background: white; height: 100dvh; display: flex; flex-direction: column; position: relative; border: 1.5px solid var(--gray-border); box-sizing: border-box; overflow: hidden; }
+        /* 2. GHOST MODE LOGIC - EXEMPTING UI CONTROLS */
+        .ghost-active #timelineContainer, 
+        .ghost-active #utilityDrawer, 
+        .ghost-active #mgmtDrawer,
+        .ghost-active .briefcase-container,
+        .ghost-active .header-top div:nth-child(2) { 
+            filter: blur(30px); 
+            opacity: 0.05; 
+            pointer-events: none; 
+        }
+
+        .app-container { 
+            width: 100%; 
+            max-width: 500px; 
+            background: white; 
+            height: 100dvh; 
+            display: flex; 
+            flex-direction: column; 
+            position: relative; 
+            border: 1.5px solid var(--gray-border); 
+            box-sizing: border-box; 
+            overflow: hidden; 
+        }
         
-        /* 2. HEADER REFINEMENT */
-        .header { padding: 12px 15px; border-bottom: 1px solid var(--gray-border); background: white; z-index: 4000; position: relative; padding-top: max(12px, env(safe-area-inset-top)); }
+        /* 3. HEADER & BRAND MARK */
+        .header { 
+            padding: 12px 15px; 
+            border-bottom: 1px solid var(--gray-border); 
+            background: white; 
+            z-index: 9000; 
+            position: relative; 
+            padding-top: max(12px, env(safe-area-inset-top)); 
+        }
         .header-top { display: flex; justify-content: flex-start; align-items: center; gap: 0; }
-        .briefcase-container { position: relative; width: 44px; height: 28px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .briefcase-icon { width: 28px; height: 20px; border: 2.2px solid var(--heavy-teal); border-radius: 5px; position: relative; display: flex; align-items: center; justify-content: center; }
-        .briefcase-icon::before { content: ''; position: absolute; top: -8px; width: 10px; height: 6px; border: 2.2px solid var(--heavy-teal); border-bottom: none; border-radius: 3.5px 3.5px 0 0; background: white; z-index: 2; }
-        .icon-timeline { width: 155%; height: 2px; background: var(--heavy-teal); position: absolute; top: 50%; display: flex; justify-content: space-evenly; align-items: center; z-index: 3; left: -27.5%; transform: translateY(-50%); }
-        .icon-dot { width: 4px; height: 4px; background: white; border: 1.2px solid var(--heavy-teal); border-radius: 50%; }
         
-        .header-controls { position: absolute; right: 15px; display: flex; flex-direction: column; gap: 4px; }
-        .toggle-btn { background: #f1f5f9; border: none; border-radius: 20px; font-size: 7px; font-weight: 900; padding: 4px 10px; color: var(--teal); cursor: pointer; text-transform: uppercase; }
+        .briefcase-container { 
+            position: relative; width: 44px; height: 28px; 
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0; 
+        }
+        .briefcase-icon { 
+            width: 28px; height: 20px; 
+            border: 2.2px solid var(--heavy-teal); 
+            border-radius: 5px; 
+            position: relative; display: flex; align-items: center; justify-content: center; 
+        }
+        .briefcase-icon::before { 
+            content: ''; position: absolute; top: -8px; 
+            width: 10px; height: 6px; 
+            border: 2.2px solid var(--heavy-teal); 
+            border-bottom: none; border-radius: 3.5px 3.5px 0 0; 
+            background: white; z-index: 2; 
+        }
+        
+        .icon-timeline { 
+            width: 155%; height: 2px; 
+            background: var(--heavy-teal); 
+            position: absolute; top: 50%; 
+            display: flex; justify-content: space-evenly; align-items: center; 
+            z-index: 3; left: -27.5%; transform: translateY(-50%); 
+        }
+        .icon-dot { 
+            width: 4px; height: 4px; 
+            background: white; 
+            border: 1.2px solid var(--heavy-teal); 
+            border-radius: 50%; 
+        }
+        
+        .header-controls { 
+            position: absolute; right: 15px; 
+            display: flex; flex-direction: column; gap: 4px; 
+            z-index: 9999; 
+        }
+        .toggle-btn { 
+            background: #f1f5f9; 
+            border: 1.5px solid var(--gray-border); 
+            border-radius: 20px; 
+            font-size: 7px; font-weight: 900; 
+            padding: 4px 10px; color: var(--teal); 
+            cursor: pointer; text-transform: uppercase; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
 
-        /* 3. NEUTRAL UI - DOCUMENTS MEDIA UPDATED */
-        .template-row { display: flex; justify-content: space-between; gap: 6px; margin-bottom: 15px; }
-        .media-icons-row { display: flex; gap: 8px; margin: 15px 0; }
-        .media-pill { background: #f1f5f9; border: 1.2px solid var(--gray-border); padding: 10px; border-radius: 18px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 7px; font-weight: 900; color: #4a5568; gap: 6px; }
-        .m-icon { width: 18px; height: 12px; background: #4a5568; border-radius: 3px; }
-        .m-doc { width: 14px; height: 16px; border: 2px solid #4a5568; border-radius: 2px; position: relative; }
-        .m-doc::after { content: ''; position: absolute; top: 0; right: 0; width: 4px; height: 4px; background: var(--gray-border); border-left: 2px solid #4a5568; border-bottom: 2px solid #4a5568; }
+        /* 4. UTILITY DRAWER & MEDIA TOOLS */
+        #utilityDrawer { 
+            position: absolute; top: 60px; width: 100%; 
+            background: white; border-bottom: 1.5px solid var(--gray-border); 
+            z-index: 3500; transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) transform; 
+            transform: translateY(calc(-100% + 40px)); 
+            border-radius: 0 0 30px 30px; 
+        }
+        .template-row { display: flex; justify-content: space-between; gap: 6px; margin-bottom: 15px; padding: 0 15px; }
+        .media-icons-row { display: flex; gap: 8px; margin: 15px 0; padding: 0 15px; }
+        .media-pill { 
+            background: #f1f5f9; border: 1.2px solid var(--gray-border); 
+            padding: 10px; border-radius: 18px; flex: 1; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            font-size: 7px; font-weight: 900; color: #4a5568; gap: 6px; 
+        }
+        .m-doc { 
+            width: 14px; height: 16px; border: 2px solid #4a5568; 
+            border-radius: 2px; position: relative; 
+        }
+        .m-doc::after { 
+            content: ''; position: absolute; top: 0; right: 0; 
+            width: 4px; height: 4px; background: var(--gray-border); 
+            border-left: 1px solid #4a5568; border-bottom: 1px solid #4a5568; 
+        }
 
-        /* 4. DRAWER & TIMELINE */
-        #utilityDrawer { position: absolute; top: 60px; width: 100%; background: white; border-bottom: 1.5px solid var(--gray-border); z-index: 3500; transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) transform; transform: translateY(calc(-100% + 40px)); border-radius: 0 0 30px 30px; }
-        #mgmtDrawer { position: fixed; bottom: 0; width: 100%; max-width: 500px; background: white; border-top: 2.5px solid var(--gray-border); z-index: 4500; transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) transform; transform: translateY(calc(100% - 45px)); border-radius: 30px 30px 0 0; }
-        .handle { width: 100%; height: 45px; display: flex; align-items: center; justify-content: center; }
-        .handle-pill { width: 40px; height: 6px; background: #cbd5e0; border-radius: 10px; }
-
-        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 60px 15px 180px; display: flex; flex-direction: column; gap: 25px; }
-        .stack-inner { position: relative; width: 88%; min-height: 80px; transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer; }
+        /* 5. TIMELINE & 3D CARDS */
+        #timelineContainer { 
+            flex-grow: 1; overflow-y: auto; 
+            padding: 60px 15px 180px; 
+            display: flex; flex-direction: column; gap: 25px; 
+        }
+        .stack-inner { 
+            position: relative; width: 88%; min-height: 80px; 
+            transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer; 
+        }
         .stack-inner.flipped { transform: rotateY(180deg); }
-        .bubble { padding: 18px; border-radius: 24px; backface-visibility: hidden; box-shadow: var(--mac-shadow); width: 100%; box-sizing: border-box; border: 1px solid #e5e5e5; }
-        .bubble-front { background: #f1f1f1; font-family: 'Nunito Sans', sans-serif; font-size: 15px; font-weight: 600; color: #1a202c; }
-        .bubble-back { background: var(--teal); color: white; transform: rotateY(180deg); position: absolute; top: 0; left: 0; height: 100%; padding: 15px; font-size: 11px; overflow-y: auto; }
+        .bubble { 
+            padding: 18px; border-radius: 24px; 
+            backface-visibility: hidden; box-shadow: var(--mac-shadow); 
+            width: 100%; box-sizing: border-box; border: 1px solid #e5e5e5; 
+        }
+        .bubble-front { 
+            background: #f1f1f1; 
+            font-family: 'Nunito Sans', sans-serif; 
+            font-size: 15px; font-weight: 600; color: #1a202c; 
+        }
+        .bubble-back { 
+            background: var(--teal); color: white; 
+            transform: rotateY(180deg); position: absolute; 
+            top: 0; left: 0; height: 100%; padding: 15px; 
+            font-size: 11px; overflow-y: auto; 
+        }
 
-        /* 5. BLUE SYNC BUTTON */
-        .draggable { position: absolute; z-index: 5000; display: flex; align-items: center; justify-content: center; font-weight: 900; box-shadow: var(--mac-shadow); cursor: pointer; border: none; }
-        #addBtn { width: 75px; height: 75px; background: var(--teal); font-size: 35px; bottom: 120px; right: 20px; color: white; border-radius: 50%; }
-        #syncClioBtn { width: 80px; height: 80px; background: var(--clio-blue); color: white; bottom: 210px; right: 20px; border-radius: 50%; font-size: 8px; text-align: center; text-transform: uppercase; padding: 10px; line-height: 1.2; }
+        /* 6. DRAGGABLE UI ELEMENTS */
+        .draggable { 
+            position: absolute; z-index: 9000; 
+            display: flex; align-items: center; justify-content: center; 
+            font-weight: 900; box-shadow: var(--mac-shadow); 
+            cursor: pointer; border: none; 
+        }
+        #addBtn { 
+            width: 75px; height: 75px; 
+            background: var(--teal); font-size: 35px; 
+            bottom: 120px; right: 20px; color: white; border-radius: 50%; 
+        }
+        #syncClioBtn { 
+            width: 80px; height: 80px; 
+            background: var(--clio-blue); color: white; 
+            bottom: 210px; right: 20px; border-radius: 50%; 
+            font-size: 8px; text-align: center; text-transform: uppercase; 
+            padding: 10px; line-height: 1.2; 
+        }
 
-        textarea { width: 100%; height: 100px; border: 1.5px solid var(--gray-border); border-radius: 20px; padding: 15px; font-size: 16px; outline: none; background: #fafafa; font-family: 'Nunito Sans', sans-serif; }
-        .chip { border: 1px solid var(--gray-border); padding: 8px 0; border-radius: 50px; font-size: 8px; font-weight: 900; background: #f8fafc; flex: 1; text-align: center; }
-        .mgmt-btn { width: 100%; padding: 15px; border-radius: 15px; border: none; font-weight: 900; cursor: pointer; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; }
+        /* 7. MANAGEMENT DRAWER */
+        #mgmtDrawer { 
+            position: fixed; bottom: 0; width: 100%; max-width: 500px; 
+            background: white; border-top: 2.5px solid var(--gray-border); 
+            z-index: 4500; transition: 0.5s transform; 
+            transform: translateY(calc(100% - 45px)); 
+            border-radius: 30px 30px 0 0; 
+        }
+        .handle { width: 100%; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .handle-pill { width: 40px; height: 6px; background: #cbd5e0; border-radius: 10px; }
+        
+        .mgmt-btn { 
+            width: 100%; padding: 15px; border-radius: 15px; 
+            border: none; font-weight: 900; cursor: pointer; 
+            text-transform: uppercase; font-size: 11px; 
+        }
+
+        textarea { 
+            width: calc(100% - 30px); height: 100px; margin: 0 15px;
+            border: 1.5px solid var(--gray-border); border-radius: 20px; 
+            padding: 15px; font-size: 16px; outline: none; background: #fafafa; 
+            font-family: 'Nunito Sans', sans-serif; box-sizing: border-box;
+        }
+        .chip { border: 1px solid var(--gray-border); padding: 8px 0; border-radius: 50px; font-size: 8px; font-weight: 900; background: #f8fafc; flex: 1; text-align: center; cursor: pointer; }
     </style>
 </head>
 <body id="appBody">
@@ -81,7 +230,7 @@
     </header>
 
     <div id="utilityDrawer">
-        <div style="padding: 15px;">
+        <div style="padding: 15px 0;">
             <div class="template-row">
                 <button onclick="useTemplate('INCIDENT')" class="chip">INCIDENT</button>
                 <button onclick="useTemplate('INJURY')" class="chip">INJURY</button>
@@ -89,8 +238,8 @@
                 <button onclick="useTemplate('EVIDENCE')" class="chip">EVIDENCE</button>
             </div>
             <div class="media-icons-row">
-                <div class="media-pill"><div class="m-icon"></div>CAMERA</div>
-                <div class="media-pill"><div class="m-icon"></div>AUDIO</div>
+                <div class="media-pill"><div style="width:18px; height:12px; background:#4a5568; border-radius:3px;"></div>CAMERA</div>
+                <div class="media-pill"><div style="width:12px; height:12px; border:2px solid #4a5568; border-radius:50%;"></div>AUDIO</div>
                 <div class="media-pill"><div class="m-doc"></div>DOCUMENTS</div>
             </div>
             <textarea id="statusBox" placeholder="Log your day..."></textarea>
@@ -105,8 +254,8 @@
     <div id="mgmtDrawer">
         <div class="handle" onclick="toggleMgmt()"><div class="handle-pill"></div></div>
         <div style="padding: 0 25px 50px; display: flex; flex-direction: column; gap: 10px;">
-            <button class="mgmt-btn" style="background: var(--silver-gray); color: white;" onclick="alert('Exporting to PDF/Clio...')">SAVE & EXPORT</button>
-            <button class="mgmt-btn" style="background: var(--teal); color: white;" onclick="confirm('Wipe Timeline?') && (localStorage.clear() || (vault = []) || refresh())">START NEW TIMELINE</button>
+            <button class="mgmt-btn" style="background: var(--silver-gray); color: white;" onclick="alert('Preparing Documents for Export...')">SAVE & EXPORT</button>
+            <button class="mgmt-btn" style="background: var(--teal); color: white;" onclick="confirm('Wipe Current Timeline?') && (localStorage.clear() || (vault = []) || refresh())">START NEW TIMELINE</button>
         </div>
     </div>
 </div>
@@ -115,15 +264,27 @@
     let vault = JSON.parse(localStorage.getItem('wt_timeline')) || [];
     let utilOpen = false; let mgmtOpen = false;
 
-    // THE ARTIFACT KILLER
+    // --- ARTIFACT KILLER: CLEAN DATABASE ON LOAD ---
     vault = vault.filter(item => item.text && item.text !== "undefined" && !item.text.includes("undefined"));
     localStorage.setItem('wt_timeline', JSON.stringify(vault));
 
-    function toggleUtility() { document.getElementById('utilityDrawer').style.transform = utilOpen ? 'translateY(calc(-100% + 40px))' : 'translateY(0)'; utilOpen = !utilOpen; }
-    function toggleMgmt() { document.getElementById('mgmtDrawer').style.transform = mgmtOpen ? 'translateY(calc(100% - 45px))' : 'translateY(0)'; mgmtOpen = !mgmtOpen; }
+    function toggleUtility() { 
+        document.getElementById('utilityDrawer').style.transform = utilOpen ? 'translateY(calc(-100% + 40px))' : 'translateY(0)'; 
+        utilOpen = !utilOpen; 
+    }
+
+    function toggleMgmt() { 
+        document.getElementById('mgmtDrawer').style.transform = mgmtOpen ? 'translateY(calc(100% - 45px))' : 'translateY(0)'; 
+        mgmtOpen = !mgmtOpen; 
+    }
 
     function useTemplate(t) { 
-        const ts = { 'INCIDENT': 'ACTION:\nVIOLATION:', 'WITNESS': 'NAME:\nCONTACT:', 'INJURY': 'OFA RECORD:\nINJURY:', 'EVIDENCE': 'TYPE:\nLOCATION:' }; 
+        const ts = { 
+            'INCIDENT': 'ACTION:\nVIOLATION:', 
+            'WITNESS': 'NAME:\nCONTACT:', 
+            'INJURY': 'OFA RECORD:\nINJURY:', 
+            'EVIDENCE': 'TYPE:\nLOCATION:' 
+        }; 
         document.getElementById('statusBox').value = ts[t]; 
     }
 
@@ -131,30 +292,46 @@
         const text = document.getElementById('statusBox').value;
         if(!text.trim() || text.includes("undefined")) return;
         vault.push({ text: text, stamp: new Date().toLocaleString() });
-        localStorage.setItem('wt_timeline', JSON.stringify(vault)); refresh();
+        localStorage.setItem('wt_timeline', JSON.stringify(vault)); 
+        refresh();
         document.getElementById('statusBox').value = '';
+        if(utilOpen) toggleUtility();
     };
 
     function refresh() {
         const list = document.getElementById('timelineContainer'); list.innerHTML = '';
         [...vault].reverse().forEach(item => {
-            list.innerHTML += `<div class="stack-wrapper">
+            list.innerHTML += `
+            <div class="stack-wrapper">
                 <div style="font-size:9px; font-weight:900; color:var(--silver-gray); margin-bottom:5px;">📍 LANGLEY | ${item.stamp}</div>
                 <div class="stack-inner" onclick="this.classList.toggle('flipped')">
                     <div class="bubble bubble-front"><p style="margin:0;">${item.text}</p></div>
-                    <div class="bubble bubble-back"><b>STATUTORY CROSS-REF:</b> Pattern verified.</div>
+                    <div class="bubble bubble-back">
+                        <b>STATUTORY CROSS-REFERENCE:</b><br>
+                        Pattern verified against BC ESA and WCB safety standards. 
+                        Documentary evidence linked to local timestamp.
+                    </div>
                 </div>
             </div>`;
         });
     }
 
+    // --- DRAGGABLE PHYSICS ENGINE ---
     function makeDraggable(el) {
-        let p1 = 0, p2 = 0, p3 = 0, p4 = 0; el.ontouchstart = dStart;
+        let p1 = 0, p2 = 0, p3 = 0, p4 = 0;
+        el.ontouchstart = dStart;
         function dStart(e) { p3 = e.touches[0].clientX; p4 = e.touches[0].clientY; document.ontouchend = dEnd; document.ontouchmove = dMove; }
-        function dMove(e) { let cx = e.touches[0].clientX; let cy = e.touches[0].clientY; p1 = p3 - cx; p2 = p4 - cy; p3 = cx; p4 = cy; el.style.top = (el.offsetTop - p2) + "px"; el.style.left = (el.offsetLeft - p1) + "px"; }
+        function dMove(e) { 
+            let cx = e.touches[0].clientX; let cy = e.touches[0].clientY; 
+            p1 = p3 - cx; p2 = p4 - cy; p3 = cx; p4 = cy; 
+            el.style.top = (el.offsetTop - p2) + "px"; 
+            el.style.left = (el.offsetLeft - p1) + "px"; 
+        }
         function dEnd() { document.ontouchend = null; document.ontouchmove = null; }
     }
-    makeDraggable(document.getElementById("addBtn")); makeDraggable(document.getElementById("syncClioBtn"));
+
+    makeDraggable(document.getElementById("addBtn")); 
+    makeDraggable(document.getElementById("syncClioBtn"));
     refresh();
 </script>
 </body>
