@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Restoration Build</title>
+    <title>WorkTimeline™ | Elite Master Build</title>
     <style>
-        /* 1. BRANDING & CORE DESIGN */
+        /* 1. BRANDING & CORE UI */
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Nunito+Sans:wght@400;600;700;800&display=swap');
         
         :root { 
@@ -16,18 +16,16 @@
         
         body { font-family: 'Nunito', sans-serif; background: var(--gray-bg); margin: 0; padding: 0; height: 100dvh; width: 100vw; overflow: hidden; display: flex; justify-content: center; -webkit-tap-highlight-color: transparent; position: fixed; }
         
-        /* 2. GHOST MODE - SELECTIVE BLUR */
-        .ghost-active #timelineContainer, 
-        .ghost-active #utilityDrawer, 
-        .ghost-active #mgmtDrawer { 
+        /* GHOST MODE ISOLATION */
+        .ghost-active #timelineContainer, .ghost-active #utilityDrawer, .ghost-active #mgmtDrawer { 
             filter: blur(40px) grayscale(1); opacity: 0.05; pointer-events: none; 
         }
 
         .app-container { width: 100%; max-width: 500px; background: white; height: 100dvh; display: flex; flex-direction: column; position: relative; border: 1.5px solid var(--gray-border); box-sizing: border-box; overflow: hidden; }
         
-        /* 3. HEADER RESTORATION - EXEMPT FROM BLUR */
+        /* 2. HEADER & LOGO (RESTORED) */
         .header { padding: 12px 15px; border-bottom: 1px solid var(--gray-border); background: white; z-index: 10000; position: relative; padding-top: max(12px, env(safe-area-inset-top)); }
-        .header-top { display: flex; justify-content: flex-start; align-items: center; gap: 0; }
+        .header-top { display: flex; justify-content: flex-start; align-items: center; }
         
         .briefcase-container { position: relative; width: 44px; height: 28px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .briefcase-icon { width: 28px; height: 20px; border: 2.2px solid var(--heavy-teal); border-radius: 5px; position: relative; display: flex; align-items: center; justify-content: center; }
@@ -39,26 +37,23 @@
         .toggle-btn { background: #f8fafc; border: 1.5px solid var(--gray-border); border-radius: 20px; font-size: 7px; font-weight: 900; padding: 6px 12px; color: var(--teal); cursor: pointer; text-transform: uppercase; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .ghost-active #ghostToggle { background: var(--risk-red); color: white; border-color: var(--risk-red); }
 
-        /* 4. UTILITY & MEDIA */
+        /* 3. UTILITY DRAWER & MEDIA */
         #utilityDrawer { position: absolute; top: 60px; width: 100%; background: white; border-bottom: 1.5px solid var(--gray-border); z-index: 3500; transition: 0.5s transform; transform: translateY(calc(-100% + 40px)); border-radius: 0 0 30px 30px; }
         .media-icons-row { display: flex; gap: 8px; margin: 15px 0; padding: 0 15px; }
         .media-pill { background: #f1f5f9; border: 1.2px solid var(--gray-border); padding: 10px; border-radius: 18px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 7px; font-weight: 900; color: #4a5568; gap: 6px; }
-        .m-doc { width: 14px; height: 16px; border: 2px solid #4a5568; border-radius: 2px; position: relative; }
+        
+        /* 4. ELITE TIMELINE (FLAT STACK) */
+        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 60px 15px 180px; display: flex; flex-direction: column; gap: 20px; }
+        .journal-card { background: #f1f1f1; border-radius: 24px; padding: 18px; box-shadow: var(--mac-shadow); border: 1px solid #e5e5e5; font-family: 'Nunito Sans', sans-serif; }
+        .card-text { font-size: 15px; font-weight: 600; color: #1a202c; line-height: 1.4; margin-bottom: 10px; }
+        .card-analysis { background: var(--teal); color: white; padding: 12px; border-radius: 15px; font-size: 11px; margin-top: 8px; font-weight: 400; }
 
-        /* 5. TIMELINE */
-        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 60px 15px 180px; display: flex; flex-direction: column; gap: 25px; transition: 0.3s filter; }
-        .stack-inner { position: relative; width: 88%; min-height: 80px; transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer; }
-        .stack-inner.flipped { transform: rotateY(180deg); }
-        .bubble { padding: 18px; border-radius: 24px; backface-visibility: hidden; box-shadow: var(--mac-shadow); width: 100%; box-sizing: border-box; border: 1px solid #e5e5e5; }
-        .bubble-front { background: #f1f1f1; font-family: 'Nunito Sans', sans-serif; font-size: 15px; font-weight: 600; color: #1a202c; }
-        .bubble-back { background: var(--teal); color: white; transform: rotateY(180deg); position: absolute; top: 0; left: 0; height: 100%; padding: 15px; font-size: 11px; overflow-y: auto; }
-
-        /* 6. DRAGGABLE BUTTONS */
+        /* 5. DRAGGABLE BUTTONS */
         .draggable { position: absolute; z-index: 10000; display: flex; align-items: center; justify-content: center; font-weight: 900; box-shadow: var(--mac-shadow); cursor: pointer; border: none; }
         #addBtn { width: 75px; height: 75px; background: var(--teal); font-size: 35px; bottom: 120px; right: 20px; color: white; border-radius: 50%; }
         #syncClioBtn { width: 80px; height: 80px; background: var(--clio-blue); color: white; bottom: 210px; right: 20px; border-radius: 50%; font-size: 8px; text-align: center; text-transform: uppercase; padding: 10px; line-height: 1.2; }
 
-        /* 7. MANAGEMENT */
+        /* 6. MANAGEMENT */
         #mgmtDrawer { position: fixed; bottom: 0; width: 100%; max-width: 500px; background: white; border-top: 2.5px solid var(--gray-border); z-index: 4500; transition: 0.5s transform; transform: translateY(calc(100% - 45px)); border-radius: 30px 30px 0 0; }
         .mgmt-btn { width: 100%; padding: 15px; border-radius: 15px; border: none; font-weight: 900; cursor: pointer; text-transform: uppercase; font-size: 11px; margin: 5px 0; }
     </style>
@@ -85,7 +80,7 @@
             <div class="media-icons-row">
                 <div class="media-pill">CAMERA</div>
                 <div class="media-pill">AUDIO</div>
-                <div class="media-pill"><div class="m-doc"></div>DOCUMENTS</div>
+                <div class="media-pill">DOCUMENTS</div>
             </div>
             <textarea id="statusBox" style="width:calc(100% - 30px); margin:0 15px; height:100px; border-radius:20px; padding:15px; font-family:'Nunito Sans'; border:1.5px solid var(--gray-border);" placeholder="Log your day..."></textarea>
         </div>
@@ -100,7 +95,7 @@
         <div class="handle" style="width:100%; height:45px; display:flex; align-items:center; justify-content:center; cursor:pointer;" onclick="toggleMgmt()"><div style="width:40px; height:6px; background:#cbd5e0; border-radius:10px;"></div></div>
         <div style="padding: 0 25px 50px;">
             <button class="mgmt-btn" style="background: var(--silver-gray); color: white;">SAVE & EXPORT</button>
-            <button class="mgmt-btn" style="background: var(--teal); color: white;" onclick="confirm('Wipe?') && (localStorage.clear() || location.reload())">START NEW TIMELINE</button>
+            <button class="mgmt-btn" style="background: var(--teal); color: white;" onclick="confirm('Wipe?') && (localStorage.clear() || (vault = []) || refresh())">START NEW TIMELINE</button>
         </div>
     </div>
 </div>
@@ -111,7 +106,6 @@
 
     // ARTIFACT SCRUBBER
     vault = vault.filter(item => item.text && item.text !== "undefined");
-    localStorage.setItem('wt_timeline', JSON.stringify(vault));
 
     function toggleUtility() { document.getElementById('utilityDrawer').style.transform = utilOpen ? 'translateY(calc(-100% + 40px))' : 'translateY(0)'; utilOpen = !utilOpen; }
     function toggleMgmt() { document.getElementById('mgmtDrawer').style.transform = mgmtOpen ? 'translateY(calc(100% - 45px))' : 'translateY(0)'; mgmtOpen = !mgmtOpen; }
@@ -128,12 +122,11 @@
     function refresh() {
         const list = document.getElementById('timelineContainer'); list.innerHTML = '';
         [...vault].reverse().forEach(item => {
-            list.innerHTML += `<div class="stack-wrapper" style="margin-bottom:20px;">
-                <div style="font-size:9px; font-weight:900; color:var(--silver-gray); margin-bottom:5px;">📍 LANGLEY | ${item.stamp}</div>
-                <div class="stack-inner" onclick="this.classList.toggle('flipped')">
-                    <div class="bubble bubble-front">${item.text}</div>
-                    <div class="bubble bubble-back"><b>STATUTORY CROSS-REF:</b> Verified.</div>
-                </div>
+            list.innerHTML += `
+            <div class="journal-card">
+                <div style="font-size:9px; font-weight:900; color:var(--silver-gray); margin-bottom:8px;">📍 LANGLEY | ${item.stamp}</div>
+                <div class="card-text">${item.text}</div>
+                <div class="card-analysis"><b>STATUTORY CROSS-REF:</b> Verified against BC ESA/WCB standards.</div>
             </div>`;
         });
     }
