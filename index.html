@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline Elite | v14.9 Heavy-Duty</title>
+    <title>WorkTimeline Elite | v15.1 Heavy-Duty</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&family=Nunito+Sans:wght@400;700&display=swap');
         
@@ -20,30 +20,32 @@
             --warn-yellow: #f1c40f; 
         }
 
-        /* RESET & BASE */
+        /* HEAVY-DUTY BASE STYLING */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
         body { 
             font-family: 'Nunito', sans-serif; 
             background-color: var(--gray-bg); 
             margin: 0; 
             padding: 0; 
+            height: 100vh; 
             height: 100dvh; 
             display: flex; 
             flex-direction: column; 
             overflow: hidden; 
         }
 
-        /* MAC-STYLE TOGGLE - FULL CODE NO SHORTCUTS */
-        .toggle-group { display: flex; gap: 15px; align-items: center; }
-        .mac-switch-wrapper { display: flex; flex-direction: column; align-items: center; }
-        .mac-switch { position: relative; display: inline-block; width: 40px; height: 22px; }
+        /* MAC-STYLE TOGGLES - FULL EXPLICIT CODE */
+        .toggle-group { display: flex; flex-direction: row; gap: 15px; align-items: center; }
+        .mac-switch-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .mac-switch { position: relative; display: inline-block; width: 42px; height: 24px; }
         .mac-switch input { opacity: 0; width: 0; height: 0; }
         .mac-slider { 
             position: absolute; 
             cursor: pointer; 
             top: 0; left: 0; right: 0; bottom: 0; 
             background-color: #d1d5db; 
-            transition: .3s; 
+            transition: 0.3s; 
             border-radius: 34px; 
         }
         .mac-slider:before { 
@@ -51,26 +53,30 @@
             content: ""; 
             height: 18px; 
             width: 18px; 
-            left: 2px; 
-            bottom: 2px; 
-            background-color: white; 
-            transition: .3s; 
+            left: 3px; 
+            bottom: 3px; 
+            background-color: #ffffff; 
+            transition: 0.3s; 
             border-radius: 50%; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2); 
         }
         input:checked + .mac-slider { background-color: var(--teal) !important; }
         input:checked + .mac-slider.gold-variant { background-color: var(--notes-gold) !important; }
         input:checked + .mac-slider:before { transform: translateX(18px); }
-        .switch-label { font-size: 8px; font-weight: 900; color: var(--slate); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .switch-label { font-size: 9px; font-weight: 900; color: var(--slate); margin-top: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
 
         /* TOP DRAWER ARCHITECTURE */
         #topDrawer { 
             position: fixed; 
             top: 0; 
+            left: 0;
             width: 100%; 
             background-color: var(--white); 
-            border-bottom: 5px solid var(--teal); 
-            border-radius: 0 0 35px 35px; 
+            border-bottom-width: 5px;
+            border-bottom-style: solid;
+            border-bottom-color: var(--teal); 
+            border-bottom-left-radius: 35px;
+            border-bottom-right-radius: 35px;
             transition: transform 0.4s cubic-bezier(0.1, 0.7, 0.1, 1); 
             z-index: 10000; 
             transform: translateY(calc(-100% + 60px)); 
@@ -87,11 +93,12 @@
             bottom: 0; 
             width: 100%; 
             background-color: var(--white); 
-            border-radius: 0 0 35px 35px; 
+            border-bottom-left-radius: 35px;
+            border-bottom-right-radius: 35px;
         }
         .top-pill { width: 55px; height: 6px; background-color: var(--mac-border); border-radius: 10px; position: absolute; bottom: 10px; }
 
-        /* INTAKE ELEMENTS */
+        /* INPUT AREA */
         #statusBox { 
             width: 100%; 
             height: 120px; 
@@ -107,6 +114,7 @@
         }
         .media-dock { 
             display: flex; 
+            flex-direction: row;
             gap: 12px; 
             background-color: #e2e8f0; 
             padding: 8px; 
@@ -117,8 +125,8 @@
         }
         .icon-btn { 
             background-color: var(--white); 
-            width: 44px; 
-            height: 44px; 
+            width: 46px; 
+            height: 46px; 
             border-radius: 12px; 
             display: flex; 
             align-items: center; 
@@ -126,17 +134,19 @@
             color: var(--slate); 
             border: none; 
             cursor: pointer; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
-        /* TIMELINE - ZERO JUMP STATIC CARDS */
+        /* TIMELINE - ZERO JUMP */
         #timeline { 
             flex-grow: 1; 
             overflow-y: auto; 
-            padding: 80px 20px 140px; 
+            padding-top: 80px;
+            padding-bottom: 140px;
+            padding-left: 20px;
+            padding-right: 20px;
             display: flex; 
             flex-direction: column; 
-            gap: 18px; 
+            gap: 20px; 
         }
         .entry-card { 
             background-color: var(--white); 
@@ -146,22 +156,32 @@
             border-left: 8px solid var(--teal); 
             box-shadow: 0 5px 15px rgba(0,0,0,0.05); 
             position: relative; 
+            width: 100%;
         }
         .note-card { border-left-color: var(--notes-gold) !important; }
         .stamp { font-size: 10px; font-weight: 800; color: var(--slate); opacity: 0.5; margin-bottom: 8px; }
-        .dual-badge { 
-            background-color: #e0f2f1; 
-            color: var(--teal); 
-            font-size: 9px; 
-            padding: 4px 8px; 
-            border-radius: 6px; 
-            font-weight: 900; 
-            margin-top: 12px; 
-            display: inline-block;
-            text-transform: uppercase;
+        
+        /* AI PULSE OVERLAY */
+        #aiPulse { 
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            background-color: rgba(255,255,255,0.9); 
+            z-index: 100001; 
+            display: none; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
         }
+        .pulse-circle { 
+            width: 100px; height: 100px; 
+            border-radius: 50%; 
+            border: 6px solid var(--teal); 
+            animation: pulse-ring 1.5s infinite; 
+        }
+        @keyframes pulse-ring { 0% { transform: scale(0.6); opacity: 1; } 100% { transform: scale(1.4); opacity: 0; } }
 
-        /* MODALS & CHOICE UI */
+        /* CHOICE MODAL */
         .overlay { 
             position: fixed; 
             top: 0; left: 0; 
@@ -182,7 +202,6 @@
             max-width: 360px; 
             text-align: center; 
             border: 4px solid var(--teal); 
-            box-shadow: var(--mac-shadow);
         }
         .btn { 
             padding: 18px; 
@@ -195,21 +214,17 @@
             font-size: 14px;
             text-transform: uppercase;
         }
-        
+
+        /* VAULT ACTION */
         #vaultBtn { 
             position: fixed; 
-            right: 20px; 
-            bottom: 85px; 
-            width: 60px; 
-            height: 60px; 
+            right: 20px; bottom: 85px; 
+            width: 64px; height: 64px; 
             background-color: var(--clio-blue); 
-            border-radius: 18px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            color: white; 
-            border: none; 
-            box-shadow: 0 8px 25px rgba(0,118,206,0.4);
+            border-radius: 20px; 
+            display: flex; align-items: center; justify-content: center; 
+            color: #ffffff; border: none; 
+            box-shadow: 0 8px 25px rgba(0,118,206,0.4); 
             z-index: 9999; 
         }
     </style>
@@ -220,14 +235,14 @@
 <input type="file" id="micIn" accept="audio/*" capture="microphone" style="display:none;" onchange="mediaLog('Voice Note')">
 <input type="file" id="docIn" style="display:none;" onchange="mediaLog('Document')">
 
-<button id="vaultBtn" onclick="alert('VAULT: Raw notes and AI Legal Precedents bundled for Clio sync.')">
-    <svg width="28" height="28" fill="white" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/></svg>
+<button id="vaultBtn" onclick="alert('VAULT STATUS: All Raw and AI-Crosslinked Artifacts are secured for Clio.')">
+    <svg width="30" height="30" fill="white" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/></svg>
 </button>
 
 <div id="topDrawer">
     <div style="padding: 20px;">
         <header style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <div style="font-weight:900; color:var(--teal); font-size:20px;">WorkTimeline™</div>
+            <div style="font-weight:900; color:var(--teal); font-size:22px;">WorkTimeline™</div>
             <div class="toggle-group">
                 <div class="mac-switch-wrapper">
                     <label class="mac-switch">
@@ -238,14 +253,14 @@
                 </div>
             </div>
         </header>
-        <textarea id="statusBox" placeholder="Describe the incident details..."></textarea>
+        <textarea id="statusBox" placeholder="Describe the event in detail..."></textarea>
         <div style="display:flex; align-items:center; margin-top:15px;">
             <div class="media-dock">
-                <button class="icon-btn" onclick="document.getElementById('cameraIn').click()"><svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M9 3L7.17 5H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-3.17L15 3H9z"/></svg></button>
-                <button class="icon-btn" onclick="document.getElementById('micIn').click()"><svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg></button>
-                <button class="icon-btn" onclick="document.getElementById('docIn').click()"><svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6z"/></svg></button>
+                <button class="icon-btn" onclick="document.getElementById('cameraIn').click()"><svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M9 3L7.17 5H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-3.17L15 3H9z"/></svg></button>
+                <button class="icon-btn" onclick="document.getElementById('micIn').click()"><svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg></button>
+                <button class="icon-btn" onclick="document.getElementById('docIn').click()"><svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6z"/></svg></button>
             </div>
-            <button onclick="analyzeIntelligence()" style="width:60px; height:60px; border-radius:15px; background-color:var(--teal); color:white; font-size:32px; font-weight:900; border:none; cursor:pointer;">+</button>
+            <button onclick="processEntry()" style="width:64px; height:64px; border-radius:18px; background-color:var(--teal); color:#ffffff; font-size:36px; font-weight:900; border:none; cursor:pointer;">+</button>
         </div>
     </div>
     <div class="top-handle" onclick="document.getElementById('topDrawer').classList.toggle('open')"><div class="top-pill"></div></div>
@@ -255,77 +270,88 @@
 
 <div id="choiceModal" class="overlay">
     <div class="modal">
-        <h2 style="color:var(--teal); margin:0; font-size:22px;">DUAL ARTIFACT DETECTED</h2>
-        <p id="patternInfo" style="margin: 20px 0; line-height:1.5; color:var(--slate); font-size: 14px;"></p>
-        <button class="btn" style="background-color:var(--teal); color:white;" onclick="executeChoice(true)">USE AI CASE LAW VERSION</button>
-        <button class="btn" style="background-color:var(--slate); color:white;" onclick="executeChoice(false)">KEEP MY RAW TEXT VERSION</button>
+        <h2 style="color:var(--teal); margin:0; font-size:24px;">AI INTERVENTION</h2>
+        <p id="patternAlert" style="margin: 20px 0; line-height:1.6; color:var(--slate); font-size: 15px;"></p>
+        <button class="btn" style="background-color:var(--teal); color:#ffffff;" onclick="finalizeEntry(true)">USE AI CASE-LAW VERSION</button>
+        <button class="btn" style="background-color:var(--slate); color:#ffffff;" onclick="finalizeEntry(false)">KEEP RAW TEXT VERSION</button>
     </div>
 </div>
 
-<script>
-    // FULL LENGTH SCRIPT - NO SUMMARIES
-    let db = JSON.parse(localStorage.getItem('WT_DUAL_V149')) || [];
-    let pendingArtifact = null;
+<div id="aiPulse">
+    <div class="pulse-circle"></div>
+    <div style="margin-top:30px; font-weight:900; color:var(--teal); font-size:18px; letter-spacing:1px;">ANALYZING PATTERNS...</div>
+</div>
 
-    const caseReference = {
-        RETAL: { 
-            title: "WorkSafeBC S.47 (Retaliation)", 
-            body: "LEGAL ARTIFACT: Potential retaliation identified following a First Aid report. This activity is protected under the BC Workers Compensation Act, Section 47 (Prohibited Action)." 
+<script>
+    // FULL ENGINE V15.1
+    let localDB = JSON.parse(localStorage.getItem('WORK_TIMELINE_V15_1')) || [];
+    let pendingData = null;
+
+    const legalPrecedents = {
+        RETALIATION: { 
+            title: "WorkSafeBC S.47 (Prohibited Action)", 
+            body: "LEGAL PRECEDENT: This entry follows a First Aid report. Hostility or pressure identified here constitutes a match for 'Retaliation' under BC OHS Section 47." 
         },
-        CONS: { 
-            title: "Constructive Dismissal Precedent", 
-            body: "LEGAL ARTIFACT: Unilateral removal of workplace access or tools identified. Match for Constructive Dismissal as per Potter v. New Brunswick [2015] SCC 10." 
+        CONSTRUCTIVE: { 
+            title: "Potter v. NB (Constructive Dismissal)", 
+            body: "LEGAL PRECEDENT: Removing login access or tools without notice is a fundamental breach of contract per Potter v. New Brunswick [2015] SCC 10." 
         }
     };
 
-    function analyzeIntelligence() {
-        const box = document.getElementById('statusBox');
-        const val = box.value.trim();
-        if(!val) return;
+    function processEntry() {
+        const input = document.getElementById('statusBox');
+        const val = input.value.trim();
+        if (!val) return;
 
-        const isNoteMode = document.getElementById('noteToggle').checked;
-        if(isNoteMode) { 
-            commitEntry(val, null, false, true); 
-            return; 
+        const isNote = document.getElementById('noteToggle').checked;
+        if (isNote) {
+            commitToStorage(val, null, false, true);
+            return;
         }
 
-        const textLower = val.toLowerCase();
-        let patternMatch = null;
-        
-        // CHECK HISTORY FOR FIRST AID LINK
-        const hasFirstAid = db.some(entry => entry.txt.toLowerCase().includes("first aid") || entry.txt.toLowerCase().includes("report"));
+        // START HEAVY PULSE
+        document.getElementById('aiPulse').style.display = 'flex';
 
-        if (hasFirstAid && (textLower.includes("harass") || textLower.includes("pressure") || textLower.includes("yell") || textLower.includes("treated"))) {
-            patternMatch = caseReference.RETAL;
-        } else if ((textLower.includes("access") || textLower.includes("login")) && (textLower.includes("locked") || textLower.includes("removed"))) {
-            patternMatch = caseReference.CONS;
-        }
+        setTimeout(() => {
+            document.getElementById('aiPulse').style.display = 'none';
+            const lowVal = val.toLowerCase();
+            let foundMatch = null;
+            
+            // SEMANTIC CROSS-REFERENCE
+            const firstAidHistory = localDB.some(e => e.txt.toLowerCase().includes("first aid"));
 
-        if(patternMatch) {
-            pendingArtifact = { raw: val, ai: patternMatch.body, title: patternMatch.title };
-            document.getElementById('patternInfo').innerHTML = `I've detected a legal pattern: <strong>${patternMatch.title}</strong>.<br><br>Both versions will be secured in the vault. Which version should lead your timeline?`;
-            document.getElementById('choiceModal').style.display = 'flex';
-        } else {
-            commitEntry(val, null, false, false);
-        }
+            if (firstAidHistory && (lowVal.includes("harass") || lowVal.includes("pressure") || lowVal.includes("yell") || lowVal.includes("shout"))) {
+                foundMatch = legalPrecedents.RETALIATION;
+            } else if ((lowVal.includes("login") || lowVal.includes("access")) && (lowVal.includes("lock") || lowVal.includes("remove"))) {
+                foundMatch = foundMatch || legalPrecedents.CONSTRUCTIVE;
+            }
+
+            if (foundMatch) {
+                pendingData = { raw: val, ai: foundMatch.body, type: foundMatch.title };
+                document.getElementById('patternAlert').innerHTML = `AI has cross-referenced history and found a pattern match: <strong>${foundMatch.title}</strong>.<br><br>Both versions will be saved to the vault. Which one should display on the timeline?`;
+                document.getElementById('choiceModal').style.display = 'flex';
+            } else {
+                commitToStorage(val, null, false, false);
+            }
+        }, 1500);
     }
 
-    function executeChoice(useAI) {
-        commitEntry(pendingArtifact.raw, pendingArtifact.ai, useAI, false);
+    function finalizeEntry(useAI) {
+        commitToStorage(pendingData.raw, pendingData.ai, useAI, false);
         document.getElementById('choiceModal').style.display = 'none';
     }
 
-    function commitEntry(raw, ai, useAI, isNote) {
-        const entryObj = {
+    function commitToStorage(raw, ai, useAI, isNote) {
+        const entry = {
             id: Date.now(),
             txt: useAI ? ai : raw,
-            mirror: ai ? (useAI ? raw : ai) : null,
+            meta: ai ? { rawText: raw, aiText: ai } : null,
             isNote: isNote,
             time: new Date().toLocaleString()
         };
-        
-        db.push(entryObj);
-        localStorage.setItem('WT_DUAL_V149', JSON.stringify(db));
+
+        localDB.push(entry);
+        localStorage.setItem('WORK_TIMELINE_V15_1', JSON.stringify(localDB));
         
         document.getElementById('statusBox').value = '';
         document.getElementById('topDrawer').classList.remove('open');
@@ -334,25 +360,25 @@
 
     function mediaLog(type) {
         const isNote = document.getElementById('noteToggle').checked;
-        commitEntry(`[${type.toUpperCase()} ARTIFACT ATTACHED]`, null, false, isNote);
+        commitToStorage(`[ATTACHED ${type.toUpperCase()} ARTIFACT]`, null, false, isNote);
     }
 
     function render() {
-        const container = document.getElementById('timeline');
-        container.innerHTML = '';
-        const filterNotes = document.getElementById('noteToggle').checked;
-        
-        const filteredList = db.filter(item => item.isNote === filterNotes);
-        
-        [...filteredList].reverse().forEach(item => {
+        const timeline = document.getElementById('timeline');
+        timeline.innerHTML = '';
+        const noteFilter = document.getElementById('noteToggle').checked;
+
+        const filtered = localDB.filter(item => item.isNote === noteFilter);
+
+        [...filtered].reverse().forEach(item => {
             const card = document.createElement('div');
             card.className = `entry-card ${item.isNote ? 'note-card' : ''}`;
             card.innerHTML = `
                 <div class="stamp">${item.time}</div>
-                <div style="font-weight:700; line-height:1.5; white-space:pre-wrap;">${item.txt}</div>
-                ${item.mirror ? '<div class="dual-badge">Vault: Dual Artifact Secured</div>' : ''}
+                <div style="font-weight:700; line-height:1.6; white-space:pre-wrap;">${item.txt}</div>
+                ${item.meta ? '<div style="background:#e0f2f1; color:#008080; font-size:9px; font-weight:900; padding:4px 8px; border-radius:6px; display:inline-block; margin-top:12px; text-transform:uppercase;">Dual-Artifact Secured</div>' : ''}
             `;
-            container.appendChild(card);
+            timeline.appendChild(card);
         });
     }
 
