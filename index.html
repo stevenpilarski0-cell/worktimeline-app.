@@ -10,7 +10,7 @@
         :root { 
             --teal: #008080; --teal-dark: #004d4d; --platinum: #e2e8f0; 
             --gray-dark: #2c3e50; --clio-blue: #0076CE; --notes-gold: #f1c40f;
-            --dark-silver: #7f8c8d;
+            --dark-silver: #7f8c8d; --slate: #64748b;
         }
 
         body { 
@@ -19,8 +19,8 @@
             display: flex; flex-direction: column; overflow: hidden; 
         }
 
-        /* Ghost Mode */
-        .ghost-active #timelineContainer { filter: blur(20px) grayscale(1); opacity: 0.3; pointer-events: none; }
+        /* Ghost Mode Blur */
+        .ghost-active #timelineContainer { filter: blur(25px) grayscale(1); opacity: 0.3; pointer-events: none; }
         .notes-mode { background: #fffdf2 !important; }
 
         /* --- HEADER --- */
@@ -31,11 +31,11 @@
         }
         .brand-group { display: flex; align-items: center; gap: 8px; }
         .logo-text-wrapper { display: flex; flex-direction: column; line-height: 0.85; }
-        .main-title { font-weight: 900; color: var(--teal); font-size: 19px; letter-spacing: -0.5px; }
-        .sub-title { font-weight: 900; color: var(--teal); font-size: 10px; letter-spacing: -1px; margin: 0; }
+        .main-title { font-weight: 900; color: var(--teal); font-size: 20px; letter-spacing: -0.5px; }
+        .sub-title { font-weight: 900; color: var(--teal); font-size: 11px; letter-spacing: -1.1px; margin: 0; }
 
         /* --- TOGGLES --- */
-        .toggle-group { display: flex; gap: 12px; align-items: center; }
+        .toggle-group { display: flex; gap: 15px; align-items: center; }
         .switch { position: relative; width: 34px; height: 18px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--platinum); transition: .4s; border-radius: 30px; }
@@ -46,26 +46,39 @@
 
         /* --- PULL-UP DRAWER --- */
         #mgmtDrawer { 
-            position: fixed; bottom: -300px; left: 0; width: 100%; 
+            position: fixed; bottom: -280px; left: 0; width: 100%; 
             background: white; border-top: 5px solid var(--teal); 
             z-index: 200000; border-radius: 30px 30px 0 0; 
             transition: bottom 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 -10px 50px rgba(0,0,0,0.25);
             padding-bottom: env(safe-area-inset-bottom);
         }
         #mgmtDrawer.active { bottom: 0; }
-        .pull-handle { width: 100%; height: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; }
-        .handle-pill { width: 50px; height: 6px; background: var(--platinum); border-radius: 10px; }
-        .mgmt-label { position: absolute; bottom: 5px; font-size: 8px; font-weight: 900; color: var(--teal); }
+        .pull-handle { width: 100%; height: 55px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; }
+        .handle-pill { width: 50px; height: 6px; background: var(--platinum); border-radius: 10px; margin-bottom: 5px; }
+        .handle-text { font-size: 9px; font-weight: 900; color: var(--teal); letter-spacing: 1px; }
 
-        /* --- BUTTONS --- */
-        .dock-btn { border: none; padding: 18px; border-radius: 50px; font-weight: 900; width: 100%; font-size: 14px; margin-bottom: 12px; cursor: pointer; color: white; }
-        #addBtn { position: absolute; z-index: 9000; width: 75px; height: 75px; border-radius: 22px; background: var(--teal); color: white; font-weight: 900; font-size: 35px; border: none; box-shadow: 0 8px 20px rgba(0,0,0,0.2); right: 20px; top: 160px; transition: 0.3s; }
+        /* --- DRAWER BUTTONS --- */
+        .drawer-btn { 
+            border: none; padding: 18px; border-radius: 50px; 
+            font-weight: 900; width: 100%; font-size: 14px; margin-bottom: 12px;
+            cursor: pointer; color: white; transition: 0.2s;
+        }
+        .btn-save-sync { background: var(--teal); box-shadow: 0 4px 15px rgba(0, 128, 128, 0.3); }
+        .btn-new-journal { background: var(--slate); }
 
-        /* --- CONTENT --- */
+        /* --- CONTENT & INPUT --- */
+        #addBtn { 
+            position: absolute; z-index: 9000; width: 75px; height: 75px; 
+            border-radius: 22px; background: var(--teal); color: white; 
+            font-weight: 900; font-size: 35px; border: none; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2); right: 20px; top: 160px; 
+        }
+
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 20px 20px 120px; background: #fafbfc; }
-        .entry { background: white; border-radius: 24px; padding: 20px; border: 1.5px solid var(--platinum); margin-bottom: 20px; border-left: 8px solid var(--teal); box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
+        .entry { background: white; border-radius: 24px; padding: 20px; border: 1.5px solid var(--platinum); margin-bottom: 20px; border-left: 8px solid var(--teal); }
         .note-item { border-left-color: var(--notes-gold); }
+        
         #statusBox { width: 100%; height: 110px; padding: 15px; border-radius: 22px; border: 2.5px solid var(--platinum); outline: none; font-family: inherit; font-weight: 700; resize: none; box-sizing: border-box; }
     </style>
 </head>
@@ -73,7 +86,7 @@
 
 <header class="header">
     <div class="brand-group">
-        <svg width="42" height="42" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg width="45" height="45" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M8 7V5C8 3.89543 8.89543 3 10 3H14C15.1046 3 16 3.89543 16 5V7M4 7H20C21.1046 7 22 7.89543 22 9V18C22 19.1046 21.1046 20 20 20H4C2.89543 20 2 19.1046 2 18V9C2 7.89543 2.89543 7 4 7Z" stroke="var(--teal)" stroke-width="1.8" stroke-linecap="round"/>
             <line x1="6" y1="13.5" x2="18" y2="13.5" stroke="var(--teal)" stroke-width="1" stroke-dasharray="2 2"/>
             <circle cx="8" cy="13.5" r="1.5" fill="var(--teal)"/>
@@ -100,12 +113,11 @@
 <div id="mgmtDrawer">
     <div class="pull-handle" onclick="toggleDrawer()">
         <div class="handle-pill"></div>
-        <div class="mgmt-label">MANAGEMENT</div>
+        <div class="handle-text">MANAGEMENT</div>
     </div>
     <div style="padding:0 30px 40px;">
-        <button class="dock-btn" style="background:var(--teal);" onclick="alert('Artifact Exported')">SAVE JOURNAL</button>
-        <button class="dock-btn" style="background:var(--clio-blue);" onclick="alert('Connecting to Clio...')">LOCK & SYNC CLIO</button>
-        <button class="dock-btn" style="background:var(--dark-silver);" onclick="confirmReset()">START NEW JOURNAL</button>
+        <button class="drawer-btn btn-save-sync" onclick="alert('Artifact Syncing to Clio Grow...')">SAVE & SYNC CLIO</button>
+        <button class="drawer-btn btn-new-journal" onclick="confirmReset()">START NEW TIMELINE</button>
     </div>
 </div>
 
@@ -130,9 +142,7 @@
         const b = document.getElementById('statusBox'); if(!b.value.trim()) return;
         navigator.geolocation.getCurrentPosition(pos => {
             const entry = {
-                id: Date.now(),
-                content: b.value, // standardized to 'content'
-                stamp: new Date().toLocaleString(),
+                id: Date.now(), content: b.value, stamp: new Date().toLocaleString(),
                 gps: `${pos.coords.latitude.toFixed(2)}, ${pos.coords.longitude.toFixed(2)}`
             };
             if(activeVault === "TIMELINE") {
@@ -150,15 +160,17 @@
         [...data].reverse().forEach(item => {
             const div = document.createElement('div');
             div.className = `entry ${activeVault === 'NOTES' ? 'note-item' : ''}`;
-            // FIX: Checking for both 'content' and 'grit' to prevent undefined bug
-            const bodyText = item.content || item.grit || "No data recorded";
+            const bodyText = item.content || item.grit || "No data";
             div.innerHTML = `<div style="font-size:9px; font-weight:900; color:var(--dark-silver);">📍 ${item.gps} | ${item.stamp}</div><p style="font-size:14px; font-weight:700; margin:5px 0 0; white-space:pre-wrap; line-height:1.4;">${bodyText}</p>`;
             list.appendChild(div);
         });
     }
 
     function confirmReset() {
-        if(confirm("Wipe everything? This cannot be undone.")) { localStorage.clear(); location.reload(); }
+        if(confirm("Wipe everything and start new? This cannot be undone.")) { 
+            localStorage.clear(); 
+            location.reload(); 
+        }
     }
 </script>
 </body>
