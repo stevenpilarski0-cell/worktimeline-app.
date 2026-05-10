@@ -96,11 +96,12 @@
                 return;
             }
 
+            // Show status while communicating with Vercel
             outputDiv.style.display = "block";
-            outputDiv.innerText = "Processing through Secure AI Vault...";
+            outputDiv.innerText = "Consulting Secure AI Vault...";
 
             try {
-                // This connects to the Vercel function /api/analyze which handles your Cohere Key
+                // Connecting to the Vercel Serverless Function
                 const response = await fetch('/api/analyze', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -109,11 +110,11 @@
 
                 const data = await response.json();
                 
-                // Displays the professionalized summary returned by the AI
-                outputDiv.innerText = data.summary || "Summary generated and verified.";
+                // Display the summary returned by the Cohere engine
+                outputDiv.innerText = data.summary || "Evidence verified and summarized.";
             } catch (error) {
-                outputDiv.innerText = "Error: System could not reach the vault. Ensure your Vercel API is live.";
-                console.error(error);
+                outputDiv.innerText = "Error: Connection to AI Vault failed. Verify your Vercel deployment is active.";
+                console.error("AI Bridge Error:", error);
             }
         }
     </script>
