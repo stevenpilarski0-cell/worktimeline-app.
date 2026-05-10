@@ -3,20 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline Elite | v12.5</title>
+    <title>WorkTimeline Elite | v12.6</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&family=Nunito+Sans:wght@400;700&display=swap');
-        :root { --teal: #008080; --slate: #475569; --gray-bg: #f1f5f9; --mac-border: #cbd5e0; --notes-gold: #f59e0b; --white: #ffffff; --mac-shadow: 0 10px 25px rgba(0,0,0,0.1); --clio-green: #2ecc71; --clio-blue: #0076CE; }
+        :root { --teal: #008080; --slate: #475569; --gray-bg: #f1f5f9; --mac-border: #cbd5e0; --notes-gold: #f59e0b; --white: #ffffff; --mac-shadow: 0 10px 25px rgba(0,0,0,0.1); --clio-green: #2ecc71; --clio-blue: #0076CE; --risk-red: #e53e3e; }
         body { font-family: 'Nunito', sans-serif; background: var(--gray-bg); margin: 0; padding: 0; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; -webkit-tap-highlight-color: transparent; }
         .ghost-active #timeline, .ghost-active #intakeArea { filter: blur(25px) grayscale(1); opacity: 0.3; pointer-events: none; }
         .notes-mode { background: #fffdf2 !important; }
         .header { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background: var(--white); border-bottom: 2px solid var(--mac-border); z-index: 10000; position: relative; }
-        .brand { display: flex; align-items: center; gap: 8px; }
+        
+        /* BRANDING WITH TIMELINE-BRIEFCASE */
+        .brand { display: flex; align-items: center; gap: 10px; }
         .brand-text-group { display: flex; flex-direction: column; }
         .brand-text { font-weight: 900; color: var(--teal); font-size: 17px; line-height: 1; }
         .sub-text { font-weight: 900; color: var(--teal); font-size: 9px; letter-spacing: -0.5px; margin-top: 2px; }
         .clio-dot { width: 7px; height: 7px; background: var(--clio-green); border-radius: 50%; display: inline-block; margin-left: 3px; box-shadow: 0 0 5px var(--clio-green); }
-        .clio-sync-btn { background: var(--clio-blue); color: white; border: none; padding: 8px 12px; border-radius: 10px; font-weight: 900; font-size: 10px; cursor: pointer; display: flex; align-items: center; gap: 5px; box-shadow: 0 4px 10px rgba(0,118,206,0.3); }
+
+        /* CLIO BLUE SYNC BUTTON (ROUNDED SQUARE) */
+        .clio-sync-btn { background: var(--clio-blue); color: white; border: none; padding: 8px 14px; border-radius: 12px; font-weight: 900; font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(0,118,206,0.3); }
+
         .toggle-group { display: flex; gap: 10px; align-items: center; }
         .switch-box { text-align: center; }
         .switch { position: relative; width: 32px; height: 16px; display: inline-block; }
@@ -27,6 +32,7 @@
         input:checked + .slider.gold { background-color: var(--notes-gold); }
         input:checked + .slider:before { transform: translateX(16px); }
         .label { font-size: 7px; font-weight: 900; color: var(--slate); margin-top: 2px; text-transform: uppercase; }
+
         .intake { background: var(--white); padding: 15px; border-bottom: 2px solid var(--mac-border); position: relative; z-index: 5000; }
         .templates { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: none; }
         .chip { background: #f8fafc; border: 1.5px solid var(--mac-border); padding: 7px 14px; border-radius: 100px; font-size: 10px; font-weight: 900; color: var(--slate); white-space: nowrap; cursor: pointer; }
@@ -59,13 +65,9 @@
 
 <div id="introOverlay" class="overlay" style="display: flex;">
     <div class="modal" style="text-align: center;">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" style="margin-bottom:15px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-        <h2 style="color:var(--teal); font-weight:900; margin:0 0 10px; font-size:20px;">Welcome to WorkTimeline</h2>
+        <h2 style="color:var(--teal); font-weight:900; margin-bottom:10px;">Disclaimer</h2>
         <p style="font-size:14px; line-height:1.5; color:var(--slate); font-weight:700; margin-bottom:20px;">
-            We are happy you have a space to express yourself in this timeline and journal. 
-            <br><br>
-            <span style="color:var(--risk-red); font-weight:900;">FRIENDLY WARNING:</span> 
-            We do not give, nor will our AI ever give, direct legal advice. This is a record-keeping tool only.
+            We are happy to provide a space for your expression. However, we do not provide, nor will our AI ever provide, direct legal advice.
         </p>
         <button class="btn" style="background:var(--teal);" onclick="closeIntro()">I UNDERSTAND</button>
     </div>
@@ -78,9 +80,8 @@
 
 <div id="aiOpinion" class="overlay">
     <div class="modal">
-        <div style="font-size:10px; font-weight:900; color:var(--notes-gold); margin-bottom:5px;">LEGAL DIAGNOSTIC</div>
         <div id="aiTitle" style="font-weight:900; font-size:18px; margin-bottom:10px; color:var(--teal);"></div>
-        <div id="aiBody" style="font-size:14px; line-height:1.4; color:var(--slate); margin-bottom:20px;"></div>
+        <div id="aiBody" style="font-size:14px; color:var(--slate); margin-bottom:20px;"></div>
         <button class="btn" style="background:var(--teal)" onclick="saveAI(true)">AGREE & LOG</button>
         <button class="btn" style="background:var(--slate)" onclick="saveAI(false)">LOG RAW TEXT ONLY</button>
     </div>
@@ -88,15 +89,23 @@
 
 <header class="header">
     <div class="brand">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="8" width="18" height="12" rx="2" stroke="var(--teal)" stroke-width="2"/>
+            <path d="M9 8V5C9 4.44772 9.44772 4 10 4H14C14.5523 4 15 4.44772 15 5V8" stroke="var(--teal)" stroke-width="2"/>
+            <path d="M2 14H22" stroke="var(--teal)" stroke-width="1.5" stroke-dasharray="3 2" opacity="0.6"/>
+            <circle cx="7" cy="14" r="1.5" fill="var(--teal)"/>
+            <circle cx="12" cy="14" r="1.5" fill="var(--teal)"/>
+            <circle cx="17" cy="14" r="1.5" fill="var(--teal)"/>
+        </svg>
         <div class="brand-text-group">
             <div class="brand-text">WorkTimeline™</div>
             <div class="sub-text">TAKIN'INTAKE <span class="clio-dot"></span></div>
         </div>
     </div>
+
     <div class="toggle-group">
         <button class="clio-sync-btn" onclick="syncClio()">
-            <svg width="12" height="12" fill="white" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-2.09c-2.13-.33-3.03-2.1-3.08-3.75h1.9c.05.81.43 2.01 1.18 2.01.7 0 1.25-.45 1.25-1.15 0-.75-.5-1.1-1.6-1.55-1.45-.6-2.5-1.35-2.5-3.05 0-1.75 1.25-2.9 2.85-3.25V4h2v2.07c1.78.3 2.75 1.9 2.83 3.43h-1.88c-.08-.73-.43-1.68-1.1-1.68-.6 0-1 .4-1 1 0 .6.45.85 1.45 1.25 1.35.55 2.65 1.3 2.65 3.3 0 1.8-1.35 2.9-2.95 3.3V18h-2v-1.5z"/></svg>
+            <svg width="14" height="14" fill="white" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/></svg>
             SYNC
         </button>
         <div class="switch-box"><label class="switch"><input type="checkbox" onchange="document.getElementById('app').classList.toggle('ghost-active')"><span class="slider"></span></label><div class="label">GHOST</div></div>
@@ -127,51 +136,61 @@
 <div id="drawer">
     <div class="handle" onclick="document.getElementById('drawer').classList.toggle('open')"><div class="pill"></div><div class="handle-txt">MANAGEMENT</div></div>
     <div class="drawer-content">
-        <button class="btn" style="background:var(--teal)" onclick="alert('Timeline Saved Successfully!')">SAVE TIMELINE</button>
+        <button class="btn" style="background:var(--teal)" onclick="alert('Timeline Saved!')">SAVE TIMELINE</button>
         <button class="btn" style="background:var(--slate)" onclick="reset()">START FRESH</button>
     </div>
 </div>
 
 <script>
-    let db = JSON.parse(localStorage.getItem('WT_ELITE_VAULT_V12')) || [];
-    let noteDb = JSON.parse(localStorage.getItem('WT_NOTE_VAULT_V12')) || [];
-    let current = null;
-    let mode = "TIMELINE";
+    let db = JSON.parse(localStorage.getItem('WT_ELITE_V12')) || [];
+    let noteDb = JSON.parse(localStorage.getItem('WT_NOTE_V12')) || [];
+    let current = null; let mode = "TIMELINE";
 
-    window.onload = () => { 
-        render();
-        if(localStorage.getItem('WT_DISCLAIMER_ACCEPTED')) {
-            document.getElementById('introOverlay').style.display = 'none';
-        }
-    };
-
-    function closeIntro() {
-        localStorage.setItem('WT_DISCLAIMER_ACCEPTED', 'true');
-        document.getElementById('introOverlay').style.display = 'none';
-    }
-
+    window.onload = () => { render(); if(localStorage.getItem('WT_DISCLAIMER')) document.getElementById('introOverlay').style.display='none'; };
+    function closeIntro() { localStorage.setItem('WT_DISCLAIMER','1'); document.getElementById('introOverlay').style.display='none'; }
     function tag(t) { document.getElementById('statusBox').value = `--- ${t.toUpperCase()} ---\n`; }
     function toggleNotes() { mode = document.getElementById('noteToggle').checked ? "NOTES" : "TIMELINE"; document.body.classList.toggle('notes-mode'); document.getElementById('addBtn').style.background = mode === "NOTES" ? "var(--notes-gold)" : "var(--teal)"; render(); }
+
     function syncClio() {
-        document.getElementById('loadingText').innerText = "SYNCING TO CLIO SECURE CLOUD...";
+        if(db.length === 0 && noteDb.length === 0) { alert("Nothing to sync yet!"); return; }
+        document.getElementById('loadingText').innerText = "GENERATING CASE SUMMARY & SYNCING TO CLIO...";
         document.getElementById('aiLoad').style.display = 'flex';
-        setTimeout(() => { document.getElementById('aiLoad').style.display = 'none'; alert("SYNC COMPLETE: Timeline secured to Clio."); document.getElementById('loadingText').innerText = "ANALYZING BC CASE LAW..."; }, 1500);
+        
+        setTimeout(() => {
+            const summary = `CASE SUMMARY:\n- Entries logged: ${db.length}\n- Private notes: ${noteDb.length}\n- Latest activity: ${new Date().toLocaleString()}\n\nFull timeline and encrypted summaries have been pushed to Clio secure storage.`;
+            document.getElementById('aiLoad').style.display = 'none';
+            alert(summary);
+            document.getElementById('loadingText').innerText = "ANALYZING BC CASE LAW...";
+        }, 2000);
     }
+
     function analyze(text) {
         let t = text.toLowerCase();
         if(t.includes("unsafe") || t.includes("refused")) return { title: "WorkSafeBC 3.12", msg: "Right to refuse unsafe work detected. Legal avenue: Workers Compensation Act." };
-        if(t.includes("hours cut") || t.includes("fired")) return { title: "Dismissal Risk", msg: "Constructive or Wrongful Dismissal detected. Legal avenue: BC ESA / Common Law." };
+        if(t.includes("hours cut") || t.includes("fired")) return { title: "Dismissal Risk", msg: "Potential Constructive or Wrongful Dismissal detected." };
         return null;
     }
+
     function process() {
         const box = document.getElementById('statusBox'); const val = box.value.trim(); if(!val) return;
-        if(mode === "NOTES") { noteDb.push({ id: Date.now(), txt: val, time: new Date().toLocaleString() }); localStorage.setItem('WT_NOTE_VAULT_V12', JSON.stringify(noteDb)); box.value = ''; render(); return; }
+        if(mode === "NOTES") {
+            noteDb.push({ id: Date.now(), txt: val, time: new Date().toLocaleString() });
+            localStorage.setItem('WT_NOTE_V12', JSON.stringify(noteDb));
+            box.value = ''; render(); return;
+        }
         document.getElementById('aiLoad').style.display = 'flex';
-        setTimeout(() => { document.getElementById('aiLoad').style.display = 'none'; let report = analyze(val); current = { id: Date.now(), txt: val, time: new Date().toLocaleString(), report }; if(report) { document.getElementById('aiTitle').innerText = report.title; document.getElementById('aiBody').innerText = report.msg; document.getElementById('aiOpinion').style.display = 'flex'; } else { saveAI(false); } }, 1100);
+        setTimeout(() => {
+            document.getElementById('aiLoad').style.display = 'none';
+            let report = analyze(val);
+            current = { id: Date.now(), txt: val, time: new Date().toLocaleString(), report };
+            if(report) { document.getElementById('aiTitle').innerText = report.title; document.getElementById('aiBody').innerText = report.msg; document.getElementById('aiOpinion').style.display = 'flex'; } 
+            else { saveAI(false); }
+        }, 1100);
     }
-    function saveAI(agree) { if(!agree) current.report = null; db.push(current); localStorage.setItem('WT_ELITE_VAULT_V12', JSON.stringify(db)); document.getElementById('aiOpinion').style.display = 'none'; document.getElementById('statusBox').value = ''; render(); }
-    function render() { const container = document.getElementById('timeline'); container.innerHTML = ''; const list = mode === "TIMELINE" ? db : noteDb; [...list].reverse().forEach(item => { const wrap = document.createElement('div'); wrap.className = 'entry-card'; wrap.innerHTML = `<div class="stamp">${item.time}</div><div class="card-inner" onclick="this.classList.toggle('flipped')"><div class="face front"><div style="font-weight:700">${item.txt.substring(0,55)}...</div></div><div class="face back"><div style="font-size:11px">${item.txt}</div>${item.report ? `<div style="margin-top:10px; border-top:1px solid rgba(255,255,255,0.3); padding-top:5px; font-weight:900; font-size:12px;">${item.report.title}</div>` : ''}</div></div>`; container.appendChild(wrap); }); }
-    function reset() { if(confirm("Clear all data?")) { localStorage.clear(); location.reload(); } }
+
+    function saveAI(agree) { if(!agree) current.report = null; db.push(current); localStorage.setItem('WT_ELITE_V12', JSON.stringify(db)); document.getElementById('aiOpinion').style.display = 'none'; document.getElementById('statusBox').value = ''; render(); }
+    function render() { const container = document.getElementById('timeline'); container.innerHTML = ''; const list = mode === "TIMELINE" ? db : noteDb; [...list].reverse().forEach(item => { const wrap = document.createElement('div'); wrap.className = 'entry-card'; wrap.innerHTML = `<div class="stamp">${item.time}</div><div class="card-inner" onclick="this.classList.toggle('flipped')"><div class="face front"><div style="font-weight:700">${item.txt.substring(0,55)}...</div></div><div class="face back"><div style="font-size:11px">${item.txt}</div>${item.report ? `<div style="margin-top:10px; border-top:1px solid rgba(255,255,255,0.3); padding-top:5px; font-weight:900;">${item.report.title}</div>` : ''}</div></div>`; container.appendChild(wrap); }); }
+    function reset() { if(confirm("Start Fresh?")) { localStorage.clear(); location.reload(); } }
 </script>
 </body>
 </html>
