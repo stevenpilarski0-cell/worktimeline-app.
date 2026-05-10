@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Full Master</title>
+    <title>WorkTimeline™ | Master Prototype</title>
     <style>
         /* 1. CORE STYLE & FONTS */
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Nunito+Sans:wght@400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Nunito+Sans:wght@400;600;800&family=Courier+Prime:wght@400;700&display=swap');
         
         :root { 
             --teal: #008080; --silver-gray: #95a5a6; --gray-bg: #e2e8f0; --clio-green: #2ecc71; 
@@ -20,20 +20,23 @@
 
         .app-container { width: 100%; max-width: 500px; background: white; height: 100dvh; display: flex; flex-direction: column; position: relative; border: 1.5px solid var(--gray-border); box-sizing: border-box; overflow: hidden; }
         
-        /* 2. HEADER & TOGGLES */
+        /* 2. HEADER & BRIEFCASE LOGO REFINEMENT */
         .header { padding: 12px 15px; border-bottom: 1px solid var(--gray-border); background: white; z-index: 4000; position: relative; padding-top: max(12px, env(safe-area-inset-top)); }
         .header-top { display: flex; justify-content: flex-start; align-items: center; gap: 4px; }
         
         .briefcase-container { position: relative; width: 44px; height: 28px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .briefcase-icon { width: 28px; height: 20px; border: 2.2px solid var(--heavy-teal); border-radius: 5px; position: relative; display: flex; align-items: center; justify-content: center; }
         .briefcase-icon::before { content: ''; position: absolute; top: -8px; width: 10px; height: 6px; border: 2.2px solid var(--heavy-teal); border-bottom: none; border-radius: 3.5px 3.5px 0 0; background: white; z-index: 2; }
-        .icon-timeline { width: 155%; height: 1.5px; background: var(--heavy-teal); position: absolute; top: 50%; display: flex; justify-content: space-around; padding: 0 4px; box-sizing: border-box; z-index: 3; left: -27.5%; }
-        .icon-dot { width: 3px; height: 3px; background: white; border: 1.2px solid var(--heavy-teal); border-radius: 50%; }
+        
+        /* LOGO ALIGNMENT: CIRCLES CENTERED IN TIMELINE */
+        .icon-timeline { width: 155%; height: 1.5px; background: var(--heavy-teal); position: absolute; top: 50%; display: flex; justify-content: space-evenly; align-items: center; padding: 0; box-sizing: border-box; z-index: 3; left: -27.5%; transform: translateY(-50%); }
+        .icon-dot { width: 4px; height: 4px; background: white; border: 1.2px solid var(--heavy-teal); border-radius: 50%; flex-shrink: 0; }
         
         .header-controls { position: absolute; right: 15px; display: flex; flex-direction: column; gap: 4px; }
         .toggle-btn { background: #f1f5f9; border: none; border-radius: 20px; font-size: 7px; font-weight: 900; padding: 4px 10px; color: var(--teal); cursor: pointer; text-transform: uppercase; }
 
-        /* 3. MEDIA TOOLKIT ICONS */
+        /* 3. TEMPLATE SPACING & MEDIA ICONS */
+        .template-row { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 15px; width: 100%; box-sizing: border-box; }
         .media-icons-row { display: flex; gap: 8px; margin: 15px 0; }
         .media-pill { background: #f1f5f9; border: 1.2px solid var(--gray-border); padding: 10px; border-radius: 18px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 8px; font-weight: 900; color: #4a5568; gap: 6px; cursor: pointer; }
         .m-icon { width: 18px; height: 12px; background: #4a5568; position: relative; border-radius: 3px; }
@@ -61,12 +64,12 @@
         .handle { width: 100%; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .handle-pill { width: 40px; height: 6px; background: #cbd5e0; border-radius: 10px; }
 
-        /* 6. TIMELINE & CARDS */
+        /* 6. TIMELINE & CARDS - COURIER PRIME FONT */
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 60px 15px 180px; display: flex; flex-direction: column; gap: 25px; }
         .stack-inner { position: relative; width: 88%; min-height: 80px; transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer; }
         .stack-inner.flipped { transform: rotateY(180deg); }
         .bubble { padding: 18px; border-radius: 24px; backface-visibility: hidden; box-shadow: var(--mac-shadow); width: 100%; box-sizing: border-box; border: 1px solid #e5e5e5; }
-        .bubble-front { background: #f1f1f1; }
+        .bubble-front { background: #f1f1f1; font-family: 'Courier Prime', monospace; }
         .bubble-back { background: var(--teal); color: white; transform: rotateY(180deg); position: absolute; top: 0; left: 0; height: 100%; padding: 15px; font-size: 11px; overflow-y: auto; }
 
         /* 7. DRAGGABLE BUTTONS */
@@ -76,8 +79,8 @@
 
         .modal-card { background: white; padding: 25px; border-radius: 30px; box-shadow: var(--mac-shadow); width: 100%; max-width: 290px; text-align: center; border: 1.5px solid var(--gray-border); }
         .modal-btn { border: none; padding: 14px; border-radius: 18px; width: 100%; font-weight: 800; margin-top: 10px; cursor: pointer; font-size: 13px; text-transform: uppercase; }
-        textarea { width: 100%; height: 100px; border: 1.5px solid var(--gray-border); border-radius: 20px; padding: 15px; font-size: 16px; outline: none; background: #fafafa; }
-        .chip { border: 1px solid var(--gray-border); padding: 8px 12px; border-radius: 50px; font-size: 9px; font-weight: 900; background: #f8fafc; cursor: pointer; }
+        textarea { width: 100%; height: 100px; border: 1.5px solid var(--gray-border); border-radius: 20px; padding: 15px; font-size: 16px; outline: none; background: #fafafa; font-family: 'Courier Prime', monospace; }
+        .chip { border: 1px solid var(--gray-border); padding: 8px 0; border-radius: 50px; font-size: 9px; font-weight: 900; background: #f8fafc; cursor: pointer; flex: 1; text-align: center; }
     </style>
 </head>
 <body id="appBody">
@@ -108,7 +111,7 @@
 
     <div id="utilityDrawer">
         <div style="padding: 15px;">
-            <div style="display:flex; gap:6px; margin-bottom:10px; overflow-x:auto; padding-bottom:5px;">
+            <div class="template-row">
                 <button onclick="useTemplate('INCIDENT')" class="chip">INCIDENT</button>
                 <button onclick="useTemplate('INJURY')" class="chip">INJURY</button>
                 <button onclick="useTemplate('WITNESS')" class="chip">WITNESS</button>
@@ -186,7 +189,7 @@
             list.innerHTML += `<div class="stack-wrapper">
                 <div style="font-size:9px; font-weight:900; color:var(--silver-gray); margin-bottom:5px;">📍 LANGLEY | ${item.stamp}</div>
                 <div class="stack-inner" onclick="this.classList.toggle('flipped')">
-                    <div class="bubble bubble-front"><p style="font-weight:600; font-size:15px; margin:0;">${item.text}</p></div>
+                    <div class="bubble bubble-front"><p style="font-weight:600; font-size:15px; margin:0; line-height:1.4;">${item.text}</p></div>
                     ${item.analysis ? `<div class="bubble bubble-back">${item.analysis}</div>` : ''}
                 </div>
             </div>`;
