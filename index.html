@@ -9,7 +9,7 @@
         :root { --teal: #008080; --teal-dark: #004d4d; --blue-trans: rgba(0, 128, 128, 0.12); --clio-blue: #0076CE; --platinum: #d8e2ea; --gray-dark: #2c3e50; --clio-green: #2ecc71; --round-inner: 24px; --glass: rgba(255, 255, 255, 0.95); --dark-silver: #7f8c8d; }
         body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 0; height: 100dvh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
         .ghost-active #timelineContainer, .ghost-active #utilityDrawer { filter: blur(25px); opacity: 0.3; pointer-events: none; }
-        #legalOverlay, #syncOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(44, 62, 80, 0.95); backdrop-filter: blur(10px); z-index: 200000; display: flex; align-items: center; justify-content: center; padding: 25px; box-sizing: border-box; display: none; }
+        #legalOverlay, #syncOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(44, 62, 80, 0.95); backdrop-filter: blur(10px); z-index: 200000; display: none; align-items: center; justify-content: center; padding: 25px; box-sizing: border-box; }
         .modal-card { background: white; padding: 35px; border-radius: 32px; text-align: center; max-width: 400px; box-shadow: 0 25px 60px rgba(0,0,0,0.4); border-bottom: 8px solid var(--teal); width: 100%; }
         .modal-btn { background: var(--teal); color: white; border: none; padding: 18px; border-radius: 99px; font-weight: 900; cursor: pointer; margin-top: 25px; width: 100%; font-size: 16px; }
         #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
@@ -25,27 +25,30 @@
         .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--teal); }
         input:checked + .slider:before { transform: translateX(16px); }
-        .draggable-btn { position: absolute; z-index: 5000; touch-action: none; display: flex; flex-direction: column; align-items: center; justify-content: center; border: none; width: 65px; height: 65px; border-radius: 20px; color: white; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25); cursor: grab; text-align: center; line-height: 1.1; padding: 5px; }
-        #addBtn { right: 20px; top: 160px; background: var(--teal); font-size: 40px; font-weight: 900; }
-        #syncBtn { right: 20px; top: 240px; background: var(--clio-blue); font-size: 10px; font-weight: 900; }
+        .draggable-btn { position: absolute; z-index: 5000; touch-action: none; display: flex; flex-direction: column; align-items: center; justify-content: center; border: none; width: 75px; height: 75px; border-radius: 24px; color: white; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25); cursor: grab; text-align: center; line-height: 1.1; }
+        #addBtn { right: 20px; top: 180px; background: var(--teal); font-size: 44px; font-weight: 900; }
+        #syncBtn { right: 20px; top: 270px; background: var(--clio-blue); font-size: 10px; font-weight: 900; padding: 10px; }
         #utilityDrawer { width: 100%; background: var(--glass); backdrop-filter: blur(12px); border-bottom: 2px solid var(--platinum); z-index: 2500; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
         #managementDrawer { position: fixed; bottom: 0; width: 100%; max-width: 500px; background: white; border-top: 3.5px solid var(--teal); z-index: 6000; transition: 0.5s transform cubic-bezier(0.16, 1, 0.3, 1); transform: translateY(calc(100% - 40px)); box-shadow: 0 -10px 40px rgba(0,0,0,0.1); }
         .drawer-content { padding: 15px 20px; }
         .drag-handle-zone { width: 100%; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .handle-pill { width: 45px; height: 6px; background: var(--platinum); border-radius: 10px; }
-        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 45px 15px 65px; position: relative; background: #fdfdfd; }
-        .entry { position: relative; margin-left: 35px; background: white; border: 2.5px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; border-left: 10px solid var(--platinum); width: calc(100% - 45px); box-sizing: border-box; transition: 0.3s; }
-        .entry.is-stacked { border-left-color: var(--teal); background: var(--blue-trans); }
+        .template-chip { background: white; border: 2.5px solid var(--teal); padding: 8px 14px; border-radius: 15px; font-size: 10px; font-weight: 900; color: var(--teal); white-space: nowrap; cursor: pointer; }
+        #statusBox { width: 100%; height: 100px; padding: 14px; border-radius: 18px; border: 2.5px solid var(--platinum); resize: none; font-family: inherit; font-weight: 700; background: #f8fafc; box-sizing: border-box; outline: none; margin-top: 10px; }
+        .media-btn { flex: 1; position: relative; background: white; border: 2.5px solid var(--platinum); padding: 12px 5px; border-radius: 16px; text-align: center; font-size: 10px; font-weight: 900; cursor: pointer; }
+        .media-btn input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 20px 15px 100px; position: relative; background: #fdfdfd; }
+        .entry { position: relative; background: white; border: 2.5px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; border-left: 12px solid var(--platinum); width: 100%; box-sizing: border-box; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
     </style>
 </head>
 <body id="appBody">
 <div id="legalOverlay" style="display:flex;"><div class="modal-card"><h2 style="color:var(--teal); font-weight:900;">Friendly Reminder</h2><p>WorkTimeline™ is an evidence-tracking tool. <b>We do not provide legal advice.</b></p><button class="modal-btn" onclick="dismissLegal()">I UNDERSTAND</button></div></div>
-<div id="syncOverlay"><div class="modal-card"><h2 style="color:var(--clio-blue); font-weight:900;">Evidence Summary</h2><p id="aiSummaryText" style="text-align:left; font-size:14px; color:var(--gray-dark); max-height:300px; overflow-y:auto;"></p><button class="modal-btn" style="background:var(--clio-blue);" onclick="finalSync()">OK & SEND</button><button class="modal-btn" style="background:var(--dark-silver); margin-top:10px;" onclick="closeSync()">CANCEL</button></div></div>
+<div id="syncOverlay"><div class="modal-card"><h2 style="color:var(--clio-blue); font-weight:900;">Evidence Summary</h2><p id="aiSummaryText" style="text-align:left; font-size:14px; color:var(--gray-dark); max-height:300px; overflow-y:auto; font-weight:700;"></p><button class="modal-btn" style="background:var(--clio-blue);" onclick="finalSync()">OK & SEND</button><button class="modal-btn" style="background:var(--dark-silver); margin-top:10px;" onclick="closeSync()">CANCEL</button></div></div>
 <div id="splashScreen"><h1 id="storyText" class="story-text">Welcome.</h1><button id="skipBtn" onclick="endSplash()">Skip Intro</button></div>
 <div class="app-container">
     <header class="header">
         <div class="logo-box">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 7V5C16 3.89543 15.1046 3 14 3H10C8.89543 3 8 3.89543 8 5V7H4C2.89543 7 2 7.89543 2 9V18C2 19.1046 2.89543 20 4 20H20C21.1046 20 22 19.1046 22 18V9C22 7.89543 21.1046 7 20 7H16ZM10 5H14V7H10V5ZM20 18H4V9H20V18Z" fill="var(--dark-silver)"/><rect x="5" y="12.5" width="14" height="2" rx="1" fill="var(--teal)"/><circle cx="7" cy="13.5" r="1.5" fill="white"/><circle cx="12" cy="13.5" r="1.5" fill="white"/><circle cx="17" cy="13.5" r="1.5" fill="white"/></svg>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M16 7V5C16 3.89543 15.1046 3 14 3H10C8.89543 3 8 3.89543 8 5V7H4C2.89543 7 2 7.89543 2 9V18C2 19.1046 2.89543 20 4 20H20C21.1046 20 22 19.1046 22 18V9C22 7.89543 21.1046 7 20 7H16ZM10 5H14V7H10V5ZM20 18H4V9H20V18Z" fill="var(--dark-silver)"/><rect x="5" y="12.5" width="14" height="2" rx="1" fill="var(--teal)"/><circle cx="7" cy="13.5" r="1.5" fill="white"/><circle cx="12" cy="13.5" r="1.5" fill="white"/><circle cx="17" cy="13.5" r="1.5" fill="white"/></svg>
             <div style="font-weight:900; color:var(--teal); font-size:16px;">WorkTimeline™</div>
         </div>
         <div class="switch-group"><div style="text-align:center;"><label class="switch"><input type="checkbox" onchange="toggleGhost(this)"><span class="slider"></span></label><div style="font-size:7px; font-weight:900;">GHOST</div></div><div style="text-align:center;"><label class="switch"><input type="checkbox" onchange="toggleVault(this)"><span class="slider"></span></label><div style="font-size:7px; font-weight:900;">NOTES</div></div></div>
@@ -54,9 +57,9 @@
     <div id="syncBtn" class="draggable-btn" onclick="triggerLockSync()">LOCK & SYNC</div>
     <div id="utilityDrawer">
         <div class="drawer-content" id="drawerContent">
-            <div style="display:flex; gap:8px; overflow-x:auto; margin-bottom:12px;"><div class="template-chip" onclick="useTemplate('WITNESS')">WITNESS</div><div class="template-chip" onclick="useTemplate('INCIDENT')">INCIDENT</div><div class="template-chip" onclick="useTemplate('LOCATION')">LOCATION</div></div>
+            <div style="display:flex; gap:10px;"><div class="template-chip" onclick="useTemplate('WITNESS')">WITNESS</div><div class="template-chip" onclick="useTemplate('INCIDENT')">INCIDENT</div><div class="template-chip" onclick="useTemplate('LOCATION')">LOCATION</div></div>
             <textarea id="statusBox" placeholder="Start your fresh record..."></textarea>
-            <div style="display:flex; gap:8px; margin-top:12px;"><div class="media-btn"><span>CAMERA</span><input type="file" accept="image/*" capture="camera" onchange="addMedia('📷 PHOTO')"></div><div class="media-btn"><span>AUDIO</span><input type="file" accept="audio/*" capture="microphone" onchange="addMedia('🎤 AUDIO')"></div><div class="media-btn"><span>DOCS</span><input type="file" onchange="addMedia('📄 FILE')"></div></div>
+            <div style="display:flex; gap:10px; margin-top:15px;"><div class="media-btn"><span>CAMERA</span><input type="file" accept="image/*" capture="camera" onchange="addMedia('📷 PHOTO')"></div><div class="media-btn"><span>AUDIO</span><input type="file" accept="audio/*" capture="microphone" onchange="addMedia('🎤 AUDIO')"></div><div class="media-btn"><span>DOCS</span><input type="file" onchange="addMedia('📄 FILE')"></div></div>
         </div>
         <div class="drag-handle-zone" onclick="toggleDrawer()"><div class="handle-pill"></div></div>
     </div>
@@ -84,7 +87,7 @@
     function triggerLockSync() {
         if (timelineVault.length === 0) return alert("No entries to sync.");
         let summary = "AI SUMMARY OF TIMELINE:\n\n";
-        timelineVault.forEach((e, i) => { summary += `${i+1}. [${e.stamp}] ${e.grit.substring(0, 50)}...\n`; });
+        timelineVault.forEach((e, i) => { summary += `${i+1}. [${e.stamp}] ${e.grit.substring(0, 60)}...\n\n`; });
         document.getElementById('aiSummaryText').innerText = summary;
         document.getElementById('syncOverlay').style.display = 'flex';
     }
@@ -109,7 +112,7 @@
         const list = document.getElementById('displayList'); list.innerHTML = ''; const data = activeVault === "TIMELINE" ? timelineVault : notesVault;
         [...data].reverse().forEach(item => {
             const div = document.createElement('div'); div.className = `entry`;
-            div.innerHTML = `<span style="font-size:9px; color:var(--teal); font-weight:900;">📍 ${item.gps} | ${item.stamp}</span><p style="margin:10px 0 0; font-size:14px; font-weight:800; white-space:pre-wrap;">${item.grit}</p>`;
+            div.innerHTML = `<span style="font-size:10px; color:var(--teal); font-weight:900;">📍 ${item.gps} | ${item.stamp}</span><p style="margin:12px 0 0; font-size:15px; font-weight:800; white-space:pre-wrap; color:var(--gray-dark); line-height:1.4;">${item.grit}</p>`;
             list.appendChild(div);
         });
     }
