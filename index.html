@@ -3,40 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Master Mobile</title>
+    <title>WorkTimeline™ | Master</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
         :root { --teal: #008080; --teal-dark: #004d4d; --blue-trans: rgba(0, 128, 128, 0.12); --clio-blue: #0076CE; --clio-green: #2ecc71; --platinum: #d8e2ea; --gray-dark: #2c3e50; }
         
-        /* MOBILE FIRST CORE */
         body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 0; height: 100dvh; overflow: hidden; color: var(--gray-dark); -webkit-tap-highlight-color: transparent; }
         .ghost-active #timelineContainer, .ghost-active #utilityDrawer { filter: blur(25px); opacity: 0.3; pointer-events: none; }
 
         .app-container { width: 100%; max-width: 500px; margin: 0 auto; background: white; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; position: relative; border: 2px solid var(--teal); box-sizing: border-box; }
         
-        /* COMPACT HEADER */
+        /* MIRRORED BRANDING HEADER */
         .header { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; border-bottom: 2px solid var(--teal); background: white; z-index: 3000; }
         .logo-area { display: flex; align-items: center; gap: 8px; }
-        .main-title { font-weight: 900; color: var(--teal); font-size: 16px; letter-spacing: -0.5px; }
+        .brand-text { display: flex; flex-direction: column; align-items: flex-start; }
+        .brand-sub { font-size: 8px; font-weight: 900; color: var(--teal); text-transform: uppercase; letter-spacing: 0.5px; }
+        .main-title { font-weight: 900; color: var(--teal); font-size: 15px; letter-spacing: -0.5px; display: flex; align-items: center; gap: 4px; }
         
-        /* CLIO PULSE */
-        .clio-pulse { width: 7px; height: 7px; background-color: var(--clio-green); border-radius: 50%; animation: clio-throb 2s infinite; margin-left: 4px; }
+        /* CLIO PULSE (NO BACKGROUND) */
+        .clio-pulse { width: 7px; height: 7px; background-color: var(--clio-green); border-radius: 50%; animation: clio-throb 2s infinite; }
         @keyframes clio-throb { 0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); } 70% { box-shadow: 0 0 0 8px rgba(46, 204, 113, 0); } 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
 
-        /* UPPER TABS (SCROLLABLE) */
+        /* UPPER SCROLLABLE TABS */
         .tab-row { display: flex; gap: 6px; overflow-x: auto; padding: 10px 15px; border-bottom: 1px solid #eee; scrollbar-width: none; }
         .tab-row::-webkit-scrollbar { display: none; }
-        .template-chip { border: 2px solid var(--teal); padding: 6px 12px; border-radius: 10px; font-size: 9px; font-weight: 900; color: var(--teal); cursor: pointer; white-space: nowrap; background: white; }
+        .template-chip { border: 2px solid var(--teal); padding: 6px 12px; border-radius: 10px; font-size: 9px; font-weight: 900; color: var(--teal); background: white; white-space: nowrap; }
 
-        /* HARDWARE TOOLS (SHRUNKEN, NO EMOJI) */
-        .media-row { display: flex; gap: 6px; padding: 0 15px 10px; }
-        .media-btn { background: #f1f5f9; border: 1.5px solid #cbd5e1; padding: 8px; border-radius: 8px; font-size: 9px; cursor: pointer; flex: 1; text-align: center; font-weight: 900; color: #475569; }
+        /* HARDWARE TOOLS (SHRUNKEN) */
+        .media-row { display: flex; gap: 6px; padding: 10px 15px; }
+        .media-btn { background: #f1f5f9; border: 1.5px solid #cbd5e1; padding: 8px; border-radius: 8px; font-size: 9px; flex: 1; text-align: center; font-weight: 900; color: #475569; }
 
-        /* FLOATING ACTION BUTTONS */
-        #addBtn { position: absolute; right: 15px; bottom: 100px; z-index: 5000; width: 70px; height: 70px; background: var(--teal); border-radius: 20px; color: white; border: none; font-size: 36px; font-weight: 900; box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
-        #syncBtn { position: absolute; left: 15px; bottom: 100px; z-index: 5000; width: 70px; height: 70px; background: var(--clio-blue); border-radius: 20px; color: white; border: none; font-size: 9px; font-weight: 900; padding: 5px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
+        /* ACTION BUTTONS */
+        #addBtn { position: absolute; right: 15px; bottom: 100px; z-index: 5000; width: 75px; height: 75px; background: var(--teal); border-radius: 22px; color: white; border: none; font-size: 38px; font-weight: 900; box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
+        #syncBtn { position: absolute; left: 15px; bottom: 100px; z-index: 5000; width: 75px; height: 75px; background: var(--clio-blue); border-radius: 22px; color: white; border: none; font-size: 9px; font-weight: 900; padding: 5px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
 
-        /* MANAGEMENT DRAWER */
+        /* BOTTOM MANAGEMENT DRAWER */
         #mgmtDrawer { position: fixed; bottom: 0; width: 100%; max-width: 496px; background: white; border-top: 3px solid var(--teal); z-index: 6000; transition: 0.4s transform ease; transform: translateY(calc(100% - 40px)); }
         .drag-handle { width: 100%; height: 40px; display: flex; align-items: center; justify-content: center; }
         .handle-pill { width: 40px; height: 5px; background: var(--teal); border-radius: 10px; opacity: 0.2; }
@@ -46,7 +47,8 @@
         .modal-card { background: white; padding: 25px; border-radius: 24px; text-align: center; border-bottom: 5px solid var(--teal); width: 100%; }
         .modal-btn { border: none; padding: 14px; border-radius: 40px; width: 100%; font-weight: 900; margin-top: 10px; font-size: 13px; }
 
-        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 15px 15px 180px; }
+        /* TIMELINE DISPLAY */
+        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 10px 15px 180px; }
         .entry { background: white; border: 2px solid var(--teal); border-left-width: 8px; padding: 15px; border-radius: 15px; margin-bottom: 20px; }
         .tier-serious { animation: pulse-ser 2s infinite; border-left-color: var(--teal-dark); background: var(--blue-trans); }
         @keyframes pulse-ser { 0% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(0, 128, 128, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0); } }
@@ -60,12 +62,18 @@
 <div class="app-container">
     <header class="header">
         <div class="logo-area">
-            <svg width="30" height="24" viewBox="0 0 40 30" fill="none"><path d="M3 12C3 10.3431 4.34315 9 6 9H13.5C13.5 7 15.5 3 20 3C24.5 3 26.5 7 26.5 9H34C35.6569 9 37 10.3431 37 12V25C37 26.6569 35.6569 28 34 28H6C4.34315 28 3 26.6569 3 25V12Z" stroke="#008080" stroke-width="3" stroke-linejoin="round"/><line x1="0" y1="18.5" x2="40" y2="18.5" stroke="#008080" stroke-width="3"/><circle cx="9" cy="18.5" r="3" fill="#008080" stroke="white"/><circle cx="20" cy="18.5" r="3" fill="#008080" stroke="white"/><circle cx="31" cy="18.5" r="3" fill="#008080" stroke="white"/></svg>
-            <div class="main-title">WorkTimeline™</div><div class="clio-pulse"></div>
+            <svg width="28" height="22" viewBox="0 0 40 30" fill="none"><path d="M3 12C3 10.3431 4.34315 9 6 9H13.5C13.5 7 15.5 3 20 3C24.5 3 26.5 7 26.5 9H34C35.6569 9 37 10.3431 37 12V25C37 26.6569 35.6569 28 34 28H6C4.34315 28 3 26.6569 3 25V12Z" stroke="#008080" stroke-width="3" stroke-linejoin="round"/><line x1="0" y1="18.5" x2="40" y2="18.5" stroke="#008080" stroke-width="3"/><circle cx="9" cy="18.5" r="3" fill="#008080" stroke="white"/><circle cx="20" cy="18.5" r="3" fill="#008080" stroke="white"/><circle cx="31" cy="18.5" r="3" fill="#008080" stroke="white"/></svg>
+            <div class="brand-text">
+                <div class="brand-sub">Takin'Intake</div>
+                <div class="main-title">WorkTimeline™ <div class="clio-pulse"></div></div>
+            </div>
         </div>
-        <div style="display:flex; gap:8px;">
-            <button onclick="document.body.classList.toggle('ghost-active')" style="background:none; border:1.5px solid var(--teal); border-radius:6px; font-size:8px; font-weight:900; color:var(--teal);">GHOST</button>
-            <button onclick="activeVault = activeVault==='TIMELINE'?'NOTES':'TIMELINE'; refresh();" id="vaultToggle" style="background:var(--teal); border:none; border-radius:6px; font-size:8px; font-weight:900; color:white;">NOTES</button>
+        <div class="brand-text" style="align-items: flex-end;">
+            <div class="brand-sub">Takin'Intake</div>
+            <div style="display:flex; gap:5px;">
+                <button onclick="document.body.classList.toggle('ghost-active')" style="background:none; border:1.5px solid var(--teal); border-radius:6px; font-size:7px; font-weight:900; color:var(--teal);">GHOST</button>
+                <button onclick="activeVault = activeVault==='TIMELINE'?'NOTES':'TIMELINE'; refresh();" id="vaultToggle" style="background:var(--teal); border:none; border-radius:6px; font-size:7px; font-weight:900; color:white; padding: 2px 6px;">NOTES</button>
+            </div>
         </div>
     </header>
 
@@ -77,23 +85,23 @@
     </div>
 
     <div class="media-row">
-        <label class="media-btn">CAMERA <input type="file" accept="image/*" capture="environment" style="display:none;" onchange="alert('Photo Ready')"></label>
-        <label class="media-btn">AUDIO <input type="file" accept="audio/*" capture="microphone" style="display:none;" onchange="alert('Audio Ready')"></label>
-        <label class="media-btn">DOCUMENT <input type="file" style="display:none;" onchange="alert('Doc Ready')"></label>
+        <label class="media-btn">CAMERA <input type="file" accept="image/*" capture="environment" style="display:none;" onchange="alert('Photo Captured')"></label>
+        <label class="media-btn">AUDIO <input type="file" accept="audio/*" capture="microphone" style="display:none;" onchange="alert('Audio Captured')"></label>
+        <label class="media-btn">DOCUMENT <input type="file" style="display:none;" onchange="alert('File Attached')"></label>
     </div>
 
-    <div style="padding: 0 15px;"><textarea id="statusBox" style="width:100%; height:70px; border:2px solid var(--teal); border-radius:12px; padding:10px; font-weight:700; outline:none; font-size:14px;" placeholder="Journal the truth..."></textarea></div>
+    <div style="padding: 0 15px;"><textarea id="statusBox" style="width:100%; height:75px; border:2px solid var(--teal); border-radius:12px; padding:10px; font-weight:700; outline:none; font-size:14px;" placeholder="Journal the truth..."></textarea></div>
 
     <div id="timelineContainer"><div id="displayList"></div></div>
 
     <button id="addBtn" onclick="submitEntry()">+</button>
-    <button id="syncBtn" onclick="alert('Synced to Clio.')">LOCK & SYNC</button>
+    <button id="syncBtn" onclick="alert('Locked and Synced.')">LOCK & SYNC</button>
 
     <div id="mgmtDrawer">
         <div class="drag-handle" onclick="toggleMgmt()"><div class="handle-pill"></div></div>
         <div style="padding: 0 20px 30px;">
-            <button class="modal-btn" style="background:var(--teal); color:white;" onclick="alert('Exporting...')">SAVE & EXPORT</button>
-            <button class="modal-btn" style="background:#7f8c8d; color:white;" onclick="confirm('Start Fresh?') && (localStorage.clear() || location.reload())">DELETE & START FRESH</button>
+            <button class="modal-btn" style="background:var(--teal); color:white;" onclick="alert('Exporting Report...')">SAVE & EXPORT</button>
+            <button class="modal-btn" style="background:#7f8c8d; color:white;" onclick="confirm('Wipe record?') && (localStorage.clear() || location.reload())">DELETE & START FRESH</button>
         </div>
     </div>
 </div>
@@ -112,7 +120,7 @@
     function submitEntry() {
         const text = document.getElementById('statusBox').value; if(!text.trim()) return;
         const low = text.toLowerCase();
-        let analysis = (low.includes("fire") || low.includes("toxic") || low.includes("quit")) ? "EA PATTERN: Serious marker detected." : "";
+        let analysis = (low.includes("fire") || low.includes("toxic") || low.includes("threat")) ? "EA PATTERN: Serious marker detected." : "";
         pending = { grit: text, analysis, stamp: new Date().toLocaleString(), tier: analysis ? 'serious' : 'minor', agree: false };
         if(analysis && activeVault === "TIMELINE") { document.getElementById('warningMsg').innerText = analysis; document.getElementById('warningOverlay').style.display = 'flex'; }
         else saveFinal();
