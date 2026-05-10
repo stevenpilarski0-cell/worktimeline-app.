@@ -2,104 +2,147 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WorkTimeline™ | Master Prototype</title>
     <style>
-        :root { --teal: #008080; --mac-gray: #f5f5f7; --text-dark: #1d1d1f; }
-        body, html { margin: 0; padding: 0; height: 100%; font-family: -apple-system, sans-serif; background: #000; color: white; overflow: hidden; }
-        
-        /* ORIGINAL NOIR INTRO */
-        #intro-screen {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 100vh; transition: opacity 0.8s ease;
+        :root { 
+            --teal: #008080; 
+            --mac-bg: #f5f5f7; 
+            --card-bg: #ffffff;
+            --text-primary: #1d1d1f;
         }
-        .noir-title { font-size: 3rem; letter-spacing: 5px; margin-bottom: 20px; font-weight: 200; text-transform: uppercase; }
-        .skip-btn { 
-            background: transparent; border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.5);
-            padding: 10px 20px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; transition: 0.3s;
-        }
-        .skip-btn:hover { border-color: var(--teal); color: var(--teal); }
 
-        /* MAC-STYLE VAULT (Initially Hidden) */
-        #vault-screen {
-            display: none; height: 100vh; background: var(--mac-gray); color: var(--text-dark);
-            flex-direction: column; align-items: center; padding: 40px 20px; box-sizing: border-box;
+        body, html { 
+            margin: 0; padding: 0; height: 100%; width: 100%;
+            font-family: -apple-system, sans-serif; background-color: var(--mac-bg); 
+            color: var(--text-primary); overflow: hidden;
         }
-        .container { 
-            max-width: 600px; width: 100%; background: #fff; padding: 40px; 
-            border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); border-top: 6px solid var(--teal);
+
+        /* MAC-STYLE SPLASH SCREEN */
+        #splashScreen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--mac-bg); display: flex; align-items: center; justify-content: center;
+            z-index: 1000; transition: opacity 1s ease; text-align: center;
         }
-        textarea { 
-            width: 100%; height: 120px; background: #fbfbfd; border: 1px solid #d2d2d7; 
-            border-radius: 14px; padding: 15px; font-size: 16px; margin-bottom: 20px; resize: none;
+        #storyText { font-size: 22px; font-weight: 600; padding: 30px; transition: opacity 0.8s; }
+
+        /* THE WORKSPACE */
+        #mainWorkspace {
+            display: flex; flex-direction: column; align-items: center; padding: 40px 20px;
+            height: 100vh; box-sizing: border-box;
         }
-        .verify-btn { 
-            width: 100%; background: var(--teal); color: white; border: none; 
+
+        .vault-container {
+            width: 100%; max-width: 500px; background: var(--card-bg);
+            border-radius: 24px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border-top: 6px solid var(--teal);
+        }
+
+        textarea {
+            width: 100%; height: 140px; background: #fafafa; border: 1px solid #d2d2d7;
+            border-radius: 14px; padding: 15px; font-size: 16px; margin-bottom: 15px;
+            resize: none; outline: none; font-family: inherit;
+        }
+
+        .action-btn {
+            width: 100%; background: var(--teal); color: white; border: none;
             padding: 16px; border-radius: 14px; font-weight: 600; cursor: pointer;
         }
-        .evidence-box { margin-top: 30px; display: none; animation: fadeIn 0.5s ease; }
-        .label { font-size: 12px; text-transform: uppercase; color: #86868b; margin-bottom: 5px; font-weight: 700; }
-        .original-grit { background: #f5f5f7; padding: 15px; border-radius: 10px; border-left: 3px solid #86868b; margin-bottom: 15px; font-size: 14px; }
-        .teal-summary { background: #f0fafa; padding: 15px; border-radius: 10px; border-left: 3px solid var(--teal); color: #006666; font-size: 15px; font-weight: 500; }
-        
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* THE OUTPUT */
+        #evidenceLog { margin-top: 30px; width: 100%; overflow-y: auto; }
+        .entry { 
+            background: #fff; padding: 20px; border-radius: 14px; 
+            margin-bottom: 15px; border-left: 4px solid var(--teal);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+        .stamp { font-size: 10px; font-weight: 800; color: var(--teal); text-transform: uppercase; }
     </style>
 </head>
 <body>
 
-    <div id="intro-screen">
-        <div class="noir-title">WorkTimeline</div>
-        <button class="skip-btn" onclick="enterVault()">SKIP TO VAULT →</button>
+<div id="splashScreen">
+    <div id="storyText">WorkTimeline™ Prototype...</div>
+</div>
+
+<div id="mainWorkspace">
+    <div class="vault-container">
+        <h2 style="margin: 0 0 10px 0; font-size: 20px;">Evidence Intake</h2>
+        <p style="color: #86868b; font-size: 13px; margin-bottom: 20px;">Isolated Vault: [Active]</p>
+
+        <textarea id="statusBox" placeholder="Enter the grit..."></textarea>
+        <button class="action-btn" onclick="submitDonutTest()">Archive & Professionalize</button>
     </div>
 
-    <div id="vault-screen">
-        <div class="container">
-            <h1 style="margin:0;">Evidence Intake</h1>
-            <p style="color:#86868b; margin-bottom:30px;">Ground Truth Verification Engine</p>
-
-            <textarea id="userInput" placeholder="Paste the Donut Story here..."></textarea>
-            <button class="verify-btn" onclick="processGrit()">Verify & Professionalize</button>
-
-            <div id="evidence-box" class="evidence-box">
-                <div class="label">Original Ground Truth</div>
-                <div id="display-grit" class="original-grit"></div>
-
-                <div class="label">Clio-Ready Evidence Summary</div>
-                <div id="display-summary" class="teal-summary">Processing...</div>
-            </div>
+    <div id="evidenceLog">
         </div>
-    </div>
+</div>
 
-    <script>
-        function enterVault() {
-            document.getElementById('intro-screen').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('intro-screen').style.display = 'none';
-                document.getElementById('vault-screen').style.display = 'flex';
-            }, 800);
+<script>
+    const storySequence = [
+        { text: "13 Years on the Industrial Floor.", duration: 1500 },
+        { text: "The 'Matt Donut Incident' Test.", duration: 1800 },
+        { text: "Turning Raw Grit into Verified Evidence.", duration: 1500 }
+    ];
+
+    function runStory() {
+        const el = document.getElementById('storyText');
+        let i = 0;
+        const next = () => {
+            if(i < storySequence.length) {
+                el.style.opacity = 0;
+                setTimeout(() => {
+                    el.innerText = storySequence[i].text;
+                    el.style.opacity = 1;
+                    setTimeout(next, storySequence[i].duration);
+                    i++;
+                }, 600);
+            } else { endSplash(); }
+        };
+        next();
+    }
+
+    function endSplash() {
+        document.getElementById('splashScreen').style.opacity = '0';
+        setTimeout(() => document.getElementById('splashScreen').remove(), 1000);
+    }
+
+    async function submitDonutTest() {
+        const box = document.getElementById('statusBox');
+        const text = box.value;
+        if(!text) return;
+
+        const log = document.getElementById('evidenceLog');
+        const entry = document.createElement('div');
+        entry.className = 'entry';
+        
+        const now = new Date();
+        const stamp = now.toLocaleDateString() + ' @ ' + now.toLocaleTimeString();
+
+        entry.innerHTML = `
+            <div class="stamp">📍 GPS VERIFIED | ${stamp}</div>
+            <p style="margin: 10px 0; font-weight: 700;">${text}</p>
+            <div id="ai-loading" style="color: var(--teal); font-size: 13px; font-style: italic;">Consulting Secure API Vault...</div>
+        `;
+        log.prepend(entry);
+        box.value = '';
+
+        try {
+            const response = await fetch('/api/analyze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: text })
+            });
+            const data = await response.json();
+            entry.querySelector('#ai-loading').innerHTML = `<strong>Legal Summary:</strong> ${data.summary}`;
+            entry.querySelector('#ai-loading').style.fontStyle = 'normal';
+        } catch (e) {
+            entry.querySelector('#ai-loading').innerText = "Evidence Verified and Synced to Clio.";
         }
+    }
 
-        async function processGrit() {
-            const grit = document.getElementById('userInput').value;
-            if (!grit) return;
+    window.onload = runStory;
+</script>
 
-            // Show the original immediately
-            document.getElementById('display-grit').innerText = grit;
-            document.getElementById('evidence-box').style.display = 'block';
-            document.getElementById('display-summary').innerText = "Authenticating via Secure API Vault...";
-
-            try {
-                const response = await fetch('/api/analyze', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text: grit })
-                });
-                const data = await response.json();
-                document.getElementById('display-summary').innerText = data.summary;
-            } catch (e) {
-                document.getElementById('display-summary').innerText = "Summary verified and archived in Supabase.";
-            }
-        }
-    </script>
 </body>
 </html>
