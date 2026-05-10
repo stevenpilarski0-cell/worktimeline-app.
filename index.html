@@ -3,101 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline Elite | Native Pulse</title>
+    <title>WorkTimeline Elite | Auditor Master</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --teal: #008080;
             --silver: #e2e8f0;
             --slate: #1e293b;
+            --risk: #ef4444;
+            --accent: #0ea5e9;
             --glass: rgba(255, 255, 255, 0.9);
         }
 
         body { font-family: 'Nunito Sans', sans-serif; background: #f1f5f9; margin: 0; padding: 0; height: 100dvh; overflow: hidden; display: flex; flex-direction: column; }
+        .stealth #timeline { filter: blur(25px) grayscale(1); pointer-events: none; }
 
-        /* --- MODERN ROUNDS & GLASS --- */
-        header { background: var(--glass); backdrop-filter: blur(25px); padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 40px 40px; border-bottom: 1px solid var(--silver); z-index: 1000; position: fixed; top: 0; width: 100%; box-sizing: border-box; }
-        .brand { font-weight: 900; color: var(--teal); font-size: 19px; letter-spacing: -0.5px; }
+        /* --- MODERN HEADER --- */
+        header { background: var(--glass); backdrop-filter: blur(20px); padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 40px 40px; border-bottom: 1px solid var(--silver); z-index: 1000; position: fixed; top: 0; width: 100%; box-sizing: border-box; }
+        .brand { font-weight: 900; color: var(--teal); font-size: 19px; }
 
+        /* --- DUAL SWITCHES --- */
+        .sw-group { display: flex; gap: 12px; }
+        .sw-wrap { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+        .sw { position: relative; width: 34px; height: 18px; }
+        .sw input { opacity: 0; width: 0; height: 0; }
+        .sld { position: absolute; inset: 0; background: #cbd5e1; transition: .3s; border-radius: 20px; cursor: pointer; }
+        .sld:before { position: absolute; content: ""; height: 14px; width: 14px; left: 2px; bottom: 2px; background: white; transition: .3s; border-radius: 50%; }
+        input:checked + .sld { background: var(--teal); }
+        input:checked + .sld:before { transform: translateX(16px); }
+        .sw-lbl { font-size: 7px; font-weight: 900; color: var(--slate); text-transform: uppercase; }
+
+        /* --- INTAKE CARD --- */
         .intake-area { margin-top: 90px; padding: 20px; }
         .main-card { background: white; border-radius: 40px; padding: 25px; border: 1px solid var(--silver); box-shadow: 0 10px 40px rgba(0,0,0,0.04); }
-        textarea { width: 100%; height: 110px; border-radius: 30px; border: 2px solid var(--silver); padding: 20px; font-family: inherit; font-size: 16px; outline: none; box-sizing: border-box; background: #fafafa; transition: 0.3s; }
-        textarea:focus { border-color: var(--teal); background: #fff; }
+        .chip-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: none; }
+        .chip { background: var(--silver); padding: 8px 16px; border-radius: 100px; font-size: 10px; font-weight: 800; color: var(--teal); white-space: nowrap; cursor: pointer; }
+        textarea { width: 100%; height: 100px; border-radius: 25px; border: 2px solid var(--silver); padding: 18px; font-family: inherit; font-size: 16px; outline: none; box-sizing: border-box; background: #fafafa; }
 
-        /* --- THE MAC DOCK (TEAL ON SILVER) --- */
-        .media-dock { display: flex; gap: 12px; margin-top: 20px; align-items: center; }
-        .native-btn { 
-            width: 58px; height: 58px; background: var(--silver); border: none; 
-            border-radius: 24px; display: flex; align-items: center; justify-content: center; 
-            cursor: pointer; position: relative; overflow: hidden; transition: 0.2s;
-        }
-        .native-btn:active { transform: scale(0.9); background: #cbd5e1; }
-        .native-btn svg { width: 26px; height: 26px; fill: var(--teal); }
-        
-        /* HIDDEN NATIVE INPUTS */
-        .native-btn input { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+        /* --- NATIVE MEDIA DOCK --- */
+        .dock { display: flex; gap: 12px; margin-top: 20px; align-items: center; }
+        .native-btn { width: 56px; height: 56px; background: var(--silver); border-radius: 22px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+        .native-btn svg { width: 24px; height: 24px; fill: var(--teal); }
+        .native-btn input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+        .rec-btn { flex-grow: 1; background: var(--teal); color: white; border: none; height: 56px; border-radius: 22px; font-weight: 900; font-size: 15px; box-shadow: 0 4px 15px rgba(0,128,128,0.2); }
 
-        .record-btn { 
-            flex-grow: 1; background: var(--teal); color: white; border: none; 
-            height: 58px; border-radius: 24px; font-weight: 900; font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,128,128,0.2);
-        }
-
-        /* --- TIMELINE --- */
+        /* --- TIMELINE & PULSE --- */
         #timeline { flex-grow: 1; overflow-y: auto; padding: 10px 20px 120px; display: flex; flex-direction: column; gap: 20px; }
-        .card { background: white; border-radius: 40px; padding: 25px; border: 1px solid var(--silver); border-left: 10px solid var(--teal); position: relative; transition: 0.4s; }
+        .card { background: white; border-radius: 38px; padding: 25px; border: 1px solid var(--silver); border-left: 10px solid var(--teal); position: relative; transition: 0.4s; }
         
-        /* PULSE CLASSES */
         @keyframes p-crit { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); } 50% { box-shadow: 0 0 0 30px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
-        .critical { animation: p-crit 1s infinite; border-left-color: #ef4444 !important; }
+        @keyframes p-mod { 0% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.4); } 70% { box-shadow: 0 0 0 20px rgba(14, 165, 233, 0); } 100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); } }
+        
+        .critical { animation: p-crit 1s infinite; border-left-color: var(--risk) !important; }
+        .moderate { animation: p-mod 2s infinite; border-left-color: var(--accent) !important; }
 
-        /* SETTINGS */
-        #gear { position: fixed; bottom: 35px; right: 35px; width: 65px; height: 65px; background: var(--slate); border-radius: 26px; border: none; z-index: 999; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        /* --- AUDIT BOX --- */
+        .audit-box { background: #f0fdfa; border-radius: 22px; padding: 18px; margin-top: 15px; font-size: 13px; line-height: 1.5; }
+        .latin-tag { display: inline-block; background: var(--accent); color: white; padding: 4px 10px; border-radius: 8px; font-size: 10px; font-weight: 900; margin-bottom: 8px; text-transform: uppercase; }
+
         #loader { position: fixed; inset: 0; background: rgba(255,255,255,0.95); z-index: 10000; display: none; align-items: center; justify-content: center; flex-direction: column; }
+        .spinner { width: 40px; height: 40px; border: 4px solid var(--silver); border-top-color: var(--teal); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        
+        #gear { position: fixed; bottom: 35px; right: 35px; width: 65px; height: 65px; background: var(--slate); border-radius: 24px; border: none; z-index: 999; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
     </style>
 </head>
-<body>
+<body id="app">
 
-    <div id="loader">
-        <div style="width:45px; height:45px; border:5px solid var(--silver); border-top-color:var(--teal); border-radius:50%; animation: spin 1s linear infinite;"></div>
-        <p style="font-weight:900; margin-top:20px; color:var(--teal); letter-spacing:1px;">CROSS-REFERENCING PATTERNS...</p>
-    </div>
+    <div id="loader"><div class="spinner"></div><p style="font-weight:900;margin-top:20px;color:var(--teal)">RECOGNIZING PATTERNS...</p></div>
 
-    <header><div class="brand">WorkTimeline Elite</div></header>
+    <header>
+        <div class="brand">WorkTimeline Elite</div>
+        <div class="sw-group">
+            <div class="sw-wrap">
+                <label class="sw"><input type="checkbox" onchange="document.getElementById('app').classList.toggle('stealth')"><span class="sld"></span></label>
+                <span class="sw-lbl">STEALTH</span>
+            </div>
+            <div class="sw-wrap">
+                <label class="sw"><input type="checkbox" id="noteToggle"><span class="sld"></span></label>
+                <span class="sw-lbl">NOTES</span>
+            </div>
+        </div>
+    </header>
 
     <div class="intake-area">
         <div class="main-card">
-            <textarea id="msg" placeholder="What pattern is occurring?"></textarea>
-            <div class="media-dock">
-                <div class="native-btn">
-                    <svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
-                    <input type="file" accept="image/*" capture="environment">
-                </div>
-                <div class="native-btn">
-                    <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-                    <input type="file" accept="audio/*" capture="microphone">
-                </div>
-                <div class="native-btn">
-                    <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-                    <input type="file" accept=".pdf,.doc,.docx,.txt">
-                </div>
-                <button class="record-btn" onclick="process()">RECORD</button>
+            <div class="chip-row">
+                <div class="chip" onclick="tag('ACCIDENT')">ACCIDENT</div>
+                <div class="chip" onclick="tag('FIRST AID')">FIRST AID</div>
+                <div class="chip" onclick="tag('PROHIBITED ACTION')">PROHIBITED ACTION</div>
+                <div class="chip" onclick="tag('WITNESS')">WITNESS</div>
+            </div>
+            <textarea id="statusBox" placeholder="Describe clinical symptoms or incidents..."></textarea>
+            <div class="dock">
+                <div class="native-btn"><svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg><input type="file" accept="image/*" capture="environment"></div>
+                <div class="native-btn"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg><input type="file" accept="audio/*" capture="microphone"></div>
+                <div class="native-btn"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg><input type="file" accept=".pdf,.doc,.docx,.txt"></div>
+                <button class="rec-btn" onclick="process()">RECORD & AUDIT</button>
             </div>
         </div>
     </div>
 
     <div id="timeline"></div>
 
-    <button id="gear" onclick="let k=prompt('Enter pT9 Key:'); if(k) localStorage.setItem('WT_K', k);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button>
+    <button id="gear" onclick="let k=prompt('API Key:'); if(k) localStorage.setItem('WT_K', k);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('WT_FINAL_NATIVE')) || [];
-        let key = localStorage.getItem('WT_K');
-
+        let db = JSON.parse(localStorage.getItem('WT_MASTER_V22')) || [];
+        function tag(t) { document.getElementById('statusBox').value += `[${t}] `; }
+        
         async function process() {
-            let val = document.getElementById('msg').value.trim();
+            let val = document.getElementById('statusBox').value.trim();
+            let key = localStorage.getItem('WT_K');
             if(!val) return;
             document.getElementById('loader').style.display = 'flex';
-            let analysis = { sev: 0, msg: "Logged to Auditor timeline." };
+
+            let result = { sev: 0, msg: "Logged to Auditor.", latin: "", case: "" };
 
             if(key) {
                 try {
@@ -106,18 +127,27 @@
                         headers: { 'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json' },
                         body: JSON.stringify({ 
                             model: 'command', 
-                            prompt: `BC LEGAL AUDITOR: Pattern recognition for BCHRT, WCB, and Civil Trial. Cross-reference Canadian Case Law. RETURN JSON: {"sev":0 or 3, "msg":"Legal diagnostic", "caseName":"...", "caseStudy":"..."} INCIDENT: ${val}`,
+                            prompt: `BC LEGAL AUDITOR: Analyze for Prohibited Action (WCB), Privacy (PIPA), and Fraud. 
+                            Recognize patterns for PTSD, Adjustment Disorder, and Anxiety onsets. 
+                            Identify Latin Terms (e.g. Prima Facie, Res Ipsa Loquitur).
+                            Explain Latin in plain English.
+                            RETURN JSON: {"sev":0 or 1 or 3, "msg":"Diagnostic", "latin":"Term & Easy Def", "case":"Case study ref"} 
+                            INCIDENT: ${val}`,
                             temperature: 0.1 
                         })
                     });
                     const d = await r.json();
-                    analysis = JSON.parse(d.generations[0].text.replace(/```json|```/g, "").trim());
+                    result = JSON.parse(d.generations[0].text.replace(/```json|```/g, "").trim());
                 } catch(e) { console.error(e); }
+            } else {
+                // Local keyword logic if no API
+                if(val.toLowerCase().includes("injury") || val.toLowerCase().includes("fired")) result.sev = 3;
+                else if(val.toLowerCase().includes("witness")) result.sev = 1;
             }
 
-            db.push({ id: Date.now(), txt: val, time: new Date().toLocaleString(), ...analysis });
-            localStorage.setItem('WT_FINAL_NATIVE', JSON.stringify(db));
-            document.getElementById('msg').value = '';
+            db.push({ id: Date.now(), txt: val, time: new Date().toLocaleString(), ...result });
+            localStorage.setItem('WT_MASTER_V22', JSON.stringify(db));
+            document.getElementById('statusBox').value = '';
             document.getElementById('loader').style.display = 'none';
             render();
         }
@@ -126,14 +156,16 @@
             let cont = document.getElementById('timeline'); cont.innerHTML = "";
             [...db].reverse().forEach(i => {
                 let card = document.createElement('div');
-                card.className = `card ${i.sev === 3 ? 'critical' : ''}`;
+                card.className = `card ${i.sev === 3 ? 'critical' : i.sev === 1 ? 'moderate' : ''}`;
                 card.innerHTML = `
                     <small style="color:var(--silver); font-weight:900; font-size:10px;">${i.time}</small>
-                    <div style="font-weight:700; margin-top:10px; color:var(--slate);">${i.txt}</div>
-                    <div style="background:#f0fdfa; padding:15px; border-radius:20px; margin-top:15px; font-size:13px;">
-                        <strong style="color:var(--teal);">AUDIT:</strong> ${i.msg}
-                    </div>
-                `;
+                    <div style="font-weight:700; margin-top:10px; color:var(--slate); line-height:1.4;">${i.txt}</div>
+                    <div class="audit-box">
+                        <div style="font-weight:900; color:var(--teal); font-size:10px; margin-bottom:5px; text-transform:uppercase;">Statutory Audit</div>
+                        ${i.msg}
+                        ${i.latin ? `<div style="margin-top:10px;"><span class="latin-tag">${i.latin}</span></div>` : ''}
+                        ${i.case ? `<div style="font-size:11px; margin-top:10px; color:var(--teal); font-style:italic;">Ref: ${i.case}</div>` : ''}
+                    </div>`;
                 cont.appendChild(card);
             });
         }
