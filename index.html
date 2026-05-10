@@ -80,13 +80,9 @@
 <script>
     const story = ["The Fresh Record.", "Canadian Justice.", "Case Law Integrated.", "Truth Secured."];
     let isDrawerOpen = true; let activeVault = "TIMELINE"; 
-    
-    // PERSISTENCE LOAD
     const timelineVault = JSON.parse(localStorage.getItem('wt_timeline')) || []; 
     const notesVault = JSON.parse(localStorage.getItem('wt_notes')) || [];
-
     window.onload = () => { refreshDisplay(); };
-
     function dismissLegal() { document.getElementById('legalOverlay').style.opacity='0'; setTimeout(() => { document.getElementById('legalOverlay').remove(); runStory(); }, 500); }
     function runStory() { const el = document.getElementById('storyText'); let i = 0; const next = () => { if(i < story.length) { el.style.opacity = 0; setTimeout(() => { el.innerText = story[i++]; el.style.opacity = 1; setTimeout(next, 2000); }, 600); } else endSplash(); }; next(); }
     function endSplash() { const s = document.getElementById('splashScreen'); if(s) { s.style.opacity='0'; setTimeout(() => s.remove(), 800); } }
@@ -112,13 +108,7 @@
         });
     }
     function toggleLegalDetail(id) { const el = document.getElementById(`detail-${id}`); el.style.display = el.style.display === 'block' ? 'none' : 'block'; }
-    function stackEntry(id) { 
-        const e = timelineVault.find(x => x.id === id) || notesVault.find(x => x.id === id); 
-        e.isStacked = true; e.currentView = 'legal'; 
-        localStorage.setItem('wt_timeline', JSON.stringify(timelineVault));
-        localStorage.setItem('wt_notes', JSON.stringify(notesVault));
-        refreshDisplay(); 
-    }
+    function stackEntry(id) { const e = timelineVault.find(x => x.id === id) || notesVault.find(x => x.id === id); e.isStacked = true; e.currentView = 'legal'; localStorage.setItem('wt_timeline', JSON.stringify(timelineVault)); localStorage.setItem('wt_notes', JSON.stringify(notesVault)); refreshDisplay(); }
     function switchView(id, view) { const e = timelineVault.find(x => x.id === id) || notesVault.find(x => x.id === id); e.currentView = view; refreshDisplay(); }
     function toggleGhost(cb) { document.getElementById('appBody').classList.toggle('ghost-active', cb.checked); }
     function toggleVault(cb) { activeVault = cb.checked ? "NOTES" : "TIMELINE"; refreshDisplay(); }
