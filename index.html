@@ -3,302 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline Elite | v15.3 Heavy-Duty Monolith</title>
-    <style id="v15-3-heavy-duty-styles">
+    <title>WorkTimeline Elite | v15.4 Force-Integrity</title>
+    <style id="v15-4-monolith-styles">
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&family=Nunito+Sans:wght@400;700&display=swap');
         
         :root { 
-            --teal: #008080; 
-            --slate: #475569; 
-            --gray-bg: #f1f5f9; 
-            --mac-border: #cbd5e0;
-            --notes-gold: #f59e0b; 
-            --white: #ffffff; 
-            --mac-shadow: 0 12px 30px rgba(0,0,0,0.12);
-            --clio-blue: #0076CE; 
-            --risk-red: #e53e3e; 
-            --warn-yellow: #f1c40f; 
+            --teal: #008080; --slate: #475569; --gray-bg: #f1f5f9; --mac-border: #cbd5e0;
+            --notes-gold: #f59e0b; --white: #ffffff; --clio-blue: #0076CE; --risk-red: #e53e3e;
         }
 
-        /* HEAVY RESET - NO SHORTCUTS */
-        * { 
-            box-sizing: border-box; 
-            -webkit-tap-highlight-color: transparent; 
-            margin: 0; 
-            padding: 0; 
-        }
-        
-        body { 
-            font-family: 'Nunito', sans-serif; 
-            background-color: var(--gray-bg); 
-            height: 100vh; 
-            height: 100dvh; 
-            display: flex; 
-            flex-direction: column; 
-            overflow: hidden; 
-        }
+        /* HEAVY-WEIGHT CORE */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+        body { font-family: 'Nunito', sans-serif; background-color: var(--gray-bg); height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* MAC-STYLE TOGGLES - FULL EXPLICIT CSS */
-        .toggle-group { 
-            display: flex; 
-            flex-direction: row; 
-            gap: 15px; 
-            align-items: center; 
-        }
-        .mac-switch-wrapper { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-        }
-        .mac-switch { 
-            position: relative; 
-            display: inline-block; 
-            width: 42px; 
-            height: 24px; 
-        }
-        .mac-switch input { 
-            opacity: 0 !important; 
-            width: 0 !important; 
-            height: 0 !important; 
-            position: absolute;
-        }
-        .mac-slider { 
-            position: absolute; 
-            cursor: pointer; 
-            top: 0; left: 0; right: 0; bottom: 0; 
-            background-color: #d1d5db; 
-            transition: 0.3s; 
-            border-radius: 34px; 
-        }
-        .mac-slider:before { 
-            position: absolute; 
-            content: ""; 
-            height: 18px; 
-            width: 18px; 
-            left: 3px; 
-            bottom: 3px; 
-            background-color: #ffffff; 
-            transition: 0.3s; 
-            border-radius: 50%; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2); 
-        }
-        input:checked + .mac-slider { 
-            background-color: var(--teal) !important; 
-        }
-        input:checked + .mac-slider.gold-variant { 
-            background-color: var(--notes-gold) !important; 
-        }
-        input:checked + .mac-slider:before { 
-            transform: translateX(18px); 
-        }
-        .switch-label { 
-            font-size: 9px; 
-            font-weight: 900; 
-            color: var(--slate); 
-            margin-top: 5px; 
-            text-transform: uppercase; 
-            letter-spacing: 0.5px; 
-        }
+        /* FORCED MAC SLIDERS */
+        .mac-switch { position: relative; display: inline-block; width: 42px; height: 24px; }
+        .mac-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+        .mac-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #d1d5db; transition: 0.3s; border-radius: 34px; }
+        .mac-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: #ffffff; transition: 0.3s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        input:checked + .mac-slider { background-color: var(--teal) !important; }
+        input:checked + .mac-slider.gold-variant { background-color: var(--notes-gold) !important; }
+        input:checked + .mac-slider:before { transform: translateX(18px); }
 
         /* TOP DRAWER ARCHITECTURE */
-        #topDrawer { 
-            position: fixed; 
-            top: 0; 
-            left: 0;
-            width: 100%; 
-            background-color: var(--white); 
-            border-bottom-width: 5px;
-            border-bottom-style: solid;
-            border-bottom-color: var(--teal); 
-            border-bottom-left-radius: 35px;
-            border-bottom-right-radius: 35px;
-            transition: transform 0.4s cubic-bezier(0.1, 0.7, 0.1, 1); 
-            z-index: 10000; 
-            transform: translateY(calc(-100% + 60px)); 
-            box-shadow: 0 5px 25px rgba(0,0,0,0.08); 
-        }
-        #topDrawer.open { 
-            transform: translateY(0); 
-        }
-        .top-handle { 
-            height: 60px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            cursor: pointer; 
-            position: absolute; 
-            bottom: 0; 
-            width: 100%; 
-            background-color: var(--white); 
-            border-bottom-left-radius: 35px;
-            border-bottom-right-radius: 35px;
-        }
-        .top-pill { 
-            width: 55px; 
-            height: 6px; 
-            background-color: var(--mac-border); 
-            border-radius: 10px; 
-            position: absolute; 
-            bottom: 10px; 
-        }
+        #topDrawer { position: fixed; top: 0; width: 100%; background: var(--white); border-bottom: 5px solid var(--teal); border-radius: 0 0 35px 35px; transition: transform 0.4s cubic-bezier(0.1, 0.7, 0.1, 1); z-index: 10000; transform: translateY(calc(-100% + 60px)); box-shadow: 0 5px 25px rgba(0,0,0,0.08); }
+        #topDrawer.open { transform: translateY(0); }
+        .top-handle { height: 60px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: absolute; bottom: 0; width: 100%; background: var(--white); border-radius: 0 0 35px 35px; }
 
-        /* INTAKE BOX */
-        #statusBox { 
-            width: 100%; 
-            height: 120px; 
-            padding: 15px; 
-            border-radius: 20px; 
-            border: 2px solid var(--mac-border); 
-            outline: none; 
-            font-family: 'Nunito Sans', sans-serif; 
-            font-size: 16px; 
-            background-color: #fafafa; 
-            box-sizing: border-box; 
-            resize: none; 
-        }
-        .media-dock { 
-            display: flex; 
-            flex-direction: row;
-            gap: 12px; 
-            background-color: #e2e8f0; 
-            padding: 8px; 
-            border-radius: 18px; 
-            flex-grow: 1; 
-            margin-right: 15px; 
-            justify-content: space-around; 
-        }
-        .icon-btn { 
-            background-color: var(--white); 
-            width: 46px; 
-            height: 46px; 
-            border-radius: 12px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            color: var(--slate); 
-            border: none; 
-            cursor: pointer; 
-        }
+        #statusBox { width: 100%; height: 120px; padding: 15px; border-radius: 20px; border: 2px solid var(--mac-border); outline: none; font-size: 16px; background: #fafafa; box-sizing: border-box; resize: none; font-family: 'Nunito Sans', sans-serif; }
+        .media-dock { display: flex; gap: 12px; background: #e2e8f0; padding: 8px; border-radius: 18px; flex-grow: 1; margin-right: 15px; justify-content: space-around; }
+        .icon-btn { background: var(--white); width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; }
 
-        /* TIMELINE - ROCK SOLID ZERO JUMP */
-        #timeline { 
-            flex-grow: 1; 
-            overflow-y: auto; 
-            padding-top: 80px;
-            padding-bottom: 140px;
-            padding-left: 20px;
-            padding-right: 20px;
-            display: flex; 
-            flex-direction: column; 
-            gap: 20px; 
-        }
-        .entry-card { 
-            background-color: var(--white); 
-            padding: 20px; 
-            border-radius: 22px; 
-            border-top: 2px solid var(--mac-border);
-            border-right: 2px solid var(--mac-border);
-            border-bottom: 2px solid var(--mac-border);
-            border-left: 8px solid var(--teal); 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05); 
-            position: relative; 
-            width: 100%;
-        }
-        .note-card { 
-            border-left-color: var(--notes-gold) !important; 
-        }
-        .stamp { 
-            font-size: 10px; 
-            font-weight: 800; 
-            color: var(--slate); 
-            opacity: 0.5; 
-            margin-bottom: 8px; 
-        }
+        /* TIMELINE - ROCK SOLID */
+        #timeline { flex-grow: 1; overflow-y: auto; padding: 80px 20px 140px; display: flex; flex-direction: column; gap: 20px; }
+        .entry-card { background: var(--white); padding: 20px; border-radius: 22px; border: 2px solid var(--mac-border); border-left: 8px solid var(--teal); box-shadow: 0 5px 15px rgba(0,0,0,0.05); position: relative; width: 100%; }
+        .note-card { border-left-color: var(--notes-gold) !important; }
+        .stamp { font-size: 10px; font-weight: 800; color: var(--slate); opacity: 0.5; margin-bottom: 8px; }
+        .vault-tag { background: #e0f2f1; color: var(--teal); font-size: 9px; padding: 4px 8px; border-radius: 6px; font-weight: 900; margin-top: 10px; display: inline-block; text-transform: uppercase; }
+
+        /* OVERLAYS */
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); z-index: 100000; display: none; align-items: center; justify-content: center; padding: 25px; }
+        .modal { background: var(--white); padding: 30px; border-radius: 35px; width: 100%; max-width: 360px; text-align: center; border: 4px solid var(--teal); }
+        .btn { padding: 18px; border-radius: 15px; border: none; font-weight: 900; width: 100%; margin-top: 15px; cursor: pointer; font-size: 14px; text-transform: uppercase; }
         
-        /* PULSE OVERLAY - FULL MONOLITH */
-        #aiPulse { 
-            position: fixed; 
-            top: 0; left: 0; 
-            width: 100%; height: 100%; 
-            background-color: rgba(255,255,255,0.9); 
-            z-index: 100001; 
-            display: none; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-        }
-        .pulse-circle { 
-            width: 100px; height: 100px; 
-            border-radius: 50%; 
-            border-width: 6px;
-            border-style: solid;
-            border-color: var(--teal); 
-            animation: pulse-ring-v15 1.5s infinite; 
-        }
-        @keyframes pulse-ring-v15 { 
-            0% { transform: scale(0.6); opacity: 1; } 
-            100% { transform: scale(1.4); opacity: 0; } 
-        }
+        #aiPulse { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 100001; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        .pulse-circle { width: 100px; height: 100px; border-radius: 50%; border: 6px solid var(--teal); animation: pulse-v154 1.5s infinite; }
+        @keyframes pulse-v154 { 0% { transform: scale(0.6); opacity: 1; } 100% { transform: scale(1.4); opacity: 0; } }
 
-        /* MODALS & CHOICE UI */
-        .overlay { 
-            position: fixed; 
-            top: 0; left: 0; 
-            width: 100%; height: 100%; 
-            background-color: rgba(0,0,0,0.6); 
-            backdrop-filter: blur(10px); 
-            z-index: 100000; 
-            display: none; 
-            align-items: center; 
-            justify-content: center; 
-            padding: 25px; 
-        }
-        .modal { 
-            background-color: var(--white); 
-            padding: 30px; 
-            border-radius: 35px; 
-            width: 100%; 
-            max-width: 360px; 
-            text-align: center; 
-            border-width: 4px;
-            border-style: solid;
-            border-color: var(--teal); 
-            box-shadow: var(--mac-shadow);
-        }
-        .btn { 
-            padding: 18px; 
-            border-radius: 15px; 
-            border: none; 
-            font-weight: 900; 
-            width: 100%; 
-            margin-top: 15px; 
-            cursor: pointer; 
-            font-size: 14px;
-            text-transform: uppercase;
-        }
-
-        /* VAULT ACTION */
-        #vaultBtn { 
-            position: fixed; 
-            right: 20px; bottom: 85px; 
-            width: 64px; height: 64px; 
-            background-color: var(--clio-blue); 
-            border-radius: 20px; 
-            display: flex; align-items: center; justify-content: center; 
-            color: #ffffff; border: none; 
-            box-shadow: 0 8px 25px rgba(0,118,206,0.4); 
-            z-index: 9999; 
-        }
+        #vaultBtn { position: fixed; right: 20px; bottom: 85px; width: 64px; height: 64px; background: var(--clio-blue); border-radius: 20px; display: flex; align-items: center; justify-content: center; color: white; border: none; box-shadow: 0 8px 25px rgba(0,118,206,0.4); z-index: 9999; }
     </style>
 </head>
-<body id="app">
+<body>
 
 <input type="file" id="cameraIn" accept="image/*" capture="environment" style="display:none;" onchange="mediaLog('Photo')">
 <input type="file" id="micIn" accept="audio/*" capture="microphone" style="display:none;" onchange="mediaLog('Voice Note')">
-<input type="file" id="docIn" style="display:none;" onchange="mediaLog('Document')">
 
-<button id="vaultBtn" onclick="alert('VAULT STATUS: All Raw and AI-Crosslinked Artifacts are secured for Clio Sync.')">
+<button id="vaultBtn" onclick="alert('VAULT SECURED: Dual Artifacts (Raw & AI) bundled for Clio.')">
     <svg width="30" height="30" fill="white" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/></svg>
 </button>
 
@@ -307,16 +67,93 @@
         <header style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
             <div style="font-weight:900; color:var(--teal); font-size:22px;">WorkTimeline™</div>
             <div class="toggle-group">
-                <div class="mac-switch-wrapper">
-                    <label class="mac-switch">
-                        <input type="checkbox" id="noteToggle" onchange="render()">
-                        <span class="mac-slider gold-variant"></span>
-                    </label>
-                    <span class="switch-label">NOTES</span>
-                </div>
+                <div class="mac-switch-wrapper"><label class="mac-switch"><input type="checkbox" id="noteToggle" onchange="render()"><span class="mac-slider gold-variant"></span></label><span class="switch-label">NOTES</span></div>
             </div>
         </header>
-        <textarea id="statusBox" placeholder="Describe the incident details..."></textarea>
+        <textarea id="statusBox" placeholder="Enter log entry..."></textarea>
         <div style="display:flex; align-items:center; margin-top:15px;">
             <div class="media-dock">
-                <button class="icon-btn" onclick="document.getElementById('cameraIn').click()"><svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M9 3L7.17 5H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2
+                <button class="icon-btn" onclick="document.getElementById('cameraIn').click()"><svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M9 3L7.17 5H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-3.17L15 3H9z"/></svg></button>
+                <button class="icon-btn" onclick="document.getElementById('micIn').click()"><svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg></button>
+            </div>
+            <button onclick="process()" style="width:64px; height:64px; border-radius:18px; background:var(--teal); color:white; font-size:36px; font-weight:900; border:none; cursor:pointer;">+</button>
+        </div>
+    </div>
+    <div class="top-handle" onclick="document.getElementById('topDrawer').classList.toggle('open')"><div class="top-pill"></div></div>
+</div>
+
+<div id="timeline"></div>
+
+<div id="choiceModal" class="overlay">
+    <div class="modal">
+        <h2 style="color:var(--teal); margin:0;">AI LEGAL MATCH</h2>
+        <p id="matchText" style="margin: 20px 0; line-height:1.5; color:var(--slate);"></p>
+        <button class="btn" style="background:var(--teal); color:white;" onclick="finalize(true)">USE AI CASE-LAW VERSION</button>
+        <button class="btn" style="background:var(--slate); color:white;" onclick="finalize(false)">KEEP RAW TEXT VERSION</button>
+    </div>
+</div>
+
+<div id="aiPulse"><div class="pulse-circle"></div><div style="margin-top:30px; font-weight:900; color:var(--teal); letter-spacing:1px;">ANALYZING PATTERNS...</div></div>
+
+<script>
+    let db = JSON.parse(localStorage.getItem('WT_MASTER_V15_4')) || [];
+    let pending = null;
+
+    const precedents = {
+        RETAL: { title: "WorkSafeBC S.47 (Retaliation)", body: "LEGAL ARTIFACT: Hostility identified following First Aid report. Protected activity under BC Workers Compensation Act, Section 47." },
+        CONS: { title: "Potter v. NB Constructive Dismissal", body: "LEGAL ARTIFACT: Unilateral removal of workplace tools/access identified as fundamental breach of contract per Potter v. NB [2015]." }
+    };
+
+    function process() {
+        const val = document.getElementById('statusBox').value.trim();
+        if(!val) return;
+        if(document.getElementById('noteToggle').checked) { save(val, null, false, true); return; }
+
+        document.getElementById('aiPulse').style.display = 'flex';
+        setTimeout(() => {
+            document.getElementById('aiPulse').style.display = 'none';
+            const t = val.toLowerCase();
+            let p = null;
+            const hasFA = db.some(e => e.txt.toLowerCase().includes("first aid"));
+
+            if(hasFA && (t.includes("harass") || t.includes("yell") || t.includes("pressure"))) p = precedents.RETAL;
+            else if(t.includes("access") && (t.includes("lock") || t.includes("remove"))) p = precedents.CONS;
+
+            if(p) {
+                pending = { raw: val, ai: p.body, title: p.title };
+                document.getElementById('matchText').innerHTML = `Pattern matched: <strong>${p.title}</strong>.<br><br>Both versions will be secured. Which one leads the timeline?`;
+                document.getElementById('choiceModal').style.display='flex';
+            } else { save(val, null, false, false); }
+        }, 1500);
+    }
+
+    function finalize(useAI) {
+        save(pending.raw, pending.ai, useAI, false);
+        document.getElementById('choiceModal').style.display = 'none';
+    }
+
+    function save(raw, ai, useAI, isNote) {
+        db.push({ id: Date.now(), txt: useAI ? ai : raw, meta: ai ? { rawText: raw, aiText: ai } : null, isNote, time: new Date().toLocaleString() });
+        localStorage.setItem('WT_MASTER_V15_4', JSON.stringify(db));
+        document.getElementById('statusBox').value = ''; 
+        document.getElementById('topDrawer').classList.remove('open');
+        render();
+    }
+
+    function mediaLog(type) { save(`[ATTACHED ${type.toUpperCase()} ARTIFACT]`, null, false, false); }
+
+    function render() {
+        const container = document.getElementById('timeline'); container.innerHTML = '';
+        const filter = document.getElementById('noteToggle').checked;
+        [...db].reverse().forEach(item => {
+            if(item.isNote !== filter) return;
+            const card = document.createElement('div'); card.className = `entry-card ${item.isNote ? 'note-card' : ''}`;
+            card.innerHTML = `<div class="stamp">${item.time}</div><div style="font-weight:700; line-height:1.6; white-space:pre-wrap;">${item.txt}</div>
+                ${item.meta ? '<div class="vault-tag">Dual Artifact Secured</div>' : ''}`;
+            container.appendChild(card);
+        });
+    }
+    window.onload = render;
+</script>
+</body>
+</html>
