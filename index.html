@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Case Law Master Build</title>
+    <title>WorkTimeline™ | Master Build</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap');
         
@@ -14,15 +14,12 @@
         }
         body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 0; height: 100dvh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
         
-        /* GHOST MODE */
-        .ghost-active #timelineContainer, .ghost-active #utilityDrawer { filter: blur(25px); opacity: 0.3; pointer-events: none; }
-
         /* LEGAL MODAL */
         #legalOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(44, 62, 80, 0.95); backdrop-filter: blur(10px); z-index: 200000; display: flex; align-items: center; justify-content: center; padding: 25px; box-sizing: border-box; }
         .modal-card { background: white; padding: 35px; border-radius: 32px; text-align: center; max-width: 400px; box-shadow: 0 25px 60px rgba(0,0,0,0.4); border-bottom: 8px solid var(--teal); }
         .modal-btn { background: var(--teal); color: white; border: none; padding: 18px; border-radius: 99px; font-weight: 900; cursor: pointer; margin-top: 25px; width: 100%; font-size: 16px; }
 
-        /* SPLASH & SKIP */
+        /* SPLASH & CENTERED SKIP */
         #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
         .story-text { font-size: 24px; font-weight: 900; color: var(--gray-dark); margin-bottom: 40px; opacity: 0; transition: 0.8s; max-width: 300px; }
         #skipBtn { padding: 18px 50px; border: 3.5px solid var(--teal); border-radius: 99px; background: white; color: var(--teal); font-weight: 900; font-size: 16px; cursor: pointer; }
@@ -39,25 +36,36 @@
         input:checked + .slider { background-color: var(--teal); }
         input:checked + .slider:before { transform: translateX(16px); }
 
-        /* TIMELINE ENTRIES */
-        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 45px 15px 25px; position: relative; background: #fdfdfd; }
-        .entry { position: relative; margin-left: 35px; background: white; border: 2.5px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; border-left: 10px solid var(--platinum); transition: 0.3s; width: calc(100% - 45px); box-sizing: border-box; }
-        .entry.teal-standard { background: var(--teal-alpha); border-color: var(--teal); border-left-color: var(--teal); }
-        
-        .pattern-alert { background: #fff8e1; border: 2px solid #ffc107; padding: 15px; border-radius: 18px; margin-top: 10px; }
-        .case-law-btn { background: var(--teal); color: white; border: none; padding: 10px; border-radius: 12px; font-weight: 900; font-size: 10px; width: 100%; margin-top: 10px; cursor: pointer; }
-        .case-details { display: none; background: white; border: 1px solid var(--platinum); border-radius: 12px; padding: 15px; margin-top: 10px; font-size: 12px; line-height: 1.5; }
+        /* MOVABLE DRAGGABLE BUTTONS */
+        .draggable-btn { position: absolute; z-index: 5000; touch-action: none; display: flex; flex-direction: column; align-items: center; justify-content: center; border: none; width: 65px; height: 65px; border-radius: 20px; color: white; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25); cursor: grab; }
+        #addBtn { right: 20px; top: 160px; background: var(--teal); font-size: 40px; font-weight: 900; }
+        #syncBtn { right: 20px; top: 240px; background: var(--clio-blue); }
 
-        #addBtn { position: absolute; z-index: 5000; right: 20px; top: 160px; width: 65px; height: 65px; border-radius: 20px; background: var(--teal); color: white; font-size: 40px; border: none; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        #syncBtn { position: absolute; z-index: 5000; right: 20px; top: 240px; width: 65px; height: 65px; border-radius: 20px; background: var(--clio-blue); border: none; color: white; font-weight: 900; font-size: 10px; }
+        /* UTILITY DRAWER & PERFECT TEMPLATES */
+        #utilityDrawer { width: 100%; background: var(--glass); backdrop-filter: blur(12px); border-bottom: 2px solid var(--platinum); z-index: 2500; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); position: relative; }
+        .drawer-content { padding: 15px 20px; }
+        .template-bar { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 12px; scrollbar-width: none; }
+        .template-chip { background: white; border: 2.5px solid var(--teal); padding: 8px 14px; border-radius: 15px; font-size: 10px; font-weight: 900; color: var(--teal); white-space: nowrap; cursor: pointer; }
+        #statusBox { width: 100%; height: 100px; padding: 14px; border-radius: 18px; border: 2.5px solid var(--platinum); resize: none; font-family: inherit; font-weight: 700; background: #f8fafc; box-sizing: border-box; outline: none; }
+
+        /* TIMELINE */
+        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 45px 15px 25px; position: relative; background: #fdfdfd; }
+        .entry { position: relative; margin-left: 35px; background: white; border: 2.5px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; border-left: 10px solid var(--platinum); width: calc(100% - 45px); box-sizing: border-box; }
+        
+        .clio-status { position: absolute; right: 25px; top: 15px; display: flex; align-items: center; gap: 6px; }
+        .pulse-dot { width: 10px; height: 10px; background-color: var(--clio-green); border-radius: 50%; animation: pulse-green 2s infinite; }
+        @keyframes pulse-green { 0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); } 100% { transform: scale(0.9); } }
+
+        .pattern-alert { background: #fff8e1; border: 2px solid #ffc107; padding: 15px; border-radius: 18px; margin-top: 10px; }
+        .case-details { background: white; border: 1px solid var(--platinum); border-radius: 12px; padding: 15px; margin-top: 10px; font-size: 12px; line-height: 1.5; border-left: 5px solid var(--teal); }
     </style>
 </head>
 <body id="appBody">
 
 <div id="legalOverlay">
     <div class="modal-card">
-        <h2 style="color:var(--teal); font-weight:900;">Canadian Legal Guard</h2>
-        <p>Ares v. Venner ensures your Contemporaneous Record is admissible. We cross-reference patterns with Canadian Case Law to build your shield.</p>
+        <h2 style="color:var(--teal); font-weight:900;">Canadian Justice Standard</h2>
+        <p>Ares v. Venner ensures your Contemporaneous Record is admissible. Use the structured templates to build a "Course of Conduct" shield.</p>
         <button class="modal-btn" onclick="dismissLegal()">I UNDERSTAND</button>
     </div>
 </div>
@@ -75,23 +83,33 @@
         </div>
     </header>
 
-    <button id="addBtn" onclick="submitEntry()">+</button>
-    <button id="syncBtn" onclick="openSync()">CLIO</button>
+    <div id="addBtn" class="draggable-btn">+</div>
+    <div id="syncBtn" class="draggable-btn" onclick="openSync()">
+        <svg viewBox="0 0 24 24" width="22" height="22"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="white" stroke-width="2.5" fill="none"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="white" stroke-width="2.5" fill="none"/></svg>
+        <span style="font-size:8px; font-weight:900; margin-top:2px;">CLIO</span>
+    </div>
 
     <div id="utilityDrawer">
         <div class="drawer-content" id="drawerContent">
+            <div class="template-bar">
+                <div class="template-chip" onclick="useTemplate('WITNESS')">WITNESS</div>
+                <div class="template-chip" onclick="useTemplate('INCIDENT')">INCIDENT</div>
+                <div class="template-chip" onclick="useTemplate('LOCATION')">LOCATION</div>
+                <div class="template-chip" onclick="useTemplate('EVIDENCE')">EVIDENCE</div>
+            </div>
             <textarea id="statusBox" placeholder="Start your fresh record..."></textarea>
+            <button onclick="submitEntry()" style="width:100%; background:var(--teal); color:white; border:none; padding:12px; border-radius:12px; font-weight:900; margin-top:10px;">SAVE RECORD</button>
         </div>
-        <div style="height:30px; display:flex; align-items:center; justify-content:center; cursor:pointer;" onclick="toggleDrawer()"><div style="width:40px; height:6px; background:var(--platinum); border-radius:10px;"></div></div>
     </div>
 
     <div id="timelineContainer">
+        <div class="clio-status"><div class="pulse-dot"></div><span style="font-size:8px; font-weight:900; color:var(--clio-green);">CLIO READY</span></div>
         <div id="displayList"></div>
     </div>
 </div>
 
 <script>
-    const story = ["The Fresh Record.", "Canadian Justice.", "Case Law Integrated.", "Secure Your Truth."];
+    const story = ["Fresh Record.", "Canadian Justice.", "Case Law Integrated.", "Truth Secured."];
     let isDrawerOpen = true;
     const timelineVault = [];
 
@@ -103,6 +121,30 @@
     }
     function endSplash() { const s = document.getElementById('splashScreen'); if(s) { s.style.opacity='0'; setTimeout(() => s.remove(), 800); } }
 
+    /* PERFECT TEMPLATE LOGIC */
+    function useTemplate(type) {
+        const box = document.getElementById('statusBox');
+        const templates = {
+            'WITNESS': 'WITNESS NAME: \nOBSERVATION: \nPOSITION/TITLE: ',
+            'INCIDENT': 'ACTION TAKEN: \nSAFETY VIOLATION: \nVERBAL MARKERS/QUOTES: ',
+            'LOCATION': 'SPECIFIC SITE AREA: \nENVIRONMENTAL HAZARDS: \nCONTEXT BEYOND GPS: ',
+            'EVIDENCE': 'TYPE (PHOTO/DOC): \nFILE ID: \nPHYSICAL CUSTODY: '
+        };
+        box.value = templates[type];
+        box.focus();
+    }
+
+    /* DRAGGABLE BUTTON LOGIC */
+    function makeMovable(el) {
+        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        el.ontouchstart = dragMouseDown;
+        function dragMouseDown(e) { e = e || window.event; pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY; document.ontouchend = closeDragElement; document.ontouchmove = elementDrag; }
+        function elementDrag(e) { e = e || window.event; pos1 = pos3 - e.touches[0].clientX; pos2 = pos4 - e.touches[0].clientY; pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY; el.style.top = (el.offsetTop - pos2) + "px"; el.style.left = (el.offsetLeft - pos1) + "px"; el.style.right = "auto"; }
+        function closeDragElement() { document.ontouchend = null; document.ontouchmove = null; }
+    }
+    makeMovable(document.getElementById('addBtn'));
+    makeMovable(document.getElementById('syncBtn'));
+
     function submitEntry() { const b = document.getElementById('statusBox'); if(!b.value.trim()) return; saveEntry(b.value); b.value = ''; }
 
     async function saveEntry(text) {
@@ -110,53 +152,35 @@
             const entry = {
                 id: Date.now(), grit: text, 
                 stamp: new Date().toLocaleString(), gps: `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`,
-                pattern: null, caseLaw: null
-            };
-            
-            // ANALYZING PATTERNS
-            if(text.toLowerCase().includes("shouting") || text.toLowerCase().includes("scream")) {
-                entry.pattern = "Pattern Detected: Verbal Aggression / Safety Hazard";
-                entry.caseLaw = {
+                caseLaw: text.toLowerCase().includes("shout") || text.toLowerCase().includes("scream") ? {
                     title: "Piresferreira v. Ayotte [2010]",
-                    similarities: "In your entry, you noted aggressive verbal conduct. In Piresferreira, the court examined if a supervisor's aggression constituted 'Intention Infliction of Mental Distress.'",
-                    violation: "Potential violation of the Canada Labour Code (Harassment/Violence Prevention) and the duty of good faith in employment."
-                };
-            }
-            
+                    similarities: "Verbal aggression in a supervisory context.",
+                    violation: "Breach of the Canada Labour Code (Harassment Prevention)."
+                } : null
+            };
             timelineVault.push(entry); refreshDisplay();
         });
-    }
-
-    function toggleCase(id) {
-        const el = document.getElementById(`case-${id}`);
-        el.style.display = el.style.display === "block" ? "none" : "block";
     }
 
     function refreshDisplay() {
         const list = document.getElementById('displayList'); list.innerHTML = '';
         [...timelineVault].reverse().forEach(item => {
-            const div = document.createElement('div');
-            div.className = 'entry';
-            
+            const div = document.createElement('div'); div.className = 'entry';
             let caseHtml = item.caseLaw ? `
                 <div class="pattern-alert">
-                    <p style="font-size:11px; font-weight:900; color:#856404; margin:0;">${item.pattern}</p>
-                    <button class="case-law-btn" onclick="toggleCase(${item.id})">📖 READ CASE LAW & VIOLATION INFO</button>
-                    <div id="case-${item.id}" class="case-details">
-                        <b style="color:var(--teal);">${item.caseLaw.title}</b><br><br>
-                        <b>Similarities:</b> ${item.caseLaw.similarities}<br><br>
-                        <b>Potential Violation:</b> ${item.caseLaw.violation}
+                    <p style="font-size:11px; font-weight:900; color:#856404; margin:0;">Case Law Similarity Detected</p>
+                    <div class="case-details">
+                        <b style="color:var(--teal);">${item.caseLaw.title}</b><br>
+                        <b>Note:</b> ${item.caseLaw.similarities}<br>
+                        <b>Violation:</b> ${item.caseLaw.violation}
                     </div>
                 </div>` : "";
-
-            div.innerHTML = `<span style="font-size:9px; color:var(--teal); font-weight:900;">📍 ${item.gps} | ${item.stamp}</span>
-                <p style="margin:10px 0 0; font-size:15px; font-weight:800;">${item.grit}</p>${caseHtml}`;
+            div.innerHTML = `<span style="font-size:9px; color:var(--teal); font-weight:900;">📍 ${item.gps} | ${item.stamp}</span><p style="margin:10px 0 0; font-size:14px; font-weight:800; white-space: pre-wrap;">${item.grit}</p>${caseHtml}`;
             list.appendChild(div);
         });
     }
 
     function openSync() { window.location.href = `https://ca.app.clio.com/oauth/authorize?client_id=18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s&response_type=code&redirect_uri=https://worktimeline-app.vercel.app/index.html&scope=leads_read%20leads_write%20contacts_write`; }
-    function toggleDrawer() { /* Basic Toggle Logic */ }
     function toggleGhost(cb) { document.getElementById('appBody').classList.toggle('ghost-active', cb.checked); }
 </script>
 </body>
