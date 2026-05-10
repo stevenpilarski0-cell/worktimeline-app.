@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Master Build 315</title>
+    <title>WorkTimeline™ | Restoration Build</title>
     <style>
-        /* 1. BRANDING & DESIGN SYSTEM */
+        /* 1. BRANDING & CORE DESIGN */
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Nunito+Sans:wght@400;600;700;800&display=swap');
         
         :root { 
@@ -16,33 +16,27 @@
         
         body { font-family: 'Nunito', sans-serif; background: var(--gray-bg); margin: 0; padding: 0; height: 100dvh; width: 100vw; overflow: hidden; display: flex; justify-content: center; -webkit-tap-highlight-color: transparent; position: fixed; }
         
-        /* 2. THE GHOST FIX: ISOLATION */
-        /* We only blur the content areas, NEVER the header or buttons */
+        /* 2. GHOST MODE - SELECTIVE BLUR */
         .ghost-active #timelineContainer, 
         .ghost-active #utilityDrawer, 
         .ghost-active #mgmtDrawer { 
-            filter: blur(40px) grayscale(1); 
-            opacity: 0.05; 
-            pointer-events: none; 
+            filter: blur(40px) grayscale(1); opacity: 0.05; pointer-events: none; 
         }
 
         .app-container { width: 100%; max-width: 500px; background: white; height: 100dvh; display: flex; flex-direction: column; position: relative; border: 1.5px solid var(--gray-border); box-sizing: border-box; overflow: hidden; }
         
-        /* 3. HEADER - EXEMPT FROM GHOST BLUR */
-        .header { 
-            padding: 12px 15px; border-bottom: 1px solid var(--gray-border); 
-            background: white; z-index: 10000; /* Highest priority */
-            position: relative; padding-top: max(12px, env(safe-area-inset-top)); 
-        }
-        .header-top { display: flex; justify-content: flex-start; align-items: center; }
+        /* 3. HEADER RESTORATION - EXEMPT FROM BLUR */
+        .header { padding: 12px 15px; border-bottom: 1px solid var(--gray-border); background: white; z-index: 10000; position: relative; padding-top: max(12px, env(safe-area-inset-top)); }
+        .header-top { display: flex; justify-content: flex-start; align-items: center; gap: 0; }
+        
+        .briefcase-container { position: relative; width: 44px; height: 28px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .briefcase-icon { width: 28px; height: 20px; border: 2.2px solid var(--heavy-teal); border-radius: 5px; position: relative; display: flex; align-items: center; justify-content: center; }
+        .briefcase-icon::before { content: ''; position: absolute; top: -8px; width: 10px; height: 6px; border: 2.2px solid var(--heavy-teal); border-bottom: none; border-radius: 3.5px 3.5px 0 0; background: white; z-index: 2; }
+        .icon-timeline { width: 155%; height: 2px; background: var(--heavy-teal); position: absolute; top: 50%; display: flex; justify-content: space-evenly; align-items: center; z-index: 3; left: -27.5%; transform: translateY(-50%); }
+        .icon-dot { width: 4px; height: 4px; background: white; border: 1.2px solid var(--heavy-teal); border-radius: 50%; }
         
         .header-controls { position: absolute; right: 15px; display: flex; flex-direction: column; gap: 4px; z-index: 10001; }
-        .toggle-btn { 
-            background: #f8fafc; border: 1.5px solid var(--gray-border); border-radius: 20px; 
-            font-size: 7px; font-weight: 900; padding: 6px 12px; color: var(--teal); 
-            cursor: pointer; text-transform: uppercase; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        /* Active state for the button so you know it's "On" */
+        .toggle-btn { background: #f8fafc; border: 1.5px solid var(--gray-border); border-radius: 20px; font-size: 7px; font-weight: 900; padding: 6px 12px; color: var(--teal); cursor: pointer; text-transform: uppercase; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .ghost-active #ghostToggle { background: var(--risk-red); color: white; border-color: var(--risk-red); }
 
         /* 4. UTILITY & MEDIA */
@@ -59,7 +53,7 @@
         .bubble-front { background: #f1f1f1; font-family: 'Nunito Sans', sans-serif; font-size: 15px; font-weight: 600; color: #1a202c; }
         .bubble-back { background: var(--teal); color: white; transform: rotateY(180deg); position: absolute; top: 0; left: 0; height: 100%; padding: 15px; font-size: 11px; overflow-y: auto; }
 
-        /* 6. DRAGGABLE BUTTONS - EXEMPT FROM GHOST BLUR */
+        /* 6. DRAGGABLE BUTTONS */
         .draggable { position: absolute; z-index: 10000; display: flex; align-items: center; justify-content: center; font-weight: 900; box-shadow: var(--mac-shadow); cursor: pointer; border: none; }
         #addBtn { width: 75px; height: 75px; background: var(--teal); font-size: 35px; bottom: 120px; right: 20px; color: white; border-radius: 50%; }
         #syncClioBtn { width: 80px; height: 80px; background: var(--clio-blue); color: white; bottom: 210px; right: 20px; border-radius: 50%; font-size: 8px; text-align: center; text-transform: uppercase; padding: 10px; line-height: 1.2; }
@@ -74,7 +68,11 @@
 <div class="app-container" id="mainApp">
     <header class="header">
         <div class="header-top">
-            <div style="font-weight:900; font-size:16px;"><span style="color:var(--silver-gray)">Work</span><span style="color:var(--teal)">Timeline</span>™</div>
+            <div class="briefcase-container"><div class="briefcase-icon"><div class="icon-timeline"><div class="icon-dot"></div><div class="icon-dot"></div><div class="icon-dot"></div></div></div></div>
+            <div style="display:flex; flex-direction:column; margin-left:4px;">
+                <div style="font-weight:900; font-size:16px;"><span style="color:var(--silver-gray)">Work</span><span style="color:var(--teal)">Timeline</span>™</div>
+                <div style="font-size:8px; font-weight:900; color:var(--teal); text-transform:uppercase;">TAKIN' INTAKE</div>
+            </div>
             <div class="header-controls">
                 <button class="toggle-btn" id="ghostToggle" onclick="document.getElementById('appBody').classList.toggle('ghost-active')">GHOST</button>
                 <button class="toggle-btn" onclick="refresh()">NOTES</button>
