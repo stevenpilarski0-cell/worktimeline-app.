@@ -13,36 +13,18 @@
 
         .app-container { width: 100%; max-width: 500px; margin: 0 auto; background: white; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; position: relative; border: 2.5px solid var(--teal); box-sizing: border-box; }
         
-        /* THE SEAMLESS SINGLE-DRAWING LOGO */
+        /* THE FLUID SINGLE-STROKE LOGO */
         .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 2.5px solid var(--teal); background: white; z-index: 3000; }
-        .logo-area { display: flex; align-items: center; gap: 12px; }
+        .logo-area { display: flex; align-items: center; gap: 10px; }
         
-        .briefcase-seamless { 
-            width: 26px; height: 18px; 
-            border: 2.5px solid var(--teal); border-radius: 6px; 
-            position: relative; display: flex; align-items: center; justify-content: center;
-            border-top: none; /* Removes the top line to allow the handle to flow in */
-        }
-        /* The Handle and Shoulders in one "drawing" */
-        .briefcase-seamless::before { 
-            content: ''; position: absolute; top: -6px; 
-            width: 26px; height: 8px; 
-            border: 2.5px solid var(--teal); border-bottom: none; border-radius: 6px 6px 0 0;
-            /* This clip-path creates the handle gap without a horizontal separator line */
-            clip-path: path('M 0 8 L 0 4 Q 0 0 4 0 L 22 0 Q 26 0 26 4 L 26 8 M 8 8 L 8 4 Q 8 2 10 2 L 16 2 Q 18 2 18 4 L 18 8');
-            left: -2.5px;
-        }
-        .timeline-center { 
-            width: 135%; height: 2.5px; background: var(--teal); 
-            position: absolute; display: flex; justify-content: space-between; align-items: center; padding: 0 2px; box-sizing: border-box; z-index: 10;
-        }
-        .dot { width: 5px; height: 5px; background: var(--teal); border-radius: 50%; border: 1px solid white; }
-
+        /* Drawing the briefcase as a single fluid SVG path */
+        .logo-svg { width: 30px; height: 26px; position: relative; display: flex; align-items: center; justify-content: center; }
+        
         .brand-stack { display: flex; flex-direction: column; align-items: flex-start; }
         .intake-label { font-size: 9px; font-weight: 900; color: var(--teal); text-transform: uppercase; letter-spacing: 1px; margin-bottom: -3px; }
         .main-title { font-weight: 900; color: var(--teal); font-size: 17px; letter-spacing: -0.5px; }
 
-        /* BUTTONS & MODALS */
+        /* INTERFACE & PULSE */
         .switch-group { display: flex; gap: 12px; }
         .switch-container { text-align: center; display: flex; flex-direction: column; align-items: center; font-size: 7px; font-weight: 900; }
         .switch { position: relative; width: 34px; height: 18px; margin-bottom: 2px; }
@@ -78,8 +60,14 @@
 <div class="app-container">
     <header class="header">
         <div class="logo-area">
-            <div class="briefcase-seamless">
-                <div class="timeline-center"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+            <div class="logo-svg">
+                <svg width="34" height="26" viewBox="0 0 34 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2 10C2 8.34315 3.34315 7 5 7H11.5C11.5 5 13 2 17 2C21 2 22.5 5 22.5 7H29C30.6569 7 32 8.34315 32 10V21C32 22.6569 30.6569 24 29 24H5C3.34315 24 2 22.6569 2 21V10Z" stroke="#008080" stroke-width="2.5" stroke-linejoin="round"/>
+                    <line x1="0" y1="15.5" x2="34" y2="15.5" stroke="#008080" stroke-width="2.5"/>
+                    <circle cx="7" cy="15.5" r="2.5" fill="#008080" stroke="white" stroke-width="1"/>
+                    <circle cx="17" cy="15.5" r="2.5" fill="#008080" stroke="white" stroke-width="1"/>
+                    <circle cx="27" cy="15.5" r="2.5" fill="#008080" stroke="white" stroke-width="1"/>
+                </svg>
             </div>
             <div class="brand-stack">
                 <div class="intake-label">Takin'Intake</div>
@@ -93,7 +81,7 @@
     </header>
 
     <button id="addBtn" onclick="submitEntry()">+</button>
-    <button id="syncBtn" onclick="alert('Journal locked and synced.')">LOCK & SYNC TO CLIO</button>
+    <button id="syncBtn" onclick="alert('Journal synced to Clio.')">LOCK & SYNC TO CLIO</button>
 
     <div id="utilityDrawer">
         <div style="padding: 15px;">
@@ -119,11 +107,9 @@
         const box = document.getElementById('statusBox'); if(!box.value.trim()) return;
         const text = box.value; const low = text.toLowerCase();
         let analysis = ""; let severity = "minor";
-        
         if (low.includes("fire") || low.includes("quit") || low.includes("toxic") || low.includes("retaliate")) { 
             analysis = "HIGH PRIORITY: Constructive Dismissal pattern detected."; severity = "serious"; 
-        }
-        else if (low.includes("pay") || low.includes("injury") || low.includes("break")) { 
+        } else if (low.includes("pay") || low.includes("injury")) { 
             analysis = "MODERATE: Statutory compliance marker."; severity = "moderate"; 
         }
 
@@ -154,12 +140,7 @@
     }
 
     function useTemplate(t) { 
-        const templates = { 
-            'INCIDENT': 'ACTION:\nVIOLATION:', 
-            'INJURY': 'OFA 2 RECORD:\nINJURY:\nFIRST AID RENDERED:', 
-            'LOCATION': 'SITE:\nHAZARDS:', 
-            'WITNESS': 'NAME:\nSTATEMENT:' 
-        };
+        const templates = { 'INCIDENT': 'ACTION:\nVIOLATION:', 'INJURY': 'OFA 2 RECORD:\nINJURY:', 'LOCATION': 'SITE:\nHAZARDS:', 'WITNESS': 'NAME:\nSTATEMENT:' };
         document.getElementById('statusBox').value = templates[t];
     }
     refreshDisplay();
