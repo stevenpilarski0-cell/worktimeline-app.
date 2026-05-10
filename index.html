@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline Elite | Titanium Gravity</title>
+    <title>WorkTimeline Elite | Auditor Pattern</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -12,126 +12,115 @@
             --slate: #1e293b;
             --risk: #ef4444;
             --teal-blue: #0ea5e9;
-            --glass: rgba(255, 255, 255, 0.85);
+            --glass: rgba(255, 255, 255, 0.9);
         }
 
         body { font-family: 'Nunito Sans', sans-serif; background: #f8fafc; margin: 0; padding: 0; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
         
-        /* PULSE ENGINE SCALING */
-        @keyframes pulse-moderate { 0% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(14, 165, 233, 0); } 100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); } }
-        @keyframes pulse-critical { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 50% { box-shadow: 0 0 0 35px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+        /* PULSE ENGINE */
+        @keyframes pulse-mod { 0% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(14, 165, 233, 0); } 100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); } }
+        @keyframes pulse-crit { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 50% { box-shadow: 0 0 0 35px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
 
-        .stealth-active #timeline { filter: blur(20px) grayscale(1); pointer-events: none; }
-
-        /* HEADER & DRAWER */
-        #topDrawer { position: fixed; top: 0; left: 0; width: 100%; background: var(--glass); backdrop-filter: blur(20px); border-bottom: 1px solid var(--silver); border-radius: 0 0 35px 35px; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); z-index: 1000; transform: translateY(calc(-100% + 65px)); }
-        #topDrawer.open { transform: translateY(0); }
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 0 25px; height: 65px; }
-        .brand { font-weight: 900; color: var(--teal); }
-
-        /* MAC SWITCHES */
-        .controls-row { display: flex; gap: 15px; }
-        .sw-wrap { display: flex; flex-direction: column; align-items: center; }
-        .sw { position: relative; width: 36px; height: 20px; }
-        .sw input { opacity: 0; width: 0; height: 0; }
-        .sld { position: absolute; inset: 0; background: #e2e8f0; transition: .3s; border-radius: 20px; cursor: pointer; }
-        .sld:before { position: absolute; content: ""; height: 16px; width: 16px; left: 2px; bottom: 2px; background: white; transition: .3s; border-radius: 50%; }
-        input:checked + .sld { background: var(--teal); }
-        input:checked + .sld:before { transform: translateX(16px); }
+        /* HEADER */
+        header { background: var(--glass); backdrop-filter: blur(20px); border-bottom: 1px solid var(--silver); padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; border-radius: 0 0 35px 35px; }
+        .brand { font-weight: 900; color: var(--teal); font-size: 18px; }
 
         /* INTAKE */
-        .intake-content { padding: 20px 25px 80px; }
-        .chip-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: none; }
-        .chip { background: white; border: 1px solid var(--silver); padding: 8px 16px; border-radius: 100px; font-size: 11px; font-weight: 800; white-space: nowrap; }
-        #statusBox { width: 100%; height: 100px; padding: 20px; border-radius: 30px; border: 1px solid var(--silver); background: #fff; font-size: 15px; outline: none; box-sizing: border-box; }
+        .intake { padding: 20px 25px; background: white; margin-top: 70px; border-radius: 35px; margin: 80px 20px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        textarea { width: 100%; height: 100px; border-radius: 25px; border: 1.5px solid var(--silver); padding: 15px; font-family: inherit; font-size: 15px; outline: none; box-sizing: border-box; }
+        .add-btn { width: 100%; background: var(--teal); color: white; border: none; padding: 15px; border-radius: 20px; font-weight: 900; margin-top: 10px; cursor: pointer; }
 
-        /* MEDIA DOCK */
-        .media-dock { display: flex; gap: 12px; margin-top: 15px; }
-        .icon-btn { width: 50px; height: 50px; background: #fff; border: 1px solid var(--silver); border-radius: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .icon-btn svg { width: 22px; height: 22px; stroke: var(--slate); fill: none; stroke-width: 2; }
-        .add-btn { flex-grow: 1; background: var(--teal); color: white; border-radius: 20px; border: none; font-weight: 900; }
-
-        /* TIMELINE CARDS */
-        #timeline { flex-grow: 1; overflow-y: auto; padding: 90px 20px 120px; display: flex; flex-direction: column; gap: 25px; }
-        .card-inner { perspective: 1000px; width: 100%; }
-        .face { border-radius: 32px; padding: 25px; background: white; border: 1px solid var(--silver); transition: 0.6s; backface-visibility: hidden; position: relative; }
+        /* TIMELINE */
+        #timeline { flex-grow: 1; overflow-y: auto; padding: 10px 20px 120px; display: flex; flex-direction: column; gap: 20px; }
+        .card { background: white; border-radius: 32px; padding: 25px; border: 1px solid var(--silver); border-left: 8px solid var(--teal); transition: 0.3s; position: relative; }
+        .p-moderate { animation: pulse-mod 2s infinite; border-left-color: var(--teal-blue); }
+        .p-critical { animation: pulse-crit 0.8s infinite; border-left-color: var(--risk); }
         
-        /* PULSE CLASSES */
-        .p-moderate { animation: pulse-moderate 2s infinite ease-in-out; border-left: 6px solid var(--teal-blue) !important; }
-        .p-critical { animation: pulse-critical 0.8s infinite ease-in-out; border-left: 6px solid var(--risk) !important; }
-        .front { border-left: 6px solid var(--teal); }
-        .back { position: absolute; inset: 0; transform: rotateY(180deg); background: var(--slate); color: white; border-left: 6px solid var(--teal); }
-        .card-inner.flipped .front { transform: rotateY(180deg); }
-        .card-inner.flipped .back { transform: rotateY(0); }
+        /* AI AUDITOR BOX */
+        .auditor-box { background: #f0fdfa; border-radius: 20px; padding: 15px; margin-top: 15px; font-size: 13px; display: none; }
+        .case-btn { background: var(--slate); color: white; padding: 8px 12px; border-radius: 12px; font-size: 10px; font-weight: 900; border: none; cursor: pointer; margin-top: 10px; }
+        .case-details { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--teal); color: var(--slate); }
 
-        #gear { position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px; background: var(--slate); border-radius: 24px; border: none; z-index: 999; box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; }
-        .handle { height: 35px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .pill { width: 45px; height: 5px; background: var(--silver); border-radius: 10px; }
+        #gear { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: var(--slate); border-radius: 24px; border: none; z-index: 999; display: flex; align-items: center; justify-content: center; }
+        #loader { position: fixed; inset: 0; background: rgba(255,255,255,0.9); z-index: 10000; display: none; align-items: center; justify-content: center; flex-direction: column; }
     </style>
 </head>
-<body id="app">
+<body>
 
-    <div id="topDrawer">
-        <div class="header">
-            <div class="brand">WorkTimeline</div>
-            <div class="controls-row">
-                <div class="sw-wrap">
-                    <label class="sw"><input type="checkbox" onchange="document.getElementById('app').classList.toggle('stealth-active')"><span class="sld"></span></label>
-                    <span style="font-size:7px; font-weight:900; color:var(--silver); margin-top:4px;">STEALTH</span>
-                </div>
-            </div>
-        </div>
-        <div class="intake-content">
-            <div class="chip-row">
-                <div class="chip" onclick="tag('ACCIDENT')">ACCIDENT</div>
-                <div class="chip" onclick="tag('WITNESS')">WITNESS</div>
-                <div class="chip" onclick="tag('HAZARD')">HAZARD</div>
-            </div>
-            <textarea id="statusBox" placeholder="Log incident details..."></textarea>
-            <div class="media-dock">
-                <div class="icon-btn"><svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
-                <div class="icon-btn"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1M12 19v4M8 23h8"/></svg></div>
-                <button class="add-btn" onclick="process()">RECORD</button>
-            </div>
-        </div>
-        <div class="handle" onclick="document.getElementById('topDrawer').classList.toggle('open')"><div class="pill"></div></div>
+    <div id="loader">
+        <div style="width:40px; height:40px; border:4px solid var(--silver); border-top-color:var(--teal); border-radius:50%; animation: spin 1s linear infinite;"></div>
+        <p style="font-weight:900; margin-top:15px; color:var(--teal);">PATTERN RECOGNITION ACTIVE...</p>
+    </div>
+
+    <header><div class="brand">WorkTimeline Elite</div></header>
+
+    <div class="intake">
+        <textarea id="msg" placeholder="Describe incident pattern..."></textarea>
+        <button class="add-btn" onclick="process()">ANALYZE & RECORD</button>
     </div>
 
     <div id="timeline"></div>
 
-    <button id="gear" onclick="alert('System Active')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button>
+    <button id="gear" onclick="let k=prompt('Paste pT9 Key:'); if(k) localStorage.setItem('WT_K', k);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1-1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('WT_PULSE')) || [];
-        function tag(t) { document.getElementById('statusBox').value += `[${t}] `; }
-        
+        let db = JSON.parse(localStorage.getItem('WT_AUDIT')) || [];
+        let key = localStorage.getItem('WT_K');
+
         async function process() {
-            let v = document.getElementById('statusBox').value.trim();
-            if(!v) return;
+            let val = document.getElementById('msg').value.trim();
+            if(!val) return;
+            document.getElementById('loader').style.display = 'flex';
 
-            // Simple Logic for Gravity:
-            let sev = 0;
-            if(v.toLowerCase().includes("fired") || v.toLowerCase().includes("injury")) sev = 3;
-            else if(v.toLowerCase().includes("witness") || v.toLowerCase().includes("hazard")) sev = 1;
+            let analysis = { sev: 0, msg: "Logged to timeline.", caseName: "", caseStudy: "" };
 
-            db.push({ t: v, d: new Date().toLocaleString(), s: sev });
-            localStorage.setItem('WT_PULSE', JSON.stringify(db));
-            document.getElementById('statusBox').value = "";
+            if(key) {
+                try {
+                    const r = await fetch('https://api.cohere.ai/v1/generate', {
+                        method: 'POST',
+                        headers: { 'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            model: 'command', 
+                            prompt: `BC LEGAL AUDITOR: Analyze this incident for BCHRT, WorkSafeBC, and ESA violations. Identify pattern recognition for workplace harassment or safety failures. 
+                            If a specific Canadian Case Study exists (e.g. Moore v. British Columbia), include it. 
+                            RETURN JSON: {"sev":0,1,3, "msg":"Legal summary", "caseName":"Name of Case", "caseStudy":"Brief of Case Study"} 
+                            Incident: ${val}`,
+                            temperature: 0.1 
+                        })
+                    });
+                    const d = await r.json();
+                    analysis = JSON.parse(d.generations[0].text.replace(/```json|```/g, "").trim());
+                } catch(e) { console.error(e); }
+            }
+
+            db.push({ id: Date.now(), txt: val, time: new Date().toLocaleString(), ...analysis });
+            localStorage.setItem('WT_AUDIT', JSON.stringify(db));
+            document.getElementById('msg').value = '';
+            document.getElementById('loader').style.display = 'none';
             render();
         }
 
         function render() {
-            let c = document.getElementById('timeline'); c.innerHTML = "";
+            let cont = document.getElementById('timeline'); cont.innerHTML = "";
             [...db].reverse().forEach(i => {
-                let pulseClass = i.s === 3 ? 'p-critical' : i.s === 1 ? 'p-moderate' : '';
-                let d = document.createElement('div'); d.className = 'card-inner';
-                d.onclick = () => d.classList.toggle('flipped');
-                d.innerHTML = `<div class="face front ${pulseClass}"><small style="font-weight:900;color:var(--silver)">${i.d}</small><div style="font-weight:700;margin-top:10px;">${i.t}</div></div>
-                               <div class="face back"><strong>LEGAL EDUCATION</strong><div style="font-size:12px;margin-top:10px;">Education content based on severity ${i.s} goes here.</div></div>`;
-                c.appendChild(d);
+                let card = document.createElement('div');
+                card.className = `card ${i.sev === 3 ? 'p-critical' : i.sev === 1 ? 'p-moderate' : ''}`;
+                card.innerHTML = `
+                    <small style="color:var(--silver); font-weight:900;">${i.time}</small>
+                    <div style="font-weight:700; margin-top:10px; color:var(--slate);">${i.txt}</div>
+                    <div class="auditor-box" id="audit-${i.id}" style="display:block;">
+                        <strong>AUDIT:</strong> ${i.msg}
+                        ${i.caseName ? `<br><button class="case-btn" onclick="document.getElementById('study-${i.id}').style.display='block'">READ CASE: ${i.caseName}</button>` : ''}
+                        <div class="case-details" id="study-${i.id}">
+                            <strong>CASE STUDY:</strong> ${i.caseStudy}
+                        </div>
+                    </div>
+                `;
+                cont.appendChild(card);
             });
         }
         render();
     </script>
+    <style> @keyframes spin { 100% { transform: rotate(360deg); } } </style>
 </body>
 </html>
