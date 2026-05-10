@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Documentary Build</title>
+    <title>WorkTimeline™ | Documents Build</title>
     <style>
         /* 1. CORE STYLE & FONTS */
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Nunito+Sans:wght@400;600;700;800&display=swap');
@@ -32,12 +32,13 @@
         .header-controls { position: absolute; right: 15px; display: flex; flex-direction: column; gap: 4px; }
         .toggle-btn { background: #f1f5f9; border: none; border-radius: 20px; font-size: 7px; font-weight: 900; padding: 4px 10px; color: var(--teal); cursor: pointer; text-transform: uppercase; }
 
-        /* 3. NEUTRAL UI - DOCUMENTARY MEDIA ADDED */
+        /* 3. NEUTRAL UI - DOCUMENTS MEDIA UPDATED */
         .template-row { display: flex; justify-content: space-between; gap: 6px; margin-bottom: 15px; }
         .media-icons-row { display: flex; gap: 8px; margin: 15px 0; }
         .media-pill { background: #f1f5f9; border: 1.2px solid var(--gray-border); padding: 10px; border-radius: 18px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 7px; font-weight: 900; color: #4a5568; gap: 6px; }
         .m-icon { width: 18px; height: 12px; background: #4a5568; border-radius: 3px; }
-        .m-docu { width: 15px; height: 15px; border: 2px solid #4a5568; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 900; }
+        .m-doc { width: 14px; height: 16px; border: 2px solid #4a5568; border-radius: 2px; position: relative; }
+        .m-doc::after { content: ''; position: absolute; top: 0; right: 0; width: 4px; height: 4px; background: var(--gray-border); border-left: 2px solid #4a5568; border-bottom: 2px solid #4a5568; }
 
         /* 4. DRAWER & TIMELINE */
         #utilityDrawer { position: absolute; top: 60px; width: 100%; background: white; border-bottom: 1.5px solid var(--gray-border); z-index: 3500; transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) transform; transform: translateY(calc(-100% + 40px)); border-radius: 0 0 30px 30px; }
@@ -90,7 +91,7 @@
             <div class="media-icons-row">
                 <div class="media-pill"><div class="m-icon"></div>CAMERA</div>
                 <div class="media-pill"><div class="m-icon"></div>AUDIO</div>
-                <div class="media-pill"><div class="m-docu">D</div>DOCUMENTARY</div>
+                <div class="media-pill"><div class="m-doc"></div>DOCUMENTS</div>
             </div>
             <textarea id="statusBox" placeholder="Log your day..."></textarea>
         </div>
