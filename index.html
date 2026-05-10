@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Master</title>
+    <title>WorkTimeline™ | Mobile-First</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Nunito+Sans:wght@400;600;800&display=swap');
         :root { 
@@ -34,7 +34,6 @@
         .timeline-teal { color: var(--teal); margin-left: -1px; }
 
         .clio-pulse { width: 6px; height: 6px; background-color: var(--clio-green); border-radius: 50%; animation: clio-throb 2s infinite; margin-left: 8px; }
-        @keyframes clio-throb { 0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); } 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
 
         /* DRAWERS */
         #utilityDrawer { position: absolute; top: 60px; width: 100%; background: white; border-bottom: 1.5px solid var(--gray-border); z-index: 3500; transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) transform; transform: translateY(calc(-100% + 40px)); border-radius: 0 0 30px 30px; }
@@ -47,22 +46,20 @@
         #addBtn { width: 70px; height: 70px; background: var(--teal); font-size: 30px; top: 160px; right: 20px; }
         #syncBtn { width: 70px; height: 70px; background: var(--clio-blue); font-size: 8px; padding: 6px; top: 250px; right: 20px; }
 
-        /* TIMELINE - MAC THREAD STYLE */
+        /* TIMELINE - MAC THREAD */
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 60px 15px 150px; display: flex; flex-direction: column; gap: 8px; scrollbar-width: none; }
         .entry { max-width: 85%; padding: 12px 16px; border-radius: 20px; text-align: left; position: relative; font-family: 'Nunito Sans', sans-serif; align-self: flex-start; background: #f1f1f1; border: 1px solid #e5e5e5; }
         .stamp-label { font-size: 9px; font-weight: 800; color: #a0aec0; margin-bottom: 4px; text-transform: uppercase; }
         .entry p { font-weight: 600; font-size: 14px; line-height: 1.4; color: #1a202c; margin: 0; }
-        
         .tier-serious { align-self: flex-end; background: white; border: 2px solid var(--teal); animation: pulse-ser 3s infinite; }
-        @keyframes pulse-ser { 0% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0.2); } 70% { box-shadow: 0 0 0 10px rgba(0, 128, 128, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0); } }
 
-        /* OVERLAYS */
-        #overlaySystem { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(25px); z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 25px; }
-        .modal-card { background: white; padding: 40px 30px; border-radius: 35px; box-shadow: var(--mac-shadow); width: 100%; max-width: 380px; text-align: center; border: 1px solid var(--gray-border); }
-        .modal-btn { border: none; padding: 18px; border-radius: 20px; width: 100%; font-weight: 800; margin-top: 15px; cursor: pointer; font-size: 14px; }
-        .appeasing-text { font-size: 14px; line-height: 1.6; color: #4a5568; margin: 20px 0; font-weight: 600; }
+        /* OVERLAYS - SCALED FOR SMALL SCREENS */
+        #overlaySystem { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(25px); z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 15px; box-sizing: border-box; }
+        .modal-card { background: white; padding: 25px 20px; border-radius: 28px; box-shadow: var(--mac-shadow); width: 100%; max-width: 340px; text-align: center; border: 1px solid var(--gray-border); max-height: 90vh; overflow-y: auto; }
+        .modal-btn { border: none; padding: 16px; border-radius: 18px; width: 100%; font-weight: 800; margin-top: 12px; cursor: pointer; font-size: 13px; }
+        .appeasing-text { font-size: 13px; line-height: 1.5; color: #4a5568; margin: 15px 0; font-weight: 600; }
 
-        .media-pill { background: rgba(226, 232, 240, 0.8); border: 1px solid var(--gray-border); padding: 10px 18px; border-radius: 50px; font-size: 10px; flex: 1; font-weight: 800; color: #4a5568; cursor: pointer; }
+        .media-pill { background: rgba(226, 232, 240, 0.8); border: 1px solid var(--gray-border); padding: 10px 18px; border-radius: 50px; font-size: 10px; flex: 1; font-weight: 800; color: #4a5568; }
         textarea { width: 100%; height: 85px; border: 1.5px solid var(--gray-border); border-radius: 20px; padding: 15px; font-family: 'Nunito Sans', sans-serif; font-weight: 600; font-size: 15px; outline: none; background: #fafafa; }
     </style>
 </head>
@@ -70,8 +67,8 @@
 
 <div id="overlaySystem">
     <div class="modal-card" id="modalContent">
-        <h2 style="color: #1a202c; font-weight: 900; margin: 0; letter-spacing: -0.5px;">INTAKE GUARD</h2>
-        <div class="appeasing-text">We are here to help you document the truth.<br><br>While this journal provides vital evidence support, <b>we do not offer legal advice.</b><br><br>Proceed to secure your workplace records.</div>
+        <h2 style="color: #1a202c; font-weight: 900; margin: 0; font-size: 18px; letter-spacing: -0.5px;">INTAKE GUARD</h2>
+        <div class="appeasing-text">We are here to help you document the truth.<br><br>While this journal provides evidence support, <b>we do not offer legal advice.</b><br><br>Proceed to secure your workplace records.</div>
         <button class="modal-btn" style="background:var(--teal); color:white;" onclick="unlockApp()">SECURE MY JOURNAL</button>
     </div>
 </div>
@@ -97,17 +94,17 @@
     </header>
 
     <div id="utilityDrawer">
-        <div style="padding: 20px 20px 50px;">
+        <div style="padding: 15px 15px 45px;">
             <div style="display:flex; gap:8px; justify-content:center; margin-bottom: 15px;">
                 <button onclick="useTemplate('INCIDENT')" class="template-chip">INCIDENT</button>
                 <button onclick="useTemplate('INJURY')" class="template-chip">INJURY</button>
                 <button onclick="useTemplate('LOCATION')" class="template-chip">LOCATION</button>
                 <button onclick="useTemplate('WITNESS')" class="template-chip">WITNESS</button>
             </div>
-            <div style="display:flex; gap:10px; margin-bottom:15px;">
+            <div style="display:flex; gap:8px; margin-bottom:12px;">
                 <label class="media-pill">CAMERA <input type="file" style="display:none;"></label>
                 <label class="media-pill">AUDIO <input type="file" style="display:none;"></label>
-                <label class="media-pill">DOCUMENT <input type="file" style="display:none;"></label>
+                <label class="media-pill">FILE <input type="file" style="display:none;"></label>
             </div>
             <textarea id="statusBox" placeholder="Documenting the grit..."></textarea>
         </div>
@@ -121,7 +118,7 @@
 
     <div id="mgmtDrawer">
         <div class="handle" onclick="toggleMgmt()"><div class="handle-pill"></div></div>
-        <div style="padding: 5px 30px 40px;">
+        <div style="padding: 5px 25px 35px;">
             <button class="modal-btn" style="background:var(--teal); color:white;" onclick="alert('Exporting Industrial Evidence...')">SAVE & EXPORT</button>
             <button class="modal-btn" style="background:#f1f5f9; color:#718096;" onclick="confirm('Wipe record?') && (localStorage.clear() || location.reload())">START FRESH</button>
         </div>
@@ -153,9 +150,8 @@
         const text = document.getElementById('statusBox').value; if(!text.trim()) return;
         let analysis = text.toLowerCase().includes("fire") || text.toLowerCase().includes("retaliation") ? "EA: Potential Retaliation / Lex Talionis marker detected. This pattern often signals constructive dismissal." : "";
         activePending = { grit: text, analysis, stamp: new Date().toLocaleString(), tier: analysis ? 'serious' : 'minor', flipped: false };
-        
         if(analysis) {
-            document.getElementById('modalContent').innerHTML = `<h3 style="margin-top:0;">EA CROSS-REFERENCE</h3><div class="appeasing-text">${analysis}<br><br><b>Do you permit this analysis to be stacked with your record?</b></div><button class="modal-btn" style="background:var(--teal);color:white" onclick="confirmSave()">YES, STACK & SAVE</button><button class="modal-btn" style="background:#f1f5f9;color:#718096" onclick="confirmSave(true)">NO, SAVE RAW ONLY</button>`;
+            document.getElementById('modalContent').innerHTML = `<h3 style="margin-top:0; font-size:16px;">EA CROSS-REFERENCE</h3><div class="appeasing-text">${analysis}<br><br><b>Stack with your record?</b></div><button class="modal-btn" style="background:var(--teal);color:white" onclick="confirmSave()">YES, STACK</button><button class="modal-btn" style="background:#f1f5f9;color:#718096" onclick="confirmSave(true)">NO, RAW ONLY</button>`;
             document.getElementById('overlaySystem').style.display = 'flex';
         } else { confirmSave(); }
         document.getElementById('statusBox').value = ''; if(utilOpen) toggleUtility();
@@ -165,17 +161,15 @@
         if(rawOnly) { activePending.analysis = ""; activePending.tier = "minor"; }
         vault.push(activePending); 
         localStorage.setItem('wt_timeline', JSON.stringify(vault)); 
-        unlockApp(); 
-        refresh();
-        // Reset modal to original guard for next refresh
+        unlockApp(); refresh();
         setTimeout(() => {
-            document.getElementById('modalContent').innerHTML = `<h2 style="color: #1a202c; font-weight: 900; margin: 0; letter-spacing: -0.5px;">INTAKE GUARD</h2><div class="appeasing-text">We are here to help you document the truth.<br><br>While this journal provides vital evidence support, <b>we do not offer legal advice.</b><br><br>Proceed to secure your workplace records.</div><button class="modal-btn" style="background:var(--teal); color:white;" onclick="unlockApp()">SECURE MY JOURNAL</button>`;
+            document.getElementById('modalContent').innerHTML = `<h2 style="color: #1a202c; font-weight: 900; margin: 0; font-size: 18px; letter-spacing: -0.5px;">INTAKE GUARD</h2><div class="appeasing-text">We are here to help you document the truth.<br><br>While this journal provides evidence support, <b>we do not offer legal advice.</b><br><br>Proceed to secure your workplace records.</div><button class="modal-btn" style="background:var(--teal); color:white;" onclick="unlockApp()">SECURE MY JOURNAL</button>`;
         }, 500);
     }
 
     function clioHandshake() {
         if(vault.length === 0) return;
-        document.getElementById('modalContent').innerHTML = `<h3 style="margin-top:0; color:var(--clio-blue);">SYNC SUMMARY</h3><div class="appeasing-text">Your industrial truth has been verified. Summarizing ${vault.length} entries for Clio handshake. Proceed?</div><button class="modal-btn" style="background:var(--clio-blue);color:white" onclick="alert('Synced');unlockApp()">YES, SYNC NOW</button><button class="modal-btn" style="background:#f1f5f9;color:#718096" onclick="unlockApp()">CANCEL</button>`;
+        document.getElementById('modalContent').innerHTML = `<h3 style="margin-top:0; font-size:16px; color:var(--clio-blue);">SYNC SUMMARY</h3><div class="appeasing-text">Your industrial truth has been verified. Summarizing ${vault.length} entries for Clio.</div><button class="modal-btn" style="background:var(--clio-blue);color:white" onclick="alert('Synced');unlockApp()">YES, SYNC NOW</button>`;
         document.getElementById('overlaySystem').style.display = 'flex';
     }
 
@@ -183,7 +177,7 @@
         const list = document.getElementById('displayList'); list.innerHTML = '';
         [...vault].reverse().forEach((item, index) => {
             const trueIdx = vault.length - 1 - index;
-            const content = item.flipped ? `<div class="stamp-label">AI CROSS-REFERENCE</div><b>ANALYSIS:</b><br>${item.analysis}` : `<div class="stamp-label">📍 LANGLEY | ${item.stamp}</div><p>${item.grit}</p>`;
+            const content = item.flipped ? `<div class="stamp-label">AI ANALYSIS</div><b>ANALYSIS:</b><br>${item.analysis}` : `<div class="stamp-label">📍 LANGLEY | ${item.stamp}</div><p>${item.grit}</p>`;
             const flip = item.analysis ? `<button onclick="flip(${trueIdx})" style="position:absolute;top:5px;right:-40px;background:var(--teal);color:white;border:none;padding:5px;border-radius:50px;font-size:7px;font-weight:900;">FLIP</button>` : "";
             list.innerHTML += `<div class="entry tier-${item.tier}">${flip}${content}</div>`;
         });
