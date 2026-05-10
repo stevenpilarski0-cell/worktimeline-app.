@@ -13,8 +13,9 @@
         .modal-card { background: white; padding: 35px; border-radius: 32px; text-align: center; max-width: 400px; box-shadow: 0 25px 60px rgba(0,0,0,0.4); border-bottom: 8px solid var(--teal); width: 100%; }
         .modal-btn { background: var(--teal); color: white; border: none; padding: 18px; border-radius: 99px; font-weight: 900; cursor: pointer; margin-top: 15px; width: 100%; font-size: 14px; }
         .app-container { width: 100%; max-width: 500px; margin: 0 auto; background: white; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; position: relative; }
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; border-bottom: 2px solid var(--platinum); z-index: 3000; background: white; }
-        .switch-group { display: flex; gap: 15px; align-items: center; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 2px solid var(--platinum); z-index: 3000; background: white; }
+        .switch-group { display: flex; gap: 12px; align-items: center; }
+        .switch-container { text-align: center; display: flex; flex-direction: column; align-items: center; }
         .switch { position: relative; width: 34px; height: 18px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--platinum); transition: .4s; border-radius: 30px; }
@@ -46,15 +47,18 @@
 <div id="syncOverlay"><div class="modal-card"><h2>Sync Summary</h2><p id="aiSummaryText" style="text-align:left; font-size:14px; max-height:300px; overflow-y:auto; font-weight:700;"></p><button class="modal-btn" style="background:var(--clio-blue);" onclick="finalSync()">OK & SEND TO CLIO</button><button class="modal-btn" style="background:var(--dark-silver); margin-top:10px;" onclick="closeSync()">CANCEL</button></div></div>
 <div class="app-container">
     <header class="header">
-        <div style="font-weight:900; color:var(--teal); font-size:18px;">WorkTimeline™</div>
-        <div class="switch-group"><label class="switch"><input type="checkbox" onchange="toggleGhost(this)"><span class="slider"></span></label><div style="font-size:7px; font-weight:900;">GHOST</div></div>
+        <div style="font-weight:900; color:var(--teal); font-size:16px;">WorkTimeline™</div>
+        <div class="switch-group">
+            <div class="switch-container"><label class="switch"><input type="checkbox" onchange="toggleGhost(this)"><span class="slider"></span></label><span style="font-size:7px; font-weight:900;">GHOST</span></div>
+            <div class="switch-container"><label class="switch"><input type="checkbox" onchange="toggleVault(this)"><span class="slider"></span></label><span style="font-size:7px; font-weight:900;">NOTES</span></div>
+        </div>
     </header>
     <div id="addBtn" class="draggable-btn" onclick="submitEntry()">+</div>
     <div id="syncBtn" class="draggable-btn" onclick="triggerSync()">LOCK & SYNC TO CLIO</div>
     <div id="utilityDrawer">
         <div class="drawer-content" id="drawerContent">
             <div style="display:flex; gap:10px; overflow-x:auto;"><div class="template-chip" onclick="useTemplate('INCIDENT')">INCIDENT</div><div class="template-chip" onclick="useTemplate('INJURY')">INJURY</div><div class="template-chip" onclick="useTemplate('LOCATION')">LOCATION</div><div class="template-chip" onclick="useTemplate('WITNESS')">WITNESS</div></div>
-            <textarea id="statusBox" placeholder="Log the grit..."></textarea>
+            <textarea id="statusBox" placeholder="Log evidence..."></textarea>
         </div>
         <div class="drag-handle-zone" onclick="toggleDrawer()"><div class="handle-pill"></div></div>
     </div>
@@ -69,28 +73,30 @@
 </div>
 <script>
     let timelineVault = JSON.parse(localStorage.getItem('wt_timeline')) || [];
-    let pendingEntry = null; let isDrawerOpen = true; let isMgmtOpen = false;
+    let notesVault = JSON.parse(localStorage.getItem('wt_notes')) || [];
+    let pendingEntry = null; let isDrawerOpen = true; let isMgmtOpen = false; let activeVault = "TIMELINE";
     window.onload = () => { refreshDisplay(); };
 
     function toggleDrawer() { const d = document.getElementById('utilityDrawer'); const c = document.getElementById('drawerContent'); if(isDrawerOpen) { d.style.transform = `translateY(-${c.offsetHeight}px)`; isDrawerOpen = false; } else { d.style.transform = `translateY(0)`; isDrawerOpen = true; } }
     function toggleMgmtDrawer() { const d = document.getElementById('managementDrawer'); if(!isMgmtOpen) { d.style.transform = 'translateY(0)'; isMgmtOpen = true; } else { d.style.transform = 'translateY(calc(100% - 40px))'; isMgmtOpen = false; } }
     function toggleGhost(cb) { document.getElementById('appBody').classList.toggle('ghost-active', cb.checked); }
+    function toggleVault(cb) { activeVault = cb.checked ? "NOTES" : "TIMELINE"; refreshDisplay(); }
 
     function submitEntry() {
         const box = document.getElementById('statusBox'); if(!box.value.trim()) return;
         const text = box.value; const low = text.toLowerCase();
         let analysis = ""; let severity = "minor";
         
-        if (low.includes("fire") || low.includes("quit") || low.includes("toxic") || low.includes("age")) {
+        if (low.includes("fire") || low.includes("quit") || low.includes("toxic") || low.includes("age") || low.includes("retaliate")) {
             analysis = "HIGH PRIORITY: Cross-referenced with Constructive Dismissal case law & BC Human Rights Code. Major evidentiary marker."; severity = "serious";
-        } else if (low.includes("pay") || low.includes("break") || low.includes("injury") || low.includes("safety")) {
+        } else if (low.includes("pay") || low.includes("break") || low.includes("injury") || low.includes("safety") || low.includes("dock")) {
             analysis = "MODERATE PRIORITY: Cross-referenced with BC ESA & Workers Compensation Act."; severity = "moderate";
-        } else if (low.includes("wet") || low.includes("clutter") || low.includes("late")) {
+        } else if (low.includes("wet") || low.includes("clutter") || low.includes("late") || low.includes("tired")) {
             analysis = "GENERAL ALERT: Minor cross-reference to Duty of Care."; severity = "minor";
         }
 
         pendingEntry = { id: Date.now(), grit: text, analysis: analysis, stamp: new Date().toLocaleString(), agree: false, tier: severity };
-        if (analysis) {
+        if (analysis && activeVault === "TIMELINE") {
             document.getElementById('warningMsg').innerHTML = `<b>AI Cross-Reference Found:</b><br><br>${analysis}<br><br><i>Stack analysis on top?</i>`;
             document.getElementById('warningOverlay').style.display = 'flex';
         } else { saveFinal(); }
@@ -98,37 +104,26 @@
     }
 
     function applyStack(agree) { pendingEntry.agree = agree; document.getElementById('warningOverlay').style.display = 'none'; saveFinal(); }
-    function saveFinal() { timelineVault.push(pendingEntry); localStorage.setItem('wt_timeline', JSON.stringify(timelineVault)); refreshDisplay(); }
+    
+    function saveFinal() { 
+        if(activeVault === "TIMELINE") { timelineVault.push(pendingEntry); localStorage.setItem('wt_timeline', JSON.stringify(timelineVault)); }
+        else { notesVault.push(pendingEntry); localStorage.setItem('wt_notes', JSON.stringify(notesVault)); }
+        refreshDisplay(); 
+    }
 
     function refreshDisplay() {
         const list = document.getElementById('displayList'); list.innerHTML = '';
-        [...timelineVault].reverse().forEach(item => {
+        const data = activeVault === "TIMELINE" ? timelineVault : notesVault;
+        [...data].reverse().forEach(item => {
             const group = document.createElement('div'); group.className = 'stack-group';
             const gritCard = `<div class="entry tier-${item.tier}"><span style="font-size:10px; color:var(--teal); font-weight:900;">📍 Langley, BC | ${item.stamp}</span><p style="margin:10px 0 0; font-weight:800;">${item.grit}</p></div>`;
-            const analysisCard = item.analysis ? `<div class="entry analysis-card tier-${item.tier}"><b>LEGAL CROSS-REF:</b><br><span style="font-size:12px; font-weight:900;">${item.analysis}</span></div>` : "";
+            const analysisCard = (item.analysis && activeVault === "TIMELINE") ? `<div class="entry analysis-card tier-${item.tier}"><b>LEGAL CROSS-REF:</b><br><span style="font-size:12px; font-weight:900;">${item.analysis}</span></div>` : "";
             group.innerHTML = item.agree ? analysisCard + gritCard : gritCard + analysisCard;
             list.appendChild(group);
         });
     }
+
     function useTemplate(t) { 
         const templates = {
             'INCIDENT': 'ACTION:\nVIOLATION:\nWITNESS:', 
-            'INJURY': 'NATURE OF INJURY:\nBODY PART:\nFIRST AID RENDERED:\nOFA ATTENDANT:', 
-            'LOCATION': 'SITE:\nHAZARDS:',
-            'WITNESS': 'WITNESS NAME:\nCONTACT INFO:\nSTATEMENT:'
-        }; 
-        document.getElementById('statusBox').value = templates[t]; 
-    }
-    function triggerSync() {
-        if (timelineVault.length === 0) return alert("No entries to sync.");
-        let summary = "AI SUMMARY OF TIMELINE:\n\n";
-        timelineVault.forEach((e, i) => { summary += `${i+1}. [${e.stamp}] ${e.grit.substring(0, 50)}...\n\n`; });
-        document.getElementById('aiSummaryText').innerText = summary;
-        document.getElementById('syncOverlay').style.display = 'flex';
-    }
-    function finalSync() { alert("Locked and Synced to Clio."); document.getElementById('syncOverlay').style.display = 'none'; }
-    function closeSync() { document.getElementById('syncOverlay').style.display = 'none'; }
-    function confirmReset() { if(confirm("Wipe vault?")) { localStorage.clear(); location.reload(); } }
-</script>
-</body>
-</html>
+            'INJURY': 'NATURE OF INJURY:\nBODY PART:\nFIRST AID RENDERED:\nOFA ATTEND
