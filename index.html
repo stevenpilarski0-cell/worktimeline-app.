@@ -11,6 +11,10 @@
         
         body { font-family: 'Nunito', sans-serif; background: var(--gray-bg); margin: 0; padding: 0; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; -webkit-tap-highlight-color: transparent; }
 
+        /* THE LOGO - FIXED TO TOP LAYER */
+        .brand-fixed { position: fixed; top: 15px; left: 20px; z-index: 20000; pointer-events: none; }
+        .logo-text { font-size: 22px; font-weight: 900; color: var(--teal); letter-spacing: -1px; }
+
         /* GHOST EFFECT */
         .ghost-active #timeline { filter: blur(45px) grayscale(1) !important; opacity: 0.2 !important; pointer-events: none; }
         .notes-mode { background: #fffdf2 !important; }
@@ -18,23 +22,20 @@
         /* TOP DRAWER */
         #topDrawer { position: fixed; top: 0; left: 0; width: 100%; background: var(--white); border-bottom: 4px solid var(--teal); border-radius: 0 0 30px 30px; transition: transform 0.4s cubic-bezier(0.1, 0.7, 0.1, 1); z-index: 10000; transform: translateY(calc(-100% + 55px)); box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
         #topDrawer.open { transform: translateY(0); }
-        
-        /* LOGO PLACEMENT INSIDE DRAWER */
-        .drawer-header { padding: 15px 20px 0; display: flex; align-items: center; justify-content: flex-start; }
-        .logo-text { font-size: 24px; font-weight: 900; color: var(--teal); letter-spacing: -1px; }
-
         .top-handle { height: 55px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: absolute; bottom: 0; width: 100%; background: var(--white); border-radius: 0 0 30px 30px; }
         .top-pill { width: 50px; height: 5px; background: var(--mac-border); border-radius: 10px; margin-top: 5px; }
 
-        .intake-content { padding: 10px 20px 85px; }
-        #statusBox { width: 100%; height: 90px; padding: 15px; border-radius: 18px; border: 2px solid var(--mac-border); outline: none; font-size: 15px; background: #fafafa; box-sizing: border-box; resize: none; font-family: 'Nunito Sans', sans-serif; }
+        /* CONTENT PADDING TO CLEAR FIXED LOGO */
+        .intake-content { padding: 60px 20px 85px; }
+        #statusBox { width: 100%; height: 95px; padding: 15px; border-radius: 18px; border: 2px solid var(--mac-border); outline: none; font-size: 15px; background: #fafafa; box-sizing: border-box; resize: none; font-family: 'Nunito Sans', sans-serif; }
 
         .controls { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
         .action-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
         .media-dock { display: flex; gap: 8px; background: #e2e8f0; padding: 5px; border-radius: 15px; flex-grow: 1; }
-        .icon-btn { background: var(--white); height: 40px; flex: 1; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: none; font-weight: 900; font-size: 11px; color: var(--slate); }
+        .icon-btn { background: var(--white); height: 42px; flex: 1; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: none; font-weight: 900; font-size: 11px; color: var(--slate); }
         #addBtn { width: 55px; height: 55px; border-radius: 15px; background: var(--teal); color: white; font-size: 30px; font-weight: 900; border: none; }
 
+        /* SWITCHES BOTTOM RIGHT */
         .settings-row { display: flex; justify-content: flex-end; align-items: center; gap: 20px; margin-top: 5px; }
         .mac-switch-wrapper { display: flex; flex-direction: column; align-items: center; }
         .mac-switch { position: relative; display: inline-block; width: 34px; height: 20px; }
@@ -48,9 +49,7 @@
 
         /* TIMELINE */
         #timeline { flex-grow: 1; overflow-y: auto; padding: 75px 15px 120px; display: flex; flex-direction: column; gap: 15px; }
-        .entry-card { width: 100%; }
-        .stamp { font-size: 9px; font-weight: 800; color: var(--slate); opacity: 0.6; margin-bottom: 3px; padding-left: 5px; }
-        .face { padding: 12px; border-radius: 18px; box-shadow: var(--mac-shadow); border: 2px solid var(--mac-border); background: var(--white); border-left: 6px solid var(--teal); font-size: 14px; }
+        .face { padding: 15px; border-radius: 18px; box-shadow: var(--mac-shadow); border: 2px solid var(--mac-border); background: var(--white); border-left: 6px solid var(--teal); font-size: 14px; }
         .face.note-item { border-left-color: var(--notes-gold); }
 
         /* BOTTOM DRAWER */
@@ -61,16 +60,17 @@
         .btn-container { padding: 10px 20px 30px; display: flex; flex-direction: column; gap: 10px; }
         .btn { padding: 16px; border-radius: 15px; border: none; color: white; font-weight: 900; font-size: 14px; cursor: pointer; }
 
-        /* OVERLAYS */
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.92); backdrop-filter: blur(20px); z-index: 100000; display: none; align-items: center; justify-content: center; flex-direction: column; }
+        /* AI OVERLAY */
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); z-index: 100000; display: none; align-items: center; justify-content: center; flex-direction: column; }
     </style>
 </head>
 <body>
 
+<div class="brand-fixed">
+    <div class="logo-text">WorkTimeline</div>
+</div>
+
 <div id="topDrawer">
-    <div class="drawer-header">
-        <div class="logo-text">WorkTimeline</div>
-    </div>
     <div class="intake-content">
         <textarea id="statusBox" placeholder="Start your record..."></textarea>
         <div class="controls">
@@ -120,8 +120,8 @@
 </div>
 
 <script>
-    let db = JSON.parse(localStorage.getItem('WT_PRO_V9')) || [];
-    let noteDb = JSON.parse(localStorage.getItem('WT_NOTES_V9')) || [];
+    let db = JSON.parse(localStorage.getItem('WT_PRO_V10')) || [];
+    let noteDb = JSON.parse(localStorage.getItem('WT_NOTES_V10')) || [];
     let mode = "TIMELINE";
 
     function render() {
@@ -161,8 +161,8 @@
             document.getElementById('aiLoad').style.display = 'none';
             const entry = { id: Date.now(), txt: val, time: new Date().toLocaleString() };
             if(mode === "NOTES") noteDb.push(entry); else db.push(entry);
-            localStorage.setItem('WT_NOTES_V9', JSON.stringify(noteDb));
-            localStorage.setItem('WT_PRO_V9', JSON.stringify(db));
+            localStorage.setItem('WT_NOTES_V10', JSON.stringify(noteDb));
+            localStorage.setItem('WT_PRO_V10', JSON.stringify(db));
             document.getElementById('statusBox').value = ''; render();
         }, 1500);
     }
@@ -177,7 +177,7 @@
 
     function mediaLog(t) {
         db.push({ id: Date.now(), txt: "[" + t + " Logged]", time: new Date().toLocaleString() });
-        localStorage.setItem('WT_PRO_V9', JSON.stringify(db)); render();
+        localStorage.setItem('WT_PRO_V10', JSON.stringify(db)); render();
     }
 
     function syncClio() { alert("Syncing to Clio..."); }
