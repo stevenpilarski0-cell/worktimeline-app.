@@ -12,9 +12,6 @@
         #legalOverlay, #syncOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(44, 62, 80, 0.95); backdrop-filter: blur(10px); z-index: 200000; display: none; align-items: center; justify-content: center; padding: 25px; box-sizing: border-box; }
         .modal-card { background: white; padding: 35px; border-radius: 32px; text-align: center; max-width: 400px; box-shadow: 0 25px 60px rgba(0,0,0,0.4); border-bottom: 8px solid var(--teal); width: 100%; }
         .modal-btn { background: var(--teal); color: white; border: none; padding: 18px; border-radius: 99px; font-weight: 900; cursor: pointer; margin-top: 25px; width: 100%; font-size: 16px; }
-        #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-        .story-text { font-size: 24px; font-weight: 900; color: var(--gray-dark); margin-bottom: 40px; opacity: 0; transition: 0.8s; }
-        #skipBtn { padding: 18px 50px; border: 3.5px solid var(--teal); border-radius: 99px; background: white; color: var(--teal); font-weight: 900; font-size: 16px; cursor: pointer; }
         .app-container { width: 100%; max-width: 500px; margin: 0 auto; background: white; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; position: relative; }
         .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; border-bottom: 2px solid var(--platinum); z-index: 3000; background: white; }
         .logo-box { display: flex; align-items: center; gap: 10px; }
@@ -48,7 +45,6 @@
 <body id="appBody">
 <div id="legalOverlay" style="display:flex;"><div class="modal-card"><h2>Friendly Reminder</h2><p>WorkTimeline™ is an evidence-tracking tool. <b>We do not provide legal advice.</b></p><button class="modal-btn" onclick="dismissLegal()">I UNDERSTAND</button></div></div>
 <div id="syncOverlay"><div class="modal-card"><h2 style="color:var(--clio-blue);">Evidence Summary</h2><p id="aiSummaryText" style="text-align:left; font-size:14px; max-height:300px; overflow-y:auto; font-weight:700;"></p><button class="modal-btn" style="background:var(--clio-blue);" onclick="finalSync()">OK & SEND</button><button class="modal-btn" style="background:var(--dark-silver); margin-top:10px;" onclick="closeSync()">CANCEL</button></div></div>
-<div id="splashScreen"><h1 id="storyText" class="story-text">Welcome.</h1><button id="skipBtn" onclick="endSplash()">Skip Intro</button></div>
 <div class="app-container">
     <header class="header">
         <div class="logo-box">
@@ -78,14 +74,11 @@
     </div>
 </div>
 <script>
-    const story = ["The Fresh Record.", "Canadian Justice.", "Case Law Integrated.", "Truth Secured."];
     let isDrawerOpen = true; let isMgmtOpen = false; let activeVault = "TIMELINE"; 
     const timelineVault = JSON.parse(localStorage.getItem('wt_timeline')) || []; 
     const notesVault = JSON.parse(localStorage.getItem('wt_notes')) || [];
     window.onload = () => { refreshDisplay(); };
-    function dismissLegal() { document.getElementById('legalOverlay').style.display='none'; runStory(); }
-    function runStory() { const el = document.getElementById('storyText'); let i = 0; const next = () => { if(i < story.length) { el.style.opacity = 0; setTimeout(() => { el.innerText = story[i++]; el.style.opacity = 1; setTimeout(next, 2000); }, 600); } else endSplash(); }; next(); }
-    function endSplash() { const s = document.getElementById('splashScreen'); if(s) { s.style.opacity='0'; setTimeout(() => s.remove(), 800); } }
+    function dismissLegal() { document.getElementById('legalOverlay').style.display='none'; }
     function toggleDrawer() { const d = document.getElementById('utilityDrawer'); const c = document.getElementById('drawerContent'); if(isDrawerOpen) { d.style.transform = `translateY(-${c.offsetHeight}px)`; isDrawerOpen = false; } else { d.style.transform = `translateY(0)`; isDrawerOpen = true; } }
     function toggleMgmtDrawer() { const d = document.getElementById('managementDrawer'); if(!isMgmtOpen) { d.style.transform = 'translateY(0)'; isMgmtOpen = true; } else { d.style.transform = 'translateY(calc(100% - 40px))'; isMgmtOpen = false; } }
     function triggerLockSync() {
