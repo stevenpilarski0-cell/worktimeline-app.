@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline Elite | AI Powered</title>
+    <title>WorkTimeline Elite</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&family=Nunito+Sans:wght@400;700&display=swap');
         
@@ -11,39 +11,26 @@
         
         body { font-family: 'Nunito', sans-serif; background: var(--gray-bg); margin: 0; padding: 0; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; -webkit-tap-highlight-color: transparent; }
 
-        /* GHOST EFFECT - HEAVY BLUR */
-        .ghost-active #timeline { 
-            filter: blur(45px) grayscale(1) !important; 
-            opacity: 0.25 !important; 
-            pointer-events: none; 
-        }
-        
+        /* GHOST EFFECT */
+        .ghost-active #timeline { filter: blur(40px) grayscale(1) !important; opacity: 0.2 !important; pointer-events: none; }
         .notes-mode { background: #fffdf2 !important; }
 
         /* TOP DRAWER */
         #topDrawer { position: fixed; top: 0; left: 0; width: 100%; background: var(--white); border-bottom: 4px solid var(--teal); border-radius: 0 0 30px 30px; transition: transform 0.4s cubic-bezier(0.1, 0.7, 0.1, 1); z-index: 10000; transform: translateY(calc(-100% + 55px)); box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
         #topDrawer.open { transform: translateY(0); }
-        
         .top-handle { height: 55px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: absolute; bottom: 0; width: 100%; background: var(--white); border-radius: 0 0 30px 30px; }
         .top-pill { width: 50px; height: 5px; background: var(--mac-border); border-radius: 10px; margin-top: 5px; }
-        .top-handle-txt { font-size: 10px; font-weight: 900; color: var(--teal); letter-spacing: 2px; text-transform: uppercase; }
 
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px 5px; }
-        .brand { font-weight: 900; color: var(--teal); font-size: 18px; }
+        .intake-content { padding: 15px 20px 85px; }
+        #statusBox { width: 100%; height: 90px; padding: 15px; border-radius: 18px; border: 2px solid var(--mac-border); outline: none; font-size: 15px; background: #fafafa; box-sizing: border-box; resize: none; }
 
-        .intake-content { padding: 10px 20px 80px; }
-        #statusBox { width: 100%; height: 100px; padding: 15px; border-radius: 20px; border: 2px solid var(--mac-border); outline: none; font-size: 15px; background: #fafafa; box-sizing: border-box; resize: none; font-family: 'Nunito Sans', sans-serif; }
-
-        /* CONTROLS LAYOUT */
-        .controls { display: flex; flex-direction: column; margin-top: 15px; gap: 15px; }
+        .controls { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
         .action-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-        
-        .media-dock { display: flex; gap: 8px; background: #e2e8f0; padding: 6px; border-radius: 18px; flex-grow: 1; }
-        .icon-btn { background: var(--white); height: 40px; flex: 1; border-radius: 12px; display: flex; align-items: center; justify-content: center; border: none; font-size: 11px; font-weight: 900; color: var(--slate); }
-        #addBtn { width: 55px; height: 55px; border-radius: 15px; background: var(--teal); color: white; font-size: 32px; font-weight: 900; border: none; cursor: pointer; }
+        .media-dock { display: flex; gap: 8px; background: #e2e8f0; padding: 5px; border-radius: 15px; flex-grow: 1; }
+        .icon-btn { background: var(--white); height: 40px; flex: 1; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: none; font-weight: 900; font-size: 11px; color: var(--slate); }
+        #addBtn { width: 55px; height: 55px; border-radius: 15px; background: var(--teal); color: white; font-size: 30px; font-weight: 900; border: none; }
 
-        /* SWITCHES BOTTOM RIGHT */
-        .settings-row { display: flex; justify-content: flex-end; align-items: center; gap: 20px; padding-top: 5px; }
+        .settings-row { display: flex; justify-content: flex-end; align-items: center; gap: 20px; }
         .mac-switch-wrapper { display: flex; flex-direction: column; align-items: center; }
         .mac-switch { position: relative; display: inline-block; width: 34px; height: 20px; }
         .mac-switch input { opacity: 0; width: 0; height: 0; }
@@ -52,34 +39,32 @@
         input:checked + .mac-slider { background-color: var(--teal); }
         input:checked + .mac-slider.gold-variant { background-color: var(--notes-gold); }
         input:checked + .mac-slider:before { transform: translateX(14px); }
-        .switch-label { font-size: 8px; font-weight: 900; color: var(--slate); margin-top: 4px; text-transform: uppercase; }
-
-        #clioVaultBtn { background: var(--clio-blue); color: white; border: none; padding: 12px; border-radius: 15px; font-weight: 900; font-size: 11px; text-transform: uppercase; cursor: pointer; width: 100%; margin-top: 10px; }
+        .switch-label { font-size: 8px; font-weight: 900; color: var(--slate); margin-top: 3px; text-transform: uppercase; }
 
         /* TIMELINE */
-        #timeline { flex-grow: 1; overflow-y: auto; padding: 75px 20px 150px; display: flex; flex-direction: column; gap: 20px; transition: filter 0.3s ease; }
+        #timeline { flex-grow: 1; overflow-y: auto; padding: 75px 15px 120px; display: flex; flex-direction: column; gap: 15px; }
         .entry-card { width: 100%; }
-        .stamp { font-size: 10px; font-weight: 800; color: var(--slate); opacity: 0.6; margin-bottom: 5px; padding-left: 5px; }
-        .face { padding: 15px; border-radius: 20px; box-shadow: var(--mac-shadow); border: 2px solid var(--mac-border); width: 100%; box-sizing: border-box; background: var(--white); border-left: 8px solid var(--teal); font-size: 15px; line-height: 1.4; }
+        .stamp { font-size: 9px; font-weight: 800; color: var(--slate); opacity: 0.6; margin-bottom: 3px; padding-left: 5px; }
+        .face { padding: 12px; border-radius: 18px; box-shadow: var(--mac-shadow); border: 2px solid var(--mac-border); background: var(--white); border-left: 6px solid var(--teal); font-size: 14px; }
         .face.note-item { border-left-color: var(--notes-gold); }
+
+        /* BOTTOM DRAWER */
+        #bottomDrawer { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--white); border-top: 4px solid var(--teal); border-radius: 30px 30px 0 0; transition: transform 0.4s cubic-bezier(0.1, 0.7, 0.1, 1); z-index: 10000; transform: translateY(calc(100% - 60px)); padding-bottom: env(safe-area-inset-bottom); }
+        #bottomDrawer.open { transform: translateY(0); }
+        .bottom-handle { height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; }
+        .bottom-pill { width: 50px; height: 5px; background: var(--mac-border); border-radius: 10px; margin-bottom: 5px; }
+        .btn-container { padding: 10px 20px 30px; display: flex; flex-direction: column; gap: 10px; }
+        .btn { padding: 16px; border-radius: 15px; border: none; color: white; font-weight: 900; font-size: 14px; cursor: pointer; }
 
         /* OVERLAYS */
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.92); backdrop-filter: blur(20px); z-index: 100000; display: none; align-items: center; justify-content: center; flex-direction: column; }
-        @keyframes pulse-teal { 0% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0.4); } 70% { box-shadow: 0 0 0 20px rgba(0, 128, 128, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0); } }
-        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.6); } 70% { box-shadow: 0 0 0 40px rgba(229, 62, 62, 0); } 100% { box-shadow: 0 0 0 0 rgba(229, 62, 62, 0); } }
-        @keyframes pulse-yellow { 0% { box-shadow: 0 0 0 0 rgba(241, 196, 15, 0.6); } 70% { box-shadow: 0 0 0 30px rgba(241, 196, 15, 0); } 100% { box-shadow: 0 0 0 0 rgba(241, 196, 15, 0); } }
     </style>
 </head>
-<body id="app">
+<body>
 
 <div id="topDrawer">
-    <header class="header">
-        <div class="brand">WorkTimeline</div>
-    </header>
-    
     <div class="intake-content">
         <textarea id="statusBox" placeholder="Start your record..."></textarea>
-        
         <div class="controls">
             <div class="action-row">
                 <div class="media-dock">
@@ -89,7 +74,6 @@
                 </div>
                 <button id="addBtn" onclick="process()">+</button>
             </div>
-
             <div class="settings-row">
                 <div class="mac-switch-wrapper">
                     <label class="mac-switch"><input type="checkbox" id="noteToggle" onchange="toggleNotes()"><span class="mac-slider gold-variant"></span></label>
@@ -100,36 +84,37 @@
                     <span class="switch-label">GHOST</span>
                 </div>
             </div>
-
-            <button id="clioVaultBtn" onclick="syncClio()">SYNC TO CLIO</button>
         </div>
     </div>
-
     <div class="top-handle" onclick="document.getElementById('topDrawer').classList.toggle('open')">
-        <div class="top-handle-txt">INTAKE</div>
+        <div style="font-size:10px; font-weight:900; color:var(--teal);">INTAKE</div>
         <div class="top-pill"></div>
     </div>
 </div>
 
 <div id="timeline"></div>
 
+<div id="bottomDrawer">
+    <div class="bottom-handle" onclick="document.getElementById('bottomDrawer').classList.toggle('open')">
+        <div class="bottom-pill"></div>
+        <div style="font-size:10px; font-weight:900; color:var(--teal);">MANAGEMENT</div>
+    </div>
+    <div class="btn-container">
+        <button class="btn" style="background:var(--clio-blue);" onclick="syncClio()">SYNC TO CLIO</button>
+        <button class="btn" style="background:var(--teal);" onclick="alert('Timeline Saved')">SAVE TIMELINE</button>
+        <button class="btn" style="background:var(--slate);" onclick="reset()">START FRESH</button>
+    </div>
+</div>
+
 <div id="aiLoad" class="overlay">
-    <div id="pulseCircle" style="width:70px; height:70px; border-radius:50%; border:5px solid var(--teal);"></div>
-    <div id="loadingText" style="font-weight:900; color:var(--teal); margin-top:25px; text-transform:uppercase; letter-spacing: 1px;">Analyzing...</div>
+    <div id="pulseCircle" style="width:60px; height:60px; border-radius:50%; border:4px solid var(--teal); transition: 0.3s;"></div>
+    <div id="loadingText" style="font-weight:900; color:var(--teal); margin-top:20px; text-transform:uppercase;">Analyzing...</div>
 </div>
 
 <script>
-    let db = JSON.parse(localStorage.getItem('WT_PRO_V5')) || [];
-    let noteDb = JSON.parse(localStorage.getItem('WT_NOTES_V5')) || [];
+    let db = JSON.parse(localStorage.getItem('WT_PRO_V6')) || [];
+    let noteDb = JSON.parse(localStorage.getItem('WT_NOTES_V6')) || [];
     let mode = "TIMELINE";
-
-    window.onload = render;
-
-    function toggleNotes() {
-        mode = document.getElementById('noteToggle').checked ? "NOTES" : "TIMELINE";
-        document.body.classList.toggle('notes-mode');
-        render();
-    }
 
     function render() {
         const container = document.getElementById('timeline');
@@ -137,21 +122,22 @@
         const list = mode === "TIMELINE" ? db : noteDb;
         [...list].reverse().forEach(item => {
             const wrap = document.createElement('div');
-            wrap.className = 'entry-card';
-            wrap.innerHTML = `<div class="stamp">${item.time}</div><div class="face ${mode==='NOTES'?'note-item':''}">${item.txt}</div>`;
+            wrap.innerHTML = `<div class="entry-card"><div class="stamp">${item.time}</div><div class="face ${mode==='NOTES'?'note-item':''}">${item.txt}</div></div>`;
             container.appendChild(wrap);
         });
+    }
+
+    function toggleNotes() {
+        mode = document.getElementById('noteToggle').checked ? "NOTES" : "TIMELINE";
+        document.body.classList.toggle('notes-mode');
+        render();
     }
 
     async function process() {
         const val = document.getElementById('statusBox').value.trim();
         if(!val) return;
-
         showPulse("teal", "Analyzing...");
-
-        let riskType = "teal";
-        let riskMsg = "Log Secured";
-
+        let riskType = "teal", riskMsg = "Log Secured";
         try {
             const res = await fetch('/api/analyze', {
                 method: 'POST',
@@ -161,39 +147,34 @@
             const data = await res.json();
             if(data.risk === "TERMINATION") { riskType = "red"; riskMsg = "Termination Warning"; }
             else if(data.risk === "RETALIATION") { riskType = "yellow"; riskMsg = "Retaliation Warning"; }
-        } catch(e) { console.log("AI Offline"); }
-
+        } catch(e) {}
         showPulse(riskType, riskMsg);
-
         setTimeout(() => {
             document.getElementById('aiLoad').style.display = 'none';
             const entry = { id: Date.now(), txt: val, time: new Date().toLocaleString() };
-            if(mode === "NOTES") { noteDb.push(entry); localStorage.setItem('WT_NOTES_V5', JSON.stringify(noteDb)); }
-            else { db.push(entry); localStorage.setItem('WT_PRO_V5', JSON.stringify(db)); }
-            document.getElementById('statusBox').value = '';
-            render();
-        }, 1600);
+            if(mode === "NOTES") noteDb.push(entry); else db.push(entry);
+            localStorage.setItem('WT_NOTES_V6', JSON.stringify(noteDb));
+            localStorage.setItem('WT_PRO_V6', JSON.stringify(db));
+            document.getElementById('statusBox').value = ''; render();
+        }, 1500);
     }
 
     function showPulse(type, text) {
         const overlay = document.getElementById('aiLoad');
         const circle = document.getElementById('pulseCircle');
-        circle.style.animation = `pulse-${type} 0.8s infinite`;
+        overlay.style.display = 'flex';
         circle.style.borderColor = type === 'teal' ? '#008080' : type === 'red' ? '#e53e3e' : '#f1c40f';
         document.getElementById('loadingText').innerText = text;
-        overlay.style.display = 'flex';
     }
 
     function mediaLog(t) {
-        const entry = { id: Date.now(), txt: "[" + t + " Record Logged]", time: new Date().toLocaleString() };
-        db.push(entry); localStorage.setItem('WT_PRO_V5', JSON.stringify(db));
-        render();
+        db.push({ id: Date.now(), txt: "[" + t + " Logged]", time: new Date().toLocaleString() });
+        localStorage.setItem('WT_PRO_V6', JSON.stringify(db)); render();
     }
 
-    function syncClio() {
-        showPulse("teal", "Syncing to Clio...");
-        setTimeout(() => document.getElementById('aiLoad').style.display = 'none', 1200);
-    }
+    function syncClio() { alert("Syncing to Clio..."); }
+    function reset() { if(confirm("Start Fresh?")) { localStorage.clear(); location.reload(); } }
+    window.onload = render;
 </script>
 </body>
 </html>
