@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline Elite | v13.5 Stable</title>
+    <title>WorkTimeline Elite | v13.6 Stable</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -101,7 +101,7 @@
         .bottom-pill { width: 50px; height: 5px; background: var(--mac-border); border-radius: 10px; margin-bottom: 5px; }
         .bottom-handle-txt { font-size: 10px; font-weight: 900; color: var(--teal); letter-spacing: 2px; }
         .drawer-content { display: flex; gap: 10px; padding: 20px; justify-content: center; flex-wrap: wrap;}
-        .btn { border: none; padding: 16px; border-radius: 12px; font-weight: 900; flex: 1; color: white; cursor: pointer; min-width: 120px;}
+        .btn { border: none; padding: 14px; border-radius: 12px; font-weight: 900; flex: 1; color: white; cursor: pointer; min-width: 120px;}
 
         /* --- OVERLAYS --- */
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); backdrop-filter: blur(20px); z-index: 100000; display: none; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; }
@@ -180,7 +180,14 @@
         <div class="drawer-content">
             <button class="btn" style="background:var(--teal)" onclick="alert('Timeline Saved locally!')">SAVE</button>
             <button class="btn" style="background:var(--slate)" onclick="reset()">START FRESH</button>
-            <button class="btn" style="background:#333; flex-basis: 100%;" onclick="resetApiKey()">RESET API KEY</button>
+            
+            <div style="width: 100%; margin-top: 15px; border-top: 2px solid var(--mac-border); padding-top: 15px;">
+                <div style="font-size: 11px; font-weight: 900; color: var(--teal); margin-bottom: 5px;">COHERE SECURE KEY</div>
+                <div style="display: flex; gap: 8px;">
+                    <input type="password" id="apiInputBox" placeholder="Paste pT9... key here" style="flex-grow: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--mac-border); box-sizing: border-box; font-family: monospace;">
+                    <button class="btn" style="background: #333; min-width: 80px; padding: 10px;" onclick="saveApiKey()">SAVE</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -190,41 +197,35 @@
         let mode = "TIMELINE"; 
         let isLocked = false;
 
-        // --- SECURE API KEY HANDLING ---
+        // Fetch Key from memory
         let COHERE_API_KEY = localStorage.getItem('WT_API_KEY');
-
-        // Check if key is missing or empty, and prompt the user securely
-        if (!COHERE_API_KEY || COHERE_API_KEY.trim() === "") {
-            let userKey = prompt("SECURITY CHECK: Enter your Cohere API Trial Key to activate the AI. (It will be saved securely to this device only).");
-            if (userKey && userKey.trim() !== "") {
-                COHERE_API_KEY = userKey.trim();
-                localStorage.setItem('WT_API_KEY', COHERE_API_KEY);
-            }
-        }
-
-        // Function to clear the key (attached to the new button in the drawer)
-        function resetApiKey() {
-            if(confirm("Clear your secure API key from this device?")) {
-                localStorage.removeItem('WT_API_KEY');
-                location.reload();
-            }
-        }
 
         window.onload = () => { 
             render(); 
             if(localStorage.getItem('WT_L_V1')) {
                 document.getElementById('introOverlay').style.display = 'none'; 
             }
+            // If key exists, put dots in the box so you know it's saved
+            if(COHERE_API_KEY) {
+                document.getElementById('apiInputBox').value = "••••••••••••••••";
+            }
         };
+
+        // NEW: Save API Key Function
+        function saveApiKey() {
+            const newKey = document.getElementById('apiInputBox').value.trim();
+            if (newKey && newKey !== "••••••••••••••••") {
+                localStorage.setItem('WT_API_KEY', newKey);
+                COHERE_API_KEY = newKey;
+                alert("API Key Secured in local device memory.");
+                document.getElementById('apiInputBox').value = "••••••••••••••••";
+                document.getElementById('bottomDrawer').classList.remove('open');
+            }
+        }
 
         function closeIntro() { 
             localStorage.setItem('WT_L_V1', '1'); 
             document.getElementById('introOverlay').style.display = 'none'; 
-            
-            // If they closed intro but still don't have a key, ask again
-            if (!COHERE_API_KEY) {
-                location.reload(); 
-            }
         }
 
         function tag(t) { document.getElementById('statusBox').value += ` --- ${t.toUpperCase()} ---\n`; }
@@ -271,7 +272,7 @@
         }
 
         async function analyzeWithAI(text) {
-            // If they skipped the prompt, use the fallback
+            // If they haven't saved a key yet, use the local fallback
             if (!COHERE_API_KEY) {
                 let textLower = text.toLowerCase();
                 if (textLower.includes("fired") || textLower.includes("unsafe")) return { severity: 3, ai_text: "CRITICAL: Potential violation detected.", ref: "Local Fallback" };
@@ -297,7 +298,7 @@
                 return JSON.parse(responseText); 
             } catch(e) {
                 console.error("AI Error:", e);
-                return { severity: 0, ai_text: "API Sync Error. Entry saved securely offline.", ref: "Error" };
+                return { severity: 0, ai_text: "API Sync Error. Check your API Key.", ref: "Error" };
             }
         }
 
@@ -350,7 +351,7 @@
             });
         }
 
-        function reset() { if(confirm("Start Fresh? All data will be wiped.")) { localStorage.removeItem('WT_PRO_FINAL'); localStorage.removeItem('WT_NOTE_FINAL'); location.reload(); } }
+        function reset() { if(confirm("Start Fresh? All data will be wiped.")) { localStorage.removeItem('WT_PRO_FINAL'); localStorage.removeItem('WT_NOTE_FINAL'); localStorage.removeItem('WT_API_KEY'); location.reload(); } }
     </script>
 </body>
 </html>
