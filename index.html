@@ -1,120 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>WorkTimeline Elite</title>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700;800;900&display=swap" rel="stylesheet">
     <style>
-        :root { --teal: #008080; --slate: #475569; --gray-bg: #f1f5f9; --white: #ffffff; --risk-red: #e53e3e; --warn-yellow: #f1c40f; --clio: #0076CE; }
-        body { font-family: 'Nunito Sans', sans-serif; background: var(--gray-bg); margin: 0; padding: 0; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
-        @keyframes pulse-teal { 0% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0.4); } 70% { box-shadow: 0 0 0 20px rgba(0, 128, 128, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0); } }
-        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.6); } 70% { box-shadow: 0 0 0 40px rgba(229, 62, 62, 0); } 100% { box-shadow: 0 0 0 0 rgba(229, 62, 62, 0); } }
-        header { background: var(--white); padding: 10px 15px; border-bottom: 4px solid var(--teal); display: flex; justify-content: space-between; align-items: center; z-index: 100; }
-        .brand { font-weight: 900; color: var(--teal); }
-        .lock-btn { background: var(--clio); color: white; border: none; padding: 8px 12px; border-radius: 8px; font-size: 10px; font-weight: 900; }
-        .intake { background: var(--white); padding: 15px; border-bottom: 1px solid #ddd; }
-        textarea { width: 100%; height: 70px; padding: 12px; border-radius: 12px; border: 2px solid #cbd5e0; font-family: inherit; font-size: 14px; box-sizing: border-box; resize: none; margin-bottom: 10px; }
-        .btn-row { display: flex; justify-content: space-between; align-items: center; }
-        #addBtn { width: 50px; height: 50px; border-radius: 12px; background: var(--teal); color: white; font-size: 28px; border: none; font-weight: 900; }
-        #timeline { flex-grow: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 12px; padding-bottom: 100px; }
-        .card { background: var(--white); border-radius: 10px; padding: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-left: 6px solid var(--teal); position: relative; }
-        .stamp { font-size: 9px; font-weight: 800; color: var(--slate); margin-bottom: 5px; opacity: 0.7; }
-        .ai-shadow { background: #f8f9fa; border: 1px dashed var(--teal); padding: 10px; border-radius: 6px; font-size: 12px; margin-top: 10px; }
-        .sev-3 { border-left-color: var(--risk-red); }
-        .tampered { border-left-color: var(--risk-red); animation: pulse-red 1.2s infinite; }
-        #gear { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background: var(--teal); color: white; border-radius: 30px; display: flex; align-items: center; justify-content: center; font-size: 24px; border: none; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-        #drawer { position: fixed; bottom: 0; left: 0; width: 100%; background: white; border-top: 4px solid var(--teal); transform: translateY(100%); transition: 0.4s cubic-bezier(0.1, 0.7, 0.1, 1); z-index: 1001; padding: 20px; box-sizing: border-box; border-radius: 30px 30px 0 0; }
+        body { font-family: sans-serif; padding: 20px; background: #f1f5f9; }
+        .h { color: #008080; font-weight: 900; font-size: 24px; margin-bottom: 20px; }
+        .box { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        textarea { width: 100%; height: 80px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 8px; padding: 10px; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; border: none; border-radius: 8px; font-weight: 900; cursor: pointer; }
+        .add-btn { background: #008080; color: white; }
+        .card { background: white; margin-top: 15px; padding: 15px; border-radius: 10px; border-left: 5px solid #008080; }
+        #gear { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 30px; background: #333; color: white; font-size: 24px; border: none; }
+        #drawer { position: fixed; bottom: 0; left: 0; width: 100%; background: white; border-top: 4px solid #008080; padding: 20px; box-sizing: border-box; transform: translateY(100%); transition: 0.3s; z-index: 1000; }
         #drawer.open { transform: translateY(0); }
-        .drawer-btn { width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: 900; color: white; margin-bottom: 10px; }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); z-index: 2000; display: none; align-items: center; justify-content: center; flex-direction: column; font-weight: 900; color: var(--teal); }
     </style>
 </head>
 <body>
-    <div id="loader" class="overlay">
-        <div style="width:50px; height:50px; border:5px solid var(--teal); border-radius:50%; animation: pulse-teal 1s infinite;"></div>
-        <div style="margin-top:20px;">AI AUDIT IN PROGRESS...</div>
+    <div class="h">WorkTimeline Elite</div>
+    <div class="box">
+        <textarea id="msg" placeholder="What happened today?"></textarea>
+        <button class="add-btn" onclick="add()">+ ADD TO TIMELINE</button>
     </div>
-    <header><div class="brand">WorkTimeline Elite</div><button class="lock-btn" onclick="syncClio()">LOCK & SYNC</button></header>
-    <div class="intake">
-        <textarea id="statusBox" placeholder="Start your record..."></textarea>
-        <div class="btn-row"><div style="font-size:10px; font-weight:900; color:var(--slate);">INDUSTRIAL-GRADE AUDIT</div><button id="addBtn" onclick="process()">+</button></div>
-    </div>
-    <div id="timeline"></div>
-    <button id="gear" onclick="toggleDrawer()">⚙️</button>
+    <div id="list"></div>
+    <button id="gear" onclick="t()">⚙️</button>
     <div id="drawer">
-        <div style="font-weight:900; color:var(--teal); margin-bottom:15px; text-align:center;">SYSTEM SETTINGS</div>
-        <input type="password" id="apiInput" placeholder="Paste pT9... key here" style="width:100%; padding:15px; border-radius:10px; border:2px solid #ddd; margin-bottom:15px; box-sizing:border-box;">
-        <button class="drawer-btn" style="background:var(--teal);" onclick="saveApiKey()">SAVE API KEY</button>
-        <button class="drawer-btn" style="background:var(--clio);" onclick="exportTimeline()">SAVE REPORT (.TXT)</button>
-        <button class="drawer-btn" style="background:var(--slate);" onclick="toggleDrawer()">CLOSE</button>
+        <input type="password" id="k" placeholder="Paste pT9 key" style="width:100%; padding:15px; margin-bottom:10px; border: 1px solid #ccc; border-radius: 8px;">
+        <button style="background: #008080; color: white;" onclick="s()">SAVE KEY</button>
+        <button style="background: #475569; color: white; margin-top: 10px;" onclick="t()">CLOSE</button>
     </div>
     <script>
-        let db = JSON.parse(localStorage.getItem('WT_PRO_DATA')) || [];
-        let isLocked = localStorage.getItem('WT_LOCKED_STATUS') === 'true';
-        let apiKey = localStorage.getItem('WT_API_KEY');
-        window.onload = () => { render(); if(apiKey) document.getElementById('apiInput').value = "••••••••••••••••"; };
-        function toggleDrawer() { document.getElementById('drawer').classList.toggle('open'); }
-        function saveApiKey() {
-            let val = document.getElementById('apiInput').value.trim();
-            if(val && val !== "••••••••••••••••") {
-                localStorage.setItem('WT_API_KEY', val);
-                apiKey = val;
-                alert("Key Secured.");
-                toggleDrawer();
-            }
-        }
-        function syncClio() {
-            isLocked = true;
-            localStorage.setItem('WT_LOCKED_STATUS', 'true');
-            alert("Artifacts Locked to Clio. Tamper Alerts Active.");
-            render();
-        }
-        async function analyzeAI(text) {
-            if(!apiKey) return { severity: 0, msg: "Add API Key for AI diagnostic.", ref: "None" };
-            try {
-                const resp = await fetch('https://api.cohere.ai/v1/generate', {
-                    method: 'POST',
-                    headers: { 'Authorization': 'Bearer ' + apiKey, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ model: 'command', prompt: 'Analyze based on BC ESA/WCB. Return JSON ONLY: {"severity":0,1,3, "msg":"...", "ref":"..."}. Entry: ' + text, temperature: 0.1 })
-                });
-                const data = await resp.json();
-                let clean = data.generations[0].text.replace(/```json|```/g, "").trim();
-                return JSON.parse(clean);
-            } catch(e) { return { severity: 0, msg: "AI Error.", ref: "Error" }; }
-        }
-        async function process() {
-            let val = document.getElementById('statusBox').value.trim();
+        let db = JSON.parse(localStorage.getItem('WT_V15')) || [];
+        function t() { document.getElementById('drawer').classList.toggle('open'); }
+        function s() { localStorage.setItem('WT_KEY', document.getElementById('k').value); alert('Key Saved'); t(); }
+        function add() {
+            let val = document.getElementById('msg').value;
             if(!val) return;
-            document.getElementById('loader').style.display = 'flex';
-            let analysis = await analyzeAI(val);
-            db.push({ id: Date.now(), txt: val, time: new Date().toLocaleString(), severity: analysis.severity, msg: analysis.msg, ref: analysis.ref, tampered: isLocked });
-            localStorage.setItem('WT_PRO_DATA', JSON.stringify(db));
-            document.getElementById('statusBox').value = "";
-            document.getElementById('loader').style.display = 'none';
+            db.push({t: val, d: new Date().toLocaleString()});
+            localStorage.setItem('WT_V15', JSON.stringify(db));
+            document.getElementById('msg').value = '';
             render();
         }
         function render() {
-            let cont = document.getElementById('timeline');
-            cont.innerHTML = "";
-            [...db].reverse().forEach(item => {
-                let card = document.createElement('div');
-                card.className = 'card ' + (item.severity === 3 ? 'sev-3 ' : '') + (item.tampered ? 'tampered' : '');
-                card.innerHTML = '<div class="stamp">' + item.time + (item.tampered ? ' | ⚠️ TAMPERED' : '') + '</div>' +
-                    '<div style="font-weight:700; color:var(--slate);">' + item.txt + '</div>' +
-                    (item.severity > 0 ? '<div class="ai-shadow"><strong>AI:</strong> ' + item.msg + '<br><small>REF: ' + item.ref + '</small></div>' : '');
-                cont.appendChild(card);
+            let h = '';
+            [...db].reverse().forEach(i => {
+                h += '<div class="card"><small>'+i.d+'</small><br><strong>'+i.t+'</strong></div>';
             });
+            document.getElementById('list').innerHTML = h;
         }
-        function exportTimeline() {
-            let report = "WORKTIMELINE EXPORT\n\n";
-            db.forEach(i => report += "[" + i.time + "] " + i.txt + "\nAI: " + i.msg + "\n\n");
-            let blob = new Blob([report], {type: 'text/plain'});
-            let a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = "Case_Timeline.txt";
-            a.click();
-        }
+        render();
     </script>
 </body>
 </html>
