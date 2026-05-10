@@ -8,7 +8,10 @@
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap');
         
         :root { 
-            --teal: #008080; --clio-blue: #0076CE; --platinum: #d8e2ea; --gray-dark: #2c3e50; 
+            --teal: #008080; 
+            --teal-dark: #004d4d;
+            --blue-trans: rgba(0, 128, 128, 0.12); /* Dark Teal Transparent Blue */
+            --clio-blue: #0076CE; --platinum: #d8e2ea; --gray-dark: #2c3e50; 
             --clio-green: #2ecc71; --round-inner: 24px; --glass: rgba(255, 255, 255, 0.95);
         }
         body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 0; height: 100dvh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
@@ -16,7 +19,7 @@
         /* GHOST MODE BLUR */
         .ghost-active #timelineContainer, .ghost-active #utilityDrawer { filter: blur(25px); opacity: 0.3; pointer-events: none; }
 
-        /* LEGAL MODAL (CENTERED) */
+        /* LEGAL MODAL */
         #legalOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(44, 62, 80, 0.95); backdrop-filter: blur(10px); z-index: 200000; display: flex; align-items: center; justify-content: center; padding: 25px; box-sizing: border-box; }
         .modal-card { background: white; padding: 35px; border-radius: 32px; text-align: center; max-width: 400px; box-shadow: 0 25px 60px rgba(0,0,0,0.4); border-bottom: 8px solid var(--teal); }
         .modal-btn { background: var(--teal); color: white; border: none; padding: 18px; border-radius: 99px; font-weight: 900; cursor: pointer; margin-top: 25px; width: 100%; font-size: 16px; }
@@ -28,7 +31,6 @@
 
         .app-container { width: 100%; max-width: 500px; margin: 0 auto; background: white; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; position: relative; }
         
-        /* HEADER WITH SWITCHES */
         .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; border-bottom: 2px solid var(--platinum); z-index: 3000; background: white; }
         .switch-group { display: flex; gap: 15px; align-items: center; }
         .switch { position: relative; width: 34px; height: 18px; }
@@ -38,7 +40,7 @@
         input:checked + .slider { background-color: var(--teal); }
         input:checked + .slider:before { transform: translateX(16px); }
 
-        /* MOVABLE / DRAGGABLE BUTTONS */
+        /* MOVABLE BUTTONS */
         .draggable-btn { position: absolute; z-index: 5000; touch-action: none; display: flex; flex-direction: column; align-items: center; justify-content: center; border: none; width: 65px; height: 65px; border-radius: 20px; color: white; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25); cursor: grab; }
         #addBtn { right: 20px; top: 160px; background: var(--teal); font-size: 40px; font-weight: 900; }
         #syncBtn { right: 20px; top: 240px; background: var(--clio-blue); }
@@ -51,7 +53,6 @@
         
         .template-bar { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 12px; scrollbar-width: none; }
         .template-chip { background: white; border: 2px solid var(--teal); padding: 8px 14px; border-radius: 15px; font-size: 9px; font-weight: 900; color: var(--teal); white-space: nowrap; cursor: pointer; }
-        
         #statusBox { width: 100%; height: 85px; padding: 14px; border-radius: 18px; border: 2.5px solid var(--platinum); resize: none; font-family: inherit; font-weight: 700; background: #f8fafc; box-sizing: border-box; outline: none; }
 
         /* MEDIA SUITE */
@@ -63,6 +64,17 @@
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 45px 15px 25px; position: relative; background: #fdfdfd; }
         .entry { position: relative; margin-left: 35px; background: white; border: 2.5px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; border-left: 10px solid var(--platinum); width: calc(100% - 45px); box-sizing: border-box; }
         
+        /* NEW DARK TEAL TRANSPARENT BLUE ALERT */
+        .pattern-alert { 
+            background: var(--blue-trans); 
+            border: 1.5px solid var(--teal); 
+            padding: 12px; 
+            border-radius: 16px; 
+            margin-top: 10px; 
+            color: var(--teal-dark);
+            box-shadow: 0 4px 15px rgba(0, 128, 128, 0.05);
+        }
+
         .pulse-dot { width: 10px; height: 10px; background-color: var(--clio-green); border-radius: 50%; animation: pulse-green 2s infinite; }
         @keyframes pulse-green { 0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); } 100% { transform: scale(0.9); } }
     </style>
@@ -72,7 +84,7 @@
 <div id="legalOverlay">
     <div class="modal-card">
         <h2 style="color:var(--teal); font-weight:900;">Ares v. Venner Standard</h2>
-        <p>This creates a <b>Contemporaneous Record</b>. GPS and Time are anchored to your "Grit" (Fresh Record). This is not legal advice.</p>
+        <p>This creates a <b>Contemporaneous Record</b>. GPS and Time are anchored to your "Grit" (Fresh Record).</p>
         <button class="modal-btn" onclick="dismissLegal()">I UNDERSTAND</button>
     </div>
 </div>
@@ -138,23 +150,16 @@
         else { d.style.transform = `translateY(0)`; isDrawerOpen = true; }
     }
 
-    /* PLUG-IN: STRUCTURED TEMPLATES */
     function useTemplate(type) {
         const t = { 'WITNESS': 'WITNESS: \nSTATEMENT: \nCONTACT: ', 'INCIDENT': 'ACTION: \nVIOLATION: \nQUOTES: ', 'LOCATION': 'SITE AREA: \nHAZARDS: ' };
         document.getElementById('statusBox').value = t[type];
     }
 
-    /* PLUG-IN: DRAGGABLE SCRIPT */
     function makeMovable(el) {
         let p1 = 0, p2 = 0, p3 = 0, p4 = 0;
         el.ontouchstart = (e) => { p3 = e.touches[0].clientX; p4 = e.touches[0].clientY; document.ontouchend = () => { document.ontouchend = null; document.ontouchmove = null; }; document.ontouchmove = (e) => { p1 = p3 - e.touches[0].clientX; p2 = p4 - e.touches[0].clientY; p3 = e.touches[0].clientX; p4 = e.touches[0].clientY; el.style.top = (el.offsetTop - p2) + "px"; el.style.left = (el.offsetLeft - p1) + "px"; el.style.right = "auto"; }; };
     }
     makeMovable(document.getElementById('addBtn')); makeMovable(document.getElementById('syncBtn'));
-
-    /* PLUG-IN: PATTERN RECOGNITION DATA */
-    const caseDatabase = {
-        'shout': { title: 'Piresferreira v. Ayotte', similarity: 'Supervisory verbal aggression.', violation: 'Breach of Canada Labour Code Part II.' }
-    };
 
     function submitEntry() { const b = document.getElementById('statusBox'); if(!b.value.trim()) return; saveEntry(b.value); b.value = ''; }
     function addMedia(m) { saveEntry(m); }
@@ -164,7 +169,7 @@
             const entry = {
                 id: Date.now(), grit: text, stamp: new Date().toLocaleString(),
                 gps: `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`,
-                law: text.toLowerCase().includes("shout") ? caseDatabase['shout'] : null
+                law: text.toLowerCase().includes("shout") ? "Piresferreira v. Ayotte [2010] similarity detected." : null
             };
             if(activeVault === "TIMELINE") timelineVault.push(entry); else notesVault.push(entry);
             refreshDisplay();
@@ -180,7 +185,7 @@
         [...data].reverse().forEach(item => {
             const div = document.createElement('div');
             div.className = 'entry';
-            let lawHtml = item.law ? `<div style="background:#fff8e1; border:1px solid #ffc107; padding:12px; border-radius:15px; margin-top:10px; font-size:11px;"><b>Similarity Detected:</b> ${item.law.title}<br><b>Violation:</b> ${item.law.violation}</div>` : '';
+            let lawHtml = item.law ? `<div class="pattern-alert"><b>Legal Marker:</b> ${item.law}<br><span style="font-size:10px; opacity:0.8;">Potential Canada Labour Code Breach.</span></div>` : '';
             div.innerHTML = `<span style="font-size:9px; color:var(--teal); font-weight:900;">📍 ${item.gps} | ${item.stamp}</span><p style="margin:10px 0 0; font-size:14px; font-weight:800; white-space:pre-wrap;">${item.grit}</p>${lawHtml}`;
             list.appendChild(div);
         });
