@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline Elite | Auditor Pattern</title>
+    <title>WorkTimeline Elite | Titanium Media</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -22,49 +22,78 @@
         @keyframes pulse-crit { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 50% { box-shadow: 0 0 0 35px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
 
         /* HEADER */
-        header { background: var(--glass); backdrop-filter: blur(20px); border-bottom: 1px solid var(--silver); padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; border-radius: 0 0 35px 35px; }
+        header { background: var(--glass); backdrop-filter: blur(20px); border-bottom: 1px solid var(--silver); padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; border-radius: 0 0 35px 35px; position: fixed; top: 0; width: 100%; box-sizing: border-box; }
         .brand { font-weight: 900; color: var(--teal); font-size: 18px; }
 
-        /* INTAKE */
-        .intake { padding: 20px 25px; background: white; margin-top: 70px; border-radius: 35px; margin: 80px 20px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        textarea { width: 100%; height: 100px; border-radius: 25px; border: 1.5px solid var(--silver); padding: 15px; font-family: inherit; font-size: 15px; outline: none; box-sizing: border-box; }
-        .add-btn { width: 100%; background: var(--teal); color: white; border: none; padding: 15px; border-radius: 20px; font-weight: 900; margin-top: 10px; cursor: pointer; }
+        /* INTAKE SECTION */
+        .intake-container { margin-top: 80px; padding: 20px; }
+        .intake-card { background: white; border-radius: 32px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid var(--silver); }
+        textarea { width: 100%; height: 100px; border-radius: 20px; border: 1.5px solid var(--silver); padding: 15px; font-family: inherit; font-size: 15px; outline: none; box-sizing: border-box; background: #fcfcfc; }
+
+        /* MAC MEDIA DOCK */
+        .media-dock { display: flex; gap: 10px; margin-top: 15px; align-items: center; }
+        .mac-icon-btn { 
+            width: 52px; height: 52px; background: white; border: 1px solid var(--silver); 
+            border-radius: 16px; display: flex; align-items: center; justify-content: center; 
+            cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.02); transition: transform 0.2s;
+        }
+        .mac-icon-btn:active { transform: scale(0.92); }
+        .mac-icon-btn svg { width: 24px; height: 24px; fill: var(--slate); }
+        
+        .record-btn { 
+            flex-grow: 1; background: var(--teal); color: white; border: none; 
+            height: 52px; border-radius: 16px; font-weight: 900; font-size: 14px; cursor: pointer;
+        }
 
         /* TIMELINE */
         #timeline { flex-grow: 1; overflow-y: auto; padding: 10px 20px 120px; display: flex; flex-direction: column; gap: 20px; }
-        .card { background: white; border-radius: 32px; padding: 25px; border: 1px solid var(--silver); border-left: 8px solid var(--teal); transition: 0.3s; position: relative; }
+        .card { background: white; border-radius: 32px; padding: 25px; border: 1px solid var(--silver); border-left: 8px solid var(--teal); position: relative; }
         .p-moderate { animation: pulse-mod 2s infinite; border-left-color: var(--teal-blue); }
         .p-critical { animation: pulse-crit 0.8s infinite; border-left-color: var(--risk); }
         
-        /* AI AUDITOR BOX */
-        .auditor-box { background: #f0fdfa; border-radius: 20px; padding: 15px; margin-top: 15px; font-size: 13px; display: none; }
-        .case-btn { background: var(--slate); color: white; padding: 8px 12px; border-radius: 12px; font-size: 10px; font-weight: 900; border: none; cursor: pointer; margin-top: 10px; }
-        .case-details { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--teal); color: var(--slate); }
+        /* AUDITOR UI */
+        .auditor-box { background: #f0fdfa; border-radius: 20px; padding: 15px; margin-top: 15px; font-size: 13px; }
+        .case-permission-btn { background: var(--slate); color: white; padding: 10px 15px; border-radius: 12px; font-size: 11px; font-weight: 900; border: none; cursor: pointer; margin-top: 10px; display: inline-flex; align-items: center; gap: 5px; }
+        .case-details { display: none; margin-top: 12px; padding: 12px; background: white; border-radius: 12px; border: 1px solid var(--teal); color: var(--slate); line-height: 1.4; }
 
-        #gear { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: var(--slate); border-radius: 24px; border: none; z-index: 999; display: flex; align-items: center; justify-content: center; }
+        #gear { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: var(--slate); border-radius: 22px; border: none; z-index: 999; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         #loader { position: fixed; inset: 0; background: rgba(255,255,255,0.9); z-index: 10000; display: none; align-items: center; justify-content: center; flex-direction: column; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
     <div id="loader">
         <div style="width:40px; height:40px; border:4px solid var(--silver); border-top-color:var(--teal); border-radius:50%; animation: spin 1s linear infinite;"></div>
-        <p style="font-weight:900; margin-top:15px; color:var(--teal);">PATTERN RECOGNITION ACTIVE...</p>
+        <p style="font-weight:900; margin-top:15px; color:var(--teal);">SCANNING CASE RELEVANCE...</p>
     </div>
 
     <header><div class="brand">WorkTimeline Elite</div></header>
 
-    <div class="intake">
-        <textarea id="msg" placeholder="Describe incident pattern..."></textarea>
-        <button class="add-btn" onclick="process()">ANALYZE & RECORD</button>
+    <div class="intake-container">
+        <div class="intake-card">
+            <textarea id="msg" placeholder="Describe the incident details..."></textarea>
+            <div class="media-dock">
+                <div class="mac-icon-btn" onclick="alert('Camera Access Request')">
+                    <svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
+                </div>
+                <div class="mac-icon-btn" onclick="alert('Microphone Armed')">
+                    <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                </div>
+                <div class="mac-icon-btn" onclick="alert('File Picker Active')">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                </div>
+                <button class="record-btn" onclick="process()">ANALYZE INCIDENT</button>
+            </div>
+        </div>
     </div>
 
     <div id="timeline"></div>
 
-    <button id="gear" onclick="let k=prompt('Paste pT9 Key:'); if(k) localStorage.setItem('WT_K', k);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1-1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button>
+    <button id="gear" onclick="let k=prompt('Paste pT9 Key:'); if(k) localStorage.setItem('WT_K', k);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('WT_AUDIT')) || [];
+        let db = JSON.parse(localStorage.getItem('WT_AUDIT_FINAL')) || [];
         let key = localStorage.getItem('WT_K');
 
         async function process() {
@@ -72,7 +101,7 @@
             if(!val) return;
             document.getElementById('loader').style.display = 'flex';
 
-            let analysis = { sev: 0, msg: "Logged to timeline.", caseName: "", caseStudy: "" };
+            let analysis = { sev: 0, msg: "Incident logged for pattern recognition.", caseName: "", caseStudy: "" };
 
             if(key) {
                 try {
@@ -81,10 +110,11 @@
                         headers: { 'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json' },
                         body: JSON.stringify({ 
                             model: 'command', 
-                            prompt: `BC LEGAL AUDITOR: Analyze this incident for BCHRT, WorkSafeBC, and ESA violations. Identify pattern recognition for workplace harassment or safety failures. 
-                            If a specific Canadian Case Study exists (e.g. Moore v. British Columbia), include it. 
-                            RETURN JSON: {"sev":0,1,3, "msg":"Legal summary", "caseName":"Name of Case", "caseStudy":"Brief of Case Study"} 
-                            Incident: ${val}`,
+                            prompt: `ACT AS BC LEGAL EXPERT. Analyze the incident for BCHRT (Human Rights), WCB (Safety), and Civil Trial precedents. 
+                            Scan for patterns of Constructive Dismissal or Harassment. 
+                            Identify a specific Canadian Case Name if relevant.
+                            RETURN JSON: {"sev":0 or 1 or 3, "msg":"Legal diagnostic", "caseName":"Name of Case", "caseStudy":"Detailed case comparison"} 
+                            INCIDENT: ${val}`,
                             temperature: 0.1 
                         })
                     });
@@ -94,7 +124,7 @@
             }
 
             db.push({ id: Date.now(), txt: val, time: new Date().toLocaleString(), ...analysis });
-            localStorage.setItem('WT_AUDIT', JSON.stringify(db));
+            localStorage.setItem('WT_AUDIT_FINAL', JSON.stringify(db));
             document.getElementById('msg').value = '';
             document.getElementById('loader').style.display = 'none';
             render();
@@ -107,12 +137,14 @@
                 card.className = `card ${i.sev === 3 ? 'p-critical' : i.sev === 1 ? 'p-moderate' : ''}`;
                 card.innerHTML = `
                     <small style="color:var(--silver); font-weight:900;">${i.time}</small>
-                    <div style="font-weight:700; margin-top:10px; color:var(--slate);">${i.txt}</div>
-                    <div class="auditor-box" id="audit-${i.id}" style="display:block;">
-                        <strong>AUDIT:</strong> ${i.msg}
-                        ${i.caseName ? `<br><button class="case-btn" onclick="document.getElementById('study-${i.id}').style.display='block'">READ CASE: ${i.caseName}</button>` : ''}
+                    <div style="font-weight:700; margin-top:10px; color:var(--slate); line-height:1.4;">${i.txt}</div>
+                    <div class="auditor-box" id="audit-${i.id}">
+                        <div style="font-weight:900; color:var(--teal); font-size:10px; margin-bottom:5px; text-transform:uppercase;">Statutory Diagnostic</div>
+                        ${i.msg}
+                        ${i.caseName ? `<br><button class="case-permission-btn" onclick="document.getElementById('study-${i.id}').style.display='block'">GRANT PERMISSION: View Case Comparison</button>` : ''}
                         <div class="case-details" id="study-${i.id}">
-                            <strong>CASE STUDY:</strong> ${i.caseStudy}
+                            <strong style="font-size:11px; text-transform:uppercase; color:var(--teal);">Case Study: ${i.caseName}</strong><br>
+                            ${i.caseStudy}
                         </div>
                     </div>
                 `;
@@ -121,6 +153,5 @@
         }
         render();
     </script>
-    <style> @keyframes spin { 100% { transform: rotate(360deg); } } </style>
 </body>
 </html>
