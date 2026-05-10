@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Professional Build</title>
+    <title>WorkTimeline™ | Clean Build</title>
     <style>
         /* 1. CORE STYLE & FONTS */
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Nunito+Sans:wght@400;600;700;800&display=swap');
@@ -20,7 +20,7 @@
 
         .app-container { width: 100%; max-width: 500px; background: white; height: 100dvh; display: flex; flex-direction: column; position: relative; border: 1.5px solid var(--gray-border); box-sizing: border-box; overflow: hidden; }
         
-        /* 2. LOGO REFINEMENT */
+        /* 2. LOGO REFINEMENT - TIGHT & CENTERED */
         .header { padding: 12px 15px; border-bottom: 1px solid var(--gray-border); background: white; z-index: 4000; position: relative; padding-top: max(12px, env(safe-area-inset-top)); }
         .header-top { display: flex; justify-content: flex-start; align-items: center; gap: 0; }
         
@@ -34,7 +34,7 @@
         .header-controls { position: absolute; right: 15px; display: flex; flex-direction: column; gap: 4px; }
         .toggle-btn { background: #f1f5f9; border: none; border-radius: 20px; font-size: 7px; font-weight: 900; padding: 4px 10px; color: var(--teal); cursor: pointer; text-transform: uppercase; }
 
-        /* 3. NEUTRAL TYPOGRAPHY & MEDIA */
+        /* 3. NEUTRAL UI ELEMENTS */
         .template-row { display: flex; justify-content: space-between; gap: 6px; margin-bottom: 15px; width: 100%; box-sizing: border-box; }
         .media-icons-row { display: flex; gap: 8px; margin: 15px 0; }
         .media-pill { background: #f1f5f9; border: 1.2px solid var(--gray-border); padding: 10px; border-radius: 18px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 8px; font-weight: 900; color: #4a5568; gap: 6px; cursor: pointer; }
@@ -45,7 +45,7 @@
         .m-files { width: 12px; height: 15px; border-radius: 2px; border: 2px solid #4a5568; background: transparent; }
         .m-evidence { width: 15px; height: 15px; border: 2px solid #4a5568; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900; }
 
-        /* 4. RISK & SWITCH */
+        /* 4. STATUTORY PULSE */
         @keyframes statutory-pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.7); } 50% { transform: scale(1.1); box-shadow: 0 0 0 12px rgba(229, 62, 62, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(229, 62, 62, 0); } }
         .risk-badge { display: none; background: var(--risk-red); color: white; font-size: 8px; font-weight: 900; padding: 4px 8px; border-radius: 20px; margin-left: auto; text-transform: uppercase; }
         .active-pulse { display: block; animation: statutory-pulse 1s ease-out 1; }
@@ -72,7 +72,7 @@
         .bubble-front { background: #f1f1f1; font-family: 'Nunito Sans', sans-serif; font-size: 15px; font-weight: 600; line-height: 1.4; color: #1a202c; }
         .bubble-back { background: var(--teal); color: white; transform: rotateY(180deg); position: absolute; top: 0; left: 0; height: 100%; padding: 15px; font-size: 11px; overflow-y: auto; }
 
-        /* 6. BUTTONS */
+        /* 6. DRAGGABLE BUTTONS */
         .draggable { position: absolute; z-index: 5000; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; border-radius: 50%; box-shadow: var(--mac-shadow); cursor: pointer; border: none; }
         #addBtn { width: 75px; height: 75px; background: var(--teal); font-size: 35px; bottom: 120px; right: 20px; }
         #syncClioBtn { width: 80px; height: 80px; background: var(--clio-blue); font-size: 9px; bottom: 210px; right: 20px; padding: 12px; text-align: center; font-family: 'Nunito Sans', sans-serif; line-height: 1.1; text-transform: uppercase; }
@@ -141,7 +141,7 @@
         <div class="handle" onclick="toggleMgmt()"><div class="handle-pill"></div></div>
         <div style="padding: 0 25px 50px;">
             <button class="modal-btn" style="background:var(--teal); color:white;">SAVE & EXPORT</button>
-            <button class="modal-btn" style="background:#cbd5e0; color:#4a5568;" onclick="location.reload()">START NEW TIMELINE</button>
+            <button class="modal-btn" style="background:#cbd5e0; color:#4a5568;" onclick="confirm('Wipe Timeline?') && (localStorage.clear() || location.reload())">START NEW TIMELINE</button>
         </div>
     </div>
 </div>
