@@ -10,13 +10,13 @@
         :root { 
             --teal: #008080; 
             --teal-dark: #004d4d;
-            --blue-trans: rgba(0, 128, 128, 0.12); /* Dark Teal Transparent Blue */
+            --blue-trans: rgba(0, 128, 128, 0.12);
             --clio-blue: #0076CE; --platinum: #d8e2ea; --gray-dark: #2c3e50; 
             --clio-green: #2ecc71; --round-inner: 24px; --glass: rgba(255, 255, 255, 0.95);
         }
         body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 0; height: 100dvh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
         
-        /* GHOST MODE BLUR */
+        /* GHOST MODE */
         .ghost-active #timelineContainer, .ghost-active #utilityDrawer { filter: blur(25px); opacity: 0.3; pointer-events: none; }
 
         /* LEGAL MODAL */
@@ -31,6 +31,7 @@
 
         .app-container { width: 100%; max-width: 500px; margin: 0 auto; background: white; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; position: relative; }
         
+        /* HEADER */
         .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; border-bottom: 2px solid var(--platinum); z-index: 3000; background: white; }
         .switch-group { display: flex; gap: 15px; align-items: center; }
         .switch { position: relative; width: 34px; height: 18px; }
@@ -45,38 +46,27 @@
         #addBtn { right: 20px; top: 160px; background: var(--teal); font-size: 40px; font-weight: 900; }
         #syncBtn { right: 20px; top: 240px; background: var(--clio-blue); }
 
-        /* DRAWER & HANDLE */
+        /* DRAWER & TOOLS */
         #utilityDrawer { width: 100%; background: var(--glass); backdrop-filter: blur(12px); border-bottom: 2px solid var(--platinum); z-index: 2500; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
         .drawer-content { padding: 15px 20px; }
         .drag-handle-zone { width: 100%; height: 35px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .handle-pill { width: 45px; height: 6px; background: var(--platinum); border-radius: 10px; }
-        
         .template-bar { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 12px; scrollbar-width: none; }
         .template-chip { background: white; border: 2px solid var(--teal); padding: 8px 14px; border-radius: 15px; font-size: 9px; font-weight: 900; color: var(--teal); white-space: nowrap; cursor: pointer; }
         #statusBox { width: 100%; height: 85px; padding: 14px; border-radius: 18px; border: 2.5px solid var(--platinum); resize: none; font-family: inherit; font-weight: 700; background: #f8fafc; box-sizing: border-box; outline: none; }
 
-        /* MEDIA SUITE */
         .media-toolbar { display: flex; gap: 8px; margin-top: 12px; }
         .media-btn { flex: 1; position: relative; background: white; border: 2.5px solid var(--platinum); padding: 12px 5px; border-radius: 16px; text-align: center; font-size: 9px; font-weight: 900; cursor: pointer; }
         .media-btn input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
 
-        /* TIMELINE */
+        /* TIMELINE & STACKING UI */
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 45px 15px 25px; position: relative; background: #fdfdfd; }
-        .entry { position: relative; margin-left: 35px; background: white; border: 2.5px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; border-left: 10px solid var(--platinum); width: calc(100% - 45px); box-sizing: border-box; }
+        .entry { position: relative; margin-left: 35px; background: white; border: 2.5px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; border-left: 10px solid var(--platinum); width: calc(100% - 45px); box-sizing: border-box; transition: 0.3s; }
+        .entry.is-stacked { border-left-color: var(--teal); background: var(--blue-trans); }
         
-        /* NEW DARK TEAL TRANSPARENT BLUE ALERT */
-        .pattern-alert { 
-            background: var(--blue-trans); 
-            border: 1.5px solid var(--teal); 
-            padding: 12px; 
-            border-radius: 16px; 
-            margin-top: 10px; 
-            color: var(--teal-dark);
-            box-shadow: 0 4px 15px rgba(0, 128, 128, 0.05);
-        }
-
-        .pulse-dot { width: 10px; height: 10px; background-color: var(--clio-green); border-radius: 50%; animation: pulse-green 2s infinite; }
-        @keyframes pulse-green { 0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); } 100% { transform: scale(0.9); } }
+        .pattern-alert { background: var(--blue-trans); border: 1.5px solid var(--teal); padding: 12px; border-radius: 16px; margin-top: 10px; color: var(--teal-dark); }
+        .legal-detail-view { background: white; border: 1.5px solid var(--teal); padding: 15px; border-radius: 12px; margin-top: 10px; font-size: 12px; line-height: 1.5; }
+        .stack-toggle-btn { margin-top: 10px; padding: 8px; width: 100%; border-radius: 10px; border: 1.5px solid var(--teal); font-weight: 900; font-size: 10px; cursor: pointer; transition: 0.2s; }
     </style>
 </head>
 <body id="appBody">
@@ -110,11 +100,11 @@
                 <div class="template-chip" onclick="useTemplate('INCIDENT')">INCIDENT</div>
                 <div class="template-chip" onclick="useTemplate('LOCATION')">LOCATION</div>
             </div>
-            <textarea id="statusBox" placeholder="Start your record..."></textarea>
+            <textarea id="statusBox" placeholder="Start your fresh record..."></textarea>
             <div class="media-toolbar">
-                <div class="media-btn"><span>CAMERA</span><input type="file" accept="image/*" capture="camera" onchange="addMedia('📷 PHOTO')"></div>
-                <div class="media-btn"><span>AUDIO</span><input type="file" accept="audio/*" capture="microphone" onchange="addMedia('🎤 AUDIO')"></div>
-                <div class="media-btn"><span>DOCS</span><input type="file" onchange="addMedia('📄 DOC')"></div>
+                <div class="media-btn"><span>CAMERA</span><input type="file" accept="image/*" capture="camera" onchange="addMedia('📷 PHOTO Uploaded.')"></div>
+                <div class="media-btn"><span>AUDIO</span><input type="file" accept="audio/*" capture="microphone" onchange="addMedia('🎤 AUDIO Recorded.')"></div>
+                <div class="media-btn"><span>DOCS</span><input type="file" onchange="addMedia('📄 FILE Uploaded.')"></div>
             </div>
             <button onclick="submitEntry()" style="width:100%; background:var(--teal); color:white; border:none; padding:12px; border-radius:12px; font-weight:900; margin-top:10px;">SAVE RECORD</button>
         </div>
@@ -122,8 +112,9 @@
     </div>
 
     <div id="timelineContainer">
-        <div style="position:absolute; right:20px; top:10px; display:flex; align-items:center; gap:6px;">
-            <div class="pulse-dot"></div><span style="font-size:8px; font-weight:900; color:var(--clio-green);">CLIO READY</span>
+        <div style="position:absolute; right:20px; top:10px; display:flex; align-items:center; gap:6px; z-index:10;">
+            <div class="pulse-dot" style="width:10px; height:10px; background:var(--clio-green); border-radius:50%; animation: pulse-green 2s infinite;"></div>
+            <span style="font-size:8px; font-weight:900; color:var(--clio-green);">CLIO READY</span>
         </div>
         <div id="displayList"></div>
     </div>
@@ -169,11 +160,30 @@
             const entry = {
                 id: Date.now(), grit: text, stamp: new Date().toLocaleString(),
                 gps: `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`,
-                law: text.toLowerCase().includes("shout") ? "Piresferreira v. Ayotte [2010] similarity detected." : null
+                isStacked: false, currentView: 'grit',
+                law: text.toLowerCase().includes("shout") || text.toLowerCase().includes("scream") ? {
+                    title: "Piresferreira v. Ayotte [2010]",
+                    violation: "Potential breach of Canada Labour Code Part II (Harassment Prevention)."
+                } : null
             };
             if(activeVault === "TIMELINE") timelineVault.push(entry); else notesVault.push(entry);
             refreshDisplay();
         });
+    }
+
+    function toggleLegalDetail(id) {
+        const el = document.getElementById(`detail-${id}`);
+        el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function stackEntry(id) {
+        const e = timelineVault.find(x => x.id === id) || notesVault.find(x => x.id === id);
+        e.isStacked = true; e.currentView = 'legal'; refreshDisplay();
+    }
+
+    function switchView(id, view) {
+        const e = timelineVault.find(x => x.id === id) || notesVault.find(x => x.id === id);
+        e.currentView = view; refreshDisplay();
     }
 
     function toggleGhost(cb) { document.getElementById('appBody').classList.toggle('ghost-active', cb.checked); }
@@ -184,9 +194,33 @@
         const data = activeVault === "TIMELINE" ? timelineVault : notesVault;
         [...data].reverse().forEach(item => {
             const div = document.createElement('div');
-            div.className = 'entry';
-            let lawHtml = item.law ? `<div class="pattern-alert"><b>Legal Marker:</b> ${item.law}<br><span style="font-size:10px; opacity:0.8;">Potential Canada Labour Code Breach.</span></div>` : '';
-            div.innerHTML = `<span style="font-size:9px; color:var(--teal); font-weight:900;">📍 ${item.gps} | ${item.stamp}</span><p style="margin:10px 0 0; font-size:14px; font-weight:800; white-space:pre-wrap;">${item.grit}</p>${lawHtml}`;
+            div.className = `entry ${item.isStacked ? 'is-stacked' : ''}`;
+            
+            let displayContent = item.currentView === 'legal' ? 
+                `<b style="color:var(--teal-dark);">LEGAL ANALYSIS (CASE LAW):</b><br>${item.law.title}<br>Violation: ${item.law.violation}` : 
+                item.grit;
+
+            let footer = "";
+            if (item.law && !item.isStacked) {
+                footer = `
+                    <div class="pattern-alert">
+                        <b>Legal Similarity Detected</b>
+                        <button onclick="toggleLegalDetail(${item.id})" class="stack-toggle-btn">📖 READ DETECTION DETAILS</button>
+                        <div id="detail-${item.id}" class="legal-detail-view" style="display:none;">
+                            <p><b>Case:</b> ${item.law.title}</p>
+                            <p><b>Analysis:</b> Your record matches supervisory conduct markers found in this landmark Canadian case.</p>
+                            <button onclick="stackEntry(${item.id})" style="background:var(--teal); color:white; border:none; padding:10px; width:100%; border-radius:10px; font-weight:900;">VERIFY & STACK EVIDENCE</button>
+                        </div>
+                    </div>`;
+            } else if (item.isStacked) {
+                footer = `
+                    <div style="display:flex; gap:8px; margin-top:12px;">
+                        <button onclick="switchView(${item.id}, 'grit')" class="stack-toggle-btn" style="background:${item.currentView === 'grit' ? 'var(--teal)' : 'white'}; color:${item.currentView === 'grit' ? 'white' : 'var(--teal)'}">ORIGINAL GRIT</button>
+                        <button onclick="switchView(${item.id}, 'legal')" class="stack-toggle-btn" style="background:${item.currentView === 'legal' ? 'var(--teal)' : 'white'}; color:${item.currentView === 'legal' ? 'white' : 'var(--teal)'}">LEGAL ANALYSIS</button>
+                    </div>`;
+            }
+
+            div.innerHTML = `<span style="font-size:9px; color:var(--teal); font-weight:900;">📍 ${item.gps} | ${item.stamp}</span><p style="margin:10px 0 0; font-size:14px; font-weight:800; white-space:pre-wrap;">${displayContent}</p>${footer}`;
             list.appendChild(div);
         });
     }
