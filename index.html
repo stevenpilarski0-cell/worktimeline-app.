@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Sterilized Build</title>
+    <title>WorkTimeline™ | Documentary Build</title>
     <style>
         /* 1. CORE STYLE & FONTS */
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Nunito+Sans:wght@400;600;700;800&display=swap');
@@ -20,7 +20,7 @@
 
         .app-container { width: 100%; max-width: 500px; background: white; height: 100dvh; display: flex; flex-direction: column; position: relative; border: 1.5px solid var(--gray-border); box-sizing: border-box; overflow: hidden; }
         
-        /* 2. LOGO REFINEMENT */
+        /* 2. HEADER REFINEMENT */
         .header { padding: 12px 15px; border-bottom: 1px solid var(--gray-border); background: white; z-index: 4000; position: relative; padding-top: max(12px, env(safe-area-inset-top)); }
         .header-top { display: flex; justify-content: flex-start; align-items: center; gap: 0; }
         .briefcase-container { position: relative; width: 44px; height: 28px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -32,12 +32,12 @@
         .header-controls { position: absolute; right: 15px; display: flex; flex-direction: column; gap: 4px; }
         .toggle-btn { background: #f1f5f9; border: none; border-radius: 20px; font-size: 7px; font-weight: 900; padding: 4px 10px; color: var(--teal); cursor: pointer; text-transform: uppercase; }
 
-        /* 3. NEUTRAL UI */
+        /* 3. NEUTRAL UI - DOCUMENTARY MEDIA ADDED */
         .template-row { display: flex; justify-content: space-between; gap: 6px; margin-bottom: 15px; }
         .media-icons-row { display: flex; gap: 8px; margin: 15px 0; }
-        .media-pill { background: #f1f5f9; border: 1.2px solid var(--gray-border); padding: 10px; border-radius: 18px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 8px; font-weight: 900; color: #4a5568; gap: 6px; }
+        .media-pill { background: #f1f5f9; border: 1.2px solid var(--gray-border); padding: 10px; border-radius: 18px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 7px; font-weight: 900; color: #4a5568; gap: 6px; }
         .m-icon { width: 18px; height: 12px; background: #4a5568; border-radius: 3px; }
-        .m-evidence { width: 15px; height: 15px; border: 2px solid #4a5568; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900; }
+        .m-docu { width: 15px; height: 15px; border: 2px solid #4a5568; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 900; }
 
         /* 4. DRAWER & TIMELINE */
         #utilityDrawer { position: absolute; top: 60px; width: 100%; background: white; border-bottom: 1.5px solid var(--gray-border); z-index: 3500; transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) transform; transform: translateY(calc(-100% + 40px)); border-radius: 0 0 30px 30px; }
@@ -59,6 +59,7 @@
 
         textarea { width: 100%; height: 100px; border: 1.5px solid var(--gray-border); border-radius: 20px; padding: 15px; font-size: 16px; outline: none; background: #fafafa; font-family: 'Nunito Sans', sans-serif; }
         .chip { border: 1px solid var(--gray-border); padding: 8px 0; border-radius: 50px; font-size: 8px; font-weight: 900; background: #f8fafc; flex: 1; text-align: center; }
+        .mgmt-btn { width: 100%; padding: 15px; border-radius: 15px; border: none; font-weight: 900; cursor: pointer; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; }
     </style>
 </head>
 <body id="appBody">
@@ -89,7 +90,7 @@
             <div class="media-icons-row">
                 <div class="media-pill"><div class="m-icon"></div>CAMERA</div>
                 <div class="media-pill"><div class="m-icon"></div>AUDIO</div>
-                <div class="media-pill"><div class="m-evidence">E</div>EVIDENCE</div>
+                <div class="media-pill"><div class="m-docu">D</div>DOCUMENTARY</div>
             </div>
             <textarea id="statusBox" placeholder="Log your day..."></textarea>
         </div>
@@ -102,8 +103,9 @@
 
     <div id="mgmtDrawer">
         <div class="handle" onclick="toggleMgmt()"><div class="handle-pill"></div></div>
-        <div style="padding: 0 25px 50px;">
-            <button class="modal-btn" style="width:100%; padding:15px; border-radius:15px; background:var(--teal); color:white; border:none; font-weight:900;" onclick="confirm('Wipe Timeline?') && (localStorage.clear() || location.reload())">START NEW TIMELINE</button>
+        <div style="padding: 0 25px 50px; display: flex; flex-direction: column; gap: 10px;">
+            <button class="mgmt-btn" style="background: var(--silver-gray); color: white;" onclick="alert('Exporting to PDF/Clio...')">SAVE & EXPORT</button>
+            <button class="mgmt-btn" style="background: var(--teal); color: white;" onclick="confirm('Wipe Timeline?') && (localStorage.clear() || (vault = []) || refresh())">START NEW TIMELINE</button>
         </div>
     </div>
 </div>
@@ -112,7 +114,7 @@
     let vault = JSON.parse(localStorage.getItem('wt_timeline')) || [];
     let utilOpen = false; let mgmtOpen = false;
 
-    // THE ARTIFACT KILLER: Auto-scrub "undefined" data on load
+    // THE ARTIFACT KILLER
     vault = vault.filter(item => item.text && item.text !== "undefined" && !item.text.includes("undefined"));
     localStorage.setItem('wt_timeline', JSON.stringify(vault));
 
