@@ -22,9 +22,9 @@
         .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--teal); }
         input:checked + .slider:before { transform: translateX(16px); }
-        .draggable-btn { position: absolute; z-index: 5000; touch-action: none; display: flex; flex-direction: column; align-items: center; justify-content: center; border: none; width: 75px; height: 75px; border-radius: 24px; color: white; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25); cursor: grab; text-align: center; line-height: 1.1; }
-        #addBtn { right: 20px; top: 180px; background: var(--teal); font-size: 44px; font-weight: 900; }
-        #syncBtn { right: 20px; top: 270px; background: var(--clio-blue); font-size: 10px; font-weight: 900; padding: 10px; }
+        .draggable-btn { position: absolute; z-index: 5000; touch-action: none; display: flex; flex-direction: column; align-items: center; justify-content: center; border: none; width: 85px; height: 85px; border-radius: 24px; color: white; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25); cursor: grab; text-align: center; line-height: 1.1; padding: 5px; font-size: 10px; font-weight: 900; }
+        #addBtn { right: 20px; top: 180px; background: var(--teal); font-size: 44px; }
+        #syncBtn { right: 20px; top: 280px; background: var(--clio-blue); }
         #utilityDrawer { width: 100%; background: var(--glass); backdrop-filter: blur(12px); border-bottom: 2px solid var(--platinum); z-index: 2500; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
         #managementDrawer { position: fixed; bottom: 0; width: 100%; max-width: 500px; background: white; border-top: 3.5px solid var(--teal); z-index: 6000; transition: 0.5s transform cubic-bezier(0.16, 1, 0.3, 1); transform: translateY(calc(100% - 40px)); box-shadow: 0 -10px 40px rgba(0,0,0,0.1); }
         .drawer-content { padding: 15px 20px; }
@@ -54,7 +54,7 @@
         <div class="switch-group"><div style="text-align:center;"><label class="switch"><input type="checkbox" onchange="toggleGhost(this)"><span class="slider"></span></label><div style="font-size:7px; font-weight:900;">GHOST</div></div><div style="text-align:center;"><label class="switch"><input type="checkbox" onchange="toggleVault(this)"><span class="slider"></span></label><div style="font-size:7px; font-weight:900;">NOTES</div></div></div>
     </header>
     <div id="addBtn" class="draggable-btn" onclick="submitEntry()">+</div>
-    <div id="syncBtn" class="draggable-btn" onclick="triggerLockSync()">LOCK & SYNC</div>
+    <div id="syncBtn" class="draggable-btn" onclick="triggerLockSync()">LOCK & SYNC TO CLIO</div>
     <div id="utilityDrawer">
         <div class="drawer-content" id="drawerContent">
             <div style="display:flex; gap:10px; overflow-x:auto;"><div class="template-chip" onclick="useTemplate('WITNESS')">WITNESS</div><div class="template-chip" onclick="useTemplate('INCIDENT')">INCIDENT</div><div class="template-chip" onclick="useTemplate('LOCATION')">LOCATION</div><div class="template-chip" onclick="useTemplate('INJURY')">INJURY</div></div>
