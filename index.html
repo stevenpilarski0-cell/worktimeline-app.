@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Clio Sync Build</title>
+    <title>WorkTimeline™ | Full Master</title>
     <style>
         /* 1. CORE STYLE & FONTS */
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Nunito+Sans:wght@400;600;800&display=swap');
@@ -40,7 +40,7 @@
         .m-camera::after { content: ''; position: absolute; top: 3px; left: 6px; width: 6px; height: 6px; background: white; border-radius: 50%; }
         .m-audio { background: transparent; display: flex; align-items: center; justify-content: center; gap: 2px; }
         .m-audio span { width: 3px; background: #4a5568; border-radius: 10px; }
-        .m-files { width: 12px; height: 15px; border-radius: 2px; }
+        .m-files { width: 12px; height: 15px; border-radius: 2px; border: 2px solid #4a5568; background: transparent; }
 
         /* 4. STATUTORY PULSE & 3D SWITCH */
         @keyframes statutory-pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.7); } 50% { transform: scale(1.1); box-shadow: 0 0 0 12px rgba(229, 62, 62, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(229, 62, 62, 0); } }
@@ -72,13 +72,12 @@
         /* 7. DRAGGABLE BUTTONS */
         .draggable { position: absolute; z-index: 5000; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; border-radius: 50%; box-shadow: var(--mac-shadow); cursor: pointer; border: none; }
         #addBtn { width: 75px; height: 75px; background: var(--teal); font-size: 35px; bottom: 120px; right: 20px; }
-        #syncClioBtn { width: 75px; height: 75px; background: var(--clio-blue); font-size: 8px; bottom: 210px; right: 20px; padding: 10px; text-align: center; font-family: 'Nunito Sans', sans-serif; line-height: 1.1; text-transform: uppercase; }
+        #syncClioBtn { width: 80px; height: 80px; background: var(--clio-blue); font-size: 9px; bottom: 210px; right: 20px; padding: 12px; text-align: center; font-family: 'Nunito Sans', sans-serif; line-height: 1.1; text-transform: uppercase; }
 
         .modal-card { background: white; padding: 25px; border-radius: 30px; box-shadow: var(--mac-shadow); width: 100%; max-width: 290px; text-align: center; border: 1.5px solid var(--gray-border); }
         .modal-btn { border: none; padding: 14px; border-radius: 18px; width: 100%; font-weight: 800; margin-top: 10px; cursor: pointer; font-size: 13px; text-transform: uppercase; }
         textarea { width: 100%; height: 100px; border: 1.5px solid var(--gray-border); border-radius: 20px; padding: 15px; font-size: 16px; outline: none; background: #fafafa; }
         .chip { border: 1px solid var(--gray-border); padding: 8px 12px; border-radius: 50px; font-size: 9px; font-weight: 900; background: #f8fafc; cursor: pointer; }
-        @keyframes clio-throb { 0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.6); } 70% { box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); } 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
     </style>
 </head>
 <body id="appBody">
@@ -96,7 +95,7 @@
         <div class="header-top">
             <div class="briefcase-container"><div class="briefcase-icon"><div class="icon-timeline"><div class="icon-dot"></div><div class="icon-dot"></div><div class="icon-dot"></div></div></div></div>
             <div style="display:flex; flex-direction:column; margin-left:8px;">
-                <div style="font-weight:900; font-size:16px;"><span style="color:var(--silver-gray)">Work</span><span style="color:var(--teal)">Timeline</span>™ <div class="clio-pulse" style="display:inline-block; width:6px; height:6px; background:var(--clio-green); border-radius:50%; margin-left:4px; animation:clio-throb 2s infinite;"></div></div>
+                <div style="font-weight:900; font-size:16px;"><span style="color:var(--silver-gray)">Work</span><span style="color:var(--teal)">Timeline</span>™</div>
                 <div style="font-size:8px; font-weight:900; color:var(--teal); text-transform:uppercase;">TAKIN' INTAKE</div>
             </div>
             <div id="riskBadge" class="risk-badge">Statutory Alert</div>
@@ -122,7 +121,7 @@
             </div>
             <textarea id="statusBox" placeholder="Describe the pattern..." oninput="statutoryAnalyze()"></textarea>
             <div id="aiToggleRow" class="switch-container">
-                <div style="flex:1;"><div style="font-size:10px; font-weight:900; color:var(--risk-red);">ESA/WCB VIOLATION DETECTED</div></div>
+                <div style="flex:1;"><div style="font-size:10px; font-weight:900; color:var(--risk-red);">POTENTIAL ESA/WCB VIOLATION</div></div>
                 <label class="switch"><input type="checkbox" id="aiSwitch"><span class="slider"></span></label>
             </div>
         </div>
@@ -132,13 +131,13 @@
     <div id="timelineContainer"></div>
     
     <button id="addBtn" class="draggable">+</button>
-    <button id="syncClioBtn" class="draggable">LOCK SYNC TO CLIO</button>
+    <button id="syncClioBtn" class="draggable">🔒 SYNC TO CLIO</button>
 
     <div id="mgmtDrawer">
         <div class="handle" onclick="toggleMgmt()"><div class="handle-pill"></div></div>
         <div style="padding: 0 25px 50px;">
             <button class="modal-btn" style="background:var(--teal); color:white;">SAVE & EXPORT</button>
-            <button class="modal-btn" style="background:#cbd5e0; color:#4a5568;" onclick="confirm('Wipe Timeline?') && (localStorage.clear() || location.reload())">START NEW TIMELINE</button>
+            <button class="modal-btn" style="background:#cbd5e0; color:#4a5568;" onclick="location.reload()">START NEW TIMELINE</button>
         </div>
     </div>
 </div>
@@ -172,7 +171,7 @@
     document.getElementById('addBtn').onclick = function() {
         const text = document.getElementById('statusBox').value; if(!text.trim()) return;
         const useAI = document.getElementById('aiSwitch').checked;
-        let analysis = useAI ? "<b>STATUTORY CROSS-REF:</b> Potential breach of BC ESA (Sec. 83) & WorkSafeBC regulations identified." : "";
+        let analysis = useAI ? "<b>STATUTORY CROSS-REF:</b> Potential breach of BC ESA (Sec. 83) & WCB regulations identified." : "";
         vault.push({ text, analysis, stamp: new Date().toLocaleString() });
         localStorage.setItem('wt_timeline', JSON.stringify(vault)); refresh();
         document.getElementById('statusBox').value = '';
