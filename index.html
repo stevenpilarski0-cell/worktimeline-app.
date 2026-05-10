@@ -19,31 +19,34 @@
         .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 2.5px solid var(--teal); z-index: 3000; background: white; }
         .logo-area { display: flex; align-items: center; gap: 12px; }
         
-        /* MAC-STYLE ROUNDED BRIEFCASE LOGO */
-        .briefcase-mac { 
-            width: 32px; 
-            height: 24px; 
+        /* SINGLE-STROKE BRIEFCASE LOGO */
+        .briefcase-single-stroke { 
+            width: 28px; 
+            height: 20px; 
             border: 2.5px solid var(--teal); 
-            border-radius: 8px; /* Rounder Mac-style corners */
+            border-radius: 7px;
             position: relative; 
             display: flex; 
             align-items: center; 
-            justify-content: center; 
+            justify-content: center;
+            border-top: none; 
         }
-        /* Handle bone - integrated without a separator line */
-        .briefcase-mac::before { 
+
+        .briefcase-single-stroke::before { 
             content: '';
             position: absolute; 
-            top: -7px; 
-            width: 12px; 
-            height: 5px; 
-            border: 2.5px solid var(--teal); 
-            border-bottom: none; 
-            border-radius: 5px 5px 0 0; 
+            top: -6px; 
+            width: 28px; 
+            height: 10px; 
+            border: 2.5px solid var(--teal);
+            border-bottom: none;
+            border-radius: 7px 7px 0 0;
+            clip-path: path('M 0 10 L 0 6 Q 0 0 6 0 L 22 0 Q 28 0 28 6 L 28 10 M 8 10 L 8 6 Q 8 4 10 4 L 18 4 Q 20 4 20 6 L 20 10');
+            left: -2.5px;
         }
-        /* The ONLY horizontal line: Timeline + 3 Dots */
+
         .timeline-line { 
-            width: 125%; 
+            width: 130%; 
             height: 2.5px; 
             background: var(--teal); 
             position: absolute; 
@@ -52,7 +55,7 @@
             align-items: center; 
             padding: 0 1px; 
             box-sizing: border-box; 
-            z-index: 5;
+            z-index: 10;
         }
         .dot { width: 5px; height: 5px; background: var(--teal); border-radius: 50%; border: 1px solid white; }
         
@@ -70,13 +73,13 @@
         input:checked + .slider { background-color: var(--teal); }
         input:checked + .slider:before { transform: translateX(16px); }
 
-        /* FLOATING ACTION BUTTONS */
+        /* BUTTONS */
         .draggable-btn { position: absolute; z-index: 5000; display: flex; align-items: center; justify-content: center; border: none; width: 85px; height: 85px; border-radius: 24px; color: white; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25); font-weight: 900; text-align: center; font-size: 10px; padding: 5px; }
         #addBtn { right: 20px; top: 180px; background: var(--teal); font-size: 44px; }
         #syncBtn { right: 20px; top: 280px; background: var(--clio-blue); }
 
         /* OVERLAYS */
-        #warningOverlay, #syncOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(44, 62, 80, 0.95); backdrop-filter: blur(15px); z-index: 300000; display: none; align-items: center; justify-content: center; padding: 25px; box-sizing: border-box; }
+        #warningOverlay, #syncOverlay, #disclaimerOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(44, 62, 80, 0.95); backdrop-filter: blur(15px); z-index: 300000; display: none; align-items: center; justify-content: center; padding: 25px; box-sizing: border-box; }
         .modal-card { background: white; padding: 35px; border-radius: 32px; text-align: center; max-width: 400px; box-shadow: 0 25px 60px rgba(0,0,0,0.4); border-bottom: 8px solid var(--teal); width: 100%; }
         .modal-btn { background: var(--teal); color: white; border: none; padding: 18px; border-radius: 99px; font-weight: 900; cursor: pointer; margin-top: 15px; width: 100%; font-size: 14px; }
 
@@ -86,22 +89,14 @@
         .drag-handle-zone { width: 100%; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .handle-pill { width: 45px; height: 6px; background: var(--teal); border-radius: 10px; opacity: 0.3; }
 
-        /* TEMPLATE CHIPS */
-        .template-chip { background: white; border: 2.5px solid var(--teal); padding: 8px 14px; border-radius: 15px; font-size: 10px; font-weight: 900; color: var(--teal); white-space: nowrap; cursor: pointer; }
-        #statusBox { width: 100%; height: 100px; padding: 14px; border-radius: 18px; border: 2.5px solid var(--teal); resize: none; font-family: inherit; font-weight: 700; background: #f8fafc; box-sizing: border-box; outline: none; margin-top: 10px; }
-
-        /* TIMELINE ENTRIES */
+        /* ENTRIES */
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 20px 15px 120px; background: #fdfdfd; }
         .stack-group { margin-bottom: 35px; display: flex; flex-direction: column; }
-        .entry { background: white; border: 2.5px solid var(--teal); padding: 20px; border-radius: var(--round-inner); border-left: 12px solid var(--teal); width: 100%; box-sizing: border-box; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .entry { background: white; border: 2.5px solid var(--teal); padding: 20px; border-radius: var(--round-inner); border-left: 12px solid var(--teal); width: 100%; box-sizing: border-box; }
         
-        /* PULSE TIERS */
         .tier-minor { border-color: var(--platinum); border-left-color: var(--platinum); }
-        .tier-moderate { border-color: var(--teal); border-left-color: var(--teal); }
         .tier-serious { border-color: var(--teal-dark); border-left-color: var(--teal-dark); background: var(--blue-trans); animation: pulse-serious 2s infinite; }
         
-        .analysis-card { z-index: 10; margin-bottom: -15px; }
-
         @keyframes pulse-serious { 
             0% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0.4); } 
             70% { box-shadow: 0 0 0 15px rgba(0, 128, 128, 0); } 
@@ -111,14 +106,14 @@
 </head>
 <body id="appBody">
 
-<div id="warningOverlay"><div class="modal-card"><h2>AI CROSS-REFERENCE</h2><p id="warningMsg" style="text-align:left; font-size:13px; font-weight:700;"></p><button class="modal-btn" onclick="applyStack(true)">USE ANALYSIS (STACK ON TOP)</button><button class="modal-btn" style="background:var(--dark-silver);" onclick="applyStack(false)">KEEP ORIGINAL (STACK UNDER)</button></div></div>
+<div id="disclaimerOverlay" style="display:flex;"><div class="modal-card"><h2>INTAKE GUARD</h2><p style="text-align:left; font-size:14px; font-weight:700;">Friendly reminder: This is a <b>Work Journal</b> to help you document the truth.<br><br>We are <u>not</u> providing legal advice. This is a tool for evidentiary record-keeping only.</p><button class="modal-btn" onclick="closeDisclaimer()">I UNDERSTAND</button></div></div>
 
-<div id="syncOverlay"><div class="modal-card"><h2>Sync Summary</h2><p id="aiSummaryText" style="text-align:left; font-size:14px; max-height:300px; overflow-y:auto; font-weight:700;"></p><button class="modal-btn" style="background:var(--clio-blue);" onclick="finalSync()">OK & SEND TO CLIO</button><button class="modal-btn" style="background:var(--dark-silver); margin-top:10px;" onclick="closeSync()">CANCEL</button></div></div>
+<div id="warningOverlay"><div class="modal-card"><h2>AI CROSS-REFERENCE</h2><p id="warningMsg" style="text-align:left; font-size:13px; font-weight:700;"></p><button class="modal-btn" onclick="applyStack(true)">USE ANALYSIS (STACK ON TOP)</button><button class="modal-btn" style="background:var(--dark-silver);" onclick="applyStack(false)">KEEP ORIGINAL (STACK UNDER)</button></div></div>
 
 <div class="app-container">
     <header class="header">
         <div class="logo-area">
-            <div class="briefcase-mac">
+            <div class="briefcase-single-stroke">
                 <div class="timeline-line"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
             </div>
             <div class="brand-stack">
@@ -137,8 +132,8 @@
 
     <div id="utilityDrawer">
         <div class="drawer-content" id="drawerContent">
-            <div style="display:flex; gap:10px; overflow-x:auto; padding-bottom: 5px;"><div class="template-chip" onclick="useTemplate('INCIDENT')">INCIDENT</div><div class="template-chip" onclick="useTemplate('INJURY')">INJURY</div><div class="template-chip" onclick="useTemplate('LOCATION')">LOCATION</div><div class="template-chip" onclick="useTemplate('WITNESS')">WITNESS</div></div>
-            <textarea id="statusBox" placeholder="Log the grit..."></textarea>
+            <div style="display:flex; gap:10px; overflow-x:auto; padding-bottom: 5px;"><div class="template-chip" style="background:white; border:2.5px solid var(--teal); padding:8px 14px; border-radius:15px; font-size:10px; font-weight:900; color:var(--teal); cursor:pointer;" onclick="useTemplate('INCIDENT')">INCIDENT</div><div class="template-chip" style="background:white; border:2.5px solid var(--teal); padding:8px 14px; border-radius:15px; font-size:10px; font-weight:900; color:var(--teal); cursor:pointer;" onclick="useTemplate('INJURY')">INJURY</div><div class="template-chip" style="background:white; border:2.5px solid var(--teal); padding:8px 14px; border-radius:15px; font-size:10px; font-weight:900; color:var(--teal); cursor:pointer;" onclick="useTemplate('WITNESS')">WITNESS</div></div>
+            <textarea id="statusBox" style="width:100%; height:100px; padding:14px; border-radius:18px; border:2.5px solid var(--teal); resize:none; font-family:inherit; font-weight:700; background:#f8fafc; box-sizing:border-box; outline:none; margin-top:10px;" placeholder="Journal the truth..."></textarea>
         </div>
         <div class="drag-handle-zone" onclick="toggleDrawer()"><div class="handle-pill"></div></div>
     </div>
@@ -149,7 +144,7 @@
         <div class="drag-handle-zone" onclick="toggleMgmtDrawer()"><div class="handle-pill"></div></div>
         <div style="padding:0 25px 35px; display:flex; flex-direction:column; gap:12px;">
             <button class="modal-btn" style="margin-top:0; background:var(--dark-silver);" onclick="confirmReset()">DELETE & START FRESH</button>
-            <button class="modal-btn" style="margin-top:0; background:var(--teal);" onclick="alert('Exporting Report...')">SAVE & EXPORT</button>
+            <button class="modal-btn" style="margin-top:0; background:var(--teal);" onclick="alert('Exporting Journal...')">SAVE & EXPORT</button>
         </div>
     </div>
 </div>
@@ -161,6 +156,7 @@
     
     window.onload = () => { refreshDisplay(); };
 
+    function closeDisclaimer() { document.getElementById('disclaimerOverlay').style.display = 'none'; }
     function toggleDrawer() { const d = document.getElementById('utilityDrawer'); const c = document.getElementById('drawerContent'); if(isDrawerOpen) { d.style.transform = `translateY(-${c.offsetHeight}px)`; isDrawerOpen = false; } else { d.style.transform = `translateY(0)`; isDrawerOpen = true; } }
     function toggleMgmtDrawer() { const d = document.getElementById('managementDrawer'); if(!isMgmtOpen) { d.style.transform = 'translateY(0)'; isMgmtOpen = true; } else { d.style.transform = 'translateY(calc(100% - 40px))'; isMgmtOpen = false; } }
     function toggleGhost(cb) { document.getElementById('appBody').classList.toggle('ghost-active', cb.checked); }
@@ -170,13 +166,13 @@
         const box = document.getElementById('statusBox'); if(!box.value.trim()) return;
         const text = box.value; const low = text.toLowerCase();
         let analysis = ""; let severity = "minor";
-        if (low.includes("fire") || low.includes("quit") || low.includes("toxic") || low.includes("retaliate")) { analysis = "HIGH PRIORITY: Cross-referenced with Constructive Dismissal case law."; severity = "serious"; }
-        else if (low.includes("pay") || low.includes("injury") || low.includes("safety")) { analysis = "MODERATE PRIORITY: Cross-referenced with BC ESA & WorkSafeBC."; severity = "moderate"; }
-        else if (low.includes("clutter") || low.includes("wet")) { analysis = "GENERAL ALERT: Minor cross-reference to Duty of Care."; severity = "minor"; }
+        if (low.includes("fire") || low.includes("quit") || low.includes("toxic") || low.includes("retaliate")) { analysis = "HIGH PRIORITY: Pattern cross-referenced with potential Constructive Dismissal markers."; severity = "serious"; }
+        else if (low.includes("pay") || low.includes("injury") || low.includes("safety")) { analysis = "MODERATE PRIORITY: Pattern cross-referenced with BC Statutory Compliance."; severity = "moderate"; }
+        else if (low.includes("clutter") || low.includes("wet")) { analysis = "GENERAL ALERT: Documenting environmental Duty of Care patterns."; severity = "minor"; }
 
         pendingEntry = { id: Date.now(), grit: text, analysis: analysis, stamp: new Date().toLocaleString(), agree: false, tier: severity };
         if (analysis && activeVault === "TIMELINE") {
-            document.getElementById('warningMsg').innerHTML = `<b>AI Cross-Reference Found:</b><br><br>${analysis}<br><br><i>Stack analysis on top?</i>`;
+            document.getElementById('warningMsg').innerHTML = `<b>EA Pattern Analysis:</b><br><br>${analysis}<br><br><i>Stack analysis on top of the journal?</i>`;
             document.getElementById('warningOverlay').style.display = 'flex';
         } else { saveFinal(); }
         box.value = '';
@@ -195,25 +191,18 @@
         [...data].reverse().forEach(item => {
             const group = document.createElement('div'); group.className = 'stack-group';
             const gritCard = `<div class="entry tier-${item.tier}"><span style="font-size:10px; color:var(--teal); font-weight:900;">📍 LANGLEY, BC | ${item.stamp}</span><p style="margin:10px 0 0; font-weight:800; line-height:1.4;">${item.grit}</p></div>`;
-            const analysisCard = (item.analysis && activeVault === "TIMELINE") ? `<div class="entry analysis-card tier-${item.tier}"><b>LEGAL CROSS-REF:</b><br><span style="font-size:12px; font-weight:900;">${item.analysis}</span></div>` : "";
+            const analysisCard = (item.analysis && activeVault === "TIMELINE") ? `<div class="entry analysis-card tier-${item.tier}" style="z-index:10; margin-bottom:-15px;"><b>EA CROSS-REF:</b><br><span style="font-size:12px; font-weight:900;">${item.analysis}</span></div>` : "";
             group.innerHTML = item.agree ? analysisCard + gritCard : gritCard + analysisCard;
             list.appendChild(group);
         });
     }
 
     function useTemplate(t) { 
-        const templates = {
-            'INCIDENT': 'ACTION:\nVIOLATION:\nWITNESS:', 
-            'INJURY': 'NATURE OF INJURY:\nBODY PART:\nFIRST AID RENDERED:\nOFA ATTENDANT:', 
-            'LOCATION': 'SITE:\nHAZARDS:',
-            'WITNESS': 'NAME:\nCONTACT:\nSTATEMENT:'
-        }; 
+        const templates = { 'INCIDENT': 'ACTION:\nVIOLATION:\nWITNESS:', 'INJURY': 'OFA 2 RECORD:\nINJURY:\nFIRST AID RENDERED:', 'WITNESS': 'NAME:\nCONTACT:\nSTATEMENT:' }; 
         document.getElementById('statusBox').value = templates[t]; 
     }
-    function triggerSync() { if (timelineVault.length === 0) return alert("Nothing to sync."); document.getElementById('syncOverlay').style.display = 'flex'; }
-    function finalSync() { alert("Synced to Clio."); document.getElementById('syncOverlay').style.display = 'none'; }
-    function closeSync() { document.getElementById('syncOverlay').style.display = 'none'; }
-    function confirmReset() { if(confirm("Wipe active vault?")) { if(activeVault === "TIMELINE") { timelineVault = []; localStorage.setItem('wt_timeline', '[]'); } else { notesVault = []; localStorage.setItem('wt_notes', '[]'); } location.reload(); } }
+    function triggerSync() { alert("Journal locked and synchronized."); }
+    function confirmReset() { if(confirm("Wipe journal?")) { localStorage.clear(); location.reload(); } }
 </script>
 </body>
 </html>
