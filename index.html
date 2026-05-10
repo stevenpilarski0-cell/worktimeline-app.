@@ -3,85 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Clio Handshake Master</title>
+    <title>WorkTimeline™ | Minimalist Master</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
-        :root { --teal: #008080; --teal-dark: #004d4d; --blue-trans: rgba(0, 128, 128, 0.12); --clio-blue: #0076CE; --clio-green: #2ecc71; --platinum: #d8e2ea; --gray-dark: #2c3e50; }
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap');
+        :root { --teal: #008080; --teal-soft: rgba(0, 128, 128, 0.08); --clio-blue: #0076CE; --clio-green: #2ecc71; --gray-bg: #f5f7fa; --gray-border: #e2e8f0; --mac-shadow: 0 12px 40px rgba(0,0,0,0.12); }
         
-        body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 0; height: 100dvh; overflow: hidden; display: flex; justify-content: center; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Nunito', sans-serif; background: var(--gray-bg); margin: 0; padding: 0; height: 100dvh; overflow: hidden; display: flex; justify-content: center; -webkit-tap-highlight-color: transparent; color: #2d3748; }
         
-        /* GHOST BLUR */
-        .ghost-active #timelineContainer, .ghost-active #utilityDrawer, .ghost-active #mgmtDrawer { filter: blur(25px); opacity: 0.1; pointer-events: none; }
+        /* GHOST BLUR SYSTEM */
+        .app-locked { filter: blur(35px); pointer-events: none; }
+        .ghost-active #timelineContainer, .ghost-active #utilityDrawer, .ghost-active #mgmtDrawer { filter: blur(25px); opacity: 0.15; pointer-events: none; }
 
-        .app-container { width: 100%; max-width: 500px; background: white; height: 100dvh; display: flex; flex-direction: column; position: relative; border: 2px solid var(--teal); box-sizing: border-box; text-align: center; overflow: hidden; }
+        .app-container { width: 100%; max-width: 500px; background: white; height: 100dvh; display: flex; flex-direction: column; position: relative; border: 1.5px solid var(--gray-border); box-sizing: border-box; text-align: center; overflow: hidden; }
         
-        /* HEADER */
-        .header { padding: 10px 15px; border-bottom: 2px solid var(--teal); background: white; z-index: 4000; position: relative; }
-        .header-top { display: flex; justify-content: center; align-items: center; gap: 10px; position: relative; }
-        .main-title { font-weight: 900; color: var(--teal); font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        /* MINIMALIST HEADER */
+        .header { padding: 12px 20px; border-bottom: 1px solid var(--gray-border); background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); z-index: 4000; position: relative; }
+        .header-top { display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .brand-sub { font-size: 7px; font-weight: 900; color: var(--teal); text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.7; }
+        .main-title { font-weight: 800; color: #1a202c; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 6px; }
 
-        /* CLIO PULSE */
-        .clio-pulse { width: 7px; height: 7px; background-color: var(--clio-green); border-radius: 50%; animation: clio-throb 2s infinite; }
-        @keyframes clio-throb { 0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); } 70% { box-shadow: 0 0 0 8px rgba(46, 204, 113, 0); } 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
+        /* CLIO PULSE (CLEAN) */
+        .clio-pulse { width: 6px; height: 6px; background-color: var(--clio-green); border-radius: 50%; animation: clio-throb 2.5s infinite; }
+        @keyframes clio-throb { 0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); } 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
 
-        /* DRAWERS */
-        #utilityDrawer { position: absolute; top: 58px; width: 100%; background: white; border-bottom: 3px solid var(--teal); z-index: 3500; transition: 0.4s transform ease; transform: translateY(calc(-100% + 40px)); }
-        .upper-handle { width: 100%; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: absolute; bottom: 0; }
-        #mgmtDrawer { position: fixed; bottom: 0; width: 100%; max-width: 500px; background: white; border-top: 3px solid var(--teal); z-index: 4500; transition: 0.4s transform ease; transform: translateY(calc(100% - 40px)); }
-        .handle-pill { width: 40px; height: 5px; background: var(--teal); border-radius: 10px; opacity: 0.2; }
+        /* HEADER CONTROLS */
+        .header-controls { position: absolute; right: 15px; display: flex; flex-direction: column; gap: 4px; }
+        .control-btn { background: var(--teal-soft); color: var(--teal); border: 1px solid rgba(0,128,128,0.2); border-radius: 20px; font-size: 7px; font-weight: 900; padding: 4px 10px; cursor: pointer; }
 
-        /* DRAGGABLE SQUARES */
-        .draggable { position: absolute; z-index: 5000; cursor: move; touch-action: none; display: flex; align-items: center; justify-content: center; text-align: center; font-weight: 900; color: white; border-radius: 15px; border: none; box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
-        #addBtn { width: 75px; height: 75px; background: var(--teal); font-size: 36px; top: 150px; right: 15px; }
-        #syncBtn { width: 75px; height: 75px; background: var(--clio-blue); font-size: 8px; padding: 4px; top: 240px; right: 15px; }
+        /* ROUNDED DUAL DRAWERS */
+        #utilityDrawer { position: absolute; top: 60px; width: 100%; background: white; border-bottom: 1.5px solid var(--gray-border); z-index: 3500; transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) transform; transform: translateY(calc(-100% + 40px)); border-radius: 0 0 30px 30px; }
+        #mgmtDrawer { position: fixed; bottom: 0; width: 100%; max-width: 500px; background: white; border-top: 1.5px solid var(--gray-border); z-index: 4500; transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) transform; transform: translateY(calc(100% - 40px)); border-radius: 30px 30px 0 0; }
+        .handle { width: 100%; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .handle-pill { width: 35px; height: 4px; background: #cbd5e0; border-radius: 10px; }
 
-        /* TIMELINE & ENTRIES */
-        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 50px 15px 150px; }
-        .entry { background: white; border: 2px solid var(--teal); border-left-width: 8px; padding: 15px; border-radius: 15px; margin-bottom: 20px; text-align: left; position: relative; }
-        .tier-serious { animation: pulse-ser 2s infinite; border-left-color: var(--teal-dark); background: var(--blue-trans); }
-        .flip-btn { position: absolute; top: 10px; right: 10px; background: var(--teal); color: white; border: none; font-size: 8px; font-weight: 900; padding: 4px 8px; border-radius: 50px; cursor: pointer; }
-        
-        @keyframes pulse-ser { 0% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(0, 128, 128, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0); } }
+        /* FLOATING DRAGGABLE SQUARES (MINIMALIST ROUNDED) */
+        .draggable { position: absolute; z-index: 5000; display: flex; align-items: center; justify-content: center; text-align: center; font-weight: 800; color: white; border-radius: 22px; border: none; box-shadow: var(--mac-shadow); touch-action: none; transition: transform 0.2s; }
+        #addBtn { width: 70px; height: 70px; background: var(--teal); font-size: 30px; top: 160px; right: 20px; }
+        #syncBtn { width: 70px; height: 70px; background: var(--clio-blue); font-size: 8px; padding: 6px; top: 250px; right: 20px; }
 
-        /* OVERLAYS (ANALYSIS & HANDSHAKE) */
-        #overlaySystem { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(44, 62, 80, 0.98); z-index: 100000; display: none; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; }
-        .modal-card { background: white; padding: 25px; border-radius: 24px; border-bottom: 5px solid var(--teal); width: 100%; max-width: 400px; text-align: left; }
-        .modal-btn { border: none; padding: 14px; border-radius: 40px; width: 100%; font-weight: 900; margin-top: 10px; cursor: pointer; }
-        .analysis-text { font-size: 13px; line-height: 1.5; color: var(--gray-dark); margin-bottom: 15px; }
+        /* MODERN TIMELINE CARDS */
+        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 60px 20px 150px; scrollbar-width: none; }
+        #timelineContainer::-webkit-scrollbar { display: none; }
+        .entry { background: white; border: 1.5px solid var(--gray-border); border-left: 6px solid var(--teal); padding: 20px; border-radius: 24px; margin-bottom: 20px; text-align: left; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .tier-serious { animation: pulse-ser 3s infinite; border-left-color: var(--teal-dark); background: linear-gradient(to right, var(--teal-soft), transparent); }
+        @keyframes pulse-ser { 0% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0.1); } 70% { box-shadow: 0 0 0 15px rgba(0, 128, 128, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0); } }
+
+        /* OVERLAY SYSTEM */
+        #overlaySystem { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(20px); z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 25px; box-sizing: border-box; }
+        .modal-card { background: white; padding: 40px 30px; border-radius: 35px; box-shadow: var(--mac-shadow); width: 100%; max-width: 380px; text-align: center; border: 1px solid var(--gray-border); }
+        .modal-btn { border: none; padding: 18px; border-radius: 20px; width: 100%; font-weight: 800; margin-top: 15px; cursor: pointer; font-size: 14px; transition: opacity 0.2s; }
+        .legal-text { font-size: 14px; line-height: 1.6; color: #4a5568; margin: 20px 0; font-weight: 600; }
+
+        /* TOOLKIT CHIPS */
+        .template-chip { border: 1.5px solid var(--gray-border); padding: 8px 16px; border-radius: 15px; font-size: 10px; font-weight: 800; color: #4a5568; background: white; cursor: pointer; transition: 0.2s; }
+        .template-chip:active { background: var(--teal-soft); border-color: var(--teal); color: var(--teal); }
+        textarea { width: 100%; height: 85px; border: 1.5px solid var(--gray-border); border-radius: 20px; padding: 15px; font-weight: 600; font-size: 14px; outline: none; background: #fafafa; }
     </style>
 </head>
 <body id="appBody">
 
 <div id="overlaySystem">
-    <div class="modal-card" id="modalContent"></div>
+    <div class="modal-card" id="modalContent">
+        <h2 style="color: #1a202c; font-weight: 900; margin: 0;">INTAKE GUARD</h2>
+        <div class="legal-text">
+            <b>NOTICE:</b> We do not provide legal advice.<br><br>
+            This platform is a personal <b>Workplace Journal</b> for documenting facts and evidence.
+        </div>
+        <button class="modal-btn" style="background:var(--teal); color:white;" onclick="unlockApp()">I UNDERSTAND</button>
+    </div>
 </div>
 
-<div class="app-container">
+<div class="app-container app-locked" id="mainApp">
     <header class="header">
         <div class="header-top">
-            <svg width="34" height="26" viewBox="0 0 40 30" fill="none"><path d="M3 12C3 10.3431 4.34315 9 6 9H13.5C13.5 7 15.5 3 20 3C24.5 3 26.5 7 26.5 9H34C35.6569 9 37 10.3431 37 12V25C37 26.6569 35.6569 28 34 28H6C4.34315 28 3 26.6569 3 25V12Z" stroke="#008080" stroke-width="3" stroke-linejoin="round"/><line x1="0" y1="18.5" x2="40" y2="18.5" stroke="#008080" stroke-width="3"/><circle cx="9" cy="18.5" r="3" fill="#008080" stroke="white"/><circle cx="20" cy="18.5" r="3" fill="#008080" stroke="white"/><circle cx="31" cy="18.5" r="3" fill="#008080" stroke="white"/></svg>
+            <svg width="30" height="24" viewBox="0 0 40 30" fill="none"><path d="M6 9H13.5C13.5 7 15.5 3 20 3C24.5 3 26.5 7 26.5 9H34M3 12C3 10.3431 4.34315 9 6 9M37 12V25C37 26.6569 35.6569 28 34 28H6C4.34315 28 3 26.6569 3 25V12" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round"/><circle cx="20" cy="18" r="2.5" fill="var(--teal)"/></svg>
             <div class="brand-text">
                 <div class="brand-sub">Takin'Intake</div>
                 <div class="main-title">WorkTimeline™ <div class="clio-pulse"></div></div>
             </div>
-            <div style="position:absolute; right:0; display:flex; flex-direction:column; gap:4px;">
-                <button onclick="document.getElementById('appBody').classList.toggle('ghost-active')" style="background:var(--teal); color:white; border:none; border-radius:5px; font-size:7px; font-weight:900; padding:3px 6px;">GHOST</button>
-                <button id="vaultBtn" onclick="toggleVault()" style="background:var(--teal); color:white; border:none; border-radius:5px; font-size:7px; font-weight:900; padding:3px 6px;">NOTES</button>
+            <div class="header-controls">
+                <button class="control-btn" onclick="document.getElementById('appBody').classList.toggle('ghost-active')">GHOST</button>
+                <button class="control-btn" id="vaultBtn" onclick="toggleVault()">NOTES</button>
             </div>
         </div>
     </header>
 
     <div id="utilityDrawer">
-        <div style="padding: 15px 15px 50px;">
-            <div style="display:flex; gap:6px; justify-content:center; margin-bottom: 12px; overflow-x:auto;">
+        <div style="padding: 20px 20px 50px;">
+            <div style="display:flex; gap:8px; justify-content:center; margin-bottom: 15px; overflow-x:auto; padding-bottom: 5px;">
                 <button onclick="useTemplate('INCIDENT')" class="template-chip">INCIDENT</button>
                 <button onclick="useTemplate('INJURY')" class="template-chip">INJURY</button>
                 <button onclick="useTemplate('LOCATION')" class="template-chip">LOCATION</button>
                 <button onclick="useTemplate('WITNESS')" class="template-chip">WITNESS</button>
             </div>
-            <textarea id="statusBox" style="width:100%; height:75px; border:2.5px solid var(--teal); border-radius:12px; padding:10px; font-weight:700; font-size:14px; outline:none;" placeholder="Journal the truth..."></textarea>
+            <div style="display:flex; gap:6px; margin-bottom: 15px;">
+                <label style="flex:1; font-size:9px; font-weight:800; background:var(--gray-bg); padding:10px; border-radius:12px;">CAMERA <input type="file" accept="image/*" capture="environment" style="display:none;"></label>
+                <label style="flex:1; font-size:9px; font-weight:800; background:var(--gray-bg); padding:10px; border-radius:12px;">AUDIO <input type="file" accept="audio/*" capture="microphone" style="display:none;"></label>
+            </div>
+            <textarea id="statusBox" placeholder="Journal the truth..."></textarea>
         </div>
-        <div class="upper-handle" onclick="toggleUtility()"><div class="handle-pill"></div></div>
+        <div class="handle" onclick="toggleUtility()"><div class="handle-pill"></div></div>
     </div>
 
     <div id="timelineContainer"><div id="displayList"></div></div>
@@ -90,10 +111,10 @@
     <button id="syncBtn" class="draggable" onclick="clioHandshake()">LOCK & SYNC TO CLIO</button>
 
     <div id="mgmtDrawer">
-        <div class="lower-handle" onclick="toggleMgmt()"><div class="handle-pill"></div></div>
-        <div style="padding: 0 20px 30px;">
-            <button class="modal-btn" style="background:var(--teal); color:white;" onclick="alert('Exporting Report...')">SAVE & EXPORT</button>
-            <button class="modal-btn" style="background:#7f8c8d; color:white;" onclick="confirm('Start Fresh?') && (localStorage.clear() || location.reload())">DELETE & START FRESH</button>
+        <div class="handle" onclick="toggleMgmt()"><div class="handle-pill"></div></div>
+        <div style="padding: 5px 30px 40px;">
+            <button class="modal-btn" style="background:var(--teal); color:white;" onclick="alert('Exporting PDF...')">SAVE & EXPORT</button>
+            <button class="modal-btn" style="background:#f1f5f9; color:#718096;" onclick="confirm('Wipe record?') && (localStorage.clear() || location.reload())">START FRESH</button>
         </div>
     </div>
 </div>
@@ -103,6 +124,8 @@
     let activeVault = "TIMELINE"; let pending = null;
     let utilOpen = false; let mgmtOpen = false;
 
+    function unlockApp() { document.getElementById('overlaySystem').style.display = 'none'; document.getElementById('mainApp').classList.remove('app-locked'); }
+    function showOverlay(html) { document.getElementById('modalContent').innerHTML = html; document.getElementById('overlaySystem').style.display = 'flex'; }
     function toggleUtility() { document.getElementById('utilityDrawer').style.transform = utilOpen ? 'translateY(calc(-100% + 40px))' : 'translateY(0)'; utilOpen = !utilOpen; }
     function toggleMgmt() { document.getElementById('mgmtDrawer').style.transform = mgmtOpen ? 'translateY(calc(100% - 40px))' : 'translateY(0)'; mgmtOpen = !mgmtOpen; }
 
@@ -117,41 +140,38 @@
 
     function submitEntry() {
         const text = document.getElementById('statusBox').value; if(!text.trim()) return;
-        let analysis = text.toLowerCase().includes("fire") ? "EA: Retaliation pattern detected." : "";
+        let analysis = text.toLowerCase().includes("fire") ? "EA: Retaliation marker detected." : "";
         pending = { grit: text, analysis, stamp: new Date().toLocaleString(), tier: analysis ? 'serious' : 'minor', flipped: false };
-        
-        if(analysis && activeVault === "TIMELINE") {
-            showOverlay(`<h2 style="color:var(--teal)">EA DETECTION</h2><div class="analysis-text">${analysis}</div><button class="modal-btn" style="background:var(--teal);color:white" onclick="saveFinal()">STACK ANALYSIS ON TOP</button>`);
-        } else { saveFinal(); }
-        document.getElementById('statusBox').value = '';
+        if(analysis) { showOverlay(`<h3 style="margin-top:0;">EA DETECTION</h3><p class="legal-text">${analysis}</p><button class="modal-btn" style="background:var(--teal);color:white" onclick="saveFinal()">POST ANALYSIS</button>`); }
+        else { saveFinal(); }
+        document.getElementById('statusBox').value = ''; if(utilOpen) toggleUtility();
     }
 
     function clioHandshake() {
-        if(vault.length === 0) { alert("Timeline empty."); return; }
-        const summary = `Timeline Sweep: ${vault.length} industrial entries recorded. Pattern intensity concentrated in May 2026. Evidence involves OFA 2 standards and statutory compliance markers in Langley, BC.`;
-        showOverlay(`<h2 style="color:var(--clio-blue)">CLIO SYNC SUMMARY</h2><div class="analysis-text"><b>SUMMARY OF TRUTH:</b><br><br>${summary}<br><br><b>Do you permit this summary to be committed to Clio?</b></div><button class="modal-btn" style="background:var(--clio-blue);color:white" onclick="confirmSync()">YES, SYNC NOW</button><button class="modal-btn" style="background:#7f8c8d;color:white" onclick="hideOverlay()">CANCEL</button>`);
+        if(vault.length === 0) return;
+        showOverlay(`<h3 style="margin-top:0; color:var(--clio-blue);">SYNC SUMMARY</h3><p class="legal-text">Timeline includes ${vault.length} industrial records. Summarizing for Clio handshake. Proceed?</p><button class="modal-btn" style="background:var(--clio-blue);color:white" onclick="confirmSync()">YES, SYNC NOW</button><button class="modal-btn" style="background:#f1f5f9;color:#718096" onclick="unlockApp()">CANCEL</button>`);
     }
 
-    function showOverlay(html) { document.getElementById('modalContent').innerHTML = html; document.getElementById('overlaySystem').style.display = 'flex'; }
-    function hideOverlay() { document.getElementById('overlaySystem').style.display = 'none'; }
-    function saveFinal() { vault.push(pending); localStorage.setItem('wt_timeline', JSON.stringify(vault)); hideOverlay(); refresh(); }
-    function confirmSync() { alert("Clio Lock Confirmed. Summary committed to secure file."); hideOverlay(); }
+    function saveFinal() { vault.push(pending); localStorage.setItem('wt_timeline', JSON.stringify(vault)); unlockApp(); refresh(); }
+    function confirmSync() { alert("Clio Lock Confirmed."); unlockApp(); }
     
     function refresh() {
         const list = document.getElementById('displayList'); list.innerHTML = '';
         [...vault].reverse().forEach((item, index) => {
-            const trueIndex = vault.length - 1 - index;
+            const trueIdx = vault.length - 1 - index;
             const content = item.flipped ? `<b>EA ANALYSIS:</b><br>${item.analysis}` : `<b>📍 LANGLEY, BC | ${item.stamp}</b><br><br>${item.grit}`;
-            const flipBtn = item.analysis ? `<button class="flip-btn" onclick="flipItem(${trueIndex})">FLIP</button>` : "";
-            list.innerHTML += `<div class="entry tier-${item.tier}">${flipBtn}${content}</div>`;
+            const flip = item.analysis ? `<button onclick="flip(${trueIdx})" style="position:absolute;top:15px;right:15px;background:var(--gray-bg);border:none;padding:5px 12px;border-radius:20px;font-size:8px;font-weight:900;">FLIP</button>` : "";
+            list.innerHTML += `<div class="entry tier-${item.tier}">${flip}${content}</div>`;
         });
     }
 
-    function flipItem(idx) { vault[idx].flipped = !vault[idx].flipped; refresh(); }
+    function flip(idx) { vault[idx].flipped = !vault[idx].flipped; refresh(); }
     function useTemplate(t) { 
         const ts = { 'INCIDENT': 'ACTION:\nVIOLATION:', 'INJURY': 'OFA RECORD:\nINJURY:', 'LOCATION': 'SITE:\nHAZARDS:', 'WITNESS': 'NAME:\nCONTACT:' };
         document.getElementById('statusBox').value = ts[t];
     }
+
+    function toggleVault() { activeVault = activeVault === "TIMELINE" ? "NOTES" : "TIMELINE"; document.getElementById('vaultBtn').innerText = activeVault === "TIMELINE" ? "NOTES" : "TIMELINE"; }
 
     let sX, sY;
     document.getElementById("addBtn").addEventListener('touchstart', e => { sX = e.touches[0].clientX; sY = e.touches[0].clientY; });
@@ -159,7 +179,6 @@
         let dx = Math.abs(e.changedTouches[0].clientX - sX); let dy = Math.abs(e.changedTouches[0].clientY - sY);
         if(dx < 10 && dy < 10) submitEntry();
     });
-
     refresh();
 </script>
 </body>
