@@ -19,7 +19,6 @@
         
         body { font-family: 'Nunito', sans-serif; background: var(--gray-bg); margin: 0; padding: 0; height: 100dvh; overflow: hidden; display: flex; justify-content: center; -webkit-tap-highlight-color: transparent; }
         .app-locked { filter: blur(35px); pointer-events: none; }
-        .ghost-active #timelineContainer, .ghost-active #utilityDrawer, .ghost-active #mgmtDrawer { filter: blur(25px); opacity: 0.15; pointer-events: none; }
         .app-container { width: 100%; max-width: 500px; background: white; height: 100dvh; display: flex; flex-direction: column; position: relative; border: 1.5px solid var(--gray-border); box-sizing: border-box; overflow: hidden; }
         
         /* HEADER */
@@ -41,8 +40,8 @@
         .bubble-front { background: #f1f1f1; border: 1px solid #e5e5e5; color: #1a202c; position: relative; z-index: 2; }
         .bubble-back { background: var(--teal); color: white; transform: rotateY(180deg); position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; border: 1px solid rgba(255,255,255,0.2); }
         
-        /* THE DARK HEAVY GRAY-TO-TEAL PULSE */
-        .stack-inner.has-ai::after { 
+        /* THE PULSE (Conditional) */
+        .stack-inner.has-ai.pulse-on::after { 
             content: ''; position: absolute; top: 6px; left: 8px; width: 100%; height: 100%; background: #4a5568; border-radius: 22px; z-index: 0; opacity: 0.7; animation: dark-heavy-pulse 3s infinite ease-in-out; 
         }
         @keyframes dark-heavy-pulse { 
@@ -59,12 +58,10 @@
         
         /* DRAWERS & UI */
         #utilityDrawer { position: absolute; top: 60px; width: 100%; background: white; border-bottom: 1px solid var(--gray-border); z-index: 3500; transition: 0.5s transform; transform: translateY(calc(-100% + 40px)); border-radius: 0 0 30px 30px; }
-        #mgmtDrawer { position: fixed; bottom: 0; width: 100%; max-width: 500px; background: white; border-top: 1.5px solid var(--gray-border); z-index: 4500; transition: 0.5s transform; transform: translateY(calc(100% - 40px)); border-radius: 30px 30px 0 0; }
         .handle { width: 100%; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .handle-pill { width: 35px; height: 4px; background: #cbd5e0; border-radius: 10px; }
         .draggable { position: absolute; z-index: 5000; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; border-radius: 22px; border: none; box-shadow: var(--mac-shadow); touch-action: none; }
         #addBtn { width: 70px; height: 70px; background: var(--teal); font-size: 30px; top: 160px; right: 20px; }
-        #syncBtn { width: 70px; height: 70px; background: var(--clio-blue); font-size: 8px; padding: 6px; top: 250px; right: 20px; text-align: center; }
         textarea { width: 100%; height: 85px; border: 1.5px solid var(--gray-border); border-radius: 20px; padding: 15px; font-family: 'Nunito Sans', sans-serif; font-weight: 600; font-size: 15px; outline: none; background: #fafafa; }
     </style>
 </head>
@@ -73,7 +70,7 @@
 <div id="overlaySystem">
     <div class="modal-card" id="modalContent">
         <h2 style="color: #1a202c; font-weight: 900; margin: 0; font-size: 18px; letter-spacing: -0.5px;">INTAKE GUARD</h2>
-        <div style="font-size: 13px; line-height: 1.5; color: #4a5568; margin: 15px 0; font-weight: 600;">We are here to help you document the truth.<br><br>While this journal provides evidence support, <b>we do not offer legal advice.</b><br><br>Proceed to secure your workplace records.</div>
+        <div style="font-size: 13px; line-height: 1.5; color: #4a5568; margin: 15px 0; font-weight: 600;">Secure your records. We provide documentation support, but we do not offer legal advice.</div>
         <button class="modal-btn" style="background:var(--teal); color:white;" onclick="unlockApp()">SECURE MY JOURNAL</button>
     </div>
 </div>
@@ -81,39 +78,27 @@
 <div class="app-container app-locked" id="mainApp">
     <header class="header">
         <div class="header-top">
-            <svg width="40" height="30" viewBox="0 0 44 34" fill="none" style="margin-right:5px;"><rect x="4" y="10" width="36" height="20" rx="4" stroke="var(--teal)" stroke-width="2.5"/><path d="M16 10V6C16 4.89543 16.8954 4 18 4H26C27.1046 4 28 4.89543 28 6V10" stroke="var(--teal)" stroke-width="2.5"/><line x1="0" y1="20" x2="44" y2="20" stroke="var(--teal)" stroke-width="2.5"/></svg>
             <div class="brand-text"><div class="main-title"><span class="work-silver">Work</span><span class="timeline-teal">Timeline</span>™ <div class="clio-pulse"></div></div></div>
-            <div style="position:absolute; right:15px; display:flex; flex-direction:column; gap:4px;">
-                <button onclick="document.getElementById('appBody').classList.toggle('ghost-active')" style="background:var(--teal-soft); color:var(--teal); border:none; border-radius:20px; font-size:7px; font-weight:900; padding:4px 10px;">GHOST</button>
-                <button onclick="refresh()" style="background:var(--teal-soft); color:var(--teal); border:none; border-radius:20px; font-size:7px; font-weight:900; padding:4px 10px;">NOTES</button>
-            </div>
         </div>
     </header>
 
     <div id="utilityDrawer">
-        <div style="padding: 15px;">
-            <textarea id="statusBox" placeholder="Documenting the grit..."></textarea>
-        </div>
+        <div style="padding: 15px;"><textarea id="statusBox" placeholder="Documenting the grit..."></textarea></div>
         <div class="handle" onclick="toggleUtility()"><div class="handle-pill"></div></div>
     </div>
 
     <div id="timelineContainer"></div>
     <button id="addBtn" class="draggable">+</button>
-    <button id="syncBtn" class="draggable" onclick="clioHandshake()">SYNC TO CLIO</button>
-
-    <div id="mgmtDrawer">
-        <div class="handle" onclick="toggleMgmt()"><div class="handle-pill"></div></div>
-        <div style="padding: 15px 25px 35px;"><button class="modal-btn" style="background:var(--teal); color:white;" onclick="alert('Exporting...')">SAVE & EXPORT</button></div>
-    </div>
 </div>
 
 <script>
     let vault = JSON.parse(localStorage.getItem('wt_timeline')) || [];
-    let utilOpen = false; let mgmtOpen = false; let activePending = null;
+    let pulseActive = localStorage.getItem('wt_pulse_active') !== 'false';
+    let pulseExplained = localStorage.getItem('wt_pulse_explained') === 'true';
+    let utilOpen = false; let activePending = null;
 
     function unlockApp() { document.getElementById('overlaySystem').style.display = 'none'; document.getElementById('mainApp').classList.remove('app-locked'); }
     function toggleUtility() { document.getElementById('utilityDrawer').style.transform = utilOpen ? 'translateY(calc(-100% + 40px))' : 'translateY(0)'; utilOpen = !utilOpen; }
-    function toggleMgmt() { document.getElementById('mgmtDrawer').style.transform = mgmtOpen ? 'translateY(calc(100% - 40px))' : 'translateY(0)'; mgmtOpen = !mgmtOpen; }
 
     function makeDraggable(el) {
         let p1 = 0, p2 = 0, p3 = 0, p4 = 0; el.onmousedown = dStart; el.ontouchstart = dStart;
@@ -121,42 +106,63 @@
         function dMove(e) { let cx = e.clientX || e.touches[0].clientX; let cy = e.clientY || e.touches[0].clientY; p1 = p3 - cx; p2 = p4 - cy; p3 = cx; p4 = cy; el.style.top = (el.offsetTop - p2) + "px"; el.style.left = (el.offsetLeft - p1) + "px"; }
         function dEnd() { document.onmouseup = null; document.onmousemove = null; document.ontouchend = null; document.ontouchmove = null; }
     }
-    makeDraggable(document.getElementById("addBtn")); makeDraggable(document.getElementById("syncBtn"));
+    makeDraggable(document.getElementById("addBtn"));
 
     function submitEntry() {
         const text = document.getElementById('statusBox').value; if(!text.trim()) return;
         let isRisk = text.toLowerCase().includes("fire") || text.toLowerCase().includes("retaliation") || text.toLowerCase().includes("termination");
-        let analysis = isRisk ? "EA: High-severity pattern detected. Retaliation marker aligns with potential wrongful dismissal." : "";
-        activePending = { grit: text, analysis, stamp: new Date().toLocaleString() };
+        activePending = { grit: text, analysis: isRisk ? "EA: High-severity pattern detected." : "", stamp: new Date().toLocaleString() };
         
-        if(isRisk) {
-            document.getElementById('modalContent').innerHTML = `
-                <h2 style="color:var(--risk-red); font-weight:900; margin:0; font-size:18px;">EMPLOYMENT AT RISK!</h2>
-                <div style="font-size:13px; line-height:1.5; color:#4a5568; margin:15px 0; font-weight:600; text-align:left;">
-                    The AI has detected a direct threat to your position. <br><br>
-                    <b>Why the Pulse?</b><br>
-                    The Gray-to-Teal pulse indicates that this entry contains "High-Grit" evidence. It visually flags this record as a priority for legal cross-referencing.
-                </div>
-                <button class="modal-btn" style="background:var(--teal); color:white;" onclick="confirmSave()">OK, I UNDERSTAND</button>`;
-            document.getElementById('overlaySystem').style.display = 'flex';
+        if(isRisk && !pulseExplained) {
+            triggerPulseDiagnostic();
+        } else if(isRisk) {
+            triggerRiskWarning();
         } else { confirmSave(); }
         document.getElementById('statusBox').value = ''; if(utilOpen) toggleUtility();
     }
 
+    function triggerPulseDiagnostic() {
+        document.getElementById('modalContent').innerHTML = `
+            <h2 style="color:var(--risk-red); font-weight:900; margin:0; font-size:18px;">PULSE DIAGNOSTIC</h2>
+            <div style="font-size:12px; line-height:1.5; color:#4a5568; margin:15px 0; font-weight:600; text-align:left;">
+                An <b>Employment Risk Pulse</b> has been detected. <br><br>
+                <b>What is it?</b> This Gray-to-Teal heartbeat flags entries where your employment is at high risk. It is a visual legal marker to separate grit from crisis.<br><br>
+                <b>Your Control:</b> You can keep this rhythmic heartbeat active to track risks, or shut it off for a flat visual experience.
+            </div>
+            <button class="modal-btn" style="background:var(--teal); color:white;" onclick="setPulsePreference(true)">KEEP PULSE ON</button>
+            <button class="modal-btn" style="background:#f1f5f9; color:#718096;" onclick="setPulsePreference(false)">SHUT PULSE OFF</button>`;
+        document.getElementById('overlaySystem').style.display = 'flex';
+    }
+
+    function triggerRiskWarning() {
+        document.getElementById('modalContent').innerHTML = `
+            <h2 style="color:var(--risk-red); font-weight:900; margin:0; font-size:18px;">EMPLOYMENT AT RISK!</h2>
+            <div style="font-size:13px; line-height:1.5; color:#4a5568; margin:15px 0; font-weight:600;">High-severity markers detected. Documenting this pattern is critical.</div>
+            <button class="modal-btn" style="background:var(--teal); color:white;" onclick="confirmSave()">OK, I UNDERSTAND</button>`;
+        document.getElementById('overlaySystem').style.display = 'flex';
+    }
+
+    function setPulsePreference(pref) {
+        pulseActive = pref; pulseExplained = true;
+        localStorage.setItem('wt_pulse_active', pref);
+        localStorage.setItem('wt_pulse_explained', 'true');
+        confirmSave();
+    }
+
     function confirmSave() {
-        vault.push(activePending); localStorage.setItem('wt_timeline', JSON.stringify(vault)); unlockApp(); refresh();
-        // Reset modal
-        setTimeout(() => { document.getElementById('modalContent').innerHTML = `<h2 style="font-weight:900; font-size:18px;">INTAKE GUARD</h2><div style="font-size:13px; font-weight:600; margin:15px 0;">We are here to help you document the truth.<br><br>While this journal provides evidence support, <b>we do not offer legal advice.</b><br><br>Proceed to secure your workplace records.</div><button class="modal-btn" style="background:var(--teal); color:white;" onclick="unlockApp()">SECURE MY JOURNAL</button>`; }, 500);
+        vault.push(activePending); localStorage.setItem('wt_timeline', JSON.stringify(vault));
+        unlockApp(); refresh();
+        setTimeout(() => { document.getElementById('modalContent').innerHTML = `<h2 style="font-weight:900; font-size:18px;">INTAKE GUARD</h2><div style="font-size:13px; font-weight:600; margin:15px 0;">Secure your records. We provide support, but no legal advice.</div><button class="modal-btn" style="background:var(--teal); color:white;" onclick="unlockApp()">SECURE MY JOURNAL</button>`; }, 500);
     }
 
     function refresh() {
         const list = document.getElementById('timelineContainer'); list.innerHTML = '';
-        [...vault].reverse().forEach((item, index) => {
+        const pulseClass = pulseActive ? 'pulse-on' : '';
+        [...vault].reverse().forEach(item => {
             const hasAI = item.analysis !== "";
             list.innerHTML += `
                 <div class="stack-wrapper">
-                    <div class="stamp-label">📍 LANGLEY | ${item.stamp}</div>
-                    <div class="stack-inner ${hasAI ? 'has-ai' : ''}" onclick="this.classList.toggle('flipped')">
+                    <div class="stack-inner ${hasAI ? 'has-ai ' + pulseClass : ''}" onclick="this.classList.toggle('flipped')">
                         <div class="bubble bubble-front"><p style="font-weight:600; font-size:14px; margin:0;">${item.grit}</p></div>
                         ${hasAI ? `<div class="bubble bubble-back"><p style="font-weight:600; font-size:13px; margin:0;">${item.analysis}</p></div>` : ''}
                     </div>
