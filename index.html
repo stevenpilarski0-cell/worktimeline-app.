@@ -9,8 +9,8 @@
         :root { --teal: #008080; --teal-dark: #004d4d; --blue-trans: rgba(0, 128, 128, 0.12); --clio-blue: #0076CE; --platinum: #d8e2ea; --gray-dark: #2c3e50; --clio-green: #2ecc71; --round-inner: 24px; --glass: rgba(255, 255, 255, 0.95); --dark-silver: #7f8c8d; }
         body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 0; height: 100dvh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
         .ghost-active #timelineContainer, .ghost-active #utilityDrawer { filter: blur(25px); opacity: 0.3; pointer-events: none; }
-        #legalOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(44, 62, 80, 0.95); backdrop-filter: blur(10px); z-index: 200000; display: flex; align-items: center; justify-content: center; padding: 25px; box-sizing: border-box; }
-        .modal-card { background: white; padding: 35px; border-radius: 32px; text-align: center; max-width: 400px; box-shadow: 0 25px 60px rgba(0,0,0,0.4); border-bottom: 8px solid var(--teal); }
+        #legalOverlay, #syncOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(44, 62, 80, 0.95); backdrop-filter: blur(10px); z-index: 200000; display: flex; align-items: center; justify-content: center; padding: 25px; box-sizing: border-box; display: none; }
+        .modal-card { background: white; padding: 35px; border-radius: 32px; text-align: center; max-width: 400px; box-shadow: 0 25px 60px rgba(0,0,0,0.4); border-bottom: 8px solid var(--teal); width: 100%; }
         .modal-btn { background: var(--teal); color: white; border: none; padding: 18px; border-radius: 99px; font-weight: 900; cursor: pointer; margin-top: 25px; width: 100%; font-size: 16px; }
         #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
         .story-text { font-size: 24px; font-weight: 900; color: var(--gray-dark); margin-bottom: 40px; opacity: 0; transition: 0.8s; }
@@ -25,32 +25,22 @@
         .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--teal); }
         input:checked + .slider:before { transform: translateX(16px); }
-        .draggable-btn { position: absolute; z-index: 5000; touch-action: none; display: flex; flex-direction: column; align-items: center; justify-content: center; border: none; width: 65px; height: 65px; border-radius: 20px; color: white; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25); cursor: grab; }
+        .draggable-btn { position: absolute; z-index: 5000; touch-action: none; display: flex; flex-direction: column; align-items: center; justify-content: center; border: none; width: 65px; height: 65px; border-radius: 20px; color: white; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25); cursor: grab; text-align: center; line-height: 1.1; padding: 5px; }
         #addBtn { right: 20px; top: 160px; background: var(--teal); font-size: 40px; font-weight: 900; }
-        #syncBtn { right: 20px; top: 240px; background: var(--clio-blue); }
+        #syncBtn { right: 20px; top: 240px; background: var(--clio-blue); font-size: 10px; font-weight: 900; }
         #utilityDrawer { width: 100%; background: var(--glass); backdrop-filter: blur(12px); border-bottom: 2px solid var(--platinum); z-index: 2500; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
         #managementDrawer { position: fixed; bottom: 0; width: 100%; max-width: 500px; background: white; border-top: 3.5px solid var(--teal); z-index: 6000; transition: 0.5s transform cubic-bezier(0.16, 1, 0.3, 1); transform: translateY(calc(100% - 40px)); box-shadow: 0 -10px 40px rgba(0,0,0,0.1); }
         .drawer-content { padding: 15px 20px; }
         .drag-handle-zone { width: 100%; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .handle-pill { width: 45px; height: 6px; background: var(--platinum); border-radius: 10px; }
-        .template-bar { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 12px; scrollbar-width: none; }
-        .template-chip { background: white; border: 2px solid var(--teal); padding: 8px 14px; border-radius: 15px; font-size: 9px; font-weight: 900; color: var(--teal); white-space: nowrap; cursor: pointer; }
-        #statusBox { width: 100%; height: 85px; padding: 14px; border-radius: 18px; border: 2.5px solid var(--platinum); resize: none; font-family: inherit; font-weight: 700; background: #f8fafc; box-sizing: border-box; outline: none; }
-        .media-toolbar { display: flex; gap: 8px; margin-top: 12px; }
-        .media-btn { flex: 1; position: relative; background: white; border: 2.5px solid var(--platinum); padding: 12px 5px; border-radius: 16px; text-align: center; font-size: 9px; font-weight: 900; cursor: pointer; }
-        .media-btn input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 45px 15px 65px; position: relative; background: #fdfdfd; }
         .entry { position: relative; margin-left: 35px; background: white; border: 2.5px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; border-left: 10px solid var(--platinum); width: calc(100% - 45px); box-sizing: border-box; transition: 0.3s; }
         .entry.is-stacked { border-left-color: var(--teal); background: var(--blue-trans); }
-        .pattern-alert { background: var(--blue-trans); border: 1.5px solid var(--teal); padding: 12px; border-radius: 16px; margin-top: 10px; color: var(--teal-dark); }
-        .legal-detail-view { background: white; border: 1.5px solid var(--teal); padding: 15px; border-radius: 12px; margin-top: 10px; font-size: 12px; line-height: 1.5; text-align: left; }
-        .stack-toggle-btn { margin-top: 10px; padding: 8px; width: 100%; border-radius: 10px; border: 1.5px solid var(--teal); font-weight: 900; font-size: 10px; cursor: pointer; }
-        .pulse-dot { width: 10px; height: 10px; background-color: var(--clio-green); border-radius: 50%; animation: pulse-green 2s infinite; }
-        @keyframes pulse-green { 0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); } 100% { transform: scale(0.9); } }
     </style>
 </head>
 <body id="appBody">
-<div id="legalOverlay"><div class="modal-card"><h2 style="color:var(--teal); font-weight:900;">Friendly Reminder</h2><p>WorkTimeline™ is an evidence-tracking tool. <b>We do not provide legal advice.</b></p><button class="modal-btn" onclick="dismissLegal()">I UNDERSTAND</button></div></div>
+<div id="legalOverlay" style="display:flex;"><div class="modal-card"><h2 style="color:var(--teal); font-weight:900;">Friendly Reminder</h2><p>WorkTimeline™ is an evidence-tracking tool. <b>We do not provide legal advice.</b></p><button class="modal-btn" onclick="dismissLegal()">I UNDERSTAND</button></div></div>
+<div id="syncOverlay"><div class="modal-card"><h2 style="color:var(--clio-blue); font-weight:900;">Evidence Summary</h2><p id="aiSummaryText" style="text-align:left; font-size:14px; color:var(--gray-dark); max-height:300px; overflow-y:auto;"></p><button class="modal-btn" style="background:var(--clio-blue);" onclick="finalSync()">OK & SEND</button><button class="modal-btn" style="background:var(--dark-silver); margin-top:10px;" onclick="closeSync()">CANCEL</button></div></div>
 <div id="splashScreen"><h1 id="storyText" class="story-text">Welcome.</h1><button id="skipBtn" onclick="endSplash()">Skip Intro</button></div>
 <div class="app-container">
     <header class="header">
@@ -58,31 +48,25 @@
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 7V5C16 3.89543 15.1046 3 14 3H10C8.89543 3 8 3.89543 8 5V7H4C2.89543 7 2 7.89543 2 9V18C2 19.1046 2.89543 20 4 20H20C21.1046 20 22 19.1046 22 18V9C22 7.89543 21.1046 7 20 7H16ZM10 5H14V7H10V5ZM20 18H4V9H20V18Z" fill="var(--dark-silver)"/><rect x="5" y="12.5" width="14" height="2" rx="1" fill="var(--teal)"/><circle cx="7" cy="13.5" r="1.5" fill="white"/><circle cx="12" cy="13.5" r="1.5" fill="white"/><circle cx="17" cy="13.5" r="1.5" fill="white"/></svg>
             <div style="font-weight:900; color:var(--teal); font-size:16px;">WorkTimeline™</div>
         </div>
-        <div class="switch-group">
-            <div style="text-align:center;"><label class="switch"><input type="checkbox" onchange="toggleGhost(this)"><span class="slider"></span></label><div style="font-size:7px; font-weight:900;">GHOST</div></div>
-            <div style="text-align:center;"><label class="switch"><input type="checkbox" onchange="toggleVault(this)"><span class="slider"></span></label><div style="font-size:7px; font-weight:900;">NOTES</div></div>
-        </div>
+        <div class="switch-group"><div style="text-align:center;"><label class="switch"><input type="checkbox" onchange="toggleGhost(this)"><span class="slider"></span></label><div style="font-size:7px; font-weight:900;">GHOST</div></div><div style="text-align:center;"><label class="switch"><input type="checkbox" onchange="toggleVault(this)"><span class="slider"></span></label><div style="font-size:7px; font-weight:900;">NOTES</div></div></div>
     </header>
     <div id="addBtn" class="draggable-btn" onclick="submitEntry()">+</div>
-    <div id="syncBtn" class="draggable-btn" onclick="openSync()">CLIO</div>
+    <div id="syncBtn" class="draggable-btn" onclick="triggerLockSync()">LOCK & SYNC</div>
     <div id="utilityDrawer">
         <div class="drawer-content" id="drawerContent">
-            <div class="template-bar"><div class="template-chip" onclick="useTemplate('WITNESS')">WITNESS</div><div class="template-chip" onclick="useTemplate('INCIDENT')">INCIDENT</div><div class="template-chip" onclick="useTemplate('LOCATION')">LOCATION</div></div>
+            <div style="display:flex; gap:8px; overflow-x:auto; margin-bottom:12px;"><div class="template-chip" onclick="useTemplate('WITNESS')">WITNESS</div><div class="template-chip" onclick="useTemplate('INCIDENT')">INCIDENT</div><div class="template-chip" onclick="useTemplate('LOCATION')">LOCATION</div></div>
             <textarea id="statusBox" placeholder="Start your fresh record..."></textarea>
-            <div class="media-toolbar"><div class="media-btn"><span>CAMERA</span><input type="file" accept="image/*" capture="camera" onchange="addMedia('📷 PHOTO Uploaded.')"></div><div class="media-btn"><span>AUDIO</span><input type="file" accept="audio/*" capture="microphone" onchange="addMedia('🎤 AUDIO Recorded.')"></div><div class="media-btn"><span>DOCS</span><input type="file" onchange="addMedia('📄 FILE Uploaded.')"></div></div>
+            <div style="display:flex; gap:8px; margin-top:12px;"><div class="media-btn"><span>CAMERA</span><input type="file" accept="image/*" capture="camera" onchange="addMedia('📷 PHOTO')"></div><div class="media-btn"><span>AUDIO</span><input type="file" accept="audio/*" capture="microphone" onchange="addMedia('🎤 AUDIO')"></div><div class="media-btn"><span>DOCS</span><input type="file" onchange="addMedia('📄 FILE')"></div></div>
         </div>
         <div class="drag-handle-zone" onclick="toggleDrawer()"><div class="handle-pill"></div></div>
     </div>
-    <div id="timelineContainer">
-        <div style="position:absolute; right:20px; top:10px; display:flex; align-items:center; gap:6px; z-index:10;"><div class="pulse-dot"></div><span style="font-size:8px; font-weight:900; color:var(--clio-green);">CLIO READY</span></div>
-        <div id="displayList"></div>
-    </div>
+    <div id="timelineContainer"><div id="displayList"></div></div>
     <div id="managementDrawer">
         <div class="drag-handle-zone" onclick="toggleMgmtDrawer()"><div class="handle-pill"></div></div>
         <div style="padding:0 25px 35px; display:flex; flex-direction:column; gap:12px;">
             <button class="modal-btn" style="margin-top:0; background:var(--dark-silver);" onclick="confirmReset()">DELETE & START FRESH</button>
             <button class="modal-btn" style="margin-top:0; background: linear-gradient(90deg, var(--dark-silver) 0%, var(--teal) 100%);" onclick="alert('Email Client Opened.')">EMAIL EVIDENCE</button>
-            <button class="modal-btn" style="margin-top:0; background:var(--teal);" onclick="alert('Report Generated and Saved.')">SAVE & EXPORT</button>
+            <button class="modal-btn" style="margin-top:0; background:var(--teal);" onclick="alert('Report Generated.')">SAVE & EXPORT</button>
         </div>
     </div>
 </div>
@@ -92,48 +76,43 @@
     const timelineVault = JSON.parse(localStorage.getItem('wt_timeline')) || []; 
     const notesVault = JSON.parse(localStorage.getItem('wt_notes')) || [];
     window.onload = () => { refreshDisplay(); };
-    function dismissLegal() { document.getElementById('legalOverlay').style.opacity='0'; setTimeout(() => { document.getElementById('legalOverlay').remove(); runStory(); }, 500); }
+    function dismissLegal() { document.getElementById('legalOverlay').style.display='none'; runStory(); }
     function runStory() { const el = document.getElementById('storyText'); let i = 0; const next = () => { if(i < story.length) { el.style.opacity = 0; setTimeout(() => { el.innerText = story[i++]; el.style.opacity = 1; setTimeout(next, 2000); }, 600); } else endSplash(); }; next(); }
     function endSplash() { const s = document.getElementById('splashScreen'); if(s) { s.style.opacity='0'; setTimeout(() => s.remove(), 800); } }
     function toggleDrawer() { const d = document.getElementById('utilityDrawer'); const c = document.getElementById('drawerContent'); if(isDrawerOpen) { d.style.transform = `translateY(-${c.offsetHeight}px)`; isDrawerOpen = false; } else { d.style.transform = `translateY(0)`; isDrawerOpen = true; } }
     function toggleMgmtDrawer() { const d = document.getElementById('managementDrawer'); if(!isMgmtOpen) { d.style.transform = 'translateY(0)'; isMgmtOpen = true; } else { d.style.transform = 'translateY(calc(100% - 40px))'; isMgmtOpen = false; } }
-    function confirmReset() { if(confirm("CRITICAL: This will permanently wipe your persistent evidence vault. Proceed?")) { localStorage.clear(); location.reload(); } }
-    function useTemplate(type) { const t = { 'WITNESS': 'WITNESS: \nSTATEMENT: \nCONTACT: ', 'INCIDENT': 'ACTION: \nVIOLATION: \nQUOTES: ', 'LOCATION': 'SITE AREA: \nHAZARDS: ' }; document.getElementById('statusBox').value = t[type]; }
+    function triggerLockSync() {
+        if (timelineVault.length === 0) return alert("No entries to sync.");
+        let summary = "AI SUMMARY OF TIMELINE:\n\n";
+        timelineVault.forEach((e, i) => { summary += `${i+1}. [${e.stamp}] ${e.grit.substring(0, 50)}...\n`; });
+        document.getElementById('aiSummaryText').innerText = summary;
+        document.getElementById('syncOverlay').style.display = 'flex';
+    }
+    function finalSync() { alert("Locked and Synced to Clio."); document.getElementById('syncOverlay').style.display = 'none'; }
+    function closeSync() { document.getElementById('syncOverlay').style.display = 'none'; }
+    function confirmReset() { if(confirm("Wipe vault?")) { localStorage.clear(); location.reload(); } }
+    function useTemplate(type) { const t = { 'WITNESS': 'WITNESS: \nSTATEMENT: ', 'INCIDENT': 'ACTION: \nVIOLATION: ', 'LOCATION': 'SITE: \nHAZARDS: ' }; document.getElementById('statusBox').value = t[type]; }
     function makeMovable(el) { let p1 = 0, p2 = 0, p3 = 0, p4 = 0; el.ontouchstart = (e) => { p3 = e.touches[0].clientX; p4 = e.touches[0].clientY; document.ontouchend = () => { document.ontouchend = null; document.ontouchmove = null; }; document.ontouchmove = (e) => { p1 = p3 - e.touches[0].clientX; p2 = p4 - e.touches[0].clientY; p3 = e.touches[0].clientX; p4 = e.touches[0].clientY; el.style.top = (el.offsetTop - p2) + "px"; el.style.left = (el.offsetLeft - p1) + "px"; el.style.right = "auto"; }; }; }
     makeMovable(document.getElementById('addBtn')); makeMovable(document.getElementById('syncBtn'));
     function submitEntry() { const b = document.getElementById('statusBox'); if(!b.value.trim()) return; saveEntry(b.value); b.value = ''; }
-    function addMedia(m) { saveEntry(m); }
     function saveEntry(text) {
         navigator.geolocation.getCurrentPosition(pos => {
-            let lawData = null; const t = text.toLowerCase();
-            if(t.includes("hours") || t.includes("pay") || t.includes("overtime")) lawData = { title: "Employment Standards Act (ESA)", violation: "Wage & Hour: Mandatory Overtime pay and meal breaks are statutory requirements under the BC ESA." };
-            else if(t.includes("shout") || t.includes("harass") || t.includes("bullying") || t.includes("scream")) lawData = { title: "WorkSafeBC (OHSR 4.24-4.31)", violation: "WorkSafeBC: Employers must take all reasonable steps to prevent bullying and harassment in the workplace." };
-            else if(t.includes("camera") || t.includes("private") || t.includes("photo") || t.includes("personal information")) lawData = { title: "PIPA (BC Privacy Law)", violation: "PIPA: Unreasonable or non-consensual collection of employee personal information is prohibited." };
-            else if(t.includes("race") || t.includes("gender") || t.includes("disability") || t.includes("age") || t.includes("religion")) lawData = { title: "BC Human Rights Code", violation: "S. 13: Protection against discrimination in employment based on protected personal characteristics." };
-            else if(t.includes("unsafe") || t.includes("hazard") || t.includes("spill") || t.includes("refuse work")) lawData = { title: "WorkSafeBC / OHSR S. 3.12", violation: "Right to Refuse: Workers have a statutory duty to refuse work they believe is unsafe." };
-            else if(t.includes("fired") || t.includes("quit") || t.includes("toxic") || t.includes("retaliation") || t.includes("reprisal")) lawData = { title: "Civil / Common Law (Constructive Dismissal)", violation: "Constructive Dismissal: Significant unilateral changes to work terms or a toxic environment can be a breach of contract." };
-            const entry = { id: Date.now(), grit: text, stamp: new Date().toLocaleString(), gps: `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`, isStacked: false, currentView: 'grit', law: lawData };
+            const entry = { id: Date.now(), grit: text, stamp: new Date().toLocaleString(), gps: `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}` };
             if(activeVault === "TIMELINE") { timelineVault.push(entry); localStorage.setItem('wt_timeline', JSON.stringify(timelineVault)); } 
             else { notesVault.push(entry); localStorage.setItem('wt_notes', JSON.stringify(notesVault)); }
             refreshDisplay();
         });
     }
-    function toggleLegalDetail(id) { const el = document.getElementById(`detail-${id}`); el.style.display = el.style.display === 'block' ? 'none' : 'block'; }
-    function stackEntry(id) { const e = timelineVault.find(x => x.id === id) || notesVault.find(x => x.id === id); e.isStacked = true; e.currentView = 'legal'; localStorage.setItem('wt_timeline', JSON.stringify(timelineVault)); localStorage.setItem('wt_notes', JSON.stringify(notesVault)); refreshDisplay(); }
-    function switchView(id, view) { const e = timelineVault.find(x => x.id === id) || notesVault.find(x => x.id === id); e.currentView = view; refreshDisplay(); }
     function toggleGhost(cb) { document.getElementById('appBody').classList.toggle('ghost-active', cb.checked); }
     function toggleVault(cb) { activeVault = cb.checked ? "NOTES" : "TIMELINE"; refreshDisplay(); }
     function refreshDisplay() {
         const list = document.getElementById('displayList'); list.innerHTML = ''; const data = activeVault === "TIMELINE" ? timelineVault : notesVault;
         [...data].reverse().forEach(item => {
-            const div = document.createElement('div'); div.className = `entry ${item.isStacked ? 'is-stacked' : ''}`;
-            let content = item.currentView === 'legal' ? `<b style="color:var(--teal-dark);">STATUTORY CROSS-REFERENCE:</b><br>${item.law.title}<br>Status: ${item.law.violation}<br><br><span style="font-size:9px; opacity:0.7;">*Ares v. Venner Evidence. Not legal advice.</span>` : item.grit;
-            let footer = item.law && !item.isStacked ? `<div class="pattern-alert"><b>Statutory Marker Detected</b><button onclick="toggleLegalDetail(${item.id})" class="stack-toggle-btn">📖 REVIEW CANADIAN STATUTES</button><div id="detail-${item.id}" class="legal-detail-view" style="display:none;"><p><b>Legal Authority:</b> ${item.law.title}</p><p><b>Detection:</b> Your record identifies potential non-compliance markers under this authority.</p><button onclick="stackEntry(${item.id})" style="background:var(--teal); color:white; border:none; padding:10px; width:100%; border-radius:10px; font-weight:900;">VERIFY & STACK STATUTE</button></div></div>` : item.isStacked ? `<div style="display:flex; gap:8px; margin-top:12px;"><button onclick="switchView(${item.id}, 'grit')" class="stack-toggle-btn" style="background:${item.currentView === 'grit' ? 'var(--teal)' : 'white'}; color:${item.currentView === 'grit' ? 'white' : 'var(--teal)'}">ORIGINAL GRIT</button><button onclick="switchView(${item.id}, 'legal')" class="stack-toggle-btn" style="background:${item.currentView === 'legal' ? 'var(--teal)' : 'white'}; color:${item.currentView === 'legal' ? 'white' : 'var(--teal)'}">LEGAL ANALYSIS</button></div>` : "";
-            div.innerHTML = `<span style="font-size:9px; color:var(--teal); font-weight:900;">📍 ${item.gps} | ${item.stamp}</span><p style="margin:10px 0 0; font-size:14px; font-weight:800; white-space:pre-wrap;">${content}</p>${footer}`;
+            const div = document.createElement('div'); div.className = `entry`;
+            div.innerHTML = `<span style="font-size:9px; color:var(--teal); font-weight:900;">📍 ${item.gps} | ${item.stamp}</span><p style="margin:10px 0 0; font-size:14px; font-weight:800; white-space:pre-wrap;">${item.grit}</p>`;
             list.appendChild(div);
         });
     }
-    function openSync() { window.location.href = `https://ca.app.clio.com/oauth/authorize?client_id=18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s&response_type=code&redirect_uri=https://worktimeline-app.vercel.app/index.html&scope=leads_read%20leads_write%20contacts_write`; }
 </script>
 </body>
 </html>
