@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline Elite | v13.6 Stable</title>
+    <title>WorkTimeline Elite | v13.7 Stable</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -178,7 +178,7 @@
             <div class="bottom-handle-txt">SYSTEM CONTROLS</div>
         </div>
         <div class="drawer-content">
-            <button class="btn" style="background:var(--teal)" onclick="alert('Timeline Saved locally!')">SAVE</button>
+            <button class="btn" style="background:var(--teal)" onclick="exportTimeline()">SAVE REPORT</button>
             <button class="btn" style="background:var(--slate)" onclick="reset()">START FRESH</button>
             
             <div style="width: 100%; margin-top: 15px; border-top: 2px solid var(--mac-border); padding-top: 15px;">
@@ -197,7 +197,6 @@
         let mode = "TIMELINE"; 
         let isLocked = false;
 
-        // Fetch Key from memory
         let COHERE_API_KEY = localStorage.getItem('WT_API_KEY');
 
         window.onload = () => { 
@@ -205,13 +204,11 @@
             if(localStorage.getItem('WT_L_V1')) {
                 document.getElementById('introOverlay').style.display = 'none'; 
             }
-            // If key exists, put dots in the box so you know it's saved
             if(COHERE_API_KEY) {
                 document.getElementById('apiInputBox').value = "••••••••••••••••";
             }
         };
 
-        // NEW: Save API Key Function
         function saveApiKey() {
             const newKey = document.getElementById('apiInputBox').value.trim();
             if (newKey && newKey !== "••••••••••••••••") {
@@ -272,7 +269,6 @@
         }
 
         async function analyzeWithAI(text) {
-            // If they haven't saved a key yet, use the local fallback
             if (!COHERE_API_KEY) {
                 let textLower = text.toLowerCase();
                 if (textLower.includes("fired") || textLower.includes("unsafe")) return { severity: 3, ai_text: "CRITICAL: Potential violation detected.", ref: "Local Fallback" };
@@ -352,6 +348,47 @@
         }
 
         function reset() { if(confirm("Start Fresh? All data will be wiped.")) { localStorage.removeItem('WT_PRO_FINAL'); localStorage.removeItem('WT_NOTE_FINAL'); localStorage.removeItem('WT_API_KEY'); location.reload(); } }
+
+        // --- NEW DATA EXPORT ENGINE ---
+        function exportTimeline() {
+            if (db.length === 0) {
+                alert("Timeline is empty. Nothing to export.");
+                return;
+            }
+
+            let report = "WORKTIMELINE ELITE - SECURE LEGAL EXPORT\n";
+            report += "Generated: " + new Date().toLocaleString() + "\n";
+            report += "Integrity Status: " + (isLocked ? "LOCKED & SECURED" : "UNLOCKED DRAFT") + "\n";
+            report += "==================================================\n\n";
+
+            [...db].forEach((entry, index) => {
+                report += `[RECORD ${index + 1}] --- ${entry.time}\n`;
+                if (entry.is_post_lock) report += `⚠️ INTEGRITY WARNING: ENTRY ADDED POST-LOCK\n`;
+                
+                report += `USER NOTES:\n${entry.txt}\n\n`;
+                
+                if (entry.severity > 0) {
+                    report += `--- AI STATUTORY DIAGNOSTIC ---\n`;
+                    report += `SEVERITY LEVEL: ${entry.severity}\n`;
+                    report += `ANALYSIS: ${entry.ai_text}\n`;
+                    report += `REFERENCE: ${entry.ref}\n`;
+                }
+                report += "--------------------------------------------------\n\n";
+            });
+
+            const blob = new Blob([report], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `WorkTimeline_Audit_${Date.now()}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            document.getElementById('bottomDrawer').classList.remove('open');
+            triggerPulse("teal", "REPORT GENERATED...");
+        }
     </script>
 </body>
 </html>
