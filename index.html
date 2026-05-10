@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline Elite | v13.9 Master</title>
+    <title>WorkTimeline Elite | v14.2 Precedent</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&family=Nunito+Sans:wght@400;700&display=swap');
         
@@ -56,12 +56,10 @@
 
         /* TIMELINE */
         #timeline { flex-grow: 1; overflow-y: auto; padding: 80px 20px 140px; display: flex; flex-direction: column; gap: 20px; }
-        .entry-card { perspective: 1000px; width: 100%; }
-        .card-inner { position: relative; width: 95%; min-height: 80px; transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer; }
-        .card-inner.flipped { transform: rotateY(180deg); }
-        .face { padding: 20px; border-radius: 25px; backface-visibility: hidden; box-shadow: var(--mac-shadow); border: 2px solid var(--mac-border); width: 100%; box-sizing: border-box; }
-        .front { background: var(--white); border-left: 8px solid var(--teal); position: relative; }
-        .back { background: var(--teal); color: white; position: absolute; top: 0; left: 0; height: 100%; transform: rotateY(180deg); overflow-y: auto; }
+        .entry-card { width: 100%; }
+        .card-body { padding: 20px; border-radius: 25px; box-shadow: var(--mac-shadow); border: 2px solid var(--mac-border); width: 100%; box-sizing: border-box; background: var(--white); border-left: 8px solid var(--teal); position: relative; }
+        .note-body { border-left-color: var(--notes-gold); }
+        .stamp { font-size: 10px; font-weight: 800; color: var(--slate); opacity: 0.4; margin-bottom: 8px; }
 
         /* OVERLAYS */
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(10px); z-index: 100000; display: none; align-items: center; justify-content: center; padding: 25px; }
@@ -88,14 +86,14 @@
                 <div class="mac-switch-wrapper"><label class="mac-switch"><input type="checkbox" id="noteToggle" onchange="toggleNotes()"><span class="mac-slider gold-variant"></span></label><span class="switch-label">NOTES</span></div>
             </div>
         </header>
-        <textarea id="statusBox" placeholder="Enter daily log or event..."></textarea>
+        <textarea id="statusBox" placeholder="Log incident details..."></textarea>
         <div style="display:flex; align-items:center; margin-top:15px;">
             <div class="media-dock">
                 <button class="icon-btn" onclick="document.getElementById('cameraIn').click()"><svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M9 3L7.17 5H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-3.17L15 3H9z"/></svg></button>
                 <button class="icon-btn" onclick="document.getElementById('micIn').click()"><svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg></button>
                 <button class="icon-btn" onclick="document.getElementById('docIn').click()"><svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6z"/></svg></button>
             </div>
-            <button id="addBtn" onclick="analyzeIntelligence()" style="width:60px; height:60px; border-radius:15px; background:var(--teal); color:white; font-size:32px; font-weight:900; border:none;">+</button>
+            <button onclick="analyzeIntelligence()" style="width:60px; height:60px; border-radius:15px; background:var(--teal); color:white; font-size:32px; font-weight:900; border:none;">+</button>
         </div>
     </div>
     <div class="top-handle" onclick="document.getElementById('topDrawer').classList.toggle('open')"><div class="top-pill"></div></div>
@@ -105,11 +103,11 @@
 
 <div id="aiModal" class="overlay">
     <div class="modal">
-        <h2 id="aiTitle" style="color:var(--teal); margin:0;">PATTERN DETECTED</h2>
+        <h2 id="aiTitle" style="color:var(--teal); margin:0;">PRECEDENT MATCH</h2>
         <p id="aiBody" style="font-size:15px; color:var(--slate); margin: 20px 0; line-height:1.4;"></p>
-        <div id="aiSourceBox" style="font-size:12px; font-weight:900; background:#e0f2f1; padding:12px; border-radius:15px; margin-bottom:20px;"></div>
-        <button class="btn" style="background:var(--teal); color:white;" onclick="confirmCoin(true)">FLIP TO COIN (ADD AI)</button>
-        <button class="btn" style="background:var(--slate); color:white;" onclick="confirmCoin(false)">LOG RAW TEXT ONLY</button>
+        <div id="aiSourceBox" style="margin-bottom:20px;"></div>
+        <button class="btn" style="background:var(--teal); color:white;" onclick="confirmCaseLaw(true)">INCLUDE CASE LAW & LOG</button>
+        <button class="btn" style="background:var(--slate); color:white;" onclick="confirmCaseLaw(false)">LOG RAW TEXT ONLY</button>
     </div>
 </div>
 
@@ -119,16 +117,29 @@
 </div>
 
 <script>
-    let db = JSON.parse(localStorage.getItem('WT_PRO_MASTER_139')) || [];
-    let noteDb = JSON.parse(localStorage.getItem('WT_NOTE_MASTER_139')) || [];
+    let db = JSON.parse(localStorage.getItem('WT_PRO_142')) || [];
+    let noteDb = JSON.parse(localStorage.getItem('WT_NOTE_142')) || [];
     let mode = "TIMELINE"; let isLocked = false; let pending = null;
+
+    const precedents = {
+        RETALIATION: {
+            caseName: "Re: Section 3.12 OHS Prohibited Action",
+            summary: "A critical precedent protecting BC workers from harassment or penalty following a First Aid or Safety filing.",
+            link: "https://www.worksafebc.com/en/law-policy/occupational-health-safety/searchable-ohs-regulation/ohs-guidelines/guidelines-part-03#SectionNumber:G3.12"
+        },
+        CONSTRUCTIVE: {
+            caseName: "Potter v. New Brunswick [2015]",
+            summary: "The Supreme Court confirmed that removing workplace tools or access constitutes a fundamental breach of contract.",
+            link: "https://scc-csc.lexum.com/scc-csc/scc-csc/en/item/14738/index.do"
+        }
+    };
 
     function toggleNotes() { mode = document.getElementById('noteToggle').checked ? "NOTES" : "TIMELINE"; document.body.classList.toggle('notes-mode'); render(); }
 
     function syncClio() {
         isLocked = true;
         triggerPulse("teal", "Locking Artifacts to Clio...");
-        setTimeout(() => alert("Vault Synchronized."), 1200);
+        setTimeout(() => alert("Timeline Synchronized and Locked."), 1200);
     }
 
     function triggerPulse(type, text) {
@@ -144,26 +155,31 @@
 
     function analyzeIntelligence() {
         const box = document.getElementById('statusBox'); const val = box.value.trim(); if(!val) return;
-        if(mode === "NOTES") { noteDb.push({id:Date.now(), txt:val, time:new Date().toLocaleString()}); localStorage.setItem('WT_NOTE_MASTER_139', JSON.stringify(noteDb)); box.value=''; render(); return; }
+        if(mode === "NOTES") { noteDb.push({id:Date.now(), txt:val, time:new Date().toLocaleString()}); localStorage.setItem('WT_NOTE_142', JSON.stringify(noteDb)); box.value=''; render(); return; }
 
         const t = val.toLowerCase();
         let pattern = null;
+        let caseMatch = null;
 
-        if((t.includes("desk") || t.includes("login") || t.includes("access")) && (t.includes("removed") || t.includes("moved") || t.includes("locked"))) {
-            pattern = { title: "CONSTRUCTIVE DISMISSAL", source: "BC Employment Standards Act", body: "Pattern detected: Unilateral change to employment conditions via tool/location removal." };
-        } else if(t.includes("fired") || t.includes("termination") || t.includes("fired me")) {
-            pattern = { title: "WRONGFUL DISMISSAL RISK", source: "ESA Section 63", body: "Critical event detected. Pattern suggests termination without cause or notice." };
-        } else if(isLocked) {
+        const hasFirstAid = db.some(e => e.txt.toLowerCase().includes("first aid") || e.txt.toLowerCase().includes("report"));
+
+        if (hasFirstAid && (t.includes("harass") || t.includes("yell") || t.includes("pressure") || t.includes("picked"))) {
+            pattern = { title: "RETALIATION DETECTED", source: "WorkSafeBC 3.12" };
+            caseMatch = precedents.RETALIATION;
+        } else if ((t.includes("access") || t.includes("login") || t.includes("desk")) && (t.includes("removed") || t.includes("locked"))) {
+            pattern = { title: "CONSTRUCTIVE DISMISSAL", source: "Potter v. NB" };
+            caseMatch = precedents.CONSTRUCTIVE;
+        } else if (isLocked) {
             triggerPulse("yellow", "INTEGRITY WARNING...");
             setTimeout(() => saveEntry(val, null), 1900); return;
         }
 
-        if(pattern) {
-            pending = { val, pattern };
+        if(pattern && caseMatch) {
+            pending = { val, pattern, caseMatch };
             document.getElementById('aiTitle').innerText = pattern.title;
-            document.getElementById('aiBody').innerText = pattern.body;
-            document.getElementById('aiSourceBox').innerText = "SOURCE: " + pattern.source;
-            if(pattern.title.includes("WRONGFUL")) triggerPulse("red", "CRITICAL RISK PULSE...");
+            document.getElementById('aiBody').innerHTML = `<strong>Pattern Analysis:</strong> I have found a direct match with legal precedents.<br><br><strong>Precedent:</strong> ${caseMatch.caseName}<br><em>${caseMatch.summary}</em>`;
+            document.getElementById('aiSourceBox').innerHTML = `<button onclick="window.open('${caseMatch.link}')" style="background:var(--clio-blue); color:white; border:none; padding:12px; border-radius:12px; font-weight:900; width:100%; cursor:pointer;">READ FULL CASE LAW</button>`;
+            triggerPulse(pattern.title.includes("RETALIATION") ? "red" : "teal", "PRECEDENT MATCH FOUND...");
             setTimeout(() => document.getElementById('aiModal').style.display='flex', 1850);
         } else {
             triggerPulse("teal", "AI PULSING...");
@@ -171,21 +187,23 @@
         }
     }
 
-    function confirmCoin(useAI) {
-        saveEntry(pending.val, useAI ? pending.pattern : null);
+    function confirmCaseLaw(includeCase) {
+        let finalTxt = pending.val;
+        if(includeCase) finalTxt += `\n\n[PRECEDENT ATTACHED: ${pending.caseMatch.caseName}]\nSource: ${pending.pattern.source}`;
+        saveEntry(finalTxt, null);
         document.getElementById('aiModal').style.display = 'none';
     }
 
     function saveEntry(txt, ai) {
-        db.push({ id: Date.now(), txt, ai, time: new Date().toLocaleString() });
-        localStorage.setItem('WT_PRO_MASTER_139', JSON.stringify(db));
+        db.push({ id: Date.now(), txt, time: new Date().toLocaleString() });
+        localStorage.setItem('WT_PRO_142', JSON.stringify(db));
         document.getElementById('statusBox').value = ''; render();
     }
 
     function mediaLog(type) {
         const entry = { id: Date.now(), txt: `[ATTACHED ${type.toUpperCase()}] Hardware Artifact.`, time: new Date().toLocaleString() };
-        if(mode === "NOTES") { noteDb.push(entry); localStorage.setItem('WT_NOTE_MASTER_139', JSON.stringify(noteDb)); }
-        else { db.push(entry); localStorage.setItem('WT_PRO_MASTER_139', JSON.stringify(db)); }
+        if(mode === "NOTES") { noteDb.push(entry); localStorage.setItem('WT_NOTE_142', JSON.stringify(noteDb)); }
+        else { db.push(entry); localStorage.setItem('WT_PRO_142', JSON.stringify(db)); }
         render();
     }
 
@@ -194,21 +212,15 @@
         const list = mode === "TIMELINE" ? db : noteDb;
         [...list].reverse().forEach(item => {
             const wrap = document.createElement('div'); wrap.className = 'entry-card';
-            wrap.innerHTML = `<div class="card-inner ${item.ai ? '' : 'no-flip'}" onclick="${item.ai ? "this.classList.toggle('flipped')" : ""}">
-                <div class="face front ${mode==='NOTES'?'note-item':''}">
-                    <div style="font-size:10px; opacity:0.4; margin-bottom:10px;">${item.time}</div>
-                    <div style="font-weight:700; line-height:1.4;">${item.txt}</div>
-                    ${item.ai ? '<div style="position:absolute; bottom:15px; right:15px; font-size:20px;">🪙</div>' : ''}
-                </div>
-                ${item.ai ? `<div class="face back">
-                    <div style="font-weight:900; border-bottom:1px solid rgba(255,255,255,0.3); padding-bottom:8px; margin-bottom:10px;">${item.ai.title}</div>
-                    <div style="font-size:13px; line-height:1.5;">${item.ai.body}</div>
-                </div>` : ''}
+            wrap.innerHTML = `<div class="card-body ${mode==='NOTES'?'note-body':''}">
+                <div class="stamp">${item.time}</div>
+                <div style="font-weight:700; line-height:1.5; white-space:pre-wrap;">${item.txt}</div>
             </div>`;
             container.appendChild(wrap);
         });
     }
 
+    function reset() { if(confirm("Start Fresh?")) { localStorage.clear(); location.reload(); } }
     window.onload = render;
 </script>
 </body>
