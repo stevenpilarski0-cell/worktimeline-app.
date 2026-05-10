@@ -19,12 +19,13 @@
         
         body { font-family: 'Nunito', sans-serif; background: var(--gray-bg); margin: 0; padding: 0; height: 100dvh; overflow: hidden; display: flex; justify-content: center; -webkit-tap-highlight-color: transparent; }
         .app-locked { filter: blur(35px); pointer-events: none; }
+        .ghost-active #timelineContainer, .ghost-active #utilityDrawer, .ghost-active #mgmtDrawer { filter: blur(25px); opacity: 0.15; pointer-events: none; }
+
         .app-container { width: 100%; max-width: 500px; background: white; height: 100dvh; display: flex; flex-direction: column; position: relative; border: 1.5px solid var(--gray-border); box-sizing: border-box; overflow: hidden; }
         
         /* HEADER */
         .header { padding: 12px 15px; border-bottom: 1px solid var(--gray-border); background: white; z-index: 4000; position: relative; }
         .header-top { display: flex; justify-content: flex-start; align-items: center; }
-        .brand-text { display: flex; flex-direction: column; align-items: flex-start; }
         .main-title { font-weight: 900; font-size: 17px; display: flex; align-items: center; letter-spacing: -0.5px; }
         .work-silver { color: var(--silver-gray); }
         .timeline-teal { color: var(--teal); }
@@ -37,14 +38,11 @@
         .handle { width: 100%; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .handle-pill { width: 35px; height: 4px; background: #cbd5e0; border-radius: 10px; }
 
-        /* BUBBLY TEMPLATES & MEDIA */
-        .template-row { display: flex; gap: 6px; overflow-x: auto; padding: 0 15px 15px; scrollbar-width: none; }
-        .template-row::-webkit-scrollbar { display: none; }
-        .template-chip { flex-shrink: 0; border: 1.5px solid var(--gray-border); padding: 8px 16px; border-radius: 50px; font-size: 10px; font-weight: 900; color: #4a5568; background: #f8fafc; cursor: pointer; text-transform: uppercase; }
-        .media-row { display: flex; gap: 8px; padding: 0 15px 15px; }
+        /* BUBBLY UI */
+        .template-chip { border: 1px solid var(--gray-border); padding: 8px 16px; border-radius: 50px; font-size: 10px; font-weight: 900; color: #4a5568; background: #f8fafc; cursor: pointer; }
         .media-pill { background: rgba(226, 232, 240, 0.8); border: 1px solid var(--gray-border); padding: 10px 15px; border-radius: 50px; font-size: 10px; flex: 1; font-weight: 800; color: #4a5568; text-align: center; }
 
-        /* TIMELINE & PULSE */
+        /* 3D STACK SYSTEM */
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 60px 15px 150px; display: flex; flex-direction: column; gap: 25px; scrollbar-width: none; }
         .stack-wrapper { position: relative; width: 100%; perspective: 1000px; }
         .stack-inner { position: relative; width: 85%; min-height: 80px; transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer; }
@@ -81,22 +79,25 @@
 
 <div class="app-container app-locked" id="mainApp">
     <header class="header">
-        <div class="header-top"><div class="main-title"><span class="work-silver">Work</span><span class="timeline-teal">Timeline</span>™ <div class="clio-pulse"></div></div></div>
+        <div class="header-top">
+            <div class="main-title"><span class="work-silver">Work</span><span class="timeline-teal">Timeline</span>™ <div class="clio-pulse"></div></div>
+            <div style="position:absolute; right:15px; display:flex; flex-direction:column; gap:4px;">
+                <button onclick="document.getElementById('appBody').classList.toggle('ghost-active')" style="background:#f1f5f9; border:none; border-radius:20px; font-size:7px; font-weight:900; padding:4px 10px; color:var(--teal);">GHOST</button>
+                <button onclick="refresh()" style="background:#f1f5f9; border:none; border-radius:20px; font-size:7px; font-weight:900; padding:4px 10px; color:var(--teal);">NOTES</button>
+            </div>
+        </div>
     </header>
 
     <div id="utilityDrawer">
-        <div style="padding-top: 15px;">
-            <div class="template-row">
+        <div style="padding: 15px 15px 45px;">
+            <div style="display:flex; gap:6px; justify-content:center; margin-bottom: 15px;">
                 <button onclick="useTemplate('INCIDENT')" class="template-chip">INCIDENT</button>
-                <button onclick="useTemplate('INJURY')" class="template-chip">INJURY</button>
                 <button onclick="useTemplate('WITNESS')" class="template-chip">WITNESS</button>
-                <button onclick="useTemplate('REPRIMAND')" class="template-chip">REPRIMAND</button>
-                <button onclick="useTemplate('MEETING')" class="template-chip">MEETING</button>
             </div>
-            <div class="media-row">
+            <div style="display:flex; gap:8px; margin-bottom:12px;">
                 <div class="media-pill">CAMERA</div><div class="media-pill">AUDIO</div><div class="media-pill">FILES</div>
             </div>
-            <div style="padding: 0 15px 45px;"><textarea id="statusBox" placeholder="Documenting the grit..."></textarea></div>
+            <textarea id="statusBox" placeholder="Documenting the grit..."></textarea>
         </div>
         <div class="handle" onclick="toggleUtility()"><div class="handle-pill"></div></div>
     </div>
@@ -105,7 +106,10 @@
 
     <div id="mgmtDrawer">
         <div class="handle" onclick="toggleMgmt()"><div class="handle-pill"></div></div>
-        <div style="padding: 15px 25px 35px;"><button class="modal-btn" style="background:var(--teal); color:white;" onclick="alert('Exporting...')">SAVE & EXPORT</button></div>
+        <div style="padding: 15px 25px 35px;">
+            <button class="modal-btn" style="background:var(--teal); color:white;" onclick="alert('Exporting...')">SAVE & EXPORT</button>
+            <button class="modal-btn" style="background:#f1f5f9; color:#718096;" onclick="confirm('Wipe?') && (localStorage.clear() || location.reload())">START FRESH</button>
+        </div>
     </div>
 </div>
 
@@ -132,7 +136,7 @@
     function triggerPulseDiagnostic() {
         document.getElementById('modalContent').innerHTML = `
             <h2 style="color:var(--risk-red); font-weight:900; margin:0; font-size:18px;">PULSE DIAGNOSTIC</h2>
-            <div style="font-size:12px; line-height:1.5; color:#4a5568; margin:15px 0; font-weight:600; text-align:left;"><b>Employment Risk Pulse</b> detected. Flags high-risk entries. Keep heartbeat active or shut off.</div>
+            <div style="font-size:12px; line-height:1.5; color:#4a5568; margin:15px 0; font-weight:600; text-align:left;"><b>Unemployment Risk Pulse</b> detected. This heartbeat flags high-risk entries. Keep it on or shut it off.</div>
             <button class="modal-btn" style="background:var(--teal); color:white;" onclick="setPulsePreference(true)">KEEP PULSE ON</button>
             <button class="modal-btn" style="background:#f1f5f9; color:#718096;" onclick="setPulsePreference(false)">SHUT PULSE OFF</button>`;
         document.getElementById('overlaySystem').style.display = 'flex';
@@ -161,10 +165,7 @@
         });
     }
 
-    function useTemplate(t) { 
-        const ts = { 'INCIDENT': 'ACTION:\nVIOLATION:', 'INJURY': 'OFA RECORD:\nINJURY:', 'WITNESS': 'NAME:\nCONTACT:', 'REPRIMAND': 'ISSUED BY:\nREASON:', 'MEETING': 'ATTENDEES:\nTOPIC:' }; 
-        document.getElementById('statusBox').value = ts[t]; 
-    }
+    function useTemplate(t) { const ts = { 'INCIDENT': 'ACTION:\nVIOLATION:', 'WITNESS': 'NAME:\nCONTACT:' }; document.getElementById('statusBox').value = ts[t]; }
     refresh();
 </script>
 </body>
