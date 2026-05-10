@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Master Build</title>
+    <title>WorkTimeline™ | Final UI</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&family=Nunito+Sans:wght@400;600;800&display=swap');
         
@@ -44,7 +44,7 @@
         .mac-controls { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; gap: 10px; }
         .mac-media-bar { display: flex; gap: 10px; background: var(--mac-bg); padding: 8px; border-radius: 20px; flex-grow: 1; justify-content: space-around;}
         
-        /* SOLID MAC-STYLE ICONS */
+        /* SOLID MAC-STYLE SVG ICONS */
         .media-icon { background: white; width: 45px; height: 45px; border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); color: var(--slate); cursor: pointer; }
         
         #addBtn { width: 60px; height: 60px; border-radius: 18px; background: var(--teal); color: white; font-weight: 900; font-size: 30px; border: none; box-shadow: 0 8px 20px rgba(0,0,0,0.2); cursor: pointer; transition: 0.3s; }
@@ -62,7 +62,7 @@
         .stack-inner.has-ai-pulse-on::after { content: ''; position: absolute; top: 6px; left: 8px; width: 100%; height: 100%; background: var(--slate); border-radius: 22px; z-index: 0; opacity: 0.7; animation: dark-heavy-pulse 3s infinite ease-in-out; }
         @keyframes dark-heavy-pulse { 0% { box-shadow: 0 0 0 0 rgba(100, 116, 139, 0.7); background: var(--slate); } 50% { background: var(--teal); box-shadow: 0 0 0 15px rgba(0, 128, 128, 0.4); opacity: 0.9; } 70% { box-shadow: 0 0 0 30px rgba(0, 128, 128, 0); background: var(--teal); } 100% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0); background: var(--slate); } }
 
-        /* FIXED DRAWER CSS */
+        /* FIXED PULL UP DRAWER WITH SAFE AREA FIX */
         #mgmtDrawer { 
             position: fixed; 
             bottom: 0; left: 0; width: 100%; 
@@ -72,15 +72,15 @@
             border-radius: 35px 35px 0 0; 
             transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
             box-shadow: 0 -15px 50px rgba(0,0,0,0.2); 
-            padding-bottom: 30px; 
-            transform: translateY(calc(100% - 65px)); /* Always leaves the top 65px visible */
+            padding-bottom: calc(30px + env(safe-area-inset-bottom)); 
+            transform: translateY(calc(100% - 85px - env(safe-area-inset-bottom))); /* Peeks out 85px */
         }
-        #mgmtDrawer.active { transform: translateY(0); /* Slides up to show everything */ }
+        #mgmtDrawer.active { transform: translateY(0); }
         .pull-handle { 
-            width: 100%; height: 65px; 
+            width: 100%; height: 85px; 
             display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; 
-            cursor: pointer; 
+            align-items: center; justify-content: flex-start; 
+            padding-top: 15px; cursor: pointer; box-sizing: border-box;
         }
         .handle-pill { width: 60px; height: 6px; background: var(--teal); border-radius: 10px; margin-bottom: 6px; }
         .handle-text { font-size: 10px; font-weight: 900; color: var(--teal); letter-spacing: 2px; }
@@ -187,8 +187,8 @@
 </div>
 
 <script>
-    const timelineVault = JSON.parse(localStorage.getItem('wt_bc_timeline_v3')) || [];
-    const notesVault = JSON.parse(localStorage.getItem('wt_bc_notes_v3')) || [];
+    const timelineVault = JSON.parse(localStorage.getItem('wt_bc_timeline_final')) || [];
+    const notesVault = JSON.parse(localStorage.getItem('wt_bc_notes_final')) || [];
     let pendingEntry = null;
     let activeVault = "TIMELINE";
 
@@ -245,7 +245,7 @@
         getLocation((gpsString) => {
             if (activeVault === "NOTES") {
                 notesVault.push({ id: Date.now(), content: text, stamp: new Date().toLocaleString(), gps: gpsString, pulse: false });
-                localStorage.setItem('wt_bc_notes_v3', JSON.stringify(notesVault));
+                localStorage.setItem('wt_bc_notes_final', JSON.stringify(notesVault));
                 b.value = ''; refreshDisplay();
                 return;
             }
@@ -277,7 +277,7 @@
         if (pendingEntry) {
             if (!userAgrees) { pendingEntry.pulse = false; pendingEntry.aiTag = null; pendingEntry.aiOpinion = null; }
             timelineVault.push(pendingEntry);
-            localStorage.setItem('wt_bc_timeline_v3', JSON.stringify(timelineVault));
+            localStorage.setItem('wt_bc_timeline_final', JSON.stringify(timelineVault));
         }
         document.getElementById('statusBox').value = '';
         document.getElementById('aiOpinionOverlay').style.display = 'none';
