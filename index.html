@@ -19,8 +19,6 @@
         
         body { font-family: 'Nunito', sans-serif; background: var(--gray-bg); margin: 0; padding: 0; height: 100dvh; overflow: hidden; display: flex; justify-content: center; -webkit-tap-highlight-color: transparent; }
         .app-locked { filter: blur(35px); pointer-events: none; }
-        .ghost-active #timelineContainer, .ghost-active #utilityDrawer, .ghost-active #mgmtDrawer { filter: blur(25px); opacity: 0.15; pointer-events: none; }
-
         .app-container { width: 100%; max-width: 500px; background: white; height: 100dvh; display: flex; flex-direction: column; position: relative; border: 1.5px solid var(--gray-border); box-sizing: border-box; overflow: hidden; }
         
         /* HEADER */
@@ -33,13 +31,20 @@
         .clio-pulse { width: 7px; height: 7px; background-color: var(--clio-green); border-radius: 50%; margin-left: 8px; animation: clio-throb 2s infinite; }
         @keyframes clio-throb { 0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.6); } 70% { box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); } 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
 
-        /* DRAWERS (RESTORED BOTH) */
+        /* DRAWERS */
         #utilityDrawer { position: absolute; top: 60px; width: 100%; background: white; border-bottom: 1.5px solid var(--gray-border); z-index: 3500; transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) transform; transform: translateY(calc(-100% + 40px)); border-radius: 0 0 30px 30px; }
         #mgmtDrawer { position: fixed; bottom: 0; width: 100%; max-width: 500px; background: white; border-top: 1.5px solid var(--gray-border); z-index: 4500; transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) transform; transform: translateY(calc(100% - 40px)); border-radius: 30px 30px 0 0; }
         .handle { width: 100%; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .handle-pill { width: 35px; height: 4px; background: #cbd5e0; border-radius: 10px; }
 
-        /* TIMELINE - STACK SYSTEM */
+        /* BUBBLY TEMPLATES & MEDIA */
+        .template-row { display: flex; gap: 6px; overflow-x: auto; padding: 0 15px 15px; scrollbar-width: none; }
+        .template-row::-webkit-scrollbar { display: none; }
+        .template-chip { flex-shrink: 0; border: 1.5px solid var(--gray-border); padding: 8px 16px; border-radius: 50px; font-size: 10px; font-weight: 900; color: #4a5568; background: #f8fafc; cursor: pointer; text-transform: uppercase; }
+        .media-row { display: flex; gap: 8px; padding: 0 15px 15px; }
+        .media-pill { background: rgba(226, 232, 240, 0.8); border: 1px solid var(--gray-border); padding: 10px 15px; border-radius: 50px; font-size: 10px; flex: 1; font-weight: 800; color: #4a5568; text-align: center; }
+
+        /* TIMELINE & PULSE */
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 60px 15px 150px; display: flex; flex-direction: column; gap: 25px; scrollbar-width: none; }
         .stack-wrapper { position: relative; width: 100%; perspective: 1000px; }
         .stack-inner { position: relative; width: 85%; min-height: 80px; transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer; }
@@ -47,8 +52,6 @@
         .bubble { padding: 15px; border-radius: 22px; font-family: 'Nunito Sans', sans-serif; backface-visibility: hidden; box-shadow: var(--mac-shadow); width: 100%; box-sizing: border-box; }
         .bubble-front { background: #f1f1f1; border: 1px solid #e5e5e5; color: #1a202c; position: relative; z-index: 2; }
         .bubble-back { background: var(--teal); color: white; transform: rotateY(180deg); position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; border: 1px solid rgba(255,255,255,0.2); }
-        
-        /* HEAVY GRAY-TO-TEAL PULSE */
         .stack-inner.has-ai.pulse-on::after { 
             content: ''; position: absolute; top: 6px; left: 8px; width: 100%; height: 100%; background: #4a5568; border-radius: 22px; z-index: 0; opacity: 0.7; animation: dark-heavy-pulse 3s infinite ease-in-out; 
         }
@@ -59,17 +62,10 @@
             100% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0); background: #4a5568; } 
         }
 
-        /* UI ELEMENTS */
-        .draggable { position: absolute; z-index: 5000; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; border-radius: 22px; border: none; box-shadow: var(--mac-shadow); touch-action: none; }
-        #addBtn { width: 70px; height: 70px; background: var(--teal); font-size: 30px; top: 160px; right: 20px; }
-        #syncBtn { width: 70px; height: 70px; background: var(--clio-blue); font-size: 8px; padding: 6px; top: 250px; right: 20px; text-align: center; }
-        .template-chip { border: 1px solid var(--gray-border); padding: 8px 16px; border-radius: 50px; font-size: 10px; font-weight: 900; color: #4a5568; background: #f8fafc; cursor: pointer; }
-        .media-pill { background: rgba(226, 232, 240, 0.8); border: 1px solid var(--gray-border); padding: 10px 15px; border-radius: 50px; font-size: 10px; flex: 1; font-weight: 800; color: #4a5568; text-align: center; }
-
         /* OVERLAYS */
         #overlaySystem { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(25px); z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 15px; box-sizing: border-box; }
         .modal-card { background: white; padding: 25px; border-radius: 28px; box-shadow: var(--mac-shadow); width: 100%; max-width: 340px; text-align: center; border: 1px solid var(--gray-border); }
-        .modal-btn { border: none; padding: 16px; border-radius: 18px; width: 100%; font-weight: 800; margin-top: 12px; cursor: pointer; font-size: 13px; font-family: 'Nunito', sans-serif; }
+        .modal-btn { border: none; padding: 16px; border-radius: 18px; width: 100%; font-weight: 800; margin-top: 12px; cursor: pointer; font-size: 13px; }
         textarea { width: 100%; height: 85px; border: 1.5px solid var(--gray-border); border-radius: 20px; padding: 15px; font-family: 'Nunito Sans', sans-serif; font-weight: 600; font-size: 15px; outline: none; background: #fafafa; }
     </style>
 </head>
@@ -77,47 +73,39 @@
 
 <div id="overlaySystem">
     <div class="modal-card" id="modalContent">
-        <h2 style="color: #1a202c; font-weight: 900; margin: 0; font-size: 18px; letter-spacing: -0.5px;">INTAKE GUARD</h2>
-        <div style="font-size: 13px; line-height: 1.5; color: #4a5568; margin: 15px 0; font-weight: 600;">Secure your records. We provide documentation support, but we do not offer legal advice.</div>
+        <h2 style="color: #1a202c; font-weight: 900; margin: 0; font-size: 18px;">INTAKE GUARD</h2>
+        <div style="font-size: 13px; line-height: 1.5; color: #4a5568; margin: 15px 0; font-weight: 600;">Secure your records. We provide support, but no legal advice.</div>
         <button class="modal-btn" style="background:var(--teal); color:white;" onclick="unlockApp()">SECURE MY JOURNAL</button>
     </div>
 </div>
 
 <div class="app-container app-locked" id="mainApp">
     <header class="header">
-        <div class="header-top">
-            <div class="brand-text"><div class="main-title"><span class="work-silver">Work</span><span class="timeline-teal">Timeline</span>™ <div class="clio-pulse"></div></div></div>
-            <div style="position:absolute; right:15px; display:flex; flex-direction:column; gap:4px;">
-                <button onclick="document.getElementById('appBody').classList.toggle('ghost-active')" style="background:var(--teal-soft); color:var(--teal); border:none; border-radius:20px; font-size:7px; font-weight:900; padding:4px 10px;">GHOST</button>
-                <button onclick="refresh()" style="background:var(--teal-soft); color:var(--teal); border:none; border-radius:20px; font-size:7px; font-weight:900; padding:4px 10px;">NOTES</button>
-            </div>
-        </div>
+        <div class="header-top"><div class="main-title"><span class="work-silver">Work</span><span class="timeline-teal">Timeline</span>™ <div class="clio-pulse"></div></div></div>
     </header>
 
     <div id="utilityDrawer">
-        <div style="padding: 15px 15px 45px;">
-            <div style="display:flex; gap:6px; justify-content:center; margin-bottom: 15px;">
+        <div style="padding-top: 15px;">
+            <div class="template-row">
                 <button onclick="useTemplate('INCIDENT')" class="template-chip">INCIDENT</button>
+                <button onclick="useTemplate('INJURY')" class="template-chip">INJURY</button>
                 <button onclick="useTemplate('WITNESS')" class="template-chip">WITNESS</button>
+                <button onclick="useTemplate('REPRIMAND')" class="template-chip">REPRIMAND</button>
+                <button onclick="useTemplate('MEETING')" class="template-chip">MEETING</button>
             </div>
-            <div style="display:flex; gap:8px; margin-bottom:12px;">
-                <div class="media-pill">CAMERA</div><div class="media-pill">AUDIO</div>
+            <div class="media-row">
+                <div class="media-pill">CAMERA</div><div class="media-pill">AUDIO</div><div class="media-pill">FILES</div>
             </div>
-            <textarea id="statusBox" placeholder="Documenting the grit..."></textarea>
+            <div style="padding: 0 15px 45px;"><textarea id="statusBox" placeholder="Documenting the grit..."></textarea></div>
         </div>
         <div class="handle" onclick="toggleUtility()"><div class="handle-pill"></div></div>
     </div>
 
     <div id="timelineContainer"></div>
-    <button id="addBtn" class="draggable">+</button>
-    <button id="syncBtn" class="draggable">SYNC</button>
 
     <div id="mgmtDrawer">
         <div class="handle" onclick="toggleMgmt()"><div class="handle-pill"></div></div>
-        <div style="padding: 15px 25px 35px;">
-            <button class="modal-btn" style="background:var(--teal); color:white;" onclick="alert('Exporting...')">SAVE & EXPORT</button>
-            <button class="modal-btn" style="background:#f1f5f9; color:#718096;" onclick="confirm('Wipe?') && (localStorage.clear() || location.reload())">START FRESH</button>
-        </div>
+        <div style="padding: 15px 25px 35px;"><button class="modal-btn" style="background:var(--teal); color:white;" onclick="alert('Exporting...')">SAVE & EXPORT</button></div>
     </div>
 </div>
 
@@ -131,59 +119,32 @@
     function toggleUtility() { document.getElementById('utilityDrawer').style.transform = utilOpen ? 'translateY(calc(-100% + 40px))' : 'translateY(0)'; utilOpen = !utilOpen; }
     function toggleMgmt() { document.getElementById('mgmtDrawer').style.transform = mgmtOpen ? 'translateY(calc(100% - 40px))' : 'translateY(0)'; mgmtOpen = !mgmtOpen; }
 
-    function makeDraggable(el) {
-        let p1 = 0, p2 = 0, p3 = 0, p4 = 0; el.onmousedown = dStart; el.ontouchstart = dStart;
-        function dStart(e) { p3 = e.clientX || e.touches[0].clientX; p4 = e.clientY || e.touches[0].clientY; document.onmouseup = dEnd; document.ontouchend = dEnd; document.onmousemove = dMove; document.ontouchmove = dMove; }
-        function dMove(e) { let cx = e.clientX || e.touches[0].clientX; let cy = e.clientY || e.touches[0].clientY; p1 = p3 - cx; p2 = p4 - cy; p3 = cx; p4 = cy; el.style.top = (el.offsetTop - p2) + "px"; el.style.left = (el.offsetLeft - p1) + "px"; }
-        function dEnd() { document.onmouseup = null; document.onmousemove = null; document.ontouchend = null; document.ontouchmove = null; }
-    }
-    makeDraggable(document.getElementById("addBtn")); makeDraggable(document.getElementById("syncBtn"));
-
     function submitEntry() {
         const text = document.getElementById('statusBox').value; if(!text.trim()) return;
         let isRisk = text.toLowerCase().includes("fire") || text.toLowerCase().includes("retaliation") || text.toLowerCase().includes("termination");
         activePending = { grit: text, analysis: isRisk ? "EA: High-severity pattern detected." : "", stamp: new Date().toLocaleString() };
-        
-        if(isRisk && !pulseExplained) {
-            triggerPulseDiagnostic();
-        } else if(isRisk) {
-            triggerRiskWarning();
-        } else { confirmSave(); }
+        if(isRisk && !pulseExplained) { triggerPulseDiagnostic(); }
+        else if(isRisk) { triggerRiskWarning(); }
+        else { confirmSave(); }
         document.getElementById('statusBox').value = ''; if(utilOpen) toggleUtility();
     }
 
     function triggerPulseDiagnostic() {
         document.getElementById('modalContent').innerHTML = `
             <h2 style="color:var(--risk-red); font-weight:900; margin:0; font-size:18px;">PULSE DIAGNOSTIC</h2>
-            <div style="font-size:12px; line-height:1.5; color:#4a5568; margin:15px 0; font-weight:600; text-align:left;">
-                An <b>Employment Risk Pulse</b> detected. flags entries where your job is at high risk. <br><br>
-                Keep this heartbeat active to track risks, or shut it off.
-            </div>
+            <div style="font-size:12px; line-height:1.5; color:#4a5568; margin:15px 0; font-weight:600; text-align:left;"><b>Employment Risk Pulse</b> detected. Flags high-risk entries. Keep heartbeat active or shut off.</div>
             <button class="modal-btn" style="background:var(--teal); color:white;" onclick="setPulsePreference(true)">KEEP PULSE ON</button>
             <button class="modal-btn" style="background:#f1f5f9; color:#718096;" onclick="setPulsePreference(false)">SHUT PULSE OFF</button>`;
         document.getElementById('overlaySystem').style.display = 'flex';
     }
 
     function triggerRiskWarning() {
-        document.getElementById('modalContent').innerHTML = `
-            <h2 style="color:var(--risk-red); font-weight:900; margin:0; font-size:18px;">EMPLOYMENT AT RISK!</h2>
-            <div style="font-size:13px; line-height:1.5; color:#4a5568; margin:15px 0; font-weight:600;">High-severity markers detected. Documenting this pattern is critical.</div>
-            <button class="modal-btn" style="background:var(--teal); color:white;" onclick="confirmSave()">OK, I UNDERSTAND</button>`;
+        document.getElementById('modalContent').innerHTML = `<h2 style="color:var(--risk-red); font-weight:900; font-size:18px;">EMPLOYMENT AT RISK!</h2><div style="font-size:13px; font-weight:600; margin:15px 0;">Critical pattern detected. Documenting is vital.</div><button class="modal-btn" style="background:var(--teal); color:white;" onclick="confirmSave()">OK, I UNDERSTAND</button>`;
         document.getElementById('overlaySystem').style.display = 'flex';
     }
 
-    function setPulsePreference(pref) {
-        pulseActive = pref; pulseExplained = true;
-        localStorage.setItem('wt_pulse_active', pref);
-        localStorage.setItem('wt_pulse_explained', 'true');
-        confirmSave();
-    }
-
-    function confirmSave() {
-        vault.push(activePending); localStorage.setItem('wt_timeline', JSON.stringify(vault));
-        unlockApp(); refresh();
-        setTimeout(() => { document.getElementById('modalContent').innerHTML = `<h2 style="font-weight:900; font-size:18px;">INTAKE GUARD</h2><div style="font-size:13px; font-weight:600; margin:15px 0;">Secure your records. We provide support, but no legal advice.</div><button class="modal-btn" style="background:var(--teal); color:white;" onclick="unlockApp()">SECURE MY JOURNAL</button>`; }, 500);
-    }
+    function setPulsePreference(pref) { pulseActive = pref; pulseExplained = true; localStorage.setItem('wt_pulse_active', pref); localStorage.setItem('wt_pulse_explained', 'true'); confirmSave(); }
+    function confirmSave() { vault.push(activePending); localStorage.setItem('wt_timeline', JSON.stringify(vault)); unlockApp(); refresh(); }
 
     function refresh() {
         const list = document.getElementById('timelineContainer'); list.innerHTML = '';
@@ -192,7 +153,6 @@
             const hasAI = item.analysis !== "";
             list.innerHTML += `
                 <div class="stack-wrapper">
-                    <div class="stamp-label">📍 LANGLEY | ${item.stamp}</div>
                     <div class="stack-inner ${hasAI ? 'has-ai ' + pulseClass : ''}" onclick="this.classList.toggle('flipped')">
                         <div class="bubble bubble-front"><p style="font-weight:600; font-size:14px; margin:0;">${item.grit}</p></div>
                         ${hasAI ? `<div class="bubble bubble-back"><p style="font-weight:600; font-size:13px; margin:0;">${item.analysis}</p></div>` : ''}
@@ -201,7 +161,10 @@
         });
     }
 
-    function useTemplate(t) { const ts = { 'INCIDENT': 'ACTION:\nVIOLATION:', 'WITNESS': 'NAME:\nCONTACT:' }; document.getElementById('statusBox').value = ts[t]; }
+    function useTemplate(t) { 
+        const ts = { 'INCIDENT': 'ACTION:\nVIOLATION:', 'INJURY': 'OFA RECORD:\nINJURY:', 'WITNESS': 'NAME:\nCONTACT:', 'REPRIMAND': 'ISSUED BY:\nREASON:', 'MEETING': 'ATTENDEES:\nTOPIC:' }; 
+        document.getElementById('statusBox').value = ts[t]; 
+    }
     refresh();
 </script>
 </body>
