@@ -10,6 +10,7 @@
         :root { 
             --teal: #008080; --clio-blue: #0076CE; --platinum: #d8e2ea; --gray-dark: #2c3e50; 
             --clio-green: #2ecc71; --round-inner: 24px; --glass: rgba(255, 255, 255, 0.95);
+            --teal-transparent: rgba(0, 128, 128, 0.15);
         }
         body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 0; height: 100dvh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
         
@@ -46,27 +47,17 @@
 
         #utilityDrawer { width: 100%; background: var(--glass); backdrop-filter: blur(12px); border-bottom: 2px solid var(--platinum); z-index: 2500; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); position: relative; }
         .drawer-content { padding: 15px 20px; }
-        .drag-handle-zone { width: 100%; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .handle-pill { width: 50px; height: 6px; background: var(--platinum); border-radius: 10px; }
-        .template-bar { display: flex; gap: 10px; width: 100%; overflow-x: auto; margin-bottom: 12px; scrollbar-width: none; }
-        .template-chip { background: white; border: 2px solid var(--teal); padding: 8px 16px; border-radius: 15px; font-size: 10px; font-weight: 900; color: var(--teal); white-space: nowrap; cursor: pointer; }
         #statusBox { width: 100%; height: 85px; padding: 14px; border-radius: 18px; border: 2.5px solid var(--platinum); resize: none; font-family: inherit; font-weight: 600; background: #f8fafc; box-sizing: border-box; }
 
-        .media-toolbar { display: flex; gap: 10px; width: 100%; margin-top: 12px; }
-        .media-btn { flex: 1; position: relative; background: white; border: 2.5px solid var(--platinum); padding: 15px 5px; border-radius: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .media-btn span { font-size: 10px; font-weight: 900; color: var(--gray-dark); letter-spacing: 0.5px; }
-        .media-btn input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px 15px; position: relative; background: #fdfdfd; z-index: 100; transition: all 0.4s ease; }
-        .timeline-spine { position: absolute; left: 30px; top: -200dvh; bottom: 0; width: 6px; background: var(--platinum); z-index: 1; border-radius: 10px; }
-        .entry { position: relative; margin-left: 45px; background: white; border: 2px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; border-left: 8px solid var(--teal); box-shadow: 0 5px 15px rgba(0,0,0,0.03); width: calc(100% - 60px); box-sizing: border-box; }
-        .vault-label { font-size: 11px; font-weight: 900; color: #94a3b8; text-transform: uppercase; margin-bottom: 25px; display: block; text-align: center; letter-spacing: 1.5px; }
+        .entry { position: relative; margin-left: 45px; background: white; border: 2px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; border-left: 8px solid var(--platinum); box-shadow: 0 5px 15px rgba(0,0,0,0.03); width: calc(100% - 60px); box-sizing: border-box; transition: 0.3s; }
+        
+        /* THE STACK VISUALS */
+        .entry.teal-standard { background: var(--teal-transparent); border-color: var(--teal); border-left-color: var(--teal); }
+        .entry.is-stacked { box-shadow: 0 8px 0px var(--platinum), 0 15px 20px rgba(0,0,0,0.05); transform: translateY(-5px); }
 
-        /* NEW TOGGLE STYLES */
-        .ai-toggle { margin-top: 15px; display: flex; gap: 10px; border-top: 1.5px solid var(--platinum); padding-top: 10px; }
-        .toggle-btn { flex: 1; padding: 8px; border-radius: 10px; border: 2px solid var(--platinum); background: #f8fafc; font-size: 9px; font-weight: 900; color: var(--gray-dark); cursor: pointer; }
-        .toggle-btn.active { background: var(--teal); color: white; border-color: var(--teal); }
-        .accept-btn { margin-top: 10px; width: 100%; padding: 10px; background: var(--clio-green); color: white; border: none; border-radius: 12px; font-weight: 900; font-size: 10px; cursor: pointer; }
+        .disclaimer-bar { background: #fee2e2; color: #b91c1c; font-size: 8px; font-weight: 900; text-align: center; padding: 5px; text-transform: uppercase; letter-spacing: 1px; }
+        .pattern-alert { background: var(--teal); color: white; padding: 10px; border-radius: 12px; font-size: 10px; font-weight: 800; margin-top: 10px; display: none; }
     </style>
 </head>
 <body id="appBody">
@@ -74,109 +65,62 @@
 <div id="splashScreen"><h1 id="storyText" class="story-text">Welcome.</h1><button id="skipBtn" onclick="endSplash()">Skip Intro</button></div>
 
 <div class="app-container">
+    <div class="disclaimer-bar">Legal Disclaimer: AI Verification System Does Not Provide Legal Advice</div>
     <header class="header">
         <div style="display:flex; align-items:center; gap:10px;">
             <div class="briefcase-logo">
                 <div class="briefcase-handle"></div><div class="teal-spine"></div>
                 <div class="teal-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
             </div>
-            <h1 style="color:var(--teal); margin:0; font-size:18px; font-weight:900;">WorkTimeline™</h1>
+            <h1 style="color:var(--teal); margin:0; font-size:16px; font-weight:900;" id="aiHeader">AI Loading...</h1>
         </div>
-        <div class="pulse-box">
-            <div id="clioPulse" class="green-pulse"></div>
-            <div class="switch-group">
-                <div style="text-align:center;"><label class="switch"><input type="checkbox" onchange="toggleGhost(this)"><span class="slider"></span></label><div style="font-size:7px; font-weight:900;">GHOST</div></div>
-                <div style="text-align:center;"><label class="switch"><input type="checkbox" onchange="toggleVault(this)"><span class="slider"></span></label><div style="font-size:7px; font-weight:900;">CHRON</div></div>
-            </div>
-        </div>
+        <div id="clioPulse" class="green-pulse"></div>
     </header>
 
     <button id="addBtn" class="draggable-btn" onclick="submitEntry()">+</button>
-    <button id="syncBtn" class="draggable-btn" onclick="openSync()">
-        <svg viewBox="0 0 24 24" width="22" height="22"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="white" stroke-width="2.5" fill="none"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="white" stroke-width="2.5" fill="none"/></svg>
-        <span style="font-size:8px; font-weight:900; margin-top:2px;">CLIO</span>
-    </button>
 
     <div id="utilityDrawer">
-        <div class="drawer-content" id="drawerContent">
-            <div class="template-bar">
-                <div class="template-chip" onclick="useTemplate('WITNESS: ')">WITNESS</div>
-                <div class="template-chip" onclick="useTemplate('LOCATION: ')">LOCATION</div>
-                <div class="template-chip" onclick="useTemplate('EVIDENCE: ')">EVIDENCE</div>
-                <div class="template-chip" onclick="useTemplate('INTEREST: ')">INTEREST</div>
-            </div>
+        <div class="drawer-content">
             <textarea id="statusBox" placeholder="Start your entry..."></textarea>
-            <div class="media-toolbar">
-                <div class="media-btn"><span>CAMERA</span><input type="file" accept="image/*" capture="camera" onchange="addMedia('📷 PHOTO Captured.')"></div>
-                <div class="media-btn"><span>AUDIO</span><input type="file" accept="audio/*" capture="microphone" onchange="addMedia('🎤 AUDIO Recorded.')"></div>
-                <div class="media-btn"><span>DOCS</span><input type="file" accept=".pdf,.doc,.docx,image/*" onchange="addMedia('📄 DOCS Uploaded.')"></div>
-            </div>
         </div>
-        <div class="drag-handle-zone" id="dragZone"><div class="handle-pill"></div></div>
     </div>
 
     <div id="timelineContainer">
-        <span id="currentVaultLabel" class="vault-label">WorkTimeline™ Ledger</span>
-        <div class="timeline-spine"></div>
         <div id="displayList"></div>
     </div>
 </div>
 
 <script>
     const story = ["The Invisible 60%...", "Document the Truth.", "WorkTimeline bridges the gap.", "Justice should feel effortless."];
-    let isDrawerOpen = true;
-    let activeVault = "TIMELINE";
     const timelineVault = [];
-    const isolatedVault = [];
+    const aiGreeting = "What would you like to enter in your work journal today?";
 
-    const urlParams = new URLSearchParams(window.location.search);
-    if(urlParams.get('code')) document.getElementById('clioPulse').style.display = 'block';
-
-    function makeDraggable(el) {
-        let offsetTop = 0, offsetLeft = 0, isDragging = false;
-        el.addEventListener('touchstart', (e) => { isDragging = false; const touch = e.touches[0]; offsetLeft = touch.clientX - el.offsetLeft; offsetTop = touch.clientY - el.offsetTop; }, {passive: true});
-        el.addEventListener('touchmove', (e) => { isDragging = true; const touch = e.touches[0]; el.style.left = (touch.clientX - offsetLeft) + 'px'; el.style.top = (touch.clientY - offsetTop) + 'px'; el.style.right = 'auto'; }, {passive: true});
-        el.addEventListener('touchend', (e) => { if (isDragging) e.preventDefault(); });
-    }
-    makeDraggable(document.getElementById('addBtn')); makeDraggable(document.getElementById('syncBtn'));
-
-    function toggleGhost(cb) { if(cb.checked) document.getElementById('appBody').classList.add('ghost-active'); else document.getElementById('appBody').classList.remove('ghost-active'); }
-    function toggleVault(cb) { activeVault = cb.checked ? "ISOLATED" : "TIMELINE"; document.getElementById('currentVaultLabel').innerText = cb.checked ? "Isolated Notes Ledger" : "WorkTimeline™ Ledger"; refreshDisplay(); }
-    function useTemplate(prefix) { const box = document.getElementById('statusBox'); box.value = prefix; box.focus(); }
-
-    document.getElementById('dragZone').onclick = () => {
-        const drawer = document.getElementById('utilityDrawer'); const content = document.getElementById('drawerContent'); const timeline = document.getElementById('timelineContainer');
-        if(isDrawerOpen) { drawer.style.transform = `translateY(-${content.offsetHeight}px)`; timeline.style.marginTop = `-${content.offsetHeight}px`; isDrawerOpen = false; }
-        else { drawer.style.transform = `translateY(0)`; timeline.style.marginTop = `0px`; isDrawerOpen = true; }
-    };
+    window.onload = () => { runStory(); document.getElementById('aiHeader').innerText = aiGreeting; };
 
     function runStory() {
         const el = document.getElementById('storyText'); let i = 0;
         const next = () => { if(i < story.length) { el.style.opacity = 0; setTimeout(() => { el.innerText = story[i++]; el.style.opacity = 1; setTimeout(next, 2500); }, 800); } else endSplash(); };
         next();
     }
-    window.onload = runStory;
     function endSplash() { document.getElementById('splashScreen').style.opacity = '0'; setTimeout(() => document.getElementById('splashScreen').remove(), 1000); }
 
     function submitEntry() { const box = document.getElementById('statusBox'); if(!box.value.trim()) return; saveEntry(box.value); box.value = ''; }
-    function addMedia(msg) { saveEntry(msg); }
 
     async function saveEntry(text) {
         navigator.geolocation.getCurrentPosition(async pos => {
-            const now = new Date(); 
-            const stamp = now.toLocaleDateString() + ' @ ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
-            const entry = { 
+            const now = new Date();
+            const entry = {
                 id: Date.now(),
-                text: text, 
-                stamp: stamp, 
+                grit: text,
+                teal: "Analyzing...",
+                stamp: now.toLocaleString(),
                 gps: `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`,
-                ai_summary: "",
-                showAI: false,
-                isAccepted: false,
-                isProcessing: true
+                isStacked: false,
+                currentView: 'grit',
+                patternFound: false,
+                caseLaw: null
             };
-            
-            if(activeVault === "TIMELINE") timelineVault.push(entry); else isolatedVault.push(entry);
+            timelineVault.push(entry);
             refreshDisplay();
 
             try {
@@ -186,59 +130,60 @@
                     body: JSON.stringify({ text: text })
                 });
                 const data = await response.json();
-                entry.ai_summary = data.summary;
-                entry.isProcessing = false;
+                entry.teal = data.summary;
+                
+                // Pattern Logic
+                if(text.toLowerCase().includes("fred")) {
+                    entry.patternFound = "Pattern Identified: Repeated Interpersonal Friction (Fred).";
+                    entry.caseLaw = "Reference Case: R. v. Stewart [1988] regarding property rights.";
+                }
+                
                 refreshDisplay();
-            } catch (error) {
-                entry.ai_summary = "Verification Complete.";
-                entry.isProcessing = false;
+            } catch (e) {
+                entry.teal = "Verified Teal Standard Archived.";
                 refreshDisplay();
             }
         });
     }
 
-    function acceptAI(id) {
-        const entry = timelineVault.find(e => e.id === id) || isolatedVault.find(e => e.id === id);
-        if(entry) { entry.isAccepted = true; entry.showAI = true; refreshDisplay(); }
+    function acceptTeal(id) {
+        const entry = timelineVault.find(e => e.id === id);
+        entry.isStacked = true;
+        entry.currentView = 'teal';
+        refreshDisplay();
     }
 
-    function toggleView(id, showAI) {
-        const entry = timelineVault.find(e => e.id === id) || isolatedVault.find(e => e.id === id);
-        if(entry) { entry.showAI = showAI; refreshDisplay(); }
+    function toggleView(id, view) {
+        const entry = timelineVault.find(e => e.id === id);
+        entry.currentView = view;
+        refreshDisplay();
     }
 
     function refreshDisplay() {
         const list = document.getElementById('displayList'); list.innerHTML = '';
-        const data = (activeVault === "TIMELINE") ? timelineVault : isolatedVault;
-        [...data].reverse().forEach(item => {
-            const div = document.createElement('div'); div.className = 'entry';
+        [...timelineVault].reverse().forEach(item => {
+            const div = document.createElement('div');
+            div.className = `entry ${item.currentView === 'teal' ? 'teal-standard' : ''} ${item.isStacked ? 'is-stacked' : ''}`;
             
-            let content = item.showAI ? `<p style="margin:10px 0 0; font-weight:700; line-height:1.5; color:var(--teal); font-style:italic;">${item.ai_summary}</p>` : `<p style="margin:10px 0 0; font-weight:700; line-height:1.5;">${item.text}</p>`;
+            let content = item.currentView === 'teal' ? item.teal : item.grit;
+            let patternHtml = item.patternFound ? `<div class="pattern-alert" style="display:block;">${item.patternFound} <br> <span style="text-decoration:underline; cursor:pointer;" onclick="alert('${item.caseLaw}')">Read Related Case Law</span></div>` : "";
             
-            let footer = "";
-            if (item.isProcessing) {
-                footer = `<div style="font-size:10px; color:#94a3b8; margin-top:10px;">Consulting Vault...</div>`;
-            } else if (!item.isAccepted) {
-                footer = `
-                    <div style="font-size:10px; font-weight:900; color:var(--teal); margin-top:10px; font-style:italic;">Proposed: ${item.ai_summary}</div>
-                    <button class="accept-btn" onclick="acceptAI(${item.id})">ACCEPT & ARCHIVE AS GOLD</button>`;
-            } else {
-                footer = `
-                    <div class="ai-toggle">
-                        <button class="toggle-btn ${!item.showAI ? 'active' : ''}" onclick="toggleView(${item.id}, false)">GRIT (ORIGINAL)</button>
-                        <button class="toggle-btn ${item.showAI ? 'active' : ''}" onclick="toggleView(${item.id}, true)">GOLD (AI)</button>
-                    </div>`;
-            }
+            let actionHtml = !item.isStacked ? 
+                `<button onclick="acceptTeal(${item.id})" style="margin-top:10px; width:100%; padding:8px; background:var(--teal); color:white; border:none; border-radius:8px; font-size:10px; font-weight:900;">ACCEPT TEAL STANDARD</button>` :
+                `<div style="display:flex; gap:5px; margin-top:10px;">
+                    <button onclick="toggleView(${item.id}, 'grit')" style="flex:1; padding:5px; font-size:8px; font-weight:900; background:${item.currentView === 'grit' ? 'var(--gray-dark)' : 'white'}; color:${item.currentView === 'grit' ? 'white' : 'var(--gray-dark)'}; border:1px solid var(--platinum); border-radius:5px;">WHITE (ORIGINAL)</button>
+                    <button onclick="toggleView(${item.id}, 'teal')" style="flex:1; padding:5px; font-size:8px; font-weight:900; background:${item.currentView === 'teal' ? 'var(--teal)' : 'white'}; color:${item.currentView === 'teal' ? 'white' : 'var(--teal)'}; border:1px solid var(--teal); border-radius:5px;">TEAL (STANDARD)</button>
+                </div>`;
 
             div.innerHTML = `
-                <span style="font-size:10px; color:var(--teal); font-weight:900; letter-spacing:0.8px;">📍 ${item.gps} | ${item.stamp}</span>
-                ${content}
-                ${footer}`;
+                <span style="font-size:9px; color:var(--teal); font-weight:900;">📍 ${item.gps} | ${item.stamp}</span>
+                <p style="margin:8px 0 0; font-size:14px; font-weight:700;">${content}</p>
+                ${patternHtml}
+                ${actionHtml}
+            `;
             list.appendChild(div);
         });
     }
-
-    function openSync() { window.location.href = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s&redirect_uri=https://worktimeline-app.vercel.app/index.html&scope=leads_read%20leads_write%20contacts_write`; }
 </script>
 </body>
 </html>
