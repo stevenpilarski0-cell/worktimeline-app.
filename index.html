@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Mobile-First</title>
+    <title>WorkTimeline™ | Master</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Nunito+Sans:wght@400;600;800&display=swap');
         :root { 
@@ -33,7 +33,21 @@
         .work-silver { color: var(--silver-gray); }
         .timeline-teal { color: var(--teal); margin-left: -1px; }
 
-        .clio-pulse { width: 6px; height: 6px; background-color: var(--clio-green); border-radius: 50%; animation: clio-throb 2s infinite; margin-left: 8px; }
+        /* UNIFIED BUBBLE TEMPLATES */
+        .template-chip { 
+            border: 1px solid var(--gray-border); 
+            padding: 10px 20px; 
+            border-radius: 50px; /* Bubbly shape */
+            font-size: 10px; 
+            font-weight: 900; 
+            color: #4a5568; 
+            background: #f8fafc; 
+            cursor: pointer; 
+            font-family: 'Nunito', sans-serif;
+            transition: 0.2s all;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .template-chip:active { background: var(--teal-soft); border-color: var(--teal); color: var(--teal); transform: scale(0.95); }
 
         /* DRAWERS */
         #utilityDrawer { position: absolute; top: 60px; width: 100%; background: white; border-bottom: 1.5px solid var(--gray-border); z-index: 3500; transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) transform; transform: translateY(calc(-100% + 40px)); border-radius: 0 0 30px 30px; }
@@ -53,13 +67,12 @@
         .entry p { font-weight: 600; font-size: 14px; line-height: 1.4; color: #1a202c; margin: 0; }
         .tier-serious { align-self: flex-end; background: white; border: 2px solid var(--teal); animation: pulse-ser 3s infinite; }
 
-        /* OVERLAYS - SCALED FOR SMALL SCREENS */
+        /* OVERLAYS */
         #overlaySystem { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(25px); z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 15px; box-sizing: border-box; }
         .modal-card { background: white; padding: 25px 20px; border-radius: 28px; box-shadow: var(--mac-shadow); width: 100%; max-width: 340px; text-align: center; border: 1px solid var(--gray-border); max-height: 90vh; overflow-y: auto; }
-        .modal-btn { border: none; padding: 16px; border-radius: 18px; width: 100%; font-weight: 800; margin-top: 12px; cursor: pointer; font-size: 13px; }
-        .appeasing-text { font-size: 13px; line-height: 1.5; color: #4a5568; margin: 15px 0; font-weight: 600; }
+        .modal-btn { border: none; padding: 16px; border-radius: 18px; width: 100%; font-weight: 800; margin-top: 12px; cursor: pointer; font-size: 13px; font-family: 'Nunito', sans-serif; }
 
-        .media-pill { background: rgba(226, 232, 240, 0.8); border: 1px solid var(--gray-border); padding: 10px 18px; border-radius: 50px; font-size: 10px; flex: 1; font-weight: 800; color: #4a5568; }
+        .media-pill { background: rgba(226, 232, 240, 0.8); border: 1px solid var(--gray-border); padding: 10px 18px; border-radius: 50px; font-size: 10px; flex: 1; font-weight: 800; color: #4a5568; text-align: center; font-family: 'Nunito', sans-serif; }
         textarea { width: 100%; height: 85px; border: 1.5px solid var(--gray-border); border-radius: 20px; padding: 15px; font-family: 'Nunito Sans', sans-serif; font-weight: 600; font-size: 15px; outline: none; background: #fafafa; }
     </style>
 </head>
@@ -68,7 +81,9 @@
 <div id="overlaySystem">
     <div class="modal-card" id="modalContent">
         <h2 style="color: #1a202c; font-weight: 900; margin: 0; font-size: 18px; letter-spacing: -0.5px;">INTAKE GUARD</h2>
-        <div class="appeasing-text">We are here to help you document the truth.<br><br>While this journal provides evidence support, <b>we do not offer legal advice.</b><br><br>Proceed to secure your workplace records.</div>
+        <div style="font-size: 13px; line-height: 1.5; color: #4a5568; margin: 15px 0; font-weight: 600;">
+            We are here to help you document the truth.<br><br>While this journal provides evidence support, <b>we do not offer legal advice.</b><br><br>Proceed to secure your workplace records.
+        </div>
         <button class="modal-btn" style="background:var(--teal); color:white;" onclick="unlockApp()">SECURE MY JOURNAL</button>
     </div>
 </div>
@@ -84,7 +99,7 @@
             </svg>
             <div class="brand-text">
                 <div class="brand-sub">Takin'Intake</div>
-                <div class="main-title"><span class="work-silver">Work</span><span class="timeline-teal">Timeline</span>™ <div class="clio-pulse"></div></div>
+                <div class="main-title"><span class="work-silver">Work</span><span class="timeline-teal">Timeline</span>™</div>
             </div>
             <div style="position:absolute; right:15px; display:flex; flex-direction:column; gap:4px;">
                 <button onclick="document.getElementById('appBody').classList.toggle('ghost-active')" style="background:var(--teal-soft); color:var(--teal); border:none; border-radius:20px; font-size:7px; font-weight:900; padding:4px 10px;">GHOST</button>
@@ -95,7 +110,7 @@
 
     <div id="utilityDrawer">
         <div style="padding: 15px 15px 45px;">
-            <div style="display:flex; gap:8px; justify-content:center; margin-bottom: 15px;">
+            <div style="display:flex; gap:6px; justify-content:center; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px;">
                 <button onclick="useTemplate('INCIDENT')" class="template-chip">INCIDENT</button>
                 <button onclick="useTemplate('INJURY')" class="template-chip">INJURY</button>
                 <button onclick="useTemplate('LOCATION')" class="template-chip">LOCATION</button>
@@ -148,10 +163,10 @@
 
     function submitEntry() {
         const text = document.getElementById('statusBox').value; if(!text.trim()) return;
-        let analysis = text.toLowerCase().includes("fire") || text.toLowerCase().includes("retaliation") ? "EA: Potential Retaliation / Lex Talionis marker detected. This pattern often signals constructive dismissal." : "";
+        let analysis = text.toLowerCase().includes("fire") || text.toLowerCase().includes("retaliation") ? "EA: Potential Retaliation marker detected." : "";
         activePending = { grit: text, analysis, stamp: new Date().toLocaleString(), tier: analysis ? 'serious' : 'minor', flipped: false };
         if(analysis) {
-            document.getElementById('modalContent').innerHTML = `<h3 style="margin-top:0; font-size:16px;">EA CROSS-REFERENCE</h3><div class="appeasing-text">${analysis}<br><br><b>Stack with your record?</b></div><button class="modal-btn" style="background:var(--teal);color:white" onclick="confirmSave()">YES, STACK</button><button class="modal-btn" style="background:#f1f5f9;color:#718096" onclick="confirmSave(true)">NO, RAW ONLY</button>`;
+            document.getElementById('modalContent').innerHTML = `<h3 style="margin-top:0; font-size:16px;">EA CROSS-REFERENCE</h3><div style="font-size: 13px; line-height: 1.5; color: #4a5568; margin: 15px 0; font-weight: 600;">${analysis}<br><br><b>Stack with your record?</b></div><button class="modal-btn" style="background:var(--teal);color:white" onclick="confirmSave()">YES, STACK</button><button class="modal-btn" style="background:#f1f5f9;color:#718096" onclick="confirmSave(true)">NO, RAW ONLY</button>`;
             document.getElementById('overlaySystem').style.display = 'flex';
         } else { confirmSave(); }
         document.getElementById('statusBox').value = ''; if(utilOpen) toggleUtility();
@@ -163,13 +178,13 @@
         localStorage.setItem('wt_timeline', JSON.stringify(vault)); 
         unlockApp(); refresh();
         setTimeout(() => {
-            document.getElementById('modalContent').innerHTML = `<h2 style="color: #1a202c; font-weight: 900; margin: 0; font-size: 18px; letter-spacing: -0.5px;">INTAKE GUARD</h2><div class="appeasing-text">We are here to help you document the truth.<br><br>While this journal provides evidence support, <b>we do not offer legal advice.</b><br><br>Proceed to secure your workplace records.</div><button class="modal-btn" style="background:var(--teal); color:white;" onclick="unlockApp()">SECURE MY JOURNAL</button>`;
+            document.getElementById('modalContent').innerHTML = `<h2 style="color: #1a202c; font-weight: 900; margin: 0; font-size: 18px; letter-spacing: -0.5px;">INTAKE GUARD</h2><div style="font-size: 13px; line-height: 1.5; color: #4a5568; margin: 15px 0; font-weight: 600;">We are here to help you document the truth.<br><br>While this journal provides evidence support, <b>we do not offer legal advice.</b><br><br>Proceed to secure your workplace records.</div><button class="modal-btn" style="background:var(--teal); color:white;" onclick="unlockApp()">SECURE MY JOURNAL</button>`;
         }, 500);
     }
 
     function clioHandshake() {
         if(vault.length === 0) return;
-        document.getElementById('modalContent').innerHTML = `<h3 style="margin-top:0; font-size:16px; color:var(--clio-blue);">SYNC SUMMARY</h3><div class="appeasing-text">Your industrial truth has been verified. Summarizing ${vault.length} entries for Clio.</div><button class="modal-btn" style="background:var(--clio-blue);color:white" onclick="alert('Synced');unlockApp()">YES, SYNC NOW</button>`;
+        document.getElementById('modalContent').innerHTML = `<h3 style="margin-top:0; font-size:16px; color:var(--clio-blue);">SYNC SUMMARY</h3><div style="font-size: 13px; line-height: 1.5; color: #4a5568; margin: 15px 0; font-weight: 600;">Industrial truth verified. Summarizing ${vault.length} entries for Clio.</div><button class="modal-btn" style="background:var(--clio-blue);color:white" onclick="alert('Synced');unlockApp()">YES, SYNC NOW</button>`;
         document.getElementById('overlaySystem').style.display = 'flex';
     }
 
