@@ -15,7 +15,6 @@
             --clio-green: #2ecc71; 
             --mac-bg: #f1f5f9;
             --glass: rgba(255, 255, 255, 0.98);
-            --dark-silver: #7f8c8d;
         }
 
         body { 
@@ -28,7 +27,7 @@
             -webkit-font-smoothing: antialiased; 
         }
 
-        /* --- HEADER & BRANDING --- */
+        /* --- HEADER --- */
         .header { 
             display: flex; 
             justify-content: space-between; 
@@ -45,177 +44,171 @@
         .main-title { font-weight: 900; color: var(--teal); font-size: 20px; letter-spacing: -0.5px; }
         .sub-title { font-weight: 900; color: var(--teal); font-size: 11px; letter-spacing: -1.1px; margin: 0; }
 
-        .clio-status { display: flex; align-items: center; gap: 4px; margin-left: 6px; }
-        .pulse-dot { width: 7px; height: 7px; background: var(--clio-green); border-radius: 50%; box-shadow: 0 0 8px var(--clio-green); }
-
-        /* --- OVERLAYS --- */
-        #consentOverlay, #syncOverlay, #legalOverlay { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(44, 62, 80, 0.95); backdrop-filter: blur(10px); 
-            z-index: 500000; display: none; align-items: center; justify-content: center; padding: 25px; box-sizing: border-box; 
+        /* --- NAVIGATION TAB (THE FRESH TAB) --- */
+        #mgmtTab {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--teal);
+            color: white;
+            padding: 10px 30px;
+            border-radius: 20px 20px 0 0;
+            font-weight: 900;
+            font-size: 12px;
+            letter-spacing: 1px;
+            z-index: 99999;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+            cursor: pointer;
+            border: none;
         }
 
-        .modal-card { background: white; padding: 30px; border-radius: 32px; text-align: left; max-width: 400px; box-shadow: 0 25px 60px rgba(0,0,0,0.4); border-bottom: 8px solid var(--teal); width: 100%; }
-        .modal-btn { background: var(--teal); color: white; border: none; padding: 16px; border-radius: 99px; font-weight: 900; cursor: pointer; width: 100%; font-size: 15px; margin-top: 10px; }
-
-        /* --- BUTTONS & INTERFACE --- */
-        .draggable-btn { 
-            position: absolute; z-index: 9000; touch-action: none; 
-            width: 75px; height: 75px; border-radius: 22px; 
-            color: white; font-weight: 900; font-size: 10px;
-            display: flex; align-items: center; justify-content: center;
-            text-align: center; border: none; box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        }
-        #addBtn { background: var(--teal); right: 20px; top: 160px; font-size: 32px; }
-        #syncBtn { background: #0076CE; right: 20px; top: 250px; }
-
-        /* Utility Drawer (Top) */
-        #utilityDrawer { background: var(--glass); border-bottom: 2px solid var(--platinum); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); z-index: 8000; }
-        
-        /* MANAGEMENT DRAWER (Bottom Fix) */
+        /* --- MANAGEMENT DRAWER --- */
         #managementDrawer { 
-            position: fixed; bottom: 0; width: 100%; max-width: 500px; left: 50%; 
-            transform: translateX(-50%) translateY(calc(100% - 50px)); 
-            background: white; border-top: 4px solid var(--teal); 
-            z-index: 100000; transition: 0.5s transform cubic-bezier(0.16, 1, 0.3, 1); 
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.1); border-radius: 32px 32px 0 0;
-            padding-bottom: env(safe-area-inset-bottom);
+            position: fixed; 
+            bottom: 0; 
+            width: 100%; 
+            max-width: 500px; 
+            left: 50%; 
+            transform: translateX(-50%) translateY(100%); 
+            background: white; 
+            border-top: 5px solid var(--teal); 
+            z-index: 100001; 
+            transition: 0.5s transform cubic-bezier(0.16, 1, 0.3, 1); 
+            box-shadow: 0 -10px 50px rgba(0,0,0,0.3); 
+            border-radius: 30px 30px 0 0;
+            padding-bottom: 30px;
         }
 
-        .drawer-content { padding: 15px 20px; }
-        .template-chip { background: white; border: 2px solid var(--teal); padding: 6px 14px; border-radius: 12px; font-size: 10px; font-weight: 900; color: var(--teal); white-space: nowrap; cursor: pointer; }
+        .drawer-open { transform: translateX(-50%) translateY(0) !important; }
 
-        #statusBox { width: 100%; height: 110px; padding: 15px; border-radius: 20px; border: 2px solid var(--platinum); background: #fdfdfd; font-family: inherit; font-weight: 700; resize: none; outline: none; box-sizing: border-box; }
+        .modal-btn { 
+            background: var(--teal); 
+            color: white; 
+            border: none; 
+            padding: 18px; 
+            border-radius: 99px; 
+            font-weight: 900; 
+            cursor: pointer; 
+            width: 100%; 
+            font-size: 15px; 
+            margin-top: 15px;
+        }
 
-        /* Mac Style Media Bar */
-        .mac-media-bar { display: flex; justify-content: space-around; margin-top: 15px; background: var(--mac-bg); padding: 12px; border-radius: 24px; }
-        .media-icon { background: white; width: 50px; height: 50px; border-radius: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.04); cursor: pointer; }
-
-        /* --- TIMELINE --- */
-        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 20px 20px 100px; background: #fafbfc; position: relative; }
-        .entry { background: white; border-radius: 24px; padding: 20px; border: 1.5px solid var(--platinum); margin-bottom: 20px; border-left: 6px solid var(--platinum); transition: 0.3s; }
+        /* --- INTERFACE ELEMENTS --- */
+        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 20px 20px 120px; background: #fafbfc; }
+        .entry { background: white; border-radius: 24px; padding: 20px; border: 1.5px solid var(--platinum); margin-bottom: 20px; border-left: 8px solid var(--platinum); }
         
-        /* SEVERITY SCALES */
         .pulse-critical { border-left: 14px solid var(--teal-dark) !important; background: rgba(0, 77, 77, 0.05) !important; animation: heavy-pulse 1.5s infinite; }
-        .pulse-warning { border-left: 10px solid var(--teal) !important; animation: light-pulse 2.5s infinite; }
-
         @keyframes heavy-pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 77, 77, 0.6); } 70% { box-shadow: 0 0 0 20px rgba(0, 77, 77, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 77, 77, 0); } }
-        @keyframes light-pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0.3); } 70% { box-shadow: 0 0 0 10px rgba(0, 128, 128, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0); } }
 
-        .ghost-active #timelineContainer { filter: blur(20px); opacity: 0.2; pointer-events: none; }
-        .drag-handle-zone { width: 100%; height: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        #utilityDrawer { background: var(--glass); border-bottom: 2px solid var(--platinum); transition: transform 0.5s ease; z-index: 8000; }
+        .drag-handle-zone { width: 100%; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .handle-pill { width: 45px; height: 6px; background: #cbd5e1; border-radius: 10px; }
+        
+        .template-chip { background: white; border: 2px solid var(--teal); padding: 8px 15px; border-radius: 15px; font-size: 10px; font-weight: 900; color: var(--teal); cursor: pointer; }
+        #statusBox { width: 100%; height: 120px; padding: 15px; border-radius: 20px; border: 2px solid var(--platinum); outline: none; font-family: inherit; font-weight: 700; }
+
+        .draggable-btn { position: absolute; z-index: 9000; width: 75px; height: 75px; border-radius: 22px; color: white; font-weight: 900; display: flex; align-items: center; justify-content: center; border: none; box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+        #addBtn { background: var(--teal); right: 20px; top: 160px; font-size: 30px; }
     </style>
 </head>
-<body id="appBody">
-
-<div id="consentOverlay">
-    <div class="modal-card">
-        <h2 style="color:var(--teal); margin-top:0;">AI Insight Detected</h2>
-        <p id="consentMessage" style="font-size:14px; font-weight:700; line-height:1.4;"></p>
-        <button class="modal-btn" onclick="confirmEntry(true)">YES, USE ON TIMELINE</button>
-        <button class="modal-btn" style="background:var(--dark-silver); margin-top:10px;" onclick="confirmEntry(false)">NO, DISCARD</button>
-    </div>
-</div>
+<body>
 
 <header class="header">
     <div class="brand-group">
-        <svg width="44" height="44" viewBox="0 0 24 24" fill="none"><path d="M8 7V5C8 3.89543 8.89543 3 10 3H14C15.1046 3 16 3.89543 16 5V7M4 7H20C21.1046 7 22 7.89543 22 9V18C22 19.1046 21.1046 20 20 20H4C2.89543 20 2 19.1046 2 18V9C2 7.89543 2.89543 7 4 7Z" stroke="var(--teal)" stroke-width="1.8" stroke-linecap="round"/><circle cx="8" cy="13.5" r="1.2" fill="var(--teal)"/><circle cx="12" cy="13.5" r="1.2" fill="var(--teal)"/><circle cx="16" cy="13.5" r="1.2" fill="var(--teal)"/></svg>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none"><path d="M8 7V5C8 3.89543 8.89543 3 10 3H14C15.1046 3 16 3.89543 16 5V7M4 7H20C21.1046 7 22 7.89543 22 9V18C22 19.1046 21.1046 20 20 20H4C2.89543 20 2 19.1046 2 18V9C2 7.89543 2.89543 7 4 7Z" stroke="var(--teal)" stroke-width="2" stroke-linecap="round"/><circle cx="8" cy="13" r="1" fill="var(--teal)"/><circle cx="12" cy="13" r="1" fill="var(--teal)"/><circle cx="16" cy="13" r="1" fill="var(--teal)"/></svg>
         <div class="logo-text-wrapper">
             <span class="main-title">WorkTimeline™</span>
-            <div style="display:flex; align-items:center;"><span class="sub-title">TAKIN'INTAKE</span><div class="clio-status"><div class="pulse-dot"></div></div></div>
+            <span class="sub-title">TAKIN'INTAKE</span>
         </div>
     </div>
-    <div style="text-align:right;"><label style="position:relative; width:34px; height:18px; display:inline-block;"><input type="checkbox" onchange="toggleGhost(this)" style="opacity:0; width:0; height:0;"><span style="position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background-color:#e2e8f0; transition:.4s; border-radius:30px;"></span></label></div>
+    <div style="background:var(--clio-green); width:8px; height:8px; border-radius:50%;"></div>
 </header>
 
-<div class="app-container" style="display:flex; flex-direction:column; height:100dvh;">
+<div style="display:flex; flex-direction:column; height:100dvh; position:relative;">
+    
     <button id="addBtn" class="draggable-btn" onclick="submitEntry()">+</button>
-    <button id="syncBtn" class="draggable-btn" onclick="alert('Diagnostic mode active...')">DIAGNOSTIC</button>
 
     <div id="utilityDrawer">
         <div class="drawer-content" id="drawerContent">
-            <div style="display:flex; gap:8px; overflow-x:auto; padding-bottom:12px;"><div class="template-chip" onclick="applyTemplate('WCB')">WCB</div><div class="template-chip" onclick="applyTemplate('WITNESS')">WITNESS</div><div class="template-chip" onclick="applyTemplate('EVIDENCE')">EVIDENCE</div></div>
-            <textarea id="statusBox" placeholder="Start your fresh intake record..."></textarea>
-            <div class="mac-media-bar"><div class="media-icon">📷</div><div class="media-icon">🎤</div><div class="media-icon">📄</div></div>
+            <div style="display:flex; gap:10px; overflow-x:auto; padding-bottom:15px;">
+                <div class="template-chip" onclick="applyTemplate('WCB')">WCB</div>
+                <div class="template-chip" onclick="applyTemplate('WITNESS')">WITNESS</div>
+                <div class="template-chip" onclick="applyTemplate('EXPORT')">EXPORT</div>
+            </div>
+            <textarea id="statusBox" placeholder="Start new journal..."></textarea>
         </div>
         <div class="drag-handle-zone" onclick="toggleDrawer()"><div class="handle-pill"></div></div>
     </div>
 
     <div id="timelineContainer"><div id="displayList"></div></div>
 
+    <button id="mgmtTab" onclick="toggleMgmt()">MANAGEMENT</button>
+
     <div id="managementDrawer">
-        <div class="drag-handle-zone" onclick="toggleMgmtDrawer()"><div class="handle-pill" style="background:var(--teal);"></div></div>
-        <div style="padding:0 25px 40px; display:flex; flex-direction:column; gap:12px;">
-            <button class="modal-btn" style="background:var(--dark-silver);" onclick="confirmReset()">WIPE & START FRESH</button>
-            <button class="modal-btn" onclick="alert('Exporting CSV...')">EXPORT EVIDENCE</button>
+        <div class="drag-handle-zone" onclick="toggleMgmt()"><div class="handle-pill" style="background:var(--teal);"></div></div>
+        <div style="padding:20px 30px;">
+            <h3 style="margin-top:0; color:var(--teal-dark);">Control Center</h3>
+            <button class="modal-btn" onclick="confirmReset()" style="background:var(--dark-silver);">DELETE & START FRESH</button>
+            <button class="modal-btn" onclick="alert('Evidence Exported')">SAVE & EXPORT CSV</button>
+            <button class="modal-btn" style="background:var(--teal-dark);" onclick="toggleMgmt()">CLOSE</button>
         </div>
     </div>
 </div>
 
 <script>
-    let isDrawerOpen = true; let isMgmtOpen = false; let pendingEntry = null;
+    let isDrawerOpen = true;
     const timelineVault = JSON.parse(localStorage.getItem('wt_timeline')) || [];
 
     window.onload = () => { refreshDisplay(); };
 
     function toggleDrawer() {
-        const d = document.getElementById('utilityDrawer'); const c = document.getElementById('drawerContent');
+        const d = document.getElementById('utilityDrawer');
+        const c = document.getElementById('drawerContent');
         d.style.transform = isDrawerOpen ? `translateY(-${c.offsetHeight}px)` : `translateY(0)`;
         isDrawerOpen = !isDrawerOpen;
     }
 
-    function toggleMgmtDrawer() {
-        const d = document.getElementById('managementDrawer');
-        d.style.transform = isMgmtOpen ? 'translateX(-50%) translateY(calc(100% - 50px))' : 'translateX(-50%) translateY(0)';
-        isMgmtOpen = !isMgmtOpen;
+    function toggleMgmt() {
+        document.getElementById('managementDrawer').classList.toggle('drawer-open');
     }
 
     function applyTemplate(type) {
-        const t = { 'WCB': '--- WCB REPORT ---\nDATE:\nINJURY:', 'WITNESS': '--- WITNESS ---\nNAME:\nOBSERVATION:', 'EVIDENCE': '--- EVIDENCE ---\nITEM:\nRELEVANCE:' };
+        const t = { 'WCB': '--- WCB REPORT ---\n', 'WITNESS': '--- WITNESS STATEMENT ---\n', 'EXPORT': '--- EXPORT REQUEST ---' };
         document.getElementById('statusBox').value = t[type];
     }
 
-    function getSeverity(text) {
-        if (/fired|dismissal|quit/i.test(text)) return { score: 3, class: 'pulse-critical', tag: 'EMPLOYMENT AT RISK' };
-        if (/warning|unsafe|hazard/i.test(text)) return { score: 2, class: 'pulse-warning', tag: 'INTAKE AT RISK' };
-        return { score: 0, class: '', tag: 'RECORD' };
-    }
-
     function submitEntry() {
-        const b = document.getElementById('statusBox'); if(!b.value.trim()) return;
+        const b = document.getElementById('statusBox');
+        if(!b.value.trim()) return;
         navigator.geolocation.getCurrentPosition(pos => {
-            const severity = getSeverity(b.value);
-            pendingEntry = { id: Date.now(), grit: b.value, stamp: new Date().toLocaleString(), gps: `${pos.coords.latitude.toFixed(2)}, ${pos.coords.longitude.toFixed(2)}`, pulseClass: severity.class, tag: severity.tag, score: severity.score };
-            if (severity.score >= 2) {
-                document.getElementById('consentMessage').innerText = `AI flagged this as "${severity.tag}". Save this statutory diagnostic?`;
-                document.getElementById('consentOverlay').style.display = 'flex';
-            } else { finalizeEntry(); }
+            const entry = {
+                id: Date.now(),
+                grit: b.value,
+                stamp: new Date().toLocaleString(),
+                gps: `${pos.coords.latitude.toFixed(2)}, ${pos.coords.longitude.toFixed(2)}`,
+                pulse: /fired|dismiss|risk/i.test(b.value)
+            };
+            timelineVault.push(entry);
+            localStorage.setItem('wt_timeline', JSON.stringify(timelineVault));
+            b.value = '';
+            refreshDisplay();
         });
     }
 
-    function confirmEntry(choice) {
-        if (choice) finalizeEntry();
-        else { pendingEntry = null; document.getElementById('statusBox').value = ''; }
-        document.getElementById('consentOverlay').style.display = 'none';
-    }
-
-    function finalizeEntry() {
-        timelineVault.push(pendingEntry); localStorage.setItem('wt_timeline', JSON.stringify(timelineVault));
-        document.getElementById('statusBox').value = ''; pendingEntry = null; refreshDisplay();
-    }
-
     function refreshDisplay() {
-        const list = document.getElementById('displayList'); list.innerHTML = '';
+        const list = document.getElementById('displayList');
+        list.innerHTML = '';
         [...timelineVault].reverse().forEach(item => {
-            const div = document.createElement('div'); div.className = 'entry ' + item.pulseClass;
-            div.innerHTML = `<div style="font-size:9px; font-weight:900; color:var(--teal);">📍 ${item.gps} | ${item.stamp}</div><div style="font-size:8px; font-weight:900; color:var(--teal-dark); margin-bottom:8px;">${item.tag}</div><p style="font-size:14px; font-weight:700; margin:0; white-space:pre-wrap;">${item.grit}</p>`;
+            const div = document.createElement('div');
+            div.className = 'entry ' + (item.pulse ? 'pulse-critical' : '');
+            div.innerHTML = `<div style="font-size:10px; font-weight:900; color:var(--teal); margin-bottom:5px;">📍 ${item.gps} | ${item.stamp}</div><p style="font-size:14px; font-weight:700; margin:0;">${item.grit}</p>`;
             list.appendChild(div);
         });
     }
 
-    function toggleGhost(cb) { document.getElementById('appBody').classList.toggle('ghost-active', cb.checked); }
-    function confirmReset() { if(confirm("Wipe everything?")) { localStorage.clear(); location.reload(); } }
+    function confirmReset() { if(confirm("Wipe journal?")) { localStorage.clear(); location.reload(); } }
 
     function makeMovable(el) {
         let p1 = 0, p2 = 0, p3 = 0, p4 = 0;
@@ -224,12 +217,13 @@
             document.ontouchmove = (e) => {
                 p1 = p3 - e.touches[0].clientX; p2 = p4 - e.touches[0].clientY;
                 p3 = e.touches[0].clientX; p4 = e.touches[0].clientY;
-                el.style.top = (el.offsetTop - p2) + "px"; el.style.left = (el.offsetLeft - p1) + "px"; el.style.right = "auto";
+                el.style.top = (el.offsetTop - p2) + "px"; el.style.left = (el.offsetLeft - p1) + "px";
             };
             document.ontouchend = () => { document.ontouchmove = null; };
         };
     }
-    makeMovable(document.getElementById('addBtn')); makeMovable(document.getElementById('syncBtn'));
+    makeMovable(document.getElementById('addBtn'));
 </script>
+
 </body>
 </html>
