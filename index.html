@@ -20,23 +20,23 @@
 
         .app-container { width: 100%; max-width: 500px; background: white; height: 100dvh; display: flex; flex-direction: column; position: relative; border: 1.5px solid var(--gray-border); box-sizing: border-box; overflow: hidden; }
         
-        /* 2. HEADER & BRIEFCASE LOGO REFINEMENT */
+        /* 2. LOGO REFINEMENT: CENTERED DOTS & TIGHT ALIGNMENT */
         .header { padding: 12px 15px; border-bottom: 1px solid var(--gray-border); background: white; z-index: 4000; position: relative; padding-top: max(12px, env(safe-area-inset-top)); }
-        .header-top { display: flex; justify-content: flex-start; align-items: center; gap: 4px; }
+        .header-top { display: flex; justify-content: flex-start; align-items: center; gap: 0; } /* Tightened Gap */
         
         .briefcase-container { position: relative; width: 44px; height: 28px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .briefcase-icon { width: 28px; height: 20px; border: 2.2px solid var(--heavy-teal); border-radius: 5px; position: relative; display: flex; align-items: center; justify-content: center; }
         .briefcase-icon::before { content: ''; position: absolute; top: -8px; width: 10px; height: 6px; border: 2.2px solid var(--heavy-teal); border-bottom: none; border-radius: 3.5px 3.5px 0 0; background: white; z-index: 2; }
         
-        /* LOGO ALIGNMENT: CIRCLES CENTERED IN TIMELINE */
-        .icon-timeline { width: 155%; height: 1.5px; background: var(--heavy-teal); position: absolute; top: 50%; display: flex; justify-content: space-evenly; align-items: center; padding: 0; box-sizing: border-box; z-index: 3; left: -27.5%; transform: translateY(-50%); }
+        /* THE CENTERED TIMELINE LOGO */
+        .icon-timeline { width: 155%; height: 2px; background: var(--heavy-teal); position: absolute; top: 50%; display: flex; justify-content: space-evenly; align-items: center; padding: 0; box-sizing: border-box; z-index: 3; left: -27.5%; transform: translateY(-50%); }
         .icon-dot { width: 4px; height: 4px; background: white; border: 1.2px solid var(--heavy-teal); border-radius: 50%; flex-shrink: 0; }
         
         .header-controls { position: absolute; right: 15px; display: flex; flex-direction: column; gap: 4px; }
         .toggle-btn { background: #f1f5f9; border: none; border-radius: 20px; font-size: 7px; font-weight: 900; padding: 4px 10px; color: var(--teal); cursor: pointer; text-transform: uppercase; }
 
-        /* 3. TEMPLATE SPACING & MEDIA ICONS */
-        .template-row { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 15px; width: 100%; box-sizing: border-box; }
+        /* 3. TEMPLATES & MEDIA (EVIDENCE ICON ADDED) */
+        .template-row { display: flex; justify-content: space-between; gap: 6px; margin-bottom: 15px; width: 100%; box-sizing: border-box; }
         .media-icons-row { display: flex; gap: 8px; margin: 15px 0; }
         .media-pill { background: #f1f5f9; border: 1.2px solid var(--gray-border); padding: 10px; border-radius: 18px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 8px; font-weight: 900; color: #4a5568; gap: 6px; cursor: pointer; }
         .m-icon { width: 18px; height: 12px; background: #4a5568; position: relative; border-radius: 3px; }
@@ -44,6 +44,7 @@
         .m-audio { background: transparent; display: flex; align-items: center; justify-content: center; gap: 2px; }
         .m-audio span { width: 3px; background: #4a5568; border-radius: 10px; }
         .m-files { width: 12px; height: 15px; border-radius: 2px; border: 2px solid #4a5568; background: transparent; }
+        .m-evidence { width: 15px; height: 15px; border: 2px solid #4a5568; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900; }
 
         /* 4. STATUTORY PULSE & 3D SWITCH */
         @keyframes statutory-pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.7); } 50% { transform: scale(1.1); box-shadow: 0 0 0 12px rgba(229, 62, 62, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(229, 62, 62, 0); } }
@@ -58,13 +59,12 @@
         input:checked + .slider { background-color: var(--teal); }
         input:checked + .slider:before { transform: translateX(20px); }
 
-        /* 5. DRAWERS */
+        /* 5. DRAWERS & TIMELINE */
         #utilityDrawer { position: absolute; top: 60px; width: 100%; background: white; border-bottom: 1.5px solid var(--gray-border); z-index: 3500; transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) transform; transform: translateY(calc(-100% + 40px)); border-radius: 0 0 30px 30px; }
         #mgmtDrawer { position: fixed; bottom: 0; width: 100%; max-width: 500px; background: white; border-top: 2.5px solid var(--gray-border); z-index: 4500; transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) transform; transform: translateY(calc(100% - 45px)); border-radius: 30px 30px 0 0; padding-bottom: env(safe-area-inset-bottom); }
         .handle { width: 100%; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .handle-pill { width: 40px; height: 6px; background: #cbd5e0; border-radius: 10px; }
 
-        /* 6. TIMELINE & CARDS - COURIER PRIME FONT */
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 60px 15px 180px; display: flex; flex-direction: column; gap: 25px; }
         .stack-inner { position: relative; width: 88%; min-height: 80px; transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer; }
         .stack-inner.flipped { transform: rotateY(180deg); }
@@ -72,7 +72,7 @@
         .bubble-front { background: #f1f1f1; font-family: 'Courier Prime', monospace; }
         .bubble-back { background: var(--teal); color: white; transform: rotateY(180deg); position: absolute; top: 0; left: 0; height: 100%; padding: 15px; font-size: 11px; overflow-y: auto; }
 
-        /* 7. DRAGGABLE BUTTONS */
+        /* 6. DRAGGABLE BUTTONS */
         .draggable { position: absolute; z-index: 5000; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; border-radius: 50%; box-shadow: var(--mac-shadow); cursor: pointer; border: none; }
         #addBtn { width: 75px; height: 75px; background: var(--teal); font-size: 35px; bottom: 120px; right: 20px; }
         #syncClioBtn { width: 80px; height: 80px; background: var(--clio-blue); font-size: 9px; bottom: 210px; right: 20px; padding: 12px; text-align: center; font-family: 'Nunito Sans', sans-serif; line-height: 1.1; text-transform: uppercase; }
@@ -80,7 +80,7 @@
         .modal-card { background: white; padding: 25px; border-radius: 30px; box-shadow: var(--mac-shadow); width: 100%; max-width: 290px; text-align: center; border: 1.5px solid var(--gray-border); }
         .modal-btn { border: none; padding: 14px; border-radius: 18px; width: 100%; font-weight: 800; margin-top: 10px; cursor: pointer; font-size: 13px; text-transform: uppercase; }
         textarea { width: 100%; height: 100px; border: 1.5px solid var(--gray-border); border-radius: 20px; padding: 15px; font-size: 16px; outline: none; background: #fafafa; font-family: 'Courier Prime', monospace; }
-        .chip { border: 1px solid var(--gray-border); padding: 8px 0; border-radius: 50px; font-size: 9px; font-weight: 900; background: #f8fafc; cursor: pointer; flex: 1; text-align: center; }
+        .chip { border: 1px solid var(--gray-border); padding: 8px 0; border-radius: 50px; font-size: 8px; font-weight: 900; background: #f8fafc; cursor: pointer; flex: 1; text-align: center; }
     </style>
 </head>
 <body id="appBody">
@@ -97,7 +97,7 @@
     <header class="header">
         <div class="header-top">
             <div class="briefcase-container"><div class="briefcase-icon"><div class="icon-timeline"><div class="icon-dot"></div><div class="icon-dot"></div><div class="icon-dot"></div></div></div></div>
-            <div style="display:flex; flex-direction:column; margin-left:8px;">
+            <div style="display:flex; flex-direction:column; margin-left:4px;">
                 <div style="font-weight:900; font-size:16px;"><span style="color:var(--silver-gray)">Work</span><span style="color:var(--teal)">Timeline</span>™</div>
                 <div style="font-size:8px; font-weight:900; color:var(--teal); text-transform:uppercase;">TAKIN' INTAKE</div>
             </div>
@@ -116,15 +116,17 @@
                 <button onclick="useTemplate('INJURY')" class="chip">INJURY</button>
                 <button onclick="useTemplate('WITNESS')" class="chip">WITNESS</button>
                 <button onclick="useTemplate('SETTING')" class="chip">SETTING</button>
+                <button onclick="useTemplate('EVIDENCE')" class="chip">EVIDENCE</button>
             </div>
             <div class="media-icons-row">
                 <div class="media-pill"><div class="m-icon m-camera"></div>CAMERA</div>
                 <div class="media-pill"><div class="m-icon m-audio"><span style="height:40%"></span><span style="height:100%"></span><span style="height:60%"></span></div>AUDIO</div>
                 <div class="media-pill"><div class="m-icon m-files"></div>DOCS</div>
+                <div class="media-pill"><div class="m-evidence">E</div>EVIDENCE</div>
             </div>
             <textarea id="statusBox" placeholder="Describe the pattern..." oninput="statutoryAnalyze()"></textarea>
             <div id="aiToggleRow" class="switch-container">
-                <div style="flex:1;"><div style="font-size:10px; font-weight:900; color:var(--risk-red);">POTENTIAL ESA/WCB VIOLATION</div></div>
+                <div style="flex:1;"><div style="font-size:10px; font-weight:900; color:var(--risk-red);">POTENTIAL STATUTORY BREACH</div></div>
                 <label class="switch"><input type="checkbox" id="aiSwitch"><span class="slider"></span></label>
             </div>
         </div>
@@ -132,7 +134,6 @@
     </div>
 
     <div id="timelineContainer"></div>
-    
     <button id="addBtn" class="draggable">+</button>
     <button id="syncClioBtn" class="draggable">🔒 SYNC TO CLIO</button>
 
@@ -154,7 +155,7 @@
     function toggleMgmt() { document.getElementById('mgmtDrawer').style.transform = mgmtOpen ? 'translateY(calc(100% - 45px))' : 'translateY(0)'; mgmtOpen = !mgmtOpen; }
 
     function useTemplate(t) { 
-        const ts = { 'INCIDENT': 'ACTION:\nVIOLATION:', 'WITNESS': 'NAME:\nCONTACT:', 'INJURY': 'OFA RECORD:\nINJURY:', 'SETTING': 'LOCATION:\nCONTEXT:' }; 
+        const ts = { 'INCIDENT': 'ACTION:\nVIOLATION:', 'WITNESS': 'NAME:\nCONTACT:', 'INJURY': 'OFA RECORD:\nINJURY:', 'SETTING': 'LOCATION:\nCONTEXT:', 'EVIDENCE': 'TYPE:\nLOCATION:' }; 
         document.getElementById('statusBox').value = ts[t]; 
     }
 
@@ -174,7 +175,7 @@
     document.getElementById('addBtn').onclick = function() {
         const text = document.getElementById('statusBox').value; if(!text.trim()) return;
         const useAI = document.getElementById('aiSwitch').checked;
-        let analysis = useAI ? "<b>STATUTORY CROSS-REF:</b> Potential breach of BC ESA (Sec. 83) & WCB regulations identified." : "";
+        let analysis = useAI ? "<b>STATUTORY CROSS-REF:</b> Potential breach of BC ESA (Sec. 83) & WCB regulations identified. Pattern suggests risk to employment security." : "";
         vault.push({ text, analysis, stamp: new Date().toLocaleString() });
         localStorage.setItem('wt_timeline', JSON.stringify(vault)); refresh();
         document.getElementById('statusBox').value = '';
