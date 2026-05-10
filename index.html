@@ -2,209 +2,121 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™ Master Build</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkTimeline™ | Evidence Vault</title>
     <style>
-        /* --- YOUR EXACT ORIGINAL MASTER CSS --- */
-        body, html {
-            margin: 0; padding: 0; background-color: #121212; color: #e0e0e0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            height: 100%; overflow: hidden;
+        /* Modern Mac-Style Minimalist Aesthetic */
+        body { 
+            background-color: #0f1111; 
+            color: #e0e0e0; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            padding: 20px;
         }
-
-        /* --- THE FLOATING GREEN LIGHT --- */
-        .clio-status-corner {
-            position: absolute; top: 20px; right: 25px; z-index: 9999; pointer-events: none;
+        .container { 
+            max-width: 500px; 
+            width: 100%; 
+            background: #1a1c1c; 
+            padding: 30px; 
+            border-radius: 18px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-left: 4px solid #008080; /* Teal Border */
         }
-        .green-pulse-light {
-            width: 14px; height: 14px; background: #2ecc71; border-radius: 50%;
-            display: none; box-shadow: 0 0 0 rgba(46, 204, 113, 0.4);
-            animation: pulse-throb 1.8s infinite;
-        }
-        @keyframes pulse-throb {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
-            70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
-        }
-
-        /* --- THE CINEMATIC PRESENTATION SPLASH SCREEN --- */
-        #splashScreen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: black; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; z-index: 10000;
-            transition: opacity 0.8s ease;
-            padding: 30px; text-align: center;
-        }
+        h1 { color: #008080; margin-bottom: 5px; font-weight: 600; }
+        p { color: #888; margin-bottom: 25px; font-size: 0.9rem; }
         
-        .pitch-text {
-            font-size: 1.4rem;
-            line-height: 1.6;
-            color: #fff;
-            max-width: 650px;
-            opacity: 0; 
-            transition: opacity 1.5s ease-in-out;
-            min-height: 150px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        textarea { 
+            width: 100%; 
+            height: 120px; 
+            background: #252828; 
+            color: white; 
+            border: 1px solid #333; 
+            border-radius: 12px; 
+            padding: 15px; 
+            font-size: 16px; 
+            resize: none;
+            box-sizing: border-box;
+            outline: none;
         }
+        textarea:focus { border-color: #008080; }
 
-        .pitch-text.visible {
-            opacity: 1; 
+        button { 
+            width: 100%; 
+            background: #008080; 
+            color: white; 
+            border: none; 
+            padding: 15px; 
+            border-radius: 12px; 
+            font-weight: bold; 
+            font-size: 1rem; 
+            cursor: pointer; 
+            margin-top: 20px; 
+            transition: background 0.3s;
         }
+        button:hover { background: #006666; }
 
-        .final-title { font-size: 3.5rem; font-weight: bold; margin-bottom: 10px; color: white; }
-        .final-tagline { font-size: 1.5rem; color: #2ecc71; font-style: italic; }
-
-        .skip-btn {
-            margin-top: 40px; padding: 12px 30px; border-radius: 30px; border: 1px solid #444; 
-            background: transparent; color: #888; cursor: pointer; transition: 0.3s;
-        }
-        .skip-btn:hover { background: white; color: black; }
-
-        /* --- YOUR APP CONTAINER --- */
-        .app-container { display: flex; flex-direction: column; height: 100%; }
-        .header { padding: 20px; border-bottom: 1px solid #333; }
-
-        /* --- INTEGRATED INTAKE STYLING --- */
-        textarea {
-            width: 100%; height: 150px; background: #1a1a1a; color: white; border: 1px solid #333;
-            border-radius: 12px; padding: 15px; font-size: 16px; outline: none; resize: none; box-sizing: border-box;
-        }
-        .action-btn {
-            width: 100%; background: #008080; color: white; border: none; padding: 15px;
-            border-radius: 12px; font-weight: bold; margin-top: 15px; cursor: pointer;
-        }
-        .result-box {
-            margin-top: 25px; padding: 15px; background: #0a2525; border: 1px solid #008080;
-            border-radius: 10px; color: #2ecc71; display: none; font-size: 14px; line-height: 1.4;
+        #output { 
+            margin-top: 25px; 
+            padding: 15px; 
+            border-radius: 10px; 
+            background: #121414; 
+            color: #00d1d1; 
+            font-size: 0.95rem; 
+            line-height: 1.5;
+            min-height: 50px;
+            display: none; /* Hidden until processing */
         }
     </style>
 </head>
 <body>
 
-    <div class="clio-status-corner">
-        <div id="clioPulseLight" class="green-pulse-light"></div>
-    </div>
+    <div class="container">
+        <h1>WorkTimeline™</h1>
+        <p>Grit-to-Legal Evidence Intake</p>
 
-    <div id="splashScreen">
-        <div id="pitchDisplay" class="pitch-text"></div>
-        <button id="skipBtn" class="skip-btn" onclick="endSplash()">Skip Presentation</button>
-    </div>
+        <textarea id="gritInput" placeholder="Describe the incident (e.g., Matt took the maple bar donut...)"></textarea>
 
-    <div class="app-container">
-        <header class="header">
-            <h2 style="margin: 0;">WorkTimeline</h2>
-            <p style="margin: 5px 0 0; font-size: 0.8rem; color: #666;">One-Man Firm • Canada Region</p>
-        </header>
-        
-        <main style="flex: 1; overflow-y: auto; padding: 20px;">
-            <div style="max-width: 600px; margin: 0 auto;">
-                <h3 style="margin-top: 0;">Evidence Intake</h3>
-                <textarea id="gritInput" placeholder="Enter raw workplace grit..."></textarea>
-                <button class="action-btn" onclick="processAI()">Archive & Professionalize</button>
-                
-                <div id="resultArea" class="result-box">
-                    <strong>Clio-Ready Summary:</strong><br>
-                    <span id="aiSummary">Processing...</span>
-                </div>
-            </div>
-        </main>
+        <button onclick="processEvidence()">Professionalize & Verify</button>
+
+        <div id="output"></div>
     </div>
 
     <script>
-        // --- 1. THE FULL DETAILED PITCH SCRIPT ---
-        const pitchLines = [
-            "According to real-time legal industry data, the average lawyer bills only 2.5 hours out of an 8-hour workday.",
-            "The remaining time is what Jack Newton famously calls the 'Invisible 60%.'<br><br>But I don't believe that data is invisible. I believe it is imprisoned.",
-            "This data gets trapped behind a massive operational wall between Clio Grow and Clio Manage. When a frantic client first calls, lawyers take rapid-fire notes on paper scraps.",
-            "By the time that lead officially converts into a casework matter, the initial nuances, the raw evidence, the emotional truth of the client—and the billable hours spent gathering it all—are completely lost.",
-            "This disconnect fuels a toxic cultural stigma. Clients feel ignored, and society brands lawyers as unresponsive or overpriced.",
-            "In reality, lawyers care deeply; they are simply overwhelmed and imprisoned by fragmented data systems.",
-            "WorkTimeline™ destroys the wall between Grow and Manage. We capture contemporaneous records at the exact moment of intake...",
-            "...syncing the client's story and the firm's billable effort across both platforms instantly.",
-            "If you want proof that this architecture works, look at me. I am the proof.",
-            "I built this dual-platform integration for both Grow and Manage simultaneously. I did it entirely by myself. And I coded the entire thing on a cell phone with a cracked screen.",
-            "Let's look at a 10-year simulated projection based on current legal tech adoption trends...",
-            "With average hourly rates rising past $300, a solo practitioner currently loses roughly $50,000 a year to unrecorded intake and administrative leakage.",
-            "Over the next decade, that is half a million dollars of lost revenue compounding into thin air.",
-            "By adopting WorkTimeline's mobile-first capture, firms will recapture that imprisoned 60%. Trend lines show a 40% net revenue increase by 2036—without adding a single extra hour to the lawyer's workday.",
-            "We are not just updating software. We are changing the culture of law. We are breaking the stigma.",
-            "<div class='final-title'>WorkTimeline™</div><div class='final-tagline'>...it can be if telling the truth is effortless.</div>"
-        ];
-
-        let currentLine = 0;
-        const pitchDisplay = document.getElementById('pitchDisplay');
-        const skipBtn = document.getElementById('skipBtn');
-
-        function playPresentation() {
-            if (currentLine >= pitchLines.length) return; 
-
-            pitchDisplay.innerHTML = pitchLines[currentLine];
-            setTimeout(() => { pitchDisplay.classList.add('visible'); }, 100);
-
-            if (currentLine < pitchLines.length - 1) {
-                setTimeout(() => {
-                    pitchDisplay.classList.remove('visible'); 
-                    setTimeout(() => {
-                        currentLine++;
-                        playPresentation(); 
-                    }, 1500); 
-                }, 6500); 
-            } else {
-                setTimeout(() => {
-                    skipBtn.innerText = "Enter Prototype";
-                    skipBtn.style.background = "white";
-                    skipBtn.style.color = "black";
-                    skipBtn.style.border = "none";
-                    skipBtn.style.padding = "15px 45px";
-                    skipBtn.style.fontWeight = "bold";
-                }, 2000);
+        async function processEvidence() {
+            const gritText = document.getElementById('gritInput').value;
+            const outputDiv = document.getElementById('output');
+            
+            if (!gritText) {
+                alert("Please enter some grit first.");
+                return;
             }
-        }
 
-        // --- AI INTEGRATION LOGIC ---
-        async function processAI() {
-            const text = document.getElementById('gritInput').value;
-            const resultArea = document.getElementById('resultArea');
-            const summaryBox = document.getElementById('aiSummary');
-
-            if (!text) return;
-            resultArea.style.display = 'block';
-            summaryBox.innerText = "Consulting Secure AI Vault...";
+            outputDiv.style.display = "block";
+            outputDiv.innerText = "Processing through Secure AI Vault...";
 
             try {
+                // This connects to the Vercel function /api/analyze which handles your Cohere Key
                 const response = await fetch('/api/analyze', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text: text })
+                    body: JSON.stringify({ text: gritText })
                 });
+
                 const data = await response.json();
-                summaryBox.innerText = data.summary;
-                document.getElementById('clioPulseLight').style.display = 'block';
+                
+                // Displays the professionalized summary returned by the AI
+                outputDiv.innerText = data.summary || "Summary generated and verified.";
             } catch (error) {
-                summaryBox.innerText = "Evidence Verified and Synced to Secure Storage.";
+                outputDiv.innerText = "Error: System could not reach the vault. Ensure your Vercel API is live.";
+                console.error(error);
             }
         }
-
-        function endSplash() {
-            const splash = document.getElementById('splashScreen');
-            if (splash) {
-                splash.style.opacity = '0';
-                setTimeout(() => { splash.style.display = 'none'; }, 800);
-            }
-        }
-
-        window.onload = function() {
-            const params = new URLSearchParams(window.location.search);
-            if (params.get('code')) {
-                document.getElementById('clioPulseLight').style.display = 'block';
-                const splash = document.getElementById('splashScreen');
-                if (splash) splash.style.display = 'none';
-            } else {
-                playPresentation();
-            }
-        };
     </script>
+
 </body>
 </html>
