@@ -2,49 +2,92 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WorkTimeline Elite</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; background: #f1f5f9; }
-        .h { color: #008080; font-weight: 900; font-size: 24px; margin-bottom: 20px; }
-        .box { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        textarea { width: 100%; height: 80px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 8px; padding: 10px; box-sizing: border-box; }
+        :root { --teal: #008080; --red: #e53e3e; }
+        body { font-family: sans-serif; padding: 20px; background: #f1f5f9; margin: 0; }
+        .h { color: var(--teal); font-weight: 900; font-size: 24px; margin-bottom: 20px; }
+        .box { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        textarea { width: 100%; height: 80px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 8px; padding: 10px; box-sizing: border-box; font-size: 16px; }
         button { width: 100%; padding: 15px; border: none; border-radius: 8px; font-weight: 900; cursor: pointer; }
-        .add-btn { background: #008080; color: white; }
-        .card { background: white; margin-top: 15px; padding: 15px; border-radius: 10px; border-left: 5px solid #008080; }
-        #gear { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 30px; background: #333; color: white; font-size: 24px; border: none; }
-        #drawer { position: fixed; bottom: 0; left: 0; width: 100%; background: white; border-top: 4px solid #008080; padding: 20px; box-sizing: border-box; transform: translateY(100%); transition: 0.3s; z-index: 1000; }
+        .add-btn { background: var(--teal); color: white; font-size: 16px; }
+        .card { background: white; margin-bottom: 15px; padding: 15px; border-radius: 10px; border-left: 6px solid var(--teal); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .card.risk { border-left-color: var(--red); }
+        .card.locked { animation: blink 1.5s infinite; border-left-color: var(--red); }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+        .ai { background: #f8f9fa; border: 1px dashed var(--teal); padding: 8px; border-radius: 6px; font-size: 12px; margin-top: 10px; color: #475569; }
+        #gear { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 30px; background: #333; color: white; font-size: 24px; border: none; z-index: 1000; }
+        #drawer { position: fixed; bottom: 0; left: 0; width: 100%; background: white; border-top: 4px solid var(--teal); padding: 20px; box-sizing: border-box; transform: translateY(100%); transition: 0.3s; z-index: 1001; border-radius: 20px 20px 0 0; }
         #drawer.open { transform: translateY(0); }
+        .status { font-size: 10px; font-weight: 900; color: var(--teal); margin-top: 10px; text-align: center; }
     </style>
 </head>
 <body>
     <div class="h">WorkTimeline Elite</div>
     <div class="box">
-        <textarea id="msg" placeholder="What happened today?"></textarea>
+        <textarea id="msg" placeholder="Record incident..."></textarea>
         <button class="add-btn" onclick="add()">+ ADD TO TIMELINE</button>
+        <div id="working" style="display:none;" class="status">AI ANALYZING...</div>
     </div>
     <div id="list"></div>
+
     <button id="gear" onclick="t()">⚙️</button>
     <div id="drawer">
-        <input type="password" id="k" placeholder="Paste pT9 key" style="width:100%; padding:15px; margin-bottom:10px; border: 1px solid #ccc; border-radius: 8px;">
-        <button style="background: #008080; color: white;" onclick="s()">SAVE KEY</button>
-        <button style="background: #475569; color: white; margin-top: 10px;" onclick="t()">CLOSE</button>
+        <div style="font-weight:900; margin-bottom:10px;">SYSTEM CONTROLS</div>
+        <input type="password" id="k" placeholder="Paste pT9 key" style="width:100%; padding:15px; margin-bottom:10px; border:1px solid #ccc; border-radius:8px; box-sizing:border-box;">
+        <button style="background:var(--teal); color:white; margin-bottom:10px;" onclick="s()">SAVE API KEY</button>
+        <button style="background:#0076CE; color:white; margin-bottom:10px;" onclick="lock()">LOCK & SYNC CLIO</button>
+        <button style="background:#475569; color:white;" onclick="t()">CLOSE</button>
     </div>
+
     <script>
-        let db = JSON.parse(localStorage.getItem('WT_V15')) || [];
+        let db = JSON.parse(localStorage.getItem('WT_V16')) || [];
+        let isLocked = localStorage.getItem('WT_L') === 'true';
+        let key = localStorage.getItem('WT_K');
+
         function t() { document.getElementById('drawer').classList.toggle('open'); }
-        function s() { localStorage.setItem('WT_KEY', document.getElementById('k').value); alert('Key Saved'); t(); }
-        function add() {
-            let val = document.getElementById('msg').value;
+        function s() { key = document.getElementById('k').value; localStorage.setItem('WT_K', key); alert('Key Saved'); t(); }
+        function lock() { isLocked = true; localStorage.setItem('WT_L', 'true'); alert('Timeline Locked.'); t(); render(); }
+
+        async function add() {
+            let val = document.getElementById('msg').value.trim();
             if(!val) return;
-            db.push({t: val, d: new Date().toLocaleString()});
-            localStorage.setItem('WT_V15', JSON.stringify(db));
+            document.getElementById('working').style.display = 'block';
+
+            let sev = 0;
+            let msg = "Securely recorded.";
+            let ref = "Local Log";
+
+            if(key) {
+                try {
+                    const r = await fetch('https://api.cohere.ai/v1/generate', {
+                        method: 'POST',
+                        headers: { 'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ model: 'command', prompt: 'Audit this for BC WCB/ESA. Return JSON: {"sev":0 or 3, "msg":"...", "ref":"..."}. Entry: ' + val, temperature: 0.1 })
+                    });
+                    const d = await r.json();
+                    let clean = d.generations[0].text.replace(/```json|```/g, "").trim();
+                    let p = JSON.parse(clean);
+                    sev = p.sev; msg = p.msg; ref = p.ref;
+                } catch(e) { console.log(e); }
+            }
+
+            db.push({t: val, d: new Date().toLocaleString(), sev: sev, msg: msg, ref: ref, tampered: isLocked});
+            localStorage.setItem('WT_V16', JSON.stringify(db));
             document.getElementById('msg').value = '';
+            document.getElementById('working').style.display = 'none';
             render();
         }
+
         function render() {
             let h = '';
             [...db].reverse().forEach(i => {
-                h += '<div class="card"><small>'+i.d+'</small><br><strong>'+i.t+'</strong></div>';
+                let cls = 'card';
+                if(i.sev === 3) cls += ' risk';
+                if(i.tampered) cls += ' locked';
+                h += '<div class="'+cls+'"><small>'+i.d+(i.tampered ? ' | ⚠️ TAMPERED':'')+'</small><br><strong>'+i.t+'</strong>' +
+                     (i.sev > 0 ? '<div class="ai"><strong>AI:</strong> '+i.msg+'<br>REF: '+i.ref+'</div>' : '') + '</div>';
             });
             document.getElementById('list').innerHTML = h;
         }
