@@ -8,14 +8,13 @@
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Nunito+Sans:wght@400;600;800&display=swap');
         :root { 
             --teal: #008080; 
-            /* DARKENED SILVER & BACKGROUND */
             --silver-gray: #95a5a6; 
             --gray-bg: #e2e8f0; 
-            --teal-soft: rgba(0, 128, 128, 0.08); 
+            --teal-soft: rgba(0, 128, 128, 0.12); 
             --clio-blue: #0076CE; 
             --clio-green: #2ecc71; 
             --gray-border: #cbd5e0; 
-            --mac-shadow: 0 12px 40px rgba(0,0,0,0.15); 
+            --mac-shadow: 0 10px 30px rgba(0,0,0,0.08); 
         }
         
         body { font-family: 'Nunito', sans-serif; background: var(--gray-bg); margin: 0; padding: 0; height: 100dvh; overflow: hidden; display: flex; justify-content: center; -webkit-tap-highlight-color: transparent; color: #2d3748; }
@@ -30,7 +29,6 @@
         .header-top { display: flex; justify-content: flex-start; align-items: center; gap: 0px; }
         .brand-text { display: flex; flex-direction: column; align-items: flex-start; }
         .brand-sub { font-size: 7px; font-weight: 900; color: var(--teal); text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.7; margin-left: 5px; }
-        
         .main-title { font-weight: 900; font-size: 17px; display: flex; align-items: center; justify-content: flex-start; gap: 0px; letter-spacing: -0.5px; }
         .work-silver { color: var(--silver-gray); }
         .timeline-teal { color: var(--teal); margin-left: -1px; }
@@ -40,7 +38,7 @@
 
         /* MAC-STYLE PILLS */
         .media-row { display: flex; gap: 10px; margin-bottom: 15px; }
-        .media-pill { background: rgba(226, 232, 240, 0.8); border: 1px solid var(--gray-border); padding: 10px 18px; border-radius: 50px; font-size: 10px; flex: 1; font-weight: 800; color: #4a5568; cursor: pointer; transition: all 0.2s ease; letter-spacing: 0.5px; }
+        .media-pill { background: rgba(226, 232, 240, 0.8); border: 1px solid var(--gray-border); padding: 10px 18px; border-radius: 50px; font-size: 10px; flex: 1; font-weight: 800; color: #4a5568; cursor: pointer; letter-spacing: 0.5px; }
 
         /* DRAWERS */
         #utilityDrawer { position: absolute; top: 60px; width: 100%; background: white; border-bottom: 1.5px solid var(--gray-border); z-index: 3500; transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) transform; transform: translateY(calc(-100% + 40px)); border-radius: 0 0 30px 30px; }
@@ -53,14 +51,34 @@
         #addBtn { width: 70px; height: 70px; background: var(--teal); font-size: 30px; top: 160px; right: 20px; }
         #syncBtn { width: 70px; height: 70px; background: var(--clio-blue); font-size: 8px; padding: 6px; top: 250px; right: 20px; }
 
-        /* TIMELINE */
-        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 60px 20px 150px; scrollbar-width: none; }
-        .entry { background: white; border: 1.5px solid var(--gray-border); border-left: 6px solid var(--teal); padding: 20px; border-radius: 24px; margin-bottom: 20px; text-align: left; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-        .entry p { font-family: 'Nunito Sans', sans-serif; font-weight: 600; font-size: 14px; line-height: 1.6; color: #2d3748; margin-top: 12px; }
-        .tier-serious { animation: pulse-ser 3s infinite; border-left-color: var(--teal-dark); background: linear-gradient(to right, var(--teal-soft), transparent); }
+        /* TIMELINE - MAC MESSAGE BUBBLE STYLE */
+        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 60px 15px 150px; display: flex; flex-direction: column; gap: 8px; scrollbar-width: none; }
+        .entry { 
+            max-width: 85%; 
+            padding: 12px 16px; 
+            border-radius: 20px; 
+            margin-bottom: 4px; 
+            text-align: left; 
+            position: relative; 
+            font-family: 'Nunito Sans', sans-serif;
+            align-self: flex-start; /* Mac incoming style */
+            background: #f1f1f1;
+            border: 1px solid #e5e5e5;
+        }
+        .stamp-label { font-size: 9px; font-weight: 800; color: #a0aec0; margin-bottom: 4px; text-transform: uppercase; }
+        .entry p { font-weight: 600; font-size: 14px; line-height: 1.4; color: #1a202c; margin: 0; }
+        
+        /* EA SUPER SERIOUS - MAC BUBBLE (TEAL ACCENT) */
+        .tier-serious { 
+            align-self: flex-end; /* Mac outgoing style */
+            background: white; 
+            border: 2px solid var(--teal); 
+            animation: pulse-ser 3s infinite;
+        }
+        @keyframes pulse-ser { 0% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0.2); } 70% { box-shadow: 0 0 0 10px rgba(0, 128, 128, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0); } }
 
         /* OVERLAYS */
-        #overlaySystem { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(25px); z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 25px; box-sizing: border-box; }
+        #overlaySystem { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(25px); z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 25px; }
         .modal-card { background: white; padding: 40px 30px; border-radius: 35px; box-shadow: var(--mac-shadow); width: 100%; max-width: 380px; text-align: center; border: 1px solid var(--gray-border); }
         .modal-btn { border: none; padding: 18px; border-radius: 20px; width: 100%; font-weight: 800; margin-top: 15px; cursor: pointer; font-size: 14px; }
         .appeasing-text { font-size: 14px; line-height: 1.6; color: #4a5568; margin: 20px 0; font-weight: 600; }
@@ -74,11 +92,7 @@
 <div id="overlaySystem">
     <div class="modal-card" id="modalContent">
         <h2 style="color: #1a202c; font-weight: 900; margin: 0; letter-spacing: -0.5px;">INTAKE GUARD</h2>
-        <div class="appeasing-text">
-            We are here to help you document the truth.<br><br>
-            Please note that while this journal provides vital evidence support, <b>we do not offer legal advice.</b><br><br>
-            By continuing, you are choosing to professionally secure your workplace records.
-        </div>
+        <div class="appeasing-text">We are here to help you document the truth.<br><br>While this journal provides vital evidence support, <b>we do not offer legal advice.</b><br><br>Proceed to secure your workplace records.</div>
         <button class="modal-btn" style="background:var(--teal); color:white;" onclick="unlockApp()">SECURE MY JOURNAL</button>
     </div>
 </div>
@@ -90,9 +104,7 @@
                 <rect x="4" y="10" width="36" height="20" rx="4" stroke="var(--teal)" stroke-width="2.5"/>
                 <path d="M16 10V6C16 4.89543 16.8954 4 18 4H26C27.1046 4 28 4.89543 28 6V10" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round"/>
                 <line x1="0" y1="20" x2="44" y2="20" stroke="var(--teal)" stroke-width="2.5"/>
-                <circle cx="10" cy="20" r="3" fill="var(--teal)" stroke="white" stroke-width="1"/>
-                <circle cx="22" cy="20" r="3" fill="var(--teal)" stroke="white" stroke-width="1"/>
-                <circle cx="34" cy="20" r="3" fill="var(--teal)" stroke="white" stroke-width="1"/>
+                <circle cx="10" cy="20" r="3" fill="var(--teal)" stroke="white" stroke-width="1"/><circle cx="22" cy="20" r="3" fill="var(--teal)" stroke="white" stroke-width="1"/><circle cx="34" cy="20" r="3" fill="var(--teal)" stroke="white" stroke-width="1"/>
             </svg>
             <div class="brand-text">
                 <div class="brand-sub">Takin'Intake</div>
@@ -126,7 +138,7 @@
     <div id="timelineContainer"><div id="displayList"></div></div>
 
     <button id="addBtn" class="draggable">+</button>
-    <button id="syncBtn" class="draggable" onclick="clioHandshake()">LOCK & SYNC TO CLIO</button>
+    <button id="syncBtn" class="draggable" onclick="clioHandshake()">SYNC</button>
 
     <div id="mgmtDrawer">
         <div class="handle" onclick="toggleMgmt()"><div class="handle-pill"></div></div>
@@ -174,8 +186,8 @@
         const list = document.getElementById('displayList'); list.innerHTML = '';
         [...vault].reverse().forEach((item, index) => {
             const trueIdx = vault.length - 1 - index;
-            const content = item.flipped ? `<b>EA ANALYSIS:</b><br>${item.analysis}` : `<b>📍 LANGLEY, BC | ${item.stamp}</b><p>${item.grit}</p>`;
-            const flip = item.analysis ? `<button onclick="flip(${trueIdx})" style="position:absolute;top:15px;right:15px;background:var(--gray-bg);border:none;padding:5px 12px;border-radius:20px;font-size:8px;font-weight:900;">FLIP</button>` : "";
+            const content = item.flipped ? `<div class="stamp-label">AI CROSS-REFERENCE</div><b>EA ANALYSIS:</b><br>${item.analysis}` : `<div class="stamp-label">📍 LANGLEY | ${item.stamp}</div><p>${item.grit}</p>`;
+            const flip = item.analysis ? `<button onclick="flip(${trueIdx})" style="position:absolute;top:5px;right:-40px;background:var(--teal);color:white;border:none;padding:5px;border-radius:50px;font-size:7px;font-weight:900;">FLIP</button>` : "";
             list.innerHTML += `<div class="entry tier-${item.tier}">${flip}${content}</div>`;
         });
     }
