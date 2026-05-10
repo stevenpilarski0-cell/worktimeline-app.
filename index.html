@@ -29,6 +29,7 @@
         .app-container { width: 100%; max-width: 500px; margin: 0 auto; background: white; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; position: relative; }
         
         .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; border-bottom: 2px solid var(--platinum); z-index: 3000; background: white; }
+        .logo-box { display: flex; align-items: center; gap: 10px; }
         .switch-group { display: flex; gap: 15px; align-items: center; }
         .switch { position: relative; width: 34px; height: 18px; }
         .switch input { opacity: 0; width: 0; height: 0; }
@@ -80,7 +81,16 @@
 
 <div class="app-container">
     <header class="header">
-        <div style="font-weight:900; color:var(--teal); font-size:16px;">WorkTimeline™</div>
+        <div class="logo-box">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M16 7V5C16 3.89543 15.1046 3 14 3H10C8.89543 3 8 3.89543 8 5V7H4C2.89543 7 2 7.89543 2 9V18C2 19.1046 2.89543 20 4 20H20C21.1046 20 22 19.1046 22 18V9C22 7.89543 21.1046 7 20 7H16ZM10 5H14V7H10V5Z" fill="var(--teal)"/>
+                <rect x="5" y="12" width="14" height="1.5" rx="0.75" fill="white"/>
+                <circle cx="7" cy="12.75" r="1.2" fill="var(--teal)"/>
+                <circle cx="12" cy="12.75" r="1.2" fill="var(--teal)"/>
+                <circle cx="17" cy="12.75" r="1.2" fill="var(--teal)"/>
+            </svg>
+            <div style="font-weight:900; color:var(--teal); font-size:16px;">WorkTimeline™</div>
+        </div>
         <div class="switch-group">
             <div style="text-align:center;"><label class="switch"><input type="checkbox" onchange="toggleGhost(this)"><span class="slider"></span></label><div style="font-size:7px; font-weight:900;">GHOST</div></div>
             <div style="text-align:center;"><label class="switch"><input type="checkbox" onchange="toggleVault(this)"><span class="slider"></span></label><div style="font-size:7px; font-weight:900;">NOTES</div></div>
