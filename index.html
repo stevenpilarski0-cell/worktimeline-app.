@@ -29,8 +29,9 @@
         #addBtn { right: 20px; top: 160px; background: var(--teal); font-size: 40px; font-weight: 900; }
         #syncBtn { right: 20px; top: 240px; background: var(--clio-blue); }
         #utilityDrawer { width: 100%; background: var(--glass); backdrop-filter: blur(12px); border-bottom: 2px solid var(--platinum); z-index: 2500; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        #managementDrawer { position: fixed; bottom: 0; width: 100%; max-width: 500px; background: white; border-top: 3.5px solid var(--teal); z-index: 6000; transition: 0.5s transform cubic-bezier(0.16, 1, 0.3, 1); transform: translateY(calc(100% - 40px)); box-shadow: 0 -10px 40px rgba(0,0,0,0.1); }
         .drawer-content { padding: 15px 20px; }
-        .drag-handle-zone { width: 100%; height: 35px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .drag-handle-zone { width: 100%; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .handle-pill { width: 45px; height: 6px; background: var(--platinum); border-radius: 10px; }
         .template-bar { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 12px; scrollbar-width: none; }
         .template-chip { background: white; border: 2px solid var(--teal); padding: 8px 14px; border-radius: 15px; font-size: 9px; font-weight: 900; color: var(--teal); white-space: nowrap; cursor: pointer; }
@@ -38,7 +39,7 @@
         .media-toolbar { display: flex; gap: 8px; margin-top: 12px; }
         .media-btn { flex: 1; position: relative; background: white; border: 2.5px solid var(--platinum); padding: 12px 5px; border-radius: 16px; text-align: center; font-size: 9px; font-weight: 900; cursor: pointer; }
         .media-btn input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 45px 15px 25px; position: relative; background: #fdfdfd; }
+        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 45px 15px 65px; position: relative; background: #fdfdfd; }
         .entry { position: relative; margin-left: 35px; background: white; border: 2.5px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; border-left: 10px solid var(--platinum); width: calc(100% - 45px); box-sizing: border-box; transition: 0.3s; }
         .entry.is-stacked { border-left-color: var(--teal); background: var(--blue-trans); }
         .pattern-alert { background: var(--blue-trans); border: 1.5px solid var(--teal); padding: 12px; border-radius: 16px; margin-top: 10px; color: var(--teal-dark); }
@@ -76,21 +77,27 @@
         <div style="position:absolute; right:20px; top:10px; display:flex; align-items:center; gap:6px; z-index:10;"><div class="pulse-dot"></div><span style="font-size:8px; font-weight:900; color:var(--clio-green);">CLIO READY</span></div>
         <div id="displayList"></div>
     </div>
+    <div id="managementDrawer">
+        <div class="drag-handle-zone" onclick="toggleMgmtDrawer()"><div class="handle-pill"></div></div>
+        <div style="padding:0 25px 35px; display:flex; flex-direction:column; gap:12px;">
+            <button class="modal-btn" style="margin-top:0;" onclick="alert('Report Generated and Saved.')">SAVE & EXPORT</button>
+            <button class="modal-btn" style="margin-top:0; background:var(--clio-blue);" onclick="alert('Email Client Opened.')">EMAIL EVIDENCE</button>
+            <button class="modal-btn" style="margin-top:0; background:#e74c3c;" onclick="confirmReset()">DELETE & START FRESH</button>
+        </div>
+    </div>
 </div>
 <script>
     const story = ["The Fresh Record.", "Canadian Justice.", "Case Law Integrated.", "Truth Secured."];
-    let isDrawerOpen = true; let activeVault = "TIMELINE"; 
-    
-    // PERSISTENCE LOAD
+    let isDrawerOpen = true; let isMgmtOpen = false; let activeVault = "TIMELINE"; 
     const timelineVault = JSON.parse(localStorage.getItem('wt_timeline')) || []; 
     const notesVault = JSON.parse(localStorage.getItem('wt_notes')) || [];
-
     window.onload = () => { refreshDisplay(); };
-
     function dismissLegal() { document.getElementById('legalOverlay').style.opacity='0'; setTimeout(() => { document.getElementById('legalOverlay').remove(); runStory(); }, 500); }
     function runStory() { const el = document.getElementById('storyText'); let i = 0; const next = () => { if(i < story.length) { el.style.opacity = 0; setTimeout(() => { el.innerText = story[i++]; el.style.opacity = 1; setTimeout(next, 2000); }, 600); } else endSplash(); }; next(); }
     function endSplash() { const s = document.getElementById('splashScreen'); if(s) { s.style.opacity='0'; setTimeout(() => s.remove(), 800); } }
     function toggleDrawer() { const d = document.getElementById('utilityDrawer'); const c = document.getElementById('drawerContent'); if(isDrawerOpen) { d.style.transform = `translateY(-${c.offsetHeight}px)`; isDrawerOpen = false; } else { d.style.transform = `translateY(0)`; isDrawerOpen = true; } }
+    function toggleMgmtDrawer() { const d = document.getElementById('managementDrawer'); if(!isMgmtOpen) { d.style.transform = 'translateY(0)'; isMgmtOpen = true; } else { d.style.transform = 'translateY(calc(100% - 40px))'; isMgmtOpen = false; } }
+    function confirmReset() { if(confirm("CRITICAL: This will permanently wipe your persistent evidence vault. Proceed?")) { localStorage.clear(); location.reload(); } }
     function useTemplate(type) { const t = { 'WITNESS': 'WITNESS: \nSTATEMENT: \nCONTACT: ', 'INCIDENT': 'ACTION: \nVIOLATION: \nQUOTES: ', 'LOCATION': 'SITE AREA: \nHAZARDS: ' }; document.getElementById('statusBox').value = t[type]; }
     function makeMovable(el) { let p1 = 0, p2 = 0, p3 = 0, p4 = 0; el.ontouchstart = (e) => { p3 = e.touches[0].clientX; p4 = e.touches[0].clientY; document.ontouchend = () => { document.ontouchend = null; document.ontouchmove = null; }; document.ontouchmove = (e) => { p1 = p3 - e.touches[0].clientX; p2 = p4 - e.touches[0].clientY; p3 = e.touches[0].clientX; p4 = e.touches[0].clientY; el.style.top = (el.offsetTop - p2) + "px"; el.style.left = (el.offsetLeft - p1) + "px"; el.style.right = "auto"; }; }; }
     makeMovable(document.getElementById('addBtn')); makeMovable(document.getElementById('syncBtn'));
@@ -112,13 +119,7 @@
         });
     }
     function toggleLegalDetail(id) { const el = document.getElementById(`detail-${id}`); el.style.display = el.style.display === 'block' ? 'none' : 'block'; }
-    function stackEntry(id) { 
-        const e = timelineVault.find(x => x.id === id) || notesVault.find(x => x.id === id); 
-        e.isStacked = true; e.currentView = 'legal'; 
-        localStorage.setItem('wt_timeline', JSON.stringify(timelineVault));
-        localStorage.setItem('wt_notes', JSON.stringify(notesVault));
-        refreshDisplay(); 
-    }
+    function stackEntry(id) { const e = timelineVault.find(x => x.id === id) || notesVault.find(x => x.id === id); e.isStacked = true; e.currentView = 'legal'; localStorage.setItem('wt_timeline', JSON.stringify(timelineVault)); localStorage.setItem('wt_notes', JSON.stringify(notesVault)); refreshDisplay(); }
     function switchView(id, view) { const e = timelineVault.find(x => x.id === id) || notesVault.find(x => x.id === id); e.currentView = view; refreshDisplay(); }
     function toggleGhost(cb) { document.getElementById('appBody').classList.toggle('ghost-active', cb.checked); }
     function toggleVault(cb) { activeVault = cb.checked ? "NOTES" : "TIMELINE"; refreshDisplay(); }
