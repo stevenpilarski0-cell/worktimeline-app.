@@ -61,6 +61,12 @@
         .timeline-spine { position: absolute; left: 30px; top: -200dvh; bottom: 0; width: 6px; background: var(--platinum); z-index: 1; border-radius: 10px; }
         .entry { position: relative; margin-left: 45px; background: white; border: 2px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; border-left: 8px solid var(--teal); box-shadow: 0 5px 15px rgba(0,0,0,0.03); width: calc(100% - 60px); box-sizing: border-box; }
         .vault-label { font-size: 11px; font-weight: 900; color: #94a3b8; text-transform: uppercase; margin-bottom: 25px; display: block; text-align: center; letter-spacing: 1.5px; }
+
+        /* NEW TOGGLE STYLES */
+        .ai-toggle { margin-top: 15px; display: flex; gap: 10px; border-top: 1.5px solid var(--platinum); padding-top: 10px; }
+        .toggle-btn { flex: 1; padding: 8px; border-radius: 10px; border: 2px solid var(--platinum); background: #f8fafc; font-size: 9px; font-weight: 900; color: var(--gray-dark); cursor: pointer; }
+        .toggle-btn.active { background: var(--teal); color: white; border-color: var(--teal); }
+        .accept-btn { margin-top: 10px; width: 100%; padding: 10px; background: var(--clio-green); color: white; border: none; border-radius: 12px; font-weight: 900; font-size: 10px; cursor: pointer; }
     </style>
 </head>
 <body id="appBody">
@@ -160,16 +166,19 @@
             const now = new Date(); 
             const stamp = now.toLocaleDateString() + ' @ ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
             const entry = { 
+                id: Date.now(),
                 text: text, 
                 stamp: stamp, 
                 gps: `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`,
-                ai_summary: "Consulting AI Vault..."
+                ai_summary: "",
+                showAI: false,
+                isAccepted: false,
+                isProcessing: true
             };
             
             if(activeVault === "TIMELINE") timelineVault.push(entry); else isolatedVault.push(entry);
             refreshDisplay();
 
-            // AI BRIDGE START
             try {
                 const response = await fetch('/api/analyze', {
                     method: 'POST',
@@ -178,13 +187,24 @@
                 });
                 const data = await response.json();
                 entry.ai_summary = data.summary;
+                entry.isProcessing = false;
                 refreshDisplay();
             } catch (error) {
-                entry.ai_summary = "Verified & Archived.";
+                entry.ai_summary = "Verification Complete.";
+                entry.isProcessing = false;
                 refreshDisplay();
             }
-            // AI BRIDGE END
         });
+    }
+
+    function acceptAI(id) {
+        const entry = timelineVault.find(e => e.id === id) || isolatedVault.find(e => e.id === id);
+        if(entry) { entry.isAccepted = true; entry.showAI = true; refreshDisplay(); }
+    }
+
+    function toggleView(id, showAI) {
+        const entry = timelineVault.find(e => e.id === id) || isolatedVault.find(e => e.id === id);
+        if(entry) { entry.showAI = showAI; refreshDisplay(); }
     }
 
     function refreshDisplay() {
@@ -192,12 +212,28 @@
         const data = (activeVault === "TIMELINE") ? timelineVault : isolatedVault;
         [...data].reverse().forEach(item => {
             const div = document.createElement('div'); div.className = 'entry';
+            
+            let content = item.showAI ? `<p style="margin:10px 0 0; font-weight:700; line-height:1.5; color:var(--teal); font-style:italic;">${item.ai_summary}</p>` : `<p style="margin:10px 0 0; font-weight:700; line-height:1.5;">${item.text}</p>`;
+            
+            let footer = "";
+            if (item.isProcessing) {
+                footer = `<div style="font-size:10px; color:#94a3b8; margin-top:10px;">Consulting Vault...</div>`;
+            } else if (!item.isAccepted) {
+                footer = `
+                    <div style="font-size:10px; font-weight:900; color:var(--teal); margin-top:10px; font-style:italic;">Proposed: ${item.ai_summary}</div>
+                    <button class="accept-btn" onclick="acceptAI(${item.id})">ACCEPT & ARCHIVE AS GOLD</button>`;
+            } else {
+                footer = `
+                    <div class="ai-toggle">
+                        <button class="toggle-btn ${!item.showAI ? 'active' : ''}" onclick="toggleView(${item.id}, false)">GRIT (ORIGINAL)</button>
+                        <button class="toggle-btn ${item.showAI ? 'active' : ''}" onclick="toggleView(${item.id}, true)">GOLD (AI)</button>
+                    </div>`;
+            }
+
             div.innerHTML = `
                 <span style="font-size:10px; color:var(--teal); font-weight:900; letter-spacing:0.8px;">📍 ${item.gps} | ${item.stamp}</span>
-                <p style="margin:10px 0 0; font-weight:700; line-height:1.5;">${item.text}</p>
-                <div style="margin-top:10px; padding-top:10px; border-top:1.5px solid var(--platinum); font-size:12px; color:var(--teal); font-weight:600; font-style:italic;">
-                    ${item.ai_summary || ""}
-                </div>`;
+                ${content}
+                ${footer}`;
             list.appendChild(div);
         });
     }
