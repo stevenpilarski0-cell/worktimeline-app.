@@ -17,7 +17,7 @@
         .ghost-active #timelineContainer, .ghost-active #utilityDrawer, .ghost-active #mgmtDrawer { filter: blur(25px); opacity: 0.15; pointer-events: none; }
         .app-container { width: 100%; max-width: 500px; background: white; height: 100dvh; display: flex; flex-direction: column; position: relative; border: 1.5px solid var(--gray-border); box-sizing: border-box; overflow: hidden; }
         
-        /* HEADER - COMPACT MODERN ICON */
+        /* HEADER - LOCKED BRANDING */
         .header { padding: 12px 15px; border-bottom: 1px solid var(--gray-border); background: white; z-index: 4000; position: relative; }
         .header-top { display: flex; justify-content: flex-start; align-items: center; gap: 8px; }
         
@@ -30,7 +30,9 @@
         .main-title { font-weight: 900; font-size: 16px; display: flex; align-items: center; letter-spacing: -0.5px; line-height: 1; }
         .work-silver { color: var(--silver-gray); } .timeline-teal { color: var(--teal); }
         .clio-pulse { width: 6px; height: 6px; background-color: var(--clio-green); border-radius: 50%; margin-left: 6px; animation: clio-throb 2s infinite; }
-        .intake-sub { font-size: 7px; font-weight: 900; color: var(--teal); letter-spacing: 1.5px; margin-top: 2px; text-transform: uppercase; }
+        
+        /* TAKEN INTAKE - N's MEETING */
+        .intake-sub { font-size: 8px; font-weight: 900; color: var(--teal); letter-spacing: -0.2px; margin-top: 2px; text-transform: uppercase; word-spacing: -2px; }
 
         @keyframes clio-throb { 0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.6); } 70% { box-shadow: 0 0 0 8px rgba(46, 204, 113, 0); } 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
 
@@ -87,7 +89,7 @@
             <div class="briefcase-icon"><div class="icon-timeline"><div class="icon-dot"></div><div class="icon-dot"></div><div class="icon-dot"></div></div></div>
             <div class="brand-block">
                 <div class="main-title"><span class="work-silver">Work</span><span class="timeline-teal">Timeline</span>™ <div class="clio-pulse"></div></div>
-                <div class="intake-sub">INTAKE / GUARD</div>
+                <div class="intake-sub">TAKEN INTAKE</div>
             </div>
             <div style="position:absolute; right:15px; display:flex; flex-direction:column; gap:4px;">
                 <button onclick="document.getElementById('appBody').classList.toggle('ghost-active')" style="background:#f1f5f9; border:none; border-radius:20px; font-size:7px; font-weight:900; padding:4px 10px; color:var(--teal);">GHOST</button>
