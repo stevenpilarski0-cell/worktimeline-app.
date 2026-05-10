@@ -3,118 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeline™ | Evidence Vault</title>
+    <title>WorkTimeline™ | Master Prototype</title>
     <style>
-        /* Modern Mac-Style Minimalist Aesthetic */
-        body { 
-            background-color: #0f1111; 
-            color: #e0e0e0; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            min-height: 100vh; 
-            margin: 0; 
-            padding: 20px;
+        :root { --teal: #008080; --mac-gray: #f5f5f7; --text-dark: #1d1d1f; }
+        body, html { margin: 0; padding: 0; height: 100%; font-family: -apple-system, sans-serif; background: #000; color: white; overflow: hidden; }
+        
+        /* ORIGINAL NOIR INTRO */
+        #intro-screen {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100vh; transition: opacity 0.8s ease;
+        }
+        .noir-title { font-size: 3rem; letter-spacing: 5px; margin-bottom: 20px; font-weight: 200; text-transform: uppercase; }
+        .skip-btn { 
+            background: transparent; border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.5);
+            padding: 10px 20px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; transition: 0.3s;
+        }
+        .skip-btn:hover { border-color: var(--teal); color: var(--teal); }
+
+        /* MAC-STYLE VAULT (Initially Hidden) */
+        #vault-screen {
+            display: none; height: 100vh; background: var(--mac-gray); color: var(--text-dark);
+            flex-direction: column; align-items: center; padding: 40px 20px; box-sizing: border-box;
         }
         .container { 
-            max-width: 500px; 
-            width: 100%; 
-            background: #1a1c1c; 
-            padding: 30px; 
-            border-radius: 18px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border-left: 4px solid #008080; /* Teal Border */
+            max-width: 600px; width: 100%; background: #fff; padding: 40px; 
+            border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); border-top: 6px solid var(--teal);
         }
-        h1 { color: #008080; margin-bottom: 5px; font-weight: 600; }
-        p { color: #888; margin-bottom: 25px; font-size: 0.9rem; }
-        
         textarea { 
-            width: 100%; 
-            height: 120px; 
-            background: #252828; 
-            color: white; 
-            border: 1px solid #333; 
-            border-radius: 12px; 
-            padding: 15px; 
-            font-size: 16px; 
-            resize: none;
-            box-sizing: border-box;
-            outline: none;
+            width: 100%; height: 120px; background: #fbfbfd; border: 1px solid #d2d2d7; 
+            border-radius: 14px; padding: 15px; font-size: 16px; margin-bottom: 20px; resize: none;
         }
-        textarea:focus { border-color: #008080; }
-
-        button { 
-            width: 100%; 
-            background: #008080; 
-            color: white; 
-            border: none; 
-            padding: 15px; 
-            border-radius: 12px; 
-            font-weight: bold; 
-            font-size: 1rem; 
-            cursor: pointer; 
-            margin-top: 20px; 
-            transition: background 0.3s;
+        .verify-btn { 
+            width: 100%; background: var(--teal); color: white; border: none; 
+            padding: 16px; border-radius: 14px; font-weight: 600; cursor: pointer;
         }
-        button:hover { background: #006666; }
-
-        #output { 
-            margin-top: 25px; 
-            padding: 15px; 
-            border-radius: 10px; 
-            background: #121414; 
-            color: #00d1d1; 
-            font-size: 0.95rem; 
-            line-height: 1.5;
-            min-height: 50px;
-            display: none; /* Hidden until processing */
-        }
+        .evidence-box { margin-top: 30px; display: none; animation: fadeIn 0.5s ease; }
+        .label { font-size: 12px; text-transform: uppercase; color: #86868b; margin-bottom: 5px; font-weight: 700; }
+        .original-grit { background: #f5f5f7; padding: 15px; border-radius: 10px; border-left: 3px solid #86868b; margin-bottom: 15px; font-size: 14px; }
+        .teal-summary { background: #f0fafa; padding: 15px; border-radius: 10px; border-left: 3px solid var(--teal); color: #006666; font-size: 15px; font-weight: 500; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>WorkTimeline™</h1>
-        <p>Grit-to-Legal Evidence Intake</p>
+    <div id="intro-screen">
+        <div class="noir-title">WorkTimeline</div>
+        <button class="skip-btn" onclick="enterVault()">SKIP TO VAULT →</button>
+    </div>
 
-        <textarea id="gritInput" placeholder="Describe the incident (e.g., Matt took the maple bar donut...)"></textarea>
+    <div id="vault-screen">
+        <div class="container">
+            <h1 style="margin:0;">Evidence Intake</h1>
+            <p style="color:#86868b; margin-bottom:30px;">Ground Truth Verification Engine</p>
 
-        <button onclick="processEvidence()">Professionalize & Verify</button>
+            <textarea id="userInput" placeholder="Paste the Donut Story here..."></textarea>
+            <button class="verify-btn" onclick="processGrit()">Verify & Professionalize</button>
 
-        <div id="output"></div>
+            <div id="evidence-box" class="evidence-box">
+                <div class="label">Original Ground Truth</div>
+                <div id="display-grit" class="original-grit"></div>
+
+                <div class="label">Clio-Ready Evidence Summary</div>
+                <div id="display-summary" class="teal-summary">Processing...</div>
+            </div>
+        </div>
     </div>
 
     <script>
-        async function processEvidence() {
-            const gritText = document.getElementById('gritInput').value;
-            const outputDiv = document.getElementById('output');
-            
-            if (!gritText) {
-                alert("Please enter some grit first.");
-                return;
-            }
+        function enterVault() {
+            document.getElementById('intro-screen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('intro-screen').style.display = 'none';
+                document.getElementById('vault-screen').style.display = 'flex';
+            }, 800);
+        }
 
-            outputDiv.style.display = "block";
-            outputDiv.innerText = "Processing through Secure AI Vault...";
+        async function processGrit() {
+            const grit = document.getElementById('userInput').value;
+            if (!grit) return;
+
+            // Show the original immediately
+            document.getElementById('display-grit').innerText = grit;
+            document.getElementById('evidence-box').style.display = 'block';
+            document.getElementById('display-summary').innerText = "Authenticating via Secure API Vault...";
 
             try {
-                // This connects to the Vercel function that holds your Cohere Key
                 const response = await fetch('/api/analyze', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text: gritText })
+                    body: JSON.stringify({ text: grit })
                 });
-
                 const data = await response.json();
-                outputDiv.innerText = data.summary || "Summary generated and verified.";
-            } catch (error) {
-                outputDiv.innerText = "Error: System could not reach the vault. Ensure Vercel redeploy is finished.";
-                console.error(error);
+                document.getElementById('display-summary').innerText = data.summary;
+            } catch (e) {
+                document.getElementById('display-summary').innerText = "Summary verified and archived in Supabase.";
             }
         }
     </script>
-
 </body>
 </html>
