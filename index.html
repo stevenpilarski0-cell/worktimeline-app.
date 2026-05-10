@@ -3,157 +3,241 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline Elite | v15.4 Force-Integrity</title>
-    <style id="v15-4-monolith-styles">
+    <title>WorkTimeline Elite | Restored Original</title>
+    <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&family=Nunito+Sans:wght@400;700&display=swap');
         
-        :root { 
-            --teal: #008080; --slate: #475569; --gray-bg: #f1f5f9; --mac-border: #cbd5e0;
-            --notes-gold: #f59e0b; --white: #ffffff; --clio-blue: #0076CE; --risk-red: #e53e3e;
-        }
+        :root { --teal: #008080; --slate: #475569; --gray-bg: #f1f5f9; --mac-border: #cbd5e0; --notes-gold: #f59e0b; --white: #ffffff; --mac-shadow: 0 10px 25px rgba(0,0,0,0.1); --clio-green: #2ecc71; --clio-blue: #0076CE; --risk-red: #e53e3e; --warn-yellow: #f1c40f; }
+        
+        body { font-family: 'Nunito', sans-serif; background: var(--gray-bg); margin: 0; padding: 0; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; -webkit-tap-highlight-color: transparent; }
 
-        /* HEAVY-WEIGHT CORE */
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
-        body { font-family: 'Nunito', sans-serif; background-color: var(--gray-bg); height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+        /* GHOST EFFECT */
+        .ghost-active #timeline { filter: blur(25px) grayscale(1); opacity: 0.3; pointer-events: none; }
+        .notes-mode { background: #fffdf2 !important; }
 
-        /* FORCED MAC SLIDERS */
-        .mac-switch { position: relative; display: inline-block; width: 42px; height: 24px; }
-        .mac-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
-        .mac-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #d1d5db; transition: 0.3s; border-radius: 34px; }
-        .mac-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: #ffffff; transition: 0.3s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        input:checked + .mac-slider { background-color: var(--teal) !important; }
-        input:checked + .mac-slider.gold-variant { background-color: var(--notes-gold) !important; }
-        input:checked + .mac-slider:before { transform: translateX(18px); }
+        /* --- THE PULSE ENGINE --- */
+        @keyframes pulse-teal { 0% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0.4); } 70% { box-shadow: 0 0 0 20px rgba(0, 128, 128, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0); } }
+        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.6); } 70% { box-shadow: 0 0 0 40px rgba(229, 62, 62, 0); } 100% { box-shadow: 0 0 0 0 rgba(229, 62, 62, 0); } }
+        @keyframes pulse-yellow { 0% { box-shadow: 0 0 0 0 rgba(241, 196, 15, 0.6); } 70% { box-shadow: 0 0 0 30px rgba(241, 196, 15, 0); } 100% { box-shadow: 0 0 0 0 rgba(241, 196, 15, 0); } }
 
-        /* TOP DRAWER ARCHITECTURE */
-        #topDrawer { position: fixed; top: 0; width: 100%; background: var(--white); border-bottom: 5px solid var(--teal); border-radius: 0 0 35px 35px; transition: transform 0.4s cubic-bezier(0.1, 0.7, 0.1, 1); z-index: 10000; transform: translateY(calc(-100% + 60px)); box-shadow: 0 5px 25px rgba(0,0,0,0.08); }
+        /* TOP DRAWER */
+        #topDrawer { position: fixed; top: 0; left: 0; width: 100%; background: var(--white); border-bottom: 4px solid var(--teal); border-radius: 0 0 30px 30px; transition: transform 0.4s cubic-bezier(0.1, 0.7, 0.1, 1); z-index: 10000; transform: translateY(calc(-100% + 55px)); box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
         #topDrawer.open { transform: translateY(0); }
-        .top-handle { height: 60px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: absolute; bottom: 0; width: 100%; background: var(--white); border-radius: 0 0 35px 35px; }
+        .top-handle { height: 55px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: absolute; bottom: 0; width: 100%; background: var(--white); border-radius: 0 0 30px 30px; }
+        .top-pill { width: 50px; height: 5px; background: var(--mac-border); border-radius: 10px; position: absolute; bottom: 8px; }
+        .top-handle-txt { font-size: 10px; font-weight: 900; color: var(--teal); letter-spacing: 2px; margin-bottom: 12px; text-transform: uppercase; }
 
-        #statusBox { width: 100%; height: 120px; padding: 15px; border-radius: 20px; border: 2px solid var(--mac-border); outline: none; font-size: 16px; background: #fafafa; box-sizing: border-box; resize: none; font-family: 'Nunito Sans', sans-serif; }
-        .media-dock { display: flex; gap: 12px; background: #e2e8f0; padding: 8px; border-radius: 18px; flex-grow: 1; margin-right: 15px; justify-content: space-around; }
-        .icon-btn { background: var(--white); width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; }
+        .brand { display: flex; align-items: center; gap: 10px; }
+        .clio-sync-btn { background: var(--clio-blue); color: white; border: none; padding: 10px 14px; border-radius: 12px; font-weight: 900; font-size: 10px; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 12px rgba(0,118,206,0.3); }
 
-        /* TIMELINE - ROCK SOLID */
-        #timeline { flex-grow: 1; overflow-y: auto; padding: 80px 20px 140px; display: flex; flex-direction: column; gap: 20px; }
-        .entry-card { background: var(--white); padding: 20px; border-radius: 22px; border: 2px solid var(--mac-border); border-left: 8px solid var(--teal); box-shadow: 0 5px 15px rgba(0,0,0,0.05); position: relative; width: 100%; }
-        .note-card { border-left-color: var(--notes-gold) !important; }
-        .stamp { font-size: 10px; font-weight: 800; color: var(--slate); opacity: 0.5; margin-bottom: 8px; }
-        .vault-tag { background: #e0f2f1; color: var(--teal); font-size: 9px; padding: 4px 8px; border-radius: 6px; font-weight: 900; margin-top: 10px; display: inline-block; text-transform: uppercase; }
+        /* MAC SWITCHES */
+        .toggle-group { display: flex; gap: 12px; align-items: center; }
+        .mac-switch-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .mac-switch { position: relative; display: inline-block; width: 34px; height: 20px; }
+        .mac-switch input { opacity: 0; width: 0; height: 0; }
+        .mac-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #d1d5db; transition: .3s; border-radius: 34px; }
+        .mac-slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 2px; bottom: 2px; background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        input:checked + .mac-slider { background-color: var(--teal); }
+        input:checked + .mac-slider.gold-variant { background-color: var(--notes-gold); }
+        input:checked + .mac-slider:before { transform: translateX(14px); }
+        .switch-label { font-size: 7px; font-weight: 900; color: var(--slate); margin-top: 3px; text-transform: uppercase; }
+
+        .intake-content { padding: 10px 15px 65px; }
+        .templates { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: none; }
+        .chip { background: #f8fafc; border: 1.5px solid var(--mac-border); padding: 7px 14px; border-radius: 100px; font-size: 10px; font-weight: 900; color: var(--slate); white-space: nowrap; cursor: pointer; }
+        #statusBox { width: 100%; height: 80px; padding: 12px; border-radius: 18px; border: 2px solid var(--mac-border); outline: none; font-family: 'Nunito Sans', sans-serif; font-size: 14px; background: #fafafa; box-sizing: border-box; resize: none; }
+
+        .controls { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+        .media-dock { display: flex; gap: 8px; background: #e2e8f0; padding: 5px; border-radius: 15px; flex-grow: 1; margin-right: 12px; justify-content: space-around; }
+        .icon-btn { background: var(--white); width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--slate); border: none; cursor: pointer; }
+        .hidden-input { display: none; }
+        #addBtn { width: 50px; height: 50px; border-radius: 12px; background: var(--teal); color: white; font-size: 28px; font-weight: 900; border: none; cursor: pointer;}
+
+        /* TIMELINE (NO 3D FLIP) */
+        #timeline { flex-grow: 1; overflow-y: auto; padding: 70px 15px 120px; display: flex; flex-direction: column; gap: 18px; }
+        .entry-card { width: 100%; user-select: none; }
+        .stamp { font-size: 9px; font-weight: 800; color: var(--slate); opacity: 0.6; margin-bottom: 4px; padding-left: 5px; }
+        
+        /* Solid face, no flip styles */
+        .face { padding: 12px; border-radius: 18px; box-shadow: var(--mac-shadow); border: 2px solid var(--mac-border); width: 100%; box-sizing: border-box; background: var(--white); border-left: 6px solid var(--teal); position: relative; }
+        .face.note-item { border-left-color: var(--notes-gold); }
+
+        /* BOTTOM DRAWER */
+        #bottomDrawer { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--white); border-top: 4px solid var(--teal); border-radius: 30px 30px 0 0; transition: transform 0.4s cubic-bezier(0.1, 0.7, 0.1, 1); z-index: 10000; transform: translateY(calc(100% - 60px)); padding-bottom: env(safe-area-inset-bottom); }
+        #bottomDrawer.open { transform: translateY(0); }
+        .bottom-handle { height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; }
+        .bottom-pill { width: 50px; height: 5px; background: var(--mac-border); border-radius: 10px; margin-bottom: 5px; }
+        .bottom-handle-txt { font-size: 10px; font-weight: 900; color: var(--teal); letter-spacing: 2px; }
+        .btn { border: none; padding: 16px; border-radius: 12px; font-weight: 900; width: 100%; margin-bottom: 10px; color: white; cursor: pointer; }
 
         /* OVERLAYS */
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); z-index: 100000; display: none; align-items: center; justify-content: center; padding: 25px; }
-        .modal { background: var(--white); padding: 30px; border-radius: 35px; width: 100%; max-width: 360px; text-align: center; border: 4px solid var(--teal); }
-        .btn { padding: 18px; border-radius: 15px; border: none; font-weight: 900; width: 100%; margin-top: 15px; cursor: pointer; font-size: 14px; text-transform: uppercase; }
-        
-        #aiPulse { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 100001; display: none; flex-direction: column; align-items: center; justify-content: center; }
-        .pulse-circle { width: 100px; height: 100px; border-radius: 50%; border: 6px solid var(--teal); animation: pulse-v154 1.5s infinite; }
-        @keyframes pulse-v154 { 0% { transform: scale(0.6); opacity: 1; } 100% { transform: scale(1.4); opacity: 0; } }
-
-        #vaultBtn { position: fixed; right: 20px; bottom: 85px; width: 64px; height: 64px; background: var(--clio-blue); border-radius: 20px; display: flex; align-items: center; justify-content: center; color: white; border: none; box-shadow: 0 8px 25px rgba(0,118,206,0.4); z-index: 9999; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); backdrop-filter: blur(20px); z-index: 100000; display: none; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; }
+        .modal { background: var(--white); padding: 25px; border-radius: 25px; box-shadow: var(--mac-shadow); border: 1.5px solid var(--mac-border); width: 100%; max-width: 340px; }
     </style>
 </head>
-<body>
+<body id="app">
 
-<input type="file" id="cameraIn" accept="image/*" capture="environment" style="display:none;" onchange="mediaLog('Photo')">
-<input type="file" id="micIn" accept="audio/*" capture="microphone" style="display:none;" onchange="mediaLog('Voice Note')">
+<input type="file" id="cameraIn" accept="image/*" capture="environment" class="hidden-input" onchange="mediaLog('Photo')">
+<input type="file" id="micIn" accept="audio/*" capture="microphone" class="hidden-input" onchange="mediaLog('Voice Note')">
+<input type="file" id="docIn" class="hidden-input" onchange="mediaLog('Document')">
 
-<button id="vaultBtn" onclick="alert('VAULT SECURED: Dual Artifacts (Raw & AI) bundled for Clio.')">
-    <svg width="30" height="30" fill="white" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/></svg>
-</button>
+<div id="introOverlay" class="overlay" style="display: flex;">
+    <div class="modal" style="text-align: center;">
+        <h2 style="color:var(--teal); font-weight:900; margin-bottom:10px;">>Disclaimer</h2>
+        <p style="font-size:14px; color:var(--slate); font-weight:700; margin-bottom:20px;">>AI Legal Pulse active. Red: High Risk. Yellow: Locked Integrity warning. No direct legal advice provided.</p>
+        <button class="btn" style="background:var(--teal);" onclick="closeIntro()">I UNDERSTAND</button>
+    </div>
+</div>
 
 <div id="topDrawer">
-    <div style="padding: 20px;">
-        <header style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <div style="font-weight:900; color:var(--teal); font-size:22px;">WorkTimeline™</div>
-            <div class="toggle-group">
-                <div class="mac-switch-wrapper"><label class="mac-switch"><input type="checkbox" id="noteToggle" onchange="render()"><span class="mac-slider gold-variant"></span></label><span class="switch-label">NOTES</span></div>
-            </div>
-        </header>
-        <textarea id="statusBox" placeholder="Enter log entry..."></textarea>
-        <div style="display:flex; align-items:center; margin-top:15px;">
+    <header class="header">
+        <div class="brand">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><rect x="3" y="8" width="18" height="12" rx="2" stroke="var(--teal)" stroke-width="2"/><path d="M9 8V5C9 4.44772 9.44772 4 10 4H14C14.5523 4 15 4.44772 15 5V8" stroke="var(--teal)" stroke-width="2"/><path d="M2 14H22" stroke="var(--teal)" stroke-width="1.5" stroke-dasharray="3 2" opacity="0.6"/><circle cx="7" cy="14" r="1.5" fill="var(--teal)"/><circle cx="12" cy="14" r="1.5" fill="var(--teal)"/><circle cx="17" cy="14" r="1.5" fill="var(--teal)"/></svg>
+            <div class="brand-text" style="font-weight:900; color:var(--teal);">WorkTimeline</div>
+        </div>
+        <div class="toggle-group">
+            <button class="clio-sync-btn" onclick="syncClio()">LOCK & SYNC CLIO</button>
+            <div class="mac-switch-wrapper"><label class="mac-switch"><input type="checkbox" onchange="document.getElementById('app').classList.toggle('ghost-active')"><span class="mac-slider"></span></label><span class="switch-label">GHOST</span></div>
+            <div class="mac-switch-wrapper"><label class="mac-switch"><input type="checkbox" id="noteToggle" onchange="toggleNotes()"><span class="mac-slider gold-variant"></span></label><span class="switch-label">NOTES</span></div>
+        </div>
+    </header>
+    <div class="intake-content">
+        <div class="templates">
+            <div class="chip" onclick="tag('WorkSafeBC')">WorkSafeBC</div>
+            <div class="chip" onclick="tag('First Aid')">First Aid</div>
+            <div class="chip" onclick="tag('Injury Report')">Injury Report</div>
+            <div class="chip" onclick="tag('Witness')">Witness</div>
+        </div>
+        <textarea id="statusBox" placeholder="Start your record..."></textarea>
+        <div class="controls">
             <div class="media-dock">
-                <button class="icon-btn" onclick="document.getElementById('cameraIn').click()"><svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M9 3L7.17 5H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-3.17L15 3H9z"/></svg></button>
-                <button class="icon-btn" onclick="document.getElementById('micIn').click()"><svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg></button>
+                <button class="icon-btn" onclick="document.getElementById('cameraIn').click()"><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M9 3L7.17 5H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-3.17L15 3H9z"/></svg></button>
+                <button class="icon-btn" onclick="document.getElementById('micIn').click()"><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg></button>
+                <button class="icon-btn" onclick="document.getElementById('docIn').click()"><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6z"/></svg></button>
             </div>
-            <button onclick="process()" style="width:64px; height:64px; border-radius:18px; background:var(--teal); color:white; font-size:36px; font-weight:900; border:none; cursor:pointer;">+</button>
+            <button id="addBtn" onclick="process()">+</button>
         </div>
     </div>
-    <div class="top-handle" onclick="document.getElementById('topDrawer').classList.toggle('open')"><div class="top-pill"></div></div>
+    <div class="top-handle" onclick="document.getElementById('topDrawer').classList.toggle('open')">
+        <div class="top-handle-txt">INTAKE</div>
+        <div class="top-pill"></div>
+    </div>
 </div>
 
 <div id="timeline"></div>
 
-<div id="choiceModal" class="overlay">
-    <div class="modal">
-        <h2 style="color:var(--teal); margin:0;">AI LEGAL MATCH</h2>
-        <p id="matchText" style="margin: 20px 0; line-height:1.5; color:var(--slate);"></p>
-        <button class="btn" style="background:var(--teal); color:white;" onclick="finalize(true)">USE AI CASE-LAW VERSION</button>
-        <button class="btn" style="background:var(--slate); color:white;" onclick="finalize(false)">KEEP RAW TEXT VERSION</button>
+<div id="bottomDrawer">
+    <div class="bottom-handle" onclick="document.getElementById('bottomDrawer').classList.toggle('open')">
+        <div class="bottom-pill"></div>
+        <div class="bottom-handle-txt">MANAGEMENT</div>
+    </div>
+    <div class="drawer-content" style="padding: 20px;">
+        <button class="btn" style="background:var(--teal);" onclick="alert('Timeline Saved!')">SAVE TIMELINE</button>
+        <button class="btn" style="background:var(--slate);" onclick="reset()">START FRESH</button>
     </div>
 </div>
 
-<div id="aiPulse"><div class="pulse-circle"></div><div style="margin-top:30px; font-weight:900; color:var(--teal); letter-spacing:1px;">ANALYZING PATTERNS...</div></div>
+<div id="aiLoad" class="overlay" style="flex-direction: column;">
+    <div id="pulseCircle" style="width:60px; height:60px; border-radius:50%; border:4px solid var(--teal);"></div>
+    <div id="loadingText" style="font-weight:900; color:var(--teal); margin-top:20px; text-transform:uppercase;">AI Pulse...</div>
+</div>
 
 <script>
-    let db = JSON.parse(localStorage.getItem('WT_MASTER_V15_4')) || [];
-    let pending = null;
+    let db = JSON.parse(localStorage.getItem('WT_PRO_FINAL')) || [];
+    let noteDb = JSON.parse(localStorage.getItem('WT_NOTE_FINAL')) || [];
+    let mode = "TIMELINE"; 
+    let isLocked = false;
 
-    const precedents = {
-        RETAL: { title: "WorkSafeBC S.47 (Retaliation)", body: "LEGAL ARTIFACT: Hostility identified following First Aid report. Protected activity under BC Workers Compensation Act, Section 47." },
-        CONS: { title: "Potter v. NB Constructive Dismissal", body: "LEGAL ARTIFACT: Unilateral removal of workplace tools/access identified as fundamental breach of contract per Potter v. NB [2015]." }
-    };
+    window.onload = () => { 
+        render(); 
+        if(!localStorage.getItem('WT_L_V1')) document.getElementById('introOverlay').style.display='flex'; 
+    }
+    
+    function closeIntro() { 
+        localStorage.setItem('WT_L_V1', '1'); 
+        document.getElementById('introOverlay').style.display='none'; 
+    }
+    
+    function tag(t) { 
+        document.getElementById('statusBox').value += `--- ${t.toUpperCase()} ---\n`; 
+    }
+    
+    function toggleNotes() { 
+        mode = document.getElementById('noteToggle').checked ? "NOTES" : "TIMELINE"; 
+        document.body.classList.toggle('notes-mode'); 
+        render(); 
+    }
+
+    function syncClio() {
+        isLocked = true;
+        triggerPulse("teal", "Locking Artifacts to Clio...");
+        setTimeout(() => alert("Artifact Synced & Locked."), 1200);
+    }
+
+    function triggerPulse(type, text) {
+        const overlay = document.getElementById('aiLoad');
+        const circle = document.getElementById('pulseCircle');
+        const label = document.getElementById('loadingText');
+        circle.style.animation = `pulse-${type} 0.8s infinite`;
+        circle.style.borderColor = type === 'teal' ? 'var(--teal)' : type === 'red' ? 'var(--risk-red)' : 'var(--warn-yellow)';
+        label.style.color = circle.style.borderColor;
+        label.innerText = text;
+        overlay.style.display = 'flex';
+        setTimeout(() => overlay.style.display = 'none', 1600);
+    }
+
+    function mediaLog(type) {
+        const entry = { id: Date.now(), txt: `[ATTACHED ${type.toUpperCase()}]`, time: new Date().toLocaleString() };
+        if(mode === "NOTES") { noteDb.push(entry); localStorage.setItem('WT_NOTE_FINAL', JSON.stringify(noteDb)); }
+        else { db.push(entry); localStorage.setItem('WT_PRO_FINAL', JSON.stringify(db)); }
+        render();
+    }
 
     function process() {
         const val = document.getElementById('statusBox').value.trim();
         if(!val) return;
-        if(document.getElementById('noteToggle').checked) { save(val, null, false, true); return; }
 
-        document.getElementById('aiPulse').style.display = 'flex';
+        if(mode === "NOTES") {
+            noteDb.push({ id: Date.now(), txt: val, time: new Date().toLocaleString() });
+            localStorage.setItem('WT_NOTE_FINAL', JSON.stringify(noteDb));
+            document.getElementById('statusBox').value = ''; render(); return;
+        }
+
+        if(val.toLowerCase().includes("fired") || val.toLowerCase().includes("termination")) {
+            triggerPulse("red", "CRITICAL RISK PULSE...");
+        } else if (isLocked) {
+            triggerPulse("yellow", "INTEGRITY WARNING: TIMELINE MODIFIED...");
+        } else {
+            triggerPulse("teal", "AI PULSING...");
+        }
+
         setTimeout(() => {
-            document.getElementById('aiPulse').style.display = 'none';
-            const t = val.toLowerCase();
-            let p = null;
-            const hasFA = db.some(e => e.txt.toLowerCase().includes("first aid"));
-
-            if(hasFA && (t.includes("harass") || t.includes("yell") || t.includes("pressure"))) p = precedents.RETAL;
-            else if(t.includes("access") && (t.includes("lock") || t.includes("remove"))) p = precedents.CONS;
-
-            if(p) {
-                pending = { raw: val, ai: p.body, title: p.title };
-                document.getElementById('matchText').innerHTML = `Pattern matched: <strong>${p.title}</strong>.<br><br>Both versions will be secured. Which one leads the timeline?`;
-                document.getElementById('choiceModal').style.display='flex';
-            } else { save(val, null, false, false); }
-        }, 1500);
+            db.push({ id: Date.now(), txt: val, time: new Date().toLocaleString() });
+            localStorage.setItem('WT_PRO_FINAL', JSON.stringify(db));
+            document.getElementById('statusBox').value = ''; 
+            render();
+        }, 1700);
     }
-
-    function finalize(useAI) {
-        save(pending.raw, pending.ai, useAI, false);
-        document.getElementById('choiceModal').style.display = 'none';
-    }
-
-    function save(raw, ai, useAI, isNote) {
-        db.push({ id: Date.now(), txt: useAI ? ai : raw, meta: ai ? { rawText: raw, aiText: ai } : null, isNote, time: new Date().toLocaleString() });
-        localStorage.setItem('WT_MASTER_V15_4', JSON.stringify(db));
-        document.getElementById('statusBox').value = ''; 
-        document.getElementById('topDrawer').classList.remove('open');
-        render();
-    }
-
-    function mediaLog(type) { save(`[ATTACHED ${type.toUpperCase()} ARTIFACT]`, null, false, false); }
 
     function render() {
         const container = document.getElementById('timeline'); container.innerHTML = '';
-        const filter = document.getElementById('noteToggle').checked;
-        [...db].reverse().forEach(item => {
-            if(item.isNote !== filter) return;
-            const card = document.createElement('div'); card.className = `entry-card ${item.isNote ? 'note-card' : ''}`;
-            card.innerHTML = `<div class="stamp">${item.time}</div><div style="font-weight:700; line-height:1.6; white-space:pre-wrap;">${item.txt}</div>
-                ${item.meta ? '<div class="vault-tag">Dual Artifact Secured</div>' : ''}`;
-            container.appendChild(card);
+        const list = mode === "TIMELINE" ? db : noteDb;
+        [...list].reverse().forEach(item => {
+            const wrap = document.createElement('div'); 
+            wrap.className = 'entry-card';
+            
+            // REMOVED: onclick="this.classList.toggle('flipped')" and inner front/back logic
+            // REPLACED WITH: A single, solid face that just shows the full text.
+            wrap.innerHTML = `
+                <div class="stamp">${item.time}</div>
+                <div class="face ${mode==='NOTES'?'note-item':''}" style="font-weight:700; line-height:1.5; white-space:pre-wrap;">${item.txt}</div>
+            `;
+            container.appendChild(wrap);
         });
     }
-    window.onload = render;
+
+    function reset() { if(confirm("Start Fresh?")) { localStorage.clear(); location.reload(); } }
 </script>
 </body>
 </html>
