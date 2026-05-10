@@ -76,7 +76,7 @@
         .modal { background: var(--white); padding: 25px; border-radius: 25px; box-shadow: var(--mac-shadow); border: 1.5px solid var(--mac-border); width: 100%; max-width: 340px; }
 
         /* NEW FLOATING CLIO PADLOCK BUTTON */
-        #clioVaultBtn { position: fixed; right: 15px; bottom: 75px; background: var(--clio-blue); color: white; border: none; padding: 12px 16px; border-radius: 14px; font-weight: 900; font-size: 10px; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 12px rgba(0,118,206,0.3); display: flex; align-items: center; gap: 8px; z-index: 9999; }
+        #clioVaultBtn { position: fixed; right: 15px; bottom: 15px; background: var(--clio-blue); color: white; border: none; width: 55px; height: 55px; border-radius: 50%; font-weight: 900; font-size: 8px; cursor: pointer; text-transform: uppercase; box-shadow: 0 5px 15px rgba(0,118,206,0.4); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; z-index: 10005; }
     </style>
 </head>
 <body id="app">
@@ -146,8 +146,8 @@
 </div>
 
 <button id="clioVaultBtn" onclick="syncClio()">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-    SYNC CLIO
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+    <span>SYNC</span>
 </button>
 
 <script>
