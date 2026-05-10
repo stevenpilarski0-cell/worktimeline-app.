@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline Elite | v12.6</title>
+    <title>WorkTimeline Elite | v12.7</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&family=Nunito+Sans:wght@400;700&display=swap');
         :root { --teal: #008080; --slate: #475569; --gray-bg: #f1f5f9; --mac-border: #cbd5e0; --notes-gold: #f59e0b; --white: #ffffff; --mac-shadow: 0 10px 25px rgba(0,0,0,0.1); --clio-green: #2ecc71; --clio-blue: #0076CE; --risk-red: #e53e3e; }
@@ -11,17 +11,12 @@
         .ghost-active #timeline, .ghost-active #intakeArea { filter: blur(25px) grayscale(1); opacity: 0.3; pointer-events: none; }
         .notes-mode { background: #fffdf2 !important; }
         .header { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background: var(--white); border-bottom: 2px solid var(--mac-border); z-index: 10000; position: relative; }
-        
-        /* BRANDING WITH TIMELINE-BRIEFCASE */
         .brand { display: flex; align-items: center; gap: 10px; }
         .brand-text-group { display: flex; flex-direction: column; }
         .brand-text { font-weight: 900; color: var(--teal); font-size: 17px; line-height: 1; }
         .sub-text { font-weight: 900; color: var(--teal); font-size: 9px; letter-spacing: -0.5px; margin-top: 2px; }
         .clio-dot { width: 7px; height: 7px; background: var(--clio-green); border-radius: 50%; display: inline-block; margin-left: 3px; box-shadow: 0 0 5px var(--clio-green); }
-
-        /* CLIO BLUE SYNC BUTTON (ROUNDED SQUARE) */
         .clio-sync-btn { background: var(--clio-blue); color: white; border: none; padding: 8px 14px; border-radius: 12px; font-weight: 900; font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(0,118,206,0.3); }
-
         .toggle-group { display: flex; gap: 10px; align-items: center; }
         .switch-box { text-align: center; }
         .switch { position: relative; width: 32px; height: 16px; display: inline-block; }
@@ -32,7 +27,6 @@
         input:checked + .slider.gold { background-color: var(--notes-gold); }
         input:checked + .slider:before { transform: translateX(16px); }
         .label { font-size: 7px; font-weight: 900; color: var(--slate); margin-top: 2px; text-transform: uppercase; }
-
         .intake { background: var(--white); padding: 15px; border-bottom: 2px solid var(--mac-border); position: relative; z-index: 5000; }
         .templates { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: none; }
         .chip { background: #f8fafc; border: 1.5px solid var(--mac-border); padding: 7px 14px; border-radius: 100px; font-size: 10px; font-weight: 900; color: var(--slate); white-space: nowrap; cursor: pointer; }
@@ -42,12 +36,13 @@
         .icon-btn { background: var(--white); width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--slate); box-shadow: 0 3px 6px rgba(0,0,0,0.05); }
         #addBtn { width: 60px; height: 60px; border-radius: 15px; background: var(--teal); color: white; font-size: 32px; font-weight: 900; border: none; box-shadow: 0 5px 15px rgba(0,128,128,0.3); }
         #timeline { flex-grow: 1; overflow-y: auto; padding: 15px 15px 120px; display: flex; flex-direction: column; gap: 18px; }
-        .entry-card { perspective: 1000px; width: 100%; }
+        .entry-card { perspective: 1000px; width: 100%; user-select: none; }
         .stamp { font-size: 10px; font-weight: 800; color: var(--slate); opacity: 0.6; margin-bottom: 5px; }
         .card-inner { position: relative; width: 92%; min-height: 70px; transition: transform 0.5s; transform-style: preserve-3d; cursor: pointer; }
         .card-inner.flipped { transform: rotateY(180deg); }
         .face { padding: 15px; border-radius: 20px; backface-visibility: hidden; box-shadow: var(--mac-shadow); border: 2px solid var(--mac-border); width: 100%; box-sizing: border-box; }
         .front { background: var(--white); border-left: 8px solid var(--teal); position: relative; z-index: 2; }
+        .face.note-item { border-left-color: var(--notes-gold); }
         .back { background: var(--teal); color: var(--white); position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform: rotateY(180deg); overflow-y: auto; z-index: 1; }
         #drawer { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--white); border-top: 4px solid var(--teal); border-radius: 30px 30px 0 0; transition: transform 0.4s cubic-bezier(0.1, 0.7, 0.1, 1); z-index: 99999; transform: translateY(calc(100% - 75px)); padding-bottom: env(safe-area-inset-bottom); }
         #drawer.open { transform: translateY(0); }
@@ -66,16 +61,14 @@
 <div id="introOverlay" class="overlay" style="display: flex;">
     <div class="modal" style="text-align: center;">
         <h2 style="color:var(--teal); font-weight:900; margin-bottom:10px;">Disclaimer</h2>
-        <p style="font-size:14px; line-height:1.5; color:var(--slate); font-weight:700; margin-bottom:20px;">
-            We are happy to provide a space for your expression. However, we do not provide, nor will our AI ever provide, direct legal advice.
-        </p>
+        <p style="font-size:14px; color:var(--slate); font-weight:700; margin-bottom:20px;">We provide space for expression, but our AI does not provide legal advice. Press & hold an entry to delete it.</p>
         <button class="btn" style="background:var(--teal);" onclick="closeIntro()">I UNDERSTAND</button>
     </div>
 </div>
 
 <div id="aiLoad" class="overlay" style="flex-direction: column;">
     <div style="width:40px; height:40px; border:4px solid #e2e8f0; border-top-color:var(--teal); border-radius:50%; animation:spin 0.8s linear infinite;"></div>
-    <div id="loadingText" style="font-weight:900; color:var(--teal); margin-top:15px;">ANALYZING BC CASE LAW...</div>
+    <div id="loadingText" style="font-weight:900; color:var(--teal); margin-top:15px;">PROCESSING...</div>
 </div>
 
 <div id="aiOpinion" class="overlay">
@@ -89,25 +82,14 @@
 
 <header class="header">
     <div class="brand">
-        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="3" y="8" width="18" height="12" rx="2" stroke="var(--teal)" stroke-width="2"/>
-            <path d="M9 8V5C9 4.44772 9.44772 4 10 4H14C14.5523 4 15 4.44772 15 5V8" stroke="var(--teal)" stroke-width="2"/>
-            <path d="M2 14H22" stroke="var(--teal)" stroke-width="1.5" stroke-dasharray="3 2" opacity="0.6"/>
-            <circle cx="7" cy="14" r="1.5" fill="var(--teal)"/>
-            <circle cx="12" cy="14" r="1.5" fill="var(--teal)"/>
-            <circle cx="17" cy="14" r="1.5" fill="var(--teal)"/>
-        </svg>
+        <svg width="38" height="38" viewBox="0 0 24 24" fill="none"><rect x="3" y="8" width="18" height="12" rx="2" stroke="var(--teal)" stroke-width="2"/><path d="M9 8V5C9 4.44772 9.44772 4 10 4H14C14.5523 4 15 4.44772 15 5V8" stroke="var(--teal)" stroke-width="2"/><path d="M2 14H22" stroke="var(--teal)" stroke-width="1.5" stroke-dasharray="3 2" opacity="0.6"/><circle cx="7" cy="14" r="1.5" fill="var(--teal)"/><circle cx="12" cy="14" r="1.5" fill="var(--teal)"/><circle cx="17" cy="14" r="1.5" fill="var(--teal)"/></svg>
         <div class="brand-text-group">
             <div class="brand-text">WorkTimeline™</div>
             <div class="sub-text">TAKIN'INTAKE <span class="clio-dot"></span></div>
         </div>
     </div>
-
     <div class="toggle-group">
-        <button class="clio-sync-btn" onclick="syncClio()">
-            <svg width="14" height="14" fill="white" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/></svg>
-            SYNC
-        </button>
+        <button class="clio-sync-btn" onclick="syncClio()"><svg width="14" height="14" fill="white" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/></svg> SYNC</button>
         <div class="switch-box"><label class="switch"><input type="checkbox" onchange="document.getElementById('app').classList.toggle('ghost-active')"><span class="slider"></span></label><div class="label">GHOST</div></div>
         <div class="switch-box"><label class="switch"><input type="checkbox" id="noteToggle" onchange="toggleNotes()"><span class="slider gold"></span></label><div class="label">NOTES</div></div>
     </div>
@@ -144,7 +126,7 @@
 <script>
     let db = JSON.parse(localStorage.getItem('WT_ELITE_V12')) || [];
     let noteDb = JSON.parse(localStorage.getItem('WT_NOTE_V12')) || [];
-    let current = null; let mode = "TIMELINE";
+    let current = null; let mode = "TIMELINE"; let pressTimer;
 
     window.onload = () => { render(); if(localStorage.getItem('WT_DISCLAIMER')) document.getElementById('introOverlay').style.display='none'; };
     function closeIntro() { localStorage.setItem('WT_DISCLAIMER','1'); document.getElementById('introOverlay').style.display='none'; }
@@ -153,20 +135,18 @@
 
     function syncClio() {
         if(db.length === 0 && noteDb.length === 0) { alert("Nothing to sync yet!"); return; }
-        document.getElementById('loadingText').innerText = "GENERATING CASE SUMMARY & SYNCING TO CLIO...";
+        document.getElementById('loadingText').innerText = "GENERATING CASE SUMMARY...";
         document.getElementById('aiLoad').style.display = 'flex';
-        
         setTimeout(() => {
-            const summary = `CASE SUMMARY:\n- Entries logged: ${db.length}\n- Private notes: ${noteDb.length}\n- Latest activity: ${new Date().toLocaleString()}\n\nFull timeline and encrypted summaries have been pushed to Clio secure storage.`;
+            const summary = `CASE SUMMARY:\n- Entries: ${db.length}\n- Notes: ${noteDb.length}\n- Synced to Clio Secure Cloud.`;
             document.getElementById('aiLoad').style.display = 'none';
             alert(summary);
-            document.getElementById('loadingText').innerText = "ANALYZING BC CASE LAW...";
-        }, 2000);
+        }, 1500);
     }
 
     function analyze(text) {
         let t = text.toLowerCase();
-        if(t.includes("unsafe") || t.includes("refused")) return { title: "WorkSafeBC 3.12", msg: "Right to refuse unsafe work detected. Legal avenue: Workers Compensation Act." };
+        if(t.includes("unsafe") || t.includes("refused")) return { title: "WorkSafeBC 3.12", msg: "Right to refuse unsafe work detected." };
         if(t.includes("hours cut") || t.includes("fired")) return { title: "Dismissal Risk", msg: "Potential Constructive or Wrongful Dismissal detected." };
         return null;
     }
@@ -185,11 +165,42 @@
             current = { id: Date.now(), txt: val, time: new Date().toLocaleString(), report };
             if(report) { document.getElementById('aiTitle').innerText = report.title; document.getElementById('aiBody').innerText = report.msg; document.getElementById('aiOpinion').style.display = 'flex'; } 
             else { saveAI(false); }
-        }, 1100);
+        }, 1000);
     }
 
     function saveAI(agree) { if(!agree) current.report = null; db.push(current); localStorage.setItem('WT_ELITE_V12', JSON.stringify(db)); document.getElementById('aiOpinion').style.display = 'none'; document.getElementById('statusBox').value = ''; render(); }
-    function render() { const container = document.getElementById('timeline'); container.innerHTML = ''; const list = mode === "TIMELINE" ? db : noteDb; [...list].reverse().forEach(item => { const wrap = document.createElement('div'); wrap.className = 'entry-card'; wrap.innerHTML = `<div class="stamp">${item.time}</div><div class="card-inner" onclick="this.classList.toggle('flipped')"><div class="face front"><div style="font-weight:700">${item.txt.substring(0,55)}...</div></div><div class="face back"><div style="font-size:11px">${item.txt}</div>${item.report ? `<div style="margin-top:10px; border-top:1px solid rgba(255,255,255,0.3); padding-top:5px; font-weight:900;">${item.report.title}</div>` : ''}</div></div>`; container.appendChild(wrap); }); }
+
+    function deleteItem(id) {
+        if(confirm("Delete this entry permanently?")) {
+            if(mode === "TIMELINE") { db = db.filter(i => i.id !== id); localStorage.setItem('WT_ELITE_V12', JSON.stringify(db)); }
+            else { noteDb = noteDb.filter(i => i.id !== id); localStorage.setItem('WT_NOTE_V12', JSON.stringify(noteDb)); }
+            render();
+        }
+    }
+
+    function render() {
+        const container = document.getElementById('timeline');
+        container.innerHTML = '';
+        const list = mode === "TIMELINE" ? db : noteDb;
+        [...list].reverse().forEach(item => {
+            const wrap = document.createElement('div');
+            wrap.className = 'entry-card';
+            const noteClass = mode === "NOTES" ? 'note-item' : '';
+            
+            wrap.innerHTML = `<div class="stamp">${item.time}</div>
+                <div class="card-inner" 
+                     ontouchstart="startPress(${item.id})" ontouchend="endPress()" 
+                     onmousedown="startPress(${item.id})" onmouseup="endPress()"
+                     onclick="this.classList.toggle('flipped')">
+                    <div class="face front ${noteClass}"><div style="font-weight:700">${item.txt.substring(0,55)}...</div></div>
+                    <div class="face back"><div style="font-size:11px">${item.txt}</div>${item.report ? `<div style="margin-top:10px; font-weight:900;">${item.report.title}</div>` : ''}</div>
+                </div>`;
+            container.appendChild(wrap);
+        });
+    }
+
+    function startPress(id) { pressTimer = window.setTimeout(() => deleteItem(id), 1000); }
+    function endPress() { window.clearTimeout(pressTimer); }
     function reset() { if(confirm("Start Fresh?")) { localStorage.clear(); location.reload(); } }
 </script>
 </body>
