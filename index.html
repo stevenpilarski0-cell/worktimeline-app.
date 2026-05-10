@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Master v11.1</title>
+    <title>WorkTimeline™ | Master Build</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&family=Nunito+Sans:wght@400;600;800&display=swap');
         
@@ -43,7 +43,9 @@
 
         .mac-controls { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; gap: 10px; }
         .mac-media-bar { display: flex; gap: 10px; background: var(--mac-bg); padding: 8px; border-radius: 20px; flex-grow: 1; justify-content: space-around;}
-        .media-icon { background: white; width: 45px; height: 45px; border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); font-size: 20px; cursor: pointer; }
+        
+        /* SOLID MAC-STYLE ICONS */
+        .media-icon { background: white; width: 45px; height: 45px; border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); color: var(--slate); cursor: pointer; }
         
         #addBtn { width: 60px; height: 60px; border-radius: 18px; background: var(--teal); color: white; font-weight: 900; font-size: 30px; border: none; box-shadow: 0 8px 20px rgba(0,0,0,0.2); cursor: pointer; transition: 0.3s; }
 
@@ -60,10 +62,27 @@
         .stack-inner.has-ai-pulse-on::after { content: ''; position: absolute; top: 6px; left: 8px; width: 100%; height: 100%; background: var(--slate); border-radius: 22px; z-index: 0; opacity: 0.7; animation: dark-heavy-pulse 3s infinite ease-in-out; }
         @keyframes dark-heavy-pulse { 0% { box-shadow: 0 0 0 0 rgba(100, 116, 139, 0.7); background: var(--slate); } 50% { background: var(--teal); box-shadow: 0 0 0 15px rgba(0, 128, 128, 0.4); opacity: 0.9; } 70% { box-shadow: 0 0 0 30px rgba(0, 128, 128, 0); background: var(--teal); } 100% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0); background: var(--slate); } }
 
-        #mgmtDrawer { position: fixed; bottom: -280px; left: 0; width: 100%; background: white; border-top: 5px solid var(--teal); z-index: 999999; border-radius: 35px 35px 0 0; transition: bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 -15px 50px rgba(0,0,0,0.2); padding-bottom: 40px; }
-        #mgmtDrawer.active { bottom: 0 !important; }
-        .pull-handle { width: 100%; height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: absolute; top: -60px; cursor: pointer; }
-        .handle-pill { width: 60px; height: 7px; background: var(--teal); border-radius: 10px; margin-bottom: 5px; }
+        /* FIXED DRAWER CSS */
+        #mgmtDrawer { 
+            position: fixed; 
+            bottom: 0; left: 0; width: 100%; 
+            background: white; 
+            border-top: 5px solid var(--teal); 
+            z-index: 999999; 
+            border-radius: 35px 35px 0 0; 
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
+            box-shadow: 0 -15px 50px rgba(0,0,0,0.2); 
+            padding-bottom: 30px; 
+            transform: translateY(calc(100% - 65px)); /* Always leaves the top 65px visible */
+        }
+        #mgmtDrawer.active { transform: translateY(0); /* Slides up to show everything */ }
+        .pull-handle { 
+            width: 100%; height: 65px; 
+            display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; 
+            cursor: pointer; 
+        }
+        .handle-pill { width: 60px; height: 6px; background: var(--teal); border-radius: 10px; margin-bottom: 6px; }
         .handle-text { font-size: 10px; font-weight: 900; color: var(--teal); letter-spacing: 2px; }
 
         .drawer-btn { border: none; padding: 18px; border-radius: 20px; font-weight: 900; width: 85%; font-size: 14px; margin: 0 auto 12px; display: block; cursor: pointer; color: white; }
@@ -140,9 +159,15 @@
     
     <div class="mac-controls">
         <div class="mac-media-bar">
-            <div class="media-icon">📷</div>
-            <div class="media-icon">🎤</div>
-            <div class="media-icon">📄</div>
+            <div class="media-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
+            </div>
+            <div class="media-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5-3c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+            </div>
+            <div class="media-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6z"/></svg>
+            </div>
         </div>
         <button id="addBtn" onclick="runAIEngine()">+</button>
     </div>
@@ -155,15 +180,15 @@
         <div class="handle-pill"></div>
         <div class="handle-text">MANAGEMENT</div>
     </div>
-    <div style="padding-top:30px;">
+    <div style="padding:10px 20px;">
         <button class="drawer-btn btn-teal" onclick="alert('Saved!')">SAVE TIMELINE</button>
         <button class="drawer-btn btn-gray" onclick="confirmReset()">START FRESH</button>
     </div>
 </div>
 
 <script>
-    const timelineVault = JSON.parse(localStorage.getItem('wt_bc_timeline_v2')) || [];
-    const notesVault = JSON.parse(localStorage.getItem('wt_bc_notes_v2')) || [];
+    const timelineVault = JSON.parse(localStorage.getItem('wt_bc_timeline_v3')) || [];
+    const notesVault = JSON.parse(localStorage.getItem('wt_bc_notes_v3')) || [];
     let pendingEntry = null;
     let activeVault = "TIMELINE";
 
@@ -220,7 +245,7 @@
         getLocation((gpsString) => {
             if (activeVault === "NOTES") {
                 notesVault.push({ id: Date.now(), content: text, stamp: new Date().toLocaleString(), gps: gpsString, pulse: false });
-                localStorage.setItem('wt_bc_notes_v2', JSON.stringify(notesVault));
+                localStorage.setItem('wt_bc_notes_v3', JSON.stringify(notesVault));
                 b.value = ''; refreshDisplay();
                 return;
             }
@@ -252,7 +277,7 @@
         if (pendingEntry) {
             if (!userAgrees) { pendingEntry.pulse = false; pendingEntry.aiTag = null; pendingEntry.aiOpinion = null; }
             timelineVault.push(pendingEntry);
-            localStorage.setItem('wt_bc_timeline_v2', JSON.stringify(timelineVault));
+            localStorage.setItem('wt_bc_timeline_v3', JSON.stringify(timelineVault));
         }
         document.getElementById('statusBox').value = '';
         document.getElementById('aiOpinionOverlay').style.display = 'none';
