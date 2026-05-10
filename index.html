@@ -79,7 +79,14 @@
 </div>
 <script>
     const story = ["The Fresh Record.", "Canadian Justice.", "Case Law Integrated.", "Truth Secured."];
-    let isDrawerOpen = true; let activeVault = "TIMELINE"; const timelineVault = []; const notesVault = [];
+    let isDrawerOpen = true; let activeVault = "TIMELINE"; 
+    
+    // PERSISTENCE LOAD
+    const timelineVault = JSON.parse(localStorage.getItem('wt_timeline')) || []; 
+    const notesVault = JSON.parse(localStorage.getItem('wt_notes')) || [];
+
+    window.onload = () => { refreshDisplay(); };
+
     function dismissLegal() { document.getElementById('legalOverlay').style.opacity='0'; setTimeout(() => { document.getElementById('legalOverlay').remove(); runStory(); }, 500); }
     function runStory() { const el = document.getElementById('storyText'); let i = 0; const next = () => { if(i < story.length) { el.style.opacity = 0; setTimeout(() => { el.innerText = story[i++]; el.style.opacity = 1; setTimeout(next, 2000); }, 600); } else endSplash(); }; next(); }
     function endSplash() { const s = document.getElementById('splashScreen'); if(s) { s.style.opacity='0'; setTimeout(() => s.remove(), 800); } }
@@ -99,11 +106,19 @@
             else if(t.includes("unsafe") || t.includes("hazard") || t.includes("spill") || t.includes("refuse work")) lawData = { title: "WorkSafeBC / OHSR S. 3.12", violation: "Right to Refuse: Workers have a statutory duty to refuse work they believe is unsafe." };
             else if(t.includes("fired") || t.includes("quit") || t.includes("toxic") || t.includes("retaliation") || t.includes("reprisal")) lawData = { title: "Civil / Common Law (Constructive Dismissal)", violation: "Constructive Dismissal: Significant unilateral changes to work terms or a toxic environment can be a breach of contract." };
             const entry = { id: Date.now(), grit: text, stamp: new Date().toLocaleString(), gps: `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`, isStacked: false, currentView: 'grit', law: lawData };
-            if(activeVault === "TIMELINE") timelineVault.push(entry); else notesVault.push(entry); refreshDisplay();
+            if(activeVault === "TIMELINE") { timelineVault.push(entry); localStorage.setItem('wt_timeline', JSON.stringify(timelineVault)); } 
+            else { notesVault.push(entry); localStorage.setItem('wt_notes', JSON.stringify(notesVault)); }
+            refreshDisplay();
         });
     }
     function toggleLegalDetail(id) { const el = document.getElementById(`detail-${id}`); el.style.display = el.style.display === 'block' ? 'none' : 'block'; }
-    function stackEntry(id) { const e = timelineVault.find(x => x.id === id) || notesVault.find(x => x.id === id); e.isStacked = true; e.currentView = 'legal'; refreshDisplay(); }
+    function stackEntry(id) { 
+        const e = timelineVault.find(x => x.id === id) || notesVault.find(x => x.id === id); 
+        e.isStacked = true; e.currentView = 'legal'; 
+        localStorage.setItem('wt_timeline', JSON.stringify(timelineVault));
+        localStorage.setItem('wt_notes', JSON.stringify(notesVault));
+        refreshDisplay(); 
+    }
     function switchView(id, view) { const e = timelineVault.find(x => x.id === id) || notesVault.find(x => x.id === id); e.currentView = view; refreshDisplay(); }
     function toggleGhost(cb) { document.getElementById('appBody').classList.toggle('ghost-active', cb.checked); }
     function toggleVault(cb) { activeVault = cb.checked ? "NOTES" : "TIMELINE"; refreshDisplay(); }
