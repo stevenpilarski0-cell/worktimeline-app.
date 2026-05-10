@@ -17,11 +17,11 @@
         .ghost-active #timelineContainer, .ghost-active #utilityDrawer, .ghost-active #mgmtDrawer { filter: blur(25px); opacity: 0.15; pointer-events: none; }
         .app-container { width: 100%; max-width: 500px; background: white; height: 100dvh; display: flex; flex-direction: column; position: relative; border: 1.5px solid var(--gray-border); box-sizing: border-box; overflow: hidden; }
         
-        /* HEADER - BALANCED SCALED ICON */
+        /* HEADER - UNIFIED BRAND PACKAGE */
         .header { padding: 12px 15px; border-bottom: 1px solid var(--gray-border); background: white; z-index: 4000; position: relative; }
-        .header-top { display: flex; justify-content: flex-start; align-items: center; gap: 14px; }
+        .header-top { display: flex; justify-content: flex-start; align-items: center; gap: 6px; } /* Tighter gap for unified package */
         
-        .briefcase-container { position: relative; width: 38px; height: 28px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .briefcase-container { position: relative; width: 44px; height: 28px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .briefcase-icon { 
             width: 28px; height: 20px; border: 2px solid var(--teal); border-radius: 5px; 
             position: relative; display: flex; align-items: center; justify-content: center;
@@ -32,13 +32,13 @@
             background: white; z-index: 2;
         }
         
-        /* THE PIERCING LINE - PRECISE WEIGHT, LARGER FRAME */
+        /* LONGER PIERCING LINE - SMALLER CIRCLES */
         .icon-timeline { 
-            width: 130%; height: 1px; background: var(--teal); position: absolute; top: 50%; 
-            display: flex; justify-content: space-around; padding: 0 2px; box-sizing: border-box; z-index: 3;
-            left: -15%;
+            width: 155%; height: 1px; background: var(--teal); position: absolute; top: 50%; 
+            display: flex; justify-content: space-around; padding: 0 4px; box-sizing: border-box; z-index: 3;
+            left: -27.5%;
         }
-        .icon-dot { width: 4px; height: 4px; background: white; border: 1.2px solid var(--teal); border-radius: 50%; margin-top: -1.5px; }
+        .icon-dot { width: 3px; height: 3px; background: white; border: 1px solid var(--teal); border-radius: 50%; margin-top: -1.5px; }
 
         .brand-block { display: flex; flex-direction: column; }
         .main-title { font-weight: 900; font-size: 16px; display: flex; align-items: center; letter-spacing: -0.5px; line-height: 1; }
@@ -48,7 +48,7 @@
 
         @keyframes clio-throb { 0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.6); } 70% { box-shadow: 0 0 0 8px rgba(46, 204, 113, 0); } 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
 
-        /* UTILITY DRAWER */
+        /* DRAWERS */
         #utilityDrawer { position: absolute; top: 60px; width: 100%; background: white; border-bottom: 1.5px solid var(--gray-border); z-index: 3500; transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) transform; transform: translateY(calc(-100% + 40px)); border-radius: 0 0 30px 30px; }
         #mgmtDrawer { position: fixed; bottom: 0; width: 100%; max-width: 500px; background: white; border-top: 1.5px solid var(--gray-border); z-index: 4500; transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) transform; transform: translateY(calc(100% - 40px)); border-radius: 30px 30px 0 0; }
         .handle { width: 100%; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
