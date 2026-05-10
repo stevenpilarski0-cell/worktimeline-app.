@@ -8,11 +8,11 @@
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap');
         :root { --teal: #008080; --teal-dark: #004d4d; --blue-trans: rgba(0, 128, 128, 0.12); --clio-blue: #0076CE; --platinum: #d8e2ea; --gray-dark: #2c3e50; --clio-green: #2ecc71; --round-inner: 24px; --glass: rgba(255, 255, 255, 0.95); --dark-silver: #7f8c8d; }
         body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 0; height: 100dvh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
-        .ghost-active #timelineContainer, #utilityDrawer { transition: filter 0.3s ease; }
         .ghost-active #timelineContainer { filter: blur(25px); opacity: 0.3; pointer-events: none; }
         #legalOverlay, #syncOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(44, 62, 80, 0.95); backdrop-filter: blur(10px); z-index: 200000; display: none; align-items: center; justify-content: center; padding: 25px; box-sizing: border-box; }
         .modal-card { background: white; padding: 35px; border-radius: 32px; text-align: left; max-width: 400px; box-shadow: 0 25px 60px rgba(0,0,0,0.4); border-bottom: 8px solid var(--teal); width: 100%; }
-        .modal-btn { background: var(--teal); color: white; border: none; padding: 18px; border-radius: 99px; font-weight: 900; cursor: pointer; margin-top: 25px; width: 100%; font-size: 16px; }
+        .modal-btn { background: var(--teal); color: white; border: none; padding: 18px; border-radius: 99px; font-weight: 900; cursor: pointer; margin-top: 25px; width: 100%; font-size: 16px; transition: transform 0.2s; }
+        .modal-btn:active { transform: scale(0.95); }
         .app-container { width: 100%; max-width: 500px; margin: 0 auto; background: white; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; position: relative; }
         .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; border-bottom: 2px solid var(--platinum); z-index: 3000; background: white; }
         .logo-box { display: flex; align-items: center; gap: 10px; }
@@ -33,24 +33,22 @@
         .handle-pill { width: 45px; height: 6px; background: var(--platinum); border-radius: 10px; }
         .template-chip { background: white; border: 2.5px solid var(--teal); padding: 8px 14px; border-radius: 15px; font-size: 10px; font-weight: 900; color: var(--teal); white-space: nowrap; cursor: pointer; }
         #statusBox { width: 100%; height: 100px; padding: 14px; border-radius: 18px; border: 2.5px solid var(--platinum); resize: none; font-family: inherit; font-weight: 700; background: #f8fafc; box-sizing: border-box; outline: none; margin-top: 10px; }
-        .media-btn { flex: 1; position: relative; background: white; border: 2.5px solid var(--platinum); padding: 12px 5px; border-radius: 16px; text-align: center; font-size: 10px; font-weight: 900; cursor: pointer; }
-        .media-btn input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 20px 15px 100px; position: relative; background: #fdfdfd; }
-        .entry { position: relative; background: white; border: 2.5px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; border-left: 12px solid var(--platinum); width: 100%; box-sizing: border-box; transition: all 0.4s; }
-        .pulse-serious { border-left-color: var(--teal-dark) !important; background: var(--blue-trans); animation: pulse-red-teal 2s infinite; }
-        @keyframes pulse-red-teal { 0% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(0, 128, 128, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0); } }
-        .legal-tag { display: inline-block; margin-top: 8px; font-size: 9px; background: var(--teal); color: white; padding: 2px 8px; border-radius: 4px; font-weight: 900; text-transform: uppercase; }
+        .entry { position: relative; background: white; border: 2.5px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; border-left: 12px solid var(--platinum); width: 100%; box-sizing: border-box; transition: 0.3s; }
+        .pulse-serious { border-left-color: var(--teal-dark) !important; background: var(--blue-trans); animation: pulse-border 2s infinite; }
+        @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(0, 128, 128, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0); } }
+        .legal-tag { display: inline-block; margin-top: 8px; font-size: 9px; background: var(--teal); color: white; padding: 3px 10px; border-radius: 6px; font-weight: 900; }
     </style>
 </head>
 <body id="appBody">
 
-<div id="legalOverlay" style="display:flex;"><div class="modal-card"><h2>Professional Notice</h2><p>WorkTimeline™ is an evidence-tracking tool. <b>This is not a substitute for legal advice.</b></p><button class="modal-btn" onclick="dismissLegal()">CONFIRM</button></div></div>
-<div id="syncOverlay"><div class="modal-card"><h2 style="color:var(--clio-blue);">Legal Diagnostic</h2><p id="aiSummaryText" style="text-align:left; font-size:14px; max-height:300px; overflow-y:auto; font-weight:700; color:var(--gray-dark);"></p><button class="modal-btn" style="background:var(--clio-blue);" onclick="finalSync()">LOCK & SYNC TO CLIO</button><button class="modal-btn" style="background:var(--dark-silver); margin-top:10px;" onclick="closeSync()">CLOSE</button></div></div>
+<div id="legalOverlay" style="display:flex;"><div class="modal-card"><h2>Professional Notice</h2><p>WorkTimeline™ is an evidence-tracking prototype. <b>This is not a substitute for legal advice.</b></p><button class="modal-btn" onclick="dismissLegal()">I UNDERSTAND</button></div></div>
+<div id="syncOverlay"><div class="modal-card"><h2 style="color:var(--clio-blue);">Legal Diagnostic</h2><p id="aiSummaryText" style="text-align:left; font-size:14px; max-height:350px; overflow-y:auto; font-weight:700; color:var(--gray-dark); white-space: pre-wrap;"></p><button class="modal-btn" style="background:var(--clio-blue);" onclick="alert('Bridge to Clio active...')">SYNC TO CLIO</button><button class="modal-btn" style="background:var(--dark-silver); margin-top:10px;" onclick="closeSync()">CLOSE</button></div></div>
 
 <div class="app-container">
     <header class="header">
         <div class="logo-box">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="2" stroke="var(--teal)" stroke-width="2"/><path d="M9 10L11 12L15 8" stroke="var(--teal)" stroke-width="2" stroke-linecap="round"/></svg>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="3" stroke="var(--teal)" stroke-width="2.5"/><path d="M9 12l2 2 4-4" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <div style="font-weight:900; color:var(--teal); font-size:16px;">WorkTimeline™</div>
         </div>
         <div class="switch-group">
@@ -69,10 +67,10 @@
                 <div class="template-chip" onclick="useTemplate('INCIDENT')">INCIDENT</div>
                 <div class="template-chip" onclick="useTemplate('INJURY')">WCB/INJURY</div>
             </div>
-            <textarea id="statusBox" placeholder="Log incident detail..."></textarea>
+            <textarea id="statusBox" placeholder="Log incident details..."></textarea>
             <div style="display:flex; gap:10px; margin-top:15px;">
-                <div class="media-btn"><span>CAMERA</span><input type="file" accept="image/*" capture="camera"></div>
-                <div class="media-btn"><span>DOCS</span><input type="file"></div>
+                <div class="media-btn" style="flex:1; border: 2.5px solid var(--platinum); border-radius:16px; padding:12px; text-align:center; font-size:10px; font-weight:900;">CAMERA</div>
+                <div class="media-btn" style="flex:1; border: 2.5px solid var(--platinum); border-radius:16px; padding:12px; text-align:center; font-size:10px; font-weight:900;">FILE</div>
             </div>
         </div>
         <div class="drag-handle-zone" onclick="toggleDrawer()"><div class="handle-pill"></div></div>
@@ -85,33 +83,33 @@
     <div id="managementDrawer">
         <div class="drag-handle-zone" onclick="toggleMgmtDrawer()"><div class="handle-pill"></div></div>
         <div style="padding:0 25px 35px; display:flex; flex-direction:column; gap:12px;">
-            <button class="modal-btn" style="margin-top:0; background:var(--dark-silver);" onclick="confirmReset()">SCRUB & WIPE ALL</button>
-            <button class="modal-btn" style="margin-top:0; background:var(--teal);" onclick="alert('Exporting CSV...')">EXPORT CSV</button>
+            <button class="modal-btn" style="margin-top:0; background:var(--dark-silver);" onclick="confirmReset()">WIPE & SCRUB DATA</button>
+            <button class="modal-btn" style="margin-top:0; background:var(--teal);" onclick="alert('Generating CSV...')">EXPORT EVIDENCE</button>
         </div>
     </div>
 </div>
 
 <script>
-    // --- ELITE LOGIC CONFIG ---
+    // --- ELITE FLAT-STACK ENGINE ---
     let isDrawerOpen = true;
     let isMgmtOpen = false;
     let activeVault = "TIMELINE";
     const timelineVault = JSON.parse(localStorage.getItem('wt_timeline')) || [];
     const notesVault = JSON.parse(localStorage.getItem('wt_notes')) || [];
 
-    const STATUTORY_MAP = {
-        wcb: { pattern: /injury|safety|hurt|hazard|accident|doctor|wcb/i, label: "WCB Section 3.12" },
-        esa: { pattern: /overtime|hours|pay|minimum wage|break|fired/i, label: "BC ESA Part 4" },
-        pipa: { pattern: /camera|privacy|record|file|information/i, label: "PIPA Privacy Standard" }
+    const LAW_PATTERNS = {
+        wcb: { regex: /injury|unsafe|safety|hazard|hurt|accident/i, tag: "WCB / OHS" },
+        esa: { regex: /pay|overtime|hours|minimum|fired|wage/i, tag: "BC ESA Violation" },
+        pipa: { regex: /privacy|camera|record|personal|data/i, tag: "PIPA Privacy" }
     };
 
     window.onload = () => { refreshDisplay(); scrubArtifacts(); };
 
+    // Artifact Killer: Purges null/undefined technical junk
     function scrubArtifacts() {
-        const vaults = ['wt_timeline', 'wt_notes'];
-        vaults.forEach(v => {
+        ['wt_timeline', 'wt_notes'].forEach(v => {
             let data = JSON.parse(localStorage.getItem(v)) || [];
-            let clean = data.filter(e => e && e.grit && e.grit !== "undefined");
+            let clean = data.filter(e => e && e.grit && e.grit !== "undefined" && e.grit.trim() !== "");
             localStorage.setItem(v, JSON.stringify(clean));
         });
     }
@@ -129,22 +127,34 @@
         isMgmtOpen = !isMgmtOpen;
     }
 
-    function triggerAISync() {
-        if (timelineVault.length === 0) return alert("Vault empty.");
-        let analysis = "STRATEGIC DIAGNOSTIC:\n\n";
-        timelineVault.forEach((e, i) => {
-            let law = runDiagnostic(e.grit);
-            analysis += `${i+1}. [${e.stamp}]\nViolation Match: ${law}\nSummary: ${e.grit.substring(0, 50)}...\n\n`;
-        });
-        document.getElementById('aiSummaryText').innerText = analysis;
+    // AI Bridge to Vercel Serverless Function
+    async function triggerAISync() {
+        if (timelineVault.length === 0) return alert("No evidence found to analyze.");
+        
+        const summaryElement = document.getElementById('aiSummaryText');
+        summaryElement.innerText = "🔍 Cross-referencing BC Statutory Standards via Cohere AI...";
         document.getElementById('syncOverlay').style.display = 'flex';
+
+        try {
+            const response = await fetch('/api/analyze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ entries: timelineVault })
+            });
+
+            const result = await response.json();
+            summaryElement.innerText = result.summary || "Analysis Complete.";
+            scrubArtifacts();
+        } catch (err) {
+            summaryElement.innerText = "Error: Check Vercel Logs for API status. Ensure COHERE_API_KEY is active.";
+        }
     }
 
     function runDiagnostic(text) {
-        for (let key in STATUTORY_MAP) {
-            if (STATUTORY_MAP[key].pattern.test(text)) return STATUTORY_MAP[key].label;
+        for (let key in LAW_PATTERNS) {
+            if (LAW_PATTERNS[key].regex.test(text)) return LAW_PATTERNS[key].tag;
         }
-        return "GENERAL INTAKE";
+        return "INTAKE RECORD";
     }
 
     function submitEntry() {
@@ -157,7 +167,7 @@
                 grit: b.value,
                 stamp: new Date().toLocaleString(),
                 gps: `${pos.coords.latitude.toFixed(2)}, ${pos.coords.longitude.toFixed(2)}`,
-                legalRef: runDiagnostic(b.value)
+                tag: runDiagnostic(b.value)
             };
             
             if(activeVault === "TIMELINE") {
@@ -180,11 +190,11 @@
         const data = activeVault === "TIMELINE" ? timelineVault : notesVault;
         [...data].reverse().forEach(item => {
             const div = document.createElement('div');
-            div.className = `entry ${item.legalRef !== 'GENERAL INTAKE' ? 'pulse-serious' : ''}`;
+            div.className = `entry ${item.tag !== 'INTAKE RECORD' ? 'pulse-serious' : ''}`;
             div.innerHTML = `
                 <div style="font-size:9px; font-weight:900; color:var(--teal);">📍 ${item.gps} | ${item.stamp}</div>
-                <div class="legal-tag">${item.legalRef}</div>
-                <p style="margin:10px 0 0; font-size:14px; font-weight:700; white-space:pre-wrap; line-height:1.4;">${item.grit}</p>
+                <div class="legal-tag">${item.tag}</div>
+                <p style="margin:10px 0 0; font-size:14px; font-weight:700; white-space:pre-wrap; color:var(--gray-dark); line-height:1.4;">${item.grit}</p>
             `;
             list.appendChild(div);
         });
@@ -194,8 +204,14 @@
     function closeSync() { document.getElementById('syncOverlay').style.display = 'none'; }
     function toggleGhost(cb) { document.getElementById('appBody').classList.toggle('ghost-active', cb.checked); }
     function toggleVault(cb) { activeVault = cb.checked ? "NOTES" : "TIMELINE"; refreshDisplay(); }
+    function confirmReset() { if(confirm("Wipe all artifacts?")) { localStorage.clear(); location.reload(); } }
+
     function useTemplate(t) { 
-        const tm = { 'WITNESS': 'WITNESS NAME:\nCONTACT:\nOBSERVATION: ', 'INCIDENT': 'WHAT HAPPENED:\nWHO WAS INVOLVED: ', 'INJURY': 'NATURE OF INJURY:\nREPORTED TO: ' };
+        const tm = { 
+            'WITNESS': 'WITNESS: \nCONTACT: \nOBSERVATION: ', 
+            'INCIDENT': 'EVENT: \nDIRECTOR INVOLVED: \nIMPACT: ', 
+            'INJURY': 'NATURE OF INJURY: \nOFA ATTENDANT: \nFIRST AID PROVIDED: ' 
+        };
         document.getElementById('statusBox').value = tm[t]; 
     }
 
