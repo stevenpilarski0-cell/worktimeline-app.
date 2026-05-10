@@ -8,13 +8,14 @@
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Nunito+Sans:wght@400;600;800&display=swap');
         :root { 
             --teal: #008080; 
-            --silver-gray: #bdc3c7; 
+            /* DARKENED SILVER & BACKGROUND */
+            --silver-gray: #95a5a6; 
+            --gray-bg: #e2e8f0; 
             --teal-soft: rgba(0, 128, 128, 0.08); 
             --clio-blue: #0076CE; 
             --clio-green: #2ecc71; 
-            --gray-bg: #f5f7fa; 
-            --gray-border: #e2e8f0; 
-            --mac-shadow: 0 12px 40px rgba(0,0,0,0.12); 
+            --gray-border: #cbd5e0; 
+            --mac-shadow: 0 12px 40px rgba(0,0,0,0.15); 
         }
         
         body { font-family: 'Nunito', sans-serif; background: var(--gray-bg); margin: 0; padding: 0; height: 100dvh; overflow: hidden; display: flex; justify-content: center; -webkit-tap-highlight-color: transparent; color: #2d3748; }
@@ -39,26 +40,26 @@
 
         /* MAC-STYLE PILLS */
         .media-row { display: flex; gap: 10px; margin-bottom: 15px; }
-        .media-pill { background: rgba(226, 232, 240, 0.5); border: 1px solid var(--gray-border); padding: 10px 18px; border-radius: 50px; font-size: 10px; flex: 1; font-weight: 800; color: #4a5568; cursor: pointer; transition: all 0.2s ease; letter-spacing: 0.5px; }
+        .media-pill { background: rgba(226, 232, 240, 0.8); border: 1px solid var(--gray-border); padding: 10px 18px; border-radius: 50px; font-size: 10px; flex: 1; font-weight: 800; color: #4a5568; cursor: pointer; transition: all 0.2s ease; letter-spacing: 0.5px; }
 
         /* DRAWERS */
         #utilityDrawer { position: absolute; top: 60px; width: 100%; background: white; border-bottom: 1.5px solid var(--gray-border); z-index: 3500; transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) transform; transform: translateY(calc(-100% + 40px)); border-radius: 0 0 30px 30px; }
         #mgmtDrawer { position: fixed; bottom: 0; width: 100%; max-width: 500px; background: white; border-top: 1.5px solid var(--gray-border); z-index: 4500; transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) transform; transform: translateY(calc(100% - 40px)); border-radius: 30px 30px 0 0; }
         .handle { width: 100%; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .handle-pill { width: 35px; height: 4px; background: #cbd5e0; border-radius: 10px; }
+        .handle-pill { width: 35px; height: 4px; background: #a0aec0; border-radius: 10px; }
 
         /* DRAGGABLES */
         .draggable { position: absolute; z-index: 5000; display: flex; align-items: center; justify-content: center; text-align: center; font-weight: 800; color: white; border-radius: 22px; border: none; box-shadow: var(--mac-shadow); touch-action: none; }
         #addBtn { width: 70px; height: 70px; background: var(--teal); font-size: 30px; top: 160px; right: 20px; }
         #syncBtn { width: 70px; height: 70px; background: var(--clio-blue); font-size: 8px; padding: 6px; top: 250px; right: 20px; }
 
-        /* TIMELINE - AUTHORITATIVE FONT */
+        /* TIMELINE */
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 60px 20px 150px; scrollbar-width: none; }
         .entry { background: white; border: 1.5px solid var(--gray-border); border-left: 6px solid var(--teal); padding: 20px; border-radius: 24px; margin-bottom: 20px; text-align: left; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
         .entry p { font-family: 'Nunito Sans', sans-serif; font-weight: 600; font-size: 14px; line-height: 1.6; color: #2d3748; margin-top: 12px; }
         .tier-serious { animation: pulse-ser 3s infinite; border-left-color: var(--teal-dark); background: linear-gradient(to right, var(--teal-soft), transparent); }
 
-        /* OVERLAYS - APPEASING STYLE */
+        /* OVERLAYS */
         #overlaySystem { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(25px); z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 25px; box-sizing: border-box; }
         .modal-card { background: white; padding: 40px 30px; border-radius: 35px; box-shadow: var(--mac-shadow); width: 100%; max-width: 380px; text-align: center; border: 1px solid var(--gray-border); }
         .modal-btn { border: none; padding: 18px; border-radius: 20px; width: 100%; font-weight: 800; margin-top: 15px; cursor: pointer; font-size: 14px; }
