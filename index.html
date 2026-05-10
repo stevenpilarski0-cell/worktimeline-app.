@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Master v11</title>
+    <title>WorkTimeline™ | Master v11.1</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&family=Nunito+Sans:wght@400;600;800&display=swap');
         
@@ -15,19 +15,16 @@
 
         body { font-family: 'Nunito', sans-serif; background: #f8fafc; margin: 0; padding: 0; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; -webkit-tap-highlight-color: transparent; }
 
-        /* PRIVACY MODES */
         .app-locked { filter: blur(35px); pointer-events: none; }
         .ghost-active #timelineContainer { filter: blur(20px) grayscale(1); opacity: 0.3; pointer-events: none; }
         .notes-mode { background: #fffdf2 !important; }
 
-        /* --- HEADER --- */
         .header { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-bottom: 1.5px solid var(--gray-border); background: white; z-index: 10000; position: relative;}
         .logo-group { display: flex; align-items: center; gap: 6px; }
         .title-text { font-weight: 900; color: var(--teal); font-size: 18px; line-height: 1; }
         .sub-text { font-weight: 900; color: var(--teal); font-size: 9px; letter-spacing: -0.5px; }
         .clio-dot { width: 8px; height: 8px; background: var(--clio-green); border-radius: 50%; box-shadow: 0 0 8px var(--clio-green); display: inline-block; margin-left: 4px; }
         
-        /* TOGGLES */
         .toggles { display: flex; gap: 10px; align-items: center; text-align: center; }
         .switch { position: relative; width: 30px; height: 16px; display: inline-block; }
         .switch input { opacity: 0; width: 0; height: 0; }
@@ -38,21 +35,18 @@
         input:checked + .slider:before { transform: translateX(14px); }
         .toggle-label { font-size: 7px; font-weight: 900; margin-top: 2px; color: var(--slate); }
 
-        /* --- INTAKE & TEMPLATES --- */
         .intake-section { padding: 15px; background: white; border-bottom: 1.5px solid var(--gray-border); z-index: 5000; position: relative; }
         .template-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
         .template-scroll::-webkit-scrollbar { display: none; }
         .template-chip { background: var(--mac-bg); border: 1px solid var(--gray-border); padding: 8px 14px; border-radius: 50px; font-size: 10px; font-weight: 900; color: var(--slate); white-space: nowrap; cursor: pointer; }
         #statusBox { width: 100%; height: 90px; padding: 15px; border-radius: 20px; border: 1.5px solid var(--gray-border); outline: none; font-family: 'Nunito Sans', sans-serif; font-weight: 600; font-size: 14px; resize: none; box-sizing: border-box; background: #fafafa; }
 
-        /* --- MAC MEDIA BAR --- */
         .mac-controls { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; gap: 10px; }
         .mac-media-bar { display: flex; gap: 10px; background: var(--mac-bg); padding: 8px; border-radius: 20px; flex-grow: 1; justify-content: space-around;}
         .media-icon { background: white; width: 45px; height: 45px; border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); font-size: 20px; cursor: pointer; }
         
         #addBtn { width: 60px; height: 60px; border-radius: 18px; background: var(--teal); color: white; font-weight: 900; font-size: 30px; border: none; box-shadow: 0 8px 20px rgba(0,0,0,0.2); cursor: pointer; transition: 0.3s; }
 
-        /* --- 3D FLIP TIMELINE --- */
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 20px 20px 140px; display: flex; flex-direction: column; gap: 20px; scrollbar-width: none; }
         .stack-wrapper { position: relative; width: 100%; perspective: 1000px; }
         .stamp-label { font-size: 9px; font-weight: 900; color: var(--silver-gray); margin-bottom: 6px; letter-spacing: 0.5px; }
@@ -66,7 +60,6 @@
         .stack-inner.has-ai-pulse-on::after { content: ''; position: absolute; top: 6px; left: 8px; width: 100%; height: 100%; background: var(--slate); border-radius: 22px; z-index: 0; opacity: 0.7; animation: dark-heavy-pulse 3s infinite ease-in-out; }
         @keyframes dark-heavy-pulse { 0% { box-shadow: 0 0 0 0 rgba(100, 116, 139, 0.7); background: var(--slate); } 50% { background: var(--teal); box-shadow: 0 0 0 15px rgba(0, 128, 128, 0.4); opacity: 0.9; } 70% { box-shadow: 0 0 0 30px rgba(0, 128, 128, 0); background: var(--teal); } 100% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0); background: var(--slate); } }
 
-        /* --- PULL UP DRAWER --- */
         #mgmtDrawer { position: fixed; bottom: -280px; left: 0; width: 100%; background: white; border-top: 5px solid var(--teal); z-index: 999999; border-radius: 35px 35px 0 0; transition: bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 -15px 50px rgba(0,0,0,0.2); padding-bottom: 40px; }
         #mgmtDrawer.active { bottom: 0 !important; }
         .pull-handle { width: 100%; height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: absolute; top: -60px; cursor: pointer; }
@@ -77,7 +70,6 @@
         .btn-teal { background: var(--teal); }
         .btn-gray { background: var(--slate); }
 
-        /* OVERLAYS & AI THINKING */
         .overlay-system { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(25px); z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 15px; box-sizing: border-box; }
         .modal-card { background: white; padding: 25px; border-radius: 28px; box-shadow: var(--mac-shadow); width: 100%; max-width: 340px; text-align: left; border: 1px solid var(--gray-border); }
         .modal-btn { border: none; padding: 16px; border-radius: 18px; width: 100%; font-weight: 800; margin-top: 10px; cursor: pointer; font-size: 13px; text-align: center; }
@@ -93,7 +85,7 @@
 <div id="overlaySystem" class="overlay-system">
     <div class="modal-card" style="text-align: center;">
         <h2 style="color: var(--teal); font-weight: 900; margin: 0; font-size: 20px;">INTAKE GUARD</h2>
-        <div style="font-size: 13px; line-height: 1.5; color: var(--slate); margin: 15px 0; font-weight: 600;">Secure your records. We provide support, but no legal advice.</div>
+        <div style="font-size: 13px; line-height: 1.5; color: var(--slate); margin: 15px 0; font-weight: 600;">Secure your records.</div>
         <button class="modal-btn" style="background:var(--teal); color:white;" id="initialUnlock">SECURE MY JOURNAL</button>
     </div>
 </div>
@@ -148,9 +140,9 @@
     
     <div class="mac-controls">
         <div class="mac-media-bar">
-            <div class="media-icon" onclick="alert('Camera Active')">📷</div>
-            <div class="media-icon" onclick="alert('Mic Active')">🎤</div>
-            <div class="media-icon" onclick="alert('Document Upload')">📄</div>
+            <div class="media-icon">📷</div>
+            <div class="media-icon">🎤</div>
+            <div class="media-icon">📄</div>
         </div>
         <button id="addBtn" onclick="runAIEngine()">+</button>
     </div>
@@ -164,14 +156,14 @@
         <div class="handle-text">MANAGEMENT</div>
     </div>
     <div style="padding-top:30px;">
-        <button class="drawer-btn btn-teal" onclick="alert('Timeline Saved & Exported!')">SAVE TIMELINE</button>
+        <button class="drawer-btn btn-teal" onclick="alert('Saved!')">SAVE TIMELINE</button>
         <button class="drawer-btn btn-gray" onclick="confirmReset()">START FRESH</button>
     </div>
 </div>
 
 <script>
-    const timelineVault = JSON.parse(localStorage.getItem('wt_bc_timeline')) || [];
-    const notesVault = JSON.parse(localStorage.getItem('wt_bc_notes')) || [];
+    const timelineVault = JSON.parse(localStorage.getItem('wt_bc_timeline_v2')) || [];
+    const notesVault = JSON.parse(localStorage.getItem('wt_bc_notes_v2')) || [];
     let pendingEntry = null;
     let activeVault = "TIMELINE";
 
@@ -195,19 +187,29 @@
         refreshDisplay();
     }
 
-    // BC LEGAL HEURISTIC ENGINE
     function analyzeBCAvenue(text) {
         const lowerText = text.toLowerCase();
-        if (lowerText.includes("unsafe") || lowerText.includes("refused") || lowerText.includes("dangerous") || lowerText.includes("hazard")) {
-            return { flagged: true, tag: "WorkSafeBC OHS Reg 3.12", opinion: "Based on BC law, workers have the right to refuse unsafe work. If you were disciplined for this, it may constitute a discriminatory action under the Workers Compensation Act." };
+        if (lowerText.includes("unsafe") || lowerText.includes("refused") || lowerText.includes("hazard")) {
+            return { flagged: true, tag: "WorkSafeBC OHS Reg 3.12", opinion: "Workers have the right to refuse unsafe work. Discipline for this may constitute a discriminatory action." };
         }
-        if (lowerText.includes("hours cut") || lowerText.includes("reduced pay") || lowerText.includes("demoted") || lowerText.includes("toxic")) {
-            return { flagged: true, tag: "Constructive Dismissal", opinion: "A significant reduction in hours, pay, or a fundamental change in duties can be legally considered 'Constructive Dismissal' under BC Common Law and the Employment Standards Act." };
+        if (lowerText.includes("hours cut") || lowerText.includes("reduced pay") || lowerText.includes("demoted")) {
+            return { flagged: true, tag: "Constructive Dismissal", opinion: "Significant reduction in hours or pay can be legally considered 'Constructive Dismissal' under BC Common Law." };
         }
         if (lowerText.includes("fired") || lowerText.includes("let go") || lowerText.includes("terminated")) {
-            return { flagged: true, tag: "Wrongful Dismissal Risk", opinion: "Termination without cause in BC requires proper notice or severance pay under the ESA. If 'cause' was alleged, the burden of proof is on the employer." };
+            return { flagged: true, tag: "Wrongful Dismissal Risk", opinion: "Termination without cause in BC requires proper notice or severance pay. If 'cause' was alleged, burden of proof is on employer." };
         }
         return { flagged: false };
+    }
+
+    function getLocation(callback) {
+        if (!navigator.geolocation) {
+            callback("Location Unavailable");
+            return;
+        }
+        navigator.geolocation.getCurrentPosition(
+            pos => callback(`${pos.coords.latitude.toFixed(2)}, ${pos.coords.longitude.toFixed(2)}`),
+            err => callback("Location Unavailable (Permission Denied)")
+        );
     }
 
     function runAIEngine() {
@@ -215,26 +217,21 @@
         const text = b.value.trim();
         if(!text) return;
 
-        // If in NOTES mode, bypass AI completely (privacy)
-        if (activeVault === "NOTES") {
-            navigator.geolocation.getCurrentPosition(pos => {
-                notesVault.push({ id: Date.now(), content: text, stamp: new Date().toLocaleString(), gps: `${pos.coords.latitude.toFixed(2)}, ${pos.coords.longitude.toFixed(2)}`, pulse: false });
-                localStorage.setItem('wt_bc_notes', JSON.stringify(notesVault));
+        getLocation((gpsString) => {
+            if (activeVault === "NOTES") {
+                notesVault.push({ id: Date.now(), content: text, stamp: new Date().toLocaleString(), gps: gpsString, pulse: false });
+                localStorage.setItem('wt_bc_notes_v2', JSON.stringify(notesVault));
                 b.value = ''; refreshDisplay();
-            });
-            return;
-        }
+                return;
+            }
 
-        // TIMELINE MODE: Run AI Processing
-        document.getElementById('appBody').classList.add('app-locked');
-        document.getElementById('aiThinkingOverlay').style.display = 'flex';
+            document.getElementById('appBody').classList.add('app-locked');
+            document.getElementById('aiThinkingOverlay').style.display = 'flex';
 
-        setTimeout(() => {
-            navigator.geolocation.getCurrentPosition(pos => {
+            setTimeout(() => {
                 const analysis = analyzeBCAvenue(text);
                 pendingEntry = {
-                    id: Date.now(), content: text, stamp: new Date().toLocaleString(),
-                    gps: `${pos.coords.latitude.toFixed(2)}, ${pos.coords.longitude.toFixed(2)}`,
+                    id: Date.now(), content: text, stamp: new Date().toLocaleString(), gps: gpsString,
                     pulse: analysis.flagged, aiTag: analysis.flagged ? analysis.tag : null, aiOpinion: analysis.flagged ? analysis.opinion : null
                 };
 
@@ -247,15 +244,15 @@
                 } else {
                     confirmAI(true);
                 }
-            });
-        }, 1200);
+            }, 1200);
+        });
     }
 
     function confirmAI(userAgrees) {
         if (pendingEntry) {
             if (!userAgrees) { pendingEntry.pulse = false; pendingEntry.aiTag = null; pendingEntry.aiOpinion = null; }
             timelineVault.push(pendingEntry);
-            localStorage.setItem('wt_bc_timeline', JSON.stringify(timelineVault));
+            localStorage.setItem('wt_bc_timeline_v2', JSON.stringify(timelineVault));
         }
         document.getElementById('statusBox').value = '';
         document.getElementById('aiOpinionOverlay').style.display = 'none';
