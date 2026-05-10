@@ -45,6 +45,7 @@
         /* TIMELINE - STACK SYSTEM */
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 60px 15px 150px; display: flex; flex-direction: column; gap: 25px; scrollbar-width: none; }
         .stack-wrapper { position: relative; width: 100%; perspective: 1000px; }
+        .stamp-label { font-size: 9px; font-weight: 900; color: var(--silver-gray); margin-bottom: 6px; letter-spacing: 0.5px; }
         .stack-inner { position: relative; width: 85%; min-height: 80px; transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer; }
         .stack-inner.flipped { transform: rotateY(180deg); }
         .bubble { padding: 15px; border-radius: 22px; font-family: 'Nunito Sans', sans-serif; backface-visibility: hidden; box-shadow: var(--mac-shadow); width: 100%; box-sizing: border-box; }
@@ -62,7 +63,7 @@
         }
 
         /* DRAGGABLES */
-        .draggable { position: absolute; z-index: 5000; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; border-radius: 22px; border: none; box-shadow: var(--mac-shadow); touch-action: none; }
+        .draggable { position: absolute; z-index: 5000; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; border-radius: 22px; border: none; box-shadow: var(--mac-shadow); touch-action: none; cursor: pointer; }
         #addBtn { width: 70px; height: 70px; background: var(--teal); font-size: 30px; top: 160px; right: 20px; }
         #syncBtn { width: 70px; height: 70px; background: var(--clio-blue); font-size: 8px; padding: 6px; top: 250px; right: 20px; text-align: center; }
 
@@ -79,7 +80,7 @@
     <div class="modal-card" id="modalContent">
         <h2 style="color: #1a202c; font-weight: 900; margin: 0; font-size: 18px;">INTAKE GUARD</h2>
         <div style="font-size: 13px; line-height: 1.5; color: #4a5568; margin: 15px 0; font-weight: 600;">Secure your records. We provide support, but no legal advice.</div>
-        <button class="modal-btn" style="background:var(--teal); color:white;" onclick="unlockApp()">SECURE MY JOURNAL</button>
+        <button class="modal-btn" style="background:var(--teal); color:white;" id="initialUnlock">SECURE MY JOURNAL</button>
     </div>
 </div>
 
@@ -116,7 +117,7 @@
         <div class="handle" onclick="toggleMgmt()"><div class="handle-pill"></div></div>
         <div style="padding: 15px 25px 35px;">
             <button class="modal-btn" style="background:var(--teal); color:white;" onclick="alert('Exporting...')">SAVE & EXPORT</button>
-            <button class="modal-btn" style="background:#f1f5f9; color:#718096;" onclick="confirm('Wipe?') && (localStorage.clear() || location.reload())">START FRESH</button>
+            <button class="modal-btn" style="background:#f1f5f9; color:#718096;" onclick="confirm('Wipe everything?') && (localStorage.clear() || location.reload())">START FRESH</button>
         </div>
     </div>
 </div>
@@ -128,26 +129,33 @@
     let utilOpen = false; let mgmtOpen = false; let activePending = null;
 
     function unlockApp() { document.getElementById('overlaySystem').style.display = 'none'; document.getElementById('mainApp').classList.remove('app-locked'); }
+    document.getElementById('initialUnlock').onclick = unlockApp;
+
     function toggleUtility() { document.getElementById('utilityDrawer').style.transform = utilOpen ? 'translateY(calc(-100% + 40px))' : 'translateY(0)'; utilOpen = !utilOpen; }
     function toggleMgmt() { document.getElementById('mgmtDrawer').style.transform = mgmtOpen ? 'translateY(calc(100% - 40px))' : 'translateY(0)'; mgmtOpen = !mgmtOpen; }
 
     function makeDraggable(el) {
         let p1 = 0, p2 = 0, p3 = 0, p4 = 0; el.onmousedown = dStart; el.ontouchstart = dStart;
-        function dStart(e) { p3 = e.clientX || e.touches[0].clientX; p4 = e.clientY || e.touches[0].clientY; document.onmouseup = dEnd; document.ontouchend = dEnd; document.onmousemove = dMove; document.ontouchmove = dMove; }
-        function dMove(e) { let cx = e.clientX || e.touches[0].clientX; let cy = e.clientY || e.touches[0].clientY; p1 = p3 - cx; p2 = p4 - cy; p3 = cx; p4 = cy; el.style.top = (el.offsetTop - p2) + "px"; el.style.left = (el.offsetLeft - p1) + "px"; }
+        function dStart(e) { p3 = e.clientX || (e.touches ? e.touches[0].clientX : 0); p4 = e.clientY || (e.touches ? e.touches[0].clientY : 0); document.onmouseup = dEnd; document.ontouchend = dEnd; document.onmousemove = dMove; document.ontouchmove = dMove; }
+        function dMove(e) { let cx = e.clientX || (e.touches ? e.touches[0].clientX : 0); let cy = e.clientY || (e.touches ? e.touches[0].clientY : 0); p1 = p3 - cx; p2 = p4 - cy; p3 = cx; p4 = cy; el.style.top = (el.offsetTop - p2) + "px"; el.style.left = (el.offsetLeft - p1) + "px"; }
         function dEnd() { document.onmouseup = null; document.onmousemove = null; document.ontouchend = null; document.ontouchmove = null; }
     }
     makeDraggable(document.getElementById("addBtn")); makeDraggable(document.getElementById("syncBtn"));
 
     function submitEntry() {
         const text = document.getElementById('statusBox').value; if(!text.trim()) return;
-        let isRisk = text.toLowerCase().includes("fire") || text.toLowerCase().includes("retaliation") || text.toLowerCase().includes("termination");
+        let isRisk = text.toLowerCase().includes("fire") || text.toLowerCase().includes("retaliation") || text.toLowerCase().includes("termination") || text.toLowerCase().includes("fired");
         activePending = { grit: text, analysis: isRisk ? "EA: High-severity pattern detected." : "", stamp: new Date().toLocaleString() };
+        
         if(isRisk && !pulseExplained) { triggerPulseDiagnostic(); }
         else if(isRisk) { triggerRiskWarning(); }
         else { confirmSave(); }
+        
         document.getElementById('statusBox').value = ''; if(utilOpen) toggleUtility();
     }
+    
+    // ATTACH SUBMIT TO CLICK
+    document.getElementById('addBtn').onclick = submitEntry;
 
     function triggerPulseDiagnostic() {
         document.getElementById('modalContent').innerHTML = `
@@ -163,8 +171,22 @@
         document.getElementById('overlaySystem').style.display = 'flex';
     }
 
-    function setPulsePreference(pref) { pulseActive = pref; pulseExplained = true; localStorage.setItem('wt_pulse_active', pref); localStorage.setItem('wt_pulse_explained', 'true'); confirmSave(); }
-    function confirmSave() { vault.push(activePending); localStorage.setItem('wt_timeline', JSON.stringify(vault)); unlockApp(); refresh(); }
+    function setPulsePreference(pref) { 
+        pulseActive = pref; pulseExplained = true; 
+        localStorage.setItem('wt_pulse_active', pref); 
+        localStorage.setItem('wt_pulse_explained', 'true'); 
+        confirmSave(); 
+    }
+    
+    function confirmSave() { 
+        vault.push(activePending); 
+        localStorage.setItem('wt_timeline', JSON.stringify(vault)); 
+        unlockApp(); refresh(); 
+        // Reset modal for next use
+        setTimeout(() => {
+            document.getElementById('modalContent').innerHTML = `<h2 style="color: #1a202c; font-weight: 900; margin: 0; font-size: 18px;">INTAKE GUARD</h2><div style="font-size: 13px; line-height: 1.5; color: #4a5568; margin: 15px 0; font-weight: 600;">Secure your records. We provide support, but no legal advice.</div><button class="modal-btn" style="background:var(--teal); color:white;" onclick="unlockApp()">SECURE MY JOURNAL</button>`;
+        }, 500);
+    }
 
     function refresh() {
         const list = document.getElementById('timelineContainer'); list.innerHTML = '';
