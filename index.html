@@ -24,14 +24,13 @@
 
         .app-container { width: 100%; max-width: 500px; background: white; height: 100dvh; display: flex; flex-direction: column; position: relative; border: 1.5px solid var(--gray-border); box-sizing: border-box; text-align: center; overflow: hidden; }
         
-        /* HEADER - UNIFIED ONE-WORD BRANDING */
-        .header { padding: 12px 20px; border-bottom: 1px solid var(--gray-border); background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); z-index: 4000; position: relative; }
-        .header-top { display: flex; justify-content: center; align-items: center; gap: 12px; }
+        /* HEADER - LEFT ALIGNED BRAND BLOCK */
+        .header { padding: 12px 15px; border-bottom: 1px solid var(--gray-border); background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); z-index: 4000; position: relative; }
+        .header-top { display: flex; justify-content: flex-start; align-items: center; gap: 0px; } /* Gap at 0 for logo-to-text contact */
         .brand-text { display: flex; flex-direction: column; align-items: flex-start; }
-        .brand-sub { font-size: 7px; font-weight: 900; color: var(--teal); text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.7; }
+        .brand-sub { font-size: 7px; font-weight: 900; color: var(--teal); text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.7; margin-left: 5px; }
         
-        /* ZERO GAP UNIFIED NAME */
-        .main-title { font-weight: 900; font-size: 17px; display: flex; align-items: center; justify-content: center; gap: 0px; letter-spacing: -0.5px; }
+        .main-title { font-weight: 900; font-size: 17px; display: flex; align-items: center; justify-content: flex-start; gap: 0px; letter-spacing: -0.5px; }
         .work-silver { color: var(--silver-gray); padding-right: 0px; }
         .timeline-teal { color: var(--teal); padding-left: 0px; margin-left: -1px; }
 
