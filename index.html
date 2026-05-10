@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Master Build 2026</title>
+    <title>WorkTimeline™ | Takin'Intake Master</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap');
-        :root { --teal: #008080; --teal-dark: #004d4d; --blue-trans: rgba(0, 128, 128, 0.12); --clio-blue: #0076CE; --platinum: #d8e2ea; --gray-dark: #2c3e50; --clio-green: #2ecc71; --round-inner: 24px; --glass: rgba(255, 255, 255, 0.95); --dark-silver: #7f8c8d; }
+        :root { --teal: #008080; --teal-dark: #004d4d; --blue-trans: rgba(0, 128, 128, 0.12); --clio-blue: #0076CE; --platinum: #d8e2ea; --gray-dark: #2c3e50; --round-inner: 24px; --glass: rgba(255, 255, 255, 0.95); --dark-silver: #7f8c8d; }
         
         body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 0; height: 100dvh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
         
@@ -20,16 +20,17 @@
 
         .app-container { width: 100%; max-width: 500px; margin: 0 auto; background: white; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; position: relative; border: 2.5px solid var(--teal); box-sizing: border-box; }
         
-        /* HEADER BRANDING */
+        /* HEADER - MIRRORED BRANDING */
         .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 2.5px solid var(--teal); z-index: 3000; background: white; }
-        .logo-area { display: flex; align-items: center; gap: 10px; }
-        .brand-text { display: flex; flex-direction: column; align-items: flex-end; }
-        
-        /* HOLLOW BRIEFCASE WITH TIMELINE */
+        .logo-area { display: flex; align-items: center; gap: 12px; }
         .briefcase-outline { width: 36px; height: 28px; border: 2.5px solid var(--teal); border-radius: 4px; position: relative; display: flex; align-items: center; justify-content: center; }
         .briefcase-handle { position: absolute; top: -7px; width: 12px; height: 4px; border: 2.5px solid var(--teal); border-bottom: none; border-radius: 3px 3px 0 0; }
         .timeline-line { width: 120%; height: 2.5px; background: var(--teal); position: absolute; display: flex; justify-content: space-between; align-items: center; padding: 0 2px; box-sizing: border-box; }
         .dot { width: 5px; height: 5px; background: var(--teal); border-radius: 50%; }
+        
+        .brand-stack { display: flex; flex-direction: column; align-items: flex-start; }
+        .intake-label { font-size: 9px; font-weight: 900; color: var(--teal); letter-spacing: 1px; margin-bottom: -3px; text-transform: uppercase; }
+        .main-title { font-weight: 900; color: var(--teal); font-size: 17px; letter-spacing: -0.5px; }
 
         /* SWITCHES */
         .switch-group { display: flex; gap: 12px; }
@@ -41,7 +42,7 @@
         input:checked + .slider { background-color: var(--teal); }
         input:checked + .slider:before { transform: translateX(16px); }
 
-        /* FLOATING ACTION BUTTONS */
+        /* FLOATING CONTROLS */
         .draggable-btn { position: absolute; z-index: 5000; display: flex; align-items: center; justify-content: center; border: none; width: 85px; height: 85px; border-radius: 24px; color: white; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25); font-weight: 900; text-align: center; font-size: 10px; padding: 5px; }
         #addBtn { right: 20px; top: 180px; background: var(--teal); font-size: 44px; }
         #syncBtn { right: 20px; top: 280px; background: var(--clio-blue); }
@@ -52,21 +53,21 @@
         .drag-handle-zone { width: 100%; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .handle-pill { width: 45px; height: 6px; background: var(--teal); border-radius: 10px; opacity: 0.3; }
 
-        /* INPUTS */
+        /* TEMPLATE CHIPS */
         .template-chip { background: white; border: 2.5px solid var(--teal); padding: 8px 14px; border-radius: 15px; font-size: 10px; font-weight: 900; color: var(--teal); white-space: nowrap; cursor: pointer; }
         #statusBox { width: 100%; height: 100px; padding: 14px; border-radius: 18px; border: 2.5px solid var(--teal); resize: none; font-family: inherit; font-weight: 700; background: #f8fafc; box-sizing: border-box; outline: none; margin-top: 10px; }
 
-        /* TIMELINE ENTRIES */
+        /* TIMELINE */
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 20px 15px 120px; background: #fdfdfd; }
         .stack-group { margin-bottom: 35px; display: flex; flex-direction: column; }
         .entry { background: white; border: 2.5px solid var(--teal); padding: 20px; border-radius: var(--round-inner); border-left: 12px solid var(--teal); width: 100%; box-sizing: border-box; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         
-        /* CHROMATIC PULSE TIERS */
-        .tier-minor { border-left-color: var(--platinum); border-color: var(--platinum); }
-        .tier-moderate { border-left-color: var(--teal); border-color: var(--teal); }
-        .tier-serious { border-left-color: var(--teal-dark); border-color: var(--teal-dark); background: var(--blue-trans); animation: pulse-serious 2s infinite; }
+        /* PULSE TIERS */
+        .tier-minor { border-color: var(--platinum); border-left-color: var(--platinum); }
+        .tier-moderate { border-color: var(--teal); border-left-color: var(--teal); }
+        .tier-serious { border-color: var(--teal-dark); border-left-color: var(--teal-dark); background: var(--blue-trans); animation: pulse-serious 2s infinite; }
         
-        .analysis-card { z-index: 10; margin-bottom: -15px; font-style: italic; }
+        .analysis-card { z-index: 10; margin-bottom: -15px; }
 
         @keyframes pulse-serious { 
             0% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0.4); } 
@@ -84,13 +85,13 @@
 <div class="app-container">
     <header class="header">
         <div class="logo-area">
-            <div class="brand-text">
-                <div style="font-size: 8px; font-weight: 900; color: var(--teal); letter-spacing: 0.5px; margin-bottom: -2px;">TAKEN/INTAKE</div>
-                <div style="font-weight: 900; color: var(--teal); font-size: 16px; letter-spacing: -0.5px;">WorkTimeline™</div>
-            </div>
             <div class="briefcase-outline">
                 <div class="briefcase-handle"></div>
                 <div class="timeline-line"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+            </div>
+            <div class="brand-stack">
+                <div class="intake-label">Takin'Intake</div>
+                <div class="main-title">WorkTimeline™</div>
             </div>
         </div>
         <div class="switch-group">
@@ -138,7 +139,7 @@
         const text = box.value; const low = text.toLowerCase();
         let analysis = ""; let severity = "minor";
         
-        if (low.includes("fire") || low.includes("quit") || low.includes("toxic") || low.includes("retaliate") || low.includes("age")) {
+        if (low.includes("fire") || low.includes("quit") || low.includes("toxic") || low.includes("age") || low.includes("retaliate")) {
             analysis = "HIGH PRIORITY: Cross-referenced with Constructive Dismissal case law & Human Rights Code."; severity = "serious";
         } else if (low.includes("pay") || low.includes("break") || low.includes("injury") || low.includes("safety") || low.includes("hazard")) {
             analysis = "MODERATE PRIORITY: Cross-referenced with BC ESA & WorkSafeBC regulations."; severity = "moderate";
