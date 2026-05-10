@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Full Master Build</title>
+    <title>WorkTimeline™ | Master Build</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap');
         
         :root { 
             --teal: #008080; --clio-blue: #0076CE; --platinum: #d8e2ea; --gray-dark: #2c3e50; 
             --clio-green: #2ecc71; --round-inner: 24px; --glass: rgba(255, 255, 255, 0.95);
-            --teal-alpha: rgba(0, 128, 128, 0.15);
         }
         body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 0; height: 100dvh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
         
@@ -22,13 +21,12 @@
         .modal-btn { background: var(--teal); color: white; border: none; padding: 18px; border-radius: 99px; font-weight: 900; cursor: pointer; margin-top: 25px; width: 100%; font-size: 16px; }
 
         /* SPLASH & CENTERED SKIP */
-        #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; transition: 0.8s; }
         .story-text { font-size: 24px; font-weight: 900; color: var(--gray-dark); margin-bottom: 40px; opacity: 0; transition: 0.8s; }
         #skipBtn { padding: 18px 50px; border: 3.5px solid var(--teal); border-radius: 99px; background: white; color: var(--teal); font-weight: 900; font-size: 16px; cursor: pointer; }
 
         .app-container { width: 100%; max-width: 500px; margin: 0 auto; background: white; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; position: relative; }
         
-        /* HEADER */
         .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; border-bottom: 2px solid var(--platinum); z-index: 3000; background: white; }
         .switch-group { display: flex; gap: 15px; align-items: center; }
         .switch { position: relative; width: 34px; height: 18px; }
@@ -38,27 +36,24 @@
         input:checked + .slider { background-color: var(--teal); }
         input:checked + .slider:before { transform: translateX(16px); }
 
-        /* MOVABLE BUTTONS */
+        /* DRAGGABLE BUTTONS */
         .draggable-btn { position: absolute; z-index: 5000; touch-action: none; display: flex; flex-direction: column; align-items: center; justify-content: center; border: none; width: 65px; height: 65px; border-radius: 20px; color: white; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25); cursor: grab; }
         #addBtn { right: 20px; top: 160px; background: var(--teal); font-size: 40px; font-weight: 900; }
         #syncBtn { right: 20px; top: 240px; background: var(--clio-blue); }
 
-        /* UTILITY DRAWER SLIDE */
+        /* DRAWER & TOOLS */
         #utilityDrawer { width: 100%; background: var(--glass); backdrop-filter: blur(12px); border-bottom: 2px solid var(--platinum); z-index: 2500; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
         .drawer-content { padding: 15px 20px; }
         .drag-handle-zone { width: 100%; height: 35px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .handle-pill { width: 45px; height: 6px; background: var(--platinum); border-radius: 10px; }
-
         .template-bar { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 12px; scrollbar-width: none; }
         .template-chip { background: white; border: 2px solid var(--teal); padding: 8px 14px; border-radius: 15px; font-size: 9px; font-weight: 900; color: var(--teal); white-space: nowrap; cursor: pointer; }
         #statusBox { width: 100%; height: 85px; padding: 14px; border-radius: 18px; border: 2.5px solid var(--platinum); resize: none; font-family: inherit; font-weight: 700; background: #f8fafc; box-sizing: border-box; outline: none; }
 
-        /* MEDIA TOOLBAR */
         .media-toolbar { display: flex; gap: 8px; margin-top: 12px; }
         .media-btn { flex: 1; position: relative; background: white; border: 2.5px solid var(--platinum); padding: 12px 5px; border-radius: 16px; text-align: center; font-size: 9px; font-weight: 900; cursor: pointer; }
         .media-btn input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
 
-        /* TIMELINE */
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 45px 15px 25px; position: relative; background: #fdfdfd; }
         .entry { position: relative; margin-left: 35px; background: white; border: 2.5px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; border-left: 10px solid var(--platinum); width: calc(100% - 45px); box-sizing: border-box; }
         
@@ -70,8 +65,8 @@
 
 <div id="legalOverlay">
     <div class="modal-card">
-        <h2 style="color:var(--teal); font-weight:900;">Canadian Justice Standard</h2>
-        <p>Ares v. Venner ensures your Contemporaneous Record is admissible. GPS and Time are anchored here.</p>
+        <h2 style="color:var(--teal); font-weight:900;">Ares v. Venner Standard</h2>
+        <p>This creates a <b>Contemporaneous Record</b>. GPS and Time are anchored here. This is not legal advice.</p>
         <button class="modal-btn" onclick="dismissLegal()">I UNDERSTAND</button>
     </div>
 </div>
@@ -87,11 +82,8 @@
         </div>
     </header>
 
-    <div id="addBtn" class="draggable-btn">+</div>
-    <div id="syncBtn" class="draggable-btn" onclick="openSync()">
-        <svg viewBox="0 0 24 24" width="22" height="22"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="white" stroke-width="2.5" fill="none"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="white" stroke-width="2.5" fill="none"/></svg>
-        <span style="font-size:8px; font-weight:900; margin-top:2px;">CLIO</span>
-    </div>
+    <div id="addBtn" class="draggable-btn" onclick="submitEntry()">+</div>
+    <div id="syncBtn" class="draggable-btn" onclick="openSync()">CLIO</div>
 
     <div id="utilityDrawer">
         <div class="drawer-content" id="drawerContent">
@@ -106,7 +98,6 @@
                 <div class="media-btn"><span>AUDIO</span><input type="file" accept="audio/*" capture="microphone" onchange="addMedia('🎤 AUDIO Recorded.')"></div>
                 <div class="media-btn"><span>DOCS</span><input type="file" onchange="addMedia('📄 FILE Uploaded.')"></div>
             </div>
-            <button onclick="submitEntry()" style="width:100%; background:var(--teal); color:white; border:none; padding:12px; border-radius:12px; font-weight:900; margin-top:10px;">SAVE RECORD</button>
         </div>
         <div class="drag-handle-zone" onclick="toggleDrawer()"><div class="handle-pill"></div></div>
     </div>
@@ -135,28 +126,41 @@
     function endSplash() { const s = document.getElementById('splashScreen'); if(s) { s.style.opacity='0'; setTimeout(() => s.remove(), 800); } }
 
     function toggleDrawer() {
-        const d = document.getElementById('utilityDrawer'); const c = document.getElementById('drawerContent'); const t = document.getElementById('timelineContainer');
-        if(isDrawerOpen) { d.style.transform = `translateY(-${c.offsetHeight}px)`; t.style.marginTop = `-${c.offsetHeight}px`; isDrawerOpen = false; }
-        else { d.style.transform = `translateY(0)`; t.style.marginTop = `0px`; isDrawerOpen = true; }
+        const d = document.getElementById('utilityDrawer'); const c = document.getElementById('drawerContent');
+        if(isDrawerOpen) { d.style.transform = `translateY(-${c.offsetHeight}px)`; isDrawerOpen = false; }
+        else { d.style.transform = `translateY(0)`; isDrawerOpen = true; }
     }
 
     function useTemplate(type) {
-        const templates = { 'WITNESS': 'WITNESS NAME: \nOBSERVATION: \nPOSITION: ', 'INCIDENT': 'ACTION TAKEN: \nSAFETY VIOLATION: \nVERBAL MARKERS: ', 'LOCATION': 'SPECIFIC SITE AREA: \nENVIRONMENTAL HAZARDS: ' };
-        const box = document.getElementById('statusBox'); box.value = templates[type]; box.focus();
+        const t = { 'WITNESS': 'WITNESS: \nSTATEMENT: \nCONTACT: ', 'INCIDENT': 'ACTION: \nVIOLATION: \nQUOTES: ', 'LOCATION': 'SITE AREA: \nHAZARDS: ' };
+        document.getElementById('statusBox').value = t[type];
     }
 
+    /* DRAGGABLE FIX */
     function makeMovable(el) {
         let p1 = 0, p2 = 0, p3 = 0, p4 = 0;
         el.ontouchstart = (e) => { p3 = e.touches[0].clientX; p4 = e.touches[0].clientY; document.ontouchend = () => { document.ontouchend = null; document.ontouchmove = null; }; document.ontouchmove = (e) => { p1 = p3 - e.touches[0].clientX; p2 = p4 - e.touches[0].clientY; p3 = e.touches[0].clientX; p4 = e.touches[0].clientY; el.style.top = (el.offsetTop - p2) + "px"; el.style.left = (el.offsetLeft - p1) + "px"; el.style.right = "auto"; }; };
     }
     makeMovable(document.getElementById('addBtn')); makeMovable(document.getElementById('syncBtn'));
 
-    function submitEntry() { const b = document.getElementById('statusBox'); if(!b.value.trim()) return; saveEntry(b.value); b.value = ''; }
+    /* CORE SUBMIT CONNECTION */
+    function submitEntry() { 
+        const box = document.getElementById('statusBox'); 
+        if(!box.value.trim()) return; 
+        saveEntry(box.value); 
+        box.value = ''; 
+    }
     function addMedia(m) { saveEntry(m); }
 
-    async function saveEntry(text) {
-        navigator.geolocation.getCurrentPosition(async pos => {
-            const entry = { id: Date.now(), grit: text, stamp: new Date().toLocaleString(), gps: `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`, pattern: text.toLowerCase().includes("shout") || text.toLowerCase().includes("scream") ? "Verbal Aggression Detected (Piresferreira v. Ayotte [2010])" : null };
+    function saveEntry(text) {
+        navigator.geolocation.getCurrentPosition(pos => {
+            const entry = {
+                id: Date.now(),
+                grit: text,
+                stamp: new Date().toLocaleString(),
+                gps: `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`,
+                law: text.toLowerCase().includes("shout") ? "Piresferreira v. Ayotte similarity detected." : null
+            };
             if(activeVault === "TIMELINE") timelineVault.push(entry); else notesVault.push(entry);
             refreshDisplay();
         });
@@ -164,12 +168,14 @@
 
     function toggleGhost(cb) { document.getElementById('appBody').classList.toggle('ghost-active', cb.checked); }
     function toggleVault(cb) { activeVault = cb.checked ? "NOTES" : "TIMELINE"; refreshDisplay(); }
+
     function refreshDisplay() {
         const list = document.getElementById('displayList'); list.innerHTML = '';
         const data = activeVault === "TIMELINE" ? timelineVault : notesVault;
         [...data].reverse().forEach(item => {
-            const div = document.createElement('div'); div.className = 'entry';
-            div.innerHTML = `<span style="font-size:9px; color:var(--teal); font-weight:900;">📍 ${item.gps} | ${item.stamp}</span><p style="margin:10px 0 0; font-size:14px; font-weight:800; white-space: pre-wrap;">${item.grit}</p>${item.pattern ? `<div style="background:#fff8e1; border:1px solid #ffc107; padding:10px; border-radius:10px; margin-top:10px; font-size:11px;"><b>Pattern Similarity:</b> ${item.pattern}</div>` : ''}`;
+            const div = document.createElement('div');
+            div.className = 'entry';
+            div.innerHTML = `<span style="font-size:9px; color:var(--teal); font-weight:900;">📍 ${item.gps} | ${item.stamp}</span><p style="margin:10px 0 0; font-size:14px; font-weight:800; white-space:pre-wrap;">${item.grit}</p>${item.law ? `<div style="background:#fff8e1; border:1px solid #ffc107; padding:10px; border-radius:10px; margin-top:10px; font-size:11px;"><b>Canadian Law:</b> ${item.law}</div>` : ''}`;
             list.appendChild(div);
         });
     }
