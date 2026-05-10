@@ -16,10 +16,10 @@
         }
         body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 0; height: 100dvh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
         
-        /* GHOST MODE */
+        /* GHOST MODE BLUR */
         .ghost-active #timelineContainer, .ghost-active #utilityDrawer { filter: blur(25px); opacity: 0.3; pointer-events: none; }
 
-        /* LEGAL MODAL */
+        /* LEGAL MODAL (DISCLAIMER) */
         #legalOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(44, 62, 80, 0.95); backdrop-filter: blur(10px); z-index: 200000; display: flex; align-items: center; justify-content: center; padding: 25px; box-sizing: border-box; }
         .modal-card { background: white; padding: 35px; border-radius: 32px; text-align: center; max-width: 400px; box-shadow: 0 25px 60px rgba(0,0,0,0.4); border-bottom: 8px solid var(--teal); }
         .modal-btn { background: var(--teal); color: white; border: none; padding: 18px; border-radius: 99px; font-weight: 900; cursor: pointer; margin-top: 25px; width: 100%; font-size: 16px; }
@@ -31,7 +31,6 @@
 
         .app-container { width: 100%; max-width: 500px; margin: 0 auto; background: white; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; position: relative; }
         
-        /* HEADER */
         .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; border-bottom: 2px solid var(--platinum); z-index: 3000; background: white; }
         .switch-group { display: flex; gap: 15px; align-items: center; }
         .switch { position: relative; width: 34px; height: 18px; }
@@ -41,20 +40,22 @@
         input:checked + .slider { background-color: var(--teal); }
         input:checked + .slider:before { transform: translateX(16px); }
 
-        /* MOVABLE BUTTONS */
+        /* DRAGGABLE BUTTONS */
         .draggable-btn { position: absolute; z-index: 5000; touch-action: none; display: flex; flex-direction: column; align-items: center; justify-content: center; border: none; width: 65px; height: 65px; border-radius: 20px; color: white; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25); cursor: grab; }
         #addBtn { right: 20px; top: 160px; background: var(--teal); font-size: 40px; font-weight: 900; }
         #syncBtn { right: 20px; top: 240px; background: var(--clio-blue); }
 
-        /* DRAWER & TOOLS */
+        /* DRAWER & HANDLE */
         #utilityDrawer { width: 100%; background: var(--glass); backdrop-filter: blur(12px); border-bottom: 2px solid var(--platinum); z-index: 2500; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
         .drawer-content { padding: 15px 20px; }
         .drag-handle-zone { width: 100%; height: 35px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .handle-pill { width: 45px; height: 6px; background: var(--platinum); border-radius: 10px; }
+        
         .template-bar { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 12px; scrollbar-width: none; }
         .template-chip { background: white; border: 2px solid var(--teal); padding: 8px 14px; border-radius: 15px; font-size: 9px; font-weight: 900; color: var(--teal); white-space: nowrap; cursor: pointer; }
         #statusBox { width: 100%; height: 85px; padding: 14px; border-radius: 18px; border: 2.5px solid var(--platinum); resize: none; font-family: inherit; font-weight: 700; background: #f8fafc; box-sizing: border-box; outline: none; }
 
+        /* MEDIA TOOLBAR */
         .media-toolbar { display: flex; gap: 8px; margin-top: 12px; }
         .media-btn { flex: 1; position: relative; background: white; border: 2.5px solid var(--platinum); padding: 12px 5px; border-radius: 16px; text-align: center; font-size: 9px; font-weight: 900; cursor: pointer; }
         .media-btn input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
@@ -65,16 +66,20 @@
         .entry.is-stacked { border-left-color: var(--teal); background: var(--blue-trans); }
         
         .pattern-alert { background: var(--blue-trans); border: 1.5px solid var(--teal); padding: 12px; border-radius: 16px; margin-top: 10px; color: var(--teal-dark); }
-        .legal-detail-view { background: white; border: 1.5px solid var(--teal); padding: 15px; border-radius: 12px; margin-top: 10px; font-size: 12px; line-height: 1.5; }
-        .stack-toggle-btn { margin-top: 10px; padding: 8px; width: 100%; border-radius: 10px; border: 1.5px solid var(--teal); font-weight: 900; font-size: 10px; cursor: pointer; transition: 0.2s; }
+        .legal-detail-view { background: white; border: 1.5px solid var(--teal); padding: 15px; border-radius: 12px; margin-top: 10px; font-size: 12px; line-height: 1.5; text-align: left; }
+        .stack-toggle-btn { margin-top: 10px; padding: 8px; width: 100%; border-radius: 10px; border: 1.5px solid var(--teal); font-weight: 900; font-size: 10px; cursor: pointer; }
+
+        .pulse-dot { width: 10px; height: 10px; background-color: var(--clio-green); border-radius: 50%; animation: pulse-green 2s infinite; }
+        @keyframes pulse-green { 0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); } 100% { transform: scale(0.9); } }
     </style>
 </head>
 <body id="appBody">
 
 <div id="legalOverlay">
     <div class="modal-card">
-        <h2 style="color:var(--teal); font-weight:900;">Ares v. Venner Standard</h2>
-        <p>This creates a <b>Contemporaneous Record</b>. GPS and Time are anchored to your "Grit" (Fresh Record).</p>
+        <h2 style="color:var(--teal); font-weight:900;">Friendly Reminder</h2>
+        <p>WorkTimeline™ is an evidence-tracking tool. <b>We do not provide legal advice.</b></p>
+        <p style="font-size: 12px; margin-top: 10px;">This platform creates a Contemporaneous Record under the <i>Ares v. Venner</i> standard. Please consult a legal professional for guidance.</p>
         <button class="modal-btn" onclick="dismissLegal()">I UNDERSTAND</button>
     </div>
 </div>
@@ -113,8 +118,7 @@
 
     <div id="timelineContainer">
         <div style="position:absolute; right:20px; top:10px; display:flex; align-items:center; gap:6px; z-index:10;">
-            <div class="pulse-dot" style="width:10px; height:10px; background:var(--clio-green); border-radius:50%; animation: pulse-green 2s infinite;"></div>
-            <span style="font-size:8px; font-weight:900; color:var(--clio-green);">CLIO READY</span>
+            <div class="pulse-dot"></div><span style="font-size:8px; font-weight:900; color:var(--clio-green);">CLIO READY</span>
         </div>
         <div id="displayList"></div>
     </div>
@@ -197,7 +201,7 @@
             div.className = `entry ${item.isStacked ? 'is-stacked' : ''}`;
             
             let displayContent = item.currentView === 'legal' ? 
-                `<b style="color:var(--teal-dark);">LEGAL ANALYSIS (CASE LAW):</b><br>${item.law.title}<br>Violation: ${item.law.violation}` : 
+                `<b style="color:var(--teal-dark);">RESEARCH ANALYSIS:</b><br>${item.law.title}<br>Potential Violation: ${item.law.violation}<br><br><span style="font-size:9px; font-weight:500;">*Reminder: Not legal advice. Consult a union rep or lawyer.</span>` : 
                 item.grit;
 
             let footer = "";
@@ -207,8 +211,8 @@
                         <b>Legal Similarity Detected</b>
                         <button onclick="toggleLegalDetail(${item.id})" class="stack-toggle-btn">📖 READ DETECTION DETAILS</button>
                         <div id="detail-${item.id}" class="legal-detail-view" style="display:none;">
-                            <p><b>Case:</b> ${item.law.title}</p>
-                            <p><b>Analysis:</b> Your record matches supervisory conduct markers found in this landmark Canadian case.</p>
+                            <p><b>Case Law:</b> ${item.law.title}</p>
+                            <p><b>Analysis:</b> Your record reflects markers of supervisory aggression often cited in Canadian labor disputes.</p>
                             <button onclick="stackEntry(${item.id})" style="background:var(--teal); color:white; border:none; padding:10px; width:100%; border-radius:10px; font-weight:900;">VERIFY & STACK EVIDENCE</button>
                         </div>
                     </div>`;
