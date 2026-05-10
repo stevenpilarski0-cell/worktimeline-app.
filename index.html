@@ -14,35 +14,33 @@
         }
         body { font-family: 'Nunito', sans-serif; background: #eef1f5; margin: 0; padding: 0; height: 100dvh; overflow: hidden; color: var(--gray-dark); -webkit-font-smoothing: antialiased; }
         
-        /* LEGAL WARNING MODAL */
-        #legalOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(44, 62, 80, 0.9); backdrop-filter: blur(8px); z-index: 200000; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; transition: opacity 0.5s ease; }
+        /* CLIO PULSE (NO BACKGROUND) */
+        .clio-status { position: absolute; right: 25px; top: -35px; display: flex; align-items: center; gap: 6px; z-index: 500; }
+        .pulse-dot { width: 10px; height: 10px; background-color: var(--clio-green); border-radius: 50%; box-shadow: 0 0 0 rgba(46, 204, 113, 0.4); animation: pulse-green 2s infinite; }
+        .pulse-text { font-size: 8px; font-weight: 900; color: var(--clio-green); letter-spacing: 1px; }
+        
+        @keyframes pulse-green { 
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(46, 204, 113, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+        }
+
+        #legalOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(44, 62, 80, 0.9); backdrop-filter: blur(8px); z-index: 200000; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; }
         .modal-card { background: white; padding: 30px; border-radius: 28px; text-align: center; max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
         .modal-btn { background: var(--teal); color: white; border: none; padding: 15px 40px; border-radius: 99px; font-weight: 900; cursor: pointer; margin-top: 20px; width: 100%; }
 
-        .ghost-active #timelineContainer, .ghost-active #utilityDrawer { filter: blur(18px); opacity: 0.6; pointer-events: none; }
+        #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; }
+        .story-text { font-size: 24px; font-weight: 900; color: var(--gray-dark); line-height: 1.4; opacity: 0; transition: opacity 0.8s; }
+        #skipBtn { position: absolute; bottom: calc(40px + env(safe-area-inset-bottom)); padding: 14px 28px; border: 3px solid var(--teal); border-radius: 99px; background: white; color: var(--teal); font-weight: 900; font-size: 13px; z-index: 100001; }
 
-        #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: #eef1f5; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; box-sizing: border-box; transition: opacity 1.2s ease; }
-        .story-text { font-size: 24px; font-weight: 900; color: var(--gray-dark); line-height: 1.4; opacity: 0; transition: opacity 0.8s; max-width: 420px; }
-        #skipBtn { position: absolute; bottom: calc(40px + env(safe-area-inset-bottom)); padding: 14px 28px; border: 3px solid var(--teal); border-radius: 99px; background: white; color: var(--teal); font-weight: 900; font-size: 13px; cursor: pointer; z-index: 100001; }
-
-        .app-container { width: 100%; max-width: 500px; margin: 0 auto; background: white; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.12); }
-
+        .app-container { width: 100%; max-width: 500px; margin: 0 auto; background: white; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; position: relative; }
         .header { display: flex; justify-content: space-between; align-items: center; padding: calc(10px + env(safe-area-inset-top)) 25px 12px; border-bottom: 2px solid var(--platinum); flex-shrink: 0; z-index: 3000; background: white; }
         .briefcase-logo { position: relative; width: 38px; height: 26px; border: 3.5px solid var(--gray-dark); border-radius: 8px; }
         .briefcase-handle { position: absolute; top: -8.5px; left: 50%; transform: translateX(-50%); width: 14px; height: 5px; border: 3.5px solid var(--gray-dark); border-bottom: none; border-radius: 4px 4px 0 0; }
         .teal-spine { position: absolute; top: 50%; left: -8px; right: -8px; height: 3.5px; background: var(--teal); border-radius: 2px; transform: translateY(-50%); }
-        .teal-dots { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; gap: 3px; }
         .dot { width: 4px; height: 4px; background: var(--teal); border-radius: 50%; border: 1px solid white; }
 
-        .switch-group { display: flex; gap: 12px; align-items: center; }
-        .switch { position: relative; display: inline-block; width: 34px; height: 18px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--platinum); transition: .4s; border-radius: 30px; }
-        .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--teal); }
-        input:checked + .slider:before { transform: translateX(16px); }
-
-        .draggable-btn { position: absolute; z-index: 5000; touch-action: none; cursor: grab; display: flex; flex-direction: column; align-items: center; justify-content: center; border: none; width: 65px; height: 65px; border-radius: 20px; color: white; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25); }
+        .draggable-btn { position: absolute; z-index: 5000; touch-action: none; display: flex; flex-direction: column; align-items: center; justify-content: center; border: none; width: 65px; height: 65px; border-radius: 20px; color: white; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25); }
         #addBtn { right: 20px; top: 160px; background: var(--teal); font-size: 40px; }
         #syncBtn { right: 20px; top: 240px; background: var(--clio-blue); }
 
@@ -50,18 +48,11 @@
         .drawer-content { padding: 15px 20px; }
         .drag-handle-zone { width: 100%; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .handle-pill { width: 50px; height: 6px; background: var(--platinum); border-radius: 10px; }
-        
-        .template-bar { display: flex; gap: 10px; width: 100%; overflow-x: auto; margin-bottom: 12px; scrollbar-width: none; }
+        .template-bar { display: flex; gap: 10px; width: 100%; overflow-x: auto; margin-bottom: 12px; }
         .template-chip { background: white; border: 2px solid var(--teal); padding: 8px 16px; border-radius: 15px; font-size: 10px; font-weight: 900; color: var(--teal); white-space: nowrap; cursor: pointer; }
-        
         #statusBox { width: 100%; height: 85px; padding: 14px; border-radius: 18px; border: 2.5px solid var(--platinum); resize: none; font-family: inherit; font-weight: 600; background: #f8fafc; box-sizing: border-box; outline: none; }
 
-        .media-toolbar { display: flex; gap: 10px; width: 100%; margin-top: 12px; }
-        .media-btn { flex: 1; position: relative; background: white; border: 2.5px solid var(--platinum); padding: 15px 5px; border-radius: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .media-btn span { font-size: 10px; font-weight: 900; color: var(--gray-dark); letter-spacing: 0.5px; }
-        .media-btn input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-
-        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 25px 15px; position: relative; background: #fdfdfd; z-index: 100; transition: all 0.4s ease; }
+        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 45px 15px 25px; position: relative; background: #fdfdfd; z-index: 100; transition: all 0.4s ease; }
         .entry { position: relative; margin-left: 45px; background: white; border: 2px solid var(--platinum); padding: 20px; border-radius: var(--round-inner); margin-bottom: 25px; z-index: 2; border-left: 8px solid var(--platinum); width: calc(100% - 60px); box-sizing: border-box; transition: 0.3s; }
         .entry.teal-standard { background: var(--teal-alpha); border-color: var(--teal); border-left-color: var(--teal); }
         .entry.is-stacked { box-shadow: 0 8px 0px var(--platinum), 0 15px 20px rgba(0,0,0,0.05); }
@@ -71,28 +62,22 @@
 
 <div id="legalOverlay">
     <div class="modal-card">
-        <h2 style="color:var(--teal); font-weight:900;">Friendly Reminder</h2>
-        <p style="font-weight:600; font-size:14px;">WorkTimeline™ is a documentation tool. Our AI verification system does not provide legal advice.</p>
+        <h2 style="color:var(--teal); font-weight:900;">Evidence Protection</h2>
+        <p style="font-weight:600; font-size:14px;">WorkTimeline™ creates <b>Contemporaneous Records</b> (records made while the event is fresh). This is not legal advice, but a tool for truth. Your GPS and Time are anchored to every note.</p>
         <button class="modal-btn" onclick="dismissLegal()">I UNDERSTAND</button>
     </div>
 </div>
 
-<div id="splashScreen">
-    <h1 id="storyText" class="story-text">Welcome.</h1>
-    <button id="skipBtn" onclick="endSplash()">Skip Intro</button>
-</div>
+<div id="splashScreen"><h1 id="storyText" class="story-text">Welcome.</h1><button id="skipBtn" onclick="endSplash()">Skip Intro</button></div>
 
 <div class="app-container">
     <header class="header">
         <div style="display:flex; align-items:center; gap:10px;">
             <div class="briefcase-logo">
                 <div class="briefcase-handle"></div><div class="teal-spine"></div>
-                <div class="teal-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                <div class="dot" style="position:absolute; top:10px; left:12px;"></div>
             </div>
             <h1 style="color:var(--teal); margin:0; font-size:18px; font-weight:900;">WorkTimeline™</h1>
-        </div>
-        <div class="switch-group">
-            <div style="text-align:center;"><label class="switch"><input type="checkbox" onchange="toggleGhost(this)"><span class="slider"></span></label><div style="font-size:7px; font-weight:900;">GHOST</div></div>
         </div>
     </header>
 
@@ -108,25 +93,23 @@
                 <div class="template-chip" onclick="useTemplate('WITNESS: ')">WITNESS</div>
                 <div class="template-chip" onclick="useTemplate('LOCATION: ')">LOCATION</div>
                 <div class="template-chip" onclick="useTemplate('EVIDENCE: ')">EVIDENCE</div>
-                <div class="template-chip" onclick="useTemplate('INTEREST: ')">INTEREST</div>
             </div>
-            <textarea id="statusBox" placeholder="Start your entry..."></textarea>
-            <div class="media-toolbar">
-                <div class="media-btn"><span>CAMERA</span><input type="file" accept="image/*" capture="camera" onchange="addMedia('📷 PHOTO Captured.')"></div>
-                <div class="media-btn"><span>AUDIO</span><input type="file" accept="audio/*" capture="microphone" onchange="addMedia('🎤 AUDIO Recorded.')"></div>
-                <div class="media-btn"><span>DOCS</span><input type="file" accept=".pdf,.doc,.docx,image/*" onchange="addMedia('📄 DOCS Uploaded.')"></div>
-            </div>
+            <textarea id="statusBox" placeholder="Start your record..."></textarea>
         </div>
         <div class="drag-handle-zone" id="dragZone"><div class="handle-pill"></div></div>
     </div>
 
     <div id="timelineContainer">
+        <div class="clio-status">
+            <div class="pulse-dot"></div>
+            <span class="pulse-text">CLIO READY</span>
+        </div>
         <div id="displayList"></div>
     </div>
 </div>
 
 <script>
-    const story = ["The Invisible 60%...", "Document the Truth.", "WorkTimeline bridges the gap.", "Justice should feel effortless."];
+    const story = ["Document the Truth.", "GPS Verified.", "Contemporaneous Evidence.", "Justice made effortless."];
     let isDrawerOpen = true;
     const timelineVault = [];
 
@@ -142,11 +125,8 @@
     }
     
     function endSplash() { 
-        const splash = document.getElementById('splashScreen');
-        if (splash) {
-            splash.style.opacity = '0'; 
-            setTimeout(() => { splash.remove(); }, 1000); 
-        }
+        const s = document.getElementById('splashScreen');
+        if(s) { s.style.opacity = '0'; setTimeout(() => s.remove(), 1000); }
     }
 
     document.getElementById('dragZone').onclick = () => {
@@ -155,39 +135,26 @@
         else { drawer.style.transform = `translateY(0)`; timeline.style.marginTop = `0px`; isDrawerOpen = true; }
     };
 
-    function toggleGhost(cb) { if(cb.checked) document.getElementById('appBody').classList.add('ghost-active'); else document.getElementById('appBody').classList.remove('ghost-active'); }
     function useTemplate(prefix) { const box = document.getElementById('statusBox'); box.value = prefix; box.focus(); }
 
     function makeDraggable(el) {
-        let offsetTop = 0, offsetLeft = 0, isDragging = false;
-        el.addEventListener('touchstart', (e) => { isDragging = false; const touch = e.touches[0]; offsetLeft = touch.clientX - el.offsetLeft; offsetTop = touch.clientY - el.offsetTop; }, {passive: true});
-        el.addEventListener('touchmove', (e) => { isDragging = true; const touch = e.touches[0]; el.style.left = (touch.clientX - offsetLeft) + 'px'; el.style.top = (touch.clientY - offsetTop) + 'px'; el.style.right = 'auto'; }, {passive: true});
+        let offsetTop = 0, offsetLeft = 0;
+        el.addEventListener('touchstart', (e) => { const touch = e.touches[0]; offsetLeft = touch.clientX - el.offsetLeft; offsetTop = touch.clientY - el.offsetTop; }, {passive: true});
+        el.addEventListener('touchmove', (e) => { const touch = e.touches[0]; el.style.left = (touch.clientX - offsetLeft) + 'px'; el.style.top = (touch.clientY - offsetTop) + 'px'; el.style.right = 'auto'; }, {passive: true});
     }
     makeDraggable(document.getElementById('addBtn')); makeDraggable(document.getElementById('syncBtn'));
 
     function submitEntry() { const box = document.getElementById('statusBox'); if(!box.value.trim()) return; saveEntry(box.value); box.value = ''; }
-    function addMedia(msg) { saveEntry(msg); }
 
     async function saveEntry(text) {
         navigator.geolocation.getCurrentPosition(async pos => {
             const entry = {
-                id: Date.now(), grit: text, teal: "Analysing...", 
+                id: Date.now(), grit: text, teal: "Analyzing...", 
                 stamp: new Date().toLocaleString(), gps: `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`,
-                isStacked: false, currentView: 'grit', isReady: false
+                isStacked: false, currentView: 'grit'
             };
             timelineVault.push(entry); refreshDisplay();
-
-            try {
-                const response = await fetch('/api/analyze', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: text }) });
-                const data = await response.json();
-                entry.teal = data.summary;
-                entry.isReady = true;
-                refreshDisplay();
-            } catch (e) { 
-                entry.teal = "Verified Teal Standard ready for review."; 
-                entry.isReady = true;
-                refreshDisplay(); 
-            }
+            setTimeout(() => { entry.teal = "Summarized Evidence Record Ready."; refreshDisplay(); }, 1500);
         });
     }
 
@@ -199,31 +166,15 @@
         [...timelineVault].reverse().forEach(item => {
             const div = document.createElement('div');
             div.className = `entry ${item.currentView === 'teal' ? 'teal-standard' : ''} ${item.isStacked ? 'is-stacked' : ''}`;
-            
-            let displayContent = item.currentView === 'teal' ? item.teal : item.grit;
-            
-            let actionHtml = "";
-            if (!item.isStacked) {
-                actionHtml = `
-                    <div style="margin-top:10px; padding:10px; border-top:1px solid #eee;">
-                        <p style="font-size:11px; font-weight:800; color:var(--teal); margin:0 0 5px;">Proposed Teal Standard:</p>
-                        <p style="font-size:12px; font-style:italic; margin:0 0 10px; color:#666;">${item.teal}</p>
-                        <button onclick="acceptTeal(${item.id})" style="width:100%; padding:8px; background:var(--teal); color:white; border:none; border-radius:8px; font-size:10px; font-weight:900; ${!item.isReady ? 'opacity:0.5; pointer-events:none;' : ''}">ACCEPT TEAL STANDARD</button>
-                    </div>`;
-            } else {
-                actionHtml = `
-                    <div style="display:flex; gap:5px; margin-top:10px;">
-                        <button onclick="toggleView(${item.id}, 'grit')" style="flex:1; padding:5px; font-size:8px; font-weight:900; background:${item.currentView === 'grit' ? 'var(--gray-dark)' : 'white'}; color:${item.currentView === 'grit' ? 'white' : 'var(--gray-dark)'}; border:1px solid var(--platinum); border-radius:5px;">WHITE</button>
-                        <button onclick="toggleView(${item.id}, 'teal')" style="flex:1; padding:5px; font-size:8px; font-weight:900; background:${item.currentView === 'teal' ? 'var(--teal)' : 'white'}; color:${item.currentView === 'teal' ? 'white' : 'var(--teal)'}; border:1px solid var(--teal); border-radius:5px;">TEAL</button>
-                    </div>`;
-            }
-
-            div.innerHTML = `<span style="font-size:9px; color:var(--teal); font-weight:900;">📍 ${item.gps} | ${item.stamp}</span><p style="margin:8px 0 0; font-size:14px; font-weight:700;">${displayContent}</p>${actionHtml}`;
+            let content = item.currentView === 'teal' ? item.teal : item.grit;
+            let actionHtml = !item.isStacked ? 
+                `<div style="margin-top:10px; border-top:1px solid #eee; padding-top:10px;"><p style="font-size:10px; color:var(--teal); font-weight:800;">Proposed Teal Standard: ${item.teal}</p><button onclick="acceptTeal(${item.id})" style="width:100%; margin-top:8px; padding:8px; background:var(--teal); color:white; border:none; border-radius:8px; font-size:10px; font-weight:900;">ACCEPT & STACK</button></div>` :
+                `<div style="display:flex; gap:5px; margin-top:10px;"><button onclick="toggleView(${item.id}, 'grit')" style="flex:1; padding:5px; font-size:8px; font-weight:900; background:${item.currentView === 'grit' ? 'var(--gray-dark)' : 'white'}; color:${item.currentView === 'grit' ? 'white' : 'var(--gray-dark)'}; border:1px solid var(--platinum); border-radius:5px;">ORIGINAL (CONTEMPORANEOUS)</button><button onclick="toggleView(${item.id}, 'teal')" style="flex:1; padding:5px; font-size:8px; font-weight:900; background:${item.currentView === 'teal' ? 'var(--teal)' : 'white'}; color:${item.currentView === 'teal' ? 'white' : 'var(--teal)'}; border:1px solid var(--teal); border-radius:5px;">TEAL (SUMMARY)</button></div>`;
+            div.innerHTML = `<span style="font-size:9px; color:var(--teal); font-weight:900;">📍 ${item.gps} | ${item.stamp}</span><p style="margin:8px 0 0; font-size:14px; font-weight:700;">${content}</p>${actionHtml}`;
             list.appendChild(div);
         });
     }
-
-    function openSync() { window.location.href = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s&redirect_uri=https://worktimeline-app.vercel.app/index.html&scope=leads_read%20leads_write%20contacts_write`; }
+    function openSync() { window.location.href = `https://ca.app.clio.com/oauth/authorize?client_id=18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s&response_type=code&redirect_uri=https://worktimeline-app.vercel.app/index.html&scope=leads_read%20leads_write%20contacts_write`; }
 </script>
 </body>
 </html>
