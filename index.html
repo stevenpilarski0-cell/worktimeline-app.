@@ -3,155 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Takin' Intake</title>
+    <title>WorkTimeline™ | Vault Logic</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap');
-        :root { --teal: #008080; --teal-dark: #004d4d; --platinum: #e2e8f0; --gray-dark: #2c3e50; --clio-blue: #0076CE; --clio-green: #2ecc71; --mac-bg: #f1f5f9; }
+        :root { --teal: #008080; --teal-dark: #004d4d; --platinum: #e2e8f0; --clio-blue: #0076CE; --clio-green: #2ecc71; --danger: #e74c3c; --notes-gold: #f1c40f; }
         
-        body { font-family: 'Nunito', sans-serif; background: #f8fafc; margin: 0; padding: 0; height: 100dvh; overflow: hidden; -webkit-font-smoothing: antialiased; }
+        body { font-family: 'Nunito', sans-serif; background: #f8fafc; margin: 0; padding: 0; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; transition: background 0.3s; }
+        .notes-active { background: #fef9e7 !important; }
 
-        /* --- HEADER & BRANDING --- */
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-bottom: 1.5px solid var(--platinum); background: white; z-index: 10000; position: relative; }
-        .brand-group { display: flex; align-items: center; gap: 4px; }
-        .logo-text-wrapper { display: flex; flex-direction: column; line-height: 0.85; }
-        .main-title { font-weight: 900; color: var(--teal); font-size: 20px; letter-spacing: -0.5px; }
-        .sub-title { font-weight: 900; color: var(--teal); font-size: 11px; letter-spacing: -1.1px; margin: 0; }
+        /* --- HEADER & VAULT SWITCH --- */
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-bottom: 1.5px solid var(--platinum); background: white; z-index: 1000; }
+        .vault-toggle-container { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+        .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--teal); transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--notes-gold); }
+        input:checked + .slider:before { transform: translateX(20px); }
 
-        /* --- OVERLAYS --- */
-        #syncOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(44, 62, 80, 0.98); z-index: 900000; display: none; align-items: center; justify-content: center; padding: 25px; box-sizing: border-box; }
-        .modal-card { background: white; padding: 30px; border-radius: 32px; max-width: 400px; width: 100%; border-bottom: 8px solid var(--clio-blue); }
-
-        /* --- BUTTONS --- */
-        .draggable-btn { position: absolute; z-index: 9000; width: 85px; height: 85px; border-radius: 24px; color: white; font-weight: 900; font-size: 10px; display: flex; align-items: center; justify-content: center; text-align: center; border: none; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
-        #addBtn { background: var(--teal); right: 20px; top: 160px; font-size: 35px; }
-        #syncBtn { background: var(--clio-blue); right: 20px; top: 260px; line-height: 1.2; }
-
-        /* --- THE FIXED MANAGEMENT TAB & DRAWER --- */
-        #mgmtTab { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); background: var(--teal); color: white; padding: 12px 30px; border-radius: 20px 20px 0 0; font-weight: 900; font-size: 12px; z-index: 100000; cursor: pointer; border: none; box-shadow: 0 -5px 15px rgba(0,0,0,0.1); }
+        /* --- UI ELEMENTS --- */
+        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 20px 20px 100px; }
+        .entry { background: white; border-radius: 24px; padding: 20px; border: 1.5px solid var(--platinum); margin-bottom: 20px; border-left: 8px solid var(--teal); box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+        .entry.note-item { border-left-color: var(--notes-gold); }
         
-        #managementDrawer { position: fixed; bottom: -100%; left: 0; width: 100%; background: white; border-top: 5px solid var(--teal); z-index: 100001; transition: bottom 0.4s ease; border-radius: 30px 30px 0 0; padding-bottom: 40px; }
-        #managementDrawer.active { bottom: 0; }
+        .bottom-dock { background: white; border-top: 2px solid var(--platinum); padding: 15px 20px calc(15px + env(safe-area-inset-bottom)); display: grid; grid-template-columns: 1fr 1fr 1.5fr; gap: 10px; z-index: 10000; }
+        .dock-btn { border: none; border-radius: 16px; padding: 12px 5px; font-weight: 900; font-size: 10px; color: white; cursor: pointer; text-align: center; text-transform: uppercase; }
+        .btn-fresh { background: var(--danger); }
+        .btn-export { background: var(--teal); }
+        .btn-clio { background: var(--clio-blue); }
 
-        /* --- INTERFACE --- */
-        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 20px 20px 150px; background: #fafbfc; height: calc(100dvh - 150px); }
-        .entry { background: white; border-radius: 24px; padding: 20px; border: 1.5px solid var(--platinum); margin-bottom: 20px; border-left: 8px solid var(--platinum); }
-        .pulse-critical { border-left: 14px solid var(--teal-dark) !important; animation: heavy-pulse 1.5s infinite; }
-        @keyframes heavy-pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 77, 77, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(0, 77, 77, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 77, 77, 0); } }
+        #addBtn { position: absolute; z-index: 9000; width: 75px; height: 75px; border-radius: 22px; background: var(--teal); color: white; font-weight: 900; font-size: 35px; border: none; box-shadow: 0 8px 20px rgba(0,0,0,0.2); right: 20px; top: 140px; }
+        .notes-btn-active { background: var(--notes-gold) !important; }
 
-        .handle-pill { width: 45px; height: 6px; background: #cbd5e1; border-radius: 10px; margin: 15px auto; cursor: pointer; }
-        #statusBox { width: 100%; height: 110px; padding: 15px; border-radius: 20px; border: 2px solid var(--platinum); outline: none; font-family: inherit; font-weight: 700; resize: none; box-sizing: border-box; }
+        #statusBox { width: 100%; height: 100px; padding: 15px; border-radius: 20px; border: 2px solid var(--platinum); outline: none; font-family: inherit; font-weight: 700; resize: none; box-sizing: border-box; }
     </style>
 </head>
-<body>
-
-<div id="syncOverlay">
-    <div class="modal-card">
-        <h2 style="color:var(--clio-blue);">Evidence Summary</h2>
-        <p id="aiSummaryText" style="font-size:14px; font-weight:700; color:var(--gray-dark); margin-bottom:20px;"></p>
-        <p style="font-size:11px; color:var(--dark-silver);">Clicking OK will lock this timeline and send the artifact to Clio Grow.</p>
-        <button class="modal-btn" style="background:var(--clio-blue); color:white; padding:15px; border-radius:50px; border:none; width:100%; font-weight:900;" onclick="finalSync()">OK & SEND TO CLIO</button>
-        <button class="modal-btn" style="background:none; color:var(--dark-silver); border:none; width:100%; margin-top:10px; font-weight:800;" onclick="closeSync()">CANCEL</button>
-    </div>
-</div>
+<body id="appBody">
 
 <header class="header">
-    <div class="brand-group">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none"><path d="M8 7V5C8 3.89543 8.89543 3 10 3H14C15.1046 3 16 3.89543 16 5V7M4 7H20C21.1046 7 22 7.89543 22 9V18C22 19.1046 21.1046 20 20 20H4C2.89543 20 2 19.1046 2 18V9C2 7.89543 2.89543 7 4 7Z" stroke="var(--teal)" stroke-width="2" stroke-linecap="round"/></svg>
-        <div class="logo-text-wrapper">
-            <span class="main-title">WorkTimeline™</span>
-            <span class="sub-title">TAKIN'INTAKE</span>
+    <div style="display:flex; align-items:center; gap:8px;">
+        <svg width="35" height="35" viewBox="0 0 24 24" fill="none"><path d="M8 7V5C8 3.89543 8.89543 3 10 3H14C15.1046 3 16 3.89543 16 5V7M4 7H20C21.1046 7 22 7.89543 22 9V18C22 19.1046 21.1046 20 20 20H4C2.89543 20 2 19.1046 2 18V9C2 7.89543 2.89543 7 4 7Z" stroke="var(--teal)" stroke-width="2"/></svg>
+        <div>
+            <div style="font-weight:900; color:var(--teal); font-size:18px;">WorkTimeline™</div>
+            <div id="vaultLabel" style="font-size:9px; font-weight:900; color:var(--teal);">TIMELINE ACTIVE</div>
         </div>
     </div>
-    <div style="background:var(--clio-green); width:8px; height:8px; border-radius:50%; box-shadow:0 0 8px var(--clio-green);"></div>
+    <div class="vault-toggle-container">
+        <label class="switch">
+            <input type="checkbox" onchange="toggleVault(this)">
+            <span class="slider"></span>
+        </label>
+        <span style="font-size:7px; font-weight:900;">SWITCH TO NOTES</span>
+    </div>
 </header>
 
-<div style="display:flex; flex-direction:column; height:100dvh;">
-    <button id="addBtn" class="draggable-btn" onclick="submitEntry()">+</button>
-    <button id="syncBtn" class="draggable-btn" onclick="triggerClioSync()">LOCK & SYNC<br>TO CLIO</button>
-
-    <div id="utilityDrawer" style="background:white; padding:15px; border-bottom:2.5px solid var(--platinum); z-index:8000;">
-        <textarea id="statusBox" placeholder="Start new journal..."></textarea>
-    </div>
-
-    <div id="timelineContainer"><div id="displayList"></div></div>
-
-    <button id="mgmtTab" onclick="toggleMgmt()">MANAGEMENT</button>
-
-    <div id="managementDrawer">
-        <div class="handle-pill" onclick="toggleMgmt()"></div>
-        <div style="padding:0 30px 40px;">
-            <button onclick="confirmReset()" style="background:var(--dark-silver); color:white; border:none; padding:18px; border-radius:50px; width:100%; font-weight:900; margin-bottom:12px;">DELETE & START FRESH</button>
-            <button onclick="alert('Exporting CSV...')" style="background:var(--teal); color:white; border:none; padding:18px; border-radius:50px; width:100%; font-weight:900;">EXPORT EVIDENCE</button>
-        </div>
-    </div>
+<div style="padding:15px; background:white; border-bottom:1.5px solid var(--platinum);">
+    <textarea id="statusBox" placeholder="Start new intake record..."></textarea>
 </div>
 
+<button id="addBtn" onclick="submitEntry()">+</button>
+
+<div id="timelineContainer">
+    <div id="displayList"></div>
+</div>
+
+<footer class="bottom-dock">
+    <button class="dock-btn btn-fresh" onclick="confirmReset()">WIPE ALL</button>
+    <button class="dock-btn btn-export" onclick="alert('Exporting Vault...')">EXPORT</button>
+    <button class="dock-btn btn-clio" onclick="alert('Syncing...')">SYNC CLIO</button>
+</footer>
+
 <script>
-    const timelineVault = JSON.parse(localStorage.getItem('wt_timeline')) || [];
+    let activeVault = "TIMELINE"; // Default vault
+    const timelineData = JSON.parse(localStorage.getItem('wt_timeline')) || [];
+    const notesData = JSON.parse(localStorage.getItem('wt_notes')) || [];
 
     window.onload = () => { refreshDisplay(); };
 
-    function toggleMgmt() {
-        const drawer = document.getElementById('managementDrawer');
-        drawer.classList.toggle('active');
+    function toggleVault(cb) {
+        activeVault = cb.checked ? "NOTES" : "TIMELINE";
+        document.body.classList.toggle('notes-active', cb.checked);
+        document.getElementById('addBtn').classList.toggle('notes-btn-active', cb.checked);
+        document.getElementById('vaultLabel').innerText = `${activeVault} ACTIVE`;
+        document.getElementById('vaultLabel').style.color = cb.checked ? 'var(--notes-gold)' : 'var(--teal)';
+        refreshDisplay();
     }
-
-    function triggerClioSync() {
-        if (timelineVault.length === 0) return alert("Nothing to sync.");
-        let summary = "AI ANALYSIS: " + timelineVault.length + " entries found. Critical patterns detected in job risk and safety. Generating legal artifact...";
-        document.getElementById('aiSummaryText').innerText = summary;
-        document.getElementById('syncOverlay').style.display = 'flex';
-    }
-
-    function finalSync() {
-        alert("TIMELINE LOCKED. Artifact transmitted to Clio Grow.");
-        document.getElementById('syncOverlay').style.display = 'none';
-    }
-
-    function closeSync() { document.getElementById('syncOverlay').style.display = 'none'; }
 
     function submitEntry() {
-        const b = document.getElementById('statusBox'); if(!b.value.trim()) return;
+        const b = document.getElementById('statusBox'); 
+        if(!b.value.trim()) return;
+        
         navigator.geolocation.getCurrentPosition(pos => {
             const entry = {
                 id: Date.now(),
-                grit: b.value,
+                content: b.value,
                 stamp: new Date().toLocaleString(),
-                gps: `${pos.coords.latitude.toFixed(2)}, ${pos.coords.longitude.toFixed(2)}`,
-                pulse: /fired|risk|unsafe|dismiss/i.test(b.value)
+                gps: `${pos.coords.latitude.toFixed(2)}, ${pos.coords.longitude.toFixed(2)}`
             };
-            timelineVault.push(entry);
-            localStorage.setItem('wt_timeline', JSON.stringify(timelineVault));
+
+            if(activeVault === "TIMELINE") {
+                timelineData.push(entry);
+                localStorage.setItem('wt_timeline', JSON.stringify(timelineData));
+            } else {
+                notesData.push(entry);
+                localStorage.setItem('wt_notes', JSON.stringify(notesData));
+            }
+
             b.value = '';
             refreshDisplay();
         });
     }
 
     function refreshDisplay() {
-        const list = document.getElementById('displayList'); list.innerHTML = '';
-        [...timelineVault].reverse().forEach(item => {
+        const list = document.getElementById('displayList'); 
+        list.innerHTML = '';
+        const dataToShow = activeVault === "TIMELINE" ? timelineData : notesData;
+
+        [...dataToShow].reverse().forEach(item => {
             const div = document.createElement('div');
-            div.className = 'entry ' + (item.pulse ? 'pulse-critical' : '');
-            div.innerHTML = `<div style="font-size:10px; font-weight:900; color:var(--teal);">📍 ${item.gps} | ${item.stamp}</div><p style="font-size:14px; font-weight:700; margin:5px 0 0;">${item.grit}</p>`;
+            div.className = 'entry' + (activeVault === "NOTES" ? ' note-item' : '');
+            div.innerHTML = `
+                <div style="font-size:9px; font-weight:900; color:var(--dark-silver);">📍 ${item.gps} | ${item.stamp}</div>
+                <p style="font-size:14px; font-weight:700; margin:5px 0 0; white-space:pre-wrap;">${item.content}</p>
+            `;
             list.appendChild(div);
         });
     }
 
-    function confirmReset() { if(confirm("Wipe journal?")) { localStorage.clear(); location.reload(); } }
-
-    function makeMovable(el) {
-        let p1 = 0, p2 = 0, p3 = 0, p4 = 0;
-        el.ontouchstart = (e) => {
-            p3 = e.touches[0].clientX; p4 = e.touches[0].clientY;
-            document.ontouchmove = (e) => {
-                p1 = p3 - e.touches[0].clientX; p2 = p4 - e.touches[0].clientY;
-                p3 = e.touches[0].clientX; p4 = e.touches[0].clientY;
-                el.style.top = (el.offsetTop - p2) + "px"; el.style.left = (el.offsetLeft - p1) + "px";
-            };
-            document.ontouchend = () => { document.ontouchmove = null; };
-        };
+    function confirmReset() {
+        if(confirm(`Wipe the entire ${activeVault} vault?`)) {
+            if(activeVault === "TIMELINE") { timelineData.length = 0; localStorage.removeItem('wt_timeline'); }
+            else { notesData.length = 0; localStorage.removeItem('wt_notes'); }
+            location.reload();
+        }
     }
-    makeMovable(document.getElementById('addBtn')); makeMovable(document.getElementById('syncBtn'));
 </script>
+
 </body>
 </html>
