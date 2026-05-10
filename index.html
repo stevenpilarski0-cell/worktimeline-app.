@@ -7,28 +7,21 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Nunito+Sans:wght@400;600;800&display=swap');
         :root { 
-            --teal: #008080; 
-            --silver-gray: #95a5a6; 
-            --gray-bg: #e2e8f0; 
-            --clio-green: #2ecc71; 
-            --clio-blue: #0076CE;
-            --gray-border: #cbd5e0; 
-            --mac-shadow: 0 10px 30px rgba(0,0,0,0.12); 
+            --teal: #008080; --silver-gray: #95a5a6; --gray-bg: #e2e8f0; --clio-green: #2ecc71; 
+            --clio-blue: #0076CE; --gray-border: #cbd5e0; --mac-shadow: 0 10px 30px rgba(0,0,0,0.12); 
             --risk-red: #e53e3e;
         }
         
         body { font-family: 'Nunito', sans-serif; background: var(--gray-bg); margin: 0; padding: 0; height: 100dvh; overflow: hidden; display: flex; justify-content: center; -webkit-tap-highlight-color: transparent; }
         .app-locked { filter: blur(35px); pointer-events: none; }
         .ghost-active #timelineContainer, .ghost-active #utilityDrawer, .ghost-active #mgmtDrawer { filter: blur(25px); opacity: 0.15; pointer-events: none; }
-
         .app-container { width: 100%; max-width: 500px; background: white; height: 100dvh; display: flex; flex-direction: column; position: relative; border: 1.5px solid var(--gray-border); box-sizing: border-box; overflow: hidden; }
         
         /* HEADER */
         .header { padding: 12px 15px; border-bottom: 1px solid var(--gray-border); background: white; z-index: 4000; position: relative; }
         .header-top { display: flex; justify-content: flex-start; align-items: center; }
         .main-title { font-weight: 900; font-size: 17px; display: flex; align-items: center; letter-spacing: -0.5px; }
-        .work-silver { color: var(--silver-gray); }
-        .timeline-teal { color: var(--teal); }
+        .work-silver { color: var(--silver-gray); } .timeline-teal { color: var(--teal); }
         .clio-pulse { width: 7px; height: 7px; background-color: var(--clio-green); border-radius: 50%; margin-left: 8px; animation: clio-throb 2s infinite; }
         @keyframes clio-throb { 0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.6); } 70% { box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); } 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
 
@@ -50,7 +43,7 @@
         .stack-inner.flipped { transform: rotateY(180deg); }
         .bubble { padding: 15px; border-radius: 22px; font-family: 'Nunito Sans', sans-serif; backface-visibility: hidden; box-shadow: var(--mac-shadow); width: 100%; box-sizing: border-box; }
         .bubble-front { background: #f1f1f1; border: 1px solid #e5e5e5; color: #1a202c; position: relative; z-index: 2; }
-        .bubble-back { background: var(--teal); color: white; transform: rotateY(180deg); position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; border: 1px solid rgba(255,255,255,0.2); }
+        .bubble-back { background: var(--teal); color: white; transform: rotateY(180deg); position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; border: 1px solid rgba(255,255,255,0.2); overflow-y: auto; }
         
         .stack-inner.has-ai.pulse-on::after { 
             content: ''; position: absolute; top: 6px; left: 8px; width: 100%; height: 100%; background: #4a5568; border-radius: 22px; z-index: 0; opacity: 0.7; animation: dark-heavy-pulse 3s infinite ease-in-out; 
@@ -144,8 +137,14 @@
 
     function submitEntry() {
         const text = document.getElementById('statusBox').value; if(!text.trim()) return;
-        let isRisk = text.toLowerCase().includes("fire") || text.toLowerCase().includes("retaliation") || text.toLowerCase().includes("termination") || text.toLowerCase().includes("fired");
-        activePending = { grit: text, analysis: isRisk ? "EA: High-severity pattern detected." : "", stamp: new Date().toLocaleString() };
+        let analysis = ""; let isRisk = false;
+        
+        if (text.toLowerCase().includes("fire") || text.toLowerCase().includes("termination") || text.toLowerCase().includes("fired") || text.toLowerCase().includes("retaliation")) {
+            isRisk = true;
+            analysis = `<div style="font-size:11px; text-align:left;"><b>LEGAL DIAGNOSTIC:</b><br><br><b>Prima Facie Case:</b> Retaliatory Discharge.<br><br><b>Nexus:</b> Direct temporal proximity between protected activity (Safety Reporting) and adverse employment action.<br><br><b>Statutory Breach:</b> Potential violation of BC Workers Compensation Act (Sec. 48-50) regarding discriminatory action. <br><br><b>Latin Principle:</b> <i>Abusus Non Tollit Usum</i> (Abuse does not cancel use). Improper termination does not invalidate your underlying documentation.</div>`;
+        }
+
+        activePending = { grit: text, analysis: analysis, stamp: new Date().toLocaleString() };
         
         if(isRisk && !pulseExplained) { triggerPulseDiagnostic(); }
         else if(isRisk) { triggerRiskWarning(); }
@@ -154,38 +153,25 @@
         document.getElementById('statusBox').value = ''; if(utilOpen) toggleUtility();
     }
     
-    // ATTACH SUBMIT TO CLICK
     document.getElementById('addBtn').onclick = submitEntry;
 
     function triggerPulseDiagnostic() {
         document.getElementById('modalContent').innerHTML = `
             <h2 style="color:var(--risk-red); font-weight:900; margin:0; font-size:18px;">PULSE DIAGNOSTIC</h2>
-            <div style="font-size:12px; line-height:1.5; color:#4a5568; margin:15px 0; font-weight:600; text-align:left;"><b>Unemployment Risk Pulse</b> detected. This heartbeat flags high-risk entries. Keep it on or shut it off.</div>
+            <div style="font-size:12px; line-height:1.5; color:#4a5568; margin:15px 0; font-weight:600; text-align:left;"><b>Unemployment Risk Pulse</b> detected. Heartbeat indicates high-risk legal markers. Keep pulse active or shut off.</div>
             <button class="modal-btn" style="background:var(--teal); color:white;" onclick="setPulsePreference(true)">KEEP PULSE ON</button>
             <button class="modal-btn" style="background:#f1f5f9; color:#718096;" onclick="setPulsePreference(false)">SHUT PULSE OFF</button>`;
         document.getElementById('overlaySystem').style.display = 'flex';
     }
 
     function triggerRiskWarning() {
-        document.getElementById('modalContent').innerHTML = `<h2 style="color:var(--risk-red); font-weight:900; font-size:18px;">EMPLOYMENT AT RISK!</h2><div style="font-size:13px; font-weight:600; margin:15px 0;">Critical pattern detected. Documenting is vital.</div><button class="modal-btn" style="background:var(--teal); color:white;" onclick="confirmSave()">OK, I UNDERSTAND</button>`;
+        document.getElementById('modalContent').innerHTML = `<h2 style="color:var(--risk-red); font-weight:900; font-size:18px;">EMPLOYMENT AT RISK!</h2><div style="font-size:13px; font-weight:600; margin:15px 0;">Critical pattern detected. Legal Diagnostic active.</div><button class="modal-btn" style="background:var(--teal); color:white;" onclick="confirmSave()">OK, I UNDERSTAND</button>`;
         document.getElementById('overlaySystem').style.display = 'flex';
     }
 
-    function setPulsePreference(pref) { 
-        pulseActive = pref; pulseExplained = true; 
-        localStorage.setItem('wt_pulse_active', pref); 
-        localStorage.setItem('wt_pulse_explained', 'true'); 
-        confirmSave(); 
-    }
-    
-    function confirmSave() { 
-        vault.push(activePending); 
-        localStorage.setItem('wt_timeline', JSON.stringify(vault)); 
-        unlockApp(); refresh(); 
-        // Reset modal for next use
-        setTimeout(() => {
-            document.getElementById('modalContent').innerHTML = `<h2 style="color: #1a202c; font-weight: 900; margin: 0; font-size: 18px;">INTAKE GUARD</h2><div style="font-size: 13px; line-height: 1.5; color: #4a5568; margin: 15px 0; font-weight: 600;">Secure your records. We provide support, but no legal advice.</div><button class="modal-btn" style="background:var(--teal); color:white;" onclick="unlockApp()">SECURE MY JOURNAL</button>`;
-        }, 500);
+    function setPulsePreference(pref) { pulseActive = pref; pulseExplained = true; localStorage.setItem('wt_pulse_active', pref); localStorage.setItem('wt_pulse_explained', 'true'); confirmSave(); }
+    function confirmSave() { vault.push(activePending); localStorage.setItem('wt_timeline', JSON.stringify(vault)); unlockApp(); refresh(); 
+        setTimeout(() => { document.getElementById('modalContent').innerHTML = `<h2 style="color: #1a202c; font-weight: 900; margin: 0; font-size: 18px;">INTAKE GUARD</h2><div style="font-size: 13px; line-height: 1.5; color: #4a5568; margin: 15px 0; font-weight: 600;">Secure your records. Support provided, no legal advice.</div><button class="modal-btn" style="background:var(--teal); color:white;" onclick="unlockApp()">SECURE MY JOURNAL</button>`; }, 500);
     }
 
     function refresh() {
@@ -198,7 +184,7 @@
                     <div class="stamp-label">📍 LANGLEY | ${item.stamp}</div>
                     <div class="stack-inner ${hasAI ? 'has-ai ' + pulseClass : ''}" onclick="this.classList.toggle('flipped')">
                         <div class="bubble bubble-front"><p style="font-weight:600; font-size:14px; margin:0;">${item.grit}</p></div>
-                        ${hasAI ? `<div class="bubble bubble-back"><p style="font-weight:600; font-size:13px; margin:0;">${item.analysis}</p></div>` : ''}
+                        ${hasAI ? `<div class="bubble bubble-back">${item.analysis}</div>` : ''}
                     </div>
                 </div>`;
         });
