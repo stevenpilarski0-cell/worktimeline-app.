@@ -61,7 +61,7 @@
     <div id="syncBtn" class="draggable-btn" onclick="triggerLockSync()">LOCK & SYNC</div>
     <div id="utilityDrawer">
         <div class="drawer-content" id="drawerContent">
-            <div style="display:flex; gap:10px;"><div class="template-chip" onclick="useTemplate('WITNESS')">WITNESS</div><div class="template-chip" onclick="useTemplate('INCIDENT')">INCIDENT</div><div class="template-chip" onclick="useTemplate('LOCATION')">LOCATION</div></div>
+            <div style="display:flex; gap:10px; overflow-x:auto;"><div class="template-chip" onclick="useTemplate('WITNESS')">WITNESS</div><div class="template-chip" onclick="useTemplate('INCIDENT')">INCIDENT</div><div class="template-chip" onclick="useTemplate('LOCATION')">LOCATION</div><div class="template-chip" onclick="useTemplate('INJURY')">INJURY</div></div>
             <textarea id="statusBox" placeholder="Start your fresh record..."></textarea>
             <div style="display:flex; gap:10px; margin-top:15px;"><div class="media-btn"><span>CAMERA</span><input type="file" accept="image/*" capture="camera" onchange="addMedia('📷 PHOTO')"></div><div class="media-btn"><span>AUDIO</span><input type="file" accept="audio/*" capture="microphone" onchange="addMedia('🎤 AUDIO')"></div><div class="media-btn"><span>DOCS</span><input type="file" onchange="addMedia('📄 FILE')"></div></div>
         </div>
@@ -98,7 +98,7 @@
     function finalSync() { alert("Locked and Synced to Clio."); document.getElementById('syncOverlay').style.display = 'none'; }
     function closeSync() { document.getElementById('syncOverlay').style.display = 'none'; }
     function confirmReset() { if(confirm("Wipe vault?")) { localStorage.clear(); location.reload(); } }
-    function useTemplate(type) { const t = { 'WITNESS': 'WITNESS: \nSTATEMENT: ', 'INCIDENT': 'ACTION: \nVIOLATION: ', 'LOCATION': 'SITE: \nHAZARDS: ' }; document.getElementById('statusBox').value = t[type]; }
+    function useTemplate(type) { const t = { 'WITNESS': 'WITNESS: \nSTATEMENT: ', 'INCIDENT': 'ACTION: \nVIOLATION: ', 'LOCATION': 'SITE: \nHAZARDS: ', 'INJURY': 'NATURE OF INJURY: \nBODY PART: \nFIRST AID RENDERED: \nOFA ATTENDANT: ' }; document.getElementById('statusBox').value = t[type]; }
     function makeMovable(el) { let p1 = 0, p2 = 0, p3 = 0, p4 = 0; el.ontouchstart = (e) => { p3 = e.touches[0].clientX; p4 = e.touches[0].clientY; document.ontouchend = () => { document.ontouchend = null; document.ontouchmove = null; }; document.ontouchmove = (e) => { p1 = p3 - e.touches[0].clientX; p2 = p4 - e.touches[0].clientY; p3 = e.touches[0].clientX; p4 = e.touches[0].clientY; el.style.top = (el.offsetTop - p2) + "px"; el.style.left = (el.offsetLeft - p1) + "px"; el.style.right = "auto"; }; }; }
     makeMovable(document.getElementById('addBtn')); makeMovable(document.getElementById('syncBtn'));
     function submitEntry() { const b = document.getElementById('statusBox'); if(!b.value.trim()) return; saveEntry(b.value); b.value = ''; }
@@ -107,7 +107,7 @@
             const low = text.toLowerCase();
             let score = 0;
             if(low.includes("fire") || low.includes("quit") || low.includes("toxic") || low.includes("lawyer")) score += 2;
-            if(low.includes("overtime") || low.includes("pay") || low.includes("harass") || low.includes("photo")) score += 1;
+            if(low.includes("overtime") || low.includes("pay") || low.includes("harass") || low.includes("photo") || low.includes("injury")) score += 1;
             const entry = { id: Date.now(), grit: text, stamp: new Date().toLocaleString(), gps: `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`, level: score };
             if(activeVault === "TIMELINE") { timelineVault.push(entry); localStorage.setItem('wt_timeline', JSON.stringify(timelineVault)); } 
             else { notesVault.push(entry); localStorage.setItem('wt_notes', JSON.stringify(notesVault)); }
