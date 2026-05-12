@@ -13,6 +13,7 @@
             --mac-shadow: 0 10px 30px rgba(0,0,0,0.12);
             --mac-glass: rgba(255, 255, 255, 0.75);
             --damage-red: #e53e3e;
+            --warning-amber: #d69e2e;
         }
         
         body { font-family: 'Nunito', sans-serif; background: var(--gray-bg); margin: 0; padding: 0; height: 100dvh; overflow: hidden; display: flex; justify-content: center; }
@@ -29,17 +30,18 @@
         .view-section { flex-grow: 1; overflow-y: auto; padding: 20px 15px 150px; display: none; flex-direction: column; gap: 20px; }
         .view-section.active { display: flex; }
 
-        /* MARKET CARD */
+        /* CARDS & BADGES */
         .auction-card { background: #f8fafc; border: 1.5px solid var(--gray-border); border-radius: 24px; padding: 18px; box-shadow: var(--mac-shadow); border-left: 8px solid var(--silver-gray); }
         .win-rate { font-size: 24px; font-weight: 900; margin: 5px 0; }
+        .badge { display: inline-block; padding: 4px 8px; border-radius: 8px; font-size: 9px; font-weight: 900; color: white; margin-bottom: 5px; }
+        .type-tag { font-size: 9px; font-weight: 900; color: var(--teal); background: #e6fffa; padding: 2px 6px; border-radius: 4px; margin-right: 5px; }
         .damage-tag { font-size: 9px; font-weight: 900; color: var(--damage-red); background: #fff5f5; padding: 4px 8px; border-radius: 6px; display: inline-block; margin-top: 5px; }
-        .disclaimer-box { font-size: 8px; color: #718096; line-height: 1.4; margin-top: 15px; background: #edf2f7; padding: 10px; border-radius: 12px; }
 
-        /* TAMPER ALERT (RED PULSE) */
+        /* TAMPER ALERT */
         .tamper-glow { animation: tamper-pulse 1.5s infinite alternate; border: 2px solid var(--damage-red) !important; }
         @keyframes tamper-pulse { from { box-shadow: 0 0 5px var(--damage-red); } to { box-shadow: 0 0 20px var(--damage-red); } }
 
-        /* JOURNAL STYLES */
+        /* STACK STYLES */
         .stack-wrapper { position: relative; width: 100%; }
         .stamp-label { font-size: 9px; font-weight: 900; color: var(--silver-gray); margin-bottom: 6px; }
         .stack-inner { position: relative; width: 90%; min-height: 70px; transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer; }
@@ -56,7 +58,7 @@
 <div id="overlaySystem">
     <div style="background: white; padding: 30px; border-radius: 28px; text-align: center; max-width: 300px;">
         <h2 style="font-weight: 900; margin: 0; font-size: 16px;">WORK-DEMO</h2>
-        <p style="font-size: 12px; color: #4a5568;">Tamper-Proof Ledger & Lawyer Marketplace Summary.</p>
+        <p style="font-size: 12px; color: #4a5568;">Dual-Terminology Experience (Client vs. Lawyer).</p>
         <button onclick="unlockApp()" style="background:var(--teal); color:white; border:none; padding:15px; width:100%; border-radius:18px; font-weight:800; cursor:pointer;">START DEMO</button>
     </div>
 </div>
@@ -73,20 +75,20 @@
     </header>
 
     <div id="journalView" class="view-section active">
-        <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <select id="provinceSelect" style="border-radius:10px; font-size:10px; padding:5px;">
-                <option value="BC">British Columbia (ESA/WorkSafe)</option>
-                <option value="ON">Ontario (ESA/WSIB)</option>
-                <option value="QC">Quebec (CNESST)</option>
+        <div style="display:flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px;">
+            <select id="typeSelect" style="border-radius:10px; font-size:10px; padding:5px; flex: 1; border: 1px solid var(--gray-border);">
+                <option value="CONTEMP">Entry Type: Live Note</option>
+                <option value="RECON">Entry Type: Past Event</option>
+                <option value="CORROB">Entry Type: Has Proof</option>
             </select>
             <button id="lockBtn" onclick="lockTimeline()" style="font-size:9px; font-weight:900; background:var(--silver-gray); color:white; border:none; padding:5px 10px; border-radius:8px; cursor:pointer;">LOCK TIMELINE</button>
         </div>
-        <textarea id="statusBox" style="width:100%; height:80px; border-radius:20px; border:1px solid var(--gray-border); padding:15px; font-family:inherit; box-sizing: border-box;" placeholder="Enter event details..."></textarea>
+        <textarea id="statusBox" style="width:100%; height:80px; border-radius:20px; border:1px solid var(--gray-border); padding:15px; font-family:inherit; box-sizing: border-box;" placeholder="Add to your timeline..."></textarea>
         <div id="timelineContainer"></div>
     </div>
 
     <div id="marketView" class="view-section">
-        <h3 style="font-weight: 900; margin: 0; font-size: 14px;">Anonymous Case Summary</h3>
+        <h3 style="font-weight: 900; margin: 0; font-size: 14px;">Lawyer Dashboard | Case Analysis</h3>
         <div id="marketContainer"></div>
     </div>
 
@@ -94,7 +96,16 @@
 </div>
 
 <script>
-    // 1. STATE MANAGEMENT
+    // 1. TERMINOLOGY MAP
+    const TERM_MAP = {
+        CONTEMP: { client: "Live Note", lawyer: "Contemporaneous Evidence" },
+        RECON: { client: "Past Event", lawyer: "Reconstructed Narrative" },
+        CORROB: { client: "Has Proof", lawyer: "Corroborated Submission" },
+        HIGH: { client: "Great Documentation", lawyer: "High Story Integrity" },
+        LOW: { client: "Changes Detected", lawyer: "Integrity Compromised / Tamper Alert" }
+    };
+
+    // 2. STATE
     let vault = JSON.parse(localStorage.getItem('wt_timeline')) || [];
     let isLocked = localStorage.getItem('wt_locked') === 'true';
     let isTampered = localStorage.getItem('wt_tampered') === 'true';
@@ -107,13 +118,13 @@
         renderMarket();
     }
 
-    // 2. INTEGRITY LEDGER
+    // 3. INTEGRITY LEDGER
     function lockTimeline() {
-        if(vault.length === 0) return alert("Timeline must have data before locking.");
+        if(vault.length === 0) return;
         isLocked = true;
         localStorage.setItem('wt_locked', 'true');
-        document.getElementById('lockBtn').innerText = "TIMELINE SECURED";
-        alert("Chronological Evidence Integrity Locked. Any future changes will be recorded as a Tamper Event.");
+        document.getElementById('lockBtn').innerText = "SECURED";
+        alert("Locked. Your information is now prepared for legal analysis.");
         renderMarket(); 
     }
 
@@ -127,10 +138,9 @@
         document.body.classList.toggle('ghost-active', view === 'ghost');
     }
 
-    // 3. CLIO DUO PATTERN RECOGNITION
     function submitEntry() {
         const text = document.getElementById('statusBox').value;
-        const prov = document.getElementById('provinceSelect').value;
+        const type = document.getElementById('typeSelect').value;
         if(!text.trim()) return;
 
         let entryTampered = false;
@@ -140,11 +150,10 @@
             localStorage.setItem('wt_tampered', 'true');
         }
 
+        // Simulating Clio Duo AI Pattern Recognition
         const patterns = [
             { key: "fire", type: "ESA", msg: "Potential Unlawful Termination" },
-            { key: "hurt", type: "WorkSafe", msg: "Health & Safety Violation" },
-            { key: "privacy", type: "Privacy Act", msg: "PII/FOIPPA Breach" },
-            { key: "harass", type: "Human Rights", msg: "Discriminatory Conduct" }
+            { key: "hurt", type: "WorkSafe", msg: "Safety Non-Compliance" }
         ];
 
         let analysis = "";
@@ -160,7 +169,7 @@
             grit: text, 
             analysis: analysis, 
             tags: tags, 
-            province: prov, 
+            entryType: type,
             stamp: new Date().toLocaleString(), 
             tampered: entryTampered 
         });
@@ -171,59 +180,64 @@
         renderMarket();
     }
 
+    // 4. DYNAMIC UI RENDERING
     function refresh() {
         const container = document.getElementById('timelineContainer');
         container.innerHTML = '';
         [...vault].reverse().forEach(item => {
             const hasAI = item.analysis !== "";
             const tamperClass = item.tampered ? 'tamper-glow' : '';
+            
+            // Client sees simple terms
+            const typeLabel = TERM_MAP[item.entryType].client;
+
             container.innerHTML += `
                 <div class="stack-wrapper">
-                    <div class="stamp-label" style="color:${item.tampered ? 'var(--damage-red)' : ''}">📍 ${item.province} | ${item.stamp} ${item.tampered ? '[TAMPER DETECTED]' : ''}</div>
+                    <div class="stamp-label" style="color:${item.tampered ? 'var(--damage-red)' : ''}">
+                        ${item.stamp} ${item.tampered ? '— Changed' : ''}
+                    </div>
                     <div class="stack-inner ${hasAI ? 'has-ai pulse-on' : ''} ${tamperClass}" onclick="if('${hasAI}'=='true') this.classList.toggle('flipped')">
-                        <div class="bubble bubble-front"><p style="margin:0; font-size:12px;">${item.grit}</p></div>
-                        <div class="bubble bubble-back"><p style="margin:0; font-size:10px; font-weight:900;">${item.analysis}</p></div>
+                        <div class="bubble bubble-front">
+                            <span class="type-tag">${typeLabel}</span>
+                            <p style="margin:5px 0 0 0; font-size:12px;">${item.grit}</p>
+                        </div>
+                        <div class="bubble bubble-back"><p style="margin:0; font-size:10px; font-weight:900;">WorkTimeline Analysis Activated</p></div>
                     </div>
                 </div>`;
         });
     }
 
-    // 4. ANONYMOUS MARKETPLACE SUMMARY
     function renderMarket() {
         const container = document.getElementById('marketContainer');
         if(!isLocked) {
-            container.innerHTML = '<p style="text-align:center; color:gray; font-size:11px; margin-top:40px;">Timeline must be locked by the user before the summary is available to lawyers.</p>';
+            container.innerHTML = '<p style="text-align:center; color:gray; font-size:11px; margin-top:40px;">Lock required to generate Analysis.</p>';
             return;
         }
 
-        const total = vault.length;
         const aiHits = vault.filter(v => v.analysis !== "").length;
-        const provinceFactor = (vault[0].province === "QC") ? 0.8 : 1.0; 
-        const winPercent = Math.min(99, Math.max(5, ((aiHits * 25) + (total * 5)) * provinceFactor));
-        
+        const winPercent = Math.min(99, Math.max(5, (aiHits * 25) + (vault.length * 5)));
         const tealFactor = winPercent / 100;
         const dynamicColor = isTampered ? 'var(--damage-red)' : `rgb(${149 - (149-0)*tealFactor}, ${165 - (165-128)*tealFactor}, ${166 - (166-128)*tealFactor})`;
 
-        const uniqueTags = [...new Set(vault.map(v => v.tags).flat())];
+        // Lawyer sees technical terms
+        const integrityLabel = isTampered ? TERM_MAP.LOW.lawyer : TERM_MAP.HIGH.lawyer;
 
         container.innerHTML = `
             <div class="auction-card" style="border-left-color: ${dynamicColor}">
-                <div class="win-rate" style="color: ${dynamicColor}">${isTampered ? 'INTEGRITY ALERT' : winPercent + '% Probability'}</div>
-                <div style="font-size:10px; font-weight:900; color:var(--silver-gray);">ANONYMOUS SUMMARY | ${vault[0].province}</div>
-                <div style="font-size:11px; margin-top:10px; border-top:1px solid #eee; padding-top:10px;">
-                    <strong>Violation Markers:</strong><br>
-                    ${uniqueTags.length > 0 ? uniqueTags.join(", ") : "General Employment Inquiry"}
-                </div>
-                <div style="font-size:11px; margin-top:8px;">
-                    <strong>Case Complexity:</strong> ${total} Logged Events.
-                </div>
-                ${uniqueTags.includes("Human Rights") || isTampered ? '<div class="damage-tag">AGGRAVATED/PUNITIVE DAMAGES LIKELY</div>' : ''}
+                <span class="badge" style="background:${isTampered ? 'var(--damage-red)' : 'var(--teal)'}">${integrityLabel}</span>
+                <div class="win-rate" style="color: ${dynamicColor}">${winPercent}% Story Integrity</div>
+                <div style="font-size:10px; font-weight:900; color:var(--silver-gray);">ANONYMOUS VAULT | SECURED BY CLIO CLOUD</div>
                 
-                <div class="disclaimer-box">
-                    <strong>DISCLAIMER:</strong> Analysis based on pattern recognition and jurisdictional data. We do not provide legal advice and never accept commissions from client outcomes.
+                <div style="font-size:11px; margin-top:10px; border-top:1px solid #eee; padding-top:10px;">
+                    <strong>Evidentiary Composition:</strong><br>
+                    ${vault.map(v => TERM_MAP[v.entryType].lawyer).filter((v, i, a) => a.indexOf(v) === i).join(", ")}
                 </div>
 
-                <button style="width:100%; margin-top:15px; padding:12px; border-radius:14px; background:var(--clio-blue); color:white; border:none; font-weight:900; cursor:pointer;">ACQUIRE CASE DATA (CLIO CLOUD)</button>
+                <div class="disclaimer-box">
+                    <strong>INTEGRITY LOG:</strong> Using pattern recognition to identify narrative shifts or linear gaps.
+                </div>
+
+                <button style="width:100%; margin-top:15px; padding:12px; border-radius:14px; background:var(--clio-blue); color:white; border:none; font-weight:900; cursor:pointer;">ACQUIRE CASE DATA</button>
             </div>`;
     }
 </script>
