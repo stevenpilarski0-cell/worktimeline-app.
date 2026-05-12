@@ -147,7 +147,7 @@
     }
     document.getElementById('initialUnlock').onclick = unlockApp;
 
-    // 3. AI TRIGGER LOGIC - Demonstation keyword scanning
+    // 3. AI TRIGGER LOGIC - Demonstration keyword scanning
     function submitEntry() {
         const text = document.getElementById('statusBox').value; 
         if(!text.trim()) return;
@@ -192,6 +192,7 @@
         const list = document.getElementById('timelineContainer'); 
         list.innerHTML = '';
         
+        // Show empty state placeholder if vault is empty
         if (vault.length === 0) {
             list.innerHTML = `<div style="text-align:center; color:var(--silver-gray); margin-top:50px; font-style:italic;">[ No records found. Add an entry to begin. ]</div>`;
             return;
@@ -200,6 +201,7 @@
         const pulseClass = pulseActive ? 'pulse-on' : '';
 
         [...vault].reverse().forEach(item => {
+            // Check if entry contains AI analysis text
             const hasAI = item.analysis && item.analysis.trim() !== "";
             
             list.innerHTML += `
@@ -248,7 +250,7 @@
         document.getElementById('statusBox').value = ts[t]; 
     }
     
-    // NAVIGATION CONTROLS
+    // NAVIGATION CONTROLS - Ghost Mode Switch
     const btnNotes = document.getElementById('btnNotes');
     const btnGhost = document.getElementById('btnGhost');
     const navSlider = document.getElementById('navSlider');
