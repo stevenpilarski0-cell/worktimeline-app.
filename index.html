@@ -22,7 +22,7 @@
 
     <div class="container">
         <h2>WorkTimeline™</h2>
-        <p>Record chronological evidence securely.</p>
+        <p>Securely record chronological evidence.</p>
         
         <!-- 2. The User Interface -->
         <textarea id="noteContent" rows="5" placeholder="Enter evidence details..."></textarea>
@@ -34,11 +34,10 @@
 
     <script>
         // 3. Connection Coordinates
-        // These are based on your specific Project ID and the key you provided
         const _supabaseUrl = 'https://sghmgiaaqcuymqnfbleh.supabase.co'; 
         const _supabaseKey = 'Sb_publishable_VL3kSjtNHGvLcmZYi1YXnA_Xlo8zpXy';
 
-        // 4. Initialize the "Client" (The bridge to your database)
+        // 4. Initialize the Client
         const _supabase = supabase.createClient(_supabaseUrl, _supabaseKey);
 
         // 5. The Logic to Save Data
@@ -70,7 +69,7 @@
             } else {
                 statusDiv.innerText = "Integrity Verified: Evidence Saved.";
                 statusDiv.style.color = "green";
-                contentInput.value = ""; // Clear the input after success
+                contentInput.value = ""; // Clear input on success
             }
         });
     </script>
