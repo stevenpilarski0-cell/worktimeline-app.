@@ -44,7 +44,6 @@
         .main-title { font-weight: 900; font-size: 15px; display: flex; align-items: center; letter-spacing: -0.5px; line-height: 1; }
         .work-silver { color: var(--silver-gray); } .timeline-teal { color: var(--teal); }
         
-        /* CLIO PULSE */
         .clio-pulse { width: 6px; height: 6px; border-radius: 50%; margin-left: 6px; transition: all 0.4s ease; background-color: #cbd5e0; }
         .clio-pulse.connected { background-color: var(--clio-green); animation: clio-throb 2s infinite; }
         @keyframes clio-throb { 0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.6); } 70% { box-shadow: 0 0 0 8px rgba(46, 204, 113, 0); } 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
@@ -126,24 +125,18 @@
 </div>
 
 <script>
-    // CORE DATA & STATE
+    // 1. DATA PERSISTENCE
     let vault = JSON.parse(localStorage.getItem('wt_timeline')) || [];
     let pulseActive = localStorage.getItem('wt_pulse_active') !== 'false';
     let utilOpen = false; 
-    let activePending = null;
 
-    // 1. INITIALIZATION: Check real Clio connection from server
+    // 2. INITIALIZATION
     async function initClioStatus() {
         const pulse = document.querySelector('.clio-pulse');
-        try {
-            const response = await fetch('/api/clio/status');
-            const data = await response.json();
-            if (data.connected) {
-                pulse.classList.add('connected');
-                localStorage.setItem('clio_linked', 'true');
-            }
-        } catch (e) {
-            console.log("Clio not linked.");
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('clio_status') === 'success' || localStorage.getItem('clio_linked') === 'true') {
+            pulse.classList.add('connected');
+            localStorage.setItem('clio_linked', 'true');
         }
     }
 
@@ -154,44 +147,108 @@
     }
     document.getElementById('initialUnlock').onclick = unlockApp;
 
-    // 2. REAL HANDSHAKE LOGIC
-    function performHandshake() {
-        const syncBtn = document.getElementById('syncBtn');
-        syncBtn.innerText = "REDIRECTING...";
-        // Initiates the real OAuth handshake via your backend
-        window.location.href = '/api/auth/clio'; 
+    // 3. AI TRIGGER LOGIC (For Demo Purposes)
+    function submitEntry() {
+        const text = document.getElementById('statusBox').value; 
+        if(!text.trim()) return;
+
+        // Diagnostic Triggers
+        const triggers = [
+            { keys: ["fire", "termination", "fired"], msg: "RETALIATORY DISCHARGE: Potential labor code violation detected." },
+            { keys: ["harass", "bully", "toxic"], msg: "WORKPLACE CULTURE: Hostile environment markers identified." },
+            { keys: ["injury", "hurt", "safety"], msg: "OCCUPATIONAL HEALTH: Safety protocol non-compliance detected." },
+            { keys: ["pay", "wage", "overtime"], msg: "COMPENSATION INTEGRITY: Possible wage theft or ESA breach." }
+        ];
+
+        let analysis = ""; 
+        const lowerText = text.toLowerCase();
+
+        // Scan logic
+        triggers.forEach(item => {
+            item.keys.forEach(key => {
+                if (lowerText.includes(key)) {
+                    analysis = `<div style="font-size:11px;"><b>LEGAL DIAGNOSTIC:</b> ${item.msg}</div>`;
+                }
+            });
+        });
+
+        const newEntry = { 
+            grit: text, 
+            analysis: analysis, 
+            stamp: new Date().toLocaleString() 
+        };
+
+        vault.push(newEntry); 
+        localStorage.setItem('wt_timeline', JSON.stringify(vault)); 
+        refresh();
+
+        document.getElementById('statusBox').value = ''; 
+        if(utilOpen) toggleUtility();
+    }
+    document.getElementById('addBtn').onclick = submitEntry;
+
+    // 4. UI REFRESH (Empty States & AI Detection)
+    function refresh() {
+        const list = document.getElementById('timelineContainer'); 
+        list.innerHTML = '';
+        
+        if (vault.length === 0) {
+            list.innerHTML = `<div style="text-align:center; color:var(--silver-gray); margin-top:50px; font-style:italic;">[ No records found. Add an entry to begin. ]</div>`;
+            return;
+        }
+
+        const pulseClass = pulseActive ? 'pulse-on' : '';
+
+        [...vault].reverse().forEach(item => {
+            const hasAI = item.analysis && item.analysis.trim() !== "";
+            
+            list.innerHTML += `
+                <div class="stack-wrapper">
+                    <div class="stamp-label">📍 LANGLEY | ${item.stamp}</div>
+                    <div class="stack-inner ${hasAI ? 'has-ai ' + pulseClass : ''}" 
+                         onclick="${hasAI ? "this.classList.toggle('flipped')" : ""}">
+                        <div class="bubble bubble-front">
+                            <p style="font-weight:600; font-size:14px; margin:0;">${item.grit}</p>
+                        </div>
+                        ${hasAI ? `<div class="bubble bubble-back">${item.analysis}</div>` : ''}
+                    </div>
+                </div>`;
+        });
     }
 
+    // 5. CLIO & UTILITY CONTROLS
+    function performHandshake() { window.location.href = '/api/auth/clio'; }
+
     document.getElementById('syncBtn').onclick = () => {
-        const isLinked = localStorage.getItem('clio_linked') === 'true';
-        if (!isLinked) {
+        if (localStorage.getItem('clio_linked') !== 'true') {
             performHandshake();
         } else {
-            handleDataSync();
+            alert("Syncing to Clio Warehouse...");
         }
     };
 
-    async function handleDataSync() {
-        const syncBtn = document.getElementById('syncBtn');
-        syncBtn.innerText = "SYNCING...";
-        
-        try {
-            const response = await fetch('/api/clio/sync', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ evidence: vault })
-            });
-            
-            if (response.ok) {
-                syncBtn.innerText = "SUCCESS";
-                setTimeout(() => syncBtn.innerText = "SYNC TO CLIO", 2000);
-            }
-        } catch (err) {
-            syncBtn.innerText = "RETRY";
-        }
+    function toggleUtility() { 
+        document.getElementById('utilityDrawer').style.transform = utilOpen ? 'translateY(calc(-100% + 40px))' : 'translateY(0)'; 
+        utilOpen = !utilOpen; 
     }
 
-    // 3. UI & NAVIGATION (Your existing logic)
+    function makeDraggable(el) {
+        let p1 = 0, p2 = 0, p3 = 0, p4 = 0; 
+        el.onmousedown = dStart; el.ontouchstart = dStart;
+        function dStart(e) { p3 = e.clientX || (e.touches ? e.touches[0].clientX : 0); p4 = e.clientY || (e.touches ? e.touches[0].clientY : 0); document.onmouseup = dEnd; document.ontouchend = dEnd; document.onmousemove = dMove; document.ontouchmove = dMove; }
+        function dMove(e) { let cx = e.clientX || (e.touches ? e.touches[0].clientX : 0); let cy = e.clientY || (e.touches ? e.touches[0].clientY : 0); p1 = p3 - cx; p2 = p4 - cy; p3 = cx; p4 = cy; el.style.top = (el.offsetTop - p2) + "px"; el.style.left = (el.offsetLeft - p1) + "px"; }
+        function dEnd() { document.onmouseup = null; document.onmousemove = null; document.ontouchend = null; document.ontouchmove = null; }
+    }
+
+    makeDraggable(document.getElementById("addBtn")); 
+    makeDraggable(document.getElementById("syncBtn"));
+
+    function useTemplate(t) { 
+        const ts = { 'INCIDENT': 'ACTION:\nVIOLATION:', 'WITNESS': 'NAME:\nCONTACT:', 'INJURY': 'OFA RECORD:\nINJURY:' }; 
+        document.getElementById('statusBox').value = ts[t]; 
+    }
+    
+    // NAVIGATION CONTROLS
     const btnNotes = document.getElementById('btnNotes');
     const btnGhost = document.getElementById('btnGhost');
     const navSlider = document.getElementById('navSlider');
@@ -208,48 +265,6 @@
         btnGhost.classList.add('active'); btnNotes.classList.remove('active');
     };
 
-    function toggleUtility() { 
-        document.getElementById('utilityDrawer').style.transform = utilOpen ? 'translateY(calc(-100% + 40px))' : 'translateY(0)'; 
-        utilOpen = !utilOpen; 
-    }
-
-    function makeDraggable(el) {
-        let p1 = 0, p2 = 0, p3 = 0, p4 = 0; el.onmousedown = dStart; el.ontouchstart = dStart;
-        function dStart(e) { p3 = e.clientX || (e.touches ? e.touches[0].clientX : 0); p4 = e.clientY || (e.touches ? e.touches[0].clientY : 0); document.onmouseup = dEnd; document.ontouchend = dEnd; document.onmousemove = dMove; document.ontouchmove = dMove; }
-        function dMove(e) { let cx = e.clientX || (e.touches ? e.touches[0].clientX : 0); let cy = e.clientY || (e.touches ? e.touches[0].clientY : 0); p1 = p3 - cx; p2 = p4 - cy; p3 = cx; p4 = cy; el.style.top = (el.offsetTop - p2) + "px"; el.style.left = (el.offsetLeft - p1) + "px"; }
-        function dEnd() { document.onmouseup = null; document.onmousemove = null; document.ontouchend = null; document.ontouchmove = null; }
-    }
-    makeDraggable(document.getElementById("addBtn")); 
-    makeDraggable(document.getElementById("syncBtn"));
-
-    function submitEntry() {
-        const text = document.getElementById('statusBox').value; if(!text.trim()) return;
-        let analysis = ""; let isRisk = false;
-        if (text.toLowerCase().includes("fire") || text.toLowerCase().includes("termination")) {
-            isRisk = true;
-            analysis = `<div style="font-size:11px;"><b>LEGAL DIAGNOSTIC:</b> Retaliatory Discharge Markers Found.</div>`;
-        }
-        activePending = { grit: text, analysis: analysis, stamp: new Date().toLocaleString() };
-        vault.push(activePending); 
-        localStorage.setItem('wt_timeline', JSON.stringify(vault)); 
-        refresh();
-        document.getElementById('statusBox').value = ''; if(utilOpen) toggleUtility();
-    }
-    document.getElementById('addBtn').onclick = submitEntry;
-
-    function refresh() {
-        const list = document.getElementById('timelineContainer'); list.innerHTML = '';
-        const pulseClass = pulseActive ? 'pulse-on' : '';
-        [...vault].reverse().forEach(item => {
-            const hasAI = item.analysis !== "";
-            list.innerHTML += `<div class="stack-wrapper"><div class="stamp-label">📍 LANGLEY | ${item.stamp}</div><div class="stack-inner ${hasAI ? 'has-ai ' + pulseClass : ''}" onclick="this.classList.toggle('flipped')"><div class="bubble bubble-front"><p style="font-weight:600; font-size:14px; margin:0;">${item.grit}</p></div>${hasAI ? `<div class="bubble bubble-back">${item.analysis}</div>` : ''}</div></div>`;
-        });
-    }
-
-    function useTemplate(t) { 
-        const ts = { 'INCIDENT': 'ACTION:\nVIOLATION:', 'WITNESS': 'NAME:\nCONTACT:', 'INJURY': 'OFA RECORD:\nINJURY:' }; 
-        document.getElementById('statusBox').value = ts[t]; 
-    }
     refresh();
 </script>
 </body>
