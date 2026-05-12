@@ -125,12 +125,12 @@
 </div>
 
 <script>
-    // 1. DATA PERSISTENCE -
+    // 1. DATA PERSISTENCE - Load existing vault or start new
     let vault = JSON.parse(localStorage.getItem('wt_timeline')) || [];
     let pulseActive = localStorage.getItem('wt_pulse_active') !== 'false';
     let utilOpen = false; 
 
-    // 2. INITIALIZATION -
+    // 2. INITIALIZATION - Check status and unlock
     async function initClioStatus() {
         const pulse = document.querySelector('.clio-pulse');
         const urlParams = new URLSearchParams(window.location.search);
@@ -147,12 +147,12 @@
     }
     document.getElementById('initialUnlock').onclick = unlockApp;
 
-    // 3. AI TRIGGER LOGIC (For Demo Purposes) -
+    // 3. AI TRIGGER LOGIC - Demonstation keyword scanning
     function submitEntry() {
         const text = document.getElementById('statusBox').value; 
         if(!text.trim()) return;
 
-        // Diagnostic Triggers
+        // Diagnostic triggers for Demo
         const triggers = [
             { keys: ["fire", "termination", "fired"], msg: "RETALIATORY DISCHARGE: Potential labor code violation detected." },
             { keys: ["harass", "bully", "toxic"], msg: "WORKPLACE CULTURE: Hostile environment markers identified." },
@@ -163,7 +163,7 @@
         let analysis = ""; 
         const lowerText = text.toLowerCase();
 
-        // Scan logic
+        // Scan for demo triggers
         triggers.forEach(item => {
             item.keys.forEach(key => {
                 if (lowerText.includes(key)) {
@@ -187,7 +187,7 @@
     }
     document.getElementById('addBtn').onclick = submitEntry;
 
-    // 4. UI REFRESH (Empty States & AI Detection) -
+    // 4. UI REFRESH - Redraw the timeline cards
     function refresh() {
         const list = document.getElementById('timelineContainer'); 
         list.innerHTML = '';
@@ -216,7 +216,7 @@
         });
     }
 
-    // 5. CLIO & UTILITY CONTROLS -
+    // 5. CLIO & UTILITY CONTROLS
     function performHandshake() { window.location.href = '/api/clio-exchange'; }
 
     document.getElementById('syncBtn').onclick = () => {
@@ -248,7 +248,7 @@
         document.getElementById('statusBox').value = ts[t]; 
     }
     
-    // NAVIGATION CONTROLS -
+    // NAVIGATION CONTROLS
     const btnNotes = document.getElementById('btnNotes');
     const btnGhost = document.getElementById('btnGhost');
     const navSlider = document.getElementById('navSlider');
