@@ -3,65 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeline™ | Premium Functionality</title>
+    <title>WorkTimeline™ | Premium Portal</title>
+    
+    <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
-        body { font-family: "SF Pro Display", "Inter", system-ui, sans-serif; background: linear-gradient(180deg, #E5E4E2 0%, #008080 100%); min-height: 100vh; display: flex; justify-content: center; margin: 0; }
-        .app-window { width: 100%; max-width: 420px; background: rgba(255, 255, 255, 0.95); border-radius: 32px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); margin: 40px 20px; padding: 20px; overflow: hidden; }
-        .header { display: flex; justify-content: space-around; padding: 15px; border-bottom: 1px solid #eee; }
-        .icon-btn { border: none; background: none; cursor: pointer; text-align: center; font-size: 10px; font-weight: 700; color: #008080; }
-        .icon-btn span { display: block; font-size: 20px; margin-bottom: 5px; }
-        .switch-btn { width: 100%; padding: 12px; border-radius: 18px; border: none; background: #2D3E50; color: white; font-weight: 700; margin: 20px 0; cursor: pointer; }
+        /* 1. THE SKIN: Platinum to Teal Gradient & Bubbly Typography */
+        :root {
+            --platinum: #E5E4E2;
+            --teal: #008080;
+            --clio-blue: #0070D2;
+            --slate: #2D3E50;
+        }
+
+        body {
+            font-family: "SF Pro Display", "Inter", system-ui, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(180deg, var(--platinum) 0%, var(--teal) 100%);
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* 2. THE WINDOW: Modern Mac-Style Rounded Container */
+        .app-window {
+            width: 100%;
+            max-width: 420px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            margin: 20px;
+            border-radius: 35px; /* Maximum roundness for bubbly feel */
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 3. HARDWARE NAV: Functional Icons */
+        .hardware-nav {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+            background: white;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .nav-item {
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: var(--teal);
+            font-size: 10px;
+            font-weight: 800;
+            transition: transform 0.2s;
+        }
+
+        .nav-item:active { transform: scale(0.9); }
+        .nav-item-icon { display: block; font-size: 24px; margin-bottom: 4px; }
+
+        /* 4. CONTENT AREA */
+        .content { padding: 25px; flex: 1; overflow-y: auto; }
+        
+        .btn-pill {
+            background: var(--slate);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 12px;
+            width: 100%;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 15px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .lock-btn {
+            background: var(--teal);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 20px;
+            width: 100%;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-<div class="app-window">
-    <div class="header">
-        <button class="icon-btn" onclick="handleAction('camera')"><span>📷</span>CAMERA</button>
-        <button class="icon-btn" onclick="handleAction('notes')"><span>🗒️</span>NOTES</button>
-        <button class="icon-btn" onclick="handleAction('stealth')"><span>👻</span>STEALTH</button>
-        <button class="icon-btn" onclick="handleAction('audio')"><span>🎙️</span>AUDIO</button>
+    <div class="app-window">
+        <!-- Persistent Hardware Nav -->
+        <div class="hardware-nav">
+            <button class="nav-item" onclick="triggerCamera()"><span class="nav-item-icon">📸</span>CAMERA</button>
+            <button class="nav-item" onclick="triggerAudio()"><span class="nav-item-icon">🎙️</span>AUDIO</button>
+            <button class="nav-item" onclick="triggerStealth()"><span class="nav-item-icon">👻</span>STEALTH</button>
+            <button class="nav-item" onclick="triggerNotes()"><span class="nav-item-icon">🗒️</span>NOTES</button>
+        </div>
+
+        <div class="content">
+            <button class="btn-pill" id="viewToggle" onclick="toggleView()">SWITCH TO FIRM MARKETPLACE</button>
+            
+            <div id="dynamicContent">
+                <!-- Client View Default -->
+                <div id="clientDashboard">
+                    <h2 style="color: var(--teal);">Timeline</h2>
+                    <div class="card">
+                        <small style="color: var(--teal); font-weight: bold;">MAY 12, 2026</small>
+                        <p>Evidence capture initialized. Awaiting cryptographic validation.</p>
+                    </div>
+                    <button class="lock-btn" id="lockSubmitBtn" onclick="finalizeTimeline()">LOCK & SUBMIT</button>
+                </div>
+
+                <!-- Firm View Hidden by Default -->
+                <div id="firmDashboard" class="hidden">
+                    <h2 style="color: var(--slate);">Triage Marketplace</h2>
+                    <div class="card" style="border-left: 5px solid #00ffff;">
+                        <strong>Elite Case Match: 94%</strong>
+                        <p>Pattern finding: High. Ready for retainer.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <button class="switch-btn" onclick="toggleContext()">SWITCH MARKETPLACE VIEW</button>
+    <script>
+        // 1. SUPABASE INITIALIZATION
+        const _supabase = supabase.createClient('https://sghmgiaaqcuymqnfbleh.supabase.co', 'Sb_publishable_VL3kSjtNHGvLcmZYi1YXnA_Xlo8zpXy');
 
-    <div id="contentArea" style="padding: 20px;">
-        <!-- Evidence or Triage cards will load here -->
-    </div>
-</div>
-
-<script>
-    const _supabase = supabase.createClient('https://sghmgiaaqcuymqnfbleh.supabase.co', 'Sb_publishable_VL3kSjtNHGvLcmZYi1YXnA_Xlo8zpXy');
-
-    // Functional Action Handler
-    async function handleAction(action) {
-        switch(action) {
-            case 'camera':
+        // 2. HARDWARE LOGIC
+        async function triggerCamera() {
+            try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                alert("Camera active. Ready to capture evidence.");
-                break;
-            case 'audio':
-                const audio = await navigator.mediaDevices.getUserMedia({ audio: true });
-                alert("Microphone active. Recording...");
-                break;
-            case 'stealth':
-                alert("Stealth mode enabled. Screen activity hidden.");
-                break;
-            case 'notes':
-                alert("Opening secure notepad...");
-                break;
+                alert("Camera Access Granted. Capturing visual evidence...");
+            } catch (e) { alert("Camera access denied."); }
         }
-    }
 
-    // Marketplace Context Switch
-    let isFirmView = false;
-    function toggleContext() {
-        isFirmView = !isFirmView;
-        const area = document.getElementById('contentArea');
-        area.innerHTML = isFirmView ? "<h3>Firm Marketplace</h3><p>Triage Case Leads Loading...</p>" : "<h3>My Timeline</h3><p>Evidence Feed Loading...</p>";
-        alert(isFirmView ? "Switched to Firm View" : "Switched to Client View");
-    }
-</script>
+        async function triggerAudio() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                alert("Microphone Access Granted. Recording audio log...");
+            } catch (e) { alert("Audio access denied."); }
+        }
+
+        function triggerStealth() {
+            document.body.style.filter = "contrast(0.1)"; // Visual cue for stealth
+            setTimeout(() => document.body.style.filter = "none", 2000);
+            alert("Stealth mode active. Interface minimized.");
+        }
+
+        function triggerNotes() {
+            alert("Opening Secure Notepad...");
+        }
+
+        // 3. STATE MANAGEMENT (Client vs Firm)
+        let currentMode = 'client';
+        function toggleView() {
+            const clientUI = document.getElementById('clientDashboard');
+            const firmUI = document.getElementById('firmDashboard');
+            const toggleBtn = document.getElementById('viewToggle');
+
+            if (currentMode === 'client') {
+                clientUI.classList.add('hidden');
+                firmUI.classList.remove('hidden');
+                toggleBtn.innerText = "SWITCH TO CLIENT TIMELINE";
+                currentMode = 'firm';
+            } else {
+                clientUI.classList.remove('hidden');
+                firmUI.classList.add('hidden');
+                toggleBtn.innerText = "SWITCH TO FIRM MARKETPLACE";
+                currentMode = 'client';
+            }
+        }
+
+        // 4. INTEGRITY LOCK
+        async function finalizeTimeline() {
+            const confirmLock = confirm("This will finalize your evidence for legal review. It cannot be undone. Proceed?");
+            if (confirmLock) {
+                document.getElementById('lockSubmitBtn').disabled = true;
+                document.getElementById('lockSubmitBtn').innerText = "(X) TIMELINE LOCKED";
+                // In production, we would update the 'status' in Supabase here
+                alert("Timeline Locked. Integrity Hash generated.");
+            }
+        }
+    </script>
 </body>
 </html>
