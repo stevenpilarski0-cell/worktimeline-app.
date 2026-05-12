@@ -3,75 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeline™ | Evidence Integrity</title>
-    
-    <!-- 1. Load the Supabase Library -->
+    <title>WorkTimeline™ | Evidence Manager</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
     <style>
-        body { font-family: sans-serif; background-color: #f0f4f4; color: #333; padding: 40px; display: flex; justify-content: center; }
-        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
+        body { font-family: sans-serif; background-color: #f0f4f4; color: #333; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 500px; margin-bottom: 20px; }
         h2 { color: #008080; margin-top: 0; }
-        textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
-        button { background-color: #008080; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 16px; margin-top: 15px; width: 100%; }
-        button:hover { background-color: #006666; }
-        #status { margin-top: 15px; font-weight: bold; }
+        textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; margin-bottom: 10px; }
+        button { background-color: #008080; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; width: 100%; margin-bottom: 10px; }
+        #evidenceList { width: 100%; max-width: 500px; }
+        .evidence-card { background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 5px solid #008080; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
     </style>
 </head>
 <body>
 
     <div class="container">
         <h2>WorkTimeline™</h2>
-        <p>Securely record chronological evidence.</p>
-        
-        <!-- 2. The User Interface -->
-        <textarea id="noteContent" rows="5" placeholder="Enter evidence details..."></textarea>
-        
-        <button id="saveBtn">Secure Evidence Entry</button>
-        
+        <textarea id="noteContent" rows="3" placeholder="Describe the incident..."></textarea>
+        <button id="saveBtn">Secure Evidence</button>
+        <button id="loadBtn" style="background-color: #555;">Refresh Timeline</button>
         <div id="status"></div>
     </div>
 
+    <div id="evidenceList"></div>
+
     <script>
-        // 3. Connection Coordinates
         const _supabaseUrl = 'https://sghmgiaaqcuymqnfbleh.supabase.co'; 
         const _supabaseKey = 'Sb_publishable_VL3kSjtNHGvLcmZYi1YXnA_Xlo8zpXy';
-
-        // 4. Initialize the Client
         const _supabase = supabase.createClient(_supabaseUrl, _supabaseKey);
 
-        // 5. The Logic to Save Data
-        const saveBtn = document.getElementById('saveBtn');
-        const contentInput = document.getElementById('noteContent');
-        const statusDiv = document.getElementById('status');
-
-        saveBtn.addEventListener('click', async () => {
-            const content = contentInput.value;
-
-            if (!content) {
-                statusDiv.innerText = "Please enter some text first.";
-                statusDiv.style.color = "orange";
-                return;
-            }
-
-            statusDiv.innerText = "Securing data...";
-            statusDiv.style.color = "blue";
-
-            // Sending data to the 'timelines' table
-            const { data, error } = await _supabase
-                .from('timelines')
-                .insert([{ content: content }]);
-
-            if (error) {
-                console.error("Supabase Error:", error);
-                statusDiv.innerText = "Error: " + error.message;
-                statusDiv.style.color = "red";
-            } else {
-                statusDiv.innerText = "Integrity Verified: Evidence Saved.";
-                statusDiv.style.color = "green";
-                contentInput.value = ""; // Clear input on success
+        // --- SAVE LOGIC ---
+        document.getElementById('saveBtn').addEventListener('click', async () => {
+            const content = document.getElementById('noteContent').value;
+            const { error } = await _supabase.from('timelines').insert([{ content: content }]);
+            if (error) alert(error.message);
+            else {
+                document.getElementById('noteContent').value = "";
+                loadEvidence(); // Auto-refresh after saving
             }
         });
+
+        // --- SEARCH/READ LOGIC ---
+        async function loadEvidence() {
+            const listDiv = document.getElementById('evidenceList');
+            listDiv.innerHTML = "Loading...";
+
+            const { data, error } = await _supabase
+                .from('timelines')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                listDiv.innerHTML = "Error loading evidence: " + error.message;
+            } else {
+                listDiv.innerHTML = ""; // Clear "Loading" text
+                data.forEach(entry => {
+                    const card = document.createElement('div');
+                    card.className = 'evidence-card';
+                    card.innerHTML = `<strong>${new Date(entry.created_at).toLocaleDateString()}</strong><p>${entry.content}</p>`;
+                    listDiv.appendChild(card);
+                });
+            }
+        }
+
+        document.getElementById('loadBtn').addEventListener('click', loadEvidence);
     </script>
 </body>
 </html>
