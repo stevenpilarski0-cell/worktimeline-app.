@@ -31,9 +31,13 @@
 
         /* MARKET CARD */
         .auction-card { background: #f8fafc; border: 1.5px solid var(--gray-border); border-radius: 24px; padding: 18px; box-shadow: var(--mac-shadow); border-left: 8px solid var(--silver-gray); }
-        .win-rate { font-size: 24px; font-weight: 900; margin: 5px 0; transition: color 0.5s; }
+        .win-rate { font-size: 24px; font-weight: 900; margin: 5px 0; }
         .damage-tag { font-size: 9px; font-weight: 900; color: var(--damage-red); background: #fff5f5; padding: 4px 8px; border-radius: 6px; display: inline-block; margin-top: 5px; }
-        .disclaimer-box { font-size: 8.5px; color: #718096; line-height: 1.4; margin-top: 15px; text-align: left; background: #edf2f7; padding: 10px; border-radius: 12px; }
+        .disclaimer-box { font-size: 8px; color: #718096; line-height: 1.4; margin-top: 15px; background: #edf2f7; padding: 10px; border-radius: 12px; }
+
+        /* TAMPER ALERT */
+        .tamper-glow { animation: tamper-pulse 1.5s infinite alternate; border: 2px solid var(--damage-red) !important; }
+        @keyframes tamper-pulse { from { box-shadow: 0 0 5px var(--damage-red); } to { box-shadow: 0 0 20px var(--damage-red); } }
 
         /* JOURNAL STYLES */
         .stack-wrapper { position: relative; width: 100%; }
@@ -44,11 +48,7 @@
         .bubble-front { background: #f1f1f1; border: 1px solid #e5e5e5; }
         .bubble-back { background: var(--teal); color: white; transform: rotateY(180deg); position: absolute; top: 0; left: 0; height: 100%; overflow-y: auto; }
         
-        .has-ai.pulse-on::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 22px; z-index: -1; animation: heavy-pulse 3s infinite; }
-        @keyframes heavy-pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(0, 128, 128, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0); } }
-
         #addBtn { position: absolute; z-index: 5000; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; border-radius: 22px; width: 70px; height: 70px; background: var(--teal); font-size: 30px; bottom: 30px; right: 20px; border: none; cursor: pointer; }
-        select { border: 1px solid var(--gray-border); border-radius: 10px; padding: 5px; font-size: 10px; font-family: inherit; }
     </style>
 </head>
 <body>
@@ -56,7 +56,7 @@
 <div id="overlaySystem">
     <div style="background: white; padding: 30px; border-radius: 28px; text-align: center; max-width: 300px;">
         <h2 style="font-weight: 900; margin: 0;">WORK-DEMO</h2>
-        <p style="font-size: 12px; color: #4a5568;">Privacy-Compliant Marketplace & Scoring Engine.</p>
+        <p style="font-size: 12px; color: #4a5568;">Tamper-Proof Ledger & Lawyer Marketplace Summary.</p>
         <button onclick="unlockApp()" style="background:var(--teal); color:white; border:none; padding:15px; width:100%; border-radius:18px; font-weight:800; cursor:pointer;">START DEMO</button>
     </div>
 </div>
@@ -74,19 +74,19 @@
 
     <div id="journalView" class="view-section active">
         <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <span style="font-size: 10px; font-weight: 900; color: var(--silver-gray);">Jurisdiction:</span>
-            <select id="provinceSelect">
+            <select id="provinceSelect" style="border-radius:10px; font-size:10px; padding:5px;">
                 <option value="BC">British Columbia (ESA/WorkSafe)</option>
                 <option value="ON">Ontario (ESA/WSIB)</option>
                 <option value="QC">Quebec (CNESST)</option>
             </select>
+            <button id="lockBtn" onclick="lockTimeline()" style="font-size:9px; font-weight:900; background:var(--silver-gray); color:white; border:none; padding:5px 10px; border-radius:8px; cursor:pointer;">LOCK TIMELINE</button>
         </div>
-        <textarea id="statusBox" style="width:100%; height:80px; border-radius:20px; border:1px solid var(--gray-border); padding:15px; font-family:inherit; box-sizing: border-box;" placeholder="Type incident details (e.g., 'fire', 'privacy', 'harass')..."></textarea>
+        <textarea id="statusBox" style="width:100%; height:80px; border-radius:20px; border:1px solid var(--gray-border); padding:15px; font-family:inherit; box-sizing: border-box;" placeholder="Enter event details..."></textarea>
         <div id="timelineContainer"></div>
     </div>
 
     <div id="marketView" class="view-section">
-        <h3 style="font-weight: 900; margin: 0; font-size: 14px;">Anonymous Portfolios</h3>
+        <h3 style="font-weight: 900; margin: 0; font-size: 14px;">Anonymous Case Summary</h3>
         <div id="marketContainer"></div>
     </div>
 
@@ -95,12 +95,24 @@
 
 <script>
     let vault = JSON.parse(localStorage.getItem('wt_timeline')) || [];
+    let isLocked = localStorage.getItem('wt_locked') === 'true';
+    let isTampered = localStorage.getItem('wt_tampered') === 'true';
 
     function unlockApp() {
         document.getElementById('overlaySystem').style.display = 'none';
         document.getElementById('mainApp').classList.remove('app-locked');
+        if(isLocked) document.getElementById('lockBtn').innerText = "TIMELINE SECURED";
         refresh();
         renderMarket();
+    }
+
+    function lockTimeline() {
+        if(vault.length === 0) return alert("Timeline must have data before locking.");
+        isLocked = true;
+        localStorage.setItem('wt_locked', 'true');
+        document.getElementById('lockBtn').innerText = "TIMELINE SECURED";
+        alert("Chronological Evidence Integrity Locked. Any future changes will be recorded as a Tamper Event.");
+        renderMarket(); // Generates the summary for the lawyer
     }
 
     function switchView(view, offset, btn) {
@@ -111,7 +123,6 @@
         const targetView = (view === 'ghost') ? 'journalView' : `${view}View`;
         document.getElementById(targetView).classList.add('active');
         document.body.classList.toggle('ghost-active', view === 'ghost');
-        document.getElementById('addBtn').style.display = (view === 'market') ? 'none' : 'flex';
     }
 
     function submitEntry() {
@@ -119,14 +130,19 @@
         const prov = document.getElementById('provinceSelect').value;
         if(!text.trim()) return;
 
-        // Legal Pattern Logic
+        // Tamper Logic
+        let entryTampered = false;
+        if(isLocked) {
+            entryTampered = true;
+            isTampered = true;
+            localStorage.setItem('wt_tampered', 'true');
+        }
+
         const patterns = [
-            { key: "fire", type: "ESA", msg: "Unlawful Termination Risk" },
-            { key: "hurt", type: "WorkSafe", msg: "OHS Non-Compliance" },
-            { key: "pay", type: "ESA", msg: "Wage Theft/Overtime Breach" },
-            { key: "harass", type: "Human Rights", msg: "Discriminatory Conduct" },
-            { key: "privacy", type: "Privacy Act", msg: "Personal Info Breach/FOIPPA" },
-            { key: "stole", type: "Criminal", msg: "Aggravated Conduct/Theft" }
+            { key: "fire", type: "ESA", msg: "Potential Unlawful Termination" },
+            { key: "hurt", type: "WorkSafe", msg: "Health & Safety Violation" },
+            { key: "privacy", type: "Privacy Act", msg: "PII/FOIPPA Breach" },
+            { key: "harass", type: "Human Rights", msg: "Discriminatory Conduct" }
         ];
 
         let analysis = "";
@@ -138,7 +154,7 @@
             }
         });
 
-        vault.push({ grit: text, analysis: analysis, tags: tags, province: prov, stamp: new Date().toLocaleString() });
+        vault.push({ grit: text, analysis: analysis, tags: tags, province: prov, stamp: new Date().toLocaleString(), tampered: entryTampered });
         localStorage.setItem('wt_timeline', JSON.stringify(vault));
         document.getElementById('statusBox').value = '';
         refresh();
@@ -147,13 +163,14 @@
 
     function refresh() {
         const container = document.getElementById('timelineContainer');
-        container.innerHTML = vault.length === 0 ? '<p style="text-align:center; color:gray; font-size:12px;">Timeline Empty.</p>' : '';
+        container.innerHTML = '';
         [...vault].reverse().forEach(item => {
             const hasAI = item.analysis !== "";
+            const tamperClass = item.tampered ? 'tamper-glow' : '';
             container.innerHTML += `
                 <div class="stack-wrapper">
-                    <div class="stamp-label">📍 ${item.province} | ${item.stamp}</div>
-                    <div class="stack-inner ${hasAI ? 'has-ai pulse-on' : ''}" onclick="if('${hasAI}'=='true') this.classList.toggle('flipped')">
+                    <div class="stamp-label" style="color:${item.tampered ? 'var(--damage-red)' : ''}">📍 ${item.province} | ${item.stamp} ${item.tampered ? '[TAMPER DETECTED]' : ''}</div>
+                    <div class="stack-inner ${hasAI ? 'has-ai pulse-on' : ''} ${tamperClass}" onclick="if('${hasAI}'=='true') this.classList.toggle('flipped')">
                         <div class="bubble bubble-front"><p style="margin:0; font-size:12px;">${item.grit}</p></div>
                         <div class="bubble bubble-back"><p style="margin:0; font-size:10px; font-weight:900;">${item.analysis}</p></div>
                     </div>
@@ -163,41 +180,40 @@
 
     function renderMarket() {
         const container = document.getElementById('marketContainer');
-        if(vault.length === 0) {
-            container.innerHTML = '<p style="text-align:center; color:gray; font-size:11px;">No active evidence packages.</p>';
+        if(!isLocked) {
+            container.innerHTML = '<p style="text-align:center; color:gray; font-size:11px; margin-top:40px;">Timeline must be locked by the user before the summary is available to lawyers.</p>';
             return;
         }
 
-        // WEIGHTED SCORING ALGORITHM
+        // SCORING ALGORITHM
         const total = vault.length;
-        const aiPoints = vault.filter(v => v.analysis !== "").length * 20;
-        const complexity = total * 5;
+        const aiHits = vault.filter(v => v.analysis !== "").length;
         const provinceFactor = (vault[0].province === "QC") ? 0.8 : 1.0; 
-        
-        const rawWinRate = (aiPoints + complexity) * provinceFactor;
-        const winPercent = Math.min(99, Math.max(5, rawWinRate));
+        const winPercent = Math.min(99, Math.max(5, ((aiHits * 25) + (total * 5)) * provinceFactor));
         
         const tealFactor = winPercent / 100;
-        const dynamicColor = `rgb(${149 - (149-0)*tealFactor}, ${165 - (165-128)*tealFactor}, ${166 - (166-128)*tealFactor})`;
+        const dynamicColor = isTampered ? 'var(--damage-red)' : `rgb(${149 - (149-0)*tealFactor}, ${165 - (165-128)*tealFactor}, ${166 - (166-128)*tealFactor})`;
 
-        const damageFlags = [];
-        if(vault.some(v => v.tags.includes("Criminal"))) damageFlags.push("PUNITIVE");
-        if(vault.some(v => v.tags.includes("Human Rights"))) damageFlags.push("AGGRAVATED");
+        const uniqueTags = [...new Set(vault.map(v => v.tags).flat())];
 
         container.innerHTML = `
             <div class="auction-card" style="border-left-color: ${dynamicColor}">
-                <div class="win-rate" style="color: ${dynamicColor}">${winPercent}% Success Probability</div>
-                <div style="font-size:10px; font-weight:900; color:var(--silver-gray);">ANONYMOUS PORTFOLIO | JURISDICTION: ${vault[0].province}</div>
-                <div style="font-size:11px; margin-top:8px;"><strong>Pattern Analysis:</strong> ${[...new Set(vault.map(v => v.tags).flat())].join(", ") || "General Inquiry"}</div>
-                <div style="margin-top:5px;">
-                    ${damageFlags.map(d => `<span class="damage-tag">${d} DAMAGES LIKELY</span>`).join(" ")}
+                <div class="win-rate" style="color: ${dynamicColor}">${isTampered ? 'INTEGRITY ALERT' : winPercent + '% Probability'}</div>
+                <div style="font-size:10px; font-weight:900; color:var(--silver-gray);">ANONYMOUS SUMMARY | ${vault[0].province}</div>
+                <div style="font-size:11px; margin-top:10px; border-top:1px solid #eee; padding-top:10px;">
+                    <strong>Violation Markers:</strong><br>
+                    ${uniqueTags.length > 0 ? uniqueTags.join(", ") : "General Employment Inquiry"}
                 </div>
+                <div style="font-size:11px; margin-top:8px;">
+                    <strong>Case Complexity:</strong> ${total} Logged Events.
+                </div>
+                ${uniqueTags.includes("Human Rights") || isTampered ? '<div class="damage-tag">AGGRAVATED/PUNITIVE DAMAGES LIKELY</div>' : ''}
                 
                 <div class="disclaimer-box">
-                    <strong>DISCLAIMER:</strong> This analysis is based on automated pattern recognition and data evaluation. We do not provide legal advice. Our platform does not accept payments or commissions from client outcomes.
+                    <strong>DISCLAIMER:</strong> Analysis based on pattern recognition and jurisdictional data. We do not provide legal advice and never accept commissions from client outcomes.
                 </div>
 
-                <button style="width:100%; margin-top:15px; padding:10px; border-radius:12px; background:var(--clio-blue); color:white; border:none; font-weight:900; cursor:pointer;">ACQUIRE CASE VIA CLIO</button>
+                <button style="width:100%; margin-top:15px; padding:12px; border-radius:14px; background:var(--clio-blue); color:white; border:none; font-weight:900; cursor:pointer;">ACQUIRE CASE DATA (CLIO)</button>
             </div>`;
     }
 </script>
