@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Offline-First Sync</title>
+    <title>WorkTimeline™ | Live Realtime Sync</title>
     <!-- Supabase Client Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -14,32 +14,20 @@
             --clio-blue: #0076CE; --gray-border: #cbd5e0; 
             --mac-shadow: 0 10px 30px rgba(0,0,0,0.12);
             --mac-glass: rgba(255, 255, 255, 0.75);
-            --damage-red: #e53e3e;
-            --privacy-purple: #805ad5;
-            --injury-orange: #dd6b20;
+            --clio-green: #2ecc71;
         }
         
         body { font-family: 'Nunito', sans-serif; background: var(--gray-bg); margin: 0; padding: 0; height: 100dvh; overflow: hidden; display: flex; justify-content: center; }
         .app-container { width: 100%; max-width: 500px; background: white; height: 100dvh; display: flex; flex-direction: column; position: relative; border: 1.5px solid var(--gray-border); overflow: hidden; }
         
-        /* CONNECTION DOT */
         .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
-        .status-online { background: var(--teal); }
-        .status-offline { background: var(--damage-red); animation: pulse 1.5s infinite; }
-        @keyframes pulse { from { opacity: 1; } to { opacity: 0.4; } }
-
-        .domain-tabs { display: flex; background: #edf2f7; padding: 10px; gap: 10px; border-bottom: 1px solid var(--gray-border); }
-        .domain-btn { flex: 1; font-size: 8px; font-weight: 900; padding: 8px; border-radius: 10px; border: 1px solid var(--gray-border); background: white; cursor: pointer; }
-        .domain-btn.active { color: white; border-color: transparent; }
-        .domain-employment.active { background: var(--teal); }
-        .domain-privacy.active { background: var(--privacy-purple); }
-        .domain-injury.active { background: var(--injury-orange); }
+        .status-online { background: var(--clio-green); box-shadow: 0 0 8px var(--clio-green); }
 
         .header { padding: 14px 15px; border-bottom: 1px solid var(--gray-border); background: var(--mac-glass); backdrop-filter: blur(20px); z-index: 4000; display: flex; justify-content: space-between; align-items: center; }
-        .view-section { flex-grow: 1; overflow-y: auto; padding: 20px 15px 150px; display: none; flex-direction: column; gap: 20px; }
-        .view-section.active { display: flex; }
-        .bubble { padding: 15px; border-radius: 22px; width: 100%; box-sizing: border-box; box-shadow: var(--mac-shadow); background: #f1f1f1; border: 1px solid #e5e5e5; }
-        .pending-tag { font-size: 8px; color: var(--silver-gray); font-weight: 900; margin-top: 5px; display: block; }
+        .view-section { flex-grow: 1; overflow-y: auto; padding: 20px 15px 150px; display: flex; flex-direction: column; gap: 20px; }
+        
+        .bubble { padding: 15px; border-radius: 22px; width: 100%; box-sizing: border-box; box-shadow: var(--mac-shadow); background: #f1f1f1; border: 1px solid #e5e5e5; position: relative; }
+        .sync-tag { font-size: 8px; font-weight: 900; color: var(--silver-gray); margin-bottom: 5px; display: block; }
         
         #addBtn { position: absolute; z-index: 5000; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; border-radius: 22px; width: 70px; height: 70px; background: var(--teal); font-size: 30px; bottom: 30px; right: 20px; border: none; cursor: pointer; }
     </style>
@@ -47,24 +35,16 @@
 <body>
 
 <div class="app-container" id="mainApp">
-    <div class="domain-tabs">
-        <button class="domain-btn domain-employment active" onclick="setDomain('EMPLOYMENT', this)">EMPLOYMENT</button>
-        <button class="domain-btn domain-privacy" onclick="setDomain('PRIVACY', this)">PRIVACY</button>
-        <button class="domain-btn domain-injury" onclick="setDomain('INJURY', this)">INJURY</button>
-    </div>
-
     <header class="header">
         <div style="display:flex; align-items:center;">
-            <span id="connDot" class="status-dot status-offline"></span>
-            <div id="domainTitle" style="font-weight: 900; font-size: 13px; color: var(--teal);">WorkTimeline™</div>
+            <span id="connDot" class="status-dot status-online"></span>
+            <div style="font-weight: 900; font-size: 13px; color: var(--teal);">WorkTimeline™</div>
         </div>
-        <div style="display:flex; gap:10px;">
-            <button onclick="switchView('journal')" style="font-size:9px; border:none; background:transparent; font-weight:900; cursor:pointer;">JOURNAL</button>
-        </div>
+        <div id="syncLabel" style="font-size: 9px; font-weight: 900; color: var(--silver-gray);">REALTIME ACTIVE</div>
     </header>
 
-    <div id="journalView" class="view-section active">
-        <textarea id="statusBox" style="width:100%; height:80px; border-radius:20px; border:1px solid var(--gray-border); padding:15px; font-family:inherit;" placeholder="Restoring... (Notes will be cached)"></textarea>
+    <div class="view-section">
+        <textarea id="statusBox" style="width:100%; height:80px; border-radius:20px; border:1px solid var(--gray-border); padding:15px; font-family:inherit;" placeholder="Add to your live timeline..."></textarea>
         <div id="timelineContainer"></div>
     </div>
 
@@ -72,100 +52,89 @@
 </div>
 
 <script>
-    // 1. CONFIG
-    const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-    const SUPABASE_KEY = 'YOUR_SUPABASE_KEY';
+    // 1. PROJECT CONFIG FROM 1000026130.jpg
+    const SUPABASE_URL = 'https://sghmgiaaqcuymqnfbleh.supabase.co';
+    const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY'; 
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    let currentDomain = 'EMPLOYMENT';
-    let isOffline = true;
     let pendingQueue = JSON.parse(localStorage.getItem('wt_pending')) || [];
 
-    // 2. CONNECTION HEARTBEAT
-    async function checkConnection() {
-        const dot = document.getElementById('connDot');
-        try {
-            const { error } = await _supabase.from('timelines').select('id').limit(1);
-            if (error) throw error;
+    // 2. REALTIME SUBSCRIPTION HANDSHAKE
+    function initRealtime() {
+        _supabase
+            .channel('schema-db-changes')
+            .on('postgres_changes', 
+                { event: 'INSERT', schema: 'public', table: 'timelines' }, 
+                (payload) => {
+                    console.log('New entry detected via Realtime');
+                    fetchTimeline(); // Instant refresh
+                }
+            )
+            .subscribe();
             
-            if (isOffline) {
-                isOffline = false;
-                dot.className = 'status-dot status-online';
-                processQueue(); // Sync local notes
-            }
-        } catch (e) {
-            isOffline = true;
-            dot.className = 'status-dot status-offline';
-            setTimeout(checkConnection, 30000); // Check every 30s
-        }
+        // Check for cached data to sync since status is now Healthy
+        if (pendingQueue.length > 0) syncPendingData();
     }
 
-    // 3. OFFLINE SYNC LOGIC
-    async function processQueue() {
-        if (pendingQueue.length === 0) { fetchTimeline(); return; }
-        
-        for (const item of pendingQueue) {
-            await _supabase.from('timelines').insert([item]);
+    async function syncPendingData() {
+        document.getElementById('syncLabel').innerText = "SYNCING CACHE...";
+        for (let entry of pendingQueue) {
+            await _supabase.from('timelines').insert([entry]);
         }
-        
         pendingQueue = [];
         localStorage.setItem('wt_pending', JSON.stringify([]));
+        document.getElementById('syncLabel').innerText = "REALTIME ACTIVE";
         fetchTimeline();
     }
 
     async function submitEntry() {
         const text = document.getElementById('statusBox').value;
-        if(!text.trim()) return;
+        if (!text.trim()) return;
 
-        const entry = { 
-            content: text, 
-            legal_domain: currentDomain,
+        const entry = {
+            content: text,
+            legal_domain: 'EMPLOYMENT',
             created_at: new Date().toISOString()
         };
 
-        if (isOffline) {
+        const { error } = await _supabase.from('timelines').insert([entry]);
+        
+        if (error) {
             pendingQueue.push(entry);
             localStorage.setItem('wt_pending', JSON.stringify(pendingQueue));
-            renderTimeline([]); // Refresh view to show pending note
+            renderTimeline([]); 
         } else {
-            await _supabase.from('timelines').insert([entry]);
-            fetchTimeline();
+            document.getElementById('statusBox').value = '';
+            // No need to manually call fetchTimeline here, Realtime will catch it!
         }
-        document.getElementById('statusBox').value = '';
     }
 
     async function fetchTimeline() {
-        if (isOffline) { renderTimeline([]); return; }
         const { data } = await _supabase.from('timelines')
-            .select('*').eq('legal_domain', currentDomain).order('created_at', { ascending: false });
+            .select('*').order('created_at', { ascending: false });
         renderTimeline(data || []);
     }
 
     function renderTimeline(dbData) {
         const container = document.getElementById('timelineContainer');
-        const localItems = pendingQueue.filter(q => q.legal_domain === currentDomain);
-        
-        const combined = [...localItems.map(l => ({...l, pending: true})), ...dbData];
+        const combined = [...pendingQueue.map(p => ({...p, pending: true})), ...dbData];
         
         container.innerHTML = combined.map(item => `
-            <div class="stack-wrapper" style="margin-bottom:15px;">
-                <div style="font-size:9px; font-weight:900; color:var(--silver-gray);">${new Date(item.created_at).toLocaleString()}</div>
+            <div style="margin-top:20px;">
                 <div class="bubble">
+                    <span class="sync-tag">${item.pending ? 'LOCAL CACHE' : 'CLOUD VERIFIED'}</span>
+                    <div style="font-size:9px; font-weight:900; color:var(--silver-gray); margin-bottom:5px;">
+                        ${new Date(item.created_at).toLocaleString()}
+                    </div>
                     <p style="margin:0; font-size:12px;">${item.content}</p>
-                    ${item.pending ? '<span class="pending-tag">WAITING FOR SUPABASE SYNC...</span>' : ''}
                 </div>
             </div>
         `).join('');
     }
 
-    function setDomain(key, btn) {
-        currentDomain = key;
-        document.querySelectorAll('.domain-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        fetchTimeline();
-    }
-
-    checkConnection();
+    // Initialize
+    initRealtime();
+    fetchTimeline();
 </script>
 </body>
 </html>
