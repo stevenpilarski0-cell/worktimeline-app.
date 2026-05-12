@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Private Lawyer Portal</title>
+    <title>WorkTimeline™ | Dynamic Notifications</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Nunito+Sans:wght@400;600;800&display=swap');
@@ -12,22 +12,18 @@
             --teal: #008080; --silver-gray: #95a5a6; --gray-bg: #e2e8f0; 
             --clio-blue: #0076CE; --gray-border: #cbd5e0; 
             --mac-shadow: 0 10px 30px rgba(0,0,0,0.12);
-            --mac-glass: rgba(255, 255, 255, 0.75);
-            --lawyer-msg: #f7fafc;
+            --clio-green: #2ecc71;
         }
         
         body { font-family: 'Nunito', sans-serif; background: var(--gray-bg); margin: 0; padding: 0; height: 100dvh; overflow: hidden; display: flex; justify-content: center; }
         .app-container { width: 100%; max-width: 500px; background: white; height: 100dvh; display: flex; flex-direction: column; position: relative; border: 1.5px solid var(--gray-border); overflow: hidden; }
         
-        .header { padding: 14px 15px; border-bottom: 1px solid var(--gray-border); background: var(--mac-glass); backdrop-filter: blur(20px); z-index: 4000; display: flex; justify-content: space-between; align-items: center; }
+        .header { padding: 14px 15px; border-bottom: 1px solid var(--gray-border); background: rgba(255,255,255,0.75); backdrop-filter: blur(20px); z-index: 4000; display: flex; justify-content: space-between; align-items: center; }
         .view-section { flex-grow: 1; overflow-y: auto; padding: 20px 15px 150px; display: flex; flex-direction: column; gap: 20px; }
         
-        .bubble { padding: 15px; border-radius: 22px; width: 100%; box-sizing: border-box; box-shadow: var(--mac-shadow); background: #f1f1f1; border: 1px solid #e5e5e5; position: relative; }
-        
-        /* COMMENT STYLES */
-        .comment-thread { margin-top: 10px; padding-left: 10px; border-left: 2px solid var(--clio-blue); }
-        .lawyer-bubble { background: var(--lawyer-msg); border: 1px solid var(--clio-blue); border-radius: 12px; padding: 10px; margin-top: 5px; font-size: 11px; }
-        .comment-input { width: 100%; border: none; background: #edf2f7; padding: 8px; border-radius: 8px; font-size: 10px; margin-top: 10px; }
+        .bubble { padding: 15px; border-radius: 22px; width: 100%; box-sizing: border-box; box-shadow: var(--mac-shadow); background: #f1f1f1; border: 1px solid #e5e5e5; }
+        .lawyer-config { background: #f7fafc; padding: 10px; border-radius: 12px; font-size: 10px; margin-bottom: 10px; border: 1px solid var(--gray-border); }
+        .config-input { width: 100%; border: 1px solid var(--gray-border); padding: 5px; border-radius: 6px; margin-top: 5px; }
     </style>
 </head>
 <body>
@@ -35,51 +31,49 @@
 <div class="app-container">
     <header class="header">
         <div style="font-weight: 900; font-size: 13px; color: var(--teal);">WorkTimeline™ Private Portal</div>
-        <div id="connStatus" style="font-size: 8px; color: var(--silver-gray);">SECURE CONNECTION</div>
     </header>
 
     <div class="view-section">
+        <!-- 1. DYNAMIC CONFIGURATION UI -->
+        <div class="lawyer-config">
+            <strong>Lawyer Assignment</strong>
+            <input type="email" id="targetLawyerEmail" class="config-input" placeholder="Enter lawyer's email for notifications...">
+        </div>
+
         <div id="timelineContainer"></div>
     </div>
 </div>
 
 <script>
-    // Configuration from your Healthy project
-    const SUPABASE_URL = 'https://sghmgiaaqcuymqnfbleh.supabase.co';
+    const SUPABASE_URL = 'https://sghmgiaaqcuymqnfbleh.supabase.co'; //
     const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY'; 
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // 1. REALTIME PRIVATE CHANNEL HANDSHAKE
-    function initRealtime() {
-        _supabase
-            .channel('private-messages')
-            .on('postgres_changes', 
-                { event: 'INSERT', schema: 'public', table: 'comments' }, 
-                () => { fetchTimeline(); }
-            )
-            .subscribe();
-    }
-
     async function fetchTimeline() {
-        // Fetch timeline and join with private comments
-        const { data: timelines } = await _supabase.from('timelines')
+        const { data } = await _supabase.from('timelines')
             .select('*, comments(*)').order('created_at', { ascending: false });
-        renderTimeline(timelines || []);
+        renderTimeline(data || []);
     }
 
     async function addComment(timelineId) {
         const input = document.getElementById(`input-${timelineId}`);
+        const lawyerEmail = document.getElementById('targetLawyerEmail').value;
         const text = input.value;
+        
         if (!text.trim()) return;
 
-        // Insert private comment
-        await _supabase.from('comments').insert([{
+        // 2. PASSING THE EMAIL DYNAMICALLY
+        const { error } = await _supabase.from('comments').insert([{
             timeline_id: timelineId,
             content: text,
-            author_role: 'CLIENT' // Hardcoded for this view
+            author_role: 'CLIENT',
+            notify_email: lawyerEmail // This triggers the logic in the cloud
         }]);
 
-        input.value = '';
+        if (!error) {
+            input.value = '';
+            fetchTimeline();
+        }
     }
 
     function renderTimeline(data) {
@@ -87,24 +81,17 @@
         container.innerHTML = data.map(item => `
             <div style="margin-top:20px;">
                 <div class="bubble">
-                    <div style="font-size:9px; font-weight:900; color:var(--silver-gray);">${new Date(item.created_at).toLocaleString()}</div>
+                    <div style="font-size:9px; color:var(--silver-gray);">${new Date(item.created_at).toLocaleString()}</div>
                     <p style="margin:5px 0; font-size:12px;">${item.content}</p>
-                    
-                    <div class="comment-thread">
-                        ${(item.comments || []).map(c => `
-                            <div class="lawyer-bubble">
-                                <strong>${c.author_role}:</strong> ${c.content}
-                            </div>
-                        `).join('')}
-                        <input type="text" id="input-${item.id}" class="comment-input" placeholder="Message your lawyer..." 
-                               onkeydown="if(event.key==='Enter') addComment('${item.id}')">
+                    <div style="margin-top:10px; padding-left:10px; border-left:2px solid var(--clio-blue);">
+                        ${(item.comments || []).map(c => `<div style="font-size:11px;"><strong>${c.author_role}:</strong> ${c.content}</div>`).join('')}
+                        <input type="text" id="input-${item.id}" style="width:100%; margin-top:10px; font-size:10px;" placeholder="Message lawyer..." onkeydown="if(event.key==='Enter') addComment('${item.id}')">
                     </div>
                 </div>
             </div>
         `).join('');
     }
 
-    initRealtime();
     fetchTimeline();
 </script>
 </body>
