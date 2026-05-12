@@ -31,20 +31,20 @@
         .header { padding: 14px 15px; border-bottom: 1px solid var(--gray-border); background: var(--mac-glass); backdrop-filter: blur(20px); z-index: 4000; position: relative; display: flex; justify-content: space-between; align-items: center; }
         .header-left { display: flex; align-items: center; gap: 12px; }
         
-        /* MAC UTILITY NAV */
         .mac-nav { display: flex; background: rgba(0,0,0,0.06); padding: 2px; border-radius: 14px; position: relative; width: 110px; border: 0.5px solid rgba(0,0,0,0.05); }
         .nav-item { flex: 1; font-size: 8.5px; font-weight: 900; padding: 7px 0; border: none; background: transparent; color: #718096; cursor: pointer; position: relative; z-index: 1; transition: color 0.3s; text-align: center; letter-spacing: 0.5px; }
         .nav-item.active { color: var(--teal); }
         .ghost-active .nav-item.active { color: white; }
         .nav-slider { position: absolute; top: 2px; left: 2px; height: calc(100% - 4px); width: 52px; background: white; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); z-index: 0; }
 
-        /* BRANDING & ICONS */
         .briefcase-icon { width: 22px; height: 16px; border: 1.8px solid var(--teal); border-radius: 4px; position: relative; display: flex; align-items: center; justify-content: center; }
         .briefcase-icon::before { content: ''; position: absolute; top: -6px; width: 8px; height: 4px; border: 1.8px solid var(--teal); border-bottom: none; border-radius: 3px 3px 0 0; background: inherit; z-index: 2; }
         .icon-timeline { width: 140%; height: 1px; background: var(--teal); position: absolute; top: 50%; display: flex; justify-content: space-between; left: -20%; }
         .icon-dot { width: 4px; height: 4px; background: white; border: 1.2px solid var(--teal); border-radius: 50%; margin-top: -1.5px; }
         .main-title { font-weight: 900; font-size: 15px; display: flex; align-items: center; letter-spacing: -0.5px; line-height: 1; }
         .work-silver { color: var(--silver-gray); } .timeline-teal { color: var(--teal); }
+        
+        /* CLIO PULSE */
         .clio-pulse { width: 6px; height: 6px; border-radius: 50%; margin-left: 6px; transition: all 0.4s ease; background-color: #cbd5e0; }
         .clio-pulse.connected { background-color: var(--clio-green); animation: clio-throb 2s infinite; }
         @keyframes clio-throb { 0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.6); } 70% { box-shadow: 0 0 0 8px rgba(46, 204, 113, 0); } 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
@@ -126,16 +126,72 @@
 </div>
 
 <script>
+    // CORE DATA & STATE
     let vault = JSON.parse(localStorage.getItem('wt_timeline')) || [];
-    let isLinkedToClio = localStorage.getItem('clio_linked') === 'true';
     let pulseActive = localStorage.getItem('wt_pulse_active') !== 'false';
-    let pulseExplained = localStorage.getItem('wt_pulse_explained') === 'true';
-    let utilOpen = false; let activePending = null;
+    let utilOpen = false; 
+    let activePending = null;
 
-    function unlockApp() { document.getElementById('overlaySystem').style.display = 'none'; document.getElementById('mainApp').classList.remove('app-locked'); initClioStatus(); }
+    // 1. INITIALIZATION: Check real Clio connection from server
+    async function initClioStatus() {
+        const pulse = document.querySelector('.clio-pulse');
+        try {
+            const response = await fetch('/api/clio/status');
+            const data = await response.json();
+            if (data.connected) {
+                pulse.classList.add('connected');
+                localStorage.setItem('clio_linked', 'true');
+            }
+        } catch (e) {
+            console.log("Clio not linked.");
+        }
+    }
+
+    function unlockApp() { 
+        document.getElementById('overlaySystem').style.display = 'none'; 
+        document.getElementById('mainApp').classList.remove('app-locked'); 
+        initClioStatus(); 
+    }
     document.getElementById('initialUnlock').onclick = unlockApp;
 
-    // MAC NAVIGATION SWITCH
+    // 2. REAL HANDSHAKE LOGIC
+    function performHandshake() {
+        const syncBtn = document.getElementById('syncBtn');
+        syncBtn.innerText = "REDIRECTING...";
+        // Initiates the real OAuth handshake via your backend
+        window.location.href = '/api/auth/clio'; 
+    }
+
+    document.getElementById('syncBtn').onclick = () => {
+        const isLinked = localStorage.getItem('clio_linked') === 'true';
+        if (!isLinked) {
+            performHandshake();
+        } else {
+            handleDataSync();
+        }
+    };
+
+    async function handleDataSync() {
+        const syncBtn = document.getElementById('syncBtn');
+        syncBtn.innerText = "SYNCING...";
+        
+        try {
+            const response = await fetch('/api/clio/sync', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ evidence: vault })
+            });
+            
+            if (response.ok) {
+                syncBtn.innerText = "SUCCESS";
+                setTimeout(() => syncBtn.innerText = "SYNC TO CLIO", 2000);
+            }
+        } catch (err) {
+            syncBtn.innerText = "RETRY";
+        }
+    }
+
+    // 3. UI & NAVIGATION (Your existing logic)
     const btnNotes = document.getElementById('btnNotes');
     const btnGhost = document.getElementById('btnGhost');
     const navSlider = document.getElementById('navSlider');
@@ -143,38 +199,19 @@
     btnNotes.onclick = () => {
         document.getElementById('appBody').classList.remove('ghost-active');
         navSlider.style.transform = 'translateX(0)';
-        btnNotes.classList.add('active');
-        btnGhost.classList.remove('active');
+        btnNotes.classList.add('active'); btnGhost.classList.remove('active');
     };
 
     btnGhost.onclick = () => {
         document.getElementById('appBody').classList.add('ghost-active');
         navSlider.style.transform = 'translateX(54px)';
-        btnGhost.classList.add('active');
-        btnNotes.classList.remove('active');
+        btnGhost.classList.add('active'); btnNotes.classList.remove('active');
     };
 
-    function initClioStatus() {
-        const pulse = document.querySelector('.clio-pulse');
-        if (isLinkedToClio) pulse.classList.add('connected');
+    function toggleUtility() { 
+        document.getElementById('utilityDrawer').style.transform = utilOpen ? 'translateY(calc(-100% + 40px))' : 'translateY(0)'; 
+        utilOpen = !utilOpen; 
     }
-
-    function performHandshake() {
-        const pulse = document.querySelector('.clio-pulse');
-        const syncBtn = document.getElementById('syncBtn');
-        syncBtn.innerText = "LINKING...";
-        setTimeout(() => {
-            isLinkedToClio = true;
-            localStorage.setItem('clio_linked', 'true');
-            pulse.classList.add('connected');
-            syncBtn.innerText = "SYNC TO CLIO";
-            alert("OAuth 2.0 Handshake Successful.");
-        }, 1500);
-    }
-
-    document.getElementById('syncBtn').onclick = () => !isLinkedToClio ? performHandshake() : alert("Syncing to Warehouse...");
-
-    function toggleUtility() { document.getElementById('utilityDrawer').style.transform = utilOpen ? 'translateY(calc(-100% + 40px))' : 'translateY(0)'; utilOpen = !utilOpen; }
 
     function makeDraggable(el) {
         let p1 = 0, p2 = 0, p3 = 0, p4 = 0; el.onmousedown = dStart; el.ontouchstart = dStart;
@@ -182,7 +219,8 @@
         function dMove(e) { let cx = e.clientX || (e.touches ? e.touches[0].clientX : 0); let cy = e.clientY || (e.touches ? e.touches[0].clientY : 0); p1 = p3 - cx; p2 = p4 - cy; p3 = cx; p4 = cy; el.style.top = (el.offsetTop - p2) + "px"; el.style.left = (el.offsetLeft - p1) + "px"; }
         function dEnd() { document.onmouseup = null; document.onmousemove = null; document.ontouchend = null; document.ontouchmove = null; }
     }
-    makeDraggable(document.getElementById("addBtn")); makeDraggable(document.getElementById("syncBtn"));
+    makeDraggable(document.getElementById("addBtn")); 
+    makeDraggable(document.getElementById("syncBtn"));
 
     function submitEntry() {
         const text = document.getElementById('statusBox').value; if(!text.trim()) return;
@@ -192,12 +230,12 @@
             analysis = `<div style="font-size:11px;"><b>LEGAL DIAGNOSTIC:</b> Retaliatory Discharge Markers Found.</div>`;
         }
         activePending = { grit: text, analysis: analysis, stamp: new Date().toLocaleString() };
-        confirmSave();
+        vault.push(activePending); 
+        localStorage.setItem('wt_timeline', JSON.stringify(vault)); 
+        refresh();
         document.getElementById('statusBox').value = ''; if(utilOpen) toggleUtility();
     }
     document.getElementById('addBtn').onclick = submitEntry;
-
-    function confirmSave() { vault.push(activePending); localStorage.setItem('wt_timeline', JSON.stringify(vault)); refresh(); }
 
     function refresh() {
         const list = document.getElementById('timelineContainer'); list.innerHTML = '';
