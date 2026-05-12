@@ -3,177 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeline™ | Secure Portal</title>
-    
-    <!-- Load Supabase Library -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+    <title>WorkTimeline™ | Client Dashboard</title>
     <style>
-        /* 1. Background Gradient: Platinum to Teal */
+        /* Base Styles & Platinum-to-Teal Gradient */
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             margin: 0;
             padding: 0;
+            background: linear-gradient(180deg, #E5E4E2 0%, #008080 100%);
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* Mobile App Container */
+        .app-container {
+            width: 100%;
+            max-width: 414px; /* iPhone size */
+            background: #f8f9f9;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header Styles from 1000026040.jpg */
+        header {
+            padding: 20px;
+            background: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        .logo { color: #008080; font-weight: bold; font-size: 20px; }
+        
+        .toggles { display: flex; gap: 15px; font-size: 12px; font-weight: bold; color: #666; }
+        .toggle-item { display: flex; align-items: center; gap: 5px; }
+
+        /* Intake Card Section */
+        .content { padding: 20px; flex: 1; }
+
+        .intake-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+
+        .intake-card h3 { margin: 0 0 15px 0; font-size: 18px; color: #333; }
+
+        .tags { display: flex; gap: 8px; margin-bottom: 20px; }
+        .tag { background: #e0e6e6; color: #008080; padding: 4px 12px; border-radius: 15px; font-size: 11px; font-weight: bold; }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            background: linear-gradient(135deg, #bdc3c7, #95a5a6);
+            padding: 15px;
+            border-radius: 15px;
+        }
+
+        .action-btn {
+            background: #fdfdfd;
+            border: none;
+            border-radius: 12px;
+            padding: 15px 5px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            /* Platinum (#E5E4E2) to Teal (#008080) */
-            background: linear-gradient(180deg, #E5E4E2 0%, #008080 100%);
-            background-attachment: fixed;
-        }
-
-        /* 2. Container Design from 1000026174.jpg */
-        .container {
-            background: white;
-            padding: 35px;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-        }
-
-        h2 {
-            color: #008080; /* Teal Accent */
-            font-size: 26px;
-            font-weight: 700;
-            margin-bottom: 25px;
-            letter-spacing: -0.5px;
-        }
-
-        /* 3. Button Styles */
-        .btn {
-            border: none;
-            padding: 15px;
-            border-radius: 12px;
+            gap: 5px;
+            font-size: 10px;
+            font-weight: bold;
+            color: #2D3E50;
             cursor: pointer;
-            width: 100%;
-            font-weight: 600;
-            font-size: 16px;
+        }
+
+        /* Timeline Feed */
+        .timeline { position: relative; padding-left: 20px; }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #ddd;
+        }
+
+        .pulse-card {
+            background: #ff7675; /* Red Pulse color from 1000026040.jpg */
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
             margin-bottom: 15px;
-            transition: transform 0.1s ease, opacity 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .btn:active { transform: scale(0.98); }
-
-        .btn-clio-client { background-color: #0070D2; color: white; }
-        .btn-clio-firm { background-color: #2D3E50; color: white; }
-        .btn-create { background-color: #ffffff; color: #008080; border: 2px solid #008080; }
-
-        /* 4. Input Styles */
-        input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 12px;
-            border: 1px solid #d1d9d9;
-            border-radius: 10px;
-            background: #fdfdfd;
-            box-sizing: border-box;
-        }
-
-        .divider {
-            margin: 25px 0;
-            border-top: 1px solid #eee;
             position: relative;
         }
 
-        .divider::after {
-            content: "OR";
+        .pulse-card.blue { background: #74b9ff; }
+
+        .pulse-card::after {
+            content: '';
             position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: white;
-            padding: 0 12px;
-            font-size: 12px;
-            color: #999;
-            font-weight: bold;
+            left: -20px;
+            top: 20px;
+            width: 10px;
+            height: 10px;
+            background: inherit;
+            border-radius: 50%;
+            border: 2px solid white;
         }
 
-        #lockMessage {
-            color: #c0392b;
-            font-size: 13px;
-            font-weight: bold;
-            margin-top: 10px;
-            display: none;
-        }
+        .pulse-card h4 { margin: 0; font-size: 14px; }
+        .pulse-card p { margin: 5px 0; font-size: 12px; opacity: 0.9; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h2>WorkTimeline™</h2>
-        
-        <!-- Clio Options based on 1000026174.jpg -->
-        <button id="clioClientBtn" class="btn btn-clio-client">Client Sign in with Clio</button>
-        <button id="clioFirmBtn" class="btn btn-clio-firm">Firm Sign in with Clio</button>
-        
-        <div class="divider"></div>
-        
-        <!-- Manual Account Creation -->
-        <h3>Create Account</h3>
-        <input type="email" id="email" placeholder="Email Address">
-        <input type="password" id="password" placeholder="Password">
-        <button id="signupBtn" class="btn btn-create">Create Account with WorkTimeline</button>
-        
-        <div id="lockMessage">LOCK ACTIVATED: Timeline is verified and read-only.</div>
-        <div id="status"></div>
+    <div class="app-container">
+        <header>
+            <div class="logo">WorkTimeline</div>
+            <div class="toggles">
+                <div class="toggle-item">Stealth ◯</div>
+                <div class="toggle-item">Notes ◯</div>
+            </div>
+        </header>
+
+        <div class="content">
+            <!-- Intake Card -->
+            <div class="intake-card">
+                <h3>Intake card</h3>
+                <div class="tags">
+                    <span class="tag">first aid</span>
+                    <span class="tag">honest</span>
+                </div>
+                
+                <div class="action-grid">
+                    <button class="action-btn"><span>📷</span>Camera</button>
+                    <button class="action-btn"><span>🎤</span>Mic</button>
+                    <button class="action-btn"><span>📄</span>Document</button>
+                </div>
+            </div>
+
+            <!-- Timeline Feed -->
+            <div class="timeline">
+                <div class="pulse-card">
+                    <h4>Pulses: 1926 + ago</h4>
+                    <p><strong>Prohibited Action:</strong> (interuitment processes)</p>
+                    <div class="tags">
+                        <span class="tag" style="background:rgba(255,255,255,0.3); color:white;">First Aid</span>
+                    </div>
+                </div>
+
+                <div class="pulse-card blue">
+                    <h4>Sample 2020 + ago</h4>
+                    <p>BCHRT patterns patterns. Immoveable prodirent cotification.</p>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <script>
-        // Initialize Supabase
-        const _supabaseUrl = 'https://sghmgiaaqcuymqnfbleh.supabase.co'; 
-        const _supabaseKey = 'Sb_publishable_VL3kSjtNHGvLcmZYi1YXnA_Xlo8zpXy';
-        const _supabase = supabase.createClient(_supabaseUrl, _supabaseKey);
-
-        // 1. Clio Login Handlers
-        async function clioLogin(role) {
-            const { error } = await _supabase.auth.signInWithOAuth({
-                provider: 'clio',
-                options: { 
-                    redirectTo: 'https://worktimeline-app.vercel.app/',
-                    queryParams: { role: role }
-                }
-            });
-            if (error) console.error(error.message);
-        }
-
-        document.getElementById('clioClientBtn').onclick = () => clioLogin('client');
-        document.getElementById('clioFirmBtn').onclick = () => clioLogin('firm');
-
-        // 2. Manual Sign Up Logic
-        document.getElementById('signupBtn').onclick = async () => {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            
-            const { data, error } = await _supabase.auth.signUp({
-                email: email,
-                password: password,
-                options: { data: { role: 'client' } }
-            });
-
-            if (error) alert("Error: " + error.message);
-            else alert("Success! Check your email to confirm your account.");
-        };
-
-        // 3. Lock Feature Implementation
-        async function checkIntegrityLock(userId) {
-            const { data } = await _supabase
-                .from('profiles')
-                .select('timeline_status')
-                .eq('id', userId)
-                .single();
-
-            if (data && data.timeline_status === 'locked') {
-                document.getElementById('signupBtn').disabled = true;
-                document.getElementById('lockMessage').style.display = 'block';
-            }
-        }
-    </script>
 </body>
 </html>
