@@ -3,169 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeline™ | Client Dashboard</title>
+    <title>WorkTimeline™ | Master UI</title>
     <style>
-        /* Base Styles & Platinum-to-Teal Gradient */
+        /* 1. Global Branding (Platinum to Teal Gradient) */
+        :root {
+            --platinum: #E5E4E2;
+            --teal: #008080;
+            --clio-blue: #0070D2;
+            --slate: #2D3E50;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             margin: 0;
-            padding: 0;
-            background: linear-gradient(180deg, #E5E4E2 0%, #008080 100%);
+            background: linear-gradient(180deg, var(--platinum) 0%, var(--teal) 100%);
             background-attachment: fixed;
             display: flex;
             justify-content: center;
             min-height: 100vh;
         }
 
-        /* Mobile App Container */
-        .app-container {
+        /* 2. Container Logic */
+        .master-app {
             width: 100%;
-            max-width: 414px; /* iPhone size */
-            background: #f8f9f9;
+            max-width: 450px;
+            background: #ffffff;
             min-height: 100vh;
-            box-shadow: 0 0 20px rgba(0,0,0,0.2);
             display: flex;
             flex-direction: column;
+            overflow-x: hidden;
         }
 
-        /* Header Styles from 1000026040.jpg */
-        header {
-            padding: 20px;
-            background: white;
+        /* 3. Client View Components (1000023130.jpg) */
+        .client-header {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            justify-content: space-around;
+            padding: 15px;
+            background: #fff;
             border-bottom: 1px solid #eee;
         }
 
-        .logo { color: #008080; font-weight: bold; font-size: 20px; }
-        
-        .toggles { display: flex; gap: 15px; font-size: 12px; font-weight: bold; color: #666; }
-        .toggle-item { display: flex; align-items: center; gap: 5px; }
+        .icon-nav { font-size: 10px; text-align: center; color: var(--teal); font-weight: bold; }
 
-        /* Intake Card Section */
-        .content { padding: 20px; flex: 1; }
-
-        .intake-card {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            margin-bottom: 25px;
-        }
-
-        .intake-card h3 { margin: 0 0 15px 0; font-size: 18px; color: #333; }
-
-        .tags { display: flex; gap: 8px; margin-bottom: 20px; }
-        .tag { background: #e0e6e6; color: #008080; padding: 4px 12px; border-radius: 15px; font-size: 11px; font-weight: bold; }
-
-        .action-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            background: linear-gradient(135deg, #bdc3c7, #95a5a6);
-            padding: 15px;
+        .clarity-card {
+            background: #fff;
+            border: 2px solid #00ffff;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
             border-radius: 15px;
+            margin: 20px;
+            padding: 20px;
         }
 
-        .action-btn {
-            background: #fdfdfd;
-            border: none;
+        .lock-submit {
+            background: var(--teal);
+            color: white;
+            padding: 18px;
             border-radius: 12px;
-            padding: 15px 5px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-            font-size: 10px;
+            margin: 20px;
+            text-align: center;
             font-weight: bold;
-            color: #2D3E50;
             cursor: pointer;
         }
 
-        /* Timeline Feed */
-        .timeline { position: relative; padding-left: 20px; }
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 5px;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: #ddd;
+        /* 4. Firm Marketplace Components (1000023137.jpg) */
+        .triage-container {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            background: #f0f3f3;
         }
 
-        .pulse-card {
-            background: #ff7675; /* Red Pulse color from 1000026040.jpg */
+        .triage-card {
+            background: var(--teal);
             color: white;
-            padding: 15px;
-            border-radius: 15px;
-            margin-bottom: 15px;
-            position: relative;
+            border-radius: 20px;
+            padding: 25px;
+            flex: 1;
+            min-width: 300px;
         }
 
-        .pulse-card.blue { background: #74b9ff; }
-
-        .pulse-card::after {
-            content: '';
-            position: absolute;
-            left: -20px;
-            top: 20px;
-            width: 10px;
-            height: 10px;
-            background: inherit;
+        .match-score {
+            border: 4px solid #00ffff;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
-            border: 2px solid white;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
         }
 
-        .pulse-card h4 { margin: 0; font-size: 14px; }
-        .pulse-card p { margin: 5px 0; font-size: 12px; opacity: 0.9; }
+        .stat-box {
+            background: rgba(0,0,0,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 13px;
+        }
+
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <header>
-            <div class="logo">WorkTimeline</div>
-            <div class="toggles">
-                <div class="toggle-item">Stealth ◯</div>
-                <div class="toggle-item">Notes ◯</div>
-            </div>
-        </header>
+    <div class="master-app">
+        <!-- Client View: Based on 1000023130.jpg -->
+        <div id="clientView">
+            <header class="client-header">
+                <div class="icon-nav">📸<br>CAMERA</div>
+                <div class="icon-nav">🗒️<br>NOTEPAD</div>
+                <div class="icon-nav">👻<br>STEALTH</div>
+                <div class="icon-nav">🎙️<br>AUDIO</div>
+            </header>
 
-        <div class="content">
-            <!-- Intake Card -->
-            <div class="intake-card">
-                <h3>Intake card</h3>
-                <div class="tags">
-                    <span class="tag">first aid</span>
-                    <span class="tag">honest</span>
-                </div>
-                
-                <div class="action-grid">
-                    <button class="action-btn"><span>📷</span>Camera</button>
-                    <button class="action-btn"><span>🎤</span>Mic</button>
-                    <button class="action-btn"><span>📄</span>Document</button>
-                </div>
+            <div class="clarity-card">
+                <h4 style="color:var(--teal); margin:0;">Clarity Card</h4>
+                <p style="font-size:12px; line-height:1.4;">[AI Voice]: "They mention <strong>Prima Facie</strong> here. Think of it as 'At First Glance'."</p>
+                <hr>
+                <div style="font-size:11px;">The Mistervisions Translation: <br><strong>"Our Opener"</strong></div>
             </div>
 
-            <!-- Timeline Feed -->
-            <div class="timeline">
-                <div class="pulse-card">
-                    <h4>Pulses: 1926 + ago</h4>
-                    <p><strong>Prohibited Action:</strong> (interuitment processes)</p>
-                    <div class="tags">
-                        <span class="tag" style="background:rgba(255,255,255,0.3); color:white;">First Aid</span>
+            <div class="lock-submit">🔒 Lock & Submit</div>
+        </div>
+
+        <!-- Firm View Toggle -->
+        <button onclick="toggleView()" style="margin: 20px; padding: 10px;">Switch to Firm Marketplace</button>
+
+        <!-- Firm View: Based on 1000023137.jpg -->
+        <div id="firmView" class="hidden">
+            <div class="triage-container">
+                <div class="triage-card">
+                    <div class="match-score">94%</div>
+                    <h3 style="text-align:center;">Elite Top 3%</h3>
+                    <div style="text-align:center; font-size:12px;">Case Match Score: 94%</div>
+                    
+                    <div class="stat-box">
+                        <div>Pattern Finding: High</div>
+                        <div>Cross-Exam Readiness: Strong</div>
+                        <div>Severity: High</div>
                     </div>
-                </div>
 
-                <div class="pulse-card blue">
-                    <h4>Sample 2020 + ago</h4>
-                    <p>BCHRT patterns patterns. Immoveable prodirent cotification.</p>
+                    <button class="lock-submit" style="background:#fff; color:var(--teal); width:100%; margin: 20px 0 0 0;">Ready for Retainer</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <script>
+        function toggleView() {
+            document.getElementById('clientView').classList.toggle('hidden');
+            document.getElementById('firmView').classList.toggle('hidden');
+        }
+    </script>
 </body>
 </html>
