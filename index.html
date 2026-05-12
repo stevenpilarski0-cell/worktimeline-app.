@@ -19,8 +19,12 @@
         body { font-family: 'Nunito', sans-serif; background: var(--gray-bg); margin: 0; padding: 0; height: 100dvh; overflow: hidden; display: flex; justify-content: center; }
         .app-locked { filter: blur(35px); pointer-events: none; }
         
-        .app-container { width: 100%; max-width: 500px; background: white; height: 100dvh; display: flex; flex-direction: column; position: relative; border: 1.5px solid var(--gray-border); box-sizing: border-box; overflow: hidden; }
+        .app-container { width: 100%; max-width: 500px; background: white; height: 100dvh; display: flex; flex-direction: column; position: relative; border: 1.5px solid var(--gray-border); box-sizing: border-box; overflow: hidden; transition: all 0.3s ease; }
         
+        /* GHOST MODE (Privacy Shroud) */
+        .ghost-active .privacy-sensitive { filter: blur(12px) grayscale(1); opacity: 0.3; pointer-events: none; }
+        .ghost-active #statusBox { filter: blur(8px); }
+
         /* HEADER */
         .header { padding: 14px 15px; border-bottom: 1px solid var(--gray-border); background: var(--mac-glass); backdrop-filter: blur(20px); z-index: 4000; display: flex; justify-content: space-between; align-items: center; }
         .mac-nav { display: flex; background: rgba(0,0,0,0.06); padding: 2px; border-radius: 14px; position: relative; width: 160px; border: 0.5px solid rgba(0,0,0,0.05); }
@@ -35,14 +39,13 @@
         .win-rate { font-size: 24px; font-weight: 900; margin: 5px 0; }
         .badge { display: inline-block; padding: 4px 8px; border-radius: 8px; font-size: 9px; font-weight: 900; color: white; margin-bottom: 5px; }
         .type-tag { font-size: 9px; font-weight: 900; color: var(--teal); background: #e6fffa; padding: 2px 6px; border-radius: 4px; margin-right: 5px; }
-        .damage-tag { font-size: 9px; font-weight: 900; color: var(--damage-red); background: #fff5f5; padding: 4px 8px; border-radius: 6px; display: inline-block; margin-top: 5px; }
 
         /* TAMPER ALERT */
         .tamper-glow { animation: tamper-pulse 1.5s infinite alternate; border: 2px solid var(--damage-red) !important; }
         @keyframes tamper-pulse { from { box-shadow: 0 0 5px var(--damage-red); } to { box-shadow: 0 0 20px var(--damage-red); } }
 
         /* STACK STYLES */
-        .stack-wrapper { position: relative; width: 100%; }
+        .stack-wrapper { position: relative; width: 100%; transition: filter 0.3s ease; }
         .stamp-label { font-size: 9px; font-weight: 900; color: var(--silver-gray); margin-bottom: 6px; }
         .stack-inner { position: relative; width: 90%; min-height: 70px; transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer; }
         .stack-inner.flipped { transform: rotateY(180deg); }
@@ -58,7 +61,7 @@
 <div id="overlaySystem">
     <div style="background: white; padding: 30px; border-radius: 28px; text-align: center; max-width: 300px;">
         <h2 style="font-weight: 900; margin: 0; font-size: 16px;">WORK-DEMO</h2>
-        <p style="font-size: 12px; color: #4a5568;">Dual-Terminology Experience (Client vs. Lawyer).</p>
+        <p style="font-size: 12px; color: #4a5568;">Privacy-First Evidence Management.</p>
         <button onclick="unlockApp()" style="background:var(--teal); color:white; border:none; padding:15px; width:100%; border-radius:18px; font-weight:800; cursor:pointer;">START DEMO</button>
     </div>
 </div>
@@ -83,12 +86,12 @@
             </select>
             <button id="lockBtn" onclick="lockTimeline()" style="font-size:9px; font-weight:900; background:var(--silver-gray); color:white; border:none; padding:5px 10px; border-radius:8px; cursor:pointer;">LOCK TIMELINE</button>
         </div>
-        <textarea id="statusBox" style="width:100%; height:80px; border-radius:20px; border:1px solid var(--gray-border); padding:15px; font-family:inherit; box-sizing: border-box;" placeholder="Add to your timeline..."></textarea>
-        <div id="timelineContainer"></div>
+        <textarea id="statusBox" style="width:100%; height:80px; border-radius:20px; border:1px solid var(--gray-border); padding:15px; font-family:inherit; box-sizing: border-box;" placeholder="Add to your private timeline..."></textarea>
+        <div id="timelineContainer" class="privacy-sensitive"></div>
     </div>
 
     <div id="marketView" class="view-section">
-        <h3 style="font-weight: 900; margin: 0; font-size: 14px;">Lawyer Dashboard | Case Analysis</h3>
+        <h3 style="font-weight: 900; margin: 0; font-size: 14px;">Lawyer Dashboard | Case Summary</h3>
         <div id="marketContainer"></div>
     </div>
 
@@ -96,16 +99,13 @@
 </div>
 
 <script>
-    // 1. TERMINOLOGY MAP
+    // 1. TERMINOLOGY & CONFIG
     const TERM_MAP = {
         CONTEMP: { client: "Live Note", lawyer: "Contemporaneous Evidence" },
         RECON: { client: "Past Event", lawyer: "Reconstructed Narrative" },
-        CORROB: { client: "Has Proof", lawyer: "Corroborated Submission" },
-        HIGH: { client: "Great Documentation", lawyer: "High Story Integrity" },
-        LOW: { client: "Changes Detected", lawyer: "Integrity Compromised / Tamper Alert" }
+        CORROB: { client: "Has Proof", lawyer: "Corroborated Submission" }
     };
 
-    // 2. STATE
     let vault = JSON.parse(localStorage.getItem('wt_timeline')) || [];
     let isLocked = localStorage.getItem('wt_locked') === 'true';
     let isTampered = localStorage.getItem('wt_tampered') === 'true';
@@ -118,24 +118,38 @@
         renderMarket();
     }
 
-    // 3. INTEGRITY LEDGER
+    // 2. VIEW CONTROLLER (GHOST MODE LOGIC)
+    function switchView(view, offset, btn) {
+        document.getElementById('navSlider').style.transform = `translateX(${offset}px)`;
+        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const app = document.getElementById('mainApp');
+        const sections = document.querySelectorAll('.view-section');
+        
+        // Remove Ghost mode when leaving ghost tab
+        app.classList.remove('ghost-active');
+
+        if (view === 'ghost') {
+            app.classList.add('ghost-active');
+            sections.forEach(s => s.classList.remove('active'));
+            document.getElementById('journalView').classList.add('active');
+        } else {
+            sections.forEach(s => s.classList.remove('active'));
+            document.getElementById(`${view}View`).classList.add('active');
+        }
+
+        // Hide Add button in Lawyer view
+        document.getElementById('addBtn').style.display = (view === 'market') ? 'none' : 'flex';
+    }
+
+    // 3. INTEGRITY & SUBMISSION
     function lockTimeline() {
         if(vault.length === 0) return;
         isLocked = true;
         localStorage.setItem('wt_locked', 'true');
         document.getElementById('lockBtn').innerText = "SECURED";
-        alert("Locked. Your information is now prepared for legal analysis.");
         renderMarket(); 
-    }
-
-    function switchView(view, offset, btn) {
-        document.getElementById('navSlider').style.transform = `translateX(${offset}px)`;
-        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
-        const targetView = (view === 'ghost') ? 'journalView' : `${view}View`;
-        document.getElementById(targetView).classList.add('active');
-        document.body.classList.toggle('ghost-active', view === 'ghost');
     }
 
     function submitEntry() {
@@ -150,7 +164,6 @@
             localStorage.setItem('wt_tampered', 'true');
         }
 
-        // Simulating Clio Duo AI Pattern Recognition
         const patterns = [
             { key: "fire", type: "ESA", msg: "Potential Unlawful Termination" },
             { key: "hurt", type: "WorkSafe", msg: "Safety Non-Compliance" }
@@ -180,15 +193,13 @@
         renderMarket();
     }
 
-    // 4. DYNAMIC UI RENDERING
+    // 4. RENDERING (CLIENT VS LAWYER TERMINOLOGY)
     function refresh() {
         const container = document.getElementById('timelineContainer');
         container.innerHTML = '';
         [...vault].reverse().forEach(item => {
             const hasAI = item.analysis !== "";
             const tamperClass = item.tampered ? 'tamper-glow' : '';
-            
-            // Client sees simple terms
             const typeLabel = TERM_MAP[item.entryType].client;
 
             container.innerHTML += `
@@ -201,7 +212,7 @@
                             <span class="type-tag">${typeLabel}</span>
                             <p style="margin:5px 0 0 0; font-size:12px;">${item.grit}</p>
                         </div>
-                        <div class="bubble bubble-back"><p style="margin:0; font-size:10px; font-weight:900;">WorkTimeline Analysis Activated</p></div>
+                        <div class="bubble bubble-back"><p style="margin:0; font-size:10px; font-weight:900;">Duo Analysis Activated</p></div>
                     </div>
                 </div>`;
         });
@@ -219,25 +230,18 @@
         const tealFactor = winPercent / 100;
         const dynamicColor = isTampered ? 'var(--damage-red)' : `rgb(${149 - (149-0)*tealFactor}, ${165 - (165-128)*tealFactor}, ${166 - (166-128)*tealFactor})`;
 
-        // Lawyer sees technical terms
-        const integrityLabel = isTampered ? TERM_MAP.LOW.lawyer : TERM_MAP.HIGH.lawyer;
-
         container.innerHTML = `
             <div class="auction-card" style="border-left-color: ${dynamicColor}">
-                <span class="badge" style="background:${isTampered ? 'var(--damage-red)' : 'var(--teal)'}">${integrityLabel}</span>
+                <span class="badge" style="background:${isTampered ? 'var(--damage-red)' : 'var(--teal)'}">${isTampered ? 'COMPROMISED' : 'HIGH INTEGRITY'}</span>
                 <div class="win-rate" style="color: ${dynamicColor}">${winPercent}% Story Integrity</div>
                 <div style="font-size:10px; font-weight:900; color:var(--silver-gray);">ANONYMOUS VAULT | SECURED BY CLIO CLOUD</div>
                 
                 <div style="font-size:11px; margin-top:10px; border-top:1px solid #eee; padding-top:10px;">
-                    <strong>Evidentiary Composition:</strong><br>
-                    ${vault.map(v => TERM_MAP[v.entryType].lawyer).filter((v, i, a) => a.indexOf(v) === i).join(", ")}
+                    <strong>Evidentiary Classification:</strong><br>
+                    ${[...new Set(vault.map(v => TERM_MAP[v.entryType].lawyer))].join(", ")}
                 </div>
 
-                <div class="disclaimer-box">
-                    <strong>INTEGRITY LOG:</strong> Using pattern recognition to identify narrative shifts or linear gaps.
-                </div>
-
-                <button style="width:100%; margin-top:15px; padding:12px; border-radius:14px; background:var(--clio-blue); color:white; border:none; font-weight:900; cursor:pointer;">ACQUIRE CASE DATA</button>
+                <button style="width:100%; margin-top:15px; padding:12px; border-radius:14px; background:var(--clio-blue); color:white; border:none; font-weight:900; cursor:pointer;">ACQUIRE VIA CLIO</button>
             </div>`;
     }
 </script>
