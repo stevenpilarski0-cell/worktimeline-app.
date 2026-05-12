@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Live Supabase Sync</title>
+    <title>WorkTimeline™ | Offline-First Sync</title>
     <!-- Supabase Client Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -22,8 +22,8 @@
         body { font-family: 'Nunito', sans-serif; background: var(--gray-bg); margin: 0; padding: 0; height: 100dvh; overflow: hidden; display: flex; justify-content: center; }
         .app-container { width: 100%; max-width: 500px; background: white; height: 100dvh; display: flex; flex-direction: column; position: relative; border: 1.5px solid var(--gray-border); overflow: hidden; }
         
-        /* CONNECTION MONITOR */
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; transition: background 0.3s; }
+        /* CONNECTION DOT */
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
         .status-online { background: var(--teal); }
         .status-offline { background: var(--damage-red); animation: pulse 1.5s infinite; }
         @keyframes pulse { from { opacity: 1; } to { opacity: 0.4; } }
@@ -39,6 +39,8 @@
         .view-section { flex-grow: 1; overflow-y: auto; padding: 20px 15px 150px; display: none; flex-direction: column; gap: 20px; }
         .view-section.active { display: flex; }
         .bubble { padding: 15px; border-radius: 22px; width: 100%; box-sizing: border-box; box-shadow: var(--mac-shadow); background: #f1f1f1; border: 1px solid #e5e5e5; }
+        .pending-tag { font-size: 8px; color: var(--silver-gray); font-weight: 900; margin-top: 5px; display: block; }
+        
         #addBtn { position: absolute; z-index: 5000; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; border-radius: 22px; width: 70px; height: 70px; background: var(--teal); font-size: 30px; bottom: 30px; right: 20px; border: none; cursor: pointer; }
     </style>
 </head>
@@ -58,114 +60,111 @@
         </div>
         <div style="display:flex; gap:10px;">
             <button onclick="switchView('journal')" style="font-size:9px; border:none; background:transparent; font-weight:900; cursor:pointer;">JOURNAL</button>
-            <button onclick="switchView('market')" style="font-size:9px; border:none; background:transparent; font-weight:900; cursor:pointer;">LAWYER</button>
         </div>
     </header>
 
     <div id="journalView" class="view-section active">
-        <textarea id="statusBox" style="width:100%; height:80px; border-radius:20px; border:1px solid var(--gray-border); padding:15px; font-family:inherit;" placeholder="Document your event..."></textarea>
+        <textarea id="statusBox" style="width:100%; height:80px; border-radius:20px; border:1px solid var(--gray-border); padding:15px; font-family:inherit;" placeholder="Restoring... (Notes will be cached)"></textarea>
         <div id="timelineContainer"></div>
-    </div>
-
-    <div id="marketView" class="view-section">
-        <div id="marketContainer"></div>
     </div>
 
     <button id="addBtn" onclick="submitEntry()">+</button>
 </div>
 
 <script>
-    // 1. SECURE CONFIGURATION
-    const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE';
-    const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE';
-
-    // 2. INITIALIZE CLIENT
+    // 1. CONFIG
+    const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+    const SUPABASE_KEY = 'YOUR_SUPABASE_KEY';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    const DOMAINS = {
-        EMPLOYMENT: { theme: "--teal" },
-        PRIVACY: { theme: "--privacy-purple" },
-        INJURY: { theme: "--injury-orange" }
-    };
 
     let currentDomain = 'EMPLOYMENT';
     let isOffline = true;
+    let pendingQueue = JSON.parse(localStorage.getItem('wt_pending')) || [];
 
-    // 3. CONNECTION MONITOR (Addresses Restoration state in 1000026128.jpg)
+    // 2. CONNECTION HEARTBEAT
     async function checkConnection() {
         const dot = document.getElementById('connDot');
         try {
-            const { data, error } = await _supabase.from('timelines').select('id').limit(1);
+            const { error } = await _supabase.from('timelines').select('id').limit(1);
             if (error) throw error;
             
-            isOffline = false;
-            dot.className = 'status-dot status-online';
-            fetchTimeline(); // Auto-refresh when back online
+            if (isOffline) {
+                isOffline = false;
+                dot.className = 'status-dot status-online';
+                processQueue(); // Sync local notes
+            }
         } catch (e) {
             isOffline = true;
             dot.className = 'status-dot status-offline';
-            console.warn("Supabase is restoring or offline. Retrying in 30s...");
-            setTimeout(checkConnection, 30000); // Check again in 30s
+            setTimeout(checkConnection, 30000); // Check every 30s
         }
+    }
+
+    // 3. OFFLINE SYNC LOGIC
+    async function processQueue() {
+        if (pendingQueue.length === 0) { fetchTimeline(); return; }
+        
+        for (const item of pendingQueue) {
+            await _supabase.from('timelines').insert([item]);
+        }
+        
+        pendingQueue = [];
+        localStorage.setItem('wt_pending', JSON.stringify([]));
+        fetchTimeline();
+    }
+
+    async function submitEntry() {
+        const text = document.getElementById('statusBox').value;
+        if(!text.trim()) return;
+
+        const entry = { 
+            content: text, 
+            legal_domain: currentDomain,
+            created_at: new Date().toISOString()
+        };
+
+        if (isOffline) {
+            pendingQueue.push(entry);
+            localStorage.setItem('wt_pending', JSON.stringify(pendingQueue));
+            renderTimeline([]); // Refresh view to show pending note
+        } else {
+            await _supabase.from('timelines').insert([entry]);
+            fetchTimeline();
+        }
+        document.getElementById('statusBox').value = '';
+    }
+
+    async function fetchTimeline() {
+        if (isOffline) { renderTimeline([]); return; }
+        const { data } = await _supabase.from('timelines')
+            .select('*').eq('legal_domain', currentDomain).order('created_at', { ascending: false });
+        renderTimeline(data || []);
+    }
+
+    function renderTimeline(dbData) {
+        const container = document.getElementById('timelineContainer');
+        const localItems = pendingQueue.filter(q => q.legal_domain === currentDomain);
+        
+        const combined = [...localItems.map(l => ({...l, pending: true})), ...dbData];
+        
+        container.innerHTML = combined.map(item => `
+            <div class="stack-wrapper" style="margin-bottom:15px;">
+                <div style="font-size:9px; font-weight:900; color:var(--silver-gray);">${new Date(item.created_at).toLocaleString()}</div>
+                <div class="bubble">
+                    <p style="margin:0; font-size:12px;">${item.content}</p>
+                    ${item.pending ? '<span class="pending-tag">WAITING FOR SUPABASE SYNC...</span>' : ''}
+                </div>
+            </div>
+        `).join('');
     }
 
     function setDomain(key, btn) {
         currentDomain = key;
         document.querySelectorAll('.domain-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        document.getElementById('domainTitle').style.color = `var(${DOMAINS[key].theme})`;
-        document.getElementById('addBtn').style.background = `var(${DOMAINS[key].theme})`;
-        if (!isOffline) fetchTimeline();
+        fetchTimeline();
     }
 
-    function switchView(view) {
-        document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
-        document.getElementById(`${view}View`).classList.add('active');
-    }
-
-    // 4. DATA OPERATIONS
-    async function submitEntry() {
-        if (isOffline) return alert("Database is restoring. Please wait for the Teal indicator.");
-        
-        const text = document.getElementById('statusBox').value;
-        if(!text.trim()) return;
-
-        const { error } = await _supabase
-            .from('timelines')
-            .insert([{ 
-                content: text, 
-                legal_domain: currentDomain,
-                created_at: new Date()
-            }]);
-
-        if(!error) {
-            document.getElementById('statusBox').value = '';
-            fetchTimeline();
-        }
-    }
-
-    async function fetchTimeline() {
-        if (isOffline) return;
-        const { data, error } = await _supabase
-            .from('timelines')
-            .select('*')
-            .eq('legal_domain', currentDomain)
-            .order('created_at', { ascending: false });
-
-        if(!error) renderTimeline(data);
-    }
-
-    function renderTimeline(data) {
-        const container = document.getElementById('timelineContainer');
-        container.innerHTML = data.map(item => `
-            <div class="stack-wrapper" style="margin-bottom:15px;">
-                <div style="font-size:9px; font-weight:900; color:var(--silver-gray);">${new Date(item.created_at).toLocaleString()}</div>
-                <div class="bubble"><p style="margin:0; font-size:12px;">${item.content}</p></div>
-            </div>
-        `).join('');
-    }
-
-    // Start health check
     checkConnection();
 </script>
 </body>
