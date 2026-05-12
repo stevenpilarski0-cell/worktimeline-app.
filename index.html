@@ -3,113 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeline™ | Integrated Portal</title>
-    
-    <!-- 1. Load Supabase Library -->
+    <title>WorkTimeline™ | Marketplace View</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
     <style>
-        body { font-family: sans-serif; background-color: #f0f4f4; color: #333; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .container { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 450px; margin-bottom: 20px; }
-        h2, h3 { color: #008080; margin-top: 0; }
-        input, textarea { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
-        
-        .btn { border: none; padding: 14px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; margin-bottom: 10px; color: white; }
-        .btn-clio-client { background-color: #0070D2; } /* Clio Blue */
-        .btn-clio-firm { background-color: #2D3E50; }   /* Professional Slate */
-        .btn-manual { background-color: #555; }
-        .btn-convert { background-color: #f39c12; }    /* Warning/Action Orange */
-        
-        #status { font-size: 14px; font-weight: bold; text-align: center; margin-top: 10px; }
-        .hidden { display: none; }
+        body { font-family: sans-serif; background-color: #f0f4f4; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .container { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
+        h2 { color: #008080; margin-top: 0; }
+        .evidence-card { background: white; padding: 15px; border-radius: 8px; margin-top: 10px; border-left: 5px solid #008080; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .badge { background: #eee; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <!-- SECTION 1: AUTHENTICATION -->
-    <div id="authSection" class="container">
-        <h2>WorkTimeline™</h2>
-        <p>Choose your sign-in method:</p>
-        
-        <button id="clientClioBtn" class="btn btn-clio-client">Client Sign in with Clio</button>
-        <button id="firmClioBtn" class="btn btn-clio-firm">Firm Sign in with Clio</button>
-        
-        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
-        
-        <h3>Manual Sign Up</h3>
-        <input type="email" id="email" placeholder="Email Address">
-        <input type="password" id="password" placeholder="Password">
-        <button id="signUpBtn" class="btn btn-manual">Create Manual Account</button>
-        
-        <div id="status"></div>
-    </div>
-
-    <!-- SECTION 2: SETTINGS / CONVERSION -->
-    <div id="userSection" class="container hidden">
-        <h3>Account Settings</h3>
-        <p id="userGreeting"></p>
-        <div id="conversionArea">
-            <p>Hired a lawyer? Link your account to Clio to sync evidence.</p>
-            <button id="convertBtn" class="btn btn-convert">Convert to Clio Account</button>
-        </div>
-        <button id="signOutBtn" class="btn btn-manual">Sign Out</button>
+    <div class="container">
+        <h2 id="viewTitle">WorkTimeline™</h2>
+        <div id="viewBadge" class="badge">Checking Role...</div>
+        <hr>
+        <div id="timelineOutput">Loading evidence...</div>
     </div>
 
     <script>
-        // 1. Connection Coordinates
         const _supabaseUrl = 'https://sghmgiaaqcuymqnfbleh.supabase.co'; 
         const _supabaseKey = 'Sb_publishable_VL3kSjtNHGvLcmZYi1YXnA_Xlo8zpXy';
         const _supabase = supabase.createClient(_supabaseUrl, _supabaseKey);
 
-        const statusDiv = document.getElementById('status');
+        async function initializeMarketplaceView() {
+            const { data: { user } } = await _supabase.auth.getUser();
+            if (!user) return;
 
-        // 2. HELPER: Handle Clio OAuth
-        async function clioAuth(role = 'client') {
-            const { error } = await _supabase.auth.signInWithOAuth({
-                provider: 'clio',
-                options: { 
-                    redirectTo: 'https://worktimeline-app.vercel.app/',
-                    queryParams: { role: role }
-                }
-            });
-            if (error) statusDiv.innerText = error.message;
-        }
+            const userRole = user.app_metadata.role || 'client';
+            const badge = document.getElementById('viewBadge');
+            const output = document.getElementById('timelineOutput');
 
-        // 3. LISTENERS
-        document.getElementById('clientClioBtn').onclick = () => clioAuth('client');
-        document.getElementById('firmClioBtn').onclick = () => clioAuth('firm');
-        
-        document.getElementById('signUpBtn').onclick = async () => {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const { error } = await _supabase.auth.signUp({ email, password });
-            if (error) statusDiv.innerText = error.message;
-            else statusDiv.innerText = "Check your email for a confirmation link!";
-        };
+            // 1. Determine Context
+            const urlParams = new URLSearchParams(window.location.search);
+            const targetClientId = urlParams.get('client'); // The ID of the client the lawyer is viewing
 
-        document.getElementById('convertBtn').onclick = async () => {
-            // This triggers the identity linking process
-            await clioAuth('client'); 
-        };
+            let query = _supabase.from('timelines').select('*');
 
-        document.getElementById('signOutBtn').onclick = () => _supabase.auth.signOut();
-
-        // 4. SESSION MANAGEMENT
-        _supabase.auth.onAuthStateChange((event, session) => {
-            if (session) {
-                document.getElementById('authSection').classList.add('hidden');
-                document.getElementById('userSection').classList.remove('hidden');
-                document.getElementById('userGreeting').innerText = `Logged in as: ${session.user.email}`;
-                
-                // Hide conversion button if already linked
-                if (session.user.app_metadata.provider === 'clio') {
-                    document.getElementById('conversionArea').classList.add('hidden');
+            if (userRole === 'firm') {
+                badge.innerText = "FIRM VIEW";
+                // Only show evidence for the client passed in the URL
+                if (targetClientId) {
+                    query = query.eq('user_id', targetClientId);
+                    document.getElementById('viewTitle').innerText = "Client Evidence";
+                } else {
+                    output.innerText = "No client selected for this matter.";
+                    return;
                 }
             } else {
-                document.getElementById('authSection').classList.remove('hidden');
-                document.getElementById('userSection').classList.add('hidden');
+                badge.innerText = "CLIENT VIEW";
+                // Client sees only their own data
+                query = query.eq('user_id', user.id);
             }
-        });
+
+            // 2. Fetch and Display
+            const { data, error } = await query.order('created_at', { ascending: false });
+
+            if (error) {
+                output.innerText = "Error: " + error.message;
+            } else {
+                output.innerHTML = "";
+                data.forEach(entry => {
+                    const card = document.createElement('div');
+                    card.className = 'evidence-card';
+                    card.innerHTML = `<strong>${new Date(entry.created_at).toLocaleDateString()}</strong><p>${entry.content}</p>`;
+                    output.appendChild(card);
+                });
+            }
+        }
+
+        initializeMarketplaceView();
     </script>
 </body>
 </html>
