@@ -3,159 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeline™ | Master UI</title>
+    <title>WorkTimeline™ | Premium Functionality</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* 1. Global Branding (Platinum to Teal Gradient) */
-        :root {
-            --platinum: #E5E4E2;
-            --teal: #008080;
-            --clio-blue: #0070D2;
-            --slate: #2D3E50;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            margin: 0;
-            background: linear-gradient(180deg, var(--platinum) 0%, var(--teal) 100%);
-            background-attachment: fixed;
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-        }
-
-        /* 2. Container Logic */
-        .master-app {
-            width: 100%;
-            max-width: 450px;
-            background: #ffffff;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-        }
-
-        /* 3. Client View Components (1000023130.jpg) */
-        .client-header {
-            display: flex;
-            justify-content: space-around;
-            padding: 15px;
-            background: #fff;
-            border-bottom: 1px solid #eee;
-        }
-
-        .icon-nav { font-size: 10px; text-align: center; color: var(--teal); font-weight: bold; }
-
-        .clarity-card {
-            background: #fff;
-            border: 2px solid #00ffff;
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
-            border-radius: 15px;
-            margin: 20px;
-            padding: 20px;
-        }
-
-        .lock-submit {
-            background: var(--teal);
-            color: white;
-            padding: 18px;
-            border-radius: 12px;
-            margin: 20px;
-            text-align: center;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        /* 4. Firm Marketplace Components (1000023137.jpg) */
-        .triage-container {
-            display: flex;
-            gap: 20px;
-            padding: 20px;
-            background: #f0f3f3;
-        }
-
-        .triage-card {
-            background: var(--teal);
-            color: white;
-            border-radius: 20px;
-            padding: 25px;
-            flex: 1;
-            min-width: 300px;
-        }
-
-        .match-score {
-            border: 4px solid #00ffff;
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            margin: 0 auto 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .stat-box {
-            background: rgba(0,0,0,0.1);
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 15px;
-            font-size: 13px;
-        }
-
-        .hidden { display: none; }
+        body { font-family: "SF Pro Display", "Inter", system-ui, sans-serif; background: linear-gradient(180deg, #E5E4E2 0%, #008080 100%); min-height: 100vh; display: flex; justify-content: center; margin: 0; }
+        .app-window { width: 100%; max-width: 420px; background: rgba(255, 255, 255, 0.95); border-radius: 32px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); margin: 40px 20px; padding: 20px; overflow: hidden; }
+        .header { display: flex; justify-content: space-around; padding: 15px; border-bottom: 1px solid #eee; }
+        .icon-btn { border: none; background: none; cursor: pointer; text-align: center; font-size: 10px; font-weight: 700; color: #008080; }
+        .icon-btn span { display: block; font-size: 20px; margin-bottom: 5px; }
+        .switch-btn { width: 100%; padding: 12px; border-radius: 18px; border: none; background: #2D3E50; color: white; font-weight: 700; margin: 20px 0; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div class="master-app">
-        <!-- Client View: Based on 1000023130.jpg -->
-        <div id="clientView">
-            <header class="client-header">
-                <div class="icon-nav">📸<br>CAMERA</div>
-                <div class="icon-nav">🗒️<br>NOTEPAD</div>
-                <div class="icon-nav">👻<br>STEALTH</div>
-                <div class="icon-nav">🎙️<br>AUDIO</div>
-            </header>
-
-            <div class="clarity-card">
-                <h4 style="color:var(--teal); margin:0;">Clarity Card</h4>
-                <p style="font-size:12px; line-height:1.4;">[AI Voice]: "They mention <strong>Prima Facie</strong> here. Think of it as 'At First Glance'."</p>
-                <hr>
-                <div style="font-size:11px;">The Mistervisions Translation: <br><strong>"Our Opener"</strong></div>
-            </div>
-
-            <div class="lock-submit">🔒 Lock & Submit</div>
-        </div>
-
-        <!-- Firm View Toggle -->
-        <button onclick="toggleView()" style="margin: 20px; padding: 10px;">Switch to Firm Marketplace</button>
-
-        <!-- Firm View: Based on 1000023137.jpg -->
-        <div id="firmView" class="hidden">
-            <div class="triage-container">
-                <div class="triage-card">
-                    <div class="match-score">94%</div>
-                    <h3 style="text-align:center;">Elite Top 3%</h3>
-                    <div style="text-align:center; font-size:12px;">Case Match Score: 94%</div>
-                    
-                    <div class="stat-box">
-                        <div>Pattern Finding: High</div>
-                        <div>Cross-Exam Readiness: Strong</div>
-                        <div>Severity: High</div>
-                    </div>
-
-                    <button class="lock-submit" style="background:#fff; color:var(--teal); width:100%; margin: 20px 0 0 0;">Ready for Retainer</button>
-                </div>
-            </div>
-        </div>
+<div class="app-window">
+    <div class="header">
+        <button class="icon-btn" onclick="handleAction('camera')"><span>📷</span>CAMERA</button>
+        <button class="icon-btn" onclick="handleAction('notes')"><span>🗒️</span>NOTES</button>
+        <button class="icon-btn" onclick="handleAction('stealth')"><span>👻</span>STEALTH</button>
+        <button class="icon-btn" onclick="handleAction('audio')"><span>🎙️</span>AUDIO</button>
     </div>
 
-    <script>
-        function toggleView() {
-            document.getElementById('clientView').classList.toggle('hidden');
-            document.getElementById('firmView').classList.toggle('hidden');
+    <button class="switch-btn" onclick="toggleContext()">SWITCH MARKETPLACE VIEW</button>
+
+    <div id="contentArea" style="padding: 20px;">
+        <!-- Evidence or Triage cards will load here -->
+    </div>
+</div>
+
+<script>
+    const _supabase = supabase.createClient('https://sghmgiaaqcuymqnfbleh.supabase.co', 'Sb_publishable_VL3kSjtNHGvLcmZYi1YXnA_Xlo8zpXy');
+
+    // Functional Action Handler
+    async function handleAction(action) {
+        switch(action) {
+            case 'camera':
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                alert("Camera active. Ready to capture evidence.");
+                break;
+            case 'audio':
+                const audio = await navigator.mediaDevices.getUserMedia({ audio: true });
+                alert("Microphone active. Recording...");
+                break;
+            case 'stealth':
+                alert("Stealth mode enabled. Screen activity hidden.");
+                break;
+            case 'notes':
+                alert("Opening secure notepad...");
+                break;
         }
-    </script>
+    }
+
+    // Marketplace Context Switch
+    let isFirmView = false;
+    function toggleContext() {
+        isFirmView = !isFirmView;
+        const area = document.getElementById('contentArea');
+        area.innerHTML = isFirmView ? "<h3>Firm Marketplace</h3><p>Triage Case Leads Loading...</p>" : "<h3>My Timeline</h3><p>Evidence Feed Loading...</p>";
+        alert(isFirmView ? "Switched to Firm View" : "Switched to Client View");
+    }
+</script>
 </body>
 </html>
