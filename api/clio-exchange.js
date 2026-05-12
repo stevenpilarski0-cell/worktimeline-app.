@@ -1,64 +1,62 @@
-// WorkTimeline™ | Production API Handshake & Lead Creation
-export const CLIO_CONFIG = {
-    clientId: "18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJy...", // From your screenshot
-    redirectUri: "https://worktimeline-app.vercel.app/api/clio-exchange",
-    authUrl: "https://ca.app.clio.com/oauth/authorize",
-    tokenUrl: "https://ca.app.clio.com/oauth/token",
-    scopes: "identity leads_read"
-};
+// api/clio-exchange.js
 
 export default async function handler(req, res) {
-    const { code, state } = req.query;
+    // 1. Pull the keys from your Vercel Dashboard
+    // 'CLIO_CLIENT_SECRET' matches the entry in 1000026120.jpg exactly.
+    const { 
+        CLIO_CLIENT_ID, 
+        CLIO_CLIENT_SECRET, 
+        NEXT_PUBLIC_CLIO_REDIRECT_URI 
+    } = process.env;
 
-    // Phase 1: If we have a code, exchange it for an Access Token
-    if (code) {
-        try {
-            const tokenResponse = await fetch(CLIO_CONFIG.tokenUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({
-                    client_id: CLIO_CONFIG.clientId,
-                    client_secret: process.env.CLIO_SECRET, // Use Vercel Env Var for Secret!
-                    grant_type: 'authorization_code',
-                    code: code,
-                    redirect_uri: CLIO_CONFIG.redirectUri
-                })
-            });
+    const { code } = req.query; // Code provided by Clio after user login
 
-            const data = await tokenResponse.json();
-            
-            // Phase 2: Accept Bid & Create Lead in Clio Grow
-            // This is the trigger you asked for
-            const leadRes = await fetch('https://grow.clio.com/api/v1/leads', {
+    // Phase 1: If no code yet, redirect user to Clio login
+    if (!code) {
+        const authUrl = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=${CLIO_CLIENT_ID}&redirect_uri=${encodeURIComponent(NEXT_PUBLIC_CLIO_REDIRECT_URI)}&scope=identity%20leads`;
+        return res.redirect(authUrl);
+    }
+
+    try {
+        // Phase 2: Exchange Handshake Code for the Access Token
+        const response = await fetch('https://ca.app.clio.com/oauth/token', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({
+                client_id: CLIO_CLIENT_ID,
+                client_secret: CLIO_CLIENT_SECRET,
+                grant_type: 'authorization_code',
+                code: code,
+                redirect_uri: NEXT_PUBLIC_CLIO_REDIRECT_URI
+            })
+        });
+
+        const tokenData = await response.json();
+
+        if (tokenData.access_token) {
+            // Phase 3: Success! Create a Lead in Clio Grow
+            // You can map your 'vault' data here in a later step
+            await fetch('https://grow.clio.com/api/v1/leads', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${data.access_token}`,
+                    'Authorization': `Bearer ${tokenData.access_token}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     data: {
                         attributes: {
-                            description: "Accepted Bid from WorkTimeline Marketplace",
+                            description: "New Evidence Package synced from WorkTimeline™.",
                             status: "New"
-                            // Map your 'Evidence Summary' here
                         }
                     }
                 })
             });
 
-            return res.redirect('/?clio=connected');
-        } catch (error) {
-            return res.redirect('/?clio=error');
+            // Redirect back to your app with a success indicator
+            return res.redirect('/index.html?clio_status=success');
         }
+    } catch (error) {
+        console.error("Clio Auth Error:", error);
+        return res.redirect('/index.html?clio_status=error');
     }
-
-    // Phase 0: Start Handshake
-    const params = new URLSearchParams({
-        response_type: 'code',
-        client_id: CLIO_CONFIG.clientId,
-        redirect_uri: CLIO_CONFIG.redirectUri,
-        scope: CLIO_CONFIG.scopes
-    });
-
-    res.redirect(`${CLIO_CONFIG.authUrl}?${params.toString()}`);
 }
