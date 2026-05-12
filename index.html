@@ -3,271 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Master</title>
+    <title>WorkTimeline™ | Master Prototype</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Nunito+Sans:wght@400;600;800&display=swap');
         
         :root { 
             --teal: #008080; --silver-gray: #95a5a6; --gray-bg: #e2e8f0; 
-            --clio-green: #2ecc71; --clio-blue: #0076CE; --gray-border: #cbd5e0; 
-            --mac-shadow: 0 10px 30px rgba(0,0,0,0.12); --risk-red: #e53e3e;
+            --clio-blue: #0076CE; --gray-border: #cbd5e0; 
+            --mac-shadow: 0 10px 30px rgba(0,0,0,0.12);
             --mac-glass: rgba(255, 255, 255, 0.75);
+            --damage-red: #e53e3e;
         }
         
-        body { font-family: 'Nunito', sans-serif; background: var(--gray-bg); margin: 0; padding: 0; height: 100dvh; overflow: hidden; display: flex; justify-content: center; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Nunito', sans-serif; background: var(--gray-bg); margin: 0; padding: 0; height: 100dvh; overflow: hidden; display: flex; justify-content: center; }
         .app-locked { filter: blur(35px); pointer-events: none; }
         
-        /* GHOST MODE STYLES */
-        .ghost-active .app-container { background: #1a202c; border-color: #2d3748; }
-        .ghost-active #timelineContainer { filter: contrast(0.8) brightness(0.5) blur(8px); opacity: 0.2; pointer-events: none; }
-        .ghost-active .header { background: rgba(26, 32, 44, 0.85); border-bottom: 1px solid #2d3748; color: white; }
-        .ghost-active .work-silver { color: #4a5568; }
-        .ghost-active .mac-nav { background: rgba(255,255,255,0.1); }
-        .ghost-active .nav-slider { background: #4a5568; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
-
-        .app-container { width: 100%; max-width: 500px; background: white; height: 100dvh; display: flex; flex-direction: column; position: relative; border: 1.5px solid var(--gray-border); box-sizing: border-box; overflow: hidden; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .app-container { width: 100%; max-width: 500px; background: white; height: 100dvh; display: flex; flex-direction: column; position: relative; border: 1.5px solid var(--gray-border); box-sizing: border-box; overflow: hidden; }
         
-        /* HEADER - MAC STYLE */
-        .header { padding: 14px 15px; border-bottom: 1px solid var(--gray-border); background: var(--mac-glass); backdrop-filter: blur(20px); z-index: 4000; position: relative; display: flex; justify-content: space-between; align-items: center; }
-        .header-left { display: flex; align-items: center; gap: 12px; }
-        
-        .mac-nav { display: flex; background: rgba(0,0,0,0.06); padding: 2px; border-radius: 14px; position: relative; width: 110px; border: 0.5px solid rgba(0,0,0,0.05); }
-        .nav-item { flex: 1; font-size: 8.5px; font-weight: 900; padding: 7px 0; border: none; background: transparent; color: #718096; cursor: pointer; position: relative; z-index: 1; transition: color 0.3s; text-align: center; letter-spacing: 0.5px; }
-        .nav-item.active { color: var(--teal); }
-        .ghost-active .nav-item.active { color: white; }
+        /* HEADER */
+        .header { padding: 14px 15px; border-bottom: 1px solid var(--gray-border); background: var(--mac-glass); backdrop-filter: blur(20px); z-index: 4000; display: flex; justify-content: space-between; align-items: center; }
+        .mac-nav { display: flex; background: rgba(0,0,0,0.06); padding: 2px; border-radius: 14px; position: relative; width: 160px; border: 0.5px solid rgba(0,0,0,0.05); }
+        .nav-item { flex: 1; font-size: 8px; font-weight: 900; padding: 7px 0; border: none; background: transparent; color: #718096; cursor: pointer; position: relative; z-index: 1; text-align: center; }
         .nav-slider { position: absolute; top: 2px; left: 2px; height: calc(100% - 4px); width: 52px; background: white; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); z-index: 0; }
 
-        .briefcase-icon { width: 22px; height: 16px; border: 1.8px solid var(--teal); border-radius: 4px; position: relative; display: flex; align-items: center; justify-content: center; }
-        .briefcase-icon::before { content: ''; position: absolute; top: -6px; width: 8px; height: 4px; border: 1.8px solid var(--teal); border-bottom: none; border-radius: 3px 3px 0 0; background: inherit; z-index: 2; }
-        .icon-timeline { width: 140%; height: 1px; background: var(--teal); position: absolute; top: 50%; display: flex; justify-content: space-between; left: -20%; }
-        .icon-dot { width: 4px; height: 4px; background: white; border: 1.2px solid var(--teal); border-radius: 50%; margin-top: -1.5px; }
-        .main-title { font-weight: 900; font-size: 15px; display: flex; align-items: center; letter-spacing: -0.5px; line-height: 1; }
-        .work-silver { color: var(--silver-gray); } .timeline-teal { color: var(--teal); }
-        
-        .clio-pulse { width: 6px; height: 6px; border-radius: 50%; margin-left: 6px; transition: all 0.4s ease; background-color: #cbd5e0; }
-        .clio-pulse.connected { background-color: var(--clio-green); animation: clio-throb 2s infinite; }
-        @keyframes clio-throb { 0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.6); } 70% { box-shadow: 0 0 0 8px rgba(46, 204, 113, 0); } 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
+        .view-section { flex-grow: 1; overflow-y: auto; padding: 20px 15px 150px; display: none; flex-direction: column; gap: 20px; }
+        .view-section.active { display: flex; }
 
-        /* DRAWERS */
-        #utilityDrawer { position: absolute; top: 70px; width: 100%; background: white; border-bottom: 1.5px solid var(--gray-border); z-index: 3500; transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) transform; transform: translateY(calc(-100% + 40px)); border-radius: 0 0 30px 30px; }
-        .handle { width: 100%; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .handle-pill { width: 35px; height: 4px; background: #cbd5e0; border-radius: 10px; }
-        .template-chip { border: 1px solid var(--gray-border); padding: 7px 14px; border-radius: 50px; font-size: 9px; font-weight: 900; color: #4a5568; background: #f8fafc; cursor: pointer; }
+        /* MARKET CARD */
+        .auction-card { background: #f8fafc; border: 1.5px solid var(--gray-border); border-radius: 24px; padding: 18px; box-shadow: var(--mac-shadow); border-left: 8px solid var(--silver-gray); }
+        .win-rate { font-size: 24px; font-weight: 900; margin: 5px 0; transition: color 0.5s; }
+        .damage-tag { font-size: 9px; font-weight: 900; color: var(--damage-red); background: #fff5f5; padding: 4px 8px; border-radius: 6px; display: inline-block; margin-top: 5px; }
+        .disclaimer-box { font-size: 8.5px; color: #718096; line-height: 1.4; margin-top: 15px; text-align: left; background: #edf2f7; padding: 10px; border-radius: 12px; }
 
-        /* TIMELINE */
-        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 60px 15px 150px; display: flex; flex-direction: column; gap: 25px; scrollbar-width: none; }
-        .stack-wrapper { position: relative; width: 100%; perspective: 1000px; }
-        .stamp-label { font-size: 9px; font-weight: 900; color: var(--silver-gray); margin-bottom: 6px; letter-spacing: 0.5px; }
-        .stack-inner { position: relative; width: 85%; min-height: 80px; transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer; }
+        /* JOURNAL STYLES */
+        .stack-wrapper { position: relative; width: 100%; }
+        .stamp-label { font-size: 9px; font-weight: 900; color: var(--silver-gray); margin-bottom: 6px; }
+        .stack-inner { position: relative; width: 90%; min-height: 70px; transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer; }
         .stack-inner.flipped { transform: rotateY(180deg); }
-        .bubble { padding: 15px; border-radius: 22px; font-family: 'Nunito Sans', sans-serif; backface-visibility: hidden; box-shadow: var(--mac-shadow); width: 100%; box-sizing: border-box; }
-        .bubble-front { background: #f1f1f1; border: 1px solid #e5e5e5; color: #1a202c; position: relative; z-index: 2; }
-        .bubble-back { background: var(--teal); color: white; transform: rotateY(180deg); position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; border: 1px solid rgba(255,255,255,0.2); overflow-y: auto; }
+        .bubble { padding: 15px; border-radius: 22px; backface-visibility: hidden; width: 100%; box-sizing: border-box; box-shadow: var(--mac-shadow); }
+        .bubble-front { background: #f1f1f1; border: 1px solid #e5e5e5; }
+        .bubble-back { background: var(--teal); color: white; transform: rotateY(180deg); position: absolute; top: 0; left: 0; height: 100%; overflow-y: auto; }
         
-        .stack-inner.has-ai.pulse-on::after { content: ''; position: absolute; top: 6px; left: 8px; width: 100%; height: 100%; background: #4a5568; border-radius: 22px; z-index: 0; opacity: 0.7; animation: dark-heavy-pulse 3s infinite ease-in-out; }
-        @keyframes dark-heavy-pulse { 0% { box-shadow: 0 0 0 0 rgba(74, 85, 104, 0.7); background: #4a5568; } 50% { background: var(--teal); box-shadow: 0 0 0 15px rgba(0, 128, 128, 0.4); opacity: 0.9; } 100% { background: #4a5568; } }
+        .has-ai.pulse-on::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 22px; z-index: -1; animation: heavy-pulse 3s infinite; }
+        @keyframes heavy-pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(0, 128, 128, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0); } }
 
-        /* BUTTONS */
-        .draggable { position: absolute; z-index: 5000; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; border-radius: 22px; border: none; box-shadow: var(--mac-shadow); touch-action: none; cursor: pointer; }
-        #addBtn { width: 70px; height: 70px; background: var(--teal); font-size: 30px; top: 160px; right: 20px; }
-        #syncBtn { width: 70px; height: 70px; background: var(--clio-blue); font-size: 8px; padding: 6px; top: 250px; right: 20px; text-align: center; }
-
-        /* OVERLAYS */
-        #overlaySystem { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(25px); z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 15px; }
-        .modal-card { background: white; padding: 25px; border-radius: 28px; box-shadow: var(--mac-shadow); width: 100%; max-width: 340px; text-align: center; border: 1px solid var(--gray-border); }
-        .modal-btn { border: none; padding: 16px; border-radius: 18px; width: 100%; font-weight: 800; margin-top: 12px; cursor: pointer; }
-        textarea { width: 100%; height: 85px; border: 1.5px solid var(--gray-border); border-radius: 20px; padding: 15px; font-family: 'Nunito Sans', sans-serif; font-weight: 600; outline: none; background: #fafafa; }
+        #addBtn { position: absolute; z-index: 5000; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; border-radius: 22px; width: 70px; height: 70px; background: var(--teal); font-size: 30px; bottom: 30px; right: 20px; border: none; cursor: pointer; }
+        select { border: 1px solid var(--gray-border); border-radius: 10px; padding: 5px; font-size: 10px; font-family: inherit; }
     </style>
 </head>
-<body id="appBody">
+<body>
 
 <div id="overlaySystem">
-    <div class="modal-card" id="modalContent">
-        <h2 style="font-weight: 900; margin: 0; font-size: 18px;">INTAKE GUARD</h2>
-        <div style="font-size: 13px; line-height: 1.5; color: #4a5568; margin: 15px 0; font-weight: 600;">Secure your records. Support provided, no legal advice.</div>
-        <button class="modal-btn" style="background:var(--teal); color:white;" id="initialUnlock">SECURE MY JOURNAL</button>
+    <div style="background: white; padding: 30px; border-radius: 28px; text-align: center; max-width: 300px;">
+        <h2 style="font-weight: 900; margin: 0;">WORK-DEMO</h2>
+        <p style="font-size: 12px; color: #4a5568;">Privacy-Compliant Marketplace & Scoring Engine.</p>
+        <button onclick="unlockApp()" style="background:var(--teal); color:white; border:none; padding:15px; width:100%; border-radius:18px; font-weight:800; cursor:pointer;">START DEMO</button>
     </div>
 </div>
 
 <div class="app-container app-locked" id="mainApp">
     <header class="header">
-        <div class="header-left">
-            <div class="briefcase-icon">
-                <div class="icon-timeline"><div class="icon-dot"></div><div class="icon-dot"></div><div class="icon-dot"></div></div>
-            </div>
-            <div class="brand-block">
-                <div class="main-title"><span class="work-silver">Work</span><span class="timeline-teal">Timeline</span>™ <div class="clio-pulse"></div></div>
-            </div>
-        </div>
-
+        <div style="font-weight: 900; font-size: 13px; color: var(--teal);">WorkTimeline™</div>
         <div class="mac-nav">
             <div class="nav-slider" id="navSlider"></div>
-            <button class="nav-item active" id="btnNotes">NOTES</button>
-            <button class="nav-item" id="btnGhost">GHOST</button>
+            <button class="nav-item" onclick="switchView('journal', 0, this)">JOURNAL</button>
+            <button class="nav-item" onclick="switchView('market', 54, this)">LAWYER</button>
+            <button class="nav-item" onclick="switchView('ghost', 108, this)">GHOST</button>
         </div>
     </header>
 
-    <div id="utilityDrawer">
-        <div style="padding: 15px 15px 45px;">
-            <div style="display:flex; gap:6px; justify-content:center; margin-bottom: 15px; flex-wrap: wrap;">
-                <button onclick="useTemplate('INCIDENT')" class="template-chip">INCIDENT</button>
-                <button onclick="useTemplate('INJURY')" class="template-chip">INJURY</button>
-                <button onclick="useTemplate('WITNESS')" class="template-chip">WITNESS</button>
-            </div>
-            <textarea id="statusBox" placeholder="Documenting the grit..."></textarea>
+    <div id="journalView" class="view-section active">
+        <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <span style="font-size: 10px; font-weight: 900; color: var(--silver-gray);">Jurisdiction:</span>
+            <select id="provinceSelect">
+                <option value="BC">British Columbia (ESA/WorkSafe)</option>
+                <option value="ON">Ontario (ESA/WSIB)</option>
+                <option value="QC">Quebec (CNESST)</option>
+            </select>
         </div>
-        <div class="handle" onclick="toggleUtility()"><div class="handle-pill"></div></div>
+        <textarea id="statusBox" style="width:100%; height:80px; border-radius:20px; border:1px solid var(--gray-border); padding:15px; font-family:inherit; box-sizing: border-box;" placeholder="Type incident details (e.g., 'fire', 'privacy', 'harass')..."></textarea>
+        <div id="timelineContainer"></div>
     </div>
 
-    <div id="timelineContainer"></div>
-    <button id="addBtn" class="draggable">+</button>
-    <button id="syncBtn" class="draggable">SYNC TO CLIO</button>
+    <div id="marketView" class="view-section">
+        <h3 style="font-weight: 900; margin: 0; font-size: 14px;">Anonymous Portfolios</h3>
+        <div id="marketContainer"></div>
+    </div>
+
+    <button id="addBtn" onclick="submitEntry()">+</button>
 </div>
 
 <script>
-    // 1. DATA PERSISTENCE - Load existing vault or start new
     let vault = JSON.parse(localStorage.getItem('wt_timeline')) || [];
-    let pulseActive = localStorage.getItem('wt_pulse_active') !== 'false';
-    let utilOpen = false; 
 
-    // 2. INITIALIZATION - Check status and unlock
-    async function initClioStatus() {
-        const pulse = document.querySelector('.clio-pulse');
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('clio_status') === 'success' || localStorage.getItem('clio_linked') === 'true') {
-            pulse.classList.add('connected');
-            localStorage.setItem('clio_linked', 'true');
-        }
+    function unlockApp() {
+        document.getElementById('overlaySystem').style.display = 'none';
+        document.getElementById('mainApp').classList.remove('app-locked');
+        refresh();
+        renderMarket();
     }
 
-    function unlockApp() { 
-        document.getElementById('overlaySystem').style.display = 'none'; 
-        document.getElementById('mainApp').classList.remove('app-locked'); 
-        initClioStatus(); 
+    function switchView(view, offset, btn) {
+        document.getElementById('navSlider').style.transform = `translateX(${offset}px)`;
+        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+        const targetView = (view === 'ghost') ? 'journalView' : `${view}View`;
+        document.getElementById(targetView).classList.add('active');
+        document.body.classList.toggle('ghost-active', view === 'ghost');
+        document.getElementById('addBtn').style.display = (view === 'market') ? 'none' : 'flex';
     }
-    document.getElementById('initialUnlock').onclick = unlockApp;
 
-    // 3. AI TRIGGER LOGIC - Demonstration keyword scanning
     function submitEntry() {
-        const text = document.getElementById('statusBox').value; 
+        const text = document.getElementById('statusBox').value;
+        const prov = document.getElementById('provinceSelect').value;
         if(!text.trim()) return;
 
-        // Diagnostic triggers for Demo
-        const triggers = [
-            { keys: ["fire", "termination", "fired"], msg: "RETALIATORY DISCHARGE: Potential labor code violation detected." },
-            { keys: ["harass", "bully", "toxic"], msg: "WORKPLACE CULTURE: Hostile environment markers identified." },
-            { keys: ["injury", "hurt", "safety"], msg: "OCCUPATIONAL HEALTH: Safety protocol non-compliance detected." },
-            { keys: ["pay", "wage", "overtime"], msg: "COMPENSATION INTEGRITY: Possible wage theft or ESA breach." }
+        // Legal Pattern Logic
+        const patterns = [
+            { key: "fire", type: "ESA", msg: "Unlawful Termination Risk" },
+            { key: "hurt", type: "WorkSafe", msg: "OHS Non-Compliance" },
+            { key: "pay", type: "ESA", msg: "Wage Theft/Overtime Breach" },
+            { key: "harass", type: "Human Rights", msg: "Discriminatory Conduct" },
+            { key: "privacy", type: "Privacy Act", msg: "Personal Info Breach/FOIPPA" },
+            { key: "stole", type: "Criminal", msg: "Aggravated Conduct/Theft" }
         ];
 
-        let analysis = ""; 
-        const lowerText = text.toLowerCase();
-
-        // Scan for demo triggers
-        triggers.forEach(item => {
-            item.keys.forEach(key => {
-                if (lowerText.includes(key)) {
-                    analysis = `<div style="font-size:11px;"><b>LEGAL DIAGNOSTIC:</b> ${item.msg}</div>`;
-                }
-            });
+        let analysis = "";
+        let tags = [];
+        patterns.forEach(p => {
+            if(text.toLowerCase().includes(p.key)) {
+                analysis = p.msg;
+                tags.push(p.type);
+            }
         });
 
-        const newEntry = { 
-            grit: text, 
-            analysis: analysis, 
-            stamp: new Date().toLocaleString() 
-        };
-
-        vault.push(newEntry); 
-        localStorage.setItem('wt_timeline', JSON.stringify(vault)); 
+        vault.push({ grit: text, analysis: analysis, tags: tags, province: prov, stamp: new Date().toLocaleString() });
+        localStorage.setItem('wt_timeline', JSON.stringify(vault));
+        document.getElementById('statusBox').value = '';
         refresh();
-
-        document.getElementById('statusBox').value = ''; 
-        if(utilOpen) toggleUtility();
+        renderMarket();
     }
-    document.getElementById('addBtn').onclick = submitEntry;
 
-    // 4. UI REFRESH - Redraw the timeline cards
     function refresh() {
-        const list = document.getElementById('timelineContainer'); 
-        list.innerHTML = '';
-        
-        // Show empty state placeholder if vault is empty
-        if (vault.length === 0) {
-            list.innerHTML = `<div style="text-align:center; color:var(--silver-gray); margin-top:50px; font-style:italic;">[ No records found. Add an entry to begin. ]</div>`;
-            return;
-        }
-
-        const pulseClass = pulseActive ? 'pulse-on' : '';
-
+        const container = document.getElementById('timelineContainer');
+        container.innerHTML = vault.length === 0 ? '<p style="text-align:center; color:gray; font-size:12px;">Timeline Empty.</p>' : '';
         [...vault].reverse().forEach(item => {
-            // Check if entry contains AI analysis text
-            const hasAI = item.analysis && item.analysis.trim() !== "";
-            
-            list.innerHTML += `
+            const hasAI = item.analysis !== "";
+            container.innerHTML += `
                 <div class="stack-wrapper">
-                    <div class="stamp-label">📍 LANGLEY | ${item.stamp}</div>
-                    <div class="stack-inner ${hasAI ? 'has-ai ' + pulseClass : ''}" 
-                         onclick="${hasAI ? "this.classList.toggle('flipped')" : ""}">
-                        <div class="bubble bubble-front">
-                            <p style="font-weight:600; font-size:14px; margin:0;">${item.grit}</p>
-                        </div>
-                        ${hasAI ? `<div class="bubble bubble-back">${item.analysis}</div>` : ''}
+                    <div class="stamp-label">📍 ${item.province} | ${item.stamp}</div>
+                    <div class="stack-inner ${hasAI ? 'has-ai pulse-on' : ''}" onclick="if('${hasAI}'=='true') this.classList.toggle('flipped')">
+                        <div class="bubble bubble-front"><p style="margin:0; font-size:12px;">${item.grit}</p></div>
+                        <div class="bubble bubble-back"><p style="margin:0; font-size:10px; font-weight:900;">${item.analysis}</p></div>
                     </div>
                 </div>`;
         });
     }
 
-    // 5. CLIO & UTILITY CONTROLS
-    function performHandshake() { window.location.href = '/api/clio-exchange'; }
-
-    document.getElementById('syncBtn').onclick = () => {
-        if (localStorage.getItem('clio_linked') !== 'true') {
-            performHandshake();
-        } else {
-            alert("Syncing to Clio Warehouse...");
+    function renderMarket() {
+        const container = document.getElementById('marketContainer');
+        if(vault.length === 0) {
+            container.innerHTML = '<p style="text-align:center; color:gray; font-size:11px;">No active evidence packages.</p>';
+            return;
         }
-    };
 
-    function toggleUtility() { 
-        document.getElementById('utilityDrawer').style.transform = utilOpen ? 'translateY(calc(-100% + 40px))' : 'translateY(0)'; 
-        utilOpen = !utilOpen; 
+        // WEIGHTED SCORING ALGORITHM
+        const total = vault.length;
+        const aiPoints = vault.filter(v => v.analysis !== "").length * 20;
+        const complexity = total * 5;
+        const provinceFactor = (vault[0].province === "QC") ? 0.8 : 1.0; 
+        
+        const rawWinRate = (aiPoints + complexity) * provinceFactor;
+        const winPercent = Math.min(99, Math.max(5, rawWinRate));
+        
+        const tealFactor = winPercent / 100;
+        const dynamicColor = `rgb(${149 - (149-0)*tealFactor}, ${165 - (165-128)*tealFactor}, ${166 - (166-128)*tealFactor})`;
+
+        const damageFlags = [];
+        if(vault.some(v => v.tags.includes("Criminal"))) damageFlags.push("PUNITIVE");
+        if(vault.some(v => v.tags.includes("Human Rights"))) damageFlags.push("AGGRAVATED");
+
+        container.innerHTML = `
+            <div class="auction-card" style="border-left-color: ${dynamicColor}">
+                <div class="win-rate" style="color: ${dynamicColor}">${winPercent}% Success Probability</div>
+                <div style="font-size:10px; font-weight:900; color:var(--silver-gray);">ANONYMOUS PORTFOLIO | JURISDICTION: ${vault[0].province}</div>
+                <div style="font-size:11px; margin-top:8px;"><strong>Pattern Analysis:</strong> ${[...new Set(vault.map(v => v.tags).flat())].join(", ") || "General Inquiry"}</div>
+                <div style="margin-top:5px;">
+                    ${damageFlags.map(d => `<span class="damage-tag">${d} DAMAGES LIKELY</span>`).join(" ")}
+                </div>
+                
+                <div class="disclaimer-box">
+                    <strong>DISCLAIMER:</strong> This analysis is based on automated pattern recognition and data evaluation. We do not provide legal advice. Our platform does not accept payments or commissions from client outcomes.
+                </div>
+
+                <button style="width:100%; margin-top:15px; padding:10px; border-radius:12px; background:var(--clio-blue); color:white; border:none; font-weight:900; cursor:pointer;">ACQUIRE CASE VIA CLIO</button>
+            </div>`;
     }
-
-    function makeDraggable(el) {
-        let p1 = 0, p2 = 0, p3 = 0, p4 = 0; 
-        el.onmousedown = dStart; el.ontouchstart = dStart;
-        function dStart(e) { p3 = e.clientX || (e.touches ? e.touches[0].clientX : 0); p4 = e.clientY || (e.touches ? e.touches[0].clientY : 0); document.onmouseup = dEnd; document.ontouchend = dEnd; document.onmousemove = dMove; document.ontouchmove = dMove; }
-        function dMove(e) { let cx = e.clientX || (e.touches ? e.touches[0].clientX : 0); let cy = e.clientY || (e.touches ? e.touches[0].clientY : 0); p1 = p3 - cx; p2 = p4 - cy; p3 = cx; p4 = cy; el.style.top = (el.offsetTop - p2) + "px"; el.style.left = (el.offsetLeft - p1) + "px"; }
-        function dEnd() { document.onmouseup = null; document.onmousemove = null; document.ontouchend = null; document.ontouchmove = null; }
-    }
-
-    makeDraggable(document.getElementById("addBtn")); 
-    makeDraggable(document.getElementById("syncBtn"));
-
-    function useTemplate(t) { 
-        const ts = { 'INCIDENT': 'ACTION:\nVIOLATION:', 'WITNESS': 'NAME:\nCONTACT:', 'INJURY': 'OFA RECORD:\nINJURY:' }; 
-        document.getElementById('statusBox').value = ts[t]; 
-    }
-    
-    // NAVIGATION CONTROLS - Ghost Mode Switch
-    const btnNotes = document.getElementById('btnNotes');
-    const btnGhost = document.getElementById('btnGhost');
-    const navSlider = document.getElementById('navSlider');
-
-    btnNotes.onclick = () => {
-        document.getElementById('appBody').classList.remove('ghost-active');
-        navSlider.style.transform = 'translateX(0)';
-        btnNotes.classList.add('active'); btnGhost.classList.remove('active');
-    };
-
-    btnGhost.onclick = () => {
-        document.getElementById('appBody').classList.add('ghost-active');
-        navSlider.style.transform = 'translateX(54px)';
-        btnGhost.classList.add('active'); btnNotes.classList.remove('active');
-    };
-
-    refresh();
 </script>
 </body>
 </html>
