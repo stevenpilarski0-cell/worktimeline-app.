@@ -3,77 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeline™ | Marketplace View</title>
+    <title>WorkTimeline™ | Complete Portal</title>
+    
+    <!-- 1. Load Supabase Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
-        body { font-family: sans-serif; background-color: #f0f4f4; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .container { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
-        h2 { color: #008080; margin-top: 0; }
-        .evidence-card { background: white; padding: 15px; border-radius: 8px; margin-top: 10px; border-left: 5px solid #008080; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .badge { background: #eee; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        body { font-family: sans-serif; background-color: #f0f4f4; color: #333; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .container { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 500px; margin-bottom: 20px; }
+        h2, h3 { color: #008080; margin-top: 0; }
+        .btn { border: none; padding: 14px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; margin-bottom: 10px; color: white; transition: opacity 0.2s; }
+        .btn-clio { background-color: #0070D2; } /* Clio Blue */
+        .btn-firm { background-color: #2D3E50; }  /* Slate Gray */
+        .btn-sync { background-color: #27ae60; }  /* Success Green */
+        .evidence-card { background: #f9f9f9; padding: 15px; border-radius: 8px; margin-top: 10px; border-left: 5px solid #008080; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h2 id="viewTitle">WorkTimeline™</h2>
-        <div id="viewBadge" class="badge">Checking Role...</div>
-        <hr>
-        <div id="timelineOutput">Loading evidence...</div>
+    <!-- SECTION 1: AUTHENTICATION -->
+    <div id="authSection" class="container">
+        <h2>WorkTimeline™</h2>
+        <button id="clientClioBtn" class="btn btn-clio">Client Sign in with Clio</button>
+        <button id="firmClioBtn" class="btn btn-firm">Firm Sign in with Clio</button>
+        <div id="authStatus"></div>
+    </div>
+
+    <!-- SECTION 2: WORKSPACE & HANDOFF -->
+    <div id="mainSection" class="container hidden">
+        <h3 id="viewTitle">Evidence Workspace</h3>
+        <div id="evidenceList">Loading timeline...</div>
+        
+        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+        
+        <!-- Handoff Controls -->
+        <div id="handoffArea" class="hidden">
+            <h4>Clio Manage Handoff</h4>
+            <input type="text" id="matterId" placeholder="Enter Clio Matter ID" style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #ccc;">
+            <button id="syncBtn" class="btn btn-sync">Sync Evidence to Clio Note</button>
+        </div>
+        
+        <button id="signOutBtn" class="btn btn-firm" style="margin-top:20px;">Sign Out</button>
     </div>
 
     <script>
+        // 1. Configuration
         const _supabaseUrl = 'https://sghmgiaaqcuymqnfbleh.supabase.co'; 
         const _supabaseKey = 'Sb_publishable_VL3kSjtNHGvLcmZYi1YXnA_Xlo8zpXy';
         const _supabase = supabase.createClient(_supabaseUrl, _supabaseKey);
 
-        async function initializeMarketplaceView() {
-            const { data: { user } } = await _supabase.auth.getUser();
-            if (!user) return;
-
-            const userRole = user.app_metadata.role || 'client';
-            const badge = document.getElementById('viewBadge');
-            const output = document.getElementById('timelineOutput');
-
-            // 1. Determine Context
-            const urlParams = new URLSearchParams(window.location.search);
-            const targetClientId = urlParams.get('client'); // The ID of the client the lawyer is viewing
-
-            let query = _supabase.from('timelines').select('*');
-
-            if (userRole === 'firm') {
-                badge.innerText = "FIRM VIEW";
-                // Only show evidence for the client passed in the URL
-                if (targetClientId) {
-                    query = query.eq('user_id', targetClientId);
-                    document.getElementById('viewTitle').innerText = "Client Evidence";
-                } else {
-                    output.innerText = "No client selected for this matter.";
-                    return;
+        // 2. Auth Logic
+        async function handleLogin(role) {
+            const { error } = await _supabase.auth.signInWithOAuth({
+                provider: 'clio',
+                options: { 
+                    redirectTo: 'https://worktimeline-app.vercel.app/',
+                    queryParams: { role: role }
                 }
-            } else {
-                badge.innerText = "CLIENT VIEW";
-                // Client sees only their own data
-                query = query.eq('user_id', user.id);
-            }
-
-            // 2. Fetch and Display
-            const { data, error } = await query.order('created_at', { ascending: false });
-
-            if (error) {
-                output.innerText = "Error: " + error.message;
-            } else {
-                output.innerHTML = "";
-                data.forEach(entry => {
-                    const card = document.createElement('div');
-                    card.className = 'evidence-card';
-                    card.innerHTML = `<strong>${new Date(entry.created_at).toLocaleDateString()}</strong><p>${entry.content}</p>`;
-                    output.appendChild(card);
-                });
-            }
+            });
+            if (error) alert(error.message);
         }
 
-        initializeMarketplaceView();
+        document.getElementById('clientClioBtn').onclick = () => handleLogin('client');
+        document.getElementById('firmClioBtn').onclick = () => handleLogin('firm');
+        document.getElementById('signOutBtn').onclick = () => _supabase.auth.signOut();
+
+        // 3. Data Sync Logic (The Handoff)
+        document.getElementById('syncBtn').onclick = async () => {
+            const matterId = document.getElementById('matterId').value;
+            if (!matterId) return alert("Please enter a Clio Matter ID");
+
+            const { data: evidence } = await _supabase.from('timelines').select('*');
+            const noteBody = evidence.map(e => `[${new Date(e.created_at).toLocaleString()}] ${e.content}`).join('\n\n');
+
+            // Send to Clio API
+            const response = await fetch('https://app.clio.com/api/v4/notes.json', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('clio_token')}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    data: { subject: "WorkTimeline™ Evidence", body: noteBody, type: "MatterNote", matter: { id: matterId } }
+                })
+            });
+
+            if (response.ok) alert("Evidence successfully synced to Clio Manage!");
+            else alert("Sync failed. Ensure your Matter ID is correct.");
+        };
+
+        // 4. Session & UI Management
+        _supabase.auth.onAuthStateChange(async (event, session) => {
+            const authSection = document.getElementById('authSection');
+            const mainSection = document.getElementById('mainSection');
+            
+            if (session) {
+                authSection.classList.add('hidden');
+                mainSection.classList.remove('hidden');
+                
+                // Save token for API calls
+                localStorage.setItem('clio_token', session.provider_token);
+
+                const isFirm = session.user.app_metadata.role === 'firm';
+                if (isFirm) document.getElementById('handoffArea').classList.remove('hidden');
+                
+                loadTimeline();
+            } else {
+                authSection.classList.remove('hidden');
+                mainSection.classList.add('hidden');
+            }
+        });
+
+        async function loadTimeline() {
+            const list = document.getElementById('evidenceList');
+            const { data, error } = await _supabase.from('timelines').select('*').order('created_at', { ascending: false });
+            
+            if (error) list.innerText = error.message;
+            else {
+                list.innerHTML = data.map(e => `
+                    <div class="evidence-card">
+                        <strong>${new Date(e.created_at).toLocaleDateString()}</strong>
+                        <p>${e.content}</p>
+                    </div>
+                `).join('');
+            }
+        }
     </script>
 </body>
 </html>
