@@ -35,7 +35,7 @@
         .damage-tag { font-size: 9px; font-weight: 900; color: var(--damage-red); background: #fff5f5; padding: 4px 8px; border-radius: 6px; display: inline-block; margin-top: 5px; }
         .disclaimer-box { font-size: 8px; color: #718096; line-height: 1.4; margin-top: 15px; background: #edf2f7; padding: 10px; border-radius: 12px; }
 
-        /* TAMPER ALERT */
+        /* TAMPER ALERT (RED PULSE) */
         .tamper-glow { animation: tamper-pulse 1.5s infinite alternate; border: 2px solid var(--damage-red) !important; }
         @keyframes tamper-pulse { from { box-shadow: 0 0 5px var(--damage-red); } to { box-shadow: 0 0 20px var(--damage-red); } }
 
@@ -55,7 +55,7 @@
 
 <div id="overlaySystem">
     <div style="background: white; padding: 30px; border-radius: 28px; text-align: center; max-width: 300px;">
-        <h2 style="font-weight: 900; margin: 0;">WORK-DEMO</h2>
+        <h2 style="font-weight: 900; margin: 0; font-size: 16px;">WORK-DEMO</h2>
         <p style="font-size: 12px; color: #4a5568;">Tamper-Proof Ledger & Lawyer Marketplace Summary.</p>
         <button onclick="unlockApp()" style="background:var(--teal); color:white; border:none; padding:15px; width:100%; border-radius:18px; font-weight:800; cursor:pointer;">START DEMO</button>
     </div>
@@ -94,6 +94,7 @@
 </div>
 
 <script>
+    // 1. STATE MANAGEMENT
     let vault = JSON.parse(localStorage.getItem('wt_timeline')) || [];
     let isLocked = localStorage.getItem('wt_locked') === 'true';
     let isTampered = localStorage.getItem('wt_tampered') === 'true';
@@ -106,13 +107,14 @@
         renderMarket();
     }
 
+    // 2. INTEGRITY LEDGER
     function lockTimeline() {
         if(vault.length === 0) return alert("Timeline must have data before locking.");
         isLocked = true;
         localStorage.setItem('wt_locked', 'true');
         document.getElementById('lockBtn').innerText = "TIMELINE SECURED";
         alert("Chronological Evidence Integrity Locked. Any future changes will be recorded as a Tamper Event.");
-        renderMarket(); // Generates the summary for the lawyer
+        renderMarket(); 
     }
 
     function switchView(view, offset, btn) {
@@ -125,12 +127,12 @@
         document.body.classList.toggle('ghost-active', view === 'ghost');
     }
 
+    // 3. CLIO DUO PATTERN RECOGNITION
     function submitEntry() {
         const text = document.getElementById('statusBox').value;
         const prov = document.getElementById('provinceSelect').value;
         if(!text.trim()) return;
 
-        // Tamper Logic
         let entryTampered = false;
         if(isLocked) {
             entryTampered = true;
@@ -154,7 +156,15 @@
             }
         });
 
-        vault.push({ grit: text, analysis: analysis, tags: tags, province: prov, stamp: new Date().toLocaleString(), tampered: entryTampered });
+        vault.push({ 
+            grit: text, 
+            analysis: analysis, 
+            tags: tags, 
+            province: prov, 
+            stamp: new Date().toLocaleString(), 
+            tampered: entryTampered 
+        });
+
         localStorage.setItem('wt_timeline', JSON.stringify(vault));
         document.getElementById('statusBox').value = '';
         refresh();
@@ -178,6 +188,7 @@
         });
     }
 
+    // 4. ANONYMOUS MARKETPLACE SUMMARY
     function renderMarket() {
         const container = document.getElementById('marketContainer');
         if(!isLocked) {
@@ -185,7 +196,6 @@
             return;
         }
 
-        // SCORING ALGORITHM
         const total = vault.length;
         const aiHits = vault.filter(v => v.analysis !== "").length;
         const provinceFactor = (vault[0].province === "QC") ? 0.8 : 1.0; 
@@ -213,7 +223,7 @@
                     <strong>DISCLAIMER:</strong> Analysis based on pattern recognition and jurisdictional data. We do not provide legal advice and never accept commissions from client outcomes.
                 </div>
 
-                <button style="width:100%; margin-top:15px; padding:12px; border-radius:14px; background:var(--clio-blue); color:white; border:none; font-weight:900; cursor:pointer;">ACQUIRE CASE DATA (CLIO)</button>
+                <button style="width:100%; margin-top:15px; padding:12px; border-radius:14px; background:var(--clio-blue); color:white; border:none; font-weight:900; cursor:pointer;">ACQUIRE CASE DATA (CLIO CLOUD)</button>
             </div>`;
     }
 </script>
