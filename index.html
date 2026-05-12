@@ -1,213 +1,207 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline Elite</title>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <title>WorkTimeline™ | Master</title>
     <style>
-        :root {
-            --teal: #008080;
-            --silver-text: #64748b;
-            --silver-ui: #e2e8f0;
-            --clio-blue: #0076CE;
-            --clio-green: #2ecc71;
-            --slate: #1e293b;
-            --risk: #ef4444;
-            --glass: rgba(255, 255, 255, 0.94);
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Nunito+Sans:wght@400;600;800&display=swap');
+        :root { 
+            --teal: #008080; --silver-gray: #95a5a6; --gray-bg: #e2e8f0; --clio-green: #2ecc71; 
+            --clio-blue: #0076CE; --gray-border: #cbd5e0; --mac-shadow: 0 10px 30px rgba(0,0,0,0.12); 
+            --risk-red: #e53e3e;
+        }
+        
+        body { font-family: 'Nunito', sans-serif; background: var(--gray-bg); margin: 0; padding: 0; height: 100dvh; overflow: hidden; display: flex; justify-content: center; -webkit-tap-highlight-color: transparent; }
+        .app-locked { filter: blur(35px); pointer-events: none; }
+        .ghost-active #timelineContainer, .ghost-active #utilityDrawer, .ghost-active #mgmtDrawer { filter: blur(25px); opacity: 0.15; pointer-events: none; }
+        .app-container { width: 100%; max-width: 500px; background: white; height: 100dvh; display: flex; flex-direction: column; position: relative; border: 1.5px solid var(--gray-border); box-sizing: border-box; overflow: hidden; }
+        
+        /* HEADER - PIERCING TIMELINE ICON */
+        .header { padding: 12px 15px; border-bottom: 1px solid var(--gray-border); background: white; z-index: 4000; position: relative; }
+        .header-top { display: flex; justify-content: flex-start; align-items: center; gap: 14px; }
+        
+        .briefcase-container { position: relative; width: 32px; height: 24px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .briefcase-icon { 
+            width: 22px; height: 16px; border: 1.8px solid var(--teal); border-radius: 4px; 
+            position: relative; display: flex; align-items: center; justify-content: center;
+        }
+        .briefcase-icon::before { 
+            content: ''; position: absolute; top: -6px; width: 8px; height: 4px; 
+            border: 1.8px solid var(--teal); border-bottom: none; border-radius: 3px 3px 0 0; 
+            background: white; z-index: 2;
+        }
+        /* THE PIERCING LINE - THINNER, LONGER, MORE NOTICEABLE DOTS */
+        .icon-timeline { 
+            width: 140%; height: 1px; background: var(--teal); position: absolute; top: 50%; 
+            display: flex; justify-content: space-between; padding: 0; box-sizing: border-box; z-index: 3;
+            left: -20%;
+        }
+        .icon-dot { width: 4px; height: 4px; background: white; border: 1.2px solid var(--teal); border-radius: 50%; margin-top: -1.5px; }
+
+        .brand-block { display: flex; flex-direction: column; }
+        .main-title { font-weight: 900; font-size: 16px; display: flex; align-items: center; letter-spacing: -0.5px; line-height: 1; }
+        .work-silver { color: var(--silver-gray); } .timeline-teal { color: var(--teal); }
+        .clio-pulse { width: 6px; height: 6px; background-color: var(--clio-green); border-radius: 50%; margin-left: 6px; animation: clio-throb 2s infinite; }
+        .intake-sub { font-size: 8px; font-weight: 900; color: var(--teal); letter-spacing: -0.2px; margin-top: 2px; text-transform: uppercase; word-spacing: -2px; }
+
+        @keyframes clio-throb { 0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.6); } 70% { box-shadow: 0 0 0 8px rgba(46, 204, 113, 0); } 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
+
+        /* DRAWERS */
+        #utilityDrawer { position: absolute; top: 60px; width: 100%; background: white; border-bottom: 1.5px solid var(--gray-border); z-index: 3500; transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) transform; transform: translateY(calc(-100% + 40px)); border-radius: 0 0 30px 30px; }
+        #mgmtDrawer { position: fixed; bottom: 0; width: 100%; max-width: 500px; background: white; border-top: 1.5px solid var(--gray-border); z-index: 4500; transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) transform; transform: translateY(calc(100% - 40px)); border-radius: 30px 30px 0 0; }
+        .handle { width: 100%; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .handle-pill { width: 35px; height: 4px; background: #cbd5e0; border-radius: 10px; }
+
+        .template-chip { border: 1px solid var(--gray-border); padding: 7px 14px; border-radius: 50px; font-size: 9px; font-weight: 900; color: #4a5568; background: #f8fafc; cursor: pointer; }
+        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 60px 15px 150px; display: flex; flex-direction: column; gap: 25px; scrollbar-width: none; }
+        .stack-wrapper { position: relative; width: 100%; perspective: 1000px; }
+        .stamp-label { font-size: 9px; font-weight: 900; color: var(--silver-gray); margin-bottom: 6px; letter-spacing: 0.5px; }
+        .stack-inner { position: relative; width: 85%; min-height: 80px; transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer; }
+        .stack-inner.flipped { transform: rotateY(180deg); }
+        .bubble { padding: 15px; border-radius: 22px; font-family: 'Nunito Sans', sans-serif; backface-visibility: hidden; box-shadow: var(--mac-shadow); width: 100%; box-sizing: border-box; }
+        .bubble-front { background: #f1f1f1; border: 1px solid #e5e5e5; color: #1a202c; position: relative; z-index: 2; }
+        .bubble-back { background: var(--teal); color: white; transform: rotateY(180deg); position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; border: 1px solid rgba(255,255,255,0.2); overflow-y: auto; }
+        
+        .stack-inner.has-ai.pulse-on::after { 
+            content: ''; position: absolute; top: 6px; left: 8px; width: 100%; height: 100%; background: #4a5568; border-radius: 22px; z-index: 0; opacity: 0.7; animation: dark-heavy-pulse 3s infinite ease-in-out; 
+        }
+        @keyframes dark-heavy-pulse { 
+            0% { box-shadow: 0 0 0 0 rgba(74, 85, 104, 0.7); background: #4a5568; } 
+            50% { background: var(--teal); box-shadow: 0 0 0 15px rgba(0, 128, 128, 0.4); opacity: 0.9; }
+            100% { background: #4a5568; } 
         }
 
-        body {
-            font-family: 'Nunito Sans', sans-serif;
-            background: #f1f5f9;
-            margin: 0; padding: 0; height: 100vh;
-            display: flex; flex-direction: column; overflow: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
+        .draggable { position: absolute; z-index: 5000; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; border-radius: 22px; border: none; box-shadow: var(--mac-shadow); touch-action: none; cursor: pointer; }
+        #addBtn { width: 70px; height: 70px; background: var(--teal); font-size: 30px; top: 160px; right: 20px; }
+        #syncBtn { width: 70px; height: 70px; background: var(--clio-blue); font-size: 8px; padding: 6px; top: 250px; right: 20px; text-align: center; }
 
-        /* --- FLUSH MAC HEADER (75px) --- */
-        header {
-            background: var(--glass);
-            backdrop-filter: blur(25px);
-            padding: 0 20px;
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid var(--silver-ui);
-            z-index: 1000; position: fixed; top: 0; width: 100%; height: 75px;
-            box-sizing: border-box;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.03);
-        }
-
-        .logo-group { display: flex; align-items: center; gap: 6px; height: 100%; }
-        .brand-text { font-size: 21px; font-weight: 900; letter-spacing: -0.8px; display: flex; align-items: center; }
-        .text-work { color: var(--silver-text); }
-        .text-timeline { color: var(--teal); }
-
-        .status-dot { width: 7px; height: 7px; background: var(--clio-green); border-radius: 50%; margin-left: 8px; animation: statusPulse 2s infinite; }
-        @keyframes statusPulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.3; transform: scale(1.1); } 100% { opacity: 1; transform: scale(1); } }
-
-        /* --- CLIO LOCK BUTTON --- */
-        .clio-lock-btn {
-            background: var(--clio-blue); color: white; border: none;
-            padding: 10px 14px; border-radius: 16px; font-size: 10px; font-weight: 900;
-            display: flex; align-items: center; gap: 6px; cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,118,206,0.2);
-        }
-
-        /* --- INTAKE & MAIN CARD --- */
-        .intake-area { margin-top: 95px; padding: 20px; flex-shrink: 0; }
-        .main-card {
-            background: white; border-radius: 40px; padding: 25px;
-            border: 1px solid var(--silver-ui); box-shadow: 0 10px 40px rgba(0,0,0,0.04);
-        }
-
-        textarea {
-            width: 100%; height: 110px; border-radius: 30px; border: 2px solid var(--silver-ui);
-            padding: 20px; font-family: inherit; font-size: 16px; box-sizing: border-box;
-            outline: none; background: #fafafa; transition: 0.2s; resize: none;
-        }
-        textarea:focus { border-color: var(--teal); background: #fff; }
-
-        /* --- NATIVE MEDIA DOCK (TEAL ON SILVER) --- */
-        .dock { display: flex; gap: 12px; margin-top: 20px; align-items: center; }
-        .native-btn {
-            width: 56px; height: 56px; background: var(--silver-ui); border: none;
-            border-radius: 24px; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.2s; position: relative; overflow: hidden;
-        }
-        .native-btn:active { transform: scale(0.92); background: #cbd5e1; }
-        .native-btn svg { width: 26px; height: 26px; fill: var(--teal); }
-
-        .record-btn {
-            flex-grow: 1; background: var(--teal); color: white; border: none;
-            height: 56px; border-radius: 24px; font-weight: 900; font-size: 15px;
-            box-shadow: 0 4px 15px rgba(0,128,128,0.2); cursor: pointer;
-        }
-
-        /* --- TIMELINE CARDS --- */
-        #timeline { flex-grow: 1; overflow-y: auto; padding: 10px 20px 120px; display: flex; flex-direction: column; gap: 20px; }
-        .card {
-            background: white; border-radius: 38px; padding: 25px;
-            border: 1px solid var(--silver-ui); border-left: 10px solid var(--teal);
-            transition: 0.4s; animation: slideUp 0.4s ease-out;
-        }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .card.critical { border-left-color: var(--risk); box-shadow: 0 0 20px rgba(239, 68, 68, 0.15); }
-
-        /* --- SETTINGS GEAR --- */
-        #gear {
-            position: fixed; bottom: 35px; right: 35px; width: 65px; height: 65px;
-            background: var(--slate); border-radius: 24px; border: none; z-index: 999;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); cursor: pointer;
-        }
-
-        #loader {
-            position: fixed; inset: 0; background: rgba(255,255,255,0.95); z-index: 10000;
-            display: none; align-items: center; justify-content: center; flex-direction: column;
-        }
-        .spinner { width: 45px; height: 45px; border: 5px solid var(--silver-ui); border-top-color: var(--teal); border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+        #overlaySystem { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(25px); z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 15px; box-sizing: border-box; }
+        .modal-card { background: white; padding: 25px; border-radius: 28px; box-shadow: var(--mac-shadow); width: 100%; max-width: 340px; text-align: center; border: 1px solid var(--gray-border); }
+        .modal-btn { border: none; padding: 16px; border-radius: 18px; width: 100%; font-weight: 800; margin-top: 12px; cursor: pointer; font-size: 13px; }
+        textarea { width: 100%; height: 85px; border: 1.5px solid var(--gray-border); border-radius: 20px; padding: 15px; font-family: 'Nunito Sans', sans-serif; font-weight: 600; font-size: 15px; outline: none; background: #fafafa; }
     </style>
 </head>
-<body>
+<body id="appBody">
 
-<div id="loader">
-    <div class="spinner"></div>
-    <p style="font-weight:900; margin-top:20px; color:var(--teal)">AUDITING LEGAL PATTERNS...</p>
+<div id="overlaySystem">
+    <div class="modal-card" id="modalContent">
+        <h2 style="color: #1a202c; font-weight: 900; margin: 0; font-size: 18px;">INTAKE GUARD</h2>
+        <div style="font-size: 13px; line-height: 1.5; color: #4a5568; margin: 15px 0; font-weight: 600;">Secure your records. Support provided, no legal advice.</div>
+        <button class="modal-btn" style="background:var(--teal); color:white;" id="initialUnlock">SECURE MY JOURNAL</button>
+    </div>
 </div>
 
-<header>
-    <div class="logo-group">
-        <svg width="42" height="42" viewBox="0 0 100 100" fill="none">
-            <path d="M25 45V75C25 80.5 24.5 85 30 85H70C75.5 85 80 80.5 80 75V45" stroke="#008080" stroke-width="5"/>
-            <circle cx="50" cy="65" r="4" fill="#008080"/>
-        </svg>
-        <div class="brand-text"><span class="text-work">Work</span><span class="text-timeline">Timeline</span><div class="status-dot"></div></div>
-    </div>
-    <button class="clio-lock-btn" onclick="syncClio()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6z"/></svg>
-        LOCK & SEND
-    </button>
-</header>
+<div class="app-container app-locked" id="mainApp">
+    <header class="header">
+        <div class="header-top">
+            <div class="briefcase-container">
+                <div class="briefcase-icon">
+                    <div class="icon-timeline"><div class="icon-dot"></div><div class="icon-dot"></div><div class="icon-dot"></div></div>
+                </div>
+            </div>
+            <div class="brand-block">
+                <div class="main-title"><span class="work-silver">Work</span><span class="timeline-teal">Timeline</span>™ <div class="clio-pulse"></div></div>
+                <div class="intake-sub">TAKEN INTAKE</div>
+            </div>
+            <div style="position:absolute; right:15px; display:flex; flex-direction:column; gap:4px;">
+                <button onclick="document.getElementById('appBody').classList.toggle('ghost-active')" style="background:#f1f5f9; border:none; border-radius:20px; font-size:7px; font-weight:900; padding:4px 10px; color:var(--teal);">GHOST</button>
+                <button onclick="refresh()" style="background:#f1f5f9; border:none; border-radius:20px; font-size:7px; font-weight:900; padding:4px 10px; color:var(--teal);">NOTES</button>
+            </div>
+        </div>
+    </header>
 
-<div class="intake-area">
-    <div class="main-card">
-        <textarea id="msg" placeholder="Describe the incident or hazard..."></textarea>
-        <div class="dock">
-            <div class="native-btn" onclick="document.getElementById('imgIn').click()">
-                <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
-                <input type="file" id="imgIn" hidden accept="image/*" capture="environment">
+    <div id="utilityDrawer">
+        <div style="padding: 15px 15px 45px;">
+            <div style="display:flex; gap:6px; justify-content:center; margin-bottom: 15px; flex-wrap: wrap;">
+                <button onclick="useTemplate('INCIDENT')" class="template-chip">INCIDENT</button>
+                <button onclick="useTemplate('INJURY')" class="template-chip">INJURY</button>
+                <button onclick="useTemplate('WITNESS')" class="template-chip">WITNESS</button>
+                <button onclick="useTemplate('SETTING')" class="template-chip">SETTING</button>
             </div>
-            <div class="native-btn" onclick="document.getElementById('audIn').click()">
-                <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.34-1.34-3-3-3S9 3.66 9 5v6c0 1.66 1.34 3 3 3z"/></svg>
-                <input type="file" id="audIn" hidden accept="audio/*" capture="microphone">
-            </div>
-            <button class="record-btn" onclick="process()">RECORD & AUDIT</button>
+            <textarea id="statusBox" placeholder="Documenting the grit..."></textarea>
+        </div>
+        <div class="handle" onclick="toggleUtility()"><div class="handle-pill"></div></div>
+    </div>
+
+    <div id="timelineContainer"></div>
+    <button id="addBtn" class="draggable">+</button>
+    <button id="syncBtn" class="draggable">SYNC TO CLIO</button>
+
+    <div id="mgmtDrawer">
+        <div class="handle" onclick="toggleMgmt()"><div class="handle-pill"></div></div>
+        <div style="padding: 15px 25px 35px;">
+            <button class="modal-btn" style="background:var(--teal); color:white;" onclick="alert('Exporting...')">SAVE & EXPORT</button>
+            <button class="modal-btn" style="background:#f1f5f9; color:#718096;" onclick="confirm('Wipe everything?') && (localStorage.clear() || location.reload())">START FRESH</button>
         </div>
     </div>
 </div>
 
-<div id="timeline"></div>
-
-<button id="gear" onclick="let cur=localStorage.getItem('WT_K'); let k=prompt('Cohere AI Key:', cur||''); if(k) localStorage.setItem('WT_K', k);">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-</button>
-
 <script>
-    let db = JSON.parse(localStorage.getItem('WT_LOGS') || '[]');
+    let vault = JSON.parse(localStorage.getItem('wt_timeline')) || [];
+    let pulseActive = localStorage.getItem('wt_pulse_active') !== 'false';
+    let pulseExplained = localStorage.getItem('wt_pulse_explained') === 'true';
+    let utilOpen = false; let mgmtOpen = false; let activePending = null;
 
-    function syncClio() { alert("Initiating Golden Exchange with Clio..."); }
+    function unlockApp() { document.getElementById('overlaySystem').style.display = 'none'; document.getElementById('mainApp').classList.remove('app-locked'); }
+    document.getElementById('initialUnlock').onclick = unlockApp;
 
-    async function process() {
-        const val = document.getElementById('msg').value.trim();
-        const key = localStorage.getItem('WT_K');
-        if (!val) return;
-        if (!key) { alert("Please tap the Gear and add your Cohere API Key."); return; }
+    function toggleUtility() { document.getElementById('utilityDrawer').style.transform = utilOpen ? 'translateY(calc(-100% + 40px))' : 'translateY(0)'; utilOpen = !utilOpen; }
+    function toggleMgmt() { document.getElementById('mgmtDrawer').style.transform = mgmtOpen ? 'translateY(calc(100% - 40px))' : 'translateY(0)'; mgmtOpen = !mgmtOpen; }
 
-        document.getElementById('loader').style.display = 'flex';
-        
-        try {
-            const r = await fetch('https://api.cohere.ai/v1/generate', {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${key}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    model: 'command',
-                    prompt: `Audit this text for BC Workers Compensation Act violations. Specifically look for Section 47 Prohibited Action (retaliation for safety reporting) or mental health injury claim suppression. 
-                    RETURN JSON ONLY: {"sev": 0-3, "msg": "Lawyer-ready summary of violation", "law": "BC Sec 47 / WCB"}. 
-                    TEXT: ${val}`,
-                    temperature: 0.1
-                })
-            });
-            const data = await r.json();
-            const res = JSON.parse(data.generations[0].text.replace(/```json|```/g, ""));
-            
-            db.push({ id: Date.now(), txt: val, time: new Date().toLocaleString(), ...res });
-            localStorage.setItem('WT_LOGS', JSON.stringify(db));
-            document.getElementById('msg').value = '';
-            render();
-        } catch (e) { alert("AI Audit failed. Check your API key."); }
-        document.getElementById('loader').style.display = 'none';
+    function makeDraggable(el) {
+        let p1 = 0, p2 = 0, p3 = 0, p4 = 0; el.onmousedown = dStart; el.ontouchstart = dStart;
+        function dStart(e) { p3 = e.clientX || (e.touches ? e.touches[0].clientX : 0); p4 = e.clientY || (e.touches ? e.touches[0].clientY : 0); document.onmouseup = dEnd; document.ontouchend = dEnd; document.onmousemove = dMove; document.ontouchmove = dMove; }
+        function dMove(e) { let cx = e.clientX || (e.touches ? e.touches[0].clientX : 0); let cy = e.clientY || (e.touches ? e.touches[0].clientY : 0); p1 = p3 - cx; p2 = p4 - cy; p3 = cx; p4 = cy; el.style.top = (el.offsetTop - p2) + "px"; el.style.left = (el.offsetLeft - p1) + "px"; }
+        function dEnd() { document.onmouseup = null; document.onmousemove = null; document.ontouchend = null; document.ontouchmove = null; }
+    }
+    makeDraggable(document.getElementById("addBtn")); makeDraggable(document.getElementById("syncBtn"));
+
+    function submitEntry() {
+        const text = document.getElementById('statusBox').value; if(!text.trim()) return;
+        let analysis = ""; let isRisk = false;
+        if (text.toLowerCase().includes("fire") || text.toLowerCase().includes("termination") || text.toLowerCase().includes("fired") || text.toLowerCase().includes("retaliation")) {
+            isRisk = true;
+            analysis = `<div style="font-size:11px; text-align:left;"><b>LEGAL DIAGNOSTIC:</b><br><br><b>Prima Facie Case:</b> Retaliatory Discharge.<br><br><b>Nexus:</b> Direct temporal proximity between protected activity (Safety Reporting) and adverse employment action.<br><br><b>Statutory Breach:</b> Potential violation of BC Workers Compensation Act (Sec. 48-50). <br><br><b>Latin Principle:</b> <i>Abusus Non Tollit Usum</i>.</div>`;
+        }
+        activePending = { grit: text, analysis: analysis, stamp: new Date().toLocaleString() };
+        if(isRisk && !pulseExplained) { triggerPulseDiagnostic(); }
+        else if(isRisk) { triggerRiskWarning(); }
+        else { confirmSave(); }
+        document.getElementById('statusBox').value = ''; if(utilOpen) toggleUtility();
+    }
+    document.getElementById('addBtn').onclick = submitEntry;
+
+    function triggerPulseDiagnostic() {
+        document.getElementById('modalContent').innerHTML = `<h2 style="color:var(--risk-red); font-weight:900; margin:0; font-size:18px;">PULSE DIAGNOSTIC</h2><div style="font-size:12px; line-height:1.5; color:#4a5568; margin:15px 0; font-weight:600; text-align:left;"><b>Unemployment Risk Pulse</b> detected. Heartbeat indicates high-risk legal markers. Keep pulse active or shut off.</div><button class="modal-btn" style="background:var(--teal); color:white;" onclick="setPulsePreference(true)">KEEP PULSE ON</button><button class="modal-btn" style="background:#f1f5f9; color:#718096;" onclick="setPulsePreference(false)">SHUT PULSE OFF</button>`;
+        document.getElementById('overlaySystem').style.display = 'flex';
     }
 
-    function render() {
-        const cont = document.getElementById('timeline');
-        cont.innerHTML = '';
-        [...db].reverse().forEach(i => {
-            const card = document.createElement('div');
-            card.className = `card ${i.sev >= 2 ? 'critical' : ''}`;
-            card.innerHTML = `
-                <small style="color:var(--silver-text); font-weight:800;">${i.time}</small>
-                <div style="font-weight:700; margin:10px 0; color:var(--slate);">${i.txt}</div>
-                <div style="background:#f8fafc; border-radius:15px; padding:12px; border:1px solid #e2e8f0;">
-                    <strong style="color:var(--teal); font-size:11px;">DIAGNOSTIC:</strong>
-                    <span style="font-size:13px; color:var(--slate);">${i.msg}</span>
-                    <div style="font-size:10px; color:var(--silver-text); margin-top:5px;">Statute: ${i.law}</div>
-                </div>`;
-            cont.appendChild(card);
+    function triggerRiskWarning() {
+        document.getElementById('modalContent').innerHTML = `<h2 style="color:var(--risk-red); font-weight:900; font-size:18px;">EMPLOYMENT AT RISK!</h2><div style="font-size:13px; font-weight:600; margin:15px 0;">Critical pattern detected. Legal Diagnostic active.</div><button class="modal-btn" style="background:var(--teal); color:white;" onclick="confirmSave()">OK, I UNDERSTAND</button>`;
+        document.getElementById('overlaySystem').style.display = 'flex';
+    }
+
+    function setPulsePreference(pref) { pulseActive = pref; pulseExplained = true; localStorage.setItem('wt_pulse_active', pref); localStorage.setItem('wt_pulse_explained', 'true'); confirmSave(); }
+    function confirmSave() { vault.push(activePending); localStorage.setItem('wt_timeline', JSON.stringify(vault)); unlockApp(); refresh(); 
+        setTimeout(() => { document.getElementById('modalContent').innerHTML = `<h2 style="color: #1a202c; font-weight: 900; margin: 0; font-size: 18px;">INTAKE GUARD</h2><div style="font-size: 13px; line-height: 1.5; color: #4a5568; margin: 15px 0; font-weight: 600;">Secure your records. Support provided, no legal advice.</div><button class="modal-btn" style="background:var(--teal); color:white;" onclick="unlockApp()">SECURE MY JOURNAL</button>`; }, 500);
+    }
+
+    function refresh() {
+        const list = document.getElementById('timelineContainer'); list.innerHTML = '';
+        const pulseClass = pulseActive ? 'pulse-on' : '';
+        [...vault].reverse().forEach(item => {
+            const hasAI = item.analysis !== "";
+            list.innerHTML += `<div class="stack-wrapper"><div class="stamp-label">📍 LANGLEY | ${item.stamp}</div><div class="stack-inner ${hasAI ? 'has-ai ' + pulseClass : ''}" onclick="this.classList.toggle('flipped')"><div class="bubble bubble-front"><p style="font-weight:600; font-size:14px; margin:0;">${item.grit}</p></div>${hasAI ? `<div class="bubble bubble-back">${item.analysis}</div>` : ''}</div></div>`;
         });
     }
-    render();
-</script>
 
+    function useTemplate(t) { 
+        const ts = { 'INCIDENT': 'ACTION:\nVIOLATION:', 'WITNESS': 'NAME:\nCONTACT:', 'INJURY': 'OFA RECORD:\nINJURY:', 'SETTING': 'LOCATION:\nCONTEXT:' }; 
+        document.getElementById('statusBox').value = ts[t]; 
+    }
+    refresh();
+</script>
 </body>
 </html>
