@@ -2,201 +2,208 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeline™ | Live Action Prototype</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>WorkTimeline™ | Master</title>
     <style>
-        /* 1. BRANDING: Platinum to Teal & Mac-Style SF Pro Font */
-        :root {
-            --platinum: #E5E4E2;
-            --teal: #008080;
-            --clio-blue: #0070D2;
-            --slate: #2D3E50;
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Nunito+Sans:wght@400;600;800&display=swap');
+        :root { 
+            --teal: #008080; 
+            --silver-gray: #95a5a6; 
+            --gray-bg: #e2e8f0; 
+            --clio-green: #2ecc71; 
+            --clio-blue: #0076CE;
+            --gray-border: #cbd5e0; 
+            --mac-shadow: 0 10px 30px rgba(0,0,0,0.12); 
         }
-
-        body {
-            font-family: "SF Pro Display", "Inter", system-ui, sans-serif;
-            margin: 0; padding: 0;
-            background: linear-gradient(180deg, var(--platinum) 0%, var(--teal) 100%);
-            background-attachment: fixed;
-            display: flex; justify-content: center; min-height: 100vh;
-        }
-
-        /* 2. THE WINDOW: Rounded Bubbly Aesthetics */
-        .app-window {
-            width: 100%; max-width: 420px;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(15px);
-            margin: 20px; border-radius: 35px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.25);
-            display: flex; flex-direction: column; overflow: hidden;
-        }
-
-        /* 3. FUNCTIONAL NAV: Hardware Triggers */
-        .nav-bar {
-            display: flex; justify-content: space-around;
-            padding: 20px; background: white;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-        }
-
-        .nav-btn {
-            border: none; background: none; cursor: pointer;
-            color: var(--teal); font-size: 10px; font-weight: 800;
-        }
-
-        .nav-icon { display: block; font-size: 24px; margin-bottom: 4px; }
-
-        /* 4. MARKETPLACE: Horizontal Scroll Triage */
-        .triage-scroll {
-            display: flex; gap: 15px; padding: 10px 0;
-            overflow-x: auto; scroll-snap-type: x mandatory;
-        }
-
-        .triage-card {
-            background: white; min-width: 260px; padding: 20px;
-            border-radius: 25px; scroll-snap-align: center;
-            border: 2px solid #eee; transition: 0.3s; cursor: pointer;
-        }
-
-        .triage-card:hover { border-color: #00ffff; }
-
-        /* 5. UI COMPONENTS */
-        .content { padding: 25px; flex: 1; overflow-y: auto; }
-        .hidden { display: none; }
         
-        .btn-pill {
-            background: var(--teal); color: white; border: none;
-            padding: 18px; border-radius: 22px; width: 100%;
-            font-weight: 800; cursor: pointer; margin-top: 10px;
+        body { font-family: 'Nunito', sans-serif; background: var(--gray-bg); margin: 0; padding: 0; height: 100dvh; overflow: hidden; display: flex; justify-content: center; -webkit-tap-highlight-color: transparent; }
+        
+        .app-locked { filter: blur(35px); pointer-events: none; }
+        .ghost-active #timelineContainer, .ghost-active #utilityDrawer, .ghost-active #mgmtDrawer { filter: blur(25px); opacity: 0.15; pointer-events: none; }
+
+        .app-container { width: 100%; max-width: 500px; background: white; height: 100dvh; display: flex; flex-direction: column; position: relative; border: 1.5px solid var(--gray-border); box-sizing: border-box; overflow: hidden; }
+        
+        /* HEADER */
+        .header { padding: 12px 15px; border-bottom: 1px solid var(--gray-border); background: white; z-index: 4000; position: relative; }
+        .header-top { display: flex; justify-content: flex-start; align-items: center; }
+        .brand-text { display: flex; flex-direction: column; align-items: flex-start; }
+        .main-title { font-weight: 900; font-size: 17px; display: flex; align-items: center; letter-spacing: -0.5px; }
+        .work-silver { color: var(--silver-gray); }
+        .timeline-teal { color: var(--teal); }
+        .clio-pulse { width: 7px; height: 7px; background-color: var(--clio-green); border-radius: 50%; margin-left: 8px; animation: clio-throb 2s infinite; }
+        @keyframes clio-throb { 0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.6); } 70% { box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); } 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
+
+        /* DRAWERS */
+        #utilityDrawer { position: absolute; top: 60px; width: 100%; background: white; border-bottom: 1.5px solid var(--gray-border); z-index: 3500; transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) transform; transform: translateY(calc(-100% + 40px)); border-radius: 0 0 30px 30px; }
+        #mgmtDrawer { position: fixed; bottom: 0; width: 100%; max-width: 500px; background: white; border-top: 1.5px solid var(--gray-border); z-index: 4500; transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) transform; transform: translateY(calc(100% - 40px)); border-radius: 30px 30px 0 0; }
+        .handle { width: 100%; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .handle-pill { width: 35px; height: 4px; background: #cbd5e0; border-radius: 10px; }
+
+        /* BUBBLY UI */
+        .template-chip { border: 1px solid var(--gray-border); padding: 8px 16px; border-radius: 50px; font-size: 10px; font-weight: 900; color: #4a5568; background: #f8fafc; cursor: pointer; }
+        .media-pill { background: rgba(226, 232, 240, 0.8); border: 1px solid var(--gray-border); padding: 10px 15px; border-radius: 50px; font-size: 10px; flex: 1; font-weight: 800; color: #4a5568; text-align: center; }
+
+        /* 3D STACK SYSTEM & PULSE */
+        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 60px 15px 150px; display: flex; flex-direction: column; gap: 25px; scrollbar-width: none; }
+        .stack-wrapper { position: relative; width: 100%; perspective: 1000px; }
+        .stack-inner { position: relative; width: 85%; min-height: 80px; transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer; }
+        .stack-inner.flipped { transform: rotateY(180deg); }
+        .bubble { padding: 15px; border-radius: 22px; font-family: 'Nunito Sans', sans-serif; backface-visibility: hidden; box-shadow: var(--mac-shadow); width: 100%; box-sizing: border-box; }
+        .bubble-front { background: #f1f1f1; border: 1px solid #e5e5e5; color: #1a202c; position: relative; z-index: 2; }
+        .bubble-back { background: var(--teal); color: white; transform: rotateY(180deg); position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; border: 1px solid rgba(255,255,255,0.2); }
+        
+        /* THE STACKED PULSE LOGIC */
+        .stack-inner.has-ai::after { 
+            content: ''; 
+            position: absolute; 
+            top: 6px; 
+            left: 8px; 
+            width: 100%; 
+            height: 100%; 
+            background: var(--teal); 
+            border-radius: 22px; 
+            z-index: 0; 
+            opacity: 0.4; 
+            animation: stack-pulse 2.5s infinite ease-in-out; 
+        }
+        
+        @keyframes stack-pulse { 
+            0% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0.5); } 
+            70% { box-shadow: 0 0 0 15px rgba(0, 128, 128, 0); } 
+            100% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0); } 
         }
 
-        textarea {
-            width: 100%; padding: 15px; border-radius: 20px;
-            border: 1px solid #ddd; font-family: inherit; margin: 10px 0;
-        }
+        .stamp-label { font-size: 9px; font-weight: 800; color: #a0aec0; margin-bottom: 6px; text-transform: uppercase; }
 
-        .chat-bubble {
-            padding: 15px; border-radius: 20px; margin-bottom: 10px;
-            max-width: 80%; font-size: 14px;
-        }
-        .lawyer-msg { background: #f0f3f3; color: var(--slate); align-self: flex-start; }
-        .client-msg { background: var(--teal); color: white; align-self: flex-end; margin-left: auto; }
+        /* DRAGGABLES */
+        .draggable { position: absolute; z-index: 5000; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; border-radius: 22px; border: none; box-shadow: var(--mac-shadow); touch-action: none; }
+        #addBtn { width: 70px; height: 70px; background: var(--teal); font-size: 30px; top: 160px; right: 20px; }
+        #syncBtn { width: 70px; height: 70px; background: var(--clio-blue); font-size: 8px; padding: 6px; top: 250px; right: 20px; text-align: center; }
+
+        /* OVERLAYS */
+        #overlaySystem { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(25px); z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 15px; box-sizing: border-box; }
+        .modal-card { background: white; padding: 25px; border-radius: 28px; box-shadow: var(--mac-shadow); width: 100%; max-width: 340px; text-align: center; border: 1px solid var(--gray-border); }
+        .modal-btn { border: none; padding: 16px; border-radius: 18px; width: 100%; font-weight: 800; margin-top: 12px; cursor: pointer; font-size: 13px; font-family: 'Nunito', sans-serif; }
+        textarea { width: 100%; height: 85px; border: 1.5px solid var(--gray-border); border-radius: 20px; padding: 15px; font-family: 'Nunito Sans', sans-serif; font-weight: 600; font-size: 15px; outline: none; background: #fafafa; }
     </style>
 </head>
-<body>
+<body id="appBody">
 
-<div class="app-window">
-    <!-- UI STAGE: HARDWARE NAV -->
-    <div id="navArea" class="nav-bar hidden">
-        <button class="nav-btn" onclick="useHardware('camera')"><span class="nav-icon">📸</span>CAMERA</button>
-        <button class="nav-btn" onclick="useHardware('mic')"><span class="nav-icon">🎙️</span>AUDIO</button>
-        <button class="nav-btn" onclick="useHardware('stealth')"><span class="nav-icon">👻</span>STEALTH</button>
-        <button class="nav-btn" onclick="useHardware('notes')"><span class="nav-icon">🗒️</span>NOTES</button>
+<div id="overlaySystem">
+    <div class="modal-card" id="modalContent">
+        <h2 style="color: #1a202c; font-weight: 900; margin: 0; font-size: 18px; letter-spacing: -0.5px;">INTAKE GUARD</h2>
+        <div style="font-size: 13px; line-height: 1.5; color: #4a5568; margin: 15px 0; font-weight: 600;">We are here to help you document the truth.<br><br>While this journal provides evidence support, <b>we do not offer legal advice.</b><br><br>Proceed to secure your workplace records.</div>
+        <button class="modal-btn" style="background:var(--teal); color:white;" onclick="unlockApp()">SECURE MY JOURNAL</button>
+    </div>
+</div>
+
+<div class="app-container app-locked" id="mainApp">
+    <header class="header">
+        <div class="header-top">
+            <svg width="40" height="30" viewBox="0 0 44 34" fill="none" style="margin-right:5px;">
+                <rect x="4" y="10" width="36" height="20" rx="4" stroke="var(--teal)" stroke-width="2.5"/>
+                <path d="M16 10V6C16 4.89543 16.8954 4 18 4H26C27.1046 4 28 4.89543 28 6V10" stroke="var(--teal)" stroke-width="2.5"/>
+                <line x1="0" y1="20" x2="44" y2="20" stroke="var(--teal)" stroke-width="2.5"/>
+                <circle cx="10" cy="20" r="3" fill="var(--teal)" stroke="white" stroke-width="1"/><circle cx="22" cy="20" r="3" fill="var(--teal)" stroke="white" stroke-width="1"/><circle cx="34" cy="20" r="3" fill="var(--teal)" stroke="white" stroke-width="1"/>
+            </svg>
+            <div class="brand-text">
+                <div class="main-title"><span class="work-silver">Work</span><span class="timeline-teal">Timeline</span>™ <div class="clio-pulse"></div></div>
+            </div>
+            <div style="position:absolute; right:15px; display:flex; flex-direction:column; gap:4px;">
+                <button onclick="document.getElementById('appBody').classList.toggle('ghost-active')" style="background:var(--teal-soft); color:var(--teal); border:none; border-radius:20px; font-size:7px; font-weight:900; padding:4px 10px;">GHOST</button>
+                <button onclick="refresh()" style="background:var(--teal-soft); color:var(--teal); border:none; border-radius:20px; font-size:7px; font-weight:900; padding:4px 10px;">NOTES</button>
+            </div>
+        </div>
+    </header>
+
+    <div id="utilityDrawer">
+        <div style="padding: 15px 15px 45px;">
+            <div style="display:flex; gap:6px; justify-content:center; margin-bottom: 15px;">
+                <button onclick="useTemplate('INCIDENT')" class="template-chip">INCIDENT</button>
+                <button onclick="useTemplate('INJURY')" class="template-chip">INJURY</button>
+                <button onclick="useTemplate('LOCATION')" class="template-chip">LOCATION</button>
+                <button onclick="useTemplate('WITNESS')" class="template-chip">WITNESS</button>
+            </div>
+            <div style="display:flex; gap:8px; margin-bottom:12px;">
+                <div class="media-pill">CAMERA</div><div class="media-pill">AUDIO</div><div class="media-pill">FILE</div>
+            </div>
+            <textarea id="statusBox" placeholder="Documenting the grit..."></textarea>
+        </div>
+        <div class="handle" onclick="toggleUtility()"><div class="handle-pill"></div></div>
     </div>
 
-    <div class="content">
-        <!-- VIEW 1: AUTHENTICATION -->
-        <div id="authView">
-            <h2 style="color: var(--teal); text-align: center;">WorkTimeline™</h2>
-            <button class="btn-pill" style="background:var(--clio-blue);" onclick="login('client')">Client Sign in with Clio</button>
-            <button class="btn-pill" style="background:var(--slate);" onclick="login('firm')">Firm Sign in with Clio</button>
-            <div style="text-align:center; margin: 20px 0; color:#999;">OR</div>
-            <input type="email" id="regEmail" placeholder="Email" style="width:100%; padding:12px; border-radius:15px; border:1px solid #ddd; margin-bottom:10px;">
-            <button class="btn-pill" style="background:white; color:var(--teal); border:2px solid var(--teal);" onclick="manualRegister()">Create Account</button>
-        </div>
+    <div id="timelineContainer"></div>
 
-        <!-- VIEW 2: CLIENT WORKSPACE & PERSONAL STATEMENT -->
-        <div id="clientView" class="hidden">
-            <h3>My Workspace</h3>
-            <div id="timelineList"></div>
-            <p style="font-size:12px; color:#666;">Leave a statement for the lawyers:</p>
-            <textarea id="clientStatement" placeholder="What matters most to you in this case?"></textarea>
-            <button class="btn-pill" onclick="lockAndSubmit()">LOCK & SUBMIT TO MARKETPLACE</button>
-        </div>
+    <button id="addBtn" class="draggable">+</button>
+    <button id="syncBtn" class="draggable" onclick="clioHandshake()">SYNC TO CLIO</button>
 
-        <!-- VIEW 3: FIRM MARKETPLACE Discovery -->
-        <div id="firmView" class="hidden">
-            <h3>Triage Marketplace</h3>
-            <div class="triage-scroll" id="leadsList">
-                <!-- Triage Cards injected here -->
-            </div>
-        </div>
-
-        <!-- VIEW 4: COMMUNICATION BRIDGE -->
-        <div id="commsView" class="hidden">
-            <h3 id="commsHeader">Matter Discussion</h3>
-            <div id="chatBox" style="display:flex; flex-direction:column; height: 300px; overflow-y: auto;">
-                <div class="chat-bubble lawyer-msg">Welcome to the firm. We've received your statement and evidence.</div>
-            </div>
-            <div style="display:flex; gap:10px; margin-top:20px;">
-                <input type="text" id="chatInput" placeholder="Message your lawyer..." style="flex:1; border-radius:20px; padding:10px; border:1px solid #ddd;">
-                <button onclick="sendMsg()" style="background:var(--teal); color:white; border:none; padding:10px 20px; border-radius:20px; font-weight:bold;">SEND</button>
-            </div>
+    <div id="mgmtDrawer">
+        <div class="handle" onclick="toggleMgmt()"><div class="handle-pill"></div></div>
+        <div style="padding: 5px 25px 35px;">
+            <button class="modal-btn" style="background:var(--teal); color:white;" onclick="alert('Exporting...')">SAVE & EXPORT</button>
+            <button class="modal-btn" style="background:#f1f5f9; color:#718096;" onclick="confirm('Wipe?') && (localStorage.clear() || location.reload())">START FRESH</button>
         </div>
     </div>
 </div>
 
 <script>
-    const _supabase = supabase.createClient('https://sghmgiaaqcuymqnfbleh.supabase.co', 'Sb_publishable_VL3kSjtNHGvLcmZYi1YXnA_Xlo8zpXy');
+    let vault = JSON.parse(localStorage.getItem('wt_timeline')) || [];
+    let utilOpen = false; let mgmtOpen = false; let activePending = null;
 
-    // 1. HARDWARE TRIGGERS
-    async function useHardware(type) {
-        if(type === 'camera' || type === 'mic') {
-            try { await navigator.mediaDevices.getUserMedia({ video: type === 'camera', audio: type === 'mic' }); alert(`${type} active.`); }
-            catch(e) { alert(`${type} access denied.`); }
-        } else { alert(`${type} mode engaged.`); }
+    function unlockApp() { document.getElementById('overlaySystem').style.display = 'none'; document.getElementById('mainApp').classList.remove('app-locked'); }
+    function toggleUtility() { document.getElementById('utilityDrawer').style.transform = utilOpen ? 'translateY(calc(-100% + 40px))' : 'translateY(0)'; utilOpen = !utilOpen; }
+    function toggleMgmt() { document.getElementById('mgmtDrawer').style.transform = mgmtOpen ? 'translateY(calc(100% - 40px))' : 'translateY(0)'; mgmtOpen = !mgmtOpen; }
+
+    function makeDraggable(el) {
+        let p1 = 0, p2 = 0, p3 = 0, p4 = 0; el.onmousedown = dStart; el.ontouchstart = dStart;
+        function dStart(e) { p3 = e.clientX || e.touches[0].clientX; p4 = e.clientY || e.touches[0].clientY; document.onmouseup = dEnd; document.ontouchend = dEnd; document.onmousemove = dMove; document.ontouchmove = dMove; }
+        function dMove(e) { let cx = e.clientX || e.touches[0].clientX; let cy = e.clientY || e.touches[0].clientY; p1 = p3 - cx; p2 = p4 - cy; p3 = cx; p4 = cy; el.style.top = (el.offsetTop - p2) + "px"; el.style.left = (el.offsetLeft - p1) + "px"; }
+        function dEnd() { document.onmouseup = null; document.onmousemove = null; document.ontouchend = null; document.ontouchmove = null; }
+    }
+    makeDraggable(document.getElementById("addBtn")); makeDraggable(document.getElementById("syncBtn"));
+
+    function submitEntry() {
+        const text = document.getElementById('statusBox').value; if(!text.trim()) return;
+        let analysis = text.toLowerCase().includes("fire") || text.toLowerCase().includes("retaliation") ? "EA: Potential Retaliation marker detected." : "";
+        activePending = { grit: text, analysis, stamp: new Date().toLocaleString() };
+        if(analysis) {
+            document.getElementById('modalContent').innerHTML = `<h3 style="margin-top:0;">EA CROSS-REFERENCE</h3><div style="font-size:13px; font-weight:600;">${analysis}<br><br><b>Stack with your record?</b></div><button class="modal-btn" style="background:var(--teal);color:white" onclick="confirmSave()">YES, STACK</button><button class="modal-btn" style="background:#f1f5f9;color:#718096" onclick="confirmSave(true)">NO, RAW ONLY</button>`;
+            document.getElementById('overlaySystem').style.display = 'flex';
+        } else { confirmSave(); }
+        document.getElementById('statusBox').value = ''; if(utilOpen) toggleUtility();
     }
 
-    // 2. AUTHENTICATION & ONBOARDING
-    function login(role) { 
-        alert(`Starting Clio OAuth for ${role}...`); 
-        document.getElementById('authView').classList.add('hidden');
-        document.getElementById('clientView').classList.remove('hidden');
-        document.getElementById('navArea').classList.remove('hidden');
+    function confirmSave(rawOnly = false) {
+        if(rawOnly) { activePending.analysis = ""; }
+        vault.push(activePending); localStorage.setItem('wt_timeline', JSON.stringify(vault)); unlockApp(); refresh();
+        setTimeout(() => { document.getElementById('modalContent').innerHTML = `<h2 style="font-weight:900; font-size:18px;">INTAKE GUARD</h2><div style="font-size:13px; font-weight:600; margin:15px 0;">We are here to help you document the truth.<br><br>While this journal provides evidence support, <b>we do not offer legal advice.</b><br><br>Proceed to secure your workplace records.</div><button class="modal-btn" style="background:var(--teal); color:white;" onclick="unlockApp()">SECURE MY JOURNAL</button>`; }, 500);
     }
 
-    // 3. LOCK & SUBMIT (Personal Statement)
-    function lockAndSubmit() {
-        const stmt = document.getElementById('clientStatement').value;
-        if(!stmt) return alert("Please provide your personal statement.");
-        localStorage.setItem('lead_statement', stmt);
-        alert("Integrity Lock Activated. Case moved to Marketplace.");
-        document.getElementById('clientView').classList.add('hidden');
-        document.getElementById('firmView').classList.remove('hidden');
-        renderMarketplace();
+    function clioHandshake() {
+        if(vault.length === 0) return;
+        document.getElementById('modalContent').innerHTML = `<h3 style="margin-top:0; color:var(--clio-blue);">SYNC SUMMARY</h3><div style="font-size:13px; font-weight:600;">Industrial truth verified. Summarizing ${vault.length} entries for Clio.</div><button class="modal-btn" style="background:var(--clio-blue);color:white" onclick="alert('Synced');unlockApp()">YES, SYNC NOW</button>`;
+        document.getElementById('overlaySystem').style.display = 'flex';
     }
 
-    // 4. FIRM MARKETPLACE Discovery
-    function renderMarketplace() {
-        const list = document.getElementById('leadsList');
-        const stmt = localStorage.getItem('lead_statement') || "No statement left.";
-        list.innerHTML = `
-            <div class="triage-card" onclick="openComms('Lead 110')">
-                <div style="border:3px solid var(--teal); width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:10px; font-weight:bold;">94%</div>
-                <strong>Lead 110</strong>
-                <p style="font-size:11px; color:#666;">"${stmt.substring(0, 40)}..."</p>
-                <small style="color:var(--teal);">Click to Open Communication</small>
-            </div>
-        `;
+    function refresh() {
+        const list = document.getElementById('timelineContainer'); list.innerHTML = '';
+        [...vault].reverse().forEach((item, index) => {
+            const hasAI = item.analysis !== "";
+            list.innerHTML += `
+                <div class="stack-wrapper">
+                    <div class="stamp-label">📍 LANGLEY | ${item.stamp}</div>
+                    <div class="stack-inner ${hasAI ? 'has-ai' : ''}" onclick="this.classList.toggle('flipped')">
+                        <div class="bubble bubble-front"><p style="font-weight:600; font-size:14px; margin:0;">${item.grit}</p></div>
+                        ${hasAI ? `<div class="bubble bubble-back"><p style="font-weight:600; font-size:13px; margin:0;">${item.analysis}</p></div>` : ''}
+                    </div>
+                </div>`;
+        });
     }
 
-    // 5. COMMUNICATION BRIDGE (Clio Sync)
-    function openComms(id) {
-        document.getElementById('firmView').classList.add('hidden');
-        document.getElementById('commsView').classList.remove('hidden');
-        document.getElementById('commsHeader').innerText = id + " Discussion";
-    }
-
-    function sendMsg() {
-        const input = document.getElementById('chatInput');
-        if(!input.value) return;
-        const bubble = document.createElement('div');
-        bubble.className = 'chat-bubble client-msg';
-        bubble.innerText = input.value;
-        document.getElementById('chatBox').appendChild(bubble);
-        input.value = "";
-        console.log("Syncing message to Clio Manage as Note...");
-    }
+    let sX, sY; document.getElementById("addBtn").addEventListener('touchstart', e => { sX = e.touches[0].clientX; sY = e.touches[0].clientY; });
+    document.getElementById("addBtn").addEventListener('touchend', e => { let dx = Math.abs(e.changedTouches[0].clientX - sX); let dy = Math.abs(e.changedTouches[0].clientY - sY); if(dx < 10 && dy < 10) submitEntry(); });
+    refresh();
+    function useTemplate(t) { const ts = { 'INCIDENT': 'ACTION:\nVIOLATION:', 'INJURY': 'OFA RECORD:\nINJURY:', 'LOCATION': 'SITE:\nHAZARDS:', 'WITNESS': 'NAME:\nCONTACT:' }; document.getElementById('statusBox').value = ts[t]; }
 </script>
 </body>
 </html>
