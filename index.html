@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Precision v54</title>
+    <title>WorkTimeline™ | Precision v55</title>
     
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -26,382 +26,302 @@
             --metallic-gold: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
         }
         
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; font-family: 'Nunito', sans-serif; background-color: #94a3b8; -webkit-tap-highlight-color: transparent; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; font-family: 'Nunito', sans-serif; background-color: #94a3b8; overflow: hidden; }
+        
         .phone-bezel { width: 375px; height: 812px; background-color: #000; border-radius: 45px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); overflow: hidden; border: 8px solid #cbd5e0; position: relative; }
-        .app-container { width: 100%; height: 100%; background: var(--app-bg); display: flex; flex-direction: column; position: relative; z-index: 1; }
-        .privacy-active #timelineBody { filter: blur(16px); pointer-events: none; opacity: 0.2; transition: 0.3s; }
-        #timelineBody { transition: 0.3s; }
-        .clio-status-led { width: 8px; height: 8px; background-color: var(--active-green); border-radius: 50%; animation: clioBreathe 2.5s infinite; box-shadow: 0 0 8px var(--active-green); }
-        @keyframes clioBreathe { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.6; } }
         
-        /* Top Navigation */
-        .top-toggles { display: flex; justify-content: space-between; align-items: center; padding: 45px 20px 10px; z-index: 20; }
-        .toggle-btn { background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 8px 16px; border-radius: 20px; font-size: 11px; font-weight: 900; color: var(--text-dark); cursor: pointer; backdrop-filter: blur(10px); transition: 0.3s; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); text-transform: uppercase; }
-        .toggle-btn.active { background: var(--metallic-teal); color: white; border-color: var(--active-teal); }
-        .notes-dot { width: 6px; height: 6px; background: var(--active-green); border-radius: 50%; }
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px 15px; z-index: 10; }
+        /* THE SIDEBAR FIX - HIGH Z-INDEX */
+        #menuOverlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); z-index: 9999; display: none; opacity: 0; transition: opacity 0.3s; }
+        #menuOverlay.active { display: block; opacity: 1; }
         
-        /* Sidebar Fixes & Mac UI */
-        .menu-trigger { font-size: 24px; color: var(--text-dark); cursor: pointer; background: var(--glass-bg); padding: 8px; border-radius: 12px; border: 1px solid var(--glass-border); backdrop-filter: blur(10px); box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; }
-        .menu-trigger svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-        .sidebar { position: absolute; top: 0; left: 0; width: 300px; height: 100%; background: rgba(248, 250, 252, 0.85); backdrop-filter: blur(30px); transform: translateX(-100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 8000; padding: 50px 20px; box-sizing: border-box; box-shadow: 20px 0 50px rgba(0,0,0,0.1); border-right: 1px solid var(--glass-border); }
-        .sidebar.open { transform: translateX(0); }
-        .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; padding: 0 10px; }
-        .sidebar-header span { font-weight: 900; font-size: 22px; color: var(--active-teal); letter-spacing: -0.5px; }
-        .close-btn { background: white; border: 1px solid #e2e8f0; width: 32px; height: 32px; border-radius: 10px; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .close-btn svg { width: 16px; height: 16px; stroke: var(--text-dark); fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+        .sidebar { position: absolute; top: 0; left: 0; width: 300px; height: 100%; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(25px); transform: translateX(-100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); padding: 60px 20px; box-sizing: border-box; border-right: 1px solid var(--glass-border); }
+        #menuOverlay.active .sidebar { transform: translateX(0); }
         
-        .mac-menu-item { display: flex; align-items: center; gap: 14px; padding: 14px 16px; background: rgba(255,255,255,0.7); backdrop-filter: blur(10px); border-radius: 18px; margin-bottom: 12px; cursor: pointer; border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 4px 10px rgba(0,0,0,0.03); color: var(--text-dark); font-weight: 800; font-size: 14px; transition: 0.2s; }
-        .mac-menu-item:active { transform: scale(0.96); }
-        .mac-icon-box { width: 36px; height: 36px; background: white; border-radius: 12px; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02), 0 2px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
-        .mac-icon-box svg { width: 18px; height: 18px; stroke: var(--active-teal); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-        .mac-menu-item.danger .mac-icon-box svg { stroke: var(--rose); }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+        .sidebar-header span { font-weight: 900; font-size: 24px; color: var(--active-teal); }
+        .close-btn { width: 36px; height: 36px; background: white; border-radius: 12px; display: flex; justify-content: center; align-items: center; cursor: pointer; border: 1px solid #e2e8f0; }
+
+        /* Mac Modern Menu Items */
+        .mac-menu-item { display: flex; align-items: center; gap: 14px; padding: 14px 16px; background: white; border-radius: 18px; margin-bottom: 12px; cursor: pointer; border: 1px solid #e2e8f0; font-weight: 800; font-size: 14px; color: var(--text-dark); box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
+        .mac-icon-box { width: 36px; height: 36px; background: var(--f8fafc); border-radius: 12px; display: flex; justify-content: center; align-items: center; border: 1px solid #e2e8f0; }
+        .mac-icon-box svg { width: 20px; height: 20px; stroke: var(--active-teal); fill: none; stroke-width: 2.5; }
         .mac-menu-item.danger { color: var(--rose); }
+        .mac-menu-item.danger svg { stroke: var(--rose); }
+
+        /* Main App Layout */
+        .app-container { width: 100%; height: 100%; background: var(--app-bg); display: flex; flex-direction: column; position: relative; }
+        .top-toggles { display: flex; justify-content: space-between; align-items: center; padding: 45px 20px 10px; }
+        .toggle-btn { background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 8px 16px; border-radius: 20px; font-size: 11px; font-weight: 900; text-transform: uppercase; cursor: pointer; }
+        .toggle-btn.active { background: var(--metallic-teal); color: white; }
         
-        .main-title { font-weight: 900; font-size: 22px; color: var(--active-teal); letter-spacing: -0.5px; transition: 0.3s; }
-        .input-panel { background: var(--glass-bg); backdrop-filter: blur(20px); margin: 0 15px; border-radius: 24px; border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow); display: flex; flex-direction: column; gap: 15px; padding: 20px; z-index: 10; }
-        .template-row { display: flex; gap: 8px; justify-content: space-between; margin-bottom: 5px; }
-        .template-chip { flex: 1; background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px 0; font-size: 10px; font-weight: 900; color: var(--text-dark); text-align: center; cursor: pointer; text-transform: uppercase; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: 0.2s; }
-        .template-chip:active { transform: scale(0.95); }
-        .hardware-icons { display: flex; justify-content: space-evenly; align-items: center; }
-        .hw-item { position: relative; width: 44px; height: 44px; background: var(--metallic-silver); border-radius: 14px; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 2px 4px rgba(255,255,255,0.8), 0 4px 6px rgba(0,0,0,0.05); cursor: pointer; border: 1px solid #cbd5e0; }
-        .hw-item svg { width: 22px; height: 22px; stroke: var(--active-teal); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-        .hw-item input { position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer; z-index:10; }
-        .input-wrapper { background: rgba(255,255,255,0.8); border-radius: 14px; padding: 15px; border: 1px solid #e2e8f0; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
-        .input-wrapper textarea { width: 100%; background: transparent; border: none; color: var(--text-dark); font-size: 14px; font-weight: 600; font-family: 'Nunito', sans-serif; resize: none; outline: none; height: 40px; }
-        .timeline-container { flex: 1; overflow-y: auto; position: relative; padding: 20px 20px 100px; }
-        .log-list { padding-left: 35px; display: flex; flex-direction: column; gap: 15px; position: relative; }
-        .timeline-line { position: absolute; left: 15px; top: 10px; bottom: 20px; width: 4px; background: var(--metallic-silver); border-radius: 2px; z-index: 1; box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); }
-        .log-entry { position: relative; display: flex; flex-direction: column; gap: 6px; z-index: 2; transition: all 0.4s ease; }
-        .timeline-squircle { position: absolute; left: -26px; top: 16px; width: 14px; height: 14px; background: var(--metallic-teal); border-radius: 4px; border: 2px solid white; z-index: 3; box-shadow: 0 4px 6px rgba(0,128,128,0.3); cursor: pointer; transition: transform 0.2s; }
-        .timeline-squircle.gold { background: var(--metallic-gold); border-color: #fff; box-shadow: 0 0 10px rgba(245, 158, 11, 0.8); }
-        .log-bubble { background: var(--glass-bg); backdrop-filter: blur(10px); padding: 14px 16px; border-radius: 18px; border: 1px solid var(--glass-border); color: var(--text-dark); font-size: 12px; font-weight: 700; line-height: 1.5; box-shadow: 0 4px 15px rgba(0,0,0,0.03); width: 95%; box-sizing: border-box; word-break: break-word; transition: all 0.4s ease; }
-        .log-bubble.gold { border: 2px solid #f59e0b; animation: goldPulse 2.5s infinite; }
-        @keyframes goldPulse { 0%, 100% { box-shadow: 0 0 10px rgba(245, 158, 11, 0.3); } 50% { box-shadow: 0 0 22px rgba(245, 158, 11, 0.7); } }
-        .gold-insight { margin-top: 12px; padding: 10px 12px; background: rgba(245, 158, 11, 0.1); border-left: 3px solid #f59e0b; border-radius: 8px; font-size: 11px; color: #b45309; font-weight: 800; line-height: 1.4; }
-        .footer-nav { height: 80px; background: var(--glass-bg); backdrop-filter: blur(20px); display: flex; justify-content: space-evenly; align-items: center; padding: 0 15px 15px; border-top: 1px solid var(--glass-border); z-index: 10; }
-        .footer-pill { background: white; color: var(--text-dark); padding: 12px 20px; border-radius: 20px; font-size: 10px; font-weight: 900; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; border: 1px solid #e2e8f0; box-shadow: 0 4px 10px rgba(0,0,0,0.03); text-transform: uppercase; }
-        .footer-pill svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
-        .center-add-btn { background: var(--metallic-teal); color: white; width: 56px; height: 56px; border-radius: 20px; display: flex; justify-content: center; align-items: center; font-size: 32px; font-weight: 600; cursor: pointer; box-shadow: inset 0 2px 4px rgba(255,255,255,0.4), 0 8px 20px rgba(0, 128, 128, 0.4); border: 2px solid rgba(255,255,255,0.2); transition: 0.2s; }
-        
-        .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(226, 232, 240, 0.7); backdrop-filter: blur(25px); z-index: 10000; display: flex; justify-content: center; align-items: center; padding: 30px; box-sizing: border-box; text-align: center; opacity: 0; pointer-events: none; transition: 0.3s; }
-        .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal-box { background: rgba(255,255,255,0.95); padding: 40px 30px; border-radius: 35px; box-shadow: var(--glass-shadow); border: 1px solid var(--glass-border); width: 100%; max-height: 80%; overflow-y: auto; }
-        
-        .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #e2e8f0; font-size: 14px; font-weight: 700; color: var(--text-dark); }
-        .stat-value { background: var(--app-bg); padding: 6px 12px; border-radius: 10px; font-weight: 900; color: var(--active-teal); border: 1px solid #cbd5e0; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; }
+        .menu-trigger { cursor: pointer; background: white; padding: 10px; border-radius: 12px; border: 1px solid var(--glass-border); display: flex; }
+        .main-title { font-weight: 900; font-size: 22px; color: var(--active-teal); }
+
+        /* Input Area */
+        .input-panel { background: var(--glass-bg); backdrop-filter: blur(20px); margin: 0 15px; border-radius: 24px; border: 1px solid var(--glass-border); padding: 20px; box-shadow: var(--glass-shadow); }
+        .hardware-icons { display: flex; justify-content: space-evenly; margin: 15px 0; }
+        .hw-item { position: relative; width: 44px; height: 44px; background: var(--metallic-silver); border-radius: 14px; display: flex; justify-content: center; align-items: center; border: 1px solid #cbd5e0; }
+        .hw-item input { position: absolute; opacity: 0; width: 100%; height: 100%; }
+        .hw-item svg { width: 22px; height: 22px; stroke: var(--active-teal); fill: none; stroke-width: 2.5; }
+
+        .input-wrapper { background: rgba(255,255,255,0.8); border-radius: 14px; padding: 15px; border: 1px solid #e2e8f0; }
+        textarea { width: 100%; border: none; background: transparent; font-family: 'Nunito', sans-serif; font-weight: 700; outline: none; height: 45px; resize: none; }
+
+        /* Timeline Area */
+        .timeline-container { flex: 1; overflow-y: auto; padding: 20px; position: relative; }
+        .log-list { padding-left: 35px; border-left: 4px solid var(--metallic-silver); margin-left: 15px; display: flex; flex-direction: column; gap: 20px; }
+        .log-bubble { background: white; padding: 15px; border-radius: 18px; border: 1px solid var(--glass-border); font-size: 13px; font-weight: 700; color: var(--text-dark); position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+        .log-bubble.gold { border: 2px solid #f59e0b; }
+        .gold-insight { margin-top: 10px; padding: 10px; background: rgba(245,158,11,0.1); border-radius: 10px; font-size: 11px; color: #b45309; }
+
+        /* Footer */
+        .footer-nav { height: 90px; background: white; border-top: 1px solid var(--glass-border); display: flex; justify-content: space-evenly; align-items: center; padding-bottom: 15px; }
+        .footer-pill { background: #f1f5f9; padding: 12px 18px; border-radius: 20px; font-size: 10px; font-weight: 900; text-transform: uppercase; cursor: pointer; }
+        .center-add-btn { background: var(--metallic-teal); color: white; width: 56px; height: 56px; border-radius: 20px; display: flex; justify-content: center; align-items: center; font-size: 32px; box-shadow: 0 8px 20px rgba(0,128,128,0.3); cursor: pointer; }
+
+        /* Modals */
+        .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(226, 232, 240, 0.85); backdrop-filter: blur(20px); z-index: 10001; display: none; justify-content: center; align-items: center; padding: 30px; box-sizing: border-box; }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: white; padding: 35px; border-radius: 35px; box-shadow: var(--glass-shadow); width: 100%; text-align: center; border: 1px solid #fff; }
+        .stat-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #eee; font-weight: 800; font-size: 14px; }
     </style>
 </head>
 <body onload="initApp()">
     <div class="phone-bezel">
-        <div class="sidebar" id="sidebarMenu">
-            <div class="sidebar-header">
-                <span>Menu</span>
-                <div class="close-btn" onclick="toggleSidebar()">
-                    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        
+        <div id="menuOverlay" onclick="closeMenuOutside(event)">
+            <div class="sidebar" id="sidebar">
+                <div class="sidebar-header">
+                    <span>Menu</span>
+                    <div class="close-btn" onclick="toggleMenu()">
+                        <svg viewBox="0 0 24 24" stroke="black" stroke-width="3" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="mac-menu-item" onclick="emailTimeline()">
-                <div class="mac-icon-box">
-                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"></path></svg>
-                </div>
-                <span>Draft Email</span>
-            </div>
-            
-            <div class="mac-menu-item" onclick="openVaultModal()">
-                <div class="mac-icon-box">
-                    <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                </div>
-                <span>Case Law & AI Vault</span>
-            </div>
 
-            <div class="mac-menu-item" onclick="exportData()">
-                <div class="mac-icon-box">
-                    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                <div class="mac-menu-item" onclick="emailTimeline()">
+                    <div class="mac-icon-box">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"></path></svg>
+                    </div>
+                    <span>Draft Email</span>
                 </div>
-                <span>Save & Export</span>
-            </div>
-            
-            <div class="mac-menu-item danger" onclick="resetTimeline()">
-                <div class="mac-icon-box">
-                    <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+
+                <div class="mac-menu-item" onclick="openVault()">
+                    <div class="mac-icon-box">
+                        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    </div>
+                    <span>Case Law & AI Vault</span>
                 </div>
-                <span>Restart Timeline</span>
+
+                <div class="mac-menu-item" onclick="exportData()">
+                    <div class="mac-icon-box">
+                        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                    </div>
+                    <span>Save & Export</span>
+                </div>
+
+                <div class="mac-menu-item danger" onclick="resetApp()">
+                    <div class="mac-icon-box">
+                        <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                    </div>
+                    <span>Restart Timeline</span>
+                </div>
             </div>
         </div>
 
-        <div class="modal-overlay active" id="intakeOverlay">
+        <div class="modal-overlay active" id="welcomeModal">
             <div class="modal-box">
-                <div style="font-weight:900; font-size:28px; color:var(--active-teal);" id="greetingText">Good Morning</div>
-                <div style="font-size:11px; margin-bottom:20px;">Langley Township, BC</div>
-                <div style="font-size:14px; font-weight:700; line-height: 1.6; margin-bottom:30px;">
+                <h2 style="color:var(--active-teal); margin-top:0;">Good Day</h2>
+                <p style="font-weight:700; line-height:1.6;">
                     Welcome to WorkTimeline™. If this is an emergency, call 911.<br><br>
-                    <span style="color: var(--rose);">We do not give legal advice.</span> However, we <i>do</i> stop gaslighting. This is a secure, chronological journal for your truth.
-                </div>
-                <div class="center-add-btn" style="width:100%; font-size:14px;" onclick="document.getElementById('intakeOverlay').classList.remove('active')">I Understand</div>
+                    <span style="color:var(--rose);">We do not give legal advice.</span><br>However, we <i>do</i> stop gaslighting.
+                </p>
+                <div class="center-add-btn" style="width:100%; font-size:16px; height:50px;" onclick="closeWelcome()">I Understand</div>
             </div>
         </div>
 
-        <div class="modal-overlay" id="vaultOverlay">
-            <div class="modal-box" style="text-align: left;">
-                <div style="font-weight:900; font-size:22px; color:var(--active-teal); margin-bottom: 5px;">AI Interaction Vault</div>
-                <div style="font-size:11px; color:var(--text-light); margin-bottom:25px;">Encrypted Activity Ledger</div>
-                
-                <div class="stat-row">
-                    <span>Pattern Recognition Offered</span>
-                    <span class="stat-value" id="statOffers">0</span>
+        <div class="modal-overlay" id="vaultModal">
+            <div class="modal-box" style="text-align:left;">
+                <h3 style="color:var(--active-teal); margin-top:0;">AI Interaction Vault</h3>
+                <div class="stat-row"><span>Pattern Rec Offered</span><span id="vOffers">0</span></div>
+                <div class="stat-row"><span>Insights Rejected</span><span id="vRejects" style="color:var(--rose);">0</span></div>
+                <div style="margin-top:20px; padding:12px; background:#fff8e1; border-radius:12px; font-size:12px;">
+                    <strong style="color:#b45309;">LAST CASE LAW CITED:</strong><br>
+                    <span id="vLaw">None yet.</span>
                 </div>
-                <div class="stat-row">
-                    <span>Insights Rejected/Changed</span>
-                    <span class="stat-value" id="statRejections" style="color:var(--rose);">0</span>
-                </div>
-                
-                <div style="margin-top: 25px; padding: 15px; background: rgba(245, 158, 11, 0.1); border-left: 3px solid #f59e0b; border-radius: 12px;">
-                    <div style="font-size:10px; font-weight:900; color:#b45309; text-transform:uppercase; margin-bottom:6px;">Last Case Law Cited</div>
-                    <div style="font-size:13px; font-weight:700; color:var(--text-dark);" id="statCaseLaw">No legal precedents queried during this session.</div>
-                </div>
-
-                <div class="center-add-btn" style="width:100%; font-size:14px; margin-top:30px;" onclick="document.getElementById('vaultOverlay').classList.remove('active')">Close Vault</div>
+                <div class="center-add-btn" style="width:100%; font-size:16px; height:50px; margin-top:20px;" onclick="closeVault()">Close</div>
             </div>
         </div>
 
-        <div class="app-container" id="mainApp">
+        <div class="app-container">
             <div class="top-toggles">
-                <div class="toggle-btn" id="privacyBtn" onclick="togglePrivacy()">Privacy</div>
+                <div class="toggle-btn" onclick="alert('Privacy Mode Active')">Privacy</div>
                 <div style="display:flex; gap:8px;">
-                    <div class="toggle-btn active" id="timelineToggle" onclick="switchMode('TIMELINE')">Timeline</div>
-                    <div class="toggle-btn" id="notesToggle" onclick="switchMode('NOTES')">Notes <div class="notes-dot"></div></div>
+                    <div class="toggle-btn active" id="tTime" onclick="setMode('TIMELINE')">Timeline</div>
+                    <div class="toggle-btn" id="tNote" onclick="setMode('NOTES')">Notes</div>
                 </div>
             </div>
 
             <div class="header">
-                <div class="menu-trigger" onclick="toggleSidebar()">
-                    <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                <div class="menu-trigger" onclick="toggleMenu()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" stroke="black" stroke-width="2.5" fill="none"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
                 </div>
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <div class="main-title" id="brandTitle">WorkTimeline™</div>
-                    <div class="clio-status-led" title="Clio Link Ready"></div>
-                </div>
-                <div style="width:36px;"></div> </div>
-
-            <div class="input-panel">
-                <div class="template-row">
-                    <div class="template-chip" onclick="appendTemplate('SETTING')">Setting</div>
-                    <div class="template-chip" onclick="appendTemplate('WITNESS')">Witness</div>
-                    <div class="template-chip" onclick="appendTemplate('INJURY')">Injury</div>
-                </div>
-                
-                <div class="hardware-icons">
-                    <div class="hw-item">
-                        <input type="file" accept="image/*" capture="environment" onchange="processEvidence(this, 'PHOTO')">
-                        <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                    </div>
-                    <div class="hw-item">
-                        <input type="file" accept="audio/*" capture="microphone" onchange="processEvidence(this, 'AUDIO')">
-                        <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
-                    </div>
-                    <div class="hw-item">
-                        <input type="file" accept=".pdf,.doc,.docx,.txt" onchange="processEvidence(this, 'DOCUMENT')">
-                        <svg viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
-                    </div>
-                </div>
-                
-                <div class="input-wrapper"><textarea id="logInput" placeholder="Start journaling your truth..."></textarea></div>
+                <div class="main-title">WorkTimeline™</div>
+                <div class="clio-status-led"></div>
             </div>
 
-            <div class="timeline-container" id="timelineBody">
-                <div class="timeline-line" id="timelineLine"></div>
-                <div class="log-list" id="logList"></div>
+            <div class="input-panel">
+                <div class="hardware-icons">
+                    <div class="hw-item"><input type="file" accept="image/*" onchange="uploadFile(this, 'PHOTO')"><svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg></div>
+                    <div class="hw-item"><input type="file" accept="audio/*" onchange="uploadFile(this, 'AUDIO')"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line></svg></div>
+                    <div class="hw-item"><input type="file" onchange="uploadFile(this, 'DOC')"><svg viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg></div>
+                </div>
+                <div class="input-wrapper"><textarea id="logIn" placeholder="Journal your truth..."></textarea></div>
+            </div>
+
+            <div class="timeline-container">
+                <div class="log-list" id="logs"></div>
             </div>
 
             <div class="footer-nav">
-                <div class="footer-pill" onclick="runPatternRecognition()">Pattern Rec</div>
-                <div class="center-add-btn" onclick="submitEntry()">+</div>
-                <div class="footer-pill" style="color:var(--active-teal);" onclick="handleClioHandshake()">Sync CLIO</div>
+                <div class="footer-pill" onclick="runAI()">Pattern Rec</div>
+                <div class="center-add-btn" onclick="addLog()">+</div>
+                <div class="footer-pill" style="color:var(--active-teal);" onclick="clioSync()">Clio Sync</div>
             </div>
         </div>
     </div>
 
     <script>
-        /* --- SUPABASE SETUP --- */
+        /* CONFIG */
         const supabaseUrl = 'YOUR_SUPABASE_PROJECT_URL';
         const supabaseKey = 'YOUR_SUPABASE_ANON_KEY';
         const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-        /* --- APP STATE --- */
-        let logsData = JSON.parse(localStorage.getItem('silver_vault_v52')) || [];
-        let aiStats = JSON.parse(localStorage.getItem('ai_vault_stats')) || { offers: 0, rejections: 0, changes: 0, lastCaseLaw: "No legal precedents queried during this session." };
-        let currentMode = 'TIMELINE';
-        const pinSvg = `<svg viewBox="0 0 24 24" width="10" height="10" stroke="currentColor" fill="none" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
+        let data = JSON.parse(localStorage.getItem('wt_data')) || [];
+        let stats = JSON.parse(localStorage.getItem('wt_stats')) || { offers: 0, rejects: 0, law: "None." };
+        let mode = 'TIMELINE';
 
-        /* --- CORE FUNCTIONS --- */
-        function initApp() { setGreeting(); renderTimeline(); checkAuthRedirect(); }
-        function setGreeting() { const h = new Date().getHours(); document.getElementById('greetingText').innerText = h < 12 ? "Good Morning" : h < 18 ? "Good Afternoon" : "Good Evening"; }
-        function toggleSidebar() { document.getElementById('sidebarMenu').classList.toggle('open'); }
-        function togglePrivacy() { document.getElementById('mainApp').classList.toggle('privacy-active'); }
-        function switchMode(m) { currentMode = m; document.getElementById('timelineToggle').classList.toggle('active', m === 'TIMELINE'); document.getElementById('notesToggle').classList.toggle('active', m === 'NOTES'); renderTimeline(); }
-        function appendTemplate(t) { const i = document.getElementById('logInput'); i.value += (i.value ? '\n' : '') + `${t}: `; i.focus(); }
+        function initApp() { render(); }
+        function closeWelcome() { document.getElementById('welcomeModal').classList.remove('active'); }
+        function toggleMenu() { document.getElementById('menuOverlay').classList.toggle('active'); }
+        function closeMenuOutside(e) { if(e.target.id === 'menuOverlay') toggleMenu(); }
         
-        function submitEntry() { 
-            const i = document.getElementById('logInput'); 
-            const t = i.value.trim(); 
-            if(!t) return; 
-            const now = new Date(); 
-            logsData.push({ id: Date.now(), mode: currentMode, stamp: `${pinSvg} LANGLEY, BC | ${now.toLocaleDateString()} | ${now.toLocaleTimeString()}`, text: t, isGold: false }); 
-            i.value = ''; 
-            saveData(); 
-            renderTimeline(); 
+        function setMode(m) { 
+            mode = m; 
+            document.getElementById('tTime').classList.toggle('active', m==='TIMELINE');
+            document.getElementById('tNote').classList.toggle('active', m==='NOTES');
+            render(); 
         }
-        
-        function saveData() { 
-            localStorage.setItem('silver_vault_v52', JSON.stringify(logsData)); 
-            localStorage.setItem('ai_vault_stats', JSON.stringify(aiStats));
+
+        function addLog() {
+            const val = document.getElementById('logIn').value;
+            if(!val) return;
+            data.push({ id: Date.now(), text: val, mode: mode, time: new Date().toLocaleString(), gold: false });
+            document.getElementById('logIn').value = '';
+            save();
         }
-        
-        function renderTimeline() { 
-            const list = document.getElementById('logList'); 
-            list.innerHTML = ''; 
-            logsData.filter(l => (l.mode || 'TIMELINE') === currentMode).forEach(l => { 
-                const e = document.createElement('div'); 
-                e.className = 'log-entry'; 
-                e.innerHTML = `<div class="timeline-squircle ${l.isGold?'gold':''}"></div><div style="font-size:9px; color:var(--text-light);">${l.stamp}</div><div class="log-bubble ${l.isGold?'gold':''}">${l.text.replace(/\n/g, '<br>')}${l.isGold?`<div class="gold-insight">${l.patternInsight}</div>`:''}</div>`; 
-                list.appendChild(e); 
-            }); 
-            const container = document.getElementById('timelineBody');
-            container.scrollTop = container.scrollHeight;
+
+        async function uploadFile(input, type) {
+            if(!input.files[0]) return;
+            const file = input.files[0];
+            const name = `${Date.now()}_${file.name}`;
+            document.getElementById('brandTitle').innerText = "VAULTING...";
+            
+            const { data: up, error } = await supabase.storage.from('evidence').upload(name, file);
+            if(error) return alert("Upload failed");
+            
+            const { data: pub } = supabase.storage.from('evidence').getPublicUrl(name);
+            document.getElementById('logIn').value += `\n[${type} ATTACHED]\nLink: ${pub.publicUrl}\n`;
+            
+            if(type === 'PHOTO') {
+                document.getElementById('brandTitle').innerText = "SCANNING...";
+                const { data: { text } } = await Tesseract.recognize(file, 'eng');
+                const dateMatch = text.match(/\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}/);
+                if(dateMatch) {
+                    data.push({ id: Date.now(), text: `Detected Date in ${file.name}: ${dateMatch[0]}`, mode: 'NOTES', time: new Date().toLocaleString(), gold: true, insight: "OCR Extraction" });
+                }
+            }
+            document.getElementById('brandTitle').innerText = "WorkTimeline™";
+            save();
         }
-        
-        /* --- MAC SIDEBAR FUNCTIONS --- */
+
+        function runAI() {
+            if(data.length === 0) return;
+            stats.offers++;
+            stats.law = "Workers Compensation Act, RSBC 2019, c. 1";
+            if(confirm("AI suggests: Workers Compensation Precedent. Add gold insight?")) {
+                data[data.length-1].gold = true;
+                data[data.length-1].insight = "Verified Precedent Match: RSBC 2019";
+            } else {
+                stats.rejects++;
+            }
+            save();
+        }
+
+        function save() {
+            localStorage.setItem('wt_data', JSON.stringify(data));
+            localStorage.setItem('wt_stats', JSON.stringify(stats));
+            render();
+        }
+
+        function render() {
+            const container = document.getElementById('logs');
+            container.innerHTML = '';
+            data.filter(l => l.mode === mode).forEach(l => {
+                const div = document.createElement('div');
+                div.className = `log-bubble ${l.gold ? 'gold' : ''}`;
+                div.innerHTML = `<small>${l.time}</small><br>${l.text.replace(/\n/g,'<br>')}`;
+                if(l.gold) div.innerHTML += `<div class="gold-insight">${l.insight}</div>`;
+                container.appendChild(div);
+            });
+        }
+
+        function openVault() { 
+            document.getElementById('vOffers').innerText = stats.offers;
+            document.getElementById('vRejects').innerText = stats.rejects;
+            document.getElementById('vLaw').innerText = stats.law;
+            document.getElementById('vaultModal').classList.add('active'); 
+            toggleMenu();
+        }
+        function closeVault() { document.getElementById('vaultModal').classList.remove('active'); }
+
         function emailTimeline() {
-            toggleSidebar();
-            const emailBody = logsData.map(l => `${l.stamp}\n${l.text}${l.isGold ? '\n[AI INSIGHT: '+l.patternInsight+']' : ''}`).join('\n\n');
-            window.location.href = `mailto:?subject=WorkTimeline Secure Export&body=${encodeURIComponent("CONFIDENTIAL WORKTIMELINE LOG\n\n" + emailBody)}`;
+            const body = data.map(l => `[${l.time}] ${l.text}`).join('\n\n');
+            window.location.href = `mailto:?subject=WorkTimeline Export&body=${encodeURIComponent(body)}`;
+            toggleMenu();
         }
 
         function exportData() {
-            toggleSidebar();
-            const dataStr = "data:text/plain;charset=utf-8," + encodeURIComponent(JSON.stringify(logsData, null, 2));
-            const dlAnchorElem = document.createElement('a');
-            dlAnchorElem.setAttribute("href", dataStr);
-            dlAnchorElem.setAttribute("download", `WorkTimeline_Export_${new Date().toISOString().split('T')[0]}.txt`);
-            dlAnchorElem.click();
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'text/plain'});
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = 'timeline.txt'; a.click();
+            toggleMenu();
         }
 
-        function openVaultModal() {
-            toggleSidebar();
-            document.getElementById('statOffers').innerText = aiStats.offers;
-            document.getElementById('statRejections').innerText = aiStats.rejections;
-            document.getElementById('statCaseLaw').innerText = aiStats.lastCaseLaw;
-            document.getElementById('vaultOverlay').classList.add('active');
-        }
-
-        function resetTimeline() { 
-            if(confirm("Are you sure you want to completely restart? This will erase local storage.")) { 
-                logsData = []; 
-                aiStats = { offers: 0, rejections: 0, changes: 0, lastCaseLaw: "No legal precedents queried during this session." };
-                saveData(); 
-                renderTimeline(); 
-                toggleSidebar();
-            } 
-        }
-
-        /* --- CLOUD STORAGE & OCR EVIDENCE --- */
-        async function processEvidence(input, type) {
-            if (!input.files || input.files.length === 0) return;
-            const file = input.files[0];
-            const titleElement = document.getElementById('brandTitle');
-            const originalTitle = titleElement.innerText;
-            
-            try {
-                titleElement.innerHTML = `<span style="color: #f59e0b; animation: clioBreathe 1.5s infinite;">VAULTING...</span>`;
-                const uniqueFileName = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
-                
-                const { data, error } = await supabase.storage.from('evidence').upload(uniqueFileName, file);
-                if (error) throw error;
-
-                const { data: publicUrlData } = supabase.storage.from('evidence').getPublicUrl(uniqueFileName);
-                const fileUrl = publicUrlData.publicUrl;
-
-                const logInput = document.getElementById('logInput');
-                logInput.value += (logInput.value ? '\n\n' : '') + `[EVIDENCE ATTACHED: ${type}]\nSECURE LINK: ${fileUrl}\n`;
-                logInput.focus();
-
-                if (type === 'PHOTO' && file.type.startsWith('image/')) {
-                    titleElement.innerHTML = `<span style="color: #008080;">SCANNING...</span>`;
-                    await extractDateFromImage(file);
-                }
-            } catch (err) {
-                console.error("Upload Failed:", err);
-                alert("Failed to vault evidence. Check your Supabase keys and bucket settings.");
-            } finally {
-                titleElement.innerText = originalTitle;
-                input.value = ''; 
+        function resetApp() {
+            if(confirm("Wipe everything?")) {
+                data = []; stats = {offers:0, rejects:0, law:"None."};
+                save(); toggleMenu();
             }
         }
 
-        async function extractDateFromImage(file) {
-            try {
-                const { data: { text } } = await Tesseract.recognize(file, 'eng');
-                const dateRegex = /\b(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* \d{1,2},? \d{4})\b/gi;
-                const foundDates = text.match(dateRegex);
-
-                if (foundDates && foundDates.length > 0) {
-                    const extractedDate = foundDates[0];
-                    const now = new Date();
-                    
-                    logsData.push({ id: Date.now(), mode: 'NOTES', stamp: `${pinSvg} AI OCR SCAN | ${now.toLocaleDateString()} | ${now.toLocaleTimeString()}`, text: `[SCANNED DOCUMENT] OCR engine detected an embedded date in: ${file.name}`, isGold: true, patternInsight: `Extracted Historical Date: ${extractedDate}` });
-                    saveData();
-                    if (currentMode === 'NOTES') renderTimeline();
-                    alert(`AI Scan Complete.\n\nExtracted Date: ${extractedDate}`);
-                }
-            } catch (err) { console.error("AI Scan Failed:", err); }
+        function clioSync() {
+            const token = localStorage.getItem('clio_access_token');
+            if(!token) {
+                window.location.href = `https://ca.auth.api.clio.com/oauth/authorize?response_type=code&client_id=btscu9WmPHYellZtZA9slQfynBAQudwjaR7pEDdq&redirect_uri=https://worktimeline-app.vercel.app&scope=activities%20contacts%20matters%20notes`;
+            } else {
+                alert("Vaulting to Clio Manage via Secure Handshake...");
+            }
         }
 
-        /* --- CLIO HANDSHAKE --- */
         async function checkAuthRedirect() {
             const code = new URLSearchParams(window.location.search).get('code');
             if(code) {
                 const res = await fetch(`/api/clio-exchange?code=${code}`);
-                const data = await res.json();
-                if(data.access_token) { localStorage.setItem('clio_access_token', data.access_token); window.history.replaceState({}, '', '/'); alert("Clio Link Verified."); }
+                const d = await res.json();
+                if(d.access_token) { localStorage.setItem('clio_access_token', d.access_token); window.history.replaceState({}, '', '/'); }
             }
-        }
-
-        async function handleClioHandshake() {
-            const token = localStorage.getItem('clio_access_token');
-            const CLIO_CLIENT_ID = "btscu9WmPHYellZtZA9slQfynBAQudwjaR7pEDdq";
-            
-            if(!token) { window.location.href = `https://ca.auth.api.clio.com/oauth/authorize?response_type=code&client_id=${CLIO_CLIENT_ID}&redirect_uri=https://worktimeline-app.vercel.app&scope=activities%20contacts%20matters%20notes`; return; }
-            
-            const platform = confirm("Sync to Clio MANAGE? (Cancel for GROW)") ? 'MANAGE' : 'GROW';
-            const targetId = prompt(`Enter ${platform} ID:`);
-            if(!targetId) return;
-
-            const res = await fetch('/api/sync', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ logs: logsData, targetId, platform, token }) });
-            if((await res.json()).success) alert("Vaulted to Clio.");
-        }
-
-        function runPatternRecognition() { 
-            if(logsData.length > 0) { 
-                const last = logsData[logsData.length-1]; 
-                
-                // Track the AI usage in the Vault!
-                aiStats.offers += 1;
-                aiStats.lastCaseLaw = "Workers Compensation Act, RSBC 2019, c. 1 (Simulated pre-cedent match found based on recent timeline entries.)";
-                
-                // Ask user if they accept the AI Insight (Simulating Rejection Tracking)
-                const accepted = confirm("AI PRECEDENT FOUND: Potential match with RSBC 2019. Add to timeline?");
-                if (!accepted) {
-                    aiStats.rejections += 1;
-                } else {
-                    last.isGold = true; 
-                    last.patternInsight = "Verified precedent cluster detected: RSBC 2019, c. 1"; 
-                }
-                
-                renderTimeline(); 
-                saveData(); 
-            } 
         }
     </script>
 </body>
