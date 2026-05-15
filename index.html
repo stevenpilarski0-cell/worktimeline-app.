@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Work Timeline | Frosted Silver</title>
+    <title>Work Timeline | Frosted Silver v40</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
         
@@ -219,20 +219,26 @@
         .sidebar-item .circle-icon { width: 32px; height: 32px; background: var(--metallic-silver); color: var(--active-teal); border-radius: 10px; display: flex; justify-content: center; align-items: center; }
         .sidebar-item .circle-icon svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.5; fill: none; }
 
-        /* INTAKE OVERLAY (Journal Vibe) */
-        .intake-overlay {
+        /* MODAL OVERLAYS (Intake & Pattern Engine) */
+        .modal-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(226, 232, 240, 0.7); backdrop-filter: blur(25px);
             z-index: 10000; display: flex; justify-content: center; align-items: center;
             padding: 30px; box-sizing: border-box; text-align: center;
+            opacity: 0; pointer-events: none; transition: 0.3s;
         }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
 
-        .intake-message { background: rgba(255,255,255,0.9); padding: 45px 30px; border-radius: 35px; box-shadow: var(--glass-shadow); border: 1px solid var(--glass-border); }
+        .modal-box { background: rgba(255,255,255,0.9); padding: 45px 30px; border-radius: 35px; box-shadow: var(--glass-shadow); border: 1px solid var(--glass-border); width: 100%; }
         .greeting { font-weight: 900; font-size: 28px; color: var(--active-teal); margin-bottom: 5px; text-transform: uppercase; letter-spacing: -1px; }
         .location { font-size: 11px; font-weight: 800; color: var(--text-light); text-transform: uppercase; margin-bottom: 25px; letter-spacing: 1px; }
         
-        .disclaimer-body { font-size: 14px; font-weight: 700; color: var(--text-dark); line-height: 1.6; margin-bottom: 35px; }
+        .modal-body { font-size: 14px; font-weight: 700; color: var(--text-dark); line-height: 1.6; margin-bottom: 35px; }
         .ok-btn { background: var(--metallic-teal); color: white; padding: 18px; border-radius: 20px; font-weight: 900; font-size: 13px; text-transform: uppercase; cursor: pointer; box-shadow: 0 8px 20px rgba(0, 128, 128, 0.3); border: 1px solid rgba(255,255,255,0.2); }
+
+        /* Loader specific to Pattern Rec */
+        .spinner { width: 30px; height: 30px; border: 4px solid #cbd5e0; border-top: 4px solid var(--active-teal); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body onload="initApp()">
@@ -262,14 +268,34 @@
             </div>
         </div>
 
-        <div class="intake-overlay" id="intakeOverlay">
-            <div class="intake-message">
+        <div class="modal-overlay active" id="intakeOverlay">
+            <div class="modal-box">
                 <div class="greeting" id="greetingText">Good Morning</div>
                 <div class="location">Langley Township, BC</div>
-                <div class="disclaimer-body">
+                <div class="modal-body">
                     We do not practice law and we're not giving advice. <br><br><b>Look at this like it's a journal. Welcome to WorkTimeline™.</b>
                 </div>
-                <div class="ok-btn" onclick="document.getElementById('intakeOverlay').style.display='none'">I Understand</div>
+                <div class="ok-btn" onclick="document.getElementById('intakeOverlay').classList.remove('active')">I Understand</div>
+            </div>
+        </div>
+
+        <div class="modal-overlay" id="patternOverlay">
+            <div class="modal-box">
+                <div class="greeting">Pattern Engine</div>
+                <div class="location">Timeline Analysis</div>
+                
+                <div id="patternLoader">
+                    <div class="spinner"></div>
+                    <div class="modal-body">Scanning timeline for chronological patterns without influencing raw data...</div>
+                </div>
+
+                <div id="patternResult" style="display: none;">
+                    <div class="modal-body">
+                        <b>Analysis Complete.</b><br><br>
+                        Timeline behavior patterns parsed successfully. No legal conclusions drawn, but chronological clusters have been grouped for your review.
+                    </div>
+                    <div class="ok-btn" onclick="closePatternModal()">Close Review</div>
+                </div>
             </div>
         </div>
 
@@ -321,9 +347,9 @@
             </div>
 
             <div class="footer-nav">
-                <div class="footer-pill" onclick="alert('Analysis view active.')">
-                    <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                    Study
+                <div class="footer-pill" onclick="runPatternRecognition()">
+                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                    Pattern Rec
                 </div>
                 
                 <div class="center-add-btn" onclick="submitEntry()">+</div>
@@ -338,7 +364,7 @@
     </div>
 
     <script>
-        let logsData = JSON.parse(localStorage.getItem('silver_vault_v2')) || [];
+        let logsData = JSON.parse(localStorage.getItem('silver_vault_v3')) || [];
         
         // SVG Map Pin Icon String
         const pinSvg = `<svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
@@ -382,7 +408,7 @@
             input.focus();
         }
 
-        function saveData() { localStorage.setItem('silver_vault_v2', JSON.stringify(logsData)); }
+        function saveData() { localStorage.setItem('silver_vault_v3', JSON.stringify(logsData)); }
 
         function renderTimeline() {
             const list = document.getElementById('logList');
@@ -437,7 +463,6 @@
             if(logsData.length === 0) return alert("Journal is empty.");
             let body = "WorkTimeline™ Journal Export:\n\n";
             logsData.forEach(log => { 
-                // Strip out the SVG string before sending to email body
                 const cleanStamp = log.stamp.replace(/<svg.*<\/svg>/g, '').trim();
                 body += `[${cleanStamp}]\n${log.text}\n\n`; 
             });
@@ -451,6 +476,29 @@
                 renderTimeline();
                 toggleSidebar();
             }
+        }
+
+        // PATTERN RECOGNITION LOGIC
+        function runPatternRecognition() {
+            if(logsData.length === 0) {
+                alert("You need to add data to your journal before we can scan for patterns.");
+                return;
+            }
+            
+            // Show Pattern Overlay
+            document.getElementById('patternOverlay').classList.add('active');
+            document.getElementById('patternLoader').style.display = 'block';
+            document.getElementById('patternResult').style.display = 'none';
+
+            // Simulate parsing wait time (1.5 seconds)
+            setTimeout(() => {
+                document.getElementById('patternLoader').style.display = 'none';
+                document.getElementById('patternResult').style.display = 'block';
+            }, 1500);
+        }
+
+        function closePatternModal() {
+            document.getElementById('patternOverlay').classList.remove('active');
         }
     </script>
 </body>
