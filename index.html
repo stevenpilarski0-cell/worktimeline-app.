@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Timeline™ Master | Platinum Elite v11</title>
+    <title>Timeline™ Master | Platinum Elite v12</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Nunito+Sans:wght@400;600;800&display=swap');
         
@@ -16,24 +16,27 @@
             --clio-blue: #0076CE;
             --gray-border: #cbd5e0; 
             --mac-shadow: 0 15px 35px rgba(0,0,0,0.12); 
+            --radius-xl: 30px;
+            --radius-lg: 22px;
+            --radius-md: 15px;
         }
         
         body { font-family: 'Nunito', sans-serif; background: #f1f5f9; margin: 0; padding: 0; height: 100dvh; overflow: hidden; display: flex; justify-content: center; -webkit-tap-highlight-color: transparent; }
         
         .app-container { width: 100%; max-width: 500px; background: white; height: 100dvh; display: flex; flex-direction: column; position: relative; border: 1px solid var(--gray-border); box-sizing: border-box; overflow: hidden; }
 
-        /* PRIVACY BLUR (GHOST MODE) */
+        /* PRIVACY BLUR */
         .privacy-active #timelineContainer, .privacy-active .stack-wrapper, .privacy-active #linearTrack { filter: blur(35px); pointer-events: none; opacity: 0.15; }
 
-        /* SIDEBAR */
+        /* SIDEBAR (ROUNDED UPGRADE) */
         #sideBar { position: absolute; left: -280px; top: 0; width: 280px; height: 100%; background: #f8fafc; z-index: 10000; transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1); border-right: 1px solid var(--gray-border); box-shadow: 20px 0 50px rgba(0,0,0,0.1); padding: 30px 20px; box-sizing: border-box; }
         #sideBar.open { left: 0; }
-        .sidebar-item { padding: 15px; margin-bottom: 12px; border-radius: 14px; background: white; font-weight: 800; font-size: 13px; color: var(--teal); display: flex; align-items: center; gap: 15px; cursor: pointer; border: 1px solid #e2e8f0; }
+        .sidebar-item { padding: 15px; margin-bottom: 12px; border-radius: var(--radius-md); background: white; font-weight: 800; font-size: 13px; color: var(--teal); display: flex; align-items: center; gap: 15px; cursor: pointer; border: 1px solid #e2e8f0; }
         .sidebar-item svg { width: 20px; height: 20px; stroke: #4a5568; fill: none; stroke-width: 2; }
 
         /* NAV */
         .domain-nav { display: flex; background: #f8fafc; border-bottom: 1px solid var(--gray-border); padding: 10px; gap: 8px; z-index: 5000; }
-        .domain-tab { flex: 1; border: none; padding: 12px 0; border-radius: 15px; font-size: 9px; font-weight: 900; color: #64748b; background: transparent; transition: 0.3s; cursor: pointer; text-transform: uppercase; }
+        .domain-tab { flex: 1; border: none; padding: 12px 0; border-radius: var(--radius-md); font-size: 9px; font-weight: 900; color: #64748b; background: transparent; transition: 0.3s; cursor: pointer; text-transform: uppercase; }
         .domain-tab.active { background: white; color: var(--active-brand); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
 
         /* HEADER */
@@ -41,26 +44,32 @@
         .header-top { display: flex; justify-content: space-between; align-items: center; }
         .main-title { font-weight: 900; font-size: 18px; color: var(--active-brand); letter-spacing: -0.8px; }
 
-        /* UTILITY DRAWER */
-        #utilityDrawer { position: absolute; top: 125px; width: 100%; background: white; border-bottom: 2px solid var(--gray-border); z-index: 3500; transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1) transform; transform: translateY(calc(-100% + 45px)); border-radius: 0 0 35px 35px; }
+        /* UTILITY DRAWER (ROUNDED BOTTOM) */
+        #utilityDrawer { position: absolute; top: 125px; width: 100%; background: white; border-bottom: 2px solid var(--gray-border); z-index: 3500; transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1) transform; transform: translateY(calc(-100% + 45px)); border-radius: 0 0 var(--radius-xl) var(--radius-xl); }
         .handle { width: 100%; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .handle-pill { width: 40px; height: 5px; background: #cbd5e0; border-radius: 10px; }
+
+        /* TEMPLATE CHIPS (ULTRA ROUNDED) */
+        .template-chip { border: 1.5px solid var(--gray-border); padding: 10px 18px; border-radius: 50px; font-size: 10px; font-weight: 900; color: #4a5568; background: white; white-space: nowrap; cursor: pointer; }
 
         /* HARDWARE ROW */
         .hardware-row { display: flex; justify-content: space-evenly; align-items: center; padding: 10px 40px 20px; }
         .hw-item svg { width: 28px; height: 28px; stroke: #4a5568; fill: none; stroke-width: 2; }
 
-        /* LINEAR TIMELINE VISUAL */
+        /* TEXTAREA (ROUNDED) */
+        textarea { width: 100%; height: 110px; border: 2px solid var(--gray-border); border-radius: var(--radius-lg); padding: 18px; font-size: 16px; outline: none; background: #fafafa; box-sizing: border-box; font-family: 'Nunito Sans', sans-serif; }
+
+        /* TIMELINE TRACK & NODES */
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 35px 20px 200px 60px; display: flex; flex-direction: column; gap: 40px; scrollbar-width: none; position: relative; z-index: 5; }
         #linearTrack { position: absolute; left: 22px; top: 180px; bottom: 100px; width: 4px; background: rgba(0, 128, 128, 0.1); border-radius: 10px; z-index: 1; }
-        .track-node { position: absolute; left: -10px; width: 24px; height: 24px; background: white; border: 2.5px solid var(--teal); border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); z-index: 10; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--rose); font-weight: 900; }
+        .track-node { position: absolute; left: -10px; width: 24px; height: 24px; background: white; border: 2.5px solid var(--teal); border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); z-index: 10; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--rose); font-weight: 900; }
 
-        /* STATIONARY DOCK */
+        /* ACTION DOCK */
         .action-dock { position: absolute; bottom: 30px; right: 20px; display: flex; flex-direction: column; gap: 15px; z-index: 6000; }
-        #addBtn { width: 70px; height: 70px; background: var(--active-brand); border: none; border-radius: 24px; box-shadow: var(--mac-shadow); color: white; font-size: 35px; font-weight: 900; cursor: pointer; }
-        #syncBtn { width: 85px; height: 85px; background: var(--clio-blue); border: none; border-radius: 24px; box-shadow: var(--mac-shadow); display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 9px; cursor: pointer; }
+        #addBtn { width: 70px; height: 70px; background: var(--active-brand); border: none; border-radius: var(--radius-lg); box-shadow: var(--mac-shadow); color: white; font-size: 35px; font-weight: 900; cursor: pointer; }
+        #syncBtn { width: 85px; height: 85px; background: var(--clio-blue); border: none; border-radius: var(--radius-lg); box-shadow: var(--mac-shadow); display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 9px; cursor: pointer; }
 
-        .bubble { padding: 20px; border-radius: 25px; box-shadow: var(--mac-shadow); background: white; border: 1px solid #efefef; font-weight: 600; font-size: 15px; line-height: 1.4; }
+        .bubble { padding: 22px; border-radius: var(--radius-lg); box-shadow: var(--mac-shadow); background: white; border: 1px solid #efefef; font-weight: 600; font-size: 15px; line-height: 1.4; }
         .app-locked { filter: blur(50px); pointer-events: none; }
     </style>
 </head>
@@ -70,14 +79,14 @@
     <h2 style="font-weight: 900; color: var(--teal); margin-bottom: 25px;">VAULT CONTROLS</h2>
     <div class="sidebar-item" onclick="emailTimeline()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"/></svg>Email Timeline (@)</div>
     <div class="sidebar-item" onclick="resetTimeline()" style="color: var(--rose);"><svg viewBox="0 0 24 24" style="stroke: var(--rose);"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>Reset (Demo)</div>
-    <button style="border:none; padding:15px; border-radius:15px; width:100%; background:#e2e8f0; font-weight: 800; cursor:pointer;" onclick="toggleSidebar()">CLOSE</button>
+    <button style="border:none; padding:15px; border-radius:var(--radius-md); width:100%; background:#e2e8f0; font-weight: 800; cursor:pointer;" onclick="toggleSidebar()">CLOSE</button>
 </div>
 
 <div id="overlaySystem" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.98); backdrop-filter:blur(30px); z-index:100000; display:flex; align-items:center; justify-content:center; padding:25px;">
-    <div class="modal-card" style="background:white; padding:40px; border-radius:40px; text-align:center; box-shadow:var(--mac-shadow); max-width:350px;">
-        <h2 style="font-weight:900;">INTAKE GUARD</h2>
-        <p style="font-weight:600; color:#64748b; line-height:1.5;">We help you document the truth. <br><br>While this journal provides evidence support, <b>we do not offer legal advice.</b></p>
-        <button onclick="unlockApp()" style="border:none; padding:20px; border-radius:20px; width:100%; background:var(--teal); color:white; font-weight:900; cursor:pointer; text-transform:uppercase;">Secure My Journal</button>
+    <div class="modal-card" style="background:white; padding:45px 35px; border-radius:var(--radius-xl); text-align:center; box-shadow:var(--mac-shadow); max-width:350px; border: 1px solid var(--gray-border);">
+        <h2 style="font-weight:900; font-size: 22px;">INTAKE GUARD</h2>
+        <p style="font-weight:600; color:#64748b; line-height:1.6; margin: 20px 0;">We help you document the truth. <br><br>While this journal provides evidence support, <b>we do not offer legal advice.</b></p>
+        <button onclick="unlockApp()" style="border:none; padding:22px; border-radius:var(--radius-lg); width:100%; background:var(--teal); color:white; font-weight:900; cursor:pointer; text-transform:uppercase; letter-spacing: 1px;">Secure My Journal</button>
     </div>
 </div>
 
@@ -93,7 +102,7 @@
         <div class="header-top">
             <div onclick="toggleSidebar()" style="cursor:pointer;"><svg width="24" height="18" fill="none" stroke="var(--teal)" stroke-width="2.5"><line x1="0" y1="2" x2="24" y2="2"/><line x1="0" y1="9" x2="24" y2="9"/><line x1="0" y1="16" x2="24" y2="16"/></svg></div>
             <div class="main-title" id="brandTitle">WorkTimeline™</div>
-            <button onclick="togglePrivacy()" style="background:#f1f5f9; border:none; border-radius:20px; font-size:8px; font-weight:900; padding:6px 12px; cursor:pointer;">GHOST</button>
+            <button onclick="togglePrivacy()" style="background:#f1f5f9; border:none; border-radius:20px; font-size:8px; font-weight:900; padding:6px 14px; cursor:pointer;">GHOST</button>
         </div>
     </header>
 
@@ -123,14 +132,14 @@
 </div>
 
 <script>
-    let vault = JSON.parse(localStorage.getItem('platinum_v11')) || [];
+    let vault = JSON.parse(localStorage.getItem('platinum_v12')) || [];
     let currentDomain = 'WORK';
     let utilOpen = false;
 
     const domainConfig = {
         'WORK': { color: '#008080', name: 'WorkTimeline™', templates: { 'INCIDENT': 'INCIDENT:\n', 'INJURY': 'INJURY:\n', 'WITNESS': 'WITNESS:\n' } },
         'FAM': { color: '#e11d48', name: 'FamTimeline™', templates: { 'CUSTODY': 'CUSTODY:\n', 'EXPENSE': 'EXPENSE:\n' } },
-        'INJURY': { color: '#f59e0b', name: 'InjuryTimeline™', templates: { 'CLAIM': 'CLAIM #:\n', 'PAIN': 'PAIN LEVEL:\n' } },
+        'INJURY': { color: '#f59e0b', name: 'InjuryTimeline™', templates: { 'CLAIM': 'CLAIM #:\n', 'PAIN LEVEL': 'PAIN LEVEL:\n' } },
         'PROPERTY': { color: '#1e293b', name: 'PropTimeline™', templates: { 'DAMAGE': 'DAMAGE:\n', 'REPAIR': 'REPAIR:\n' } }
     };
 
@@ -148,7 +157,6 @@
         Object.keys(domainConfig[domain].templates).forEach(key => {
             const btn = document.createElement('button');
             btn.className = 'template-chip'; btn.innerText = key;
-            btn.style = "border:1.5px solid #cbd5e0; padding:10px 14px; border-radius:50px; font-size:10px; font-weight:900; background:white; white-space:nowrap; cursor:pointer;";
             btn.onclick = () => { document.getElementById('statusBox').value += domainConfig[domain].templates[key]; document.getElementById('statusBox').focus(); };
             bar.appendChild(btn);
         });
@@ -164,7 +172,7 @@
         const stamp = `📍 LANGLEY, BC | ${now.toLocaleString('en-US', options)}`;
         
         vault.push({ id: Date.now(), grit: text, domain: currentDomain, stamp: stamp });
-        localStorage.setItem('platinum_v11', JSON.stringify(vault));
+        localStorage.setItem('platinum_v12', JSON.stringify(vault));
         
         document.getElementById('statusBox').value = '';
         if(utilOpen) toggleUtility();
@@ -177,24 +185,22 @@
         const filtered = vault.filter(i => i.domain === currentDomain);
         
         filtered.reverse().forEach((item, index) => {
-            // Render Linear 3D Node (Squircle)
             const node = document.createElement('div');
             node.className = 'track-node'; 
-            node.style.top = (index * 135 + 20) + 'px'; // Dynamic vertical spacing
+            node.style.top = (index * 135 + 20) + 'px';
             node.innerHTML = '✕';
-            node.onclick = () => { if(confirm("Remove entry from temporary record?")) { vault = vault.filter(i => i.id !== item.id); localStorage.setItem('platinum_v11', JSON.stringify(vault)); refresh(); } };
+            node.onclick = () => { if(confirm("Remove entry?")) { vault = vault.filter(i => i.id !== item.id); localStorage.setItem('platinum_v12', JSON.stringify(vault)); refresh(); } };
             track.appendChild(node);
 
-            // Render Entry Bubble
             list.innerHTML += `
                 <div class="stack-wrapper">
-                    <div style="font-size:9px; font-weight:800; color:#94a3b8; margin-bottom:10px;">${item.stamp}</div>
+                    <div style="font-size:9px; font-weight:800; color:#94a3b8; margin-bottom:10px; letter-spacing: 0.5px;">${item.stamp}</div>
                     <div class="bubble">${item.grit.replace(/\n/g, '<br>')}</div>
                 </div>`;
         });
     }
 
-    function resetTimeline() { if(confirm("DEMO RESET: Wipe all temporary entries?")) { vault = []; localStorage.setItem('platinum_v11', JSON.stringify(vault)); refresh(); toggleSidebar(); } }
+    function resetTimeline() { if(confirm("DEMO RESET: Wipe all temporary entries?")) { vault = []; localStorage.setItem('platinum_v12', JSON.stringify(vault)); refresh(); toggleSidebar(); } }
     function emailTimeline() { window.location.href = `mailto:?subject=Timeline Export&body=Please see the attached secured intake data.`; }
     function clioHandshake() { if(currentDomain === 'WORK') alert("Vaulting data to Clio Canada Sandbox (ca.api.clio.com)..."); }
 
