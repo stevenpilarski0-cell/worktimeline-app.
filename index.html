@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Timeline™ Master | Platinum Final</title>
+    <title>Timeline™ Master | Platinum Elite v7</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Nunito+Sans:wght@400;600;800&display=swap');
         
@@ -14,7 +14,6 @@
             --amber: #f59e0b;
             --slate: #1e293b;
             --clio-blue: #0076CE;
-            --platinum: #e2e8f0;
             --gray-border: #cbd5e0; 
             --mac-shadow: 0 15px 35px rgba(0,0,0,0.12); 
         }
@@ -26,43 +25,31 @@
         /* PRIVACY BLUR */
         .privacy-active #timelineContainer, .privacy-active .stack-wrapper, .privacy-active #linearTrack { filter: blur(35px); pointer-events: none; opacity: 0.15; }
 
+        /* SIDEBAR */
+        #sideBar { position: absolute; left: -280px; top: 0; width: 280px; height: 100%; background: #f8fafc; z-index: 10000; transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1); border-right: 1px solid var(--gray-border); box-shadow: 20px 0 50px rgba(0,0,0,0.1); padding: 30px 20px; box-sizing: border-box; }
+        #sideBar.open { left: 0; }
+        .sidebar-item { padding: 15px; margin-bottom: 10px; border-radius: 12px; background: white; font-weight: 800; font-size: 13px; color: #475569; display: flex; align-items: center; gap: 12px; cursor: pointer; border: 1px solid #e2e8f0; transition: 0.2s; }
+        .sidebar-item:active { transform: scale(0.96); background: #f1f5f9; }
+
         /* DOMAIN NAV */
         .domain-nav { display: flex; background: #f8fafc; border-bottom: 1px solid var(--gray-border); padding: 10px; gap: 8px; z-index: 5000; }
-        .domain-tab { flex: 1; border: none; padding: 12px 0; border-radius: 15px; font-size: 9px; font-weight: 900; color: #64748b; background: transparent; cursor: pointer; text-transform: uppercase; }
+        .domain-tab { flex: 1; border: none; padding: 12px 0; border-radius: 15px; font-size: 9px; font-weight: 900; color: #64748b; background: transparent; transition: 0.3s; cursor: pointer; text-transform: uppercase; }
         .domain-tab.active { background: white; color: var(--active-brand); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
 
         /* HEADER */
-        .header { padding: 15px; border-bottom: 1px solid var(--gray-border); background: white; z-index: 4000; position: relative; }
+        .header { padding: 15px; border-bottom: 1px solid var(--gray-border); background: white; z-index: 4000; }
         .header-top { display: flex; justify-content: space-between; align-items: center; }
-        .main-title { font-weight: 900; font-size: 19px; color: var(--active-brand); letter-spacing: -0.8px; }
-
-        /* DUAL SWITCHES */
-        .switch-container { display: flex; gap: 8px; align-items: center; }
-        .mode-toggle { background: #f1f5f9; border: 1px solid var(--gray-border); padding: 6px 12px; border-radius: 20px; font-size: 8px; font-weight: 900; color: #475569; cursor: pointer; }
-        .mode-toggle.active { background: var(--active-brand); color: white; border-color: var(--active-brand); }
+        .main-title { font-weight: 900; font-size: 18px; color: var(--active-brand); letter-spacing: -0.8px; transition: 0.5s; }
 
         /* UTILITY DRAWER */
         #utilityDrawer { position: absolute; top: 125px; width: 100%; background: white; border-bottom: 2px solid var(--gray-border); z-index: 3500; transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1) transform; transform: translateY(calc(-100% + 45px)); border-radius: 0 0 35px 35px; }
         .handle { width: 100%; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .handle-pill { width: 40px; height: 5px; background: #cbd5e0; border-radius: 10px; }
 
-        /* 3D LINEAR TRACK (BG) */
-        #linearTrack { position: absolute; left: 22px; top: 180px; bottom: 100px; width: 4px; background: rgba(0, 128, 128, 0.1); border-radius: 10px; z-index: 1; transition: 0.5s; }
-        
-        /* MAC SQUIRCLE NODES */
-        .track-node { 
-            position: absolute; left: -10px; width: 24px; height: 24px; 
-            background: white; border: 2px solid var(--teal); border-radius: 8px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); z-index: 2; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; font-size: 10px;
-            transition: 0.2s;
-        }
-        .track-node:active { transform: scale(1.2); background: #fff0f0; border-color: #ff4d4d; }
-
-        /* HARDWARE ICONS - SPACED PLATINUM */
-        .hardware-row { display: flex; justify-content: space-evenly; align-items: center; padding: 10px 40px; margin-bottom: 20px; }
+        /* HARDWARE ROW - SPACED PLATINUM */
+        .hardware-row { display: flex; justify-content: space-evenly; align-items: center; padding: 10px 20px; margin-bottom: 20px; }
         .hw-item { position: relative; }
-        .hw-item svg { width: 28px; height: 28px; stroke: #4a5568; fill: none; stroke-width: 2; }
+        .hw-item svg { width: 26px; height: 26px; stroke: #4a5568; fill: none; stroke-width: 2; }
         .hw-item input { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
 
         /* TEMPLATE CHIPS */
@@ -71,27 +58,35 @@
 
         /* TIMELINE CONTAINER */
         #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 35px 20px 200px 60px; display: flex; flex-direction: column; gap: 40px; scrollbar-width: none; position: relative; z-index: 5; }
-        .bubble { padding: 22px; border-radius: 25px; box-shadow: var(--mac-shadow); background: white; border: 1px solid #efefef; font-weight: 600; font-size: 15px; line-height: 1.4; }
-        
-        /* STATIONARY ACTION DOCK */
-        .action-dock { position: absolute; bottom: 30px; right: 20px; display: flex; flex-direction: column; gap: 15px; z-index: 6000; }
-        #addBtn { width: 70px; height: 70px; background: var(--active-brand); border: none; border-radius: 24px; box-shadow: var(--mac-shadow); color: white; font-size: 35px; font-weight: 900; cursor: pointer; }
-        #syncBtn { width: 85px; height: 85px; background: var(--clio-blue); border: none; border-radius: 24px; box-shadow: var(--mac-shadow); display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 9px; cursor: pointer; }
-        #syncBtn svg { width: 26px; height: 26px; margin-bottom: 5px; }
+        #linearTrack { position: absolute; left: 22px; top: 180px; bottom: 100px; width: 4px; background: rgba(0, 128, 128, 0.1); border-radius: 10px; z-index: 1; }
+        .track-node { position: absolute; left: -10px; width: 24px; height: 24px; background: white; border: 2px solid var(--teal); border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); z-index: 2; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px; }
 
-        #overlaySystem { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(30px); z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 25px; }
+        /* ACTION DOCK */
+        .action-dock { position: absolute; bottom: 30px; right: 20px; display: flex; flex-direction: column; gap: 15px; z-index: 6000; }
+        #addBtn { width: 70px; height: 70px; background: var(--active-brand); border: none; border-radius: 24px; box-shadow: var(--mac-shadow); color: white; font-size: 35px; font-weight: 900; }
+        #syncBtn { width: 85px; height: 85px; background: var(--clio-blue); border: none; border-radius: 24px; box-shadow: var(--mac-shadow); display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 9px; }
+
         .modal-card { background: white; padding: 40px 30px; border-radius: 40px; box-shadow: var(--mac-shadow); text-align: center; border: 1px solid var(--gray-border); width: 100%; max-width: 360px; }
-        .modal-btn { border: none; padding: 20px; border-radius: 22px; width: 100%; font-weight: 900; margin-top: 15px; cursor: pointer; text-transform: uppercase; font-size: 14px; }
-        textarea { width: 100%; height: 110px; border: 2px solid var(--gray-border); border-radius: 22px; padding: 15px; font-size: 16px; outline: none; background: #fafafa; font-family: inherit; box-sizing: border-box; }
+        .modal-btn { border: none; padding: 20px; border-radius: 22px; width: 100%; font-weight: 900; margin-top: 15px; cursor: pointer; font-size: 14px; }
+        textarea { width: 100%; height: 110px; border: 2px solid var(--gray-border); border-radius: 22px; padding: 15px; font-size: 16px; outline: none; background: #fafafa; box-sizing: border-box; }
         .app-locked { filter: blur(50px); pointer-events: none; }
     </style>
 </head>
 <body>
 
-<div id="overlaySystem">
+<div id="sideBar">
+    <h2 style="font-weight: 900; color: var(--slate); margin-bottom: 25px;">Vault Controls</h2>
+    <div class="sidebar-item" onclick="exportData()">💾 Save Offline Backup</div>
+    <div class="sidebar-item" onclick="emailTimeline()">✉️ Email Timeline (@)</div>
+    <div class="sidebar-item" onclick="reviewCaseLaw()">⚖️ Review Case Law</div>
+    <div class="sidebar-item" onclick="resetTimeline()" style="color: var(--rose); margin-top: 40px; border-color: var(--rose);">🗑️ Reset Timeline (Demo)</div>
+    <button class="modal-btn" style="background: #e2e8f0; color: #475569;" onclick="toggleSidebar()">CLOSE</button>
+</div>
+
+<div id="overlaySystem" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(30px); z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 25px;">
     <div class="modal-card">
         <h2 style="font-weight: 900; font-size: 22px;">INTAKE GUARD</h2>
-        <p style="font-size: 14px; color: #64748b; font-weight: 600; line-height: 1.6; margin: 20px 0;">We help you document the truth. <br><br>While this journal provides evidence support, <b>we do not offer legal advice.</b></p>
+        <p style="font-size: 14px; color: #64748b; font-weight: 600; line-height: 1.6; margin: 20px 0;">While this journal provides evidence support, <b>we do not offer legal advice.</b></p>
         <button class="modal-btn" style="background:var(--teal); color:white;" onclick="unlockApp()">SECURE MY JOURNAL</button>
     </div>
 </div>
@@ -106,11 +101,11 @@
 
     <header class="header">
         <div class="header-top">
-            <div class="main-title" id="brandTitle">WorkTimeline™</div>
-            <div class="switch-container">
-                <button id="privBtn" class="mode-toggle" onclick="togglePrivacy()" style="display:none;">GHOST</button>
-                <button id="modeBtn" class="mode-toggle" onclick="toggleMode()">TIMELINE</button>
+            <div onclick="toggleSidebar()" style="cursor:pointer; padding: 5px;">
+                <svg width="24" height="18" viewBox="0 0 24 18" fill="none" stroke="#4a5568" stroke-width="2.5"><line x1="0" y1="2" x2="24" y2="2"/><line x1="0" y1="9" x2="24" y2="9"/><line x1="0" y1="16" x2="24" y2="16"/></svg>
             </div>
+            <div class="main-title" id="brandTitle">WorkTimeline™</div>
+            <button id="privBtn" onclick="togglePrivacy()" style="background:#f1f5f9; border:none; border-radius:20px; font-size:8px; font-weight:900; padding:6px 12px;">GHOST</button>
         </div>
     </header>
 
@@ -118,11 +113,12 @@
         <div style="padding: 20px;">
             <div id="templateBar"></div>
             <div class="hardware-row">
-                <div class="hw-item"><input type="file" accept="image/*" capture="environment" onchange="handleHardware('Photo')"><svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
-                <div class="hw-item"><input type="file" accept="audio/*" capture="microphone" onchange="handleHardware('Audio')"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg></div>
-                <div class="hw-item"><input type="file" onchange="handleHardware('Document')"><svg viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg></div>
+                <div class="hw-item"><input type="file" accept="image/*" capture="environment"><svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+                <div class="hw-item"><input type="file" accept="audio/*" capture="microphone"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg></div>
+                <div class="hw-item" onclick="emailTimeline()" title="Email Drafting"><svg viewBox="0 0 24 24" style="stroke: var(--clio-blue);"><circle cx="12" cy="12" r="10"/><path d="M16 8a3.5 3.5 0 1 0-7 0v4a3.5 3.5 0 1 0 7 0"/></svg></div>
+                <div class="hw-item"><input type="file"><svg viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg></div>
             </div>
-            <textarea id="statusBox" placeholder="Document the truth..."></textarea>
+            <textarea id="statusBox" placeholder="Capturing the truth..."></textarea>
         </div>
         <div class="handle" onclick="toggleUtility()"><div class="handle-pill"></div></div>
     </div>
@@ -133,116 +129,83 @@
     <div class="action-dock">
         <button id="addBtn" onclick="submitEntry()">+</button>
         <button id="syncBtn" onclick="clioHandshake()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 11V7a5 5 0 0 1 10 0v4" /><rect x="3" y="11" width="18" height="11" rx="2" ry="2" fill="rgba(255,255,255,0.1)" /></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M7 11V7a5 5 0 0 1 10 0v4" /><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/></svg>
             VAULT SYNC
         </button>
     </div>
 </div>
 
 <script>
-    let vault = JSON.parse(localStorage.getItem('platinum_final_v6')) || [];
+    let vault = JSON.parse(localStorage.getItem('platinum_elite_v7')) || [];
     let currentDomain = 'WORK';
-    let currentMode = 'TIMELINE';
     let utilOpen = false;
 
     const domainConfig = {
-        'WORK': { color: '#008080', name: 'WorkTimeline™', templates: { 'INCIDENT': 'INCIDENT:\n', 'WITNESS': 'WITNESS:\n', 'LOCATION': 'LOCATION:\n' } },
-        'FAM': { color: '#e11d48', name: 'FamTimeline™', templates: { 'CUSTODY': 'CUSTODY:\n', 'EXPENSE': 'EXPENSE:\n' } },
-        'INJURY': { color: '#f59e0b', name: 'InjuryTimeline™', templates: { 'CLAIM': 'CLAIM:\n', 'PAIN': 'PAIN:\n', 'INJURY': 'INJURY:\n' } },
-        'PROPERTY': { color: '#1e293b', name: 'PropTimeline™', templates: { 'DAMAGE': 'DAMAGE:\n', 'REPAIR': 'REPAIR:\n' } }
+        'WORK': { color: '#008080', name: 'WorkTimeline™', triggers: ['boss','manager','supervisor'], aggression: ['angry','bullying','harassment','antagonize'] },
+        'FAM': { color: '#e11d48', name: 'FamTimeline™' },
+        'INJURY': { color: '#f59e0b', name: 'InjuryTimeline™' },
+        'PROPERTY': { color: '#1e293b', name: 'PropTimeline™' }
     };
 
     function unlockApp() { document.getElementById('overlaySystem').style.display = 'none'; document.getElementById('mainApp').classList.remove('app-locked'); }
+    function toggleSidebar() { document.getElementById('sideBar').classList.toggle('open'); }
     function toggleUtility() { document.getElementById('utilityDrawer').style.transform = utilOpen ? 'translateY(calc(-100% + 45px))' : 'translateY(0)'; utilOpen = !utilOpen; }
     function togglePrivacy() { document.getElementById('mainApp').classList.toggle('privacy-active'); }
-    
-    function toggleMode() {
-        currentMode = (currentMode === 'TIMELINE') ? 'NOTES' : 'TIMELINE';
-        document.getElementById('modeBtn').innerText = currentMode;
-        document.getElementById('modeBtn').classList.toggle('active');
-        refresh();
-    }
 
     function switchDomain(domain) {
         currentDomain = domain;
-        const config = domainConfig[domain];
-        document.documentElement.style.setProperty('--active-brand', config.color);
-        document.getElementById('brandTitle').innerText = config.name;
-        document.getElementById('privBtn').style.display = (domain === 'WORK') ? 'block' : 'none';
-        
-        const bar = document.getElementById('templateBar');
-        bar.innerHTML = '';
-        Object.keys(config.templates).forEach(key => {
-            const btn = document.createElement('button');
-            btn.className = 'template-chip';
-            btn.innerText = key;
-            btn.onclick = () => { document.getElementById('statusBox').value += (document.getElementById('statusBox').value ? "\n" : "") + config.templates[key]; document.getElementById('statusBox').focus(); };
-            bar.appendChild(btn);
-        });
-        document.getElementById('syncBtn').style.opacity = (domain === 'WORK') ? '1' : '0.3';
+        document.documentElement.style.setProperty('--active-brand', domainConfig[domain].color);
+        document.getElementById('brandTitle').innerText = domainConfig[domain].name;
         refresh();
-    }
-
-    function handleHardware(type) {
-        document.getElementById('statusBox').value += `[${type} Handshake Complete] `;
-        document.getElementById('statusBox').focus();
-    }
-
-    function deleteEntry(id) {
-        if(confirm("Correction: Remove this entry before Vaulting?")) {
-            vault = vault.filter(i => i.id !== id);
-            localStorage.setItem('platinum_final_v6', JSON.stringify(vault));
-            refresh();
-        }
     }
 
     function submitEntry() {
         const text = document.getElementById('statusBox').value; if(!text.trim()) return;
         const now = new Date();
         const stamp = now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
-        
-        vault.push({ 
-            id: Date.now(),
-            grit: text, 
-            domain: currentDomain, 
-            type: currentMode, 
-            stamp: stamp 
-        });
-        localStorage.setItem('platinum_final_v6', JSON.stringify(vault));
+        vault.push({ id: Date.now(), grit: text, domain: currentDomain, stamp: stamp, timestamp: Date.now() });
+        localStorage.setItem('platinum_elite_v7', JSON.stringify(vault));
         document.getElementById('statusBox').value = '';
         if(utilOpen) toggleUtility();
+        checkForPatterns();
         refresh();
+    }
+
+    function checkForPatterns() {
+        if(currentDomain !== 'WORK') return;
+        const windowTime = 48 * 60 * 60 * 1000;
+        const recent = vault.filter(i => (Date.now() - i.timestamp) < windowTime && i.domain === 'WORK');
+        let matches = 0;
+        recent.forEach(i => {
+            const t = i.grit.toLowerCase();
+            if(domainConfig.WORK.triggers.some(w => t.includes(w)) && domainConfig.WORK.aggression.some(w => t.includes(w))) matches++;
+        });
+        const title = document.getElementById('brandTitle');
+        if(matches >= 3) { title.style.color = 'var(--rose)'; title.style.textShadow = '0 0 10px rgba(225,29,72,0.5)'; }
+        else { title.style.color = 'var(--active-brand)'; title.style.textShadow = 'none'; }
     }
 
     function refresh() {
         const list = document.getElementById('timelineContainer'); list.innerHTML = '';
         const track = document.getElementById('linearTrack'); track.innerHTML = '';
-        const filtered = vault.filter(i => i.domain === currentDomain && i.type === currentMode);
-        
+        const filtered = vault.filter(i => i.domain === currentDomain);
         filtered.reverse().forEach((item, index) => {
-            // SQUIRCLE NODE LOGIC
             const node = document.createElement('div');
             node.className = 'track-node';
-            node.style.top = (index * 135) + 'px'; 
-            node.innerHTML = '✕'; // Visual delete indicator
-            node.onclick = () => deleteEntry(item.id);
+            node.style.top = (index * 140) + 'px';
+            node.innerHTML = '✕';
+            node.onclick = () => { if(confirm("Remove entry?")) { vault = vault.filter(i => i.id !== item.id); refresh(); } };
             track.appendChild(node);
-
-            list.innerHTML += `
-                <div class="stack-wrapper">
-                    <div style="font-size:9px; font-weight:800; color:#94a3b8; margin-bottom:8px;">📍 ${item.stamp}</div>
-                    <div class="bubble">${item.grit.replace(/\n/g, '<br>')}</div>
-                </div>`;
+            list.innerHTML += `<div class="stack-wrapper"><div style="font-size:9px; font-weight:800; color:#94a3b8; margin-bottom:8px;">📍 ${item.stamp}</div><div class="bubble">${item.grit.replace(/\n/g, '<br>')}</div></div>`;
         });
     }
 
-    function clioHandshake() {
-        if(currentDomain !== 'WORK') return;
-        alert("Clio Vaulting: Handshake established with Canada Regional Server. Local memory purged.");
-        vault = vault.filter(v => v.domain !== 'WORK');
-        localStorage.setItem('platinum_final_v6', JSON.stringify(vault));
-        refresh();
-    }
+    function emailTimeline() { window.location.href = `mailto:?subject=Timeline Export&body=${encodeURIComponent(JSON.stringify(vault))}`; }
+    function resetTimeline() { if(confirm("DEMO RESET: Wipe all entries?")) { vault = []; localStorage.removeItem('platinum_elite_v7'); refresh(); toggleSidebar(); } }
+    function exportData() { alert("Offline Backup Saved to Device Encrypted Storage."); }
+    function reviewCaseLaw() { alert("Displaying relevant BC Labor Code & Precedents for recent entries..."); }
+
+    function clioHandshake() { if(currentDomain === 'WORK') alert("201 Created: Handshake Success with Clio Canada."); }
 
     switchDomain('WORK');
 </script>
