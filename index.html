@@ -3,22 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Work Timeline | Elite Prototype v1.2</title>
+    <title>Work Timeline | Frosted Silver</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
         
         :root {
-            --app-bg: #e5e7eb;
-            --main-bg: #ffffff;
-            --timeline-grey: #e2e8f0;
+            /* FROSTED SILVER METALLIC PALETTE */
+            --app-bg: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.9);
+            --glass-shadow: 0 8px 32px rgba(148, 163, 184, 0.2);
+            
             --text-dark: #1e293b;
-            --text-light: #94a3b8;
+            --text-light: #64748b;
             --active-teal: #008080;
             --active-green: #2ecc71;
-            --action-bar-bg: #1e293b;
-            --sidebar-bg: #f3f4f6;
-            --sidebar-text: #111827;
-            --sidebar-border: #d1d5db;
+            
+            --metallic-silver: linear-gradient(180deg, #f1f5f9 0%, #cbd5e0 100%);
+            --metallic-teal: linear-gradient(135deg, #008080 0%, #004d4d 100%);
         }
         
         body, html {
@@ -30,597 +32,417 @@
             justify-content: center;
             align-items: center;
             font-family: 'Nunito', sans-serif;
-            background-color: #e2e8f0; /* Wood desk bg */
+            background-color: #94a3b8; /* Desk background */
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Phone Bezel Container */
+        /* Phone Bezel */
         .phone-bezel {
             width: 375px;
             height: 812px;
-            background-color: #111;
-            border-radius: 40px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            background-color: #000;
+            border-radius: 45px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
             overflow: hidden;
-            border: 10px solid #222;
+            border: 8px solid #cbd5e0;
             position: relative;
         }
 
-        /* Main App Screen */
         .app-container {
             width: 100%;
             height: 100%;
-            background-color: var(--app-bg);
+            background: var(--app-bg);
             display: flex;
             flex-direction: column;
             position: relative;
         }
 
-        /* Status Bar (Dynamic Island style) */
+        /* PRIVACY GHOST */
+        .privacy-active .timeline-container { filter: blur(15px); pointer-events: none; opacity: 0.3; }
+
+        /* TOP STATUS BAR */
         .status-bar {
             height: 50px;
-            background-color: #0c141d;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 16px;
-            color: #d1d5db;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .clio-pulsator {
-            width: 8px;
-            height: 8px;
-            background-color: var(--active-green);
-            border-radius: 50%;
-            animation: pulsate 2s infinite;
-        }
-
-        @keyframes pulsate {
-            0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
-        }
-
-        .ghost-notes {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .notes-active-dot {
-            width: 6px;
-            height: 6px;
-            background-color: var(--active-green);
-            border-radius: 50%;
-            display: inline-block;
-            margin-left: -4px;
-        }
-
-        /* Header (Tab row) */
-        .header {
-            background-color: var(--main-bg);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 16px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .hamburger-menu {
-            font-size: 24px;
-            cursor: pointer;
-            color: var(--action-bar-bg);
-        }
-
-        .tab-row {
-            display: flex;
-            gap: 20px;
-            margin-left: 10px;
-        }
-
-        .tab {
-            font-size: 12px;
-            font-weight: 800;
-            color: var(--text-light);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            cursor: pointer;
-        }
-
-        .tab.active {
-            color: var(--action-bar-bg);
-        }
-
-        /* Action Icon Row */
-        .action-row {
-            height: 50px;
-            background-color: var(--action-bar-bg);
-            display: flex;
-            justify-content: space-evenly;
-            align-items: center;
-            border-radius: 0 0 10px 10px;
-        }
-
-        .action-icon {
-            font-size: 20px;
-            color: var(--active-teal);
-            cursor: pointer;
-        }
-
-        /* Story input bar */
-        .input-bar {
-            height: 40px;
-            background-color: #0c141d;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            padding: 0 16px;
-            margin: 10px 16px;
-            color: var(--text-light);
-            font-size: 14px;
-        }
-
-        .input-bar textarea {
             background: transparent;
-            border: none;
-            color: var(--text-light);
-            width: 100%;
-            height: 100%;
-            padding: 8px 0;
-            font-size: 14px;
-            resize: none;
-            outline: none;
-        }
-
-        /* Timeline Container */
-        .timeline-container {
-            flex: 1;
-            overflow-y: auto;
-            position: relative;
-            padding: 0 16px;
-        }
-
-        .timeline-line {
-            width: 2px;
-            height: 100%;
-            background-color: var(--text-dark);
-            position: absolute;
-            left: 20px;
-            top: 0;
-        }
-
-        .timeline-nodes {
-            position: absolute;
-            left: 13px;
-            top: 25px;
             display: flex;
-            flex-direction: column;
-            gap: 120px;
-        }
-
-        .timeline-node {
-            width: 16px;
-            height: 16px;
-            background-color: var(--active-teal);
-            border-radius: 50%;
-            border: 2px solid var(--app-bg);
-        }
-
-        .log-list {
-            padding: 20px 0 20px 40px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .log-entry {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .timestamp-stamp {
-            display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 6px;
-            font-size: 10px;
-            color: var(--text-light);
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-
-        .stamp-pills {
-            display: flex;
-            gap: 2px;
-        }
-
-        .stamp-pill {
-            height: 2px;
-            width: 8px;
-            background-color: var(--active-teal);
-            border-radius: 2px;
-        }
-
-        .log-bubble {
-            background-color: var(--main-bg);
-            padding: 12px;
-            border-radius: 8px;
-            border-left: 4px solid var(--active-teal);
+            padding: 0 20px;
             color: var(--text-dark);
-            font-size: 13px;
-            line-height: 1.4;
-            width: fit-content;
-            max-width: 90%;
-            word-wrap: break-word;
-        }
-
-        .log-bubble.ellipsis {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        /* Footer Nav */
-        .footer-nav {
-            height: 60px;
-            background-color: #0c141d;
-            display: flex;
-            justify-content: space-evenly;
-            align-items: center;
-            border-radius: 10px 10px 0 0;
-            border-top: 1px solid #1f2937;
-        }
-
-        .footer-btn {
-            font-size: 12px;
             font-weight: 800;
-            color: var(--text-light);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 4px;
+            font-size: 11px;
+            z-index: 10;
         }
+
+        .status-pill {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 6px 12px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            color: var(--text-dark);
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .ghost-notes { display: flex; align-items: center; gap: 8px; }
+        .notes-active-dot { width: 6px; height: 6px; background-color: var(--active-green); border-radius: 50%; }
+
+        .clio-status-led {
+            width: 10px; height: 10px; background-color: var(--clio-green); border-radius: 50%;
+            animation: breathe 2.5s infinite; box-shadow: 0 0 8px var(--clio-green); margin-left: 5px;
+        }
+        @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.6; } }
+
+        /* HEADER (Tabs & Hamburger) */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px 15px;
+            z-index: 10;
+        }
+
+        .menu-trigger {
+            font-size: 24px; color: var(--text-dark); cursor: pointer;
+            background: var(--glass-bg); padding: 8px; border-radius: 12px;
+            border: 1px solid var(--glass-border); backdrop-filter: blur(10px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex;
+        }
+
+        .tab-section { display: flex; gap: 10px; flex: 1; margin-left: 15px; }
+        .tab-pill {
+            flex: 1; background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: 14px; padding: 10px 0; font-size: 11px; font-weight: 800;
+            color: var(--text-light); text-align: center; backdrop-filter: blur(10px);
+            cursor: pointer; transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            text-transform: uppercase;
+        }
+        .tab-pill:active { transform: scale(0.95); }
+
+        /* HARDWARE & INPUT (Frosted Panel) */
+        .input-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            margin: 0 15px;
+            border-radius: 24px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 20px;
+            z-index: 10;
+        }
+
+        .hardware-icons { display: flex; justify-content: space-evenly; align-items: center; }
+        .hw-item { position: relative; width: 42px; height: 42px; background: var(--metallic-silver); border-radius: 14px; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 2px 4px rgba(255,255,255,0.8), 0 4px 6px rgba(0,0,0,0.05); cursor: pointer; border: 1px solid #cbd5e0; }
+        .hw-item svg { width: 22px; height: 22px; stroke: var(--active-teal); fill: none; stroke-width: 2.5; }
+        .hw-item input { position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer; z-index:10; }
+
+        .input-wrapper { background: rgba(255,255,255,0.8); border-radius: 14px; padding: 15px; border: 1px solid #e2e8f0; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+        .input-wrapper textarea { width: 100%; background: transparent; border: none; color: var(--text-dark); font-size: 14px; font-weight: 600; font-family: 'Nunito', sans-serif; resize: none; outline: none; height: 40px; }
+        .input-wrapper textarea::placeholder { color: #94a3b8; }
+
+        /* TIMELINE (Compact & Dense) */
+        .timeline-container { flex: 1; overflow-y: auto; position: relative; padding: 20px 20px 100px; }
+        .log-list { padding-left: 35px; display: flex; flex-direction: column; gap: 15px; position: relative; }
+        .timeline-line { position: absolute; left: 15px; top: 10px; bottom: 20px; width: 4px; background: var(--metallic-silver); border-radius: 2px; z-index: 1; box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); }
+
+        .log-entry { position: relative; display: flex; flex-direction: column; gap: 6px; z-index: 2; }
+        
+        /* MAC SQUIRCLE NODES (No Red) */
+        .timeline-squircle {
+            position: absolute; left: -28px; top: 15px; width: 18px; height: 18px;
+            background: var(--metallic-teal); border-radius: 6px; /* Squircle shape */
+            border: 2px solid white; z-index: 3; box-shadow: 0 4px 6px rgba(0,128,128,0.3);
+            cursor: pointer; transition: transform 0.2s;
+        }
+        .timeline-squircle:active { transform: scale(0.85); }
+
+        .timestamp-stamp { display: flex; align-items: center; gap: 6px; font-size: 9px; color: var(--text-light); text-transform: uppercase; font-weight: 800; padding-left: 4px; }
+        
+        .log-bubble {
+            background: var(--glass-bg); backdrop-filter: blur(10px);
+            padding: 14px 16px; border-radius: 18px; border: 1px solid var(--glass-border);
+            color: var(--text-dark); font-size: 12px; font-weight: 700; line-height: 1.5;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03); width: 95%; box-sizing: border-box;
+        }
+
+        /* FOOTER NAV (Silver Frosted) */
+        .footer-nav {
+            height: 80px; background: var(--glass-bg); backdrop-filter: blur(20px);
+            display: flex; justify-content: space-evenly; align-items: center;
+            padding: 0 15px 15px; border-top: 1px solid var(--glass-border); z-index: 10;
+        }
+
+        .footer-pill {
+            background: white; color: var(--text-dark); padding: 12px 20px;
+            border-radius: 20px; font-size: 10px; font-weight: 900; cursor: pointer;
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            border: 1px solid #e2e8f0; box-shadow: 0 4px 10px rgba(0,0,0,0.03); text-transform: uppercase;
+        }
+        .footer-pill svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2.5; fill: none; }
 
         .center-add-btn {
-            background-color: var(--active-teal);
-            color: #ffffff;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            cursor: pointer;
+            background: var(--metallic-teal); color: white; width: 56px; height: 56px;
+            border-radius: 20px; /* Squircle */
+            display: flex; justify-content: center; align-items: center;
+            font-size: 32px; font-weight: 600; cursor: pointer;
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.4), 0 8px 20px rgba(0, 128, 128, 0.4);
+            border: 2px solid rgba(255,255,255,0.2); transition: 0.2s;
         }
+        .center-add-btn:active { transform: scale(0.95); }
 
-        .sync-btn {
-            color: var(--active-green);
-        }
-
-        /* Sidebar Menu */
+        /* SIDEBAR MENU (Pure SVG, Frosted) */
         .sidebar {
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 80%;
-            height: 100%;
-            background-color: var(--sidebar-bg);
-            transition: left 0.3s ease-in-out;
-            z-index: 2000;
-            display: flex;
-            flex-direction: column;
-            border-right: 1px solid var(--sidebar-border);
+            position: absolute; top: 0; left: -100%; width: 280px; height: 100%;
+            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(25px);
+            transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 8000;
+            padding: 50px 25px; box-sizing: border-box; box-shadow: 20px 0 50px rgba(0,0,0,0.1);
+            border-right: 1px solid var(--glass-border);
         }
+        .sidebar.open { left: 0; }
 
-        .sidebar.open {
-            left: 0;
-        }
-
-        .sidebar-header {
-            padding: 16px;
-            border-bottom: 1px solid var(--sidebar-border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: 800;
-            color: var(--sidebar-text);
-        }
-
-        .close-sidebar {
-            font-size: 24px;
-            cursor: pointer;
-        }
-
-        .sidebar-list {
-            padding: 16px;
-            list-style: none;
-            margin: 0;
-        }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; font-weight: 900; font-size: 22px; color: var(--active-teal); margin-bottom: 40px; text-transform: uppercase; letter-spacing: -1px; }
+        .close-sidebar { cursor: pointer; background: var(--metallic-silver); padding: 8px; border-radius: 12px; display: flex; color: var(--text-dark); }
+        .close-sidebar svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2.5; }
 
         .sidebar-item {
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--sidebar-border);
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            color: var(--sidebar-text);
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 14px;
+            padding: 16px 20px; margin-bottom: 15px; border-radius: 18px;
+            background: white; font-weight: 800; font-size: 11px; color: var(--text-dark);
+            display: flex; align-items: center; gap: 15px; cursor: pointer;
+            border: 1px solid #e2e8f0; text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.02);
         }
+        .sidebar-item .circle-icon { width: 32px; height: 32px; background: var(--metallic-silver); color: var(--active-teal); border-radius: 10px; display: flex; justify-content: center; align-items: center; }
+        .sidebar-item .circle-icon svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.5; fill: none; }
 
-        .sidebar-item:last-child {
-            border-bottom: none;
-        }
-
-        .circle-icon {
-            width: 32px;
-            height: 32px;
-            background-color: var(--active-teal);
-            border-radius: 50%;
-            color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 18px;
-        }
-
-        /* Overlay for Intake Message */
+        /* INTAKE OVERLAY (Journal Vibe) */
         .intake-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.8);
-            z-index: 3000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            box-sizing: border-box;
-            color: #ffffff;
-            text-align: center;
-            backdrop-filter: blur(5px);
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(226, 232, 240, 0.7); backdrop-filter: blur(25px);
+            z-index: 10000; display: flex; justify-content: center; align-items: center;
+            padding: 30px; box-sizing: border-box; text-align: center;
         }
 
-        .intake-message {
-            background-color: #1e293b;
-            padding: 24px;
-            border-radius: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .greeting {
-            font-weight: 800;
-            font-size: 18px;
-        }
-
-        .disclaimer-body {
-            font-size: 13px;
-            line-height: 1.5;
-        }
-
-        .ok-btn {
-            background-color: var(--active-teal);
-            color: #ffffff;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: 800;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        /* Placeholder SVGs */
-        .icon-svg { fill: currentColor; width: 1em; height: 1em; }
+        .intake-message { background: rgba(255,255,255,0.9); padding: 45px 30px; border-radius: 35px; box-shadow: var(--glass-shadow); border: 1px solid var(--glass-border); }
+        .greeting { font-weight: 900; font-size: 28px; color: var(--active-teal); margin-bottom: 5px; text-transform: uppercase; letter-spacing: -1px; }
+        .location { font-size: 11px; font-weight: 800; color: var(--text-light); text-transform: uppercase; margin-bottom: 25px; letter-spacing: 1px; }
         
+        .disclaimer-body { font-size: 14px; font-weight: 700; color: var(--text-dark); line-height: 1.6; margin-bottom: 35px; }
+        .ok-btn { background: var(--metallic-teal); color: white; padding: 18px; border-radius: 20px; font-weight: 900; font-size: 13px; text-transform: uppercase; cursor: pointer; box-shadow: 0 8px 20px rgba(0, 128, 128, 0.3); border: 1px solid rgba(255,255,255,0.2); }
     </style>
 </head>
-<body>
+<body onload="initApp()">
     <div class="phone-bezel">
+        
         <div class="sidebar" id="sidebarMenu">
             <div class="sidebar-header">
-                Menu
-                <div class="close-sidebar" id="closeSidebar">✕</div>
+                MENU
+                <div class="close-sidebar" onclick="toggleSidebar()">
+                    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </div>
             </div>
-            <ul class="sidebar-list">
-                <li class="sidebar-item">
-                    <div class="circle-icon"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M22,6C22,4.9 21.1,4 20,4H4C2.9,4 2,4.9 2,6V18C2,19.1 2.9,20 4,20H20C21.1,20 22,19.1 22,18V6M20,6L12,11L4,6H20M20,18H4V8L12,13L20,8V18Z"/></svg></div>
-                    <span>Email</span>
-                </li>
-                <li class="sidebar-item">
-                    <div class="circle-icon"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M14,18V16H10V18H14M18,12H16V10H18V12M18,16V14H16V16H18M18,8H16V6H18V8M6,12H8V10H6V12M6,16V14H8V16H6M6,8H8V6H6V8M14,12H10V10H14V12M14,8H10V6H14V8M4,22H20C21.1,22 22,21.1 22,20V4C22,2.9 21.1,2 20,2H4C2.9,2 2,2.9 2,4V20C2,21.1 2.9,22 4,22Z"/></svg></div>
-                    <span>Save & Export</span>
-                </li>
-                <li class="sidebar-item">
-                    <div class="circle-icon"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M12,4V1L8,5L12,9V6A8,8 0 0,1 20,14A8,8 0 0,1 12,22A8,8 0 0,1 4,14H2A10,10 0 0,0 12,24A10,10 0 0,0 22,14A10,10 0 0,0 12,4Z"/></svg></div>
-                    <span>Reset</span>
-                </li>
-            </ul>
+            
+            <div class="sidebar-item" onclick="emailTimeline()">
+                <div class="circle-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"/></svg></div>
+                Draft Email
+            </div>
+            
+            <div class="sidebar-item" onclick="alert('Exporting securely.')">
+                <div class="circle-icon"><svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg></div>
+                Save & Export
+            </div>
+            
+            <div class="sidebar-item" onclick="resetTimeline()">
+                <div class="circle-icon" style="color: var(--rose);"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></div>
+                <span style="color: var(--rose);">Reset Engine</span>
+            </div>
         </div>
 
         <div class="intake-overlay" id="intakeOverlay">
             <div class="intake-message">
-                <div class="greeting" id="greetingText">Good ...</div>
+                <div class="greeting" id="greetingText">Good Morning</div>
+                <div class="location">Langley Township, BC</div>
                 <div class="disclaimer-body">
-                    We do not practice law and we're not giving advice. Look at this like it's a journal. I'll come to work timeline.
+                    We do not practice law and we're not giving advice. <br><br><b>Look at this like it's a journal. Welcome to WorkTimeline™.</b>
                 </div>
-                <div class="ok-btn" id="overlayOkBtn">I Agree</div>
+                <div class="ok-btn" onclick="document.getElementById('intakeOverlay').style.display='none'">I Understand</div>
             </div>
         </div>
 
-        <div class="app-container">
+        <div class="app-container" id="mainApp">
+            
             <div class="status-bar">
-                <span>Ghost</span>
-                <span>Upper Tab</span>
+                <div class="status-pill" onclick="togglePrivacy()">GHOST MODE</div>
                 <div class="ghost-notes">
-                    <span>Notes</span> <div class="notes-active-dot"></div>
-                    <div class="clio-pulsator"></div>
+                    <div class="status-pill">NOTES <div class="notes-active-dot"></div></div>
+                    <div class="clio-status-led" title="Clio Connection Active"></div>
                 </div>
             </div>
 
             <div class="header">
-                <div class="hamburger-menu" id="hamburgerMenu">≡</div>
-                <div class="tab-row">
-                    <span class="tab">Setting</span>
-                    <span class="tab active">Witness</span>
-                    <span class="tab">Injury</span>
+                <div class="menu-trigger" onclick="toggleSidebar()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </div>
+                <div class="tab-section">
+                    <div class="tab-pill" onclick="appendTemplate('SETTING')">Setting</div>
+                    <div class="tab-pill" onclick="appendTemplate('WITNESS')">Witness</div>
+                    <div class="tab-pill" onclick="appendTemplate('INJURY')">Injury</div>
                 </div>
             </div>
 
-            <div class="action-row">
-                <div class="action-icon">📷</div>
-                <div class="action-icon">🎤</div>
-                <div class="action-icon">🖇</div>
+            <div class="input-panel">
+                <div class="hardware-icons">
+                    <div class="hw-item">
+                        <input type="file" accept="image/*" capture="environment" onchange="hwFeedback('PHOTO ATTACHED')">
+                        <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                    </div>
+                    <div class="hw-item">
+                        <input type="file" accept="audio/*" capture="microphone" onchange="hwFeedback('AUDIO RECORDED')">
+                        <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+                    </div>
+                    <div class="hw-item">
+                        <input type="file" onchange="hwFeedback('DOCUMENT LINKED')">
+                        <svg viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                    </div>
+                </div>
+                <div class="input-wrapper">
+                    <textarea id="logInput" placeholder="Start journaling your truth..."></textarea>
+                </div>
             </div>
 
-            <div class="input-bar">
-                <textarea id="logInput" placeholder="Tell your story..." maxlength="100"></textarea>
-            </div>
-
-            <div class="timeline-container">
+            <div class="timeline-container" id="timelineBody">
                 <div class="timeline-line"></div>
-                
                 <div class="log-list" id="logList">
-                    <div class="log-entry">
-                        <div class="timestamp-stamp">
-                            <span>📍 LANGLEY, BC</span>
-                            <div class="stamp-pills"><div class="stamp-pill"></div><div class="stamp-pill"></div></div>
-                            <span>May 14, 2026</span>
-                            <div class="stamp-pills"><div class="stamp-pill"></div><div class="stamp-pill"></div></div>
-                            <span>10:15 PM PDT</span>
-                        </div>
-                        <div class="log-bubble ellipsis">
-                            Met with HR regarding incident,<br> detailed witness account...
-                        </div>
                     </div>
-                    <div class="log-entry">
-                        <div class="timestamp-stamp">
-                            <span>📍 LANGLEY, BC</span>
-                            <div class="stamp-pills"><div class="stamp-pill"></div><div class="stamp-pill"></div></div>
-                            <span>May 14, 2026</span>
-                            <div class="stamp-pills"><div class="stamp-pill"></div><div class="stamp-pill"></div></div>
-                            <span>10:15 PM PDT</span>
-                        </div>
-                        <div class="log-bubble ellipsis">
-                            Interviewed Witness 1 (Sarah) @<br> 9:00 AM... Interviewed ...
-                        </div>
-                    </div>
-                    <div class="log-entry">
-                        <div class="timestamp-stamp">
-                            <span>📍 LANGLEY, BC</span>
-                            <div class="stamp-pills"><div class="stamp-pill"></div><div class="stamp-pill"></div></div>
-                            <span>May 14, 2026</span>
-                            <div class="stamp-pills"><div class="stamp-pill"></div><div class="stamp-pill"></div></div>
-                            <span>10:15 PM PDT</span>
-                        </div>
-                        <div class="log-bubble">
-                            Injury details logged with HR...
-                        </div>
-                    </div>
-                    <div class="log-entry">
-                        <div class="timestamp-stamp">
-                            <span>📍 LANGLEY, BC</span>
-                            <div class="stamp-pills"><div class="stamp-pill"></div><div class="stamp-pill"></div></div>
-                            <span>May 14, 2026</span>
-                            <div class="stamp-pills"><div class="stamp-pill"></div><div class="stamp-pill"></div></div>
-                            <span>10:15 PM PDT</span>
-                        </div>
-                        <div class="log-bubble">
-                            Site visit photo attached on your<br>photo.
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <div class="footer-nav">
-                <span class="footer-btn" id="addBtn">addBtn</span>
-                <div class="center-add-btn" id="footerCenterPlus">+</div>
-                <span class="footer-btn sync-btn">👁 syncBtn</span>
+                <div class="footer-pill" onclick="alert('Analysis view active.')">
+                    <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    Study
+                </div>
+                
+                <div class="center-add-btn" onclick="submitEntry()">+</div>
+                
+                <div class="footer-pill" style="color: var(--active-teal);" onclick="alert('Syncing to secure server.')">
+                    <svg viewBox="0 0 24 24"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
+                    Sync
+                </div>
             </div>
+            
         </div>
     </div>
 
     <script>
-        // Sidebar logic
-        const hamburger = document.getElementById('hamburgerMenu');
-        const sidebar = document.getElementById('sidebarMenu');
-        const closeSidebar = document.getElementById('closeSidebar');
+        let logsData = JSON.parse(localStorage.getItem('silver_vault')) || [];
 
-        hamburger.addEventListener('click', () => {
-            sidebar.classList.add('open');
-        });
-
-        closeSidebar.addEventListener('click', () => {
-            sidebar.classList.remove('open');
-        });
-
-        // Dynamic Greeting logic
-        function getGreeting() {
-            const now = new Date();
-            const hour = now.getHours();
-            let greeting = "";
-            if (hour >= 5 && hour < 12) { greeting = "Good Morning"; }
-            else if (hour >= 12 && hour < 18) { greeting = "Good Afternoon"; }
-            else { greeting = "Good Evening"; }
-            return greeting;
+        function initApp() {
+            setGreeting();
+            if(logsData.length === 0) loadDummyData();
+            renderTimeline();
         }
-        document.getElementById('greetingText').innerText = getGreeting() + ",";
 
-        // Overlay hide logic
-        document.getElementById('overlayOkBtn').addEventListener('click', () => {
-            document.getElementById('intakeOverlay').style.display = 'none';
-        });
+        function loadDummyData() {
+            const baseTime = new Date();
+            logsData = [
+                { id: 1, stamp: `📍 LANGLEY, BC | ${baseTime.toLocaleDateString()} | 9:00 AM`, text: "WITNESS: Interviewed Sarah regarding the incident..." },
+                { id: 2, stamp: `📍 LANGLEY, BC | ${baseTime.toLocaleDateString()} | 11:30 AM`, text: "INJURY: Details logged and submitted to manager." },
+                { id: 3, stamp: `📍 LANGLEY, BC | ${baseTime.toLocaleDateString()} | 1:15 PM`, text: "[PHOTO ATTACHED @ 1:15 PM]\nSite visit completed." }
+            ];
+            saveData();
+        }
 
-        // Submit Log logic
-        function createDynamicTimestamp() {
-            const now = new Date();
-            const options = { month: 'long', day: 'numeric', year: 'numeric' };
-            const dateStr = now.toLocaleDateString('en-US', options);
-            const timeOptions = { hour: 'numeric', minute: '2-digit', hour12: true, timeZoneName: 'short' };
-            const timeStr = now.toLocaleTimeString('en-US', timeOptions);
-            const location = "📍 LANGLEY, BC";
+        function setGreeting() {
+            const h = new Date().getHours();
+            let greeting = "Good Evening";
+            if (h >= 4 && h < 12) greeting = "Good Morning";
+            else if (h >= 12 && h < 18) greeting = "Good Afternoon";
+            document.getElementById('greetingText').innerText = greeting;
+        }
+
+        function toggleSidebar() { document.getElementById('sidebarMenu').classList.toggle('open'); }
+        function togglePrivacy() { document.getElementById('mainApp').classList.toggle('privacy-active'); }
+        
+        function hwFeedback(label) {
+            const input = document.getElementById('logInput');
+            input.value += (input.value ? '\n' : '') + `[${label} @ ${new Date().toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit'})}]\n`;
+            input.focus();
+        }
+
+        function appendTemplate(type) {
+            const input = document.getElementById('logInput');
+            input.value += (input.value ? '\n\n' : '') + `${type}: `;
+            input.focus();
+        }
+
+        function saveData() { localStorage.setItem('silver_vault', JSON.stringify(logsData)); }
+
+        function renderTimeline() {
+            const list = document.getElementById('logList');
+            list.innerHTML = '';
             
-            return `
-                <div class="timestamp-stamp">
-                    <span>${location}</span>
-                    <div class="stamp-pills"><div class="stamp-pill"></div><div class="stamp-pill"></div></div>
-                    <span>${dateStr}</span>
-                    <div class="stamp-pills"><div class="stamp-pill"></div><div class="stamp-pill"></div></div>
-                    <span>${timeStr}</span>
-                </div>
-            `;
+            // Render oldest to newest (top to bottom)
+            logsData.forEach(log => {
+                const entry = document.createElement('div');
+                entry.className = 'log-entry';
+                
+                // LONG PRESS TO DELETE
+                let timer;
+                const start = () => timer = setTimeout(() => { if(confirm("Permanently delete this entry?")) { logsData = logsData.filter(v => v.id !== log.id); saveData(); renderTimeline(); } }, 800);
+                const stop = () => clearTimeout(timer);
+                
+                entry.onmousedown = start; entry.onmouseup = stop; entry.onmouseleave = stop;
+                entry.ontouchstart = start; entry.ontouchend = stop;
+
+                entry.innerHTML = `
+                    <div class="timeline-squircle" title="Hold to delete"></div>
+                    <div class="timestamp-stamp">${log.stamp}</div>
+                    <div class="log-bubble">${log.text.replace(/\n/g, '<br>')}</div>
+                `;
+                list.appendChild(entry);
+            });
+            
+            const container = document.getElementById('timelineBody');
+            container.scrollTop = container.scrollHeight;
         }
 
-        const logInput = document.getElementById('logInput');
-        const logList = document.getElementById('logList');
-        const addBtn = document.getElementById('addBtn');
-        const footerCenterPlus = document.getElementById('footerCenterPlus');
+        function submitEntry() {
+            const input = document.getElementById('logInput');
+            const text = input.value.trim();
+            if (!text) return;
 
-        function submitLog() {
-            const text = logInput.value.trim();
-            if (text.length === 0) return;
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
 
-            const newLog = document.createElement('div');
-            newLog.className = 'log-entry';
-            const dynamicText = text.replace(/(.{25})\s/, '$1<br> '); // Basic line break for visual flow
+            logsData.push({
+                id: Date.now(),
+                stamp: `📍 LANGLEY, BC | ${dateStr} | ${timeStr}`,
+                text: text
+            });
 
-            newLog.innerHTML = `
-                ${createDynamicTimestamp()}
-                <div class="log-bubble">${dynamicText}</div>
-            `;
-            logList.appendChild(newLog);
-            logInput.value = ''; // Clear input
-            logList.scrollTop = logList.scrollHeight; // Scroll to bottom
+            input.value = '';
+            saveData();
+            renderTimeline();
         }
 
-        addBtn.addEventListener('click', submitLog);
-        footerCenterPlus.addEventListener('click', submitLog);
+        function emailTimeline() {
+            if(logsData.length === 0) return alert("Journal is empty.");
+            let body = "WorkTimeline™ Journal Export:\n\n";
+            logsData.forEach(log => { body += `[${log.stamp}]\n${log.text}\n\n`; });
+            window.location.href = `mailto:?subject=Legal Journal Export&body=${encodeURIComponent(body)}`;
+        }
+
+        function resetTimeline() {
+            if(confirm("Clear the entire timeline?")) {
+                logsData = [];
+                saveData();
+                renderTimeline();
+                toggleSidebar();
+            }
+        }
     </script>
 </body>
 </html>
