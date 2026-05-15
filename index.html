@@ -3,20 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Work Timeline | Compact Elite</title>
+    <title>Work Timeline | Elite Prototype v1.2</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&display=swap');
         
         :root {
-            --app-bg: #e2e8f0;
+            --app-bg: #e5e7eb;
             --main-bg: #ffffff;
-            --text-dark: #0f172a;
-            --text-light: #64748b;
+            --timeline-grey: #e2e8f0;
+            --text-dark: #1e293b;
+            --text-light: #94a3b8;
             --active-teal: #008080;
             --active-green: #2ecc71;
-            --dark-header: #0c141d;
-            --dark-input: #1a2432;
-            --sidebar-bg: #f8fafc;
+            --action-bar-bg: #1e293b;
+            --sidebar-bg: #f3f4f6;
+            --sidebar-text: #111827;
+            --sidebar-border: #d1d5db;
         }
         
         body, html {
@@ -28,22 +30,23 @@
             justify-content: center;
             align-items: center;
             font-family: 'Nunito', sans-serif;
-            background-color: #cbd5e0; /* Desk background */
+            background-color: #e2e8f0; /* Wood desk bg */
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Phone Bezel */
+        /* Phone Bezel Container */
         .phone-bezel {
             width: 375px;
             height: 812px;
-            background-color: #000;
-            border-radius: 45px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            background-color: #111;
+            border-radius: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
             overflow: hidden;
-            border: 8px solid #111;
+            border: 10px solid #222;
             position: relative;
         }
 
+        /* Main App Screen */
         .app-container {
             width: 100%;
             height: 100%;
@@ -53,42 +56,37 @@
             position: relative;
         }
 
-        /* TOP STATUS BAR */
+        /* Status Bar (Dynamic Island style) */
         .status-bar {
             height: 50px;
-            background-color: var(--dark-header);
+            background-color: #0c141d;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 20px;
-            color: #94a3b8;
-            font-weight: 700;
-            font-size: 12px;
+            padding: 0 16px;
+            color: #d1d5db;
+            font-weight: 600;
+            font-size: 14px;
         }
 
-        .status-pill {
-            background-color: #334155;
-            padding: 4px 10px;
-            border-radius: 12px;
-            color: white;
-            font-size: 10px;
+        .clio-pulsator {
+            width: 8px;
+            height: 8px;
+            background-color: var(--active-green);
+            border-radius: 50%;
+            animation: pulsate 2s infinite;
+        }
+
+        @keyframes pulsate {
+            0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
         }
 
         .ghost-notes {
             display: flex;
+            gap: 12px;
             align-items: center;
-            gap: 8px;
-        }
-
-        .notes-pill {
-            background-color: #0ea5e9;
-            padding: 4px 10px;
-            border-radius: 12px;
-            color: white;
-            font-size: 10px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
         }
 
         .notes-active-dot {
@@ -96,504 +94,533 @@
             height: 6px;
             background-color: var(--active-green);
             border-radius: 50%;
+            display: inline-block;
+            margin-left: -4px;
         }
 
-        /* TABS (White Section) */
-        .tab-section {
+        /* Header (Tab row) */
+        .header {
             background-color: var(--main-bg);
-            padding: 12px 16px;
             display: flex;
-            gap: 10px;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 16px;
+            border-bottom: 1px solid #e2e8f0;
         }
 
-        .tab-pill {
-            flex: 1;
-            background-color: white;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 20px;
-            padding: 8px 0;
+        .hamburger-menu {
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--action-bar-bg);
+        }
+
+        .tab-row {
+            display: flex;
+            gap: 20px;
+            margin-left: 10px;
+        }
+
+        .tab {
             font-size: 12px;
             font-weight: 800;
-            color: var(--text-dark);
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
             cursor: pointer;
         }
 
-        /* HARDWARE & INPUT (Dark Section) */
-        .hardware-section {
-            background-color: var(--dark-header);
-            padding: 15px 20px 20px;
-            border-radius: 0 0 24px 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            z-index: 10;
+        .tab.active {
+            color: var(--action-bar-bg);
         }
 
-        .hardware-icons {
+        /* Action Icon Row */
+        .action-row {
+            height: 50px;
+            background-color: var(--action-bar-bg);
             display: flex;
             justify-content: space-evenly;
             align-items: center;
+            border-radius: 0 0 10px 10px;
         }
 
-        .icon-circle {
-            width: 34px;
-            height: 34px;
-            background-color: var(--active-teal);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
+        .action-icon {
+            font-size: 20px;
+            color: var(--active-teal);
             cursor: pointer;
         }
-        .icon-circle svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.5; }
 
-        .input-wrapper {
-            background-color: var(--dark-input);
-            border-radius: 12px;
-            padding: 12px 16px;
+        /* Story input bar */
+        .input-bar {
+            height: 40px;
+            background-color: #0c141d;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            margin: 10px 16px;
+            color: var(--text-light);
+            font-size: 14px;
         }
 
-        .input-wrapper textarea {
-            width: 100%;
+        .input-bar textarea {
             background: transparent;
             border: none;
-            color: #f1f5f9;
-            font-size: 13px;
-            font-family: 'Nunito', sans-serif;
+            color: var(--text-light);
+            width: 100%;
+            height: 100%;
+            padding: 8px 0;
+            font-size: 14px;
             resize: none;
             outline: none;
-            height: 20px;
         }
-        .input-wrapper textarea::placeholder { color: #64748b; }
 
-        /* TIMELINE (Compact & Dense) */
+        /* Timeline Container */
         .timeline-container {
             flex: 1;
             overflow-y: auto;
             position: relative;
-            padding: 15px 16px;
+            padding: 0 16px;
         }
 
-        .log-list {
-            padding-left: 35px; /* Space for the line */
-            display: flex;
-            flex-direction: column;
-            gap: 12px; /* Tighter gap for more density */
-            position: relative;
-        }
-
-        /* The continuous line */
         .timeline-line {
+            width: 2px;
+            height: 100%;
+            background-color: var(--text-dark);
             position: absolute;
-            left: 14px;
-            top: 10px;
-            bottom: 20px;
-            width: 3px;
-            background-color: #475569;
-            z-index: 1;
+            left: 20px;
+            top: 0;
         }
 
-        .log-entry {
-            position: relative;
+        .timeline-nodes {
+            position: absolute;
+            left: 13px;
+            top: 25px;
             display: flex;
             flex-direction: column;
-            gap: 4px;
-            z-index: 2;
+            gap: 120px;
         }
 
-        /* The teal dots (perfectly aligned with entries) */
-        .timeline-dot {
-            position: absolute;
-            left: -28.5px;
-            top: 20px; /* Aligns with the middle of the bubble */
+        .timeline-node {
             width: 16px;
             height: 16px;
             background-color: var(--active-teal);
             border-radius: 50%;
-            border: 3px solid var(--app-bg);
-            z-index: 3;
-            cursor: pointer;
+            border: 2px solid var(--app-bg);
+        }
+
+        .log-list {
+            padding: 20px 0 20px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .log-entry {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
 
         .timestamp-stamp {
             display: flex;
             align-items: center;
-            gap: 5px;
-            font-size: 8px; /* Scaled down */
+            gap: 6px;
+            font-size: 10px;
             color: var(--text-light);
             text-transform: uppercase;
-            font-weight: 700;
-            padding-left: 2px;
+            font-weight: 600;
+        }
+
+        .stamp-pills {
+            display: flex;
+            gap: 2px;
+        }
+
+        .stamp-pill {
+            height: 2px;
+            width: 8px;
+            background-color: var(--active-teal);
+            border-radius: 2px;
         }
 
         .log-bubble {
             background-color: var(--main-bg);
-            padding: 10px 14px; /* Tighter padding */
-            border-radius: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid var(--active-teal);
             color: var(--text-dark);
-            font-size: 11px; /* Scaled down text */
-            font-weight: 700;
+            font-size: 13px;
             line-height: 1.4;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-            width: 90%;
-            box-sizing: border-box;
+            width: fit-content;
+            max-width: 90%;
+            word-wrap: break-word;
         }
 
-        /* FOOTER NAV */
+        .log-bubble.ellipsis {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Footer Nav */
         .footer-nav {
-            height: 70px;
-            background-color: var(--dark-header);
+            height: 60px;
+            background-color: #0c141d;
             display: flex;
             justify-content: space-evenly;
             align-items: center;
-            padding: 0 10px;
+            border-radius: 10px 10px 0 0;
+            border-top: 1px solid #1f2937;
         }
 
-        .footer-pill {
-            background-color: #1e293b;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 11px;
+        .footer-btn {
+            font-size: 12px;
             font-weight: 800;
+            color: var(--text-light);
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
         }
 
         .center-add-btn {
             background-color: var(--active-teal);
-            color: white;
-            width: 44px;
-            height: 44px;
+            color: #ffffff;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 26px;
-            font-weight: 600;
+            font-size: 24px;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0, 128, 128, 0.4);
         }
 
-        /* MENU BUTTON & SIDEBAR */
-        .menu-trigger {
-            position: absolute;
-            left: 20px;
-            top: 75px; /* Overlay on white section */
-            font-size: 22px;
-            font-weight: 900;
-            color: var(--text-dark);
-            cursor: pointer;
-            z-index: 6000;
-            padding: 5px;
+        .sync-btn {
+            color: var(--active-green);
         }
 
+        /* Sidebar Menu */
         .sidebar {
             position: absolute;
             top: 0;
             left: -100%;
-            width: 260px;
+            width: 80%;
             height: 100%;
             background-color: var(--sidebar-bg);
-            transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            z-index: 8000;
-            padding: 40px 20px;
-            box-sizing: border-box;
-            box-shadow: 20px 0 40px rgba(0,0,0,0.1);
+            transition: left 0.3s ease-in-out;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--sidebar-border);
         }
-        .sidebar.open { left: 0; }
+
+        .sidebar.open {
+            left: 0;
+        }
 
         .sidebar-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--sidebar-border);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-weight: 900;
-            font-size: 20px;
-            color: var(--active-teal);
-            margin-bottom: 30px;
-            text-transform: uppercase;
+            font-weight: 800;
+            color: var(--sidebar-text);
         }
 
-        .close-sidebar { cursor: pointer; color: var(--text-light); }
+        .close-sidebar {
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .sidebar-list {
+            padding: 16px;
+            list-style: none;
+            margin: 0;
+        }
 
         .sidebar-item {
-            padding: 14px 16px;
-            margin-bottom: 12px;
-            border-radius: 16px;
-            background: white;
-            font-weight: 800;
-            font-size: 11px;
-            color: var(--text-dark);
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--sidebar-border);
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
+            color: var(--sidebar-text);
             cursor: pointer;
-            border: 1px solid #e2e8f0;
-            text-transform: uppercase;
+            font-weight: 600;
+            font-size: 14px;
         }
-        
-        .sidebar-item .circle-icon {
-            width: 28px;
-            height: 28px;
-            background-color: #f1f5f9;
-            color: var(--active-teal);
+
+        .sidebar-item:last-child {
+            border-bottom: none;
+        }
+
+        .circle-icon {
+            width: 32px;
+            height: 32px;
+            background-color: var(--active-teal);
             border-radius: 50%;
+            color: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
+            font-size: 18px;
         }
-        .sidebar-item .circle-icon svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.5; fill: none; }
 
-        /* INTAKE OVERLAY */
+        /* Overlay for Intake Message */
         .intake-overlay {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(10px);
-            z-index: 10000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            z-index: 3000;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 30px;
+            padding: 20px;
             box-sizing: border-box;
+            color: #ffffff;
             text-align: center;
+            backdrop-filter: blur(5px);
         }
 
         .intake-message {
-            background-color: white;
-            padding: 35px 25px;
-            border-radius: 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            background-color: #1e293b;
+            padding: 24px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
 
         .greeting {
-            font-weight: 900;
-            font-size: 24px;
-            color: var(--active-teal);
-            margin-bottom: 15px;
-            text-transform: uppercase;
+            font-weight: 800;
+            font-size: 18px;
         }
 
         .disclaimer-body {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--text-light);
-            line-height: 1.6;
-            margin-bottom: 25px;
+            font-size: 13px;
+            line-height: 1.5;
         }
 
         .ok-btn {
             background-color: var(--active-teal);
-            color: white;
-            padding: 16px;
-            border-radius: 20px;
-            font-weight: 900;
-            font-size: 13px;
-            text-transform: uppercase;
+            color: #ffffff;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 800;
             cursor: pointer;
+            margin-top: 10px;
         }
+
+        /* Placeholder SVGs */
+        .icon-svg { fill: currentColor; width: 1em; height: 1em; }
+        
     </style>
 </head>
-<body onload="initApp()">
+<body>
     <div class="phone-bezel">
-        
         <div class="sidebar" id="sidebarMenu">
             <div class="sidebar-header">
-                MENU
-                <div class="close-sidebar" onclick="toggleSidebar()">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                </div>
+                Menu
+                <div class="close-sidebar" id="closeSidebar">✕</div>
             </div>
-            
-            <div class="sidebar-item" onclick="emailTimeline()">
-                <div class="circle-icon">
-                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"/></svg>
-                </div>
-                Email
-            </div>
-            
-            <div class="sidebar-item" onclick="alert('Timeline Data Exported.')">
-                <div class="circle-icon">
-                    <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
-                </div>
-                Save & Export
-            </div>
-            
-            <div class="sidebar-item" onclick="resetTimeline()" style="color: var(--rose);">
-                <div class="circle-icon" style="color: var(--rose);">
-                    <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
-                </div>
-                Reset
-            </div>
+            <ul class="sidebar-list">
+                <li class="sidebar-item">
+                    <div class="circle-icon"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M22,6C22,4.9 21.1,4 20,4H4C2.9,4 2,4.9 2,6V18C2,19.1 2.9,20 4,20H20C21.1,20 22,19.1 22,18V6M20,6L12,11L4,6H20M20,18H4V8L12,13L20,8V18Z"/></svg></div>
+                    <span>Email</span>
+                </li>
+                <li class="sidebar-item">
+                    <div class="circle-icon"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M14,18V16H10V18H14M18,12H16V10H18V12M18,16V14H16V16H18M18,8H16V6H18V8M6,12H8V10H6V12M6,16V14H8V16H6M6,8H8V6H6V8M14,12H10V10H14V12M14,8H10V6H14V8M4,22H20C21.1,22 22,21.1 22,20V4C22,2.9 21.1,2 20,2H4C2.9,2 2,2.9 2,4V20C2,21.1 2.9,22 4,22Z"/></svg></div>
+                    <span>Save & Export</span>
+                </li>
+                <li class="sidebar-item">
+                    <div class="circle-icon"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M12,4V1L8,5L12,9V6A8,8 0 0,1 20,14A8,8 0 0,1 12,22A8,8 0 0,1 4,14H2A10,10 0 0,0 12,24A10,10 0 0,0 22,14A10,10 0 0,0 12,4Z"/></svg></div>
+                    <span>Reset</span>
+                </li>
+            </ul>
         </div>
 
         <div class="intake-overlay" id="intakeOverlay">
             <div class="intake-message">
-                <div class="greeting" id="greetingText">Good Morning</div>
+                <div class="greeting" id="greetingText">Good ...</div>
                 <div class="disclaimer-body">
-                    We do not practice law and we're not giving advice. Look at this like it's a journal.<br><br><b>Welcome to Work Timeline.</b>
+                    We do not practice law and we're not giving advice. Look at this like it's a journal. I'll come to work timeline.
                 </div>
-                <div class="ok-btn" onclick="document.getElementById('intakeOverlay').style.display='none'">I Understand</div>
+                <div class="ok-btn" id="overlayOkBtn">I Agree</div>
             </div>
         </div>
 
-        <div class="app-container" id="mainApp">
-            
+        <div class="app-container">
             <div class="status-bar">
-                <span class="status-pill">Ghost</span>
+                <span>Ghost</span>
                 <span>Upper Tab</span>
                 <div class="ghost-notes">
-                    <div class="notes-pill">Notes <div class="notes-active-dot"></div></div>
+                    <span>Notes</span> <div class="notes-active-dot"></div>
+                    <div class="clio-pulsator"></div>
                 </div>
             </div>
 
-            <div class="tab-section">
-                <div style="width: 30px;"></div> <div class="tab-pill">Setting</div>
-                <div class="tab-pill">Witness</div>
-                <div class="tab-pill">Injury</div>
-            </div>
-            
-            <div class="menu-trigger" onclick="toggleSidebar()">
-                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="3"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            <div class="header">
+                <div class="hamburger-menu" id="hamburgerMenu">≡</div>
+                <div class="tab-row">
+                    <span class="tab">Setting</span>
+                    <span class="tab active">Witness</span>
+                    <span class="tab">Injury</span>
+                </div>
             </div>
 
-            <div class="hardware-section">
-                <div class="hardware-icons">
-                    <div class="icon-circle"><svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
-                    <div class="icon-circle"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg></div>
-                    <div class="icon-circle"><svg viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg></div>
-                </div>
-                <div class="input-wrapper">
-                    <textarea id="logInput" placeholder="Tell your story..."></textarea>
-                </div>
+            <div class="action-row">
+                <div class="action-icon">📷</div>
+                <div class="action-icon">🎤</div>
+                <div class="action-icon">🖇</div>
+            </div>
+
+            <div class="input-bar">
+                <textarea id="logInput" placeholder="Tell your story..." maxlength="100"></textarea>
             </div>
 
             <div class="timeline-container">
                 <div class="timeline-line"></div>
+                
                 <div class="log-list" id="logList">
+                    <div class="log-entry">
+                        <div class="timestamp-stamp">
+                            <span>📍 LANGLEY, BC</span>
+                            <div class="stamp-pills"><div class="stamp-pill"></div><div class="stamp-pill"></div></div>
+                            <span>May 14, 2026</span>
+                            <div class="stamp-pills"><div class="stamp-pill"></div><div class="stamp-pill"></div></div>
+                            <span>10:15 PM PDT</span>
+                        </div>
+                        <div class="log-bubble ellipsis">
+                            Met with HR regarding incident,<br> detailed witness account...
+                        </div>
                     </div>
+                    <div class="log-entry">
+                        <div class="timestamp-stamp">
+                            <span>📍 LANGLEY, BC</span>
+                            <div class="stamp-pills"><div class="stamp-pill"></div><div class="stamp-pill"></div></div>
+                            <span>May 14, 2026</span>
+                            <div class="stamp-pills"><div class="stamp-pill"></div><div class="stamp-pill"></div></div>
+                            <span>10:15 PM PDT</span>
+                        </div>
+                        <div class="log-bubble ellipsis">
+                            Interviewed Witness 1 (Sarah) @<br> 9:00 AM... Interviewed ...
+                        </div>
+                    </div>
+                    <div class="log-entry">
+                        <div class="timestamp-stamp">
+                            <span>📍 LANGLEY, BC</span>
+                            <div class="stamp-pills"><div class="stamp-pill"></div><div class="stamp-pill"></div></div>
+                            <span>May 14, 2026</span>
+                            <div class="stamp-pills"><div class="stamp-pill"></div><div class="stamp-pill"></div></div>
+                            <span>10:15 PM PDT</span>
+                        </div>
+                        <div class="log-bubble">
+                            Injury details logged with HR...
+                        </div>
+                    </div>
+                    <div class="log-entry">
+                        <div class="timestamp-stamp">
+                            <span>📍 LANGLEY, BC</span>
+                            <div class="stamp-pills"><div class="stamp-pill"></div><div class="stamp-pill"></div></div>
+                            <span>May 14, 2026</span>
+                            <div class="stamp-pills"><div class="stamp-pill"></div><div class="stamp-pill"></div></div>
+                            <span>10:15 PM PDT</span>
+                        </div>
+                        <div class="log-bubble">
+                            Site visit photo attached on your<br>photo.
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="footer-nav">
-                <div class="footer-pill">eyeBtn</div>
-                <div class="center-add-btn" onclick="submitEntry()">+</div>
-                <div class="footer-pill" style="color: var(--active-green);">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right: 4px;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                    syncBtn
-                </div>
+                <span class="footer-btn" id="addBtn">addBtn</span>
+                <div class="center-add-btn" id="footerCenterPlus">+</div>
+                <span class="footer-btn sync-btn">👁 syncBtn</span>
             </div>
-            
         </div>
     </div>
 
     <script>
-        // Data Array
-        let logsData = [
-            { id: 1, location: "📍 LANGLEY, BC", date: "May 14, 2026", time: "10:15 PM PDT", text: "Met with HR regarding incident, detailed witness account..." },
-            { id: 2, location: "📍 LANGLEY, BC", date: "May 14, 2026", time: "10:15 PM PDT", text: "Interviewed Witness 1 (Sarah) @ 9:00 AM... Interviewed on..." },
-            { id: 3, location: "📍 LANGLEY, BC", date: "May 14, 2026", time: "10:15 PM PDT", text: "Injury details logged with HR..." },
-            { id: 4, location: "📍 LANGLEY, BC", date: "May 14, 2026", time: "10:15 PM PDT", text: "Site visit photo attached on your photo." }
-        ];
+        // Sidebar logic
+        const hamburger = document.getElementById('hamburgerMenu');
+        const sidebar = document.getElementById('sidebarMenu');
+        const closeSidebar = document.getElementById('closeSidebar');
 
-        function initApp() {
-            setGreeting();
-            renderTimeline();
-        }
+        hamburger.addEventListener('click', () => {
+            sidebar.classList.add('open');
+        });
 
-        function setGreeting() {
-            const h = new Date().getHours();
-            let greeting = "Good Evening";
-            if (h >= 4 && h < 12) greeting = "Good Morning";
-            else if (h >= 12 && h < 18) greeting = "Good Afternoon";
-            document.getElementById('greetingText').innerText = greeting;
-        }
+        closeSidebar.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+        });
 
-        function toggleSidebar() {
-            document.getElementById('sidebarMenu').classList.toggle('open');
-        }
-
-        function renderTimeline() {
-            const list = document.getElementById('logList');
-            list.innerHTML = '';
-            
-            // Render from oldest to newest (top to bottom)
-            logsData.forEach(log => {
-                const entry = document.createElement('div');
-                entry.className = 'log-entry';
-                
-                // Allow long press to delete
-                let timer;
-                const start = () => timer = setTimeout(() => { if(confirm("Delete log?")) { logsData = logsData.filter(v => v.id !== log.id); renderTimeline(); } }, 800);
-                const stop = () => clearTimeout(timer);
-                entry.onmousedown = start; entry.onmouseup = stop; entry.onmouseleave = stop;
-                entry.ontouchstart = start; entry.ontouchend = stop;
-
-                entry.innerHTML = `
-                    <div class="timeline-dot"></div>
-                    <div class="timestamp-stamp">
-                        <span>${log.location}</span> | 
-                        <span>${log.date}</span> | 
-                        <span>${log.time}</span>
-                    </div>
-                    <div class="log-bubble">${log.text.replace(/\n/g, '<br>')}</div>
-                `;
-                list.appendChild(entry);
-            });
-            
-            // Auto scroll to bottom
-            const container = document.querySelector('.timeline-container');
-            container.scrollTop = container.scrollHeight;
-        }
-
-        function submitEntry() {
-            const input = document.getElementById('logInput');
-            const text = input.value.trim();
-            if (!text) return;
-
+        // Dynamic Greeting logic
+        function getGreeting() {
             const now = new Date();
-            const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-            const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-
-            logsData.push({
-                id: Date.now(),
-                location: "📍 LANGLEY, BC",
-                date: dateStr,
-                time: timeStr + " PDT",
-                text: text
-            });
-
-            input.value = '';
-            renderTimeline();
+            const hour = now.getHours();
+            let greeting = "";
+            if (hour >= 5 && hour < 12) { greeting = "Good Morning"; }
+            else if (hour >= 12 && hour < 18) { greeting = "Good Afternoon"; }
+            else { greeting = "Good Evening"; }
+            return greeting;
         }
+        document.getElementById('greetingText').innerText = getGreeting() + ",";
 
-        // Email function copies all timeline content to email body
-        function emailTimeline() {
-            if(logsData.length === 0) {
-                alert("Your timeline is empty.");
-                return;
-            }
+        // Overlay hide logic
+        document.getElementById('overlayOkBtn').addEventListener('click', () => {
+            document.getElementById('intakeOverlay').style.display = 'none';
+        });
+
+        // Submit Log logic
+        function createDynamicTimestamp() {
+            const now = new Date();
+            const options = { month: 'long', day: 'numeric', year: 'numeric' };
+            const dateStr = now.toLocaleDateString('en-US', options);
+            const timeOptions = { hour: 'numeric', minute: '2-digit', hour12: true, timeZoneName: 'short' };
+            const timeStr = now.toLocaleTimeString('en-US', timeOptions);
+            const location = "📍 LANGLEY, BC";
             
-            let emailBody = "WorkTimeline™ Verified Log Export:\n\n";
-            logsData.forEach(log => {
-                emailBody += `[${log.date} | ${log.time}]\n${log.text}\n\n`;
-            });
-            
-            window.location.href = `mailto:?subject=Legal Intake Export&body=${encodeURIComponent(emailBody)}`;
+            return `
+                <div class="timestamp-stamp">
+                    <span>${location}</span>
+                    <div class="stamp-pills"><div class="stamp-pill"></div><div class="stamp-pill"></div></div>
+                    <span>${dateStr}</span>
+                    <div class="stamp-pills"><div class="stamp-pill"></div><div class="stamp-pill"></div></div>
+                    <span>${timeStr}</span>
+                </div>
+            `;
         }
 
-        function resetTimeline() {
-            if(confirm("Clear the entire timeline?")) {
-                logsData = [];
-                renderTimeline();
-                toggleSidebar();
-            }
+        const logInput = document.getElementById('logInput');
+        const logList = document.getElementById('logList');
+        const addBtn = document.getElementById('addBtn');
+        const footerCenterPlus = document.getElementById('footerCenterPlus');
+
+        function submitLog() {
+            const text = logInput.value.trim();
+            if (text.length === 0) return;
+
+            const newLog = document.createElement('div');
+            newLog.className = 'log-entry';
+            const dynamicText = text.replace(/(.{25})\s/, '$1<br> '); // Basic line break for visual flow
+
+            newLog.innerHTML = `
+                ${createDynamicTimestamp()}
+                <div class="log-bubble">${dynamicText}</div>
+            `;
+            logList.appendChild(newLog);
+            logInput.value = ''; // Clear input
+            logList.scrollTop = logList.scrollHeight; // Scroll to bottom
         }
+
+        addBtn.addEventListener('click', submitLog);
+        footerCenterPlus.addEventListener('click', submitLog);
     </script>
 </body>
 </html>
