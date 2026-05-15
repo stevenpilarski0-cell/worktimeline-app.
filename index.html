@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Precision v50</title>
+    <title>WorkTimeline™ | Precision v51</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
         
@@ -50,9 +50,9 @@
         /* CLIO STATUS LED */
         .clio-status-led {
             width: 8px; height: 8px; background-color: var(--clio-green); border-radius: 50%;
-            animation: breathe 2.5s infinite; box-shadow: 0 0 8px var(--clio-green);
+            animation: clioBreathe 2.5s infinite; box-shadow: 0 0 8px var(--clio-green);
         }
-        @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.6; } }
+        @keyframes clioBreathe { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.6; } }
 
         /* TOP TOGGLE BAR */
         .top-toggles {
@@ -113,7 +113,7 @@
         .timeline-container { flex: 1; overflow-y: auto; position: relative; padding: 20px 20px 100px; }
         .log-list { padding-left: 35px; display: flex; flex-direction: column; gap: 15px; position: relative; }
         .timeline-line { position: absolute; left: 15px; top: 10px; bottom: 20px; width: 4px; background: var(--metallic-silver); border-radius: 2px; z-index: 1; box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); }
-        .log-entry { position: relative; display: flex; flex-direction: column; gap: 6px; z-index: 2; }
+        .log-entry { position: relative; display: flex; flex-direction: column; gap: 6px; z-index: 2; transition: all 0.4s ease; }
         
         /* MAC SQUIRCLE NODES */
         .timeline-squircle {
@@ -123,26 +123,29 @@
         }
         .timeline-squircle:active { transform: scale(0.85); }
 
-        /* GOLD PULSING SQUIRCLE */
-        .timeline-squircle.gold {
-            background: var(--metallic-gold);
-            animation: goldPulse 2s infinite;
-        }
-        @keyframes goldPulse {
-            0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
-        }
-
         .timestamp-stamp { display: flex; align-items: center; gap: 4px; font-size: 9px; color: var(--text-light); text-transform: uppercase; font-weight: 800; padding-left: 4px; }
         .timestamp-stamp svg { width: 10px; height: 10px; stroke: currentColor; fill: none; stroke-width: 2.5; display: inline-block; vertical-align: middle; margin-top: -2px; }
         
         .log-bubble {
             background: var(--glass-bg); backdrop-filter: blur(10px); padding: 14px 16px; border-radius: 18px; border: 1px solid var(--glass-border);
             color: var(--text-dark); font-size: 12px; font-weight: 700; line-height: 1.5; box-shadow: 0 4px 15px rgba(0,0,0,0.03); width: 95%; box-sizing: border-box;
+            transition: all 0.4s ease;
         }
 
-        /* GOLD PATTERN INSIGHT BOX */
+        /* --- GOLD PULSING STYLES --- */
+        .timeline-squircle.gold { background: var(--metallic-gold); border-color: #fff; box-shadow: 0 0 10px rgba(245, 158, 11, 0.8); }
+        
+        .log-bubble.gold {
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid #f59e0b;
+            animation: goldPulse 2.5s infinite;
+        }
+
+        @keyframes goldPulse {
+            0%, 100% { box-shadow: 0 0 10px rgba(245, 158, 11, 0.3); }
+            50% { box-shadow: 0 0 22px rgba(245, 158, 11, 0.7); }
+        }
+
         .gold-insight {
             margin-top: 12px; padding: 10px 12px; background: rgba(245, 158, 11, 0.1);
             border-left: 3px solid #f59e0b; border-radius: 8px; font-size: 11px;
@@ -259,7 +262,7 @@
                     <div class="modal-body">
                         <b>Analysis Complete.</b><br><br>
                         Pattern Detected: <i>Multiple incident logs clustered in the morning hours.</i><br><br>
-                        Do you want to append this insight to your timeline? (Your raw entry remains fully intact).
+                        Do you want to append this insight to your timeline? (Your original raw entry remains exactly the same).
                     </div>
                     <div style="display: flex; gap: 10px;">
                         <div class="ok-btn ghost" onclick="handlePatternAudit('IGNORED')">Ignore</div>
@@ -357,7 +360,7 @@
     </div>
 
     <script>
-        let logsData = JSON.parse(localStorage.getItem('silver_vault_v50')) || [];
+        let logsData = JSON.parse(localStorage.getItem('silver_vault_v51')) || [];
         let currentMode = 'TIMELINE';
         
         const pinSvg = `<svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
@@ -422,7 +425,7 @@
             input.focus();
         }
 
-        function saveData() { localStorage.setItem('silver_vault_v50', JSON.stringify(logsData)); }
+        function saveData() { localStorage.setItem('silver_vault_v51', JSON.stringify(logsData)); }
 
         function renderTimeline() {
             const list = document.getElementById('logList');
@@ -443,6 +446,8 @@
 
                 // Squircle class dynamics based on Gold state
                 let squircleClass = log.isGold ? "timeline-squircle gold" : "timeline-squircle";
+                let bubbleClass = log.isGold ? "log-bubble gold" : "log-bubble";
+                
                 const nodeHtml = currentMode === 'TIMELINE' ? `<div class="${squircleClass}" title="Hold to delete"></div>` : ``;
 
                 // Add insight block if Gold
@@ -451,7 +456,7 @@
                 entry.innerHTML = `
                     ${nodeHtml}
                     <div class="timestamp-stamp">${log.stamp}</div>
-                    <div class="log-bubble">
+                    <div class="${bubbleClass}">
                         ${log.text.replace(/\n/g, '<br>')}
                         ${insightHtml}
                     </div>
@@ -524,12 +529,19 @@
             }, 1500);
         }
 
+        function resetPatternModal() {
+            document.getElementById('patternOverlay').classList.remove('active');
+            // Cleanly reset the internal overlay state after it fades out
+            setTimeout(() => {
+                document.getElementById('patternLoader').style.display = 'block';
+                document.getElementById('patternResult').style.display = 'none';
+            }, 300);
+        }
+
         function handlePatternAudit(decision) {
             const now = new Date();
             const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
             const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-            
-            document.getElementById('patternOverlay').classList.remove('active');
 
             if (decision === 'ACCEPTED') {
                 // Find the latest timeline entry to append the Gold pattern to
@@ -545,27 +557,8 @@
                     id: Date.now(),
                     mode: 'NOTES',
                     stamp: `${pinSvg} AUDIT TRAIL | ${dateStr} | ${timeStr}`,
-                    text: "[AUDIT LOG] User ACCEPTED AI Pattern Suggestion. Appended to timeline entry.",
+                    text: "[AUDIT LOG] User ACCEPTED AI Pattern Suggestion. Appended visually to timeline entry.",
                     isGold: false
                 });
 
-                switchMode('TIMELINE'); // Ensure they are on the timeline to see the cool gold pulse
-                saveData();
-                renderTimeline();
-                
-            } else {
-                // They ignored it. Just write to notes.
-                logsData.push({
-                    id: Date.now(),
-                    mode: 'NOTES',
-                    stamp: `${pinSvg} AUDIT TRAIL | ${dateStr} | ${timeStr}`,
-                    text: "[AUDIT LOG] User IGNORED AI Pattern Suggestion. Raw timeline integrity maintained.",
-                    isGold: false
-                });
-                saveData();
-                renderTimeline();
-            }
-        }
-    </script>
-</body>
-</html>
+                switchMode('TIMELINE'); // Ensure they
