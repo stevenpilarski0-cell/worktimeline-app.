@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WTL | Mobile Precision v44</title>
+    <title>WorkTimeline™ | Classic Brand v45</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
         
@@ -70,7 +70,7 @@
         .toggle-btn.active { background: var(--metallic-teal); color: white; border-color: var(--active-teal); }
         .notes-dot { width: 6px; height: 6px; background: var(--active-green); border-radius: 50%; }
 
-        /* HEADER (Hamburger & Brand) */
+        /* HEADER */
         .header {
             display: flex; justify-content: space-between; align-items: center;
             padding: 10px 20px 15px; z-index: 10;
@@ -83,11 +83,11 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex;
         }
 
-        /* WTL BRANDING */
-        .brand-container {
-            display: flex; align-items: center; gap: 8px; color: var(--active-teal);
+        /* CLASSIC BRANDING */
+        .main-title {
+            font-weight: 900; font-size: 24px; color: var(--active-teal);
+            letter-spacing: -0.5px;
         }
-        .brand-text { font-weight: 900; font-size: 24px; letter-spacing: 1px; }
 
         /* HARDWARE & INPUT */
         .input-panel {
@@ -285,16 +285,8 @@
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                 </div>
                 
-                <div class="brand-container">
-                    <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M8 6V4c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v2"></path>
-                        <rect x="2" y="6" width="20" height="14" rx="4" ry="4"></rect>
-                        <line x1="3" y1="13" x2="21" y2="13"></line>
-                        <circle cx="8" cy="13" r="2.5" fill="currentColor"></circle>
-                        <circle cx="16" cy="13" r="2.5" fill="currentColor"></circle>
-                    </svg>
-                    <span class="brand-text">WTL</span>
-                </div>
+                <div class="main-title" id="brandTitle">WorkTimeline™</div>
+                
                 <div style="width: 40px;"></div>
             </div>
 
@@ -474,7 +466,7 @@
             const filteredData = logsData.filter(log => (log.mode || 'TIMELINE') === currentMode);
             if(filteredData.length === 0) return alert(`Your ${currentMode} is empty.`);
             
-            let body = `WTL Verified ${currentMode} Export:\n\n`;
+            let body = `WorkTimeline™ Verified ${currentMode} Export:\n\n`;
             filteredData.forEach(log => { 
                 const cleanStamp = log.stamp.replace(/<svg.*<\/svg>/g, '').trim();
                 body += `[${cleanStamp}]\n${log.text}\n\n`; 
