@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>WorkTimeline™ | Precision v52</title>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
         
@@ -35,7 +36,7 @@
         .notes-dot { width: 6px; height: 6px; background: var(--active-green); border-radius: 50%; }
         .header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px 15px; z-index: 10; }
         .menu-trigger { font-size: 24px; color: var(--text-dark); cursor: pointer; background: var(--glass-bg); padding: 8px; border-radius: 12px; border: 1px solid var(--glass-border); backdrop-filter: blur(10px); box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; }
-        .main-title { font-weight: 900; font-size: 22px; color: var(--active-teal); letter-spacing: -0.5px; }
+        .main-title { font-weight: 900; font-size: 22px; color: var(--active-teal); letter-spacing: -0.5px; transition: 0.3s; }
         .input-panel { background: var(--glass-bg); backdrop-filter: blur(20px); margin: 0 15px; border-radius: 24px; border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow); display: flex; flex-direction: column; gap: 15px; padding: 20px; z-index: 10; }
         .template-row { display: flex; gap: 8px; justify-content: space-between; margin-bottom: 5px; }
         .template-chip { flex: 1; background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px 0; font-size: 10px; font-weight: 900; color: var(--text-dark); text-align: center; cursor: pointer; text-transform: uppercase; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: 0.2s; }
@@ -98,14 +99,34 @@
             <div class="header">
                 <div class="menu-trigger" onclick="toggleSidebar()">☰</div>
                 <div style="display:flex; align-items:center; gap:8px;">
-                    <div class="main-title">WorkTimeline™</div>
+                    <div class="main-title" id="brandTitle">WorkTimeline™</div>
                     <div class="clio-status-led" title="Clio Link Ready"></div>
                 </div>
                 <div style="width:24px;"></div>
             </div>
 
             <div class="input-panel">
-                <div class="template-row"><div class="template-chip" onclick="appendTemplate('SETTING')">Setting</div><div class="template-chip" onclick="appendTemplate('WITNESS')">Witness</div><div class="template-chip" onclick="appendTemplate('INJURY')">Injury</div></div>
+                <div class="template-row">
+                    <div class="template-chip" onclick="appendTemplate('SETTING')">Setting</div>
+                    <div class="template-chip" onclick="appendTemplate('WITNESS')">Witness</div>
+                    <div class="template-chip" onclick="appendTemplate('INJURY')">Injury</div>
+                </div>
+                
+                <div class="hardware-icons">
+                    <div class="hw-item">
+                        <input type="file" accept="image/*" capture="environment" onchange="processEvidence(this, 'PHOTO')">
+                        <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                    </div>
+                    <div class="hw-item">
+                        <input type="file" accept="audio/*" capture="microphone" onchange="processEvidence(this, 'AUDIO')">
+                        <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+                    </div>
+                    <div class="hw-item">
+                        <input type="file" accept=".pdf,.doc,.docx,.txt" onchange="processEvidence(this, 'DOCUMENT')">
+                        <svg viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                    </div>
+                </div>
+                
                 <div class="input-wrapper"><textarea id="logInput" placeholder="Start journaling your truth..."></textarea></div>
             </div>
 
@@ -133,12 +154,91 @@
         function togglePrivacy() { document.getElementById('mainApp').classList.toggle('privacy-active'); }
         function switchMode(m) { currentMode = m; document.getElementById('timelineToggle').classList.toggle('active', m === 'TIMELINE'); document.getElementById('notesToggle').classList.toggle('active', m === 'NOTES'); renderTimeline(); }
         function appendTemplate(t) { const i = document.getElementById('logInput'); i.value += (i.value ? '\n' : '') + `${t}: `; i.focus(); }
-        function submitEntry() { const i = document.getElementById('logInput'); const t = i.value.trim(); if(!t) return; const now = new Date(); logsData.push({ id: Date.now(), mode: currentMode, stamp: `${pinSvg} LANGLEY, BC | ${now.toLocaleDateString()} | ${now.toLocaleTimeString()}`, text: t, isGold: false }); i.value = ''; saveData(); renderTimeline(); }
+        
+        function submitEntry() { 
+            const i = document.getElementById('logInput'); 
+            const t = i.value.trim(); 
+            if(!t) return; 
+            const now = new Date(); 
+            logsData.push({ id: Date.now(), mode: currentMode, stamp: `${pinSvg} LANGLEY, BC | ${now.toLocaleDateString()} | ${now.toLocaleTimeString()}`, text: t, isGold: false }); 
+            i.value = ''; 
+            saveData(); 
+            renderTimeline(); 
+        }
+        
         function saveData() { localStorage.setItem('silver_vault_v52', JSON.stringify(logsData)); }
-        function renderTimeline() { const list = document.getElementById('logList'); list.innerHTML = ''; logsData.filter(l => (l.mode || 'TIMELINE') === currentMode).forEach(l => { const e = document.createElement('div'); e.className = 'log-entry'; e.innerHTML = `<div class="timeline-squircle ${l.isGold?'gold':''}"></div><div style="font-size:9px; color:var(--text-light);">${l.stamp}</div><div class="log-bubble ${l.isGold?'gold':''}">${l.text}${l.isGold?`<div class="gold-insight">${l.patternInsight}</div>`:''}</div>`; list.appendChild(e); }); }
+        
+        function renderTimeline() { 
+            const list = document.getElementById('logList'); 
+            list.innerHTML = ''; 
+            logsData.filter(l => (l.mode || 'TIMELINE') === currentMode).forEach(l => { 
+                const e = document.createElement('div'); 
+                e.className = 'log-entry'; 
+                e.innerHTML = `<div class="timeline-squircle ${l.isGold?'gold':''}"></div><div style="font-size:9px; color:var(--text-light);">${l.stamp}</div><div class="log-bubble ${l.isGold?'gold':''}">${l.text}${l.isGold?`<div class="gold-insight">${l.patternInsight}</div>`:''}</div>`; 
+                list.appendChild(e); 
+            }); 
+            const container = document.getElementById('timelineBody');
+            container.scrollTop = container.scrollHeight;
+        }
+        
         function resetTimeline() { if(confirm("Reset all data?")) { logsData = []; saveData(); renderTimeline(); } }
 
-        /* --- CLIO HANDSHAKE LOGIC --- */
+        /* --- 3. AI OCR SCANNER (EVIDENCE) --- */
+        function processEvidence(input, type) {
+            if (!input.files || input.files.length === 0) return;
+            const file = input.files[0];
+            
+            // Give text feedback
+            const logInput = document.getElementById('logInput');
+            logInput.value += (logInput.value ? '\n' : '') + `[EVIDENCE ATTACHED: ${file.name} - ${type}]\n`;
+            logInput.focus();
+
+            // Trigger AI scanner if it's a photo
+            if (type === 'PHOTO' && file.type.startsWith('image/')) {
+                extractDateFromImage(file);
+            }
+            input.value = ''; 
+        }
+
+        async function extractDateFromImage(file) {
+            const titleElement = document.getElementById('brandTitle');
+            const originalTitle = titleElement.innerText;
+            titleElement.innerHTML = `<span style="color: #f59e0b;">SCANNING...</span>`;
+            
+            try {
+                // The AI reads the image
+                const { data: { text } } = await Tesseract.recognize(file, 'eng');
+                
+                // Look for dates
+                const dateRegex = /\b(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* \d{1,2},? \d{4})\b/gi;
+                const foundDates = text.match(dateRegex);
+
+                if (foundDates && foundDates.length > 0) {
+                    const extractedDate = foundDates[0];
+                    const now = new Date();
+                    
+                    // Add it as a GOLD Note
+                    logsData.push({
+                        id: Date.now(),
+                        mode: 'NOTES', 
+                        stamp: `${pinSvg} AI OCR SCAN | ${now.toLocaleDateString()} | ${now.toLocaleTimeString()}`,
+                        text: `[SCANNED DOCUMENT] Our OCR engine detected an embedded date in: ${file.name}`,
+                        isGold: true,
+                        patternInsight: `Extracted Historical Date: ${extractedDate}`
+                    });
+
+                    saveData();
+                    if (currentMode === 'NOTES') renderTimeline();
+                    alert(`AI Scan Complete.\n\nExtracted Date: ${extractedDate}\nSaved securely to your Notes.`);
+                }
+            } catch (err) {
+                console.error("AI Scan Failed:", err);
+            } finally {
+                titleElement.innerText = originalTitle;
+            }
+        }
+
+        /* --- 4. CLIO HANDSHAKE LOGIC --- */
         async function checkAuthRedirect() {
             const code = new URLSearchParams(window.location.search).get('code');
             if(code) {
