@@ -1,170 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Precision v52</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
-        
-        :root {
-            --app-bg: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            --glass-bg: rgba(255, 255, 255, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.9);
-            --glass-shadow: 0 8px 32px rgba(148, 163, 184, 0.2);
-            --text-dark: #1e293b;
-            --text-light: #64748b;
-            --active-teal: #008080;
-            --active-green: #2ecc71;
-            --rose: #e11d48;
-            --metallic-silver: linear-gradient(180deg, #f1f5f9 0%, #cbd5e0 100%);
-            --metallic-teal: linear-gradient(135deg, #008080 0%, #004d4d 100%);
-            --metallic-gold: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
-        }
-        
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; font-family: 'Nunito', sans-serif; background-color: #94a3b8; -webkit-tap-highlight-color: transparent; }
-        .phone-bezel { width: 375px; height: 812px; background-color: #000; border-radius: 45px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); overflow: hidden; border: 8px solid #cbd5e0; position: relative; }
-        .app-container { width: 100%; height: 100%; background: var(--app-bg); display: flex; flex-direction: column; position: relative; }
-        .privacy-active #timelineBody { filter: blur(16px); pointer-events: none; opacity: 0.2; transition: 0.3s; }
-        #timelineBody { transition: 0.3s; }
-        .clio-status-led { width: 8px; height: 8px; background-color: var(--active-green); border-radius: 50%; animation: clioBreathe 2.5s infinite; box-shadow: 0 0 8px var(--active-green); }
-        @keyframes clioBreathe { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.6; } }
-        .top-toggles { display: flex; justify-content: space-between; align-items: center; padding: 45px 20px 10px; z-index: 20; }
-        .toggle-btn { background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 8px 16px; border-radius: 20px; font-size: 11px; font-weight: 900; color: var(--text-dark); cursor: pointer; backdrop-filter: blur(10px); transition: 0.3s; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); text-transform: uppercase; }
-        .toggle-btn.active { background: var(--metallic-teal); color: white; border-color: var(--active-teal); }
-        .notes-dot { width: 6px; height: 6px; background: var(--active-green); border-radius: 50%; }
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px 15px; z-index: 10; }
-        .menu-trigger { font-size: 24px; color: var(--text-dark); cursor: pointer; background: var(--glass-bg); padding: 8px; border-radius: 12px; border: 1px solid var(--glass-border); backdrop-filter: blur(10px); box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; }
-        .main-title { font-weight: 900; font-size: 22px; color: var(--active-teal); letter-spacing: -0.5px; }
-        .input-panel { background: var(--glass-bg); backdrop-filter: blur(20px); margin: 0 15px; border-radius: 24px; border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow); display: flex; flex-direction: column; gap: 15px; padding: 20px; z-index: 10; }
-        .template-row { display: flex; gap: 8px; justify-content: space-between; margin-bottom: 5px; }
-        .template-chip { flex: 1; background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px 0; font-size: 10px; font-weight: 900; color: var(--text-dark); text-align: center; cursor: pointer; text-transform: uppercase; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: 0.2s; }
-        .template-chip:active { transform: scale(0.95); }
-        .hardware-icons { display: flex; justify-content: space-evenly; align-items: center; }
-        .hw-item { position: relative; width: 44px; height: 44px; background: var(--metallic-silver); border-radius: 14px; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 2px 4px rgba(255,255,255,0.8), 0 4px 6px rgba(0,0,0,0.05); cursor: pointer; border: 1px solid #cbd5e0; }
-        .hw-item svg { width: 22px; height: 22px; stroke: var(--active-teal); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-        .hw-item input { position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer; z-index:10; }
-        .input-wrapper { background: rgba(255,255,255,0.8); border-radius: 14px; padding: 15px; border: 1px solid #e2e8f0; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
-        .input-wrapper textarea { width: 100%; background: transparent; border: none; color: var(--text-dark); font-size: 14px; font-weight: 600; font-family: 'Nunito', sans-serif; resize: none; outline: none; height: 40px; }
-        .timeline-container { flex: 1; overflow-y: auto; position: relative; padding: 20px 20px 100px; }
-        .log-list { padding-left: 35px; display: flex; flex-direction: column; gap: 15px; position: relative; }
-        .timeline-line { position: absolute; left: 15px; top: 10px; bottom: 20px; width: 4px; background: var(--metallic-silver); border-radius: 2px; z-index: 1; box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); }
-        .log-entry { position: relative; display: flex; flex-direction: column; gap: 6px; z-index: 2; transition: all 0.4s ease; }
-        .timeline-squircle { position: absolute; left: -26px; top: 16px; width: 14px; height: 14px; background: var(--metallic-teal); border-radius: 4px; border: 2px solid white; z-index: 3; box-shadow: 0 4px 6px rgba(0,128,128,0.3); cursor: pointer; transition: transform 0.2s; }
-        .timeline-squircle.gold { background: var(--metallic-gold); border-color: #fff; box-shadow: 0 0 10px rgba(245, 158, 11, 0.8); }
-        .log-bubble { background: var(--glass-bg); backdrop-filter: blur(10px); padding: 14px 16px; border-radius: 18px; border: 1px solid var(--glass-border); color: var(--text-dark); font-size: 12px; font-weight: 700; line-height: 1.5; box-shadow: 0 4px 15px rgba(0,0,0,0.03); width: 95%; box-sizing: border-box; transition: all 0.4s ease; }
-        .log-bubble.gold { border: 2px solid #f59e0b; animation: goldPulse 2.5s infinite; }
-        @keyframes goldPulse { 0%, 100% { box-shadow: 0 0 10px rgba(245, 158, 11, 0.3); } 50% { box-shadow: 0 0 22px rgba(245, 158, 11, 0.7); } }
-        .gold-insight { margin-top: 12px; padding: 10px 12px; background: rgba(245, 158, 11, 0.1); border-left: 3px solid #f59e0b; border-radius: 8px; font-size: 11px; color: #b45309; font-weight: 800; line-height: 1.4; }
-        .footer-nav { height: 80px; background: var(--glass-bg); backdrop-filter: blur(20px); display: flex; justify-content: space-evenly; align-items: center; padding: 0 15px 15px; border-top: 1px solid var(--glass-border); z-index: 10; }
-        .footer-pill { background: white; color: var(--text-dark); padding: 12px 20px; border-radius: 20px; font-size: 10px; font-weight: 900; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; border: 1px solid #e2e8f0; box-shadow: 0 4px 10px rgba(0,0,0,0.03); text-transform: uppercase; }
-        .footer-pill svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
-        .center-add-btn { background: var(--metallic-teal); color: white; width: 56px; height: 56px; border-radius: 20px; display: flex; justify-content: center; align-items: center; font-size: 32px; font-weight: 600; cursor: pointer; box-shadow: inset 0 2px 4px rgba(255,255,255,0.4), 0 8px 20px rgba(0, 128, 128, 0.4); border: 2px solid rgba(255,255,255,0.2); transition: 0.2s; }
-        .sidebar { position: absolute; top: 0; left: -100%; width: 280px; height: 100%; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(25px); transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 8000; padding: 50px 25px; box-sizing: border-box; box-shadow: 20px 0 50px rgba(0,0,0,0.1); border-right: 1px solid var(--glass-border); }
-        .sidebar.open { left: 0; }
-        .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(226, 232, 240, 0.7); backdrop-filter: blur(25px); z-index: 10000; display: flex; justify-content: center; align-items: center; padding: 30px; box-sizing: border-box; text-align: center; opacity: 0; pointer-events: none; transition: 0.3s; }
-        .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal-box { background: rgba(255,255,255,0.9); padding: 45px 30px; border-radius: 35px; box-shadow: var(--glass-shadow); border: 1px solid var(--glass-border); width: 100%; }
-        .spinner { width: 30px; height: 30px; border: 4px solid #cbd5e0; border-top: 4px solid var(--active-teal); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    </style>
-</head>
-<body onload="initApp()">
-    <div class="phone-bezel">
-        <div class="sidebar" id="sidebarMenu">
-            <div class="sidebar-header" style="font-weight:900; font-size:22px; color:var(--active-teal); display:flex; justify-content:space-between; margin-bottom:40px;">MENU <div onclick="toggleSidebar()" style="cursor:pointer;">✖</div></div>
-            <div class="sidebar-item" onclick="emailTimeline()" style="background:white; padding:15px; margin-bottom:10px; border-radius:15px; font-weight:800; cursor:pointer;">Draft Email</div>
-            <div class="sidebar-item" onclick="resetTimeline()" style="background:white; padding:15px; border-radius:15px; font-weight:800; color:var(--rose); cursor:pointer;">Reset Engine</div>
-        </div>
+const axios = require('axios');
 
-        <div class="modal-overlay active" id="intakeOverlay">
-            <div class="modal-box">
-                <div style="font-weight:900; font-size:28px; color:var(--active-teal);" id="greetingText">Good Morning</div>
-                <div style="font-size:11px; margin-bottom:20px;">Langley Township, BC</div>
-                <div style="font-size:14px; font-weight:700; margin-bottom:30px;">Welcome to WorkTimeline™. If this is an emergency, call 911. This is a secure journal for your truth.</div>
-                <div class="center-add-btn" style="width:100%; font-size:14px;" onclick="document.getElementById('intakeOverlay').classList.remove('active')">I Understand</div>
-            </div>
-        </div>
+export default async function handler(req, res) {
+    const { code } = req.query;
+    if (!code) return res.status(400).json({ error: 'Missing code' });
 
-        <div class="app-container" id="mainApp">
-            <div class="top-toggles">
-                <div class="toggle-btn" id="privacyBtn" onclick="togglePrivacy()">Privacy</div>
-                <div style="display:flex; gap:8px;">
-                    <div class="toggle-btn active" id="timelineToggle" onclick="switchMode('TIMELINE')">Timeline</div>
-                    <div class="toggle-btn" id="notesToggle" onclick="switchMode('NOTES')">Notes <div class="notes-dot"></div></div>
-                </div>
-            </div>
-
-            <div class="header">
-                <div class="menu-trigger" onclick="toggleSidebar()">☰</div>
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <div class="main-title">WorkTimeline™</div>
-                    <div class="clio-status-led" title="Clio Link Ready"></div>
-                </div>
-                <div style="width:24px;"></div>
-            </div>
-
-            <div class="input-panel">
-                <div class="template-row"><div class="template-chip" onclick="appendTemplate('SETTING')">Setting</div><div class="template-chip" onclick="appendTemplate('WITNESS')">Witness</div><div class="template-chip" onclick="appendTemplate('INJURY')">Injury</div></div>
-                <div class="input-wrapper"><textarea id="logInput" placeholder="Start journaling your truth..."></textarea></div>
-            </div>
-
-            <div class="timeline-container" id="timelineBody">
-                <div class="timeline-line" id="timelineLine"></div>
-                <div class="log-list" id="logList"></div>
-            </div>
-
-            <div class="footer-nav">
-                <div class="footer-pill" onclick="runPatternRecognition()">Pattern Rec</div>
-                <div class="center-add-btn" onclick="submitEntry()">+</div>
-                <div class="footer-pill" style="color:var(--active-teal);" onclick="handleClioHandshake()">Sync CLIO</div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        let logsData = JSON.parse(localStorage.getItem('silver_vault_v52')) || [];
-        let currentMode = 'TIMELINE';
-        const pinSvg = `<svg viewBox="0 0 24 24" width="10" height="10" stroke="currentColor" fill="none" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
-
-        function initApp() { setGreeting(); renderTimeline(); checkAuthRedirect(); }
-        function setGreeting() { const h = new Date().getHours(); document.getElementById('greetingText').innerText = h < 12 ? "Good Morning" : h < 18 ? "Good Afternoon" : "Good Evening"; }
-        function toggleSidebar() { document.getElementById('sidebarMenu').classList.toggle('open'); }
-        function togglePrivacy() { document.getElementById('mainApp').classList.toggle('privacy-active'); }
-        function switchMode(m) { currentMode = m; document.getElementById('timelineToggle').classList.toggle('active', m === 'TIMELINE'); document.getElementById('notesToggle').classList.toggle('active', m === 'NOTES'); renderTimeline(); }
-        function appendTemplate(t) { const i = document.getElementById('logInput'); i.value += (i.value ? '\n' : '') + `${t}: `; i.focus(); }
-        function submitEntry() { const i = document.getElementById('logInput'); const t = i.value.trim(); if(!t) return; const now = new Date(); logsData.push({ id: Date.now(), mode: currentMode, stamp: `${pinSvg} LANGLEY, BC | ${now.toLocaleDateString()} | ${now.toLocaleTimeString()}`, text: t, isGold: false }); i.value = ''; saveData(); renderTimeline(); }
-        function saveData() { localStorage.setItem('silver_vault_v52', JSON.stringify(logsData)); }
-        function renderTimeline() { const list = document.getElementById('logList'); list.innerHTML = ''; logsData.filter(l => (l.mode || 'TIMELINE') === currentMode).forEach(l => { const e = document.createElement('div'); e.className = 'log-entry'; e.innerHTML = `<div class="timeline-squircle ${l.isGold?'gold':''}"></div><div style="font-size:9px; color:var(--text-light);">${l.stamp}</div><div class="log-bubble ${l.isGold?'gold':''}">${l.text}${l.isGold?`<div class="gold-insight">${l.patternInsight}</div>`:''}</div>`; list.appendChild(e); }); }
-        function resetTimeline() { if(confirm("Reset all data?")) { logsData = []; saveData(); renderTimeline(); } }
-
-        /* --- CLIO HANDSHAKE LOGIC --- */
-        async function checkAuthRedirect() {
-            const code = new URLSearchParams(window.location.search).get('code');
-            if(code) {
-                const res = await fetch(`/api/clio-exchange?code=${code}`);
-                const data = await res.json();
-                if(data.access_token) { localStorage.setItem('clio_access_token', data.access_token); window.history.replaceState({}, '', '/'); alert("Clio Link Verified."); }
-            }
-        }
-
-        async function handleClioHandshake() {
-            const token = localStorage.getItem('clio_access_token');
-            if(!token) { window.location.href = `https://ca.auth.api.clio.com/oauth/authorize?response_type=code&client_id=348846&redirect_uri=https://worktimeline-app.vercel.app&scope=activities%20contacts%20matters%20notes`; return; }
-            
-            const platform = confirm("Sync to Clio MANAGE? (Cancel for GROW)") ? 'MANAGE' : 'GROW';
-            const targetId = prompt(`Enter ${platform} ID:`);
-            if(!targetId) return;
-
-            const res = await fetch('/api/sync', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ logs: logsData, targetId, platform, token })
-            });
-            if((await res.json()).success) alert("Vaulted to Clio.");
-        }
-
-        function runPatternRecognition() { if(logsData.length > 0) { const last = logsData[logsData.length-1]; last.isGold = true; last.patternInsight = "Verified morning cluster detected."; renderTimeline(); saveData(); } }
-    </script>
-</body>
-</html>
+    try {
+        const response = await axios.post('https://ca.auth.api.clio.com/oauth/token', {
+            grant_type: 'authorization_code',
+            code: code,
+            client_id: process.env.CLIO_CLIENT_ID,
+            client_secret: process.env.CLIO_CLIENT_SECRET,
+            redirect_uri: "https://worktimeline-app.vercel.app"
+        });
+        res.status(200).json(response.data);
+    } catch (error) {
+        res.status(500).json({ error: 'Auth Exchange Failed' });
+    }
+}
