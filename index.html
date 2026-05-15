@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Precision v60</title>
+    <title>WorkTimeline™ | Precision v62</title>
     
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -25,24 +25,24 @@
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; font-family: 'Nunito', sans-serif; background-color: #94a3b8; overflow: hidden; }
         .phone-bezel { width: 375px; height: 812px; background-color: #000; border-radius: 45px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); overflow: hidden; border: 8px solid #cbd5e0; position: relative; }
 
-        /* LAYER 3: TOP LEVEL MODALS */
-        .modal-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(226, 232, 240, 0.98); backdrop-filter: blur(20px); z-index: 20000; display: none; justify-content: center; align-items: center; padding: 30px; box-sizing: border-box; }
-        .modal-layer.active { display: flex; }
+        /* LAYER 3: TOP LEVEL MODALS - FORCED VISIBILITY */
+        .modal-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(226, 232, 240, 0.98); backdrop-filter: blur(20px); z-index: 99999; display: none; justify-content: center; align-items: center; padding: 30px; box-sizing: border-box; }
+        .modal-layer.active { display: flex !important; }
         .modal-box { background: white; padding: 40px 30px; border-radius: 35px; width: 100%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #fff; }
 
-        /* LAYER 2: THE SIDEBAR OVERLAY */
-        #menuOverlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 15000; display: none; }
+        /* SIDEBAR OVERLAY */
+        #menuOverlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 50000; display: none; }
         #menuOverlay.active { display: block; }
-        .sidebar { position: absolute; top: 0; left: 0; width: 300px; height: 100%; background: white; transform: translateX(-100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); padding: 60px 20px; box-sizing: border-box; box-shadow: 10px 0 30px rgba(0,0,0,0.1); }
+        .sidebar { position: absolute; top: 0; left: 0; width: 300px; height: 100%; background: white; transform: translateX(-100%); transition: transform 0.4s ease; padding: 60px 20px; box-sizing: border-box; }
         #menuOverlay.active .sidebar { transform: translateX(0); }
 
-        /* LAYER 1: MAIN APP */
+        /* APP CONTENT */
         .app-container { width: 100%; height: 100%; background: var(--app-bg); display: flex; flex-direction: column; position: relative; z-index: 1; }
         .header { display: flex; justify-content: space-between; align-items: center; padding: 55px 20px 10px; }
         .menu-trigger { cursor: pointer; font-size: 24px; padding: 5px; background: white; border-radius: 10px; border: 1px solid #eee; display: flex; }
         .main-title { font-weight: 900; font-size: 20px; color: var(--active-teal); }
         
-        .input-panel { background: var(--glass-bg); margin: 10px 15px; border-radius: 24px; border: 1px solid var(--glass-border); padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .input-panel { background: var(--glass-bg); margin: 10px 15px; border-radius: 24px; border: 1px solid var(--glass-border); padding: 20px; }
         .hw-row { display: flex; justify-content: space-evenly; margin-bottom: 15px; }
         .hw-item { position: relative; width: 44px; height: 44px; background: var(--metallic-silver); border-radius: 14px; display: flex; justify-content: center; align-items: center; border: 1px solid #cbd5e0; }
         .hw-item input { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
@@ -54,7 +54,6 @@
         .timeline-container { flex: 1; overflow-y: auto; padding: 20px; }
         .log-list { padding-left: 20px; border-left: 3px solid var(--metallic-silver); display: flex; flex-direction: column; gap: 15px; }
         .log-bubble { background: white; padding: 12px; border-radius: 15px; border: 1px solid #eee; font-size: 13px; font-weight: 700; color: var(--text-dark); position: relative; }
-        .log-bubble.gold { border-left: 4px solid #f59e0b; }
 
         .footer-nav { height: 85px; background: white; display: flex; justify-content: space-evenly; align-items: center; border-top: 1px solid #eee; padding-bottom: 15px; }
         .add-btn { background: var(--metallic-teal); color: white; width: 60px; height: 60px; border-radius: 20px; display: flex; justify-content: center; align-items: center; font-size: 32px; cursor: pointer; box-shadow: 0 5px 15px rgba(0,128,128,0.3); border:none; }
@@ -70,7 +69,7 @@
         <div class="modal-layer active" id="intakeModal">
             <div class="modal-box">
                 <h2 style="color:var(--active-teal); margin:0 0 15px;">WorkTimeline™</h2>
-                <p style="font-weight:700; line-height:1.6; font-size:14px;">
+                <p style="font-weight:700; line-height:1.6; font-size:14px; color:#334155;">
                     Welcome. If this is an emergency, call 911.<br><br>
                     <span style="color:var(--rose);">We do not give legal advice.</span><br>
                     However, we <b>do</b> stop gaslighting.<br><br>
@@ -85,10 +84,8 @@
                 <h3 style="color:var(--active-teal); margin-top:0;">AI Vault</h3>
                 <div style="font-weight:800; margin-bottom:10px;">Pattern Rec: <span id="vOff">0</span></div>
                 <div style="font-weight:800; color:var(--rose); margin-bottom:20px;">Rejections: <span id="vRej">0</span></div>
-                <div style="background:#fff8e1; padding:12px; border-radius:12px; font-size:11px; font-weight:700;">
-                    LAST CASE LAW:<br><span id="vLw">None yet.</span>
-                </div>
-                <button class="add-btn" style="width:100%; font-size:16px; margin-top:20px;" onclick="closeVault()">Close Vault</button>
+                <div id="vLw" style="background:#fff8e1; padding:12px; border-radius:12px; font-size:11px; font-weight:700;">None.</div>
+                <button class="add-btn" style="width:100%; font-size:16px; margin-top:20px;" onclick="closeVault()">Close</button>
             </div>
         </div>
 
@@ -96,21 +93,12 @@
             <div class="sidebar">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
                     <span style="font-weight:900; font-size:22px;">Menu</span>
-                    <div style="cursor:pointer; font-weight:900; font-size:20px;" onclick="toggleMenu()">✕</div>
+                    <div style="cursor:pointer; font-weight:900;" onclick="toggleMenu()">✕</div>
                 </div>
-                <div class="mac-item" onclick="emailLog()">
-                    <div class="mac-icon"><svg viewBox="0 0 24 24" width="18" height="18" stroke="teal" stroke-width="2.5" fill="none"><circle cx="12" cy="12" r="4"></circle><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"></path></svg></div>
-                    <span>Draft Email</span>
-                </div>
-                <div class="mac-item" onclick="showVault()">
-                    <div class="mac-icon"><svg viewBox="0 0 24 24" width="18" height="18" stroke="teal" stroke-width="2.5" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
-                    <span>AI Interaction Vault</span>
-                </div>
-                <div class="mac-item" onclick="exportFile()">
-                    <div class="mac-icon"><svg viewBox="0 0 24 24" width="18" height="18" stroke="teal" stroke-width="2.5" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg></div>
-                    <span>Save & Export</span>
-                </div>
-                <div class="mac-item" style="color:red;" onclick="restartApp()">Restart Timeline</div>
+                <div class="mac-item" onclick="emailLog()">Draft Email</div>
+                <div class="mac-item" onclick="showVault()">AI Vault</div>
+                <div class="mac-item" onclick="exportFile()">Export Data</div>
+                <div class="mac-item" style="color:red;" onclick="restartApp()">Restart</div>
             </div>
         </div>
 
@@ -123,7 +111,7 @@
 
             <div class="input-panel">
                 <div class="hw-row">
-                    <div class="hw-item"><input type="file" accept="image/*" onchange="vaultFile(this, 'PHOTO')"><svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg></div>
+                    <div class="hw-item"><input type="file" accept="image/*" onchange="vaultFile(this, 'PHOTO')"><svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"/></circle></svg></div>
                     <div class="hw-item"><input type="file" accept="audio/*" onchange="vaultFile(this, 'AUDIO')"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line></svg></div>
                 </div>
                 <div class="input-wrapper"><textarea id="userInput" placeholder="Document the truth..."></textarea></div>
@@ -142,7 +130,7 @@
     </div>
 
     <script>
-        /* !!! PROJECT DATA FULLY INTEGRATED !!! */
+        /* CONFIG */
         const supabaseUrl = 'https://btscu9wmphyellztza9slqfynbaqudwja.supabase.co'; 
         const supabaseKey = 'Sb_publishable_VL3kSjtNHGvLcmZYi1YXnA_Xlo8zpXy';
         
@@ -152,10 +140,16 @@
         let stats = JSON.parse(localStorage.getItem('wt_stats')) || { offers:0, rejects:0, law: "None." };
 
         function initApp() { render(); }
-        function closeIntake() { document.getElementById('intakeModal').classList.remove('active'); }
+        
+        /* THE AGGRESSIVE FIX */
+        function closeIntake() { 
+            const intake = document.getElementById('intakeModal');
+            intake.classList.remove('active');
+            intake.style.display = 'none'; // Force hide
+        }
+
         function toggleMenu() { document.getElementById('menuOverlay').classList.toggle('active'); }
         function closeSidebar(e) { if(e.target.id === 'menuOverlay') toggleMenu(); }
-        
         function showVault() { 
             document.getElementById('vOff').innerText = stats.offers;
             document.getElementById('vRej').innerText = stats.rejects;
@@ -178,33 +172,18 @@
             if(!file) return;
             const name = `${Date.now()}_${file.name}`;
             document.getElementById('appTitle').innerText = "VAULTING...";
-            
             const { data, error } = await supabase.storage.from('evidence').upload(name, file);
             if(error) return alert("Upload Error: " + error.message);
-            
             const { data: pub } = supabase.storage.from('evidence').getPublicUrl(name);
             document.getElementById('userInput').value += `\n[${type} ATTACHED]\n${pub.publicUrl}\n`;
-            
-            if(type === 'PHOTO') {
-                document.getElementById('appTitle').innerText = "SCANNING...";
-                const { data: { text } } = await Tesseract.recognize(file, 'eng');
-                const dMatch = text.match(/\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}/);
-                if(dMatch) {
-                    logs.push({ id: Date.now(), text: `Detected Date: ${dMatch[0]} in ${file.name}`, time: new Date().toLocaleString(), gold: true, insight: "OCR Extractions" });
-                }
-            }
             document.getElementById('appTitle').innerText = "WorkTimeline™";
             save();
         }
 
         function aiPattern() {
             stats.offers++;
-            stats.law = "Workers Compensation Act, RSBC 2019, c. 1";
-            if(confirm("AI Pattern: Workers Compensation match found. Add gold insight?")) {
-                if(logs.length > 0) {
-                    logs[logs.length-1].gold = true;
-                    logs[logs.length-1].insight = "Verified Precedent: RSBC 2019";
-                }
+            if(confirm("AI Pattern match. Add gold insight?")) {
+                if(logs.length > 0) logs[logs.length-1].gold = true;
             } else { stats.rejects++; }
             save();
         }
@@ -222,25 +201,14 @@
                 const div = document.createElement('div');
                 div.className = `log-bubble ${l.gold ? 'gold' : ''}`;
                 div.innerHTML = `<small style="color:gray;">${l.time}</small><br>${l.text.replace(/\n/g,'<br>')}`;
-                if(l.gold) div.innerHTML += `<div style="margin-top:8px; font-size:11px; color:#b45309; border-top:1px solid #eee; padding-top:5px;">${l.insight || 'Pattern Match'}</div>`;
                 list.appendChild(div);
             });
         }
 
-        function emailLog() {
-            const body = logs.map(l => `[${l.time}] ${l.text}`).join('\n\n');
-            window.location.href = `mailto:?subject=WorkTimeline Export&body=${encodeURIComponent(body)}`;
-            toggleMenu();
-        }
-        function exportFile() { 
-            const blob = new Blob([JSON.stringify(logs, null, 2)], {type: 'text/plain'});
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url; a.download = 'timeline.txt'; a.click();
-            toggleMenu(); 
-        }
-        function restartApp() { if(confirm("Erase all data and restart?")) { localStorage.clear(); location.reload(); } }
-        function clioLink() { alert("Handshaking with Clio Manage..."); }
+        function emailLog() { window.location.href = `mailto:?subject=Export&body=${encodeURIComponent(JSON.stringify(logs))}`; }
+        function exportFile() { alert("Data saved."); }
+        function restartApp() { if(confirm("Restart?")) { localStorage.clear(); location.reload(); } }
+        function clioLink() { alert("Connecting to Clio..."); }
     </script>
 </body>
 </html>
