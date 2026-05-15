@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Precision v65</title>
+    <title>WorkTimeline™ | Precision v66</title>
     
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -22,13 +22,13 @@
             --metallic-teal: linear-gradient(135deg, #008080 0%, #004d4d 100%);
         }
         
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; font-family: 'Nunito', sans-serif; background-color: #94a3b8; overflow: hidden; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; font-family: 'Nunito', sans-serif; background-color: #94a3b8; overflow: hidden; -webkit-overflow-scrolling: touch; }
         .phone-bezel { width: 375px; height: 812px; background-color: #000; border-radius: 45px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); overflow: hidden; border: 8px solid #cbd5e0; position: relative; }
 
         /* MODALS - HIGHEST Z-INDEX */
-        .modal-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(226, 232, 240, 0.98); backdrop-filter: blur(20px); z-index: 99999; display: none; justify-content: center; align-items: center; padding: 30px; box-sizing: border-box; }
-        .modal-layer.active { display: flex !important; }
-        .modal-box { background: white; padding: 40px 30px; border-radius: 35px; width: 100%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #fff; }
+        .modal-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 999999; display: flex; justify-content: center; align-items: center; padding: 30px; box-sizing: border-box; }
+        .modal-layer.hidden { display: none !important; pointer-events: none; }
+        .modal-box { background: white; padding: 40px 30px; border-radius: 35px; width: 100%; text-align: center; border: 1px solid #eee; }
 
         /* SIDEBAR */
         #menuOverlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 50000; display: none; }
@@ -36,7 +36,7 @@
         .sidebar { position: absolute; top: 0; left: 0; width: 300px; height: 100%; background: white; transform: translateX(-100%); transition: transform 0.4s ease; padding: 60px 20px; box-sizing: border-box; }
         #menuOverlay.active .sidebar { transform: translateX(0); }
 
-        /* CONTENT */
+        /* APP CONTENT */
         .app-container { width: 100%; height: 100%; background: var(--app-bg); display: flex; flex-direction: column; position: relative; z-index: 1; }
         .header { display: flex; justify-content: space-between; align-items: center; padding: 55px 20px 10px; }
         .menu-trigger { cursor: pointer; font-size: 24px; padding: 10px; background: white; border-radius: 12px; border: 1px solid #eee; display: flex; }
@@ -57,7 +57,7 @@
         .log-bubble.gold { border-left: 4px solid #f59e0b; }
 
         .footer-nav { height: 85px; background: white; display: flex; justify-content: space-evenly; align-items: center; border-top: 1px solid #eee; padding-bottom: 15px; }
-        .add-btn { background: var(--metallic-teal); color: white; width: 60px; height: 60px; border-radius: 20px; display: flex; justify-content: center; align-items: center; font-size: 32px; cursor: pointer; box-shadow: 0 5px 15px rgba(0,128,128,0.3); border:none; outline: none; -webkit-tap-highlight-color: transparent; }
+        .add-btn { background: var(--metallic-teal); color: white; width: 60px; height: 60px; border-radius: 20px; display: flex; justify-content: center; align-items: center; font-size: 32px; cursor: pointer; border:none; box-shadow: 0 5px 15px rgba(0,128,128,0.3); -webkit-appearance: none; }
         
         .mac-item { display: flex; align-items: center; gap: 12px; padding: 15px; background: #f8fafc; border-radius: 15px; margin-bottom: 10px; cursor: pointer; font-weight: 800; border: 1px solid #e2e8f0; }
         .mac-icon { width: 32px; height: 32px; background: white; border-radius: 8px; display: flex; justify-content: center; align-items: center; border: 1px solid #eee; }
@@ -67,7 +67,7 @@
 
     <div class="phone-bezel">
 
-        <div class="modal-layer active" id="intakeModal">
+        <div class="modal-layer" id="intakeModal">
             <div class="modal-box">
                 <h2 style="color:var(--active-teal); margin:0 0 15px;">WorkTimeline™</h2>
                 <p style="font-weight:700; line-height:1.6; font-size:14px;">
@@ -76,7 +76,7 @@
                     However, we <b>do</b> stop gaslighting.<br><br>
                     This is a secure journal for your truth.
                 </p>
-                <button class="add-btn" id="iUnderstandBtn" style="width:100%; font-size:16px; margin-top:20px;">I Understand</button>
+                <button class="add-btn" id="forceEnterBtn" style="width:100%; font-size:16px; margin-top:20px;">I Understand</button>
             </div>
         </div>
 
@@ -147,19 +147,29 @@
 
         let logs = JSON.parse(localStorage.getItem('wt_logs')) || [];
         let stats = JSON.parse(localStorage.getItem('wt_stats')) || { offers:0, rejects:0, law: "None." };
+        let hasEntered = localStorage.getItem('wt_entered') === 'true';
 
         function initApp() { 
-            render(); 
-            // Universal button listener for the Intake Modal
-            const btn = document.getElementById('iUnderstandBtn');
-            const handler = (e) => {
-                e.preventDefault();
-                const modal = document.getElementById('intakeModal');
-                modal.classList.remove('active');
+            render();
+            const modal = document.getElementById('intakeModal');
+            const btn = document.getElementById('forceEnterBtn');
+
+            // Show or hide modal based on state
+            if(!hasEntered) {
+                modal.style.display = 'flex';
+            } else {
                 modal.style.display = 'none';
+            }
+
+            const masterEnter = (e) => {
+                console.log("Master Enter Activated");
+                localStorage.setItem('wt_entered', 'true');
+                modal.style.display = 'none';
+                modal.classList.add('hidden');
             };
-            btn.addEventListener('click', handler);
-            btn.addEventListener('touchstart', handler);
+
+            btn.addEventListener('click', masterEnter);
+            btn.addEventListener('touchstart', masterEnter);
         }
 
         function toggleMenu() { document.getElementById('menuOverlay').classList.toggle('active'); }
@@ -187,22 +197,21 @@
             const name = `${Date.now()}_${file.name}`;
             document.getElementById('appTitle').innerText = "VAULTING...";
             
-            const { data: up, error } = await supabase.storage.from('evidence').upload(name, file);
-            if(error) return alert("Upload Error: " + error.message);
-            
-            const { data: pub } = supabase.storage.from('evidence').getPublicUrl(name);
-            document.getElementById('userInput').value += `\n[${type} ATTACHED]\n${pub.publicUrl}\n`;
-            
-            if(type === 'PHOTO') {
-                document.getElementById('appTitle').innerText = "SCANNING...";
-                try {
+            try {
+                const { data: up, error } = await supabase.storage.from('evidence').upload(name, file);
+                if(error) throw error;
+                const { data: pub } = supabase.storage.from('evidence').getPublicUrl(name);
+                document.getElementById('userInput').value += `\n[${type} ATTACHED]\n${pub.publicUrl}\n`;
+                
+                if(type === 'PHOTO') {
+                    document.getElementById('appTitle').innerText = "SCANNING...";
                     const { data: { text } } = await Tesseract.recognize(file, 'eng');
                     const dMatch = text.match(/\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}/);
                     if(dMatch) {
                         logs.push({ id: Date.now(), text: `Detected Date: ${dMatch[0]} in ${file.name}`, time: new Date().toLocaleString(), gold: true, insight: "OCR Extractions" });
                     }
-                } catch(e) { console.error("OCR Error", e); }
-            }
+                }
+            } catch(err) { alert("Upload failed. Check if 'evidence' bucket is public."); }
             document.getElementById('appTitle').innerText = "WorkTimeline™";
             save();
         }
@@ -249,7 +258,7 @@
             a.href = url; a.download = 'timeline.txt'; a.click();
             toggleMenu(); 
         }
-        function restartApp() { if(confirm("Erase all data and restart?")) { localStorage.clear(); location.reload(); } }
+        function restartApp() { if(confirm("Erase all data?")) { localStorage.clear(); location.reload(); } }
         function clioLink() { alert("Handshaking with Clio Manage..."); }
     </script>
 </body>
