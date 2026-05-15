@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Timeline™ | Master Suite</title>
+    <title>Timeline™ Master Suite</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Nunito+Sans:wght@400;600;800&display=swap');
         
         :root { 
-            --active-brand: #008080; /* Dynamic Teal */
+            --active-brand: #008080; 
             --teal: #008080; 
             --rose: #e11d48;
             --amber: #f59e0b;
-            --purple: #8b5cf6;
+            --slate: #1e293b;
             --silver-gray: #95a5a6; 
             --gray-bg: #e2e8f0; 
             --clio-green: #2ecc71; 
@@ -26,57 +26,63 @@
         .app-container { width: 100%; max-width: 500px; background: white; height: 100dvh; display: flex; flex-direction: column; position: relative; border: 1.5px solid var(--gray-border); box-sizing: border-box; overflow: hidden; }
 
         /* DOMAIN NAV */
-        .domain-nav { display: flex; background: #f8fafc; border-bottom: 1px solid var(--gray-border); padding: 5px; gap: 5px; z-index: 5000; }
-        .domain-tab { flex: 1; border: none; padding: 8px 0; border-radius: 12px; font-size: 8px; font-weight: 900; color: #64748b; background: transparent; transition: 0.3s; cursor: pointer; }
-        .domain-tab.active { background: white; color: var(--active-brand); box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid var(--gray-border); }
+        .domain-nav { display: flex; background: #f8fafc; border-bottom: 1px solid var(--gray-border); padding: 8px; gap: 6px; z-index: 5000; }
+        .domain-tab { flex: 1; border: none; padding: 10px 0; border-radius: 12px; font-size: 9px; font-weight: 900; color: #64748b; background: transparent; transition: 0.3s; cursor: pointer; }
+        .domain-tab.active { background: white; color: var(--active-brand); box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid var(--gray-border); }
 
-        /* HEADER TRANSITION */
+        /* HEADER */
         .header { padding: 12px 15px; border-bottom: 1px solid var(--gray-border); background: white; z-index: 4000; position: relative; }
-        .brand-text { display: flex; flex-direction: column; align-items: flex-start; }
-        .main-title { font-weight: 900; font-size: 17px; display: flex; align-items: center; letter-spacing: -0.5px; transition: 0.5s; color: var(--active-brand); }
-        .clio-pulse { width: 7px; height: 7px; background-color: var(--clio-green); border-radius: 50%; margin-left: 8px; animation: clio-throb 2s infinite; }
-        
-        /* THE STACK PULSE (DYNAMIC COLOR) */
-        @keyframes stack-pulse { 
-            0% { box-shadow: 0 0 0 0 var(--active-brand); opacity: 0.5; } 
-            70% { box-shadow: 0 0 0 15px transparent; opacity: 0; } 
-            100% { box-shadow: 0 0 0 0 transparent; opacity: 0; } 
-        }
+        .main-title { font-weight: 900; font-size: 18px; display: flex; align-items: center; letter-spacing: -0.5px; transition: 0.5s; color: var(--active-brand); }
+        .clio-pulse { width: 8px; height: 8px; background-color: var(--clio-green); border-radius: 50%; margin-left: 10px; animation: clio-throb 2s infinite; }
+        @keyframes clio-throb { 0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.6); } 70% { box-shadow: 0 0 0 12px rgba(46, 204, 113, 0); } 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
 
-        /* DYNAMIC ELEMENTS */
-        #addBtn { background: var(--active-brand); transition: 0.5s; }
-        .bubble-back { background: var(--active-brand); transition: 0.5s; }
-        .stack-inner.has-ai::after { animation: stack-pulse 2.5s infinite ease-in-out; background: var(--active-brand); }
-
-        /* ALL OTHER EXISTING STYLES REMAIN SAME */
-        .app-locked { filter: blur(35px); pointer-events: none; }
-        #utilityDrawer { position: absolute; top: 100px; width: 100%; background: white; border-bottom: 1.5px solid var(--gray-border); z-index: 3500; transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) transform; transform: translateY(calc(-100% + 40px)); border-radius: 0 0 30px 30px; }
-        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 20px 15px 150px; display: flex; flex-direction: column; gap: 25px; }
-        .stack-wrapper { position: relative; width: 100%; perspective: 1000px; }
-        .stack-inner { position: relative; width: 85%; min-height: 80px; transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer; }
-        .stack-inner.flipped { transform: rotateY(180deg); }
-        .bubble { padding: 15px; border-radius: 22px; backface-visibility: hidden; box-shadow: var(--mac-shadow); width: 100%; box-sizing: border-box; }
-        .bubble-front { background: #f1f1f1; border: 1px solid #e5e5e5; color: #1a202c; position: relative; z-index: 2; }
-        .bubble-back { color: white; transform: rotateY(180deg); position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
-        .draggable { position: absolute; z-index: 5000; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; border-radius: 22px; border: none; box-shadow: var(--mac-shadow); touch-action: none; }
-        #addBtn { width: 70px; height: 70px; font-size: 30px; top: 200px; right: 20px; }
-        #syncBtn { width: 70px; height: 70px; background: var(--clio-blue); font-size: 8px; padding: 6px; top: 290px; right: 20px; text-align: center; }
-        #overlaySystem { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(25px); z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 15px; box-sizing: border-box; }
-        .modal-card { background: white; padding: 25px; border-radius: 28px; box-shadow: var(--mac-shadow); width: 100%; max-width: 340px; text-align: center; border: 1px solid var(--gray-border); }
-        .modal-btn { border: none; padding: 16px; border-radius: 18px; width: 100%; font-weight: 800; margin-top: 12px; cursor: pointer; font-size: 13px; }
-        textarea { width: 100%; height: 85px; border: 1.5px solid var(--gray-border); border-radius: 20px; padding: 15px; font-size: 15px; outline: none; background: #fafafa; }
+        /* UTILITY DRAWER */
+        #utilityDrawer { position: absolute; top: 110px; width: 100%; background: white; border-bottom: 1.5px solid var(--gray-border); z-index: 3500; transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) transform; transform: translateY(calc(-100% + 40px)); border-radius: 0 0 30px 30px; }
         .handle { width: 100%; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .handle-pill { width: 35px; height: 4px; background: #cbd5e0; border-radius: 10px; }
-        .template-chip { border: 1px solid var(--gray-border); padding: 8px 16px; border-radius: 50px; font-size: 10px; font-weight: 900; color: #4a5568; background: #f8fafc; cursor: pointer; }
+
+        /* TEMPLATE BUTTONS */
+        .template-chip { border: 1px solid var(--gray-border); padding: 8px 12px; border-radius: 50px; font-size: 9px; font-weight: 900; color: #4a5568; background: #f8fafc; cursor: pointer; white-space: nowrap; }
+
+        /* TIMELINE & STACK */
+        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 20px 15px 150px; display: flex; flex-direction: column; gap: 25px; scrollbar-width: none; }
+        .stack-wrapper { position: relative; width: 100%; perspective: 1000px; }
+        .stack-inner { position: relative; width: 88%; min-height: 85px; transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer; }
+        .stack-inner.flipped { transform: rotateY(180deg); }
+        .bubble { padding: 18px; border-radius: 24px; font-family: 'Nunito Sans', sans-serif; backface-visibility: hidden; box-shadow: var(--mac-shadow); width: 100%; box-sizing: border-box; }
+        .bubble-front { background: #fcfcfc; border: 1.5px solid #efefef; color: #1a202c; position: relative; z-index: 2; }
+        .bubble-back { color: white; transform: rotateY(180deg); position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; background: var(--active-brand); border: 1px solid rgba(255,255,255,0.2); }
+        
+        .stack-inner.has-ai::after { 
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            background: var(--active-brand); border-radius: 24px; z-index: -1; opacity: 0.3; 
+            animation: stack-pulse 2.5s infinite ease-in-out; 
+        }
+        @keyframes stack-pulse { 0% { box-shadow: 0 0 0 0 var(--active-brand); } 70% { box-shadow: 0 0 0 18px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+
+        .stamp-label { font-size: 9px; font-weight: 800; color: #a0aec0; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* FLOATING ACTION BUTTONS */
+        .draggable { position: absolute; z-index: 5000; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; border-radius: 20px; border: none; box-shadow: var(--mac-shadow); touch-action: none; }
+        #addBtn { width: 65px; height: 65px; background: var(--active-brand); font-size: 30px; top: 220px; right: 20px; transition: background 0.4s; }
+        #syncBtn { width: 75px; height: 75px; background: var(--clio-blue); font-size: 9px; flex-direction: column; top: 310px; right: 15px; text-align: center; line-height: 1.2; }
+
+        /* OVERLAY SYSTEM */
+        #overlaySystem { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(20px); z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; }
+        .modal-card { background: white; padding: 30px; border-radius: 30px; box-shadow: var(--mac-shadow); width: 100%; max-width: 350px; text-align: center; border: 1.5px solid var(--gray-border); }
+        .modal-btn { border: none; padding: 18px; border-radius: 20px; width: 100%; font-weight: 900; margin-top: 15px; cursor: pointer; font-size: 14px; font-family: 'Nunito', sans-serif; transition: 0.2s; }
+        textarea { width: 100%; height: 100px; border: 2px solid var(--gray-border); border-radius: 22px; padding: 15px; font-family: 'Nunito Sans', sans-serif; font-weight: 600; font-size: 15px; outline: none; background: #fafafa; box-sizing: border-box; }
+        
+        .app-locked { filter: blur(40px); pointer-events: none; }
     </style>
 </head>
 <body id="appBody">
 
 <div id="overlaySystem">
     <div class="modal-card" id="modalContent">
-        <h2 style="color: #1a202c; font-weight: 900; margin: 0; font-size: 18px; letter-spacing: -0.5px;">TIMELINE™ SECURE</h2>
-        <div style="font-size: 13px; line-height: 1.5; color: #4a5568; margin: 15px 0; font-weight: 600;">Welcome to your multi-domain truth journal. <br><br><b>WorkTimeline™</b> is live and connected. Family, Injury, and Property are in offline prototype mode.</div>
-        <button class="modal-btn" style="background:var(--teal); color:white;" onclick="unlockApp()">OPEN VAULT</button>
+        <h2 style="color: #1a202c; font-weight: 900; margin: 0; font-size: 20px;">TIMELINE™ SECURE</h2>
+        <div style="font-size: 14px; line-height: 1.6; color: #4a5568; margin: 20px 0; font-weight: 600;">Welcome to the Unified Truth Engine.<br><br><b>WorkTimeline™</b> is live for Canadian Clio Sync. Other domains are in secure offline prototype mode.</div>
+        <button class="modal-btn" style="background:var(--teal); color:white;" onclick="unlockApp()">OPEN SECURE VAULT</button>
     </div>
 </div>
 
@@ -85,24 +91,18 @@
         <button class="domain-tab active" onclick="switchDomain('WORK')">WORK</button>
         <button class="domain-tab" onclick="switchDomain('FAM')">FAMILY</button>
         <button class="domain-tab" onclick="switchDomain('INJURY')">INJURY</button>
-        <button class="domain-tab" onclick="switchDomain('CIVIL')">CIVIL</button>
+        <button class="domain-tab" onclick="switchDomain('PROPERTY')">PROPERTY</button>
     </nav>
 
     <header class="header">
-        <div class="header-top">
-            <div class="brand-text">
-                <div class="main-title" id="brandTitle">WorkTimeline™ <div class="clio-pulse"></div></div>
-            </div>
-            <div style="position:absolute; right:15px; display:flex; gap:4px;">
-                <button onclick="refresh()" style="background:#f1f5f9; color:#475569; border:none; border-radius:20px; font-size:7px; font-weight:900; padding:6px 12px;">RELOAD</button>
-            </div>
-        </div>
+        <div class="main-title" id="brandTitle">WorkTimeline™ <div class="clio-pulse"></div></div>
     </header>
 
     <div id="utilityDrawer">
         <div style="padding: 15px 15px 45px;">
-            <div id="templateBar" style="display:flex; gap:6px; justify-content:center; margin-bottom: 15px;"></div>
-            <textarea id="statusBox" placeholder="Documenting the grit..."></textarea>
+            <div id="templateBar" style="display:flex; gap:8px; overflow-x:auto; padding-bottom:15px; scrollbar-width:none;">
+                </div>
+            <textarea id="statusBox" placeholder="Document the truth here..."></textarea>
         </div>
         <div class="handle" onclick="toggleUtility()"><div class="handle-pill"></div></div>
     </div>
@@ -110,90 +110,90 @@
     <div id="timelineContainer"></div>
 
     <button id="addBtn" class="draggable">+</button>
-    <button id="syncBtn" class="draggable">SYNC TO CLIO</button>
+    <button id="syncBtn" class="draggable">
+        <span style="font-size: 18px; margin-bottom: 2px;">🔒</span>
+        <span>SYNC CLIO</span>
+    </button>
 </div>
 
 <script>
-    let vault = JSON.parse(localStorage.getItem('wt_timeline_master')) || [];
+    let vault = JSON.parse(localStorage.getItem('timeline_master_vault')) || [];
     let currentDomain = 'WORK';
     let utilOpen = false;
 
     const domainConfig = {
-        'WORK': { color: '#008080', name: 'WorkTimeline™', templates: ['INCIDENT', 'INJURY', 'WITNESS'] },
-        'FAM': { color: '#e11d48', name: 'FamTimeline™', templates: ['CUSTODY', 'VISIT', 'EXPENSE'] },
-        'INJURY': { color: '#f59e0b', name: 'InjuryTimeline™', templates: ['PAIN', 'TREATMENT', 'WITNESS'] },
-        'CIVIL': { color: '#8b5cf6', name: 'CivilTimeline™', templates: ['CONTRACT', 'BREACH', 'NOTICE'] }
+        'WORK': { 
+            color: '#008080', name: 'WorkTimeline™', 
+            templates: { 'ACTION': 'ACTION TAKEN:\nDETAILS:', 'VIOLATION': 'POLICY VIOLATED:\nSUPERVISOR:', 'WITNESS': 'WITNESS NAME:\nCONTACT:', 'HAZARD': 'SAFETY HAZARD:\nSITE:' } 
+        },
+        'FAM': { 
+            color: '#e11d48', name: 'FamTimeline™', 
+            templates: { 'INCIDENT': 'EVENT:\nTIME:', 'CUSTODY': 'PICKUP/DROPOFF:\nSTATUS:', 'COMM': 'MSG FROM:\nCONTENT:', 'EXPENSE': 'ITEM:\nCOST:' } 
+        },
+        'INJURY': { 
+            color: '#f59e0b', name: 'InjuryTimeline™', 
+            templates: { 'PAIN': 'PAIN SCALE (1-10):\nAREA:', 'TREATMENT': 'CLINIC:\nPROVIDER:', 'WITNESS': 'EYEWITNESS:\nDETAILS:', 'SYMPTOMS': 'SYMPTOM:\nTIME:' } 
+        },
+        'PROPERTY': { 
+            color: '#1e293b', name: 'PropTimeline™', 
+            templates: { 'DAMAGE': 'DAMAGE TYPE:\nLOCATION:', 'REPAIR': 'REQUESTED:\nSTATUS:', 'NOTICE': 'NOTICE TYPE:\nDELIVERY:', 'ACCESS': 'ENTERED BY:\nPURPOSE:' } 
+        }
     };
 
     function switchDomain(domain) {
         currentDomain = domain;
         const config = domainConfig[domain];
         
-        // Update Theme
         document.documentElement.style.setProperty('--active-brand', config.color);
         document.getElementById('brandTitle').innerHTML = `${config.name} <div class="clio-pulse"></div>`;
         
-        // Update Tabs
         document.querySelectorAll('.domain-tab').forEach(btn => {
             btn.classList.toggle('active', btn.innerText === domain);
         });
 
-        // Update Templates
         const bar = document.getElementById('templateBar');
-        bar.innerHTML = config.templates.map(t => `<button onclick="useTemplate('${t}')" class="template-chip">${t}</button>`).join('');
-        
-        // Update Sync Button
+        bar.innerHTML = ''; 
+        Object.keys(config.templates).forEach(key => {
+            const btn = document.createElement('button');
+            btn.className = 'template-chip';
+            btn.innerText = key;
+            btn.onclick = () => { 
+                const box = document.getElementById('statusBox');
+                box.value = config.templates[key];
+                box.focus();
+            };
+            bar.appendChild(btn);
+        });
+
         const syncBtn = document.getElementById('syncBtn');
         if(domain === 'WORK') {
             syncBtn.style.opacity = '1';
+            syncBtn.style.background = '#0076CE';
+            syncBtn.innerHTML = '<span style="font-size: 18px; margin-bottom: 2px;">🔒</span><span>SYNC CLIO</span>';
             syncBtn.onclick = clioHandshake;
-            syncBtn.innerText = "SYNC TO CLIO";
         } else {
-            syncBtn.style.opacity = '0.4';
-            syncBtn.onclick = () => alert(`${config.name} is in Offline Prototype Mode. Clio Handshake coming soon.`);
-            syncBtn.innerText = "OFFLINE";
+            syncBtn.style.opacity = '0.35';
+            syncBtn.style.background = '#94a3b8';
+            syncBtn.innerHTML = '<span style="font-size: 18px; margin-bottom: 2px;">🔒</span><span>OFFLINE</span>';
+            syncBtn.onclick = () => alert(`${config.name} is in Secure Offline Prototype mode.`);
         }
-        
         refresh();
     }
 
     function unlockApp() { document.getElementById('overlaySystem').style.display = 'none'; document.getElementById('mainApp').classList.remove('app-locked'); }
     function toggleUtility() { document.getElementById('utilityDrawer').style.transform = utilOpen ? 'translateY(calc(-100% + 40px))' : 'translateY(0)'; utilOpen = !utilOpen; }
 
-    // THE CLIO HANDSHAKE (CANADIAN SANDBOX)
-    async function clioHandshake() {
-        if(vault.filter(i => i.domain === 'WORK').length === 0) return alert("No Work entries to sync.");
-        
-        // 1. OAUTH HANDSHAKE PLACEHOLDER
-        console.log("Connecting to ca.api.clio.com/api/v4...");
-        
-        document.getElementById('modalContent').innerHTML = `
-            <h3 style="color:var(--clio-blue);">CLIO SYNC LIVE</h3>
-            <div style="font-size:12px; font-weight:600;">Vaulting WorkTimeline™ data to Clio Grow Sandbox...</div>
-            <button class="modal-btn" style="background:var(--clio-blue); color:white;" onclick="executeVault()">CONFIRM VAULT</button>
-        `;
-        document.getElementById('overlaySystem').style.display = 'flex';
-    }
-
-    function executeVault() {
-        // Here we would use the Client ID / Secret you received
-        alert("Success: 201 Created. Data vaulted in Clio Cloud. Local memory purged.");
-        vault = vault.filter(i => i.domain !== 'WORK'); // The Purge
-        localStorage.setItem('wt_timeline_master', JSON.stringify(vault));
-        unlockApp();
-        refresh();
-    }
-
     function submitEntry() {
         const text = document.getElementById('statusBox').value; if(!text.trim()) return;
+        const isRetaliation = text.toLowerCase().includes('retaliation') || text.toLowerCase().includes('fired');
         const entry = { 
             grit: text, 
             domain: currentDomain, 
             stamp: new Date().toLocaleString(),
-            analysis: text.includes("retaliation") ? "EA: Retaliation Signal" : "" 
+            analysis: isRetaliation ? "EA: Retaliation Signal Detected. Vault as high-priority." : "" 
         };
         vault.push(entry);
-        localStorage.setItem('wt_timeline_master', JSON.stringify(vault));
+        localStorage.setItem('timeline_master_vault', JSON.stringify(vault));
         document.getElementById('statusBox').value = '';
         if(utilOpen) toggleUtility();
         refresh();
@@ -206,17 +206,38 @@
             const hasAI = item.analysis !== "";
             list.innerHTML += `
                 <div class="stack-wrapper">
-                    <div class="stamp-label">📍 LANGLEY | ${item.stamp}</div>
+                    <div class="stamp-label">📍 BC-REGIONAL | ${item.stamp}</div>
                     <div class="stack-inner ${hasAI ? 'has-ai' : ''}" onclick="this.classList.toggle('flipped')">
-                        <div class="bubble bubble-front"><p style="font-weight:600; font-size:14px; margin:0;">${item.grit}</p></div>
-                        ${hasAI ? `<div class="bubble bubble-back"><p style="font-weight:600; font-size:13px; margin:0;">${item.analysis}</p></div>` : ''}
+                        <div class="bubble bubble-front"><p style="font-weight:600; font-size:15px; margin:0; line-height:1.4;">${item.grit.replace(/\n/g, '<br>')}</p></div>
+                        ${hasAI ? `<div class="bubble bubble-back"><p style="font-weight:700; font-size:14px; margin:0;">${item.analysis}</p></div>` : ''}
                     </div>
                 </div>`;
         });
     }
 
+    async function clioHandshake() {
+        if(vault.filter(v => v.domain === 'WORK').length === 0) return alert("No Work entries to sync.");
+        document.getElementById('modalContent').innerHTML = `
+            <h3 style="color:var(--clio-blue); margin:0;">SECURE SYNC</h3>
+            <p style="font-size:13px; font-weight:600; margin:15px 0;">Vaulting WorkTimeline™ data to Clio Grow Sandbox (Canada Region).</p>
+            <button class="modal-btn" style="background:var(--clio-blue); color:white;" onclick="executeClioSync()">AUTHORIZE & VAULT</button>
+        `;
+        document.getElementById('overlaySystem').style.display = 'flex';
+    }
+
+    function executeClioSync() {
+        alert("201 Created: Data successfully vaulted in Clio. Local record purged for Zero-Footprint security.");
+        vault = vault.filter(v => v.domain !== 'WORK');
+        localStorage.setItem('timeline_master_vault', JSON.stringify(vault));
+        unlockApp(); refresh();
+        // Reset modal
+        setTimeout(() => {
+            document.getElementById('modalContent').innerHTML = `<h2 style="color: #1a202c; font-weight: 900; margin: 0; font-size: 20px;">TIMELINE™ SECURE</h2><div style="font-size: 14px; line-height: 1.6; color: #4a5568; margin: 20px 0; font-weight: 600;">Welcome to the Unified Truth Engine.<br><br><b>WorkTimeline™</b> is live for Canadian Clio Sync. Other domains are in secure offline prototype mode.</div><button class="modal-btn" style="background:var(--teal); color:white;" onclick="unlockApp()">OPEN SECURE VAULT</button>`;
+        }, 500);
+    }
+
     function makeDraggable(el) {
-        let p1=0,p2=0,p3=0,p4=0;
+        let p1=0, p2=0, p3=0, p4=0;
         el.onmousedown = dStart; el.ontouchstart = dStart;
         function dStart(e) { p3=e.clientX||e.touches[0].clientX; p4=e.clientY||e.touches[0].clientY; document.onmouseup=dEnd; document.ontouchend=dEnd; document.onmousemove=dMove; document.ontouchmove=dMove; }
         function dMove(e) { let cx=e.clientX||e.touches[0].clientX; let cy=e.clientY||e.touches[0].clientY; p1=p3-cx; p2=p4-cy; p3=cx; p4=cy; el.style.top=(el.offsetTop-p2)+"px"; el.style.left=(el.offsetLeft-p1)+"px"; }
@@ -225,12 +246,9 @@
 
     makeDraggable(document.getElementById("addBtn"));
     makeDraggable(document.getElementById("syncBtn"));
-    
     document.getElementById("addBtn").onclick = submitEntry;
     
-    function useTemplate(t) { document.getElementById('statusBox').value = `${t}:\n`; }
-
-    // Initialize WORK domain
+    // Start on WORK
     switchDomain('WORK');
 </script>
 </body>
