@@ -151,16 +151,18 @@
 
         .log-entry { position: relative; display: flex; flex-direction: column; gap: 6px; z-index: 2; }
         
-        /* MAC SQUIRCLE NODES (No Red) */
+        /* MAC SQUIRCLE NODES (Smaller, No Red) */
         .timeline-squircle {
-            position: absolute; left: -28px; top: 15px; width: 18px; height: 18px;
-            background: var(--metallic-teal); border-radius: 6px; /* Squircle shape */
+            position: absolute; left: -26px; top: 16px; width: 14px; height: 14px;
+            background: var(--metallic-teal); border-radius: 4px; /* Squircle shape */
             border: 2px solid white; z-index: 3; box-shadow: 0 4px 6px rgba(0,128,128,0.3);
             cursor: pointer; transition: transform 0.2s;
         }
         .timeline-squircle:active { transform: scale(0.85); }
 
-        .timestamp-stamp { display: flex; align-items: center; gap: 6px; font-size: 9px; color: var(--text-light); text-transform: uppercase; font-weight: 800; padding-left: 4px; }
+        /* SVG Pin & Timestamp formatting */
+        .timestamp-stamp { display: flex; align-items: center; gap: 4px; font-size: 9px; color: var(--text-light); text-transform: uppercase; font-weight: 800; padding-left: 4px; }
+        .timestamp-stamp svg { width: 10px; height: 10px; stroke: currentColor; fill: none; stroke-width: 2.5; display: inline-block; vertical-align: middle; margin-top: -2px; }
         
         .log-bubble {
             background: var(--glass-bg); backdrop-filter: blur(10px);
@@ -336,7 +338,10 @@
     </div>
 
     <script>
-        let logsData = JSON.parse(localStorage.getItem('silver_vault')) || [];
+        let logsData = JSON.parse(localStorage.getItem('silver_vault_v2')) || [];
+        
+        // SVG Map Pin Icon String
+        const pinSvg = `<svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
 
         function initApp() {
             setGreeting();
@@ -347,9 +352,9 @@
         function loadDummyData() {
             const baseTime = new Date();
             logsData = [
-                { id: 1, stamp: `📍 LANGLEY, BC | ${baseTime.toLocaleDateString()} | 9:00 AM`, text: "WITNESS: Interviewed Sarah regarding the incident..." },
-                { id: 2, stamp: `📍 LANGLEY, BC | ${baseTime.toLocaleDateString()} | 11:30 AM`, text: "INJURY: Details logged and submitted to manager." },
-                { id: 3, stamp: `📍 LANGLEY, BC | ${baseTime.toLocaleDateString()} | 1:15 PM`, text: "[PHOTO ATTACHED @ 1:15 PM]\nSite visit completed." }
+                { id: 1, stamp: `${pinSvg} LANGLEY, BC | ${baseTime.toLocaleDateString()} | 9:00 AM`, text: "WITNESS: Interviewed Sarah regarding the incident..." },
+                { id: 2, stamp: `${pinSvg} LANGLEY, BC | ${baseTime.toLocaleDateString()} | 11:30 AM`, text: "INJURY: Details logged and submitted to manager." },
+                { id: 3, stamp: `${pinSvg} LANGLEY, BC | ${baseTime.toLocaleDateString()} | 1:15 PM`, text: "[PHOTO ATTACHED @ 1:15 PM]\nSite visit completed." }
             ];
             saveData();
         }
@@ -377,13 +382,13 @@
             input.focus();
         }
 
-        function saveData() { localStorage.setItem('silver_vault', JSON.stringify(logsData)); }
+        function saveData() { localStorage.setItem('silver_vault_v2', JSON.stringify(logsData)); }
 
         function renderTimeline() {
             const list = document.getElementById('logList');
             list.innerHTML = '';
             
-            // Render oldest to newest (top to bottom)
+            // Render oldest to newest
             logsData.forEach(log => {
                 const entry = document.createElement('div');
                 entry.className = 'log-entry';
@@ -419,7 +424,7 @@
 
             logsData.push({
                 id: Date.now(),
-                stamp: `📍 LANGLEY, BC | ${dateStr} | ${timeStr}`,
+                stamp: `${pinSvg} LANGLEY, BC | ${dateStr} | ${timeStr}`,
                 text: text
             });
 
@@ -431,7 +436,11 @@
         function emailTimeline() {
             if(logsData.length === 0) return alert("Journal is empty.");
             let body = "WorkTimeline™ Journal Export:\n\n";
-            logsData.forEach(log => { body += `[${log.stamp}]\n${log.text}\n\n`; });
+            logsData.forEach(log => { 
+                // Strip out the SVG string before sending to email body
+                const cleanStamp = log.stamp.replace(/<svg.*<\/svg>/g, '').trim();
+                body += `[${cleanStamp}]\n${log.text}\n\n`; 
+            });
             window.location.href = `mailto:?subject=Legal Journal Export&body=${encodeURIComponent(body)}`;
         }
 
