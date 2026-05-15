@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Precision v51</title>
+    <title>WorkTimeline™ | Precision v52</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
         
@@ -18,6 +18,7 @@
             --text-light: #64748b;
             --active-teal: #008080;
             --active-green: #2ecc71;
+            --rose: #e11d48;
             
             --metallic-silver: linear-gradient(180deg, #f1f5f9 0%, #cbd5e0 100%);
             --metallic-teal: linear-gradient(135deg, #008080 0%, #004d4d 100%);
@@ -123,17 +124,12 @@
         }
         .timeline-squircle:active { transform: scale(0.85); }
 
-        .timestamp-stamp { display: flex; align-items: center; gap: 4px; font-size: 9px; color: var(--text-light); text-transform: uppercase; font-weight: 800; padding-left: 4px; }
-        .timestamp-stamp svg { width: 10px; height: 10px; stroke: currentColor; fill: none; stroke-width: 2.5; display: inline-block; vertical-align: middle; margin-top: -2px; }
-        
-        .log-bubble {
-            background: var(--glass-bg); backdrop-filter: blur(10px); padding: 14px 16px; border-radius: 18px; border: 1px solid var(--glass-border);
-            color: var(--text-dark); font-size: 12px; font-weight: 700; line-height: 1.5; box-shadow: 0 4px 15px rgba(0,0,0,0.03); width: 95%; box-sizing: border-box;
-            transition: all 0.4s ease;
+        /* GOLD PULSING SQUIRCLE */
+        .timeline-squircle.gold {
+            background: var(--metallic-gold);
+            border-color: #fff;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.8);
         }
-
-        /* --- GOLD PULSING STYLES --- */
-        .timeline-squircle.gold { background: var(--metallic-gold); border-color: #fff; box-shadow: 0 0 10px rgba(245, 158, 11, 0.8); }
         
         .log-bubble.gold {
             background: rgba(255, 255, 255, 0.95);
@@ -146,6 +142,16 @@
             50% { box-shadow: 0 0 22px rgba(245, 158, 11, 0.7); }
         }
 
+        .timestamp-stamp { display: flex; align-items: center; gap: 4px; font-size: 9px; color: var(--text-light); text-transform: uppercase; font-weight: 800; padding-left: 4px; }
+        .timestamp-stamp svg { width: 10px; height: 10px; stroke: currentColor; fill: none; stroke-width: 2.5; display: inline-block; vertical-align: middle; margin-top: -2px; }
+        
+        .log-bubble {
+            background: var(--glass-bg); backdrop-filter: blur(10px); padding: 14px 16px; border-radius: 18px; border: 1px solid var(--glass-border);
+            color: var(--text-dark); font-size: 12px; font-weight: 700; line-height: 1.5; box-shadow: 0 4px 15px rgba(0,0,0,0.03); width: 95%; box-sizing: border-box;
+            transition: all 0.4s ease;
+        }
+
+        /* GOLD PATTERN INSIGHT BOX */
         .gold-insight {
             margin-top: 12px; padding: 10px 12px; background: rgba(245, 158, 11, 0.1);
             border-left: 3px solid #f59e0b; border-radius: 8px; font-size: 11px;
@@ -242,7 +248,8 @@
                 <div class="greeting" id="greetingText">Good Morning</div>
                 <div class="location">Langley Township, BC</div>
                 <div class="modal-body">
-                    We do not practice law and we're not giving advice. <br><br><b>Look at this like it's a journal. Welcome to WorkTimeline™.</b>
+                    <span style="color: var(--rose); font-weight: 900;">SAFETY WARNING:</span> If you are in immediate danger or witnessing an active physical or fire hazard, <b>call 911 or contact WCB immediately.</b><br><br>
+                    We do not practice law, give advice, or dispatch emergency services. Look at this like a secure journal.<br><br><b>Welcome to WorkTimeline™.</b>
                 </div>
                 <div class="ok-btn" onclick="document.getElementById('intakeOverlay').classList.remove('active')">I Understand</div>
             </div>
@@ -360,7 +367,7 @@
     </div>
 
     <script>
-        let logsData = JSON.parse(localStorage.getItem('silver_vault_v51')) || [];
+        let logsData = JSON.parse(localStorage.getItem('silver_vault_v52')) || [];
         let currentMode = 'TIMELINE';
         
         const pinSvg = `<svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
@@ -425,7 +432,7 @@
             input.focus();
         }
 
-        function saveData() { localStorage.setItem('silver_vault_v51', JSON.stringify(logsData)); }
+        function saveData() { localStorage.setItem('silver_vault_v52', JSON.stringify(logsData)); }
 
         function renderTimeline() {
             const list = document.getElementById('logList');
@@ -561,4 +568,26 @@
                     isGold: false
                 });
 
-                switchMode('TIMELINE'); // Ensure they
+                switchMode('TIMELINE'); // Ensure they are on the timeline to see the cool gold pulse
+                saveData();
+                renderTimeline();
+                resetPatternModal();
+                
+            } else {
+                // They ignored it. Visually nothing changes on the timeline. Just write to notes silently.
+                logsData.push({
+                    id: Date.now(),
+                    mode: 'NOTES',
+                    stamp: `${pinSvg} AUDIT TRAIL | ${dateStr} | ${timeStr}`,
+                    text: "[AUDIT LOG] User IGNORED AI Pattern Suggestion. Raw timeline integrity completely maintained.",
+                    isGold: false
+                });
+                
+                saveData();
+                renderTimeline(); // Re-render to ensure layout integrity
+                resetPatternModal();
+            }
+        }
+    </script>
+</body>
+</html>
