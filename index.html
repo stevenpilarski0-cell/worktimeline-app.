@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>WorkTimeline™ | Precision v52</title>
+    
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
         
@@ -53,7 +56,7 @@
         .log-entry { position: relative; display: flex; flex-direction: column; gap: 6px; z-index: 2; transition: all 0.4s ease; }
         .timeline-squircle { position: absolute; left: -26px; top: 16px; width: 14px; height: 14px; background: var(--metallic-teal); border-radius: 4px; border: 2px solid white; z-index: 3; box-shadow: 0 4px 6px rgba(0,128,128,0.3); cursor: pointer; transition: transform 0.2s; }
         .timeline-squircle.gold { background: var(--metallic-gold); border-color: #fff; box-shadow: 0 0 10px rgba(245, 158, 11, 0.8); }
-        .log-bubble { background: var(--glass-bg); backdrop-filter: blur(10px); padding: 14px 16px; border-radius: 18px; border: 1px solid var(--glass-border); color: var(--text-dark); font-size: 12px; font-weight: 700; line-height: 1.5; box-shadow: 0 4px 15px rgba(0,0,0,0.03); width: 95%; box-sizing: border-box; transition: all 0.4s ease; }
+        .log-bubble { background: var(--glass-bg); backdrop-filter: blur(10px); padding: 14px 16px; border-radius: 18px; border: 1px solid var(--glass-border); color: var(--text-dark); font-size: 12px; font-weight: 700; line-height: 1.5; box-shadow: 0 4px 15px rgba(0,0,0,0.03); width: 95%; box-sizing: border-box; word-break: break-word; transition: all 0.4s ease; }
         .log-bubble.gold { border: 2px solid #f59e0b; animation: goldPulse 2.5s infinite; }
         @keyframes goldPulse { 0%, 100% { box-shadow: 0 0 10px rgba(245, 158, 11, 0.3); } 50% { box-shadow: 0 0 22px rgba(245, 158, 11, 0.7); } }
         .gold-insight { margin-top: 12px; padding: 10px 12px; background: rgba(245, 158, 11, 0.1); border-left: 3px solid #f59e0b; border-radius: 8px; font-size: 11px; color: #b45309; font-weight: 800; line-height: 1.4; }
@@ -66,15 +69,12 @@
         .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(226, 232, 240, 0.7); backdrop-filter: blur(25px); z-index: 10000; display: flex; justify-content: center; align-items: center; padding: 30px; box-sizing: border-box; text-align: center; opacity: 0; pointer-events: none; transition: 0.3s; }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .modal-box { background: rgba(255,255,255,0.9); padding: 45px 30px; border-radius: 35px; box-shadow: var(--glass-shadow); border: 1px solid var(--glass-border); width: 100%; }
-        .spinner { width: 30px; height: 30px; border: 4px solid #cbd5e0; border-top: 4px solid var(--active-teal); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body onload="initApp()">
     <div class="phone-bezel">
         <div class="sidebar" id="sidebarMenu">
             <div class="sidebar-header" style="font-weight:900; font-size:22px; color:var(--active-teal); display:flex; justify-content:space-between; margin-bottom:40px;">MENU <div onclick="toggleSidebar()" style="cursor:pointer;">✖</div></div>
-            <div class="sidebar-item" onclick="emailTimeline()" style="background:white; padding:15px; margin-bottom:10px; border-radius:15px; font-weight:800; cursor:pointer;">Draft Email</div>
             <div class="sidebar-item" onclick="resetTimeline()" style="background:white; padding:15px; border-radius:15px; font-weight:800; color:var(--rose); cursor:pointer;">Reset Engine</div>
         </div>
 
@@ -144,10 +144,18 @@
     </div>
 
     <script>
+        /* --- SUPABASE SETUP --- */
+        // !! PASTE YOUR KEYS HERE !!
+        const supabaseUrl = 'YOUR_SUPABASE_PROJECT_URL';
+        const supabaseKey = 'YOUR_SUPABASE_ANON_KEY';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        /* --- APP STATE --- */
         let logsData = JSON.parse(localStorage.getItem('silver_vault_v52')) || [];
         let currentMode = 'TIMELINE';
         const pinSvg = `<svg viewBox="0 0 24 24" width="10" height="10" stroke="currentColor" fill="none" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
 
+        /* --- CORE FUNCTIONS --- */
         function initApp() { setGreeting(); renderTimeline(); checkAuthRedirect(); }
         function setGreeting() { const h = new Date().getHours(); document.getElementById('greetingText').innerText = h < 12 ? "Good Morning" : h < 18 ? "Good Afternoon" : "Good Evening"; }
         function toggleSidebar() { document.getElementById('sidebarMenu').classList.toggle('open'); }
@@ -174,7 +182,7 @@
             logsData.filter(l => (l.mode || 'TIMELINE') === currentMode).forEach(l => { 
                 const e = document.createElement('div'); 
                 e.className = 'log-entry'; 
-                e.innerHTML = `<div class="timeline-squircle ${l.isGold?'gold':''}"></div><div style="font-size:9px; color:var(--text-light);">${l.stamp}</div><div class="log-bubble ${l.isGold?'gold':''}">${l.text}${l.isGold?`<div class="gold-insight">${l.patternInsight}</div>`:''}</div>`; 
+                e.innerHTML = `<div class="timeline-squircle ${l.isGold?'gold':''}"></div><div style="font-size:9px; color:var(--text-light);">${l.stamp}</div><div class="log-bubble ${l.isGold?'gold':''}">${l.text.replace(/\n/g, '<br>')}${l.isGold?`<div class="gold-insight">${l.patternInsight}</div>`:''}</div>`; 
                 list.appendChild(e); 
             }); 
             const container = document.getElementById('timelineBody');
@@ -183,33 +191,48 @@
         
         function resetTimeline() { if(confirm("Reset all data?")) { logsData = []; saveData(); renderTimeline(); } }
 
-        /* --- 3. AI OCR SCANNER (EVIDENCE) --- */
-        function processEvidence(input, type) {
+        /* --- CLOUD STORAGE & OCR EVIDENCE --- */
+        async function processEvidence(input, type) {
             if (!input.files || input.files.length === 0) return;
             const file = input.files[0];
+            const titleElement = document.getElementById('brandTitle');
+            const originalTitle = titleElement.innerText;
             
-            // Give text feedback
-            const logInput = document.getElementById('logInput');
-            logInput.value += (logInput.value ? '\n' : '') + `[EVIDENCE ATTACHED: ${file.name} - ${type}]\n`;
-            logInput.focus();
+            try {
+                // 1. UPLOAD TO SUPABASE
+                titleElement.innerHTML = `<span style="color: #f59e0b; animation: clioBreathe 1.5s infinite;">VAULTING FILE...</span>`;
+                const uniqueFileName = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+                
+                const { data, error } = await supabase.storage.from('evidence').upload(uniqueFileName, file);
+                if (error) throw error;
 
-            // Trigger AI scanner if it's a photo
-            if (type === 'PHOTO' && file.type.startsWith('image/')) {
-                extractDateFromImage(file);
+                // 2. GET URL
+                const { data: publicUrlData } = supabase.storage.from('evidence').getPublicUrl(uniqueFileName);
+                const fileUrl = publicUrlData.publicUrl;
+
+                // 3. LOG IN TEXT BOX
+                const logInput = document.getElementById('logInput');
+                logInput.value += (logInput.value ? '\n\n' : '') + `[EVIDENCE ATTACHED: ${type}]\nSECURE LINK: ${fileUrl}\n`;
+                logInput.focus();
+
+                // 4. AI OCR SCAN (IF PHOTO)
+                if (type === 'PHOTO' && file.type.startsWith('image/')) {
+                    titleElement.innerHTML = `<span style="color: #008080;">SCANNING DOC...</span>`;
+                    await extractDateFromImage(file);
+                }
+
+            } catch (err) {
+                console.error("Upload Failed:", err);
+                alert("Failed to vault evidence. Check your Supabase keys and bucket settings.");
+            } finally {
+                titleElement.innerText = originalTitle;
+                input.value = ''; 
             }
-            input.value = ''; 
         }
 
         async function extractDateFromImage(file) {
-            const titleElement = document.getElementById('brandTitle');
-            const originalTitle = titleElement.innerText;
-            titleElement.innerHTML = `<span style="color: #f59e0b;">SCANNING...</span>`;
-            
             try {
-                // The AI reads the image
                 const { data: { text } } = await Tesseract.recognize(file, 'eng');
-                
-                // Look for dates
                 const dateRegex = /\b(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* \d{1,2},? \d{4})\b/gi;
                 const foundDates = text.match(dateRegex);
 
@@ -217,12 +240,11 @@
                     const extractedDate = foundDates[0];
                     const now = new Date();
                     
-                    // Add it as a GOLD Note
                     logsData.push({
                         id: Date.now(),
                         mode: 'NOTES', 
                         stamp: `${pinSvg} AI OCR SCAN | ${now.toLocaleDateString()} | ${now.toLocaleTimeString()}`,
-                        text: `[SCANNED DOCUMENT] Our OCR engine detected an embedded date in: ${file.name}`,
+                        text: `[SCANNED DOCUMENT] OCR engine detected an embedded date in: ${file.name}`,
                         isGold: true,
                         patternInsight: `Extracted Historical Date: ${extractedDate}`
                     });
@@ -233,12 +255,10 @@
                 }
             } catch (err) {
                 console.error("AI Scan Failed:", err);
-            } finally {
-                titleElement.innerText = originalTitle;
             }
         }
 
-        /* --- 4. CLIO HANDSHAKE LOGIC --- */
+        /* --- CLIO HANDSHAKE --- */
         async function checkAuthRedirect() {
             const code = new URLSearchParams(window.location.search).get('code');
             if(code) {
