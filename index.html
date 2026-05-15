@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Work Timeline | Frosted Silver v40</title>
+    <title>Work Timeline | Dual Engine v41</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
         
@@ -24,83 +24,32 @@
         }
         
         body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Nunito', sans-serif;
-            background-color: #94a3b8; /* Desk background */
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            font-family: 'Nunito', sans-serif; background-color: #94a3b8;
             -webkit-tap-highlight-color: transparent;
         }
 
         /* Phone Bezel */
         .phone-bezel {
-            width: 375px;
-            height: 812px;
-            background-color: #000;
-            border-radius: 45px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-            overflow: hidden;
-            border: 8px solid #cbd5e0;
-            position: relative;
+            width: 375px; height: 812px; background-color: #000;
+            border-radius: 45px; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            overflow: hidden; border: 8px solid #cbd5e0; position: relative;
         }
 
         .app-container {
-            width: 100%;
-            height: 100%;
-            background: var(--app-bg);
-            display: flex;
-            flex-direction: column;
-            position: relative;
+            width: 100%; height: 100%; background: var(--app-bg);
+            display: flex; flex-direction: column; position: relative;
         }
 
-        /* PRIVACY GHOST */
-        .privacy-active .timeline-container { filter: blur(15px); pointer-events: none; opacity: 0.3; }
+        /* PRIVACY BLUR STATE */
+        .privacy-active #timelineBody { filter: blur(16px); pointer-events: none; opacity: 0.2; transition: 0.3s; }
+        #timelineBody { transition: 0.3s; }
 
-        /* TOP STATUS BAR */
-        .status-bar {
-            height: 50px;
-            background: transparent;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-            color: var(--text-dark);
-            font-weight: 800;
-            font-size: 11px;
-            z-index: 10;
-        }
-
-        .status-pill {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            padding: 6px 12px;
-            border-radius: 12px;
-            border: 1px solid var(--glass-border);
-            color: var(--text-dark);
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-
-        .ghost-notes { display: flex; align-items: center; gap: 8px; }
-        .notes-active-dot { width: 6px; height: 6px; background-color: var(--active-green); border-radius: 50%; }
-
-        .clio-status-led {
-            width: 10px; height: 10px; background-color: var(--clio-green); border-radius: 50%;
-            animation: breathe 2.5s infinite; box-shadow: 0 0 8px var(--clio-green); margin-left: 5px;
-        }
-        @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.6; } }
-
-        /* HEADER (Tabs & Hamburger) */
+        /* HEADER (Tabs & Triggers) */
         .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px 15px;
-            z-index: 10;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 50px 20px 15px; z-index: 10;
         }
 
         .menu-trigger {
@@ -110,34 +59,43 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex;
         }
 
-        .tab-section { display: flex; gap: 10px; flex: 1; margin-left: 15px; }
-        .tab-pill {
-            flex: 1; background: var(--glass-bg); border: 1px solid var(--glass-border);
-            border-radius: 14px; padding: 10px 0; font-size: 11px; font-weight: 800;
-            color: var(--text-light); text-align: center; backdrop-filter: blur(10px);
-            cursor: pointer; transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        .header-controls { display: flex; gap: 8px; align-items: center; }
+        
+        .control-pill {
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: 14px; padding: 10px 14px; font-size: 10px; font-weight: 900;
+            color: var(--text-dark); text-align: center; backdrop-filter: blur(10px);
+            cursor: pointer; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
             text-transform: uppercase;
         }
-        .tab-pill:active { transform: scale(0.95); }
+        .control-pill:active { transform: scale(0.95); }
+        .control-pill.active-mode { background: var(--metallic-teal); color: white; border: none; }
+
+        .clio-status-led {
+            width: 10px; height: 10px; background-color: var(--clio-green); border-radius: 50%;
+            animation: breathe 2.5s infinite; box-shadow: 0 0 8px var(--clio-green); margin-left: 5px;
+        }
+        @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.6; } }
 
         /* HARDWARE & INPUT (Frosted Panel) */
         .input-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            margin: 0 15px;
-            border-radius: 24px;
-            border: 1px solid var(--glass-border);
-            box-shadow: var(--glass-shadow);
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            padding: 20px;
-            z-index: 10;
+            background: var(--glass-bg); backdrop-filter: blur(20px);
+            margin: 0 15px; border-radius: 24px; border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow); display: flex; flex-direction: column;
+            gap: 15px; padding: 20px; z-index: 10;
+        }
+
+        /* TEMPLATES */
+        .template-row { display: flex; gap: 8px; justify-content: space-between; margin-bottom: 5px; }
+        .template-chip {
+            flex: 1; background: white; border: 1px solid #e2e8f0; border-radius: 10px;
+            padding: 8px 0; font-size: 9px; font-weight: 800; color: var(--text-light);
+            text-align: center; cursor: pointer; text-transform: uppercase;
         }
 
         .hardware-icons { display: flex; justify-content: space-evenly; align-items: center; }
         .hw-item { position: relative; width: 42px; height: 42px; background: var(--metallic-silver); border-radius: 14px; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 2px 4px rgba(255,255,255,0.8), 0 4px 6px rgba(0,0,0,0.05); cursor: pointer; border: 1px solid #cbd5e0; }
-        .hw-item svg { width: 22px; height: 22px; stroke: var(--active-teal); fill: none; stroke-width: 2.5; }
+        .hw-item svg { width: 20px; height: 20px; stroke: var(--active-teal); fill: none; stroke-width: 2.5; }
         .hw-item input { position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer; z-index:10; }
 
         .input-wrapper { background: rgba(255,255,255,0.8); border-radius: 14px; padding: 15px; border: 1px solid #e2e8f0; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
@@ -151,16 +109,15 @@
 
         .log-entry { position: relative; display: flex; flex-direction: column; gap: 6px; z-index: 2; }
         
-        /* MAC SQUIRCLE NODES (Smaller, No Red) */
+        /* MAC SQUIRCLE NODES */
         .timeline-squircle {
             position: absolute; left: -26px; top: 16px; width: 14px; height: 14px;
-            background: var(--metallic-teal); border-radius: 4px; /* Squircle shape */
-            border: 2px solid white; z-index: 3; box-shadow: 0 4px 6px rgba(0,128,128,0.3);
-            cursor: pointer; transition: transform 0.2s;
+            background: var(--metallic-teal); border-radius: 4px; border: 2px solid white; 
+            z-index: 3; box-shadow: 0 4px 6px rgba(0,128,128,0.3); cursor: pointer; transition: transform 0.2s;
         }
         .timeline-squircle:active { transform: scale(0.85); }
 
-        /* SVG Pin & Timestamp formatting */
+        /* SVG Pin & Timestamp */
         .timestamp-stamp { display: flex; align-items: center; gap: 4px; font-size: 9px; color: var(--text-light); text-transform: uppercase; font-weight: 800; padding-left: 4px; }
         .timestamp-stamp svg { width: 10px; height: 10px; stroke: currentColor; fill: none; stroke-width: 2.5; display: inline-block; vertical-align: middle; margin-top: -2px; }
         
@@ -171,7 +128,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.03); width: 95%; box-sizing: border-box;
         }
 
-        /* FOOTER NAV (Silver Frosted) */
+        /* FOOTER NAV */
         .footer-nav {
             height: 80px; background: var(--glass-bg); backdrop-filter: blur(20px);
             display: flex; justify-content: space-evenly; align-items: center;
@@ -188,15 +145,14 @@
 
         .center-add-btn {
             background: var(--metallic-teal); color: white; width: 56px; height: 56px;
-            border-radius: 20px; /* Squircle */
-            display: flex; justify-content: center; align-items: center;
+            border-radius: 20px; display: flex; justify-content: center; align-items: center;
             font-size: 32px; font-weight: 600; cursor: pointer;
             box-shadow: inset 0 2px 4px rgba(255,255,255,0.4), 0 8px 20px rgba(0, 128, 128, 0.4);
             border: 2px solid rgba(255,255,255,0.2); transition: 0.2s;
         }
         .center-add-btn:active { transform: scale(0.95); }
 
-        /* SIDEBAR MENU (Pure SVG, Frosted) */
+        /* SIDEBAR MENU */
         .sidebar {
             position: absolute; top: 0; left: -100%; width: 280px; height: 100%;
             background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(25px);
@@ -219,7 +175,7 @@
         .sidebar-item .circle-icon { width: 32px; height: 32px; background: var(--metallic-silver); color: var(--active-teal); border-radius: 10px; display: flex; justify-content: center; align-items: center; }
         .sidebar-item .circle-icon svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.5; fill: none; }
 
-        /* MODAL OVERLAYS (Intake & Pattern Engine) */
+        /* MODAL OVERLAYS */
         .modal-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(226, 232, 240, 0.7); backdrop-filter: blur(25px);
@@ -236,7 +192,6 @@
         .modal-body { font-size: 14px; font-weight: 700; color: var(--text-dark); line-height: 1.6; margin-bottom: 35px; }
         .ok-btn { background: var(--metallic-teal); color: white; padding: 18px; border-radius: 20px; font-weight: 900; font-size: 13px; text-transform: uppercase; cursor: pointer; box-shadow: 0 8px 20px rgba(0, 128, 128, 0.3); border: 1px solid rgba(255,255,255,0.2); }
 
-        /* Loader specific to Pattern Rec */
         .spinner { width: 30px; height: 30px; border: 4px solid #cbd5e0; border-top: 4px solid var(--active-teal); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
@@ -301,26 +256,24 @@
 
         <div class="app-container" id="mainApp">
             
-            <div class="status-bar">
-                <div class="status-pill" onclick="togglePrivacy()">GHOST MODE</div>
-                <div class="ghost-notes">
-                    <div class="status-pill">NOTES <div class="notes-active-dot"></div></div>
-                    <div class="clio-status-led" title="Clio Connection Active"></div>
-                </div>
-            </div>
-
             <div class="header">
                 <div class="menu-trigger" onclick="toggleSidebar()">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                 </div>
-                <div class="tab-section">
-                    <div class="tab-pill" onclick="appendTemplate('SETTING')">Setting</div>
-                    <div class="tab-pill" onclick="appendTemplate('WITNESS')">Witness</div>
-                    <div class="tab-pill" onclick="appendTemplate('INJURY')">Injury</div>
+                
+                <div class="header-controls">
+                    <div class="clio-status-led" title="Clio Connection Active"></div>
+                    <div class="control-pill" id="privacyBtn" onclick="togglePrivacy()">Privacy</div>
+                    <div class="control-pill active-mode" id="modeBtn" onclick="toggleMode()">MODE: TIMELINE</div>
                 </div>
             </div>
 
             <div class="input-panel">
+                <div class="template-row" id="templateRow">
+                    <div class="template-chip" onclick="appendTemplate('SETTING')">Setting</div>
+                    <div class="template-chip" onclick="appendTemplate('WITNESS')">Witness</div>
+                    <div class="template-chip" onclick="appendTemplate('INJURY')">Injury</div>
+                </div>
                 <div class="hardware-icons">
                     <div class="hw-item">
                         <input type="file" accept="image/*" capture="environment" onchange="hwFeedback('PHOTO ATTACHED')">
@@ -341,7 +294,7 @@
             </div>
 
             <div class="timeline-container" id="timelineBody">
-                <div class="timeline-line"></div>
+                <div class="timeline-line" id="timelineLine"></div>
                 <div class="log-list" id="logList">
                     </div>
             </div>
@@ -364,9 +317,9 @@
     </div>
 
     <script>
-        let logsData = JSON.parse(localStorage.getItem('silver_vault_v3')) || [];
+        let logsData = JSON.parse(localStorage.getItem('silver_vault_v4')) || [];
+        let currentMode = 'TIMELINE'; // Can be 'TIMELINE' or 'NOTES'
         
-        // SVG Map Pin Icon String
         const pinSvg = `<svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
 
         function initApp() {
@@ -378,9 +331,9 @@
         function loadDummyData() {
             const baseTime = new Date();
             logsData = [
-                { id: 1, stamp: `${pinSvg} LANGLEY, BC | ${baseTime.toLocaleDateString()} | 9:00 AM`, text: "WITNESS: Interviewed Sarah regarding the incident..." },
-                { id: 2, stamp: `${pinSvg} LANGLEY, BC | ${baseTime.toLocaleDateString()} | 11:30 AM`, text: "INJURY: Details logged and submitted to manager." },
-                { id: 3, stamp: `${pinSvg} LANGLEY, BC | ${baseTime.toLocaleDateString()} | 1:15 PM`, text: "[PHOTO ATTACHED @ 1:15 PM]\nSite visit completed." }
+                { id: 1, mode: 'TIMELINE', stamp: `${pinSvg} LANGLEY, BC | ${baseTime.toLocaleDateString()} | 9:00 AM`, text: "WITNESS: Interviewed Sarah regarding the incident..." },
+                { id: 2, mode: 'TIMELINE', stamp: `${pinSvg} LANGLEY, BC | ${baseTime.toLocaleDateString()} | 11:30 AM`, text: "INJURY: Details logged and submitted to manager." },
+                { id: 3, mode: 'NOTES', stamp: `${pinSvg} LANGLEY, BC | ${baseTime.toLocaleDateString()} | 1:15 PM`, text: "Need to remember to ask HR about form 4B tomorrow." }
             ];
             saveData();
         }
@@ -394,7 +347,30 @@
         }
 
         function toggleSidebar() { document.getElementById('sidebarMenu').classList.toggle('open'); }
-        function togglePrivacy() { document.getElementById('mainApp').classList.toggle('privacy-active'); }
+        
+        function togglePrivacy() { 
+            const app = document.getElementById('mainApp');
+            app.classList.toggle('privacy-active');
+            const btn = document.getElementById('privacyBtn');
+            if(app.classList.contains('privacy-active')) {
+                btn.style.background = 'var(--active-teal)'; btn.style.color = 'white';
+            } else {
+                btn.style.background = 'var(--glass-bg)'; btn.style.color = 'var(--text-dark)';
+            }
+        }
+
+        function toggleMode() {
+            currentMode = currentMode === 'TIMELINE' ? 'NOTES' : 'TIMELINE';
+            const btn = document.getElementById('modeBtn');
+            btn.innerText = `MODE: ${currentMode}`;
+            
+            // Adjust visual UI for Notes vs Timeline
+            document.getElementById('timelineLine').style.display = currentMode === 'TIMELINE' ? 'block' : 'none';
+            document.getElementById('templateRow').style.display = currentMode === 'TIMELINE' ? 'flex' : 'none';
+            document.getElementById('logInput').placeholder = currentMode === 'TIMELINE' ? "Start journaling your truth..." : "Capture a private note...";
+            
+            renderTimeline();
+        }
         
         function hwFeedback(label) {
             const input = document.getElementById('logInput');
@@ -408,14 +384,16 @@
             input.focus();
         }
 
-        function saveData() { localStorage.setItem('silver_vault_v3', JSON.stringify(logsData)); }
+        function saveData() { localStorage.setItem('silver_vault_v4', JSON.stringify(logsData)); }
 
         function renderTimeline() {
             const list = document.getElementById('logList');
             list.innerHTML = '';
             
-            // Render oldest to newest
-            logsData.forEach(log => {
+            // Filter by active mode
+            const filteredData = logsData.filter(log => (log.mode || 'TIMELINE') === currentMode);
+
+            filteredData.forEach(log => {
                 const entry = document.createElement('div');
                 entry.className = 'log-entry';
                 
@@ -427,8 +405,11 @@
                 entry.onmousedown = start; entry.onmouseup = stop; entry.onmouseleave = stop;
                 entry.ontouchstart = start; entry.ontouchend = stop;
 
+                // Only render squircle if in Timeline mode
+                const nodeHtml = currentMode === 'TIMELINE' ? `<div class="timeline-squircle" title="Hold to delete"></div>` : ``;
+
                 entry.innerHTML = `
-                    <div class="timeline-squircle" title="Hold to delete"></div>
+                    ${nodeHtml}
                     <div class="timestamp-stamp">${log.stamp}</div>
                     <div class="log-bubble">${log.text.replace(/\n/g, '<br>')}</div>
                 `;
@@ -438,68 +419,3 @@
             const container = document.getElementById('timelineBody');
             container.scrollTop = container.scrollHeight;
         }
-
-        function submitEntry() {
-            const input = document.getElementById('logInput');
-            const text = input.value.trim();
-            if (!text) return;
-
-            const now = new Date();
-            const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-            const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-
-            logsData.push({
-                id: Date.now(),
-                stamp: `${pinSvg} LANGLEY, BC | ${dateStr} | ${timeStr}`,
-                text: text
-            });
-
-            input.value = '';
-            saveData();
-            renderTimeline();
-        }
-
-        function emailTimeline() {
-            if(logsData.length === 0) return alert("Journal is empty.");
-            let body = "WorkTimeline™ Journal Export:\n\n";
-            logsData.forEach(log => { 
-                const cleanStamp = log.stamp.replace(/<svg.*<\/svg>/g, '').trim();
-                body += `[${cleanStamp}]\n${log.text}\n\n`; 
-            });
-            window.location.href = `mailto:?subject=Legal Journal Export&body=${encodeURIComponent(body)}`;
-        }
-
-        function resetTimeline() {
-            if(confirm("Clear the entire timeline?")) {
-                logsData = [];
-                saveData();
-                renderTimeline();
-                toggleSidebar();
-            }
-        }
-
-        // PATTERN RECOGNITION LOGIC
-        function runPatternRecognition() {
-            if(logsData.length === 0) {
-                alert("You need to add data to your journal before we can scan for patterns.");
-                return;
-            }
-            
-            // Show Pattern Overlay
-            document.getElementById('patternOverlay').classList.add('active');
-            document.getElementById('patternLoader').style.display = 'block';
-            document.getElementById('patternResult').style.display = 'none';
-
-            // Simulate parsing wait time (1.5 seconds)
-            setTimeout(() => {
-                document.getElementById('patternLoader').style.display = 'none';
-                document.getElementById('patternResult').style.display = 'block';
-            }, 1500);
-        }
-
-        function closePatternModal() {
-            document.getElementById('patternOverlay').classList.remove('active');
-        }
-    </script>
-</body>
-</html>
