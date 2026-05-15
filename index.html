@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Pure Hardware v27</title>
+    <title>WorkTimeline™ | Master v28</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Nunito+Sans:wght@400;600;800&display=swap');
         
@@ -50,7 +50,7 @@
         .handle { width: 100%; height: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .handle-pill { width: 45px; height: 6px; background: #cbd5e0; border-radius: 10px; }
 
-        /* HARDWARE ICONS (SVG RESTORED) */
+        /* HARDWARE ICONS */
         .hardware-row { display: flex; justify-content: space-evenly; align-items: center; padding: 15px 40px 25px; }
         .hw-item { position: relative; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
         .hw-item svg { width: 28px; height: 28px; stroke: #4a5568; fill: none; stroke-width: 2.2; }
@@ -76,7 +76,7 @@
         #eyeBtn svg { width: 32px; height: 32px; stroke: #4a5568; fill: none; stroke-width: 2.5; }
 
         .bubble { padding: 30px; border-radius: 28px; box-shadow: var(--mac-shadow); background: white; border: 1px solid #f1f5f9; font-weight: 600; font-size: 16px; line-height: 1.5; color: #1e293b; }
-        textarea { width: 100%; height: 120px; border: 3px solid #e2e8f0; border-radius: 25px; padding: 20px; font-size: 18px; outline: none; background: #f8fafc; box-sizing: border-box; font-family: inherit; }
+        textarea { width: 100%; height: 110px; border: 3px solid #e2e8f0; border-radius: 25px; padding: 20px; font-size: 18px; outline: none; background: #f8fafc; box-sizing: border-box; font-family: inherit; }
     </style>
 </head>
 <body>
@@ -86,9 +86,28 @@
         <h2 style="font-weight: 900; color: var(--teal); font-size: 20px; margin: 0; letter-spacing: -1px;">MENU</h2>
         <div onclick="toggleSidebar()" style="cursor: pointer; opacity: 0.4;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
     </div>
-    <div class="sidebar-item" onclick="exportData()"><svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>SAVE & EXPORT</div>
-    <div class="sidebar-item" onclick="alert('Analysis Active')"><svg viewBox="0 0 24 24"><path d="M12 7v14"/><path d="M9 21h6"/><path d="M8 7a4 4 0 0 1 8 0"/><path d="M3 21h18"/></svg>CASE LAW STUDY</div>
-    <div class="sidebar-item" onclick="resetTimeline()" style="color: var(--rose); margin-top: 50px; border-color: var(--rose);"><svg viewBox="0 0 24 24" style="stroke: var(--rose);"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>RESET PLATFORM</div>
+
+    <div class="sidebar-item" onclick="emailTimeline()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"/>
+        </svg>
+        DRAFT EMAIL (@)
+    </div>
+
+    <div class="sidebar-item" onclick="exportData()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+        SAVE & EXPORT
+    </div>
+
+    <div class="sidebar-item" onclick="alert('Precedents Repository Engaged')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 7v14"/><path d="M9 21h6"/><path d="M8 7a4 4 0 0 1 8 0"/><path d="M3 21h18"/></svg>
+        CASE LAW STUDY
+    </div>
+
+    <div class="sidebar-item" onclick="resetTimeline()" style="color: var(--rose); margin-top: 50px; border-color: var(--rose);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+        RESET PLATFORM
+    </div>
 </div>
 
 <div id="overlaySystem" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255, 255, 255, 0.99); backdrop-filter:blur(40px); z-index:100000; display:flex; align-items:center; justify-content:center; padding:30px;">
@@ -150,16 +169,16 @@
 </div>
 
 <script>
-    let vault = JSON.parse(localStorage.getItem('platinum_v27')) || [];
+    let vault = JSON.parse(localStorage.getItem('platinum_v28')) || [];
     let sessionIds = [];
     let currentDomain = 'WORK';
     let currentMode = 'TIMELINE';
     let utilOpen = false;
 
     const domainConfig = {
-        'WORK': { color: '#008080', name: 'WorkTimeline™', templates: { 'LOC': 'LOC:\n', 'EVENT': 'EVENT:\n', 'WIT': 'WIT:\n' } },
-        'FAM': { color: '#e11d48', name: 'FamTimeline™', templates: { 'VENUE': 'VENUE:\n', 'TRANS': 'TRANS:\n' } },
-        'INJURY': { color: '#f59e0b', name: 'InjuryTimeline™', templates: { 'SETTING': 'SETTING:\n', 'CLAIM': 'CLAIM:\n', 'HARM': 'HARM:\n' } },
+        'WORK': { color: '#008080', name: 'WorkTimeline™', templates: { 'LOCATION': 'LOC:\n', 'INCIDENT': 'EVENT:\n', 'WITNESS': 'WITNESS:\n' } },
+        'FAM': { color: '#e11d48', name: 'FamTimeline™', templates: { 'VENUE': 'VENUE:\n', 'CUSTODY': 'TRANS:\n' } },
+        'INJURY': { color: '#f59e0b', name: 'InjuryTimeline™', templates: { 'SETTING': 'SETTING:\n', 'CLAIM': 'CLAIM:\n', 'WITNESS': 'WITNESS:\n', 'HARM': 'HARM:\n' } },
         'PROPERTY': { color: '#1e293b', name: 'PropTimeline™', templates: { 'ADDR': 'ADDR:\n', 'FIX': 'FIX:\n' } }
     };
 
@@ -170,7 +189,8 @@
     
     function setGreeting() {
         const hour = new Date().getHours();
-        document.getElementById('greetingText').innerText = hour < 12 ? "GOOD MORNING" : hour < 18 ? "GOOD AFTERNOON" : "GOOD EVENING";
+        const greet = hour < 12 ? "GOOD MORNING" : hour < 18 ? "GOOD AFTERNOON" : "GOOD EVENING";
+        document.getElementById('greetingText').innerText = greet;
     }
 
     function toggleMode() {
@@ -203,7 +223,7 @@
         const stamp = `📍 LANGLEY, BC | ${new Date().toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}`;
         vault.push({ id, grit: text, domain: currentDomain, stamp });
         sessionIds.push(id);
-        localStorage.setItem('platinum_v27', JSON.stringify(vault));
+        localStorage.setItem('platinum_v28', JSON.stringify(vault));
         document.getElementById('statusBox').value = '';
         if(utilOpen) toggleUtility();
         refresh();
@@ -225,9 +245,10 @@
         });
     }
 
-    function resetTimeline() { if(confirm("Clear?")) { localStorage.clear(); location.reload(); } }
+    function resetTimeline() { if(confirm("Clear Platform?")) { localStorage.clear(); location.reload(); } }
     function clioHandshake() { if(currentDomain === 'WORK') alert("Syncing to Clio Canada..."); }
-    function exportData() { alert("Exporting database."); }
+    function exportData() { alert("Database Exported."); }
+    function emailTimeline() { window.location.href = "mailto:?subject=Legal Intake Export&body=Attached record."; }
 
     setGreeting();
     switchDomain('WORK');
