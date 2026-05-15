@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Precision v48</title>
+    <title>WorkTimeline™ | Precision v49</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
         
@@ -85,7 +85,7 @@
 
         /* CLASSIC BRANDING */
         .main-title {
-            font-weight: 900; font-size: 24px; color: var(--active-teal);
+            font-weight: 900; font-size: 22px; color: var(--active-teal);
             letter-spacing: -0.5px;
         }
 
@@ -208,7 +208,7 @@
 </head>
 <body onload="initApp()">
     <div class="phone-bezel">
-
+        
         <div class="sidebar" id="sidebarMenu">
             <div class="sidebar-header">
                 MENU
@@ -283,12 +283,23 @@
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                 </div>
                 
-                <div style="display: flex; align-items: flex-start; gap: 4px;">
-                    <div class="main-title" id="brandTitle">WorkTimeline™</div>
-                    <div class="clio-status-led" style="margin-top: 6px;" title="Clio Handshake Active"></div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <svg viewBox="0 0 24 24" width="28" height="28" stroke="var(--active-teal)" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M8 6V4c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v2"></path>
+                        <rect x="2" y="6" width="20" height="14" rx="4" ry="4"></rect>
+                        <line x1="2" y1="13" x2="22" y2="13"></line>
+                        <circle cx="7" cy="13" r="2" fill="var(--active-teal)"></circle>
+                        <circle cx="12" cy="13" r="2" fill="var(--active-teal)"></circle>
+                        <circle cx="17" cy="13" r="2" fill="var(--active-teal)"></circle>
+                    </svg>
+                    
+                    <div style="display: flex; align-items: flex-start; gap: 4px;">
+                        <div class="main-title" id="brandTitle">WorkTimeline™</div>
+                        <div class="clio-status-led" style="margin-top: 6px;" title="Clio Handshake Active"></div>
+                    </div>
                 </div>
                 
-                <div style="width: 40px;"></div>
+                <div style="width: 24px;"></div>
             </div>
 
             <div class="input-panel">
@@ -345,7 +356,7 @@
     </div>
 
     <script>
-        let logsData = JSON.parse(localStorage.getItem('silver_vault_v48')) || [];
+        let logsData = JSON.parse(localStorage.getItem('silver_vault_v49')) || [];
         let currentMode = 'TIMELINE';
         
         const pinSvg = `<svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
@@ -410,7 +421,7 @@
             input.focus();
         }
 
-        function saveData() { localStorage.setItem('silver_vault_v48', JSON.stringify(logsData)); }
+        function saveData() { localStorage.setItem('silver_vault_v49', JSON.stringify(logsData)); }
 
         function renderTimeline() {
             const list = document.getElementById('logList');
