@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Classic Brand v45</title>
+    <title>WorkTimeline™ | Precision v46</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
         
@@ -343,7 +343,7 @@
     </div>
 
     <script>
-        let logsData = JSON.parse(localStorage.getItem('silver_vault_wtl')) || [];
+        let logsData = JSON.parse(localStorage.getItem('silver_vault_v46')) || [];
         let currentMode = 'TIMELINE';
         
         const pinSvg = `<svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
@@ -408,7 +408,7 @@
             input.focus();
         }
 
-        function saveData() { localStorage.setItem('silver_vault_wtl', JSON.stringify(logsData)); }
+        function saveData() { localStorage.setItem('silver_vault_v46', JSON.stringify(logsData)); }
 
         function renderTimeline() {
             const list = document.getElementById('logList');
