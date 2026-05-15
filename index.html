@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Work Timeline | Dual Engine v41</title>
+    <title>Work Timeline | Precision Mac v42</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
         
@@ -46,10 +46,30 @@
         .privacy-active #timelineBody { filter: blur(16px); pointer-events: none; opacity: 0.2; transition: 0.3s; }
         #timelineBody { transition: 0.3s; }
 
+        /* TOP TOGGLE BAR (Privacy & Mode Switches) */
+        .top-toggles {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 50px 20px 10px; z-index: 20;
+        }
+
+        .toggle-btn {
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            padding: 8px 16px; border-radius: 20px; font-size: 11px; font-weight: 800;
+            color: var(--text-dark); cursor: pointer; backdrop-filter: blur(10px);
+            transition: 0.3s; display: flex; align-items: center; gap: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05); text-transform: uppercase;
+        }
+        
+        .toggle-btn.active {
+            background: var(--metallic-teal); color: white; border-color: var(--active-teal);
+        }
+
+        .notes-dot { width: 6px; height: 6px; background: var(--active-green); border-radius: 50%; }
+
         /* HEADER (Tabs & Triggers) */
         .header {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 50px 20px 15px; z-index: 10;
+            padding: 10px 20px 15px; z-index: 10;
         }
 
         .menu-trigger {
@@ -59,21 +79,9 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex;
         }
 
-        .header-controls { display: flex; gap: 8px; align-items: center; }
-        
-        .control-pill {
-            background: var(--glass-bg); border: 1px solid var(--glass-border);
-            border-radius: 14px; padding: 10px 14px; font-size: 10px; font-weight: 900;
-            color: var(--text-dark); text-align: center; backdrop-filter: blur(10px);
-            cursor: pointer; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-            text-transform: uppercase;
-        }
-        .control-pill:active { transform: scale(0.95); }
-        .control-pill.active-mode { background: var(--metallic-teal); color: white; border: none; }
-
         .clio-status-led {
             width: 10px; height: 10px; background-color: var(--clio-green); border-radius: 50%;
-            animation: breathe 2.5s infinite; box-shadow: 0 0 8px var(--clio-green); margin-left: 5px;
+            animation: breathe 2.5s infinite; box-shadow: 0 0 8px var(--clio-green);
         }
         @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.6; } }
 
@@ -88,14 +96,16 @@
         /* TEMPLATES */
         .template-row { display: flex; gap: 8px; justify-content: space-between; margin-bottom: 5px; }
         .template-chip {
-            flex: 1; background: white; border: 1px solid #e2e8f0; border-radius: 10px;
-            padding: 8px 0; font-size: 9px; font-weight: 800; color: var(--text-light);
+            flex: 1; background: white; border: 1px solid #e2e8f0; border-radius: 12px;
+            padding: 10px 0; font-size: 10px; font-weight: 800; color: var(--text-dark);
             text-align: center; cursor: pointer; text-transform: uppercase;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: 0.2s;
         }
+        .template-chip:active { transform: scale(0.95); }
 
         .hardware-icons { display: flex; justify-content: space-evenly; align-items: center; }
-        .hw-item { position: relative; width: 42px; height: 42px; background: var(--metallic-silver); border-radius: 14px; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 2px 4px rgba(255,255,255,0.8), 0 4px 6px rgba(0,0,0,0.05); cursor: pointer; border: 1px solid #cbd5e0; }
-        .hw-item svg { width: 20px; height: 20px; stroke: var(--active-teal); fill: none; stroke-width: 2.5; }
+        .hw-item { position: relative; width: 44px; height: 44px; background: var(--metallic-silver); border-radius: 14px; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 2px 4px rgba(255,255,255,0.8), 0 4px 6px rgba(0,0,0,0.05); cursor: pointer; border: 1px solid #cbd5e0; }
+        .hw-item svg { width: 22px; height: 22px; stroke: var(--active-teal); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
         .hw-item input { position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer; z-index:10; }
 
         .input-wrapper { background: rgba(255,255,255,0.8); border-radius: 14px; padding: 15px; border: 1px solid #e2e8f0; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
@@ -141,7 +151,7 @@
             display: flex; flex-direction: column; align-items: center; gap: 4px;
             border: 1px solid #e2e8f0; box-shadow: 0 4px 10px rgba(0,0,0,0.03); text-transform: uppercase;
         }
-        .footer-pill svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2.5; fill: none; }
+        .footer-pill svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 
         .center-add-btn {
             background: var(--metallic-teal); color: white; width: 56px; height: 56px;
@@ -164,7 +174,7 @@
 
         .sidebar-header { display: flex; justify-content: space-between; align-items: center; font-weight: 900; font-size: 22px; color: var(--active-teal); margin-bottom: 40px; text-transform: uppercase; letter-spacing: -1px; }
         .close-sidebar { cursor: pointer; background: var(--metallic-silver); padding: 8px; border-radius: 12px; display: flex; color: var(--text-dark); }
-        .close-sidebar svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2.5; }
+        .close-sidebar svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
 
         .sidebar-item {
             padding: 16px 20px; margin-bottom: 15px; border-radius: 18px;
@@ -173,7 +183,7 @@
             border: 1px solid #e2e8f0; text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.02);
         }
         .sidebar-item .circle-icon { width: 32px; height: 32px; background: var(--metallic-silver); color: var(--active-teal); border-radius: 10px; display: flex; justify-content: center; align-items: center; }
-        .sidebar-item .circle-icon svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.5; fill: none; }
+        .sidebar-item .circle-icon svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 
         /* MODAL OVERLAYS */
         .modal-overlay {
@@ -256,16 +266,19 @@
 
         <div class="app-container" id="mainApp">
             
+            <div class="top-toggles">
+                <div class="toggle-btn" id="privacyBtn" onclick="togglePrivacy()">Privacy</div>
+                <div style="display: flex; gap: 8px;">
+                    <div class="toggle-btn active" id="timelineToggle" onclick="switchMode('TIMELINE')">Timeline</div>
+                    <div class="toggle-btn" id="notesToggle" onclick="switchMode('NOTES')">Notes <div class="notes-dot"></div></div>
+                </div>
+            </div>
+
             <div class="header">
                 <div class="menu-trigger" onclick="toggleSidebar()">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                 </div>
-                
-                <div class="header-controls">
-                    <div class="clio-status-led" title="Clio Connection Active"></div>
-                    <div class="control-pill" id="privacyBtn" onclick="togglePrivacy()">Privacy</div>
-                    <div class="control-pill active-mode" id="modeBtn" onclick="toggleMode()">MODE: TIMELINE</div>
-                </div>
+                <div class="clio-status-led" title="Clio Connection Active"></div>
             </div>
 
             <div class="input-panel">
@@ -300,8 +313,13 @@
             </div>
 
             <div class="footer-nav">
+                
                 <div class="footer-pill" onclick="runPatternRecognition()">
-                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                    <svg viewBox="0 0 24 24">
+                        <rect x="2" y="3" width="20" height="14" rx="3" ry="3"></rect>
+                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                    </svg>
                     Pattern Rec
                 </div>
                 
@@ -317,8 +335,8 @@
     </div>
 
     <script>
-        let logsData = JSON.parse(localStorage.getItem('silver_vault_v4')) || [];
-        let currentMode = 'TIMELINE'; // Can be 'TIMELINE' or 'NOTES'
+        let logsData = JSON.parse(localStorage.getItem('silver_vault_v5')) || [];
+        let currentMode = 'TIMELINE'; // 'TIMELINE' or 'NOTES'
         
         const pinSvg = `<svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
 
@@ -353,21 +371,21 @@
             app.classList.toggle('privacy-active');
             const btn = document.getElementById('privacyBtn');
             if(app.classList.contains('privacy-active')) {
-                btn.style.background = 'var(--active-teal)'; btn.style.color = 'white';
+                btn.classList.add('active');
             } else {
-                btn.style.background = 'var(--glass-bg)'; btn.style.color = 'var(--text-dark)';
+                btn.classList.remove('active');
             }
         }
 
-        function toggleMode() {
-            currentMode = currentMode === 'TIMELINE' ? 'NOTES' : 'TIMELINE';
-            const btn = document.getElementById('modeBtn');
-            btn.innerText = `MODE: ${currentMode}`;
+        function switchMode(mode) {
+            currentMode = mode;
+            document.getElementById('timelineToggle').classList.toggle('active', mode === 'TIMELINE');
+            document.getElementById('notesToggle').classList.toggle('active', mode === 'NOTES');
             
             // Adjust visual UI for Notes vs Timeline
-            document.getElementById('timelineLine').style.display = currentMode === 'TIMELINE' ? 'block' : 'none';
-            document.getElementById('templateRow').style.display = currentMode === 'TIMELINE' ? 'flex' : 'none';
-            document.getElementById('logInput').placeholder = currentMode === 'TIMELINE' ? "Start journaling your truth..." : "Capture a private note...";
+            document.getElementById('timelineLine').style.display = mode === 'TIMELINE' ? 'block' : 'none';
+            document.getElementById('templateRow').style.display = mode === 'TIMELINE' ? 'flex' : 'none';
+            document.getElementById('logInput').placeholder = mode === 'TIMELINE' ? "Start journaling your truth..." : "Capture a private note...";
             
             renderTimeline();
         }
@@ -384,7 +402,7 @@
             input.focus();
         }
 
-        function saveData() { localStorage.setItem('silver_vault_v4', JSON.stringify(logsData)); }
+        function saveData() { localStorage.setItem('silver_vault_v5', JSON.stringify(logsData)); }
 
         function renderTimeline() {
             const list = document.getElementById('logList');
@@ -419,3 +437,70 @@
             const container = document.getElementById('timelineBody');
             container.scrollTop = container.scrollHeight;
         }
+
+        function submitEntry() {
+            const input = document.getElementById('logInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+
+            logsData.push({
+                id: Date.now(),
+                mode: currentMode,
+                stamp: `${pinSvg} LANGLEY, BC | ${dateStr} | ${timeStr}`,
+                text: text
+            });
+
+            input.value = '';
+            saveData();
+            renderTimeline();
+        }
+
+        function emailTimeline() {
+            const filteredData = logsData.filter(log => (log.mode || 'TIMELINE') === currentMode);
+            if(filteredData.length === 0) return alert(`Your ${currentMode} is empty.`);
+            
+            let body = `WorkTimeline™ Verified ${currentMode} Export:\n\n`;
+            filteredData.forEach(log => { 
+                const cleanStamp = log.stamp.replace(/<svg.*<\/svg>/g, '').trim();
+                body += `[${cleanStamp}]\n${log.text}\n\n`; 
+            });
+            window.location.href = `mailto:?subject=Legal ${currentMode} Export&body=${encodeURIComponent(body)}`;
+        }
+
+        function resetTimeline() {
+            if(confirm("Clear the entire timeline and all notes?")) {
+                logsData = [];
+                saveData();
+                renderTimeline();
+                toggleSidebar();
+            }
+        }
+
+        // PATTERN RECOGNITION LOGIC
+        function runPatternRecognition() {
+            const timelineData = logsData.filter(log => (log.mode || 'TIMELINE') === 'TIMELINE');
+            if(timelineData.length === 0) {
+                alert("You need to add data to your timeline before we can scan for patterns.");
+                return;
+            }
+            
+            document.getElementById('patternOverlay').classList.add('active');
+            document.getElementById('patternLoader').style.display = 'block';
+            document.getElementById('patternResult').style.display = 'none';
+
+            setTimeout(() => {
+                document.getElementById('patternLoader').style.display = 'none';
+                document.getElementById('patternResult').style.display = 'block';
+            }, 1500);
+        }
+
+        function closePatternModal() {
+            document.getElementById('patternOverlay').classList.remove('active');
+        }
+    </script>
+</body>
+</html>
