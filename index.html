@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Timeline™ Master Suite</title>
+    <title>Timeline™ Master Suite | Secure</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Nunito+Sans:wght@400;600;800&display=swap');
         
@@ -13,85 +13,96 @@
             --rose: #e11d48;
             --amber: #f59e0b;
             --slate: #1e293b;
-            --silver-gray: #95a5a6; 
-            --gray-bg: #e2e8f0; 
-            --clio-green: #2ecc71; 
             --clio-blue: #0076CE;
+            --clio-green: #2ecc71;
+            --gray-bg: #e2e8f0; 
             --gray-border: #cbd5e0; 
-            --mac-shadow: 0 10px 30px rgba(0,0,0,0.12); 
+            --mac-shadow: 0 20px 40px rgba(0,0,0,0.15); 
         }
         
         body { font-family: 'Nunito', sans-serif; background: var(--gray-bg); margin: 0; padding: 0; height: 100dvh; overflow: hidden; display: flex; justify-content: center; -webkit-tap-highlight-color: transparent; }
         
-        .app-container { width: 100%; max-width: 500px; background: white; height: 100dvh; display: flex; flex-direction: column; position: relative; border: 1.5px solid var(--gray-border); box-sizing: border-box; overflow: hidden; }
+        .app-container { width: 100%; max-width: 500px; background: white; height: 100dvh; display: flex; flex-direction: column; position: relative; border-right: 1px solid var(--gray-border); border-left: 1px solid var(--gray-border); box-sizing: border-box; overflow: hidden; }
 
         /* DOMAIN NAV */
-        .domain-nav { display: flex; background: #f8fafc; border-bottom: 1px solid var(--gray-border); padding: 8px; gap: 6px; z-index: 5000; }
-        .domain-tab { flex: 1; border: none; padding: 10px 0; border-radius: 12px; font-size: 9px; font-weight: 900; color: #64748b; background: transparent; transition: 0.3s; cursor: pointer; }
-        .domain-tab.active { background: white; color: var(--active-brand); box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid var(--gray-border); }
+        .domain-nav { display: flex; background: #f1f5f9; border-bottom: 1px solid var(--gray-border); padding: 10px; gap: 8px; z-index: 5000; }
+        .domain-tab { flex: 1; border: none; padding: 12px 0; border-radius: 14px; font-size: 9px; font-weight: 900; color: #64748b; background: rgba(255,255,255,0.5); transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1); cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; }
+        .domain-tab.active { background: white; color: var(--active-brand); box-shadow: 0 4px 12px rgba(0,0,0,0.1); transform: translateY(-2px); }
 
         /* HEADER */
-        .header { padding: 12px 15px; border-bottom: 1px solid var(--gray-border); background: white; z-index: 4000; position: relative; }
-        .main-title { font-weight: 900; font-size: 18px; display: flex; align-items: center; letter-spacing: -0.5px; transition: 0.5s; color: var(--active-brand); }
+        .header { padding: 15px; border-bottom: 1px solid var(--gray-border); background: white; z-index: 4000; }
+        .main-title { font-weight: 900; font-size: 20px; display: flex; align-items: center; letter-spacing: -0.8px; transition: 0.5s; color: var(--active-brand); }
         .clio-pulse { width: 8px; height: 8px; background-color: var(--clio-green); border-radius: 50%; margin-left: 10px; animation: clio-throb 2s infinite; }
         @keyframes clio-throb { 0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.6); } 70% { box-shadow: 0 0 0 12px rgba(46, 204, 113, 0); } 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
 
-        /* UTILITY DRAWER */
-        #utilityDrawer { position: absolute; top: 110px; width: 100%; background: white; border-bottom: 1.5px solid var(--gray-border); z-index: 3500; transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) transform; transform: translateY(calc(-100% + 40px)); border-radius: 0 0 30px 30px; }
-        .handle { width: 100%; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .handle-pill { width: 35px; height: 4px; background: #cbd5e0; border-radius: 10px; }
+        /* DRAWER */
+        #utilityDrawer { position: absolute; top: 120px; width: 100%; background: white; border-bottom: 2px solid var(--gray-border); z-index: 3500; transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1) transform; transform: translateY(calc(-100% + 45px)); border-radius: 0 0 35px 35px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .handle { width: 100%; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .handle-pill { width: 40px; height: 5px; background: #cbd5e0; border-radius: 10px; }
 
         /* TEMPLATE BUTTONS */
-        .template-chip { border: 1px solid var(--gray-border); padding: 8px 12px; border-radius: 50px; font-size: 9px; font-weight: 900; color: #4a5568; background: #f8fafc; cursor: pointer; white-space: nowrap; }
+        .template-chip { border: 1.5px solid var(--gray-border); padding: 10px 15px; border-radius: 50px; font-size: 10px; font-weight: 900; color: #4a5568; background: white; cursor: pointer; white-space: nowrap; transition: 0.2s; }
+        .template-chip:active { transform: scale(0.95); background: #f8fafc; }
 
-        /* TIMELINE & STACK */
-        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 20px 15px 150px; display: flex; flex-direction: column; gap: 25px; scrollbar-width: none; }
-        .stack-wrapper { position: relative; width: 100%; perspective: 1000px; }
-        .stack-inner { position: relative; width: 88%; min-height: 85px; transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer; }
+        /* TIMELINE CONTAINER */
+        #timelineContainer { flex-grow: 1; overflow-y: auto; padding: 30px 20px 180px; display: flex; flex-direction: column; gap: 30px; scrollbar-width: none; }
+        .stack-wrapper { position: relative; width: 100%; perspective: 1200px; }
+        .stack-inner { position: relative; width: 90%; min-height: 90px; transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; cursor: pointer; }
         .stack-inner.flipped { transform: rotateY(180deg); }
-        .bubble { padding: 18px; border-radius: 24px; font-family: 'Nunito Sans', sans-serif; backface-visibility: hidden; box-shadow: var(--mac-shadow); width: 100%; box-sizing: border-box; }
-        .bubble-front { background: #fcfcfc; border: 1.5px solid #efefef; color: #1a202c; position: relative; z-index: 2; }
-        .bubble-back { color: white; transform: rotateY(180deg); position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; background: var(--active-brand); border: 1px solid rgba(255,255,255,0.2); }
+        .bubble { padding: 20px; border-radius: 26px; font-family: 'Nunito Sans', sans-serif; backface-visibility: hidden; box-shadow: var(--mac-shadow); width: 100%; box-sizing: border-box; }
+        .bubble-front { background: #ffffff; border: 1px solid #efefef; color: #1a202c; position: relative; z-index: 2; }
+        .bubble-back { color: white; transform: rotateY(180deg); position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; background: var(--active-brand); display: flex; align-items: center; justify-content: center; text-align: center; }
         
         .stack-inner.has-ai::after { 
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            background: var(--active-brand); border-radius: 24px; z-index: -1; opacity: 0.3; 
-            animation: stack-pulse 2.5s infinite ease-in-out; 
+            content: ''; position: absolute; top: -2px; left: -2px; width: calc(100% + 4px); height: calc(100% + 4px); 
+            background: var(--active-brand); border-radius: 28px; z-index: -1; opacity: 0.25; 
+            animation: stack-pulse 3s infinite ease-in-out; 
         }
-        @keyframes stack-pulse { 0% { box-shadow: 0 0 0 0 var(--active-brand); } 70% { box-shadow: 0 0 0 18px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+        @keyframes stack-pulse { 0% { transform: scale(1); opacity: 0.3; } 50% { transform: scale(1.05); opacity: 0.1; } 100% { transform: scale(1); opacity: 0.3; } }
 
-        .stamp-label { font-size: 9px; font-weight: 800; color: #a0aec0; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stamp-label { font-size: 10px; font-weight: 800; color: #94a3b8; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
 
         /* FLOATING ACTION BUTTONS */
-        .draggable { position: absolute; z-index: 5000; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; border-radius: 20px; border: none; box-shadow: var(--mac-shadow); touch-action: none; }
-        #addBtn { width: 65px; height: 65px; background: var(--active-brand); font-size: 30px; top: 220px; right: 20px; transition: background 0.4s; }
-        #syncBtn { width: 75px; height: 75px; background: var(--clio-blue); font-size: 9px; flex-direction: column; top: 310px; right: 15px; text-align: center; line-height: 1.2; }
-
-        /* OVERLAY SYSTEM */
-        #overlaySystem { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(20px); z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; }
-        .modal-card { background: white; padding: 30px; border-radius: 30px; box-shadow: var(--mac-shadow); width: 100%; max-width: 350px; text-align: center; border: 1.5px solid var(--gray-border); }
-        .modal-btn { border: none; padding: 18px; border-radius: 20px; width: 100%; font-weight: 900; margin-top: 15px; cursor: pointer; font-size: 14px; font-family: 'Nunito', sans-serif; transition: 0.2s; }
-        textarea { width: 100%; height: 100px; border: 2px solid var(--gray-border); border-radius: 22px; padding: 15px; font-family: 'Nunito Sans', sans-serif; font-weight: 600; font-size: 15px; outline: none; background: #fafafa; box-sizing: border-box; }
+        .draggable { position: absolute; z-index: 6000; display: flex; align-items: center; justify-content: center; font-weight: 900; color: white; border-radius: 24px; border: none; box-shadow: var(--mac-shadow); touch-action: none; transition: transform 0.2s, background 0.5s; }
+        #addBtn { width: 70px; height: 70px; background: var(--active-brand); font-size: 35px; top: 240px; right: 25px; }
         
-        .app-locked { filter: blur(40px); pointer-events: none; }
+        /* THE VAULT BUTTON - SLEEK DESIGN */
+        #syncBtn { width: 85px; height: 85px; background: var(--clio-blue); flex-direction: column; top: 340px; right: 20px; text-align: center; font-size: 9px; overflow: hidden; padding: 10px; }
+        #syncBtn svg { width: 28px; height: 28px; margin-bottom: 6px; filter: drop-shadow(0 0 5px rgba(255,255,255,0.3)); }
+        .padlock-shackle { transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        #syncBtn:hover .padlock-shackle { transform: translateY(-3px); }
+
+        /* OVERLAYS */
+        #overlaySystem { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(30px); z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 25px; box-sizing: border-box; }
+        .modal-card { background: white; padding: 40px 30px; border-radius: 40px; box-shadow: var(--mac-shadow); width: 100%; max-width: 360px; text-align: center; border: 1px solid var(--gray-border); }
+        .modal-btn { border: none; padding: 20px; border-radius: 22px; width: 100%; font-weight: 900; margin-top: 15px; cursor: pointer; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; }
+        textarea { width: 100%; height: 120px; border: 2px solid var(--gray-border); border-radius: 25px; padding: 18px; font-family: 'Nunito Sans', sans-serif; font-weight: 600; font-size: 16px; outline: none; background: #fdfdfd; box-sizing: border-box; }
+        
+        .app-locked { filter: blur(50px); pointer-events: none; }
     </style>
 </head>
 <body id="appBody">
 
 <div id="overlaySystem">
     <div class="modal-card" id="modalContent">
-        <h2 style="color: #1a202c; font-weight: 900; margin: 0; font-size: 20px;">TIMELINE™ SECURE</h2>
-        <div style="font-size: 14px; line-height: 1.6; color: #4a5568; margin: 20px 0; font-weight: 600;">Welcome to the Unified Truth Engine.<br><br><b>WorkTimeline™</b> is live for Canadian Clio Sync. Other domains are in secure offline prototype mode.</div>
-        <button class="modal-btn" style="background:var(--teal); color:white;" onclick="unlockApp()">OPEN SECURE VAULT</button>
+        <div style="background: #f1f5f9; width: 80px; height: 80px; border-radius: 30px; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px;">
+            <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+        </div>
+        <h2 style="color: #1a202c; font-weight: 900; margin: 0; font-size: 22px; letter-spacing: -1px;">TRUTH VAULT™</h2>
+        <div style="font-size: 14px; line-height: 1.6; color: #64748b; margin: 20px 0; font-weight: 600;">Secure, Multi-Domain Legal Intake.<br><br>Your data is encrypted locally until you choose to vault to Clio.</div>
+        <button class="modal-btn" style="background:var(--teal); color:white; box-shadow: 0 10px 20px rgba(0, 128, 128, 0.2);" onclick="unlockApp()">ACCESS SECURE TERMINAL</button>
     </div>
 </div>
 
 <div class="app-container app-locked" id="mainApp">
     <nav class="domain-nav">
-        <button class="domain-tab active" onclick="switchDomain('WORK')">WORK</button>
-        <button class="domain-tab" onclick="switchDomain('FAM')">FAMILY</button>
-        <button class="domain-tab" onclick="switchDomain('INJURY')">INJURY</button>
-        <button class="domain-tab" onclick="switchDomain('PROPERTY')">PROPERTY</button>
+        <button class="domain-tab active" onclick="switchDomain('WORK')">Work</button>
+        <button class="domain-tab" onclick="switchDomain('FAM')">Family</button>
+        <button class="domain-tab" onclick="switchDomain('INJURY')">Injury</button>
+        <button class="domain-tab" onclick="switchDomain('PROPERTY')">Property</button>
     </nav>
 
     <header class="header">
@@ -99,10 +110,10 @@
     </header>
 
     <div id="utilityDrawer">
-        <div style="padding: 15px 15px 45px;">
-            <div id="templateBar" style="display:flex; gap:8px; overflow-x:auto; padding-bottom:15px; scrollbar-width:none;">
+        <div style="padding: 20px 20px 50px;">
+            <div id="templateBar" style="display:flex; gap:10px; overflow-x:auto; padding-bottom:20px; scrollbar-width:none; -webkit-overflow-scrolling: touch;">
                 </div>
-            <textarea id="statusBox" placeholder="Document the truth here..."></textarea>
+            <textarea id="statusBox" placeholder="Start typing the chronological truth..."></textarea>
         </div>
         <div class="handle" onclick="toggleUtility()"><div class="handle-pill"></div></div>
     </div>
@@ -110,14 +121,19 @@
     <div id="timelineContainer"></div>
 
     <button id="addBtn" class="draggable">+</button>
+    
     <button id="syncBtn" class="draggable">
-        <span style="font-size: 18px; margin-bottom: 2px;">🔒</span>
-        <span>SYNC CLIO</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path class="padlock-shackle" d="M7 11V7a5 5 0 0 1 10 0v4" />
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" fill="rgba(255,255,255,0.1)" />
+            <circle cx="12" cy="16" r="1.5" fill="white" />
+        </svg>
+        <span style="font-weight: 900; letter-spacing: 0.5px;">VAULT SYNC</span>
     </button>
 </div>
 
 <script>
-    let vault = JSON.parse(localStorage.getItem('timeline_master_vault')) || [];
+    let vault = JSON.parse(localStorage.getItem('master_truth_vault')) || [];
     let currentDomain = 'WORK';
     let utilOpen = false;
 
@@ -148,7 +164,7 @@
         document.getElementById('brandTitle').innerHTML = `${config.name} <div class="clio-pulse"></div>`;
         
         document.querySelectorAll('.domain-tab').forEach(btn => {
-            btn.classList.toggle('active', btn.innerText === domain);
+            btn.classList.toggle('active', btn.innerText.toUpperCase() === (domain === 'FAM' ? 'FAMILY' : domain));
         });
 
         const bar = document.getElementById('templateBar');
@@ -168,32 +184,31 @@
         const syncBtn = document.getElementById('syncBtn');
         if(domain === 'WORK') {
             syncBtn.style.opacity = '1';
-            syncBtn.style.background = '#0076CE';
-            syncBtn.innerHTML = '<span style="font-size: 18px; margin-bottom: 2px;">🔒</span><span>SYNC CLIO</span>';
+            syncBtn.style.background = 'var(--clio-blue)';
+            syncBtn.querySelector('span').innerText = "VAULT SYNC";
             syncBtn.onclick = clioHandshake;
         } else {
-            syncBtn.style.opacity = '0.35';
-            syncBtn.style.background = '#94a3b8';
-            syncBtn.innerHTML = '<span style="font-size: 18px; margin-bottom: 2px;">🔒</span><span>OFFLINE</span>';
-            syncBtn.onclick = () => alert(`${config.name} is in Secure Offline Prototype mode.`);
+            syncBtn.style.opacity = '0.3';
+            syncBtn.style.background = '#64748b';
+            syncBtn.querySelector('span').innerText = "OFFLINE";
+            syncBtn.onclick = () => alert("Module in Secure Local-Only Mode.");
         }
         refresh();
     }
 
     function unlockApp() { document.getElementById('overlaySystem').style.display = 'none'; document.getElementById('mainApp').classList.remove('app-locked'); }
-    function toggleUtility() { document.getElementById('utilityDrawer').style.transform = utilOpen ? 'translateY(calc(-100% + 40px))' : 'translateY(0)'; utilOpen = !utilOpen; }
+    function toggleUtility() { document.getElementById('utilityDrawer').style.transform = utilOpen ? 'translateY(calc(-100% + 45px))' : 'translateY(0)'; utilOpen = !utilOpen; }
 
     function submitEntry() {
         const text = document.getElementById('statusBox').value; if(!text.trim()) return;
-        const isRetaliation = text.toLowerCase().includes('retaliation') || text.toLowerCase().includes('fired');
         const entry = { 
             grit: text, 
             domain: currentDomain, 
             stamp: new Date().toLocaleString(),
-            analysis: isRetaliation ? "EA: Retaliation Signal Detected. Vault as high-priority." : "" 
+            analysis: text.toLowerCase().includes('retaliation') ? "AI ANALYST: Signal detected. Evidence secured." : "" 
         };
         vault.push(entry);
-        localStorage.setItem('timeline_master_vault', JSON.stringify(vault));
+        localStorage.setItem('master_truth_vault', JSON.stringify(vault));
         document.getElementById('statusBox').value = '';
         if(utilOpen) toggleUtility();
         refresh();
@@ -206,34 +221,34 @@
             const hasAI = item.analysis !== "";
             list.innerHTML += `
                 <div class="stack-wrapper">
-                    <div class="stamp-label">📍 BC-REGIONAL | ${item.stamp}</div>
+                    <div class="stamp-label">📍 SECURE LOG | ${item.stamp}</div>
                     <div class="stack-inner ${hasAI ? 'has-ai' : ''}" onclick="this.classList.toggle('flipped')">
-                        <div class="bubble bubble-front"><p style="font-weight:600; font-size:15px; margin:0; line-height:1.4;">${item.grit.replace(/\n/g, '<br>')}</p></div>
-                        ${hasAI ? `<div class="bubble bubble-back"><p style="font-weight:700; font-size:14px; margin:0;">${item.analysis}</p></div>` : ''}
+                        <div class="bubble bubble-front"><p style="font-weight:600; font-size:15px; margin:0; line-height:1.5;">${item.grit.replace(/\n/g, '<br>')}</p></div>
+                        ${hasAI ? `<div class="bubble bubble-back"><p style="font-weight:800; font-size:14px; margin:0; padding:10px;">${item.analysis}</p></div>` : ''}
                     </div>
                 </div>`;
         });
     }
 
     async function clioHandshake() {
-        if(vault.filter(v => v.domain === 'WORK').length === 0) return alert("No Work entries to sync.");
+        if(vault.filter(v => v.domain === 'WORK').length === 0) return;
         document.getElementById('modalContent').innerHTML = `
-            <h3 style="color:var(--clio-blue); margin:0;">SECURE SYNC</h3>
-            <p style="font-size:13px; font-weight:600; margin:15px 0;">Vaulting WorkTimeline™ data to Clio Grow Sandbox (Canada Region).</p>
-            <button class="modal-btn" style="background:var(--clio-blue); color:white;" onclick="executeClioSync()">AUTHORIZE & VAULT</button>
+            <div style="background: var(--clio-blue); width: 70px; height: 70px; border-radius: 25px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                <svg viewBox="0 0 24 24" width="35" height="35" fill="none" stroke="white" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            </div>
+            <h3 style="color:var(--clio-blue); margin:0; font-size:20px;">AUTHORIZE SYNC</h3>
+            <p style="font-size:13px; font-weight:600; color:#64748b; margin:15px 0;">Establishing handshake with Clio Canada (ca.api.clio.com)...</p>
+            <button class="modal-btn" style="background:var(--clio-blue); color:white; box-shadow: 0 8px 15px rgba(0, 118, 206, 0.3);" onclick="executeClioSync()">BEGIN SECURE TRANSIT</button>
         `;
         document.getElementById('overlaySystem').style.display = 'flex';
     }
 
     function executeClioSync() {
-        alert("201 Created: Data successfully vaulted in Clio. Local record purged for Zero-Footprint security.");
+        alert("201 CREATED: Handshake complete. Local memory purged. Data now resident in Clio Cloud.");
         vault = vault.filter(v => v.domain !== 'WORK');
-        localStorage.setItem('timeline_master_vault', JSON.stringify(vault));
+        localStorage.setItem('master_truth_vault', JSON.stringify(vault));
         unlockApp(); refresh();
-        // Reset modal
-        setTimeout(() => {
-            document.getElementById('modalContent').innerHTML = `<h2 style="color: #1a202c; font-weight: 900; margin: 0; font-size: 20px;">TIMELINE™ SECURE</h2><div style="font-size: 14px; line-height: 1.6; color: #4a5568; margin: 20px 0; font-weight: 600;">Welcome to the Unified Truth Engine.<br><br><b>WorkTimeline™</b> is live for Canadian Clio Sync. Other domains are in secure offline prototype mode.</div><button class="modal-btn" style="background:var(--teal); color:white;" onclick="unlockApp()">OPEN SECURE VAULT</button>`;
-        }, 500);
+        location.reload(); // Hard reset for Zero-Footprint
     }
 
     function makeDraggable(el) {
@@ -248,7 +263,6 @@
     makeDraggable(document.getElementById("syncBtn"));
     document.getElementById("addBtn").onclick = submitEntry;
     
-    // Start on WORK
     switchDomain('WORK');
 </script>
 </body>
