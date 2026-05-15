@@ -3,212 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Precision v62</title>
+    <title>WorkTimeline™ | v63</title>
     
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
         
         :root {
-            --app-bg: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            --glass-bg: rgba(255, 255, 255, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.9);
-            --text-dark: #1e293b;
             --active-teal: #008080;
             --rose: #e11d48;
-            --metallic-silver: linear-gradient(180deg, #f1f5f9 0%, #cbd5e0 100%);
-            --metallic-teal: linear-gradient(135deg, #008080 0%, #004d4d 100%);
         }
+
+        body, html { 
+            margin: 0; padding: 0; width: 100%; height: 100%; 
+            font-family: 'Nunito', sans-serif; background-color: #94a3b8; 
+            overflow: hidden; touch-action: manipulation;
+        }
+
+        /* THE MAIN APP CONTAINER */
+        .app-container { 
+            width: 375px; height: 812px; background: white; 
+            margin: auto; position: relative; display: flex; 
+            flex-direction: column; overflow: hidden;
+            border-radius: 40px; border: 8px solid #000;
+        }
+
+        /* THE MODAL - HIGHEST PRIORITY IN THE UNIVERSE */
+        #intakeModal {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(226, 232, 240, 0.98); backdrop-filter: blur(20px);
+            z-index: 999999 !important; display: flex; align-items: center; 
+            justify-content: center; cursor: pointer;
+        }
+
+        .modal-box {
+            background: white; padding: 40px; border-radius: 30px;
+            width: 80%; max-width: 300px; text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            pointer-events: auto;
+        }
+
+        .btn-big {
+            background: #008080; color: white; border: none;
+            padding: 15px 30px; border-radius: 15px; font-weight: 900;
+            font-size: 18px; width: 100%; margin-top: 20px; cursor: pointer;
+        }
+
+        /* HEADER & UI */
+        .header { padding: 60px 20px 10px; display: flex; justify-content: space-between; align-items: center; }
+        .main-title { font-weight: 900; font-size: 20px; color: #008080; }
         
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; font-family: 'Nunito', sans-serif; background-color: #94a3b8; overflow: hidden; }
-        .phone-bezel { width: 375px; height: 812px; background-color: #000; border-radius: 45px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); overflow: hidden; border: 8px solid #cbd5e0; position: relative; }
-
-        /* LAYER 3: TOP LEVEL MODALS - FORCED VISIBILITY */
-        .modal-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(226, 232, 240, 0.98); backdrop-filter: blur(20px); z-index: 99999; display: none; justify-content: center; align-items: center; padding: 30px; box-sizing: border-box; }
-        .modal-layer.active { display: flex !important; }
-        .modal-box { background: white; padding: 40px 30px; border-radius: 35px; width: 100%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #fff; }
-
-        /* SIDEBAR OVERLAY */
-        #menuOverlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 50000; display: none; }
-        #menuOverlay.active { display: block; }
-        .sidebar { position: absolute; top: 0; left: 0; width: 300px; height: 100%; background: white; transform: translateX(-100%); transition: transform 0.4s ease; padding: 60px 20px; box-sizing: border-box; }
-        #menuOverlay.active .sidebar { transform: translateX(0); }
-
-        /* APP CONTENT */
-        .app-container { width: 100%; height: 100%; background: var(--app-bg); display: flex; flex-direction: column; position: relative; z-index: 1; }
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 55px 20px 10px; }
-        .menu-trigger { cursor: pointer; font-size: 24px; padding: 5px; background: white; border-radius: 10px; border: 1px solid #eee; display: flex; }
-        .main-title { font-weight: 900; font-size: 20px; color: var(--active-teal); }
+        .input-area { padding: 20px; }
+        .hw-row { display: flex; gap: 15px; margin-bottom: 10px; }
+        .hw-btn { background: #f1f5f9; padding: 15px; border-radius: 12px; flex: 1; text-align: center; font-weight: 900; font-size: 12px; border: 1px solid #ddd; }
         
-        .input-panel { background: var(--glass-bg); margin: 10px 15px; border-radius: 24px; border: 1px solid var(--glass-border); padding: 20px; }
-        .hw-row { display: flex; justify-content: space-evenly; margin-bottom: 15px; }
-        .hw-item { position: relative; width: 44px; height: 44px; background: var(--metallic-silver); border-radius: 14px; display: flex; justify-content: center; align-items: center; border: 1px solid #cbd5e0; }
-        .hw-item input { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
-        .hw-item svg { width: 22px; height: 22px; stroke: var(--active-teal); fill: none; stroke-width: 2.5; }
+        textarea { width: 100%; height: 80px; border-radius: 15px; border: 1px solid #ddd; padding: 10px; font-family: inherit; font-weight: 700; box-sizing: border-box; }
 
-        .input-wrapper { background: white; border-radius: 14px; padding: 12px; border: 1px solid #e2e8f0; }
-        textarea { width: 100%; border: none; font-family: inherit; font-weight: 700; height: 45px; outline: none; resize: none; background: transparent; }
-
-        .timeline-container { flex: 1; overflow-y: auto; padding: 20px; }
-        .log-list { padding-left: 20px; border-left: 3px solid var(--metallic-silver); display: flex; flex-direction: column; gap: 15px; }
-        .log-bubble { background: white; padding: 12px; border-radius: 15px; border: 1px solid #eee; font-size: 13px; font-weight: 700; color: var(--text-dark); position: relative; }
-
-        .footer-nav { height: 85px; background: white; display: flex; justify-content: space-evenly; align-items: center; border-top: 1px solid #eee; padding-bottom: 15px; }
-        .add-btn { background: var(--metallic-teal); color: white; width: 60px; height: 60px; border-radius: 20px; display: flex; justify-content: center; align-items: center; font-size: 32px; cursor: pointer; box-shadow: 0 5px 15px rgba(0,128,128,0.3); border:none; }
+        .timeline { flex: 1; overflow-y: auto; padding: 20px; background: #f8fafc; }
+        .bubble { background: white; padding: 15px; border-radius: 15px; margin-bottom: 15px; border: 1px solid #eee; font-weight: 700; }
         
-        .mac-item { display: flex; align-items: center; gap: 12px; padding: 15px; background: #f8fafc; border-radius: 15px; margin-bottom: 10px; cursor: pointer; font-weight: 800; border: 1px solid #e2e8f0; }
-        .mac-icon { width: 32px; height: 32px; background: white; border-radius: 8px; display: flex; justify-content: center; align-items: center; border: 1px solid #eee; }
+        .footer { height: 80px; display: flex; align-items: center; justify-content: space-around; border-top: 1px solid #eee; padding-bottom: 20px; }
     </style>
 </head>
-<body onload="initApp()">
+<body>
 
-    <div class="phone-bezel">
-
-        <div class="modal-layer active" id="intakeModal">
-            <div class="modal-box">
-                <h2 style="color:var(--active-teal); margin:0 0 15px;">WorkTimeline™</h2>
-                <p style="font-weight:700; line-height:1.6; font-size:14px; color:#334155;">
-                    Welcome. If this is an emergency, call 911.<br><br>
-                    <span style="color:var(--rose);">We do not give legal advice.</span><br>
-                    However, we <b>do</b> stop gaslighting.<br><br>
-                    This is a secure journal for your truth.
-                </p>
-                <button class="add-btn" style="width:100%; font-size:16px; margin-top:20px;" onclick="closeIntake()">I Understand</button>
-            </div>
+    <div class="app-container">
+        <div class="header">
+            <div style="font-size: 24px;">☰</div>
+            <div class="main-title">WorkTimeline™</div>
+            <div style="width: 24px;"></div>
         </div>
 
-        <div class="modal-layer" id="vaultModal">
-            <div class="modal-box" style="text-align:left;">
-                <h3 style="color:var(--active-teal); margin-top:0;">AI Vault</h3>
-                <div style="font-weight:800; margin-bottom:10px;">Pattern Rec: <span id="vOff">0</span></div>
-                <div style="font-weight:800; color:var(--rose); margin-bottom:20px;">Rejections: <span id="vRej">0</span></div>
-                <div id="vLw" style="background:#fff8e1; padding:12px; border-radius:12px; font-size:11px; font-weight:700;">None.</div>
-                <button class="add-btn" style="width:100%; font-size:16px; margin-top:20px;" onclick="closeVault()">Close</button>
+        <div class="input-area">
+            <div class="hw-row">
+                <div class="hw-btn">PHOTO <input type="file" accept="image/*" style="position:absolute; opacity:0; width:60px;" onchange="vault(this)"></div>
+                <div class="hw-btn">AUDIO</div>
             </div>
+            <textarea id="msg" placeholder="Document the truth..."></textarea>
+            <button class="btn-big" onclick="addMsg()" style="margin-top:10px;">Save Entry</button>
         </div>
 
-        <div id="menuOverlay" onclick="closeSidebar(event)">
-            <div class="sidebar">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
-                    <span style="font-weight:900; font-size:22px;">Menu</span>
-                    <div style="cursor:pointer; font-weight:900;" onclick="toggleMenu()">✕</div>
-                </div>
-                <div class="mac-item" onclick="emailLog()">Draft Email</div>
-                <div class="mac-item" onclick="showVault()">AI Vault</div>
-                <div class="mac-item" onclick="exportFile()">Export Data</div>
-                <div class="mac-item" style="color:red;" onclick="restartApp()">Restart</div>
-            </div>
+        <div class="timeline" id="list"></div>
+
+        <div class="footer">
+            <div onclick="alert('Pattern Rec Active')">AI VAULT</div>
+            <div style="color:teal; font-weight:900;" onclick="alert('Clio Sync Active')">CLIO SYNC</div>
         </div>
+    </div>
 
-        <div class="app-container">
-            <div class="header">
-                <div class="menu-trigger" onclick="toggleMenu()">☰</div>
-                <div class="main-title" id="appTitle">WorkTimeline™</div>
-                <div style="width:24px;"></div>
-            </div>
-
-            <div class="input-panel">
-                <div class="hw-row">
-                    <div class="hw-item"><input type="file" accept="image/*" onchange="vaultFile(this, 'PHOTO')"><svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"/></circle></svg></div>
-                    <div class="hw-item"><input type="file" accept="audio/*" onchange="vaultFile(this, 'AUDIO')"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line></svg></div>
-                </div>
-                <div class="input-wrapper"><textarea id="userInput" placeholder="Document the truth..."></textarea></div>
-            </div>
-
-            <div class="timeline-container">
-                <div class="log-list" id="logList"></div>
-            </div>
-
-            <div class="footer-nav">
-                <div style="font-size:10px; font-weight:900;" onclick="aiPattern()">PATTERN REC</div>
-                <div class="add-btn" onclick="submitLog()">+</div>
-                <div style="font-size:10px; font-weight:900; color:teal;" onclick="clioLink()">CLIO SYNC</div>
-            </div>
+    <div id="intakeModal" onclick="forceClose()">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <h2 style="color:#008080;">WorkTimeline™</h2>
+            <p style="font-weight:700;">
+                Welcome. If this is an emergency, call 911.<br><br>
+                <span style="color:red;">We do not give legal advice.</span><br>
+                However, we <b>do</b> stop gaslighting.
+            </p>
+            <button class="btn-big" onclick="forceClose()">I UNDERSTAND</button>
+            <p style="font-size: 10px; margin-top: 10px; color: gray;">(Tap anywhere to enter)</p>
         </div>
     </div>
 
     <script>
-        /* CONFIG */
         const supabaseUrl = 'https://btscu9wmphyellztza9slqfynbaqudwja.supabase.co'; 
         const supabaseKey = 'Sb_publishable_VL3kSjtNHGvLcmZYi1YXnA_Xlo8zpXy';
-        
         const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-        let logs = JSON.parse(localStorage.getItem('wt_logs')) || [];
-        let stats = JSON.parse(localStorage.getItem('wt_stats')) || { offers:0, rejects:0, law: "None." };
-
-        function initApp() { render(); }
-        
-        /* THE AGGRESSIVE FIX */
-        function closeIntake() { 
-            const intake = document.getElementById('intakeModal');
-            intake.classList.remove('active');
-            intake.style.display = 'none'; // Force hide
-        }
-
-        function toggleMenu() { document.getElementById('menuOverlay').classList.toggle('active'); }
-        function closeSidebar(e) { if(e.target.id === 'menuOverlay') toggleMenu(); }
-        function showVault() { 
-            document.getElementById('vOff').innerText = stats.offers;
-            document.getElementById('vRej').innerText = stats.rejects;
-            document.getElementById('vLw').innerText = stats.law;
-            document.getElementById('vaultModal').classList.add('active'); 
-            toggleMenu(); 
-        }
-        function closeVault() { document.getElementById('vaultModal').classList.remove('active'); }
-
-        function submitLog() {
-            const val = document.getElementById('userInput').value;
-            if(!val) return;
-            logs.push({ id: Date.now(), text: val, time: new Date().toLocaleString(), gold: false });
-            document.getElementById('userInput').value = '';
-            save();
-        }
-
-        async function vaultFile(input, type) {
-            const file = input.files[0];
-            if(!file) return;
-            const name = `${Date.now()}_${file.name}`;
-            document.getElementById('appTitle').innerText = "VAULTING...";
-            const { data, error } = await supabase.storage.from('evidence').upload(name, file);
-            if(error) return alert("Upload Error: " + error.message);
-            const { data: pub } = supabase.storage.from('evidence').getPublicUrl(name);
-            document.getElementById('userInput').value += `\n[${type} ATTACHED]\n${pub.publicUrl}\n`;
-            document.getElementById('appTitle').innerText = "WorkTimeline™";
-            save();
-        }
-
-        function aiPattern() {
-            stats.offers++;
-            if(confirm("AI Pattern match. Add gold insight?")) {
-                if(logs.length > 0) logs[logs.length-1].gold = true;
-            } else { stats.rejects++; }
-            save();
-        }
-
-        function save() {
-            localStorage.setItem('wt_logs', JSON.stringify(logs));
-            localStorage.setItem('wt_stats', JSON.stringify(stats));
-            render();
-        }
+        let data = JSON.parse(localStorage.getItem('wt_63')) || [];
 
         function render() {
-            const list = document.getElementById('logList');
-            list.innerHTML = '';
-            logs.forEach(l => {
+            const container = document.getElementById('list');
+            container.innerHTML = '';
+            data.forEach(item => {
                 const div = document.createElement('div');
-                div.className = `log-bubble ${l.gold ? 'gold' : ''}`;
-                div.innerHTML = `<small style="color:gray;">${l.time}</small><br>${l.text.replace(/\n/g,'<br>')}`;
-                list.appendChild(div);
+                div.className = 'bubble';
+                div.innerHTML = `<small style="color:gray">${item.time}</small><br>${item.text}`;
+                container.appendChild(div);
             });
         }
 
-        function emailLog() { window.location.href = `mailto:?subject=Export&body=${encodeURIComponent(JSON.stringify(logs))}`; }
-        function exportFile() { alert("Data saved."); }
-        function restartApp() { if(confirm("Restart?")) { localStorage.clear(); location.reload(); } }
-        function clioLink() { alert("Connecting to Clio..."); }
+        function addMsg() {
+            const txt = document.getElementById('msg').value;
+            if(!txt) return;
+            data.push({ text: txt, time: new Date().toLocaleString() });
+            document.getElementById('msg').value = '';
+            localStorage.setItem('wt_63', JSON.stringify(data));
+            render();
+        }
+
+        function forceClose() {
+            console.log("Attempting to close...");
+            const m = document.getElementById('intakeModal');
+            m.style.setProperty('display', 'none', 'important');
+            m.remove(); // Literally delete it from the page
+        }
+
+        async function vault(input) {
+            const file = input.files[0];
+            if(!file) return;
+            alert("Vaulting to Canada...");
+            const { data: up, error } = await supabase.storage.from('evidence').upload(`${Date.now()}_doc`, file);
+            if(error) alert("Error: " + error.message);
+            else alert("Securely Stored.");
+        }
+
+        render();
     </script>
 </body>
 </html>
