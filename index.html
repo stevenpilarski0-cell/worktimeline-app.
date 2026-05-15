@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Timeline™ Master | Platinum Elite v7</title>
+    <title>Timeline™ Master | Platinum Elite v8</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Nunito+Sans:wght@400;600;800&display=swap');
         
@@ -25,10 +25,10 @@
         /* PRIVACY BLUR */
         .privacy-active #timelineContainer, .privacy-active .stack-wrapper, .privacy-active #linearTrack { filter: blur(35px); pointer-events: none; opacity: 0.15; }
 
-        /* SIDEBAR */
+        /* SIDEBAR (TEAL FONT UPGRADE) */
         #sideBar { position: absolute; left: -280px; top: 0; width: 280px; height: 100%; background: #f8fafc; z-index: 10000; transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1); border-right: 1px solid var(--gray-border); box-shadow: 20px 0 50px rgba(0,0,0,0.1); padding: 30px 20px; box-sizing: border-box; }
         #sideBar.open { left: 0; }
-        .sidebar-item { padding: 15px; margin-bottom: 10px; border-radius: 12px; background: white; font-weight: 800; font-size: 13px; color: #475569; display: flex; align-items: center; gap: 12px; cursor: pointer; border: 1px solid #e2e8f0; transition: 0.2s; }
+        .sidebar-item { padding: 15px; margin-bottom: 10px; border-radius: 12px; background: white; font-weight: 800; font-size: 14px; color: var(--teal); display: flex; align-items: center; gap: 12px; cursor: pointer; border: 1px solid #e2e8f0; transition: 0.2s; }
         .sidebar-item:active { transform: scale(0.96); background: #f1f5f9; }
 
         /* DOMAIN NAV */
@@ -61,11 +61,12 @@
         #linearTrack { position: absolute; left: 22px; top: 180px; bottom: 100px; width: 4px; background: rgba(0, 128, 128, 0.1); border-radius: 10px; z-index: 1; }
         .track-node { position: absolute; left: -10px; width: 24px; height: 24px; background: white; border: 2px solid var(--teal); border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); z-index: 2; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px; }
 
-        /* ACTION DOCK */
+        /* STATIONARY ACTION DOCK (BOTTOM RIGHT) */
         .action-dock { position: absolute; bottom: 30px; right: 20px; display: flex; flex-direction: column; gap: 15px; z-index: 6000; }
         #addBtn { width: 70px; height: 70px; background: var(--active-brand); border: none; border-radius: 24px; box-shadow: var(--mac-shadow); color: white; font-size: 35px; font-weight: 900; }
         #syncBtn { width: 85px; height: 85px; background: var(--clio-blue); border: none; border-radius: 24px; box-shadow: var(--mac-shadow); display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 9px; }
 
+        /* MODALS */
         .modal-card { background: white; padding: 40px 30px; border-radius: 40px; box-shadow: var(--mac-shadow); text-align: center; border: 1px solid var(--gray-border); width: 100%; max-width: 360px; }
         .modal-btn { border: none; padding: 20px; border-radius: 22px; width: 100%; font-weight: 900; margin-top: 15px; cursor: pointer; font-size: 14px; }
         textarea { width: 100%; height: 110px; border: 2px solid var(--gray-border); border-radius: 22px; padding: 15px; font-size: 16px; outline: none; background: #fafafa; box-sizing: border-box; }
@@ -75,7 +76,7 @@
 <body>
 
 <div id="sideBar">
-    <h2 style="font-weight: 900; color: var(--slate); margin-bottom: 25px;">Vault Controls</h2>
+    <h2 style="font-weight: 900; color: var(--teal); margin-bottom: 25px;">VAULT CONTROLS</h2>
     <div class="sidebar-item" onclick="exportData()">💾 Save Offline Backup</div>
     <div class="sidebar-item" onclick="emailTimeline()">✉️ Email Timeline (@)</div>
     <div class="sidebar-item" onclick="reviewCaseLaw()">⚖️ Review Case Law</div>
@@ -102,7 +103,7 @@
     <header class="header">
         <div class="header-top">
             <div onclick="toggleSidebar()" style="cursor:pointer; padding: 5px;">
-                <svg width="24" height="18" viewBox="0 0 24 18" fill="none" stroke="#4a5568" stroke-width="2.5"><line x1="0" y1="2" x2="24" y2="2"/><line x1="0" y1="9" x2="24" y2="9"/><line x1="0" y1="16" x2="24" y2="16"/></svg>
+                <svg width="24" height="18" viewBox="0 0 24 18" fill="none" stroke="var(--teal)" stroke-width="2.5"><line x1="0" y1="2" x2="24" y2="2"/><line x1="0" y1="9" x2="24" y2="9"/><line x1="0" y1="16" x2="24" y2="16"/></svg>
             </div>
             <div class="main-title" id="brandTitle">WorkTimeline™</div>
             <button id="privBtn" onclick="togglePrivacy()" style="background:#f1f5f9; border:none; border-radius:20px; font-size:8px; font-weight:900; padding:6px 12px;">GHOST</button>
@@ -115,10 +116,10 @@
             <div class="hardware-row">
                 <div class="hw-item"><input type="file" accept="image/*" capture="environment"><svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
                 <div class="hw-item"><input type="file" accept="audio/*" capture="microphone"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg></div>
-                <div class="hw-item" onclick="emailTimeline()" title="Email Drafting"><svg viewBox="0 0 24 24" style="stroke: var(--clio-blue);"><circle cx="12" cy="12" r="10"/><path d="M16 8a3.5 3.5 0 1 0-7 0v4a3.5 3.5 0 1 0 7 0"/></svg></div>
+                <div class="hw-item" onclick="emailTimeline()" title="Drafting"><svg viewBox="0 0 24 24" style="stroke: var(--clio-blue);"><circle cx="12" cy="12" r="10"/><path d="M16 8a3.5 3.5 0 1 0-7 0v4a3.5 3.5 0 1 0 7 0"/></svg></div>
                 <div class="hw-item"><input type="file"><svg viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg></div>
             </div>
-            <textarea id="statusBox" placeholder="Capturing the truth..."></textarea>
+            <textarea id="statusBox" placeholder="Capturing chronological truth..."></textarea>
         </div>
         <div class="handle" onclick="toggleUtility()"><div class="handle-pill"></div></div>
     </div>
@@ -136,15 +137,15 @@
 </div>
 
 <script>
-    let vault = JSON.parse(localStorage.getItem('platinum_elite_v7')) || [];
+    let vault = JSON.parse(localStorage.getItem('platinum_v8')) || [];
     let currentDomain = 'WORK';
     let utilOpen = false;
 
     const domainConfig = {
-        'WORK': { color: '#008080', name: 'WorkTimeline™', triggers: ['boss','manager','supervisor'], aggression: ['angry','bullying','harassment','antagonize'] },
-        'FAM': { color: '#e11d48', name: 'FamTimeline™' },
-        'INJURY': { color: '#f59e0b', name: 'InjuryTimeline™' },
-        'PROPERTY': { color: '#1e293b', name: 'PropTimeline™' }
+        'WORK': { color: '#008080', name: 'WorkTimeline™', templates: { 'INCIDENT': 'INCIDENT:\n', 'INJURY': 'INJURY:\n', 'WITNESS': 'WITNESS:\n', 'LOCATION': 'LOCATION:\n' } },
+        'FAM': { color: '#e11d48', name: 'FamTimeline™', templates: { 'CUSTODY': 'CUSTODY:\n', 'EXPENSE': 'EXPENSE:\n' } },
+        'INJURY': { color: '#f59e0b', name: 'InjuryTimeline™', templates: { 'CLAIM': 'CLAIM #:\n', 'PAIN': 'PAIN LEVEL:\n' } },
+        'PROPERTY': { color: '#1e293b', name: 'PropTimeline™', templates: { 'DAMAGE': 'DAMAGE:\n', 'REPAIR': 'REPAIR:\n' } }
     };
 
     function unlockApp() { document.getElementById('overlaySystem').style.display = 'none'; document.getElementById('mainApp').classList.remove('app-locked'); }
@@ -156,6 +157,16 @@
         currentDomain = domain;
         document.documentElement.style.setProperty('--active-brand', domainConfig[domain].color);
         document.getElementById('brandTitle').innerText = domainConfig[domain].name;
+        
+        const bar = document.getElementById('templateBar');
+        bar.innerHTML = '';
+        Object.keys(domainConfig[domain].templates).forEach(key => {
+            const btn = document.createElement('button');
+            btn.className = 'template-chip';
+            btn.innerText = key;
+            btn.onclick = () => { document.getElementById('statusBox').value += (document.getElementById('statusBox').value ? "\n" : "") + domainConfig[domain].templates[key]; document.getElementById('statusBox').focus(); };
+            bar.appendChild(btn);
+        });
         refresh();
     }
 
@@ -164,25 +175,10 @@
         const now = new Date();
         const stamp = now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
         vault.push({ id: Date.now(), grit: text, domain: currentDomain, stamp: stamp, timestamp: Date.now() });
-        localStorage.setItem('platinum_elite_v7', JSON.stringify(vault));
+        localStorage.setItem('platinum_v8', JSON.stringify(vault));
         document.getElementById('statusBox').value = '';
         if(utilOpen) toggleUtility();
-        checkForPatterns();
         refresh();
-    }
-
-    function checkForPatterns() {
-        if(currentDomain !== 'WORK') return;
-        const windowTime = 48 * 60 * 60 * 1000;
-        const recent = vault.filter(i => (Date.now() - i.timestamp) < windowTime && i.domain === 'WORK');
-        let matches = 0;
-        recent.forEach(i => {
-            const t = i.grit.toLowerCase();
-            if(domainConfig.WORK.triggers.some(w => t.includes(w)) && domainConfig.WORK.aggression.some(w => t.includes(w))) matches++;
-        });
-        const title = document.getElementById('brandTitle');
-        if(matches >= 3) { title.style.color = 'var(--rose)'; title.style.textShadow = '0 0 10px rgba(225,29,72,0.5)'; }
-        else { title.style.color = 'var(--active-brand)'; title.style.textShadow = 'none'; }
     }
 
     function refresh() {
@@ -194,18 +190,17 @@
             node.className = 'track-node';
             node.style.top = (index * 140) + 'px';
             node.innerHTML = '✕';
-            node.onclick = () => { if(confirm("Remove entry?")) { vault = vault.filter(i => i.id !== item.id); refresh(); } };
+            node.onclick = () => { if(confirm("Correct entry?")) { vault = vault.filter(i => i.id !== item.id); refresh(); } };
             track.appendChild(node);
             list.innerHTML += `<div class="stack-wrapper"><div style="font-size:9px; font-weight:800; color:#94a3b8; margin-bottom:8px;">📍 ${item.stamp}</div><div class="bubble">${item.grit.replace(/\n/g, '<br>')}</div></div>`;
         });
     }
 
-    function emailTimeline() { window.location.href = `mailto:?subject=Timeline Export&body=${encodeURIComponent(JSON.stringify(vault))}`; }
-    function resetTimeline() { if(confirm("DEMO RESET: Wipe all entries?")) { vault = []; localStorage.removeItem('platinum_elite_v7'); refresh(); toggleSidebar(); } }
-    function exportData() { alert("Offline Backup Saved to Device Encrypted Storage."); }
-    function reviewCaseLaw() { alert("Displaying relevant BC Labor Code & Precedents for recent entries..."); }
-
-    function clioHandshake() { if(currentDomain === 'WORK') alert("201 Created: Handshake Success with Clio Canada."); }
+    function emailTimeline() { window.location.href = `mailto:?subject=Timeline Export&body=Attached Legal Intake Timeline.`; }
+    function resetTimeline() { if(confirm("Wipe all demo data?")) { vault = []; localStorage.removeItem('platinum_v8'); refresh(); toggleSidebar(); } }
+    function exportData() { alert("Secured Backup Exported."); }
+    function reviewCaseLaw() { alert("Analyzing BC Case Law for patterns..."); }
+    function clioHandshake() { if(currentDomain === 'WORK') alert("Vaulting to Clio Canada Sandbox..."); }
 
     switchDomain('WORK');
 </script>
