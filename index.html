@@ -96,7 +96,7 @@
 
         textarea {
             width: 100%;
-            height: 100px;
+            height: 150px;
             padding: 12px;
             border: 1px solid #CCC;
             border-radius: 4px;
@@ -130,7 +130,59 @@
             background-color: #7A0000;
         }
 
-        /* Hidden device triggers */
+        /* POP-UP MODAL SELECTION STYLING */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            padding: 25px;
+            border-radius: 6px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        .template-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            border-bottom: 1px solid #EEE;
+            cursor: pointer;
+        }
+
+        .template-option:hover {
+            background-color: var(--steel-light);
+        }
+
+        .template-option input[type="checkbox"] {
+            transform: scale(1.2);
+            margin-top: 3px;
+        }
+
+        .template-info h5 {
+            margin: 0 0 4px 0;
+            color: var(--charcoal);
+            font-size: 15px;
+        }
+
+        .template-info p {
+            margin: 0;
+            color: #666;
+            font-size: 12px;
+        }
+
         input[type="file"] { display: none; }
     </style>
 </head>
@@ -167,13 +219,13 @@
 
         <div class="workspace-card">
             <h3>Add Direct Entry</h3>
-            <p style="font-size:12px; color:#666; margin-top:-10px;">Templates are optional shortcuts for speed and legal form—type your raw truth directly in your own words.</p>
+            <p style="font-size:12px; color:#666; margin-top:-10px;">Templates are optional shortcuts to format layout structures faster for legal overview—they do not influence your raw facts.</p>
             
             <textarea id="raw-human-entry" placeholder="Type exactly what happened in your own words..."></textarea>
             
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <button class="action-btn" onclick="executeAddEntry()">Add Entry to Timeline</button>
-                <button class="action-btn btn-secondary" style="background:#666;" onclick="useQuickTemplate()">Insert Formal Template Layout</button>
+                <button class="action-btn btn-secondary" style="background:#4A4A4A;" onclick="openTemplateModal()">📋 Choose Layout Templates</button>
             </div>
         </div>
 
@@ -187,17 +239,96 @@
         </div>
     </main>
 
+    <div id="template-modal" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-bottom:10px;">Select Formal Layout Frameworks</h3>
+            <p style="font-size:12px; color:#666; margin-top:0; margin-bottom:20px;">Select multiple structures to compile them into your entry text block simultaneously.</p>
+            
+            <div id="template-options-list">
+                <div class="template-option" onclick="toggleCheckbox('tmpl-injury')">
+                    <input type="checkbox" id="tmpl-injury" value="injury" onclick="event.stopPropagation()">
+                    <div class="template-info">
+                        <h5>Injury / Medical Report Outline</h5>
+                        <p>Structures symptoms, treatment checks, physical impacts, and site reports.</p>
+                    </div>
+                </div>
+                <div class="template-option" onclick="toggleCheckbox('tmpl-witness')">
+                    <input type="checkbox" id="tmpl-witness" value="witness" onclick="event.stopPropagation()">
+                    <div class="template-info">
+                        <h5>Witness Statement Framework</h5>
+                        <p>Organizes direct observations, third-party positions, and spoken quotes.</p>
+                    </div>
+                </div>
+                <div class="template-option" onclick="toggleCheckbox('tmpl-scene')">
+                    <input type="checkbox" id="tmpl-scene" value="scene" onclick="event.stopPropagation()">
+                    <div class="template-info">
+                        <h5>Scene / Environment Context</h5>
+                        <p>Logs layout conditions, environmental safety settings, tools used, and machinery states.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px;">
+                <button class="action-btn" style="background:#666;" onclick="closeTemplateModal()">Cancel</button>
+                <button class="action-btn" onclick="applySelectedTemplates()">Insert Selected Frameworks</button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/clio-handshake.js"></script>
 
     <script>
-        // Internal data structure matrix holding entries before sealing
         let activeLocalTimelineData = [];
         let mediaRecorder = null;
         let audioChunks = [];
 
+        // Master dictionary of actual template layout structures
+        const templateLibrary = {
+            injury: "=== FORMAL INJURY LOG LAYOUT ===\n[TIME OF INCIDENT]: \n[SPECIFIC LOCATION ON SITE]: \n[NATURE OF COMPLAINT / PHYSICAL IMPACT]: \n[FIRST AID / DISPATCH REQUIREMENT]: \n[WITNESSES TO IMPACT]: \n\n",
+            witness: "=== FORMAL WITNESS LOG LAYOUT ===\n[WITNESS NAME / IDENTITY]: \n[POSITION / RELATION TO USER]: \n[EXACT STATEMENTS RECALLED]: \n[CORROBORATING CHANNELS (TEXT/EMAIL/VERBAL)]: \n\n",
+            scene: "=== ENVIRONMENTAL STATE LOG LAYOUT ===\n[WORKSPACE SETTING / MACHINERY USED]: \n[SAFETY SYSTEM CONFIGURATIONS AT ACCIDENT TIME]: \n[SUPERVISOR DIRECTIVES ACTIVE]: \n[EQUIPMENT SHIFT CHANGES OR OVERHEAD FAULTS]: \n\n"
+        };
+
+        /* MODAL WINDOW DISPLAY UTILITIES */
+        function openTemplateModal() {
+            document.getElementById('template-modal').style.display = 'flex';
+        }
+
+        function closeTemplateModal() {
+            // Uncheck items so it starts fresh next click
+            document.querySelectorAll('#template-modal input[type="checkbox"]').forEach(cb => cb.checked = false);
+            document.getElementById('template-modal').style.display = 'none';
+        }
+
+        function toggleCheckbox(id) {
+            const cb = document.getElementById(id);
+            cb.checked = !cb.checked;
+        }
+
         /**
-         * FUNCTIONAL ADD ENTRY: Captures the user's organic, custom word inputs
+         * MULTI-SELECT INSERTER: Appends layouts safely to what the user is typing
+         */
+        function applySelectedTemplates() {
+            const entryArea = document.getElementById('raw-human-entry');
+            let compiledTemplatesText = "";
+
+            // Identify every item checked by the user
+            if (document.getElementById('tmpl-injury').checked) compiledTemplatesText += templateLibrary.injury;
+            if (document.getElementById('tmpl-witness').checked) compiledTemplatesText += templateLibrary.witness;
+            if (document.getElementById('tmpl-scene').checked) compiledTemplatesText += templateLibrary.scene;
+
+            if (compiledTemplatesText) {
+                // Prepend or append to existing content so the user never loses their original typed notes
+                entryArea.value = compiledTemplatesText + entryArea.value;
+                entryArea.focus();
+            }
+
+            closeTemplateModal();
+        }
+
+        /**
+         * FUNCTIONAL ADD ENTRY: Captures the entry array block
          */
         function executeAddEntry() {
             const inputField = document.getElementById('raw-human-entry');
@@ -210,16 +341,14 @@
 
             const newEntry = {
                 id: `entry_${Date.now()}`,
-                type: "Text Log",
+                type: "Text Log Layer",
                 timestamp: new Date().toLocaleTimeString(),
-                content: userWords,
-                verification: "Organic Human Expression"
+                content: userWords.replace(/\n/g, '<br>')
             };
 
             activeLocalTimelineData.push(newEntry);
             renderFeedItem(newEntry);
             
-            // Wipe input workspace clean for the next entry pass
             inputField.value = "";
             document.getElementById('empty-state-msg').style.display = 'none';
             
@@ -228,18 +357,7 @@
             }
         }
 
-        /**
-         * OPTIONAL SPEED TEMPLATE: Inserts structural text layout without changing human facts
-         */
-        function useQuickTemplate() {
-            const area = document.getElementById('raw-human-entry');
-            area.value = "[INCIDENT REPORT TEMPLATE]\nDATE/TIME OF EVENT:\nLOCATION:\nINDIVIDUALS PRESENT:\nRAW DESCRIPTION:\nIMPACT / CONTEXT:";
-            area.focus();
-        }
-
-        /**
-         * FUNCTIONAL CAMERA HANDSHAKE: Triggers hardware split automatically
-         */
+        /* DEVICE CAPTURE ASSIGNMENTS */
         async function handleCameraCapture(input) {
             if (input.files.length > 0) {
                 const targetPhoto = input.files[0];
@@ -260,9 +378,6 @@
             }
         }
 
-        /**
-         * FUNCTIONAL DOCUMENT HANDSHAKE: Handles file attachment tracking
-         */
         function handleDocumentUpload(input) {
             if (input.files.length > 0) {
                 const docFile = input.files[0];
@@ -278,9 +393,6 @@
             }
         }
 
-        /**
-         * FUNCTIONAL KITCHEN AUDIO RECORDER: Toggles active microphone access loops
-         */
         async function toggleAudioRecorder() {
             const micText = document.getElementById('mic-text');
             const micIcon = document.getElementById('mic-icon');
@@ -317,9 +429,6 @@
             }
         }
 
-        /**
-         * RENDERING UTILITY: Updates the visual ledger space immediately
-         */
         function renderFeedItem(item) {
             const container = document.getElementById('timeline-feed');
             const card = document.createElement('div');
@@ -328,14 +437,11 @@
                 <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--legal-teal); font-weight:bold; margin-bottom:5px;">
                     <span>${item.type}</span><span>${item.timestamp}</span>
                 </div>
-                <div style="font-size:14px; color:#333;">${item.content}</div>
+                <div style="font-size:14px; color:#333; line-height:1.4;">${item.content}</div>
             `;
             container.appendChild(card);
         }
 
-        /**
-         * THE MASTER CLIO TRANSMISSION SECURE SWITCH
-         */
         async function executeMasterClioLock() {
             if (activeLocalTimelineData.length === 0) {
                 alert("Your active timeline workspace is currently empty. Add records before executing lock protocol.");
