@@ -2,23 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline Mobile Core</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkTimeline™ - The Standard of Truth</title>
     <style>
         :root {
-            /* Premium Platinum Silver, Matte Charcoal, and Satin Teal */
-            --bg-canvas: #2B2D30; /* Dark Platinum Brushed Slate Base */
-            --surface-metallic: linear-gradient(180deg, #E2E8F0 0%, #CBD5E1 100%); /* Platinum Silver Shield */
-            --surface-card: #FFFFFF;
-            --surface-input: #F1F5F9;
-            --text-primary: #1E293B;
-            --text-muted: #64748B;
+            /* Pure White and Cool Silver Base Palette */
+            --bg-canvas: #FFFFFF; /* Pure White Base */
+            --surface-card: #F9FAFB; /* Ultra-Light Cool Gray */
+            --surface-input: #FFFFFF; /* White Inputs */
+            --text-primary: #1E2022; /* Deep Charcoal for Contrast (Not Black) */
+            --text-muted: #6B7280; /* Cool Gray Muted Text */
             --accent-teal: #14B8A6; /* Satin Teal */
-            --accent-teal-glow: rgba(20, 184, 166, 0.25);
-            --border-subtle: #94A3B8;
+            --accent-teal-glow: rgba(20, 184, 166, 0.12);
+            --border-subtle: #E5E7EB; /* Light Gray Borders */
+            --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+            
+            /* Hardware Pipeline Signaling (Preserved) */
             --beacon-green: #10B981;
             --beacon-glow: rgba(16, 185, 129, 0.4);
-            --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", sans-serif;
         }
 
         body {
@@ -28,58 +29,47 @@
             background-color: var(--bg-canvas);
             color: var(--text-primary);
             -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
-        }
-
-        /* Mobile Privacy Shield Filter Toggle View */
-        body.privacy-shielded main, 
-        body.privacy-shielded .timeline-visual-track {
-            filter: blur(16px) grayscale(1);
-            pointer-events: none;
-            user-select: none;
+            letter-spacing: -0.01em;
         }
 
         header {
-            background: var(--surface-metallic);
-            padding: 12px 20px;
-            border-bottom: 2px solid var(--border-subtle);
+            background-color: var(--surface-card);
+            padding: 20px 40px;
+            border-bottom: 1px solid var(--border-subtle);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
         header h1 {
             margin: 0;
-            font-size: 15px;
+            font-size: 16px;
             font-weight: 700;
-            letter-spacing: -0.01em;
-            color: #0F172A;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-primary);
         }
 
         .tagline {
-            font-size: 10px;
+            font-size: 11px;
             color: var(--text-muted);
-            margin-top: 2px;
+            letter-spacing: 0.02em;
+            margin-top: 4px;
         }
 
-        /* Mobile Live Verified Clio Pipeline Bar */
         .pipeline-container {
             display: flex;
             align-items: center;
-            gap: 8px;
-            background: rgba(15, 23, 42, 0.08);
-            padding: 6px 12px;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 8px 16px;
             border-radius: 20px;
-            border: 1px solid rgba(15, 23, 42, 0.12);
+            border: 1px solid var(--border-subtle);
         }
 
         @keyframes beaconBreathing {
             0% { box-shadow: 0 0 0 0 var(--beacon-glow); transform: scale(1); }
-            50% { box-shadow: 0 0 10px 3px var(--beacon-glow); transform: scale(1.05); }
+            50% { box-shadow: 0 0 12px 4px var(--beacon-glow); transform: scale(1.05); }
             100% { box-shadow: 0 0 0 0 var(--beacon-glow); transform: scale(1); }
         }
 
@@ -92,209 +82,116 @@
         }
 
         .pipeline-text {
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 0.02em;
-            text-transform: uppercase;
-            color: #0F172A;
-        }
-
-        /* Mobile Viewport Flow Frame Container */
-        main {
-            padding: 16px;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        /* Unified Customizer Strip Container (Touch Optimized) */
-        .utility-strip {
-            display: flex;
-            flex-direction: column;
-            background: var(--surface-card);
-            border-radius: 14px;
-            padding: 12px;
-            border: 1px solid rgba(0,0,0,0.05);
-            gap: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-
-        .strip-row {
-            display: flex;
-            gap: 10px;
-        }
-
-        .strip-select, .strip-toggle-btn {
-            flex: 1;
-            height: 44px; /* Standard Apple touch layer parameter alignment */
-            border-radius: 10px;
-            border: 1px solid var(--border-subtle);
-            background: var(--surface-input);
-            color: var(--text-primary);
             font-size: 11px;
             font-weight: 700;
+            letter-spacing: 0.06em;
             text-transform: uppercase;
-            cursor: pointer;
-            outline: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            color: var(--text-primary);
         }
 
-        /* Mac-Style Mobile Tool Control Dock */
+        main {
+            max-width: 680px;
+            margin: 50px auto;
+            padding: 0 24px;
+        }
+
+        /* 3D Volumetric Depth Layers on White */
+        .workspace-card {
+            background: var(--surface-card);
+            padding: 32px;
+            border-radius: 14px; 
+            border: 1px solid var(--border-subtle);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            margin-bottom: 28px;
+        }
+
+        h3 {
+            margin-top: 0;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+        }
+
+        /* Upgraded Minimalist Silver Action Dock */
         .action-dock {
             display: flex;
-            background: var(--surface-metallic);
-            border: 2px solid var(--border-subtle);
-            border-radius: 16px;
-            padding: 4px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(180deg, #F9FAFB 0%, #E5E7EB 100%); /* Silver Satin Gradient */
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            padding: 6px;
+            margin-bottom: 32px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.04);
         }
 
         .dock-btn {
             flex: 1;
             background: none;
             border: none;
-            color: #0F172A;
-            padding: 12px 6px;
-            font-size: 10px;
-            font-weight: 700;
+            color: var(--text-muted);
+            padding: 14px;
+            font-size: 12px;
+            font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.02em;
             cursor: pointer;
-            border-radius: 12px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
+            border-radius: 10px;
+            transition: color 0.2s ease, background-color 0.2s ease;
         }
 
         .dock-btn:hover {
-            background-color: rgba(255,255,255,0.4);
-        }
-
-        .node-icon {
-            width: 18px;
-            height: 18px;
-            fill: var(--text-primary);
-        }
-
-        /* MOBILE HORIZONTAL CHRONOLOGY TRACK RIBBON */
-        .mobile-timeline-container {
-            background: var(--surface-metallic);
-            border: 2px solid var(--border-subtle);
-            border-radius: 16px;
-            padding: 14px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-        }
-
-        .column-header {
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: #0F172A;
-            margin-bottom: 10px;
-        }
-
-        .timeline-visual-track {
-            display: flex;
-            flex-direction: row; /* Stacks entries left-to-right natively for horizontal thumb swipes */
-            align-items: center;
-            position: relative;
-            gap: 16px;
-            padding: 12px 8px;
-            background: rgba(255, 255, 255, 0.4);
-            border-radius: 10px;
-            border: 1px solid rgba(0,0,0,0.05);
-            overflow-x: auto; /* Activates physical fluid mobile track scrolling */
-            -webkit-overflow-scrolling: touch;
-        }
-
-        /* Central horizontal track spine line component */
-        .timeline-visual-track::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: var(--border-subtle);
-            z-index: 1;
-        }
-
-        .timeline-node {
-            width: 44px;
-            height: 44px;
-            min-width: 44px;
-            background: var(--surface-card);
-            border: 2px solid var(--border-subtle);
-            border-radius: 12px; /* Smooth touch squircle */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.06);
-            position: relative;
-        }
-
-        @keyframes patternGlowPulse {
-            0% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.6); border-color: var(--accent-teal); }
-            50% { box-shadow: 0 0 12px 4px rgba(20, 184, 166, 0.2); border-color: #2DD4BF; }
-            100% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.6); border-color: var(--accent-teal); }
-        }
-
-        .timeline-node.pattern-triggered {
-            animation: patternGlowPulse 2.5s infinite ease-in-out;
-            border-width: 3px;
-        }
-
-        .timeline-node.pattern-triggered .node-icon {
-            fill: var(--accent-teal);
-        }
-
-        /* Mobile Viewport Input Cards */
-        .workspace-card {
-            background: var(--surface-card);
-            padding: 20px;
-            border-radius: 16px; 
-            border: 1px solid rgba(0,0,0,0.05);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            color: var(--accent-teal);
+            background-color: rgba(255, 255, 255, 0.5);
         }
 
         textarea {
             width: 100%;
-            height: 120px;
-            padding: 12px;
+            height: 140px;
+            padding: 16px;
             border: 1px solid var(--border-subtle);
             border-radius: 10px;
             box-sizing: border-box;
             font-size: 14px;
             font-family: var(--font-stack);
-            line-height: 1.5;
+            line-height: 1.6;
             background-color: var(--surface-input); 
             color: var(--text-primary);
             resize: none;
-            outline: none;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
 
         textarea:focus {
+            outline: none;
             border-color: var(--accent-teal);
+            box-shadow: 0 0 0 1px var(--accent-teal), inset 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        .btn-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 16px;
+            gap: 16px;
         }
 
         button.action-btn {
-            background-color: #0F172A;
+            background-color: var(--text-primary);
             color: #FFFFFF;
             border: none;
-            height: 46px;
-            padding: 0 20px;
-            font-size: 11px;
+            padding: 12px 24px;
+            font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.02em;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
-            flex: 1;
+            transition: background-color 0.2s ease;
+        }
+
+        button.action-btn:hover {
+            background-color: #374151; /* Dark Gray hover (Not Black) */
         }
 
         button.action-btn.secondary {
@@ -303,35 +200,93 @@
             border: 1px solid var(--border-subtle);
         }
 
+        button.action-btn.secondary:hover {
+            color: var(--text-primary);
+            background-color: var(--surface-input);
+            border-color: #9CA3AF;
+        }
+
         button.lock-btn {
-            background-color: #0F172A;
-            color: #FFFFFF;
-            border: 1px solid rgba(255,255,255,0.1);
+            background-color: var(--bg-canvas);
+            color: var(--accent-teal);
+            border: 1px solid var(--accent-teal);
             width: 100%;
-            height: 52px;
+            padding: 16px;
             font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
-            border-radius: 12px;
+            letter-spacing: 0.08em;
+            border-radius: 10px;
+            margin-top: 24px;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+            transition: all 0.2s ease;
         }
 
         button.lock-btn:hover {
             background-color: var(--accent-teal);
+            color: #FFFFFF;
+            box-shadow: 0 0 24px var(--accent-teal-glow);
+        }
+
+        /* The Satin Breathing Pulse Animation (Preserved) */
+        @keyframes satinPulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.2);
+                border-color: var(--border-subtle);
+            }
+            50% {
+                box-shadow: 0 0 16px rgba(20, 184, 166, 0.08);
+                border-color: var(--accent-teal);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.2);
+                border-color: var(--border-subtle);
+            }
         }
 
         #wt-system-notification {
             display: none;
-            border: 2px solid var(--border-subtle);
-            padding: 16px;
+            border: 1px solid var(--border-subtle);
+            padding: 20px;
+            margin-bottom: 28px;
             background-color: var(--surface-card);
             border-radius: 14px;
         }
 
-        #wt-notification-title { margin: 0 0 4px 0; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--accent-teal); }
-        #wt-notification-text { margin: 0; font-size: 12px; line-height: 1.5; color: var(--text-muted); }
+        #wt-system-notification.active-pulse {
+            animation: satinPulse 3s infinite ease-in-out;
+        }
+
+        #wt-notification-title {
+            margin: 0 0 6px 0;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent-teal);
+        }
+
+        #wt-notification-text {
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text-muted);
+        }
+
+        .timeline-feed {
+            margin-top: 24px;
+            border-left: 1px solid var(--border-subtle);
+            padding-left: 20px;
+        }
+
+        .feed-item {
+            background: var(--surface-card);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border-subtle);
+        }
 
         .modal {
             display: none;
@@ -341,59 +296,72 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(15, 23, 42, 0.4);
+            background-color: rgba(255, 255, 255, 0.8);
             align-items: center;
             justify-content: center;
-            backdrop-filter: blur(4px);
+            backdrop-filter: blur(8px);
         }
 
         .modal-content {
-            background-color: var(--surface-card);
-            padding: 20px;
-            border-radius: 16px;
-            width: 88%;
-            max-width: 380px;
+            background-color: #FFFFFF;
+            padding: 32px;
+            border-radius: 14px;
+            width: 90%;
+            max-width: 460px;
             border: 1px solid var(--border-subtle);
+            box-shadow: 0 24px 64px rgba(0,0,0,0.05);
         }
 
-        .template-option { display: flex; align-items: flex-start; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--surface-input); }
-        .template-option input[type="checkbox"] { margin-top: 2px; accent-color: var(--accent-teal); }
-        .template-info h5 { margin: 0 0 2px 0; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-primary); }
-        .template-info p { margin: 0; color: var(--text-muted); font-size: 11px; line-height: 1.4; }
-        
+        .template-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 16px;
+            border-bottom: 1px solid var(--border-subtle);
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .template-option:hover {
+            background-color: var(--surface-card);
+        }
+
+        .template-option input[type="checkbox"] {
+            margin-top: 3px;
+            accent-color: var(--accent-teal);
+        }
+
+        .template-info h5 {
+            margin: 0 0 4px 0;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .template-info p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
         input[type="file"] { display: none; }
-        footer { text-align: center; padding: 24px 16px; font-size: 10px; color: #FFFFFF; opacity: 0.5; }
+        footer { text-align: center; padding: 40px 25px; font-size: 11px; color: var(--text-muted); letter-spacing: 0.02em; }
     </style>
 </head>
 <body>
 
     <header>
         <div>
-            <h1>WorkTimeline</h1>
-            <div class="tagline">Mobile Verification Gateway</div>
+            <h1>WorkTimeline™</h1>
+            <div class="tagline">Universal Verification Framework</div>
         </div>
-        <div class="pipeline-container">
-            <div id="pipeline-beacon" class="hardware-beacon"></div>
-            <div id="pipeline-text" class="pipeline-text">Clio</div>
+        <div id="connection-status">
+            Clio Pipeline Active
         </div>
     </header>
 
     <main>
-        <div class="utility-strip">
-            <div class="strip-row">
-                <select class="strip-select" onchange="changeUserFont(this.value)">
-                    <option value="sans">Sans Font</option>
-                    <option value="serif">Serif Font</option>
-                    <option value="mono">Mono Font</option>
-                </select>
-                <button class="strip-toggle-btn" onclick="togglePrivacyShieldView()">Privacy Shield</button>
-            </div>
-            <select id="canvas-mode-selector" class="strip-select" style="width:100%;" onchange="toggleNotesCanvasMode(this.value)">
-                <option value="timeline">Timeline Recording Mode</option>
-                <option value="notes">Private Notepad Scratch Space</option>
-            </select>
-        </div>
-
         <div id="wt-system-notification">
             <h4 id="wt-notification-title"></h4>
             <p id="wt-notification-text"></p>
@@ -401,75 +369,76 @@
 
         <div class="action-dock">
             <button class="dock-btn" onclick="document.getElementById('document-input').click()">
-                <svg class="node-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-                File
+                Document File
             </button>
             <button class="dock-btn" onclick="toggleAudioRecorder()">
-                <svg id="mic-icon-svg" class="node-icon" viewBox="0 0 24 24"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.42 2.72 6.2 6 6.72V21h2v-3.28c3.28-.52 6-3.3 6-6.72h-1.7z"/></svg>
-                <span id="mic-status">Audio</span>
+                <span id="mic-status">Audio Log</span>
             </button>
             <button class="dock-btn" onclick="document.getElementById('camera-input').click()">
-                <svg class="node-icon" viewBox="0 0 24 24"><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
-                Photo
+                Photo Asset
             </button>
         </div>
 
         <input type="file" id="document-input" accept=".pdf,.doc,.docx,.txt" onchange="handleDocumentUpload(this)">
         <input type="file" id="camera-input" accept="image/*" capture="environment" onchange="handleCameraCapture(this)">
 
-        <div class="mobile-timeline-container">
-            <div class="column-header">Horizontal Case Chronology View</div>
-            <div id="visual-node-track" class="timeline-visual-track">
-                </div>
-        </div>
-
         <div class="workspace-card">
-            <h3 id="workspace-input-title">Add Direct Entry</h3>
-            <textarea id="raw-human-entry" placeholder="Record contemporaneous verification metrics..."></textarea>
+            <h3>Add Direct Entry</h3>
+            <textarea id="raw-human-entry" placeholder="Record contemporaneous observation data..."></textarea>
             
             <div class="btn-row">
-                <button class="action-btn" onclick="executeCommitEntryPayload()">Submit</button>
-                <button id="blueprint-modal-trigger" class="action-btn secondary" onclick="openTemplateModal()">Outlines</button>
+                <button class="action-btn" onclick="executeAddEntry()">Commit Entry</button>
+                <button class="action-btn secondary" onclick="openTemplateModal()">Structural Blueprints</button>
             </div>
         </div>
 
         <div class="workspace-card">
-            <h3>Session Logs</h3>
-            <div id="timeline-feed" style="max-height: 180px; overflow-y: auto;">
-                <p id="empty-state-msg" style="color: var(--text-muted); font-style: italic; font-size: 12px; margin: 0;">No chronological entries recorded.</p>
+            <h3>Active Record Feed</h3>
+            <div id="timeline-feed" class="timeline-feed">
+                <p id="empty-state-msg" style="color: var(--text-muted); font-style: italic; font-size: 13px; margin: 0;">No active layers committed to memory.</p>
             </div>
-            <button class="lock-btn" style="margin-top:20px;" onclick="executeMasterClioLock()">Certify and Seal to Clio</button>
+            
+            <button class="lock-btn" onclick="executeMasterClioLock()">Certify Ledger & Seal to Clio</button>
         </div>
     </main>
 
     <div id="template-modal" class="modal">
         <div class="modal-content">
-            <h5>Structural Frameworks</h5>
+            <h3>Structural Blueprints</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-top: 0; margin-bottom: 24px; line-height: 1.5;">Select outlines to mount to your current workspace text field.</p>
+            
             <div id="template-options-list">
                 <div class="template-option" onclick="toggleCheckbox('tmpl-injury')">
                     <input type="checkbox" id="tmpl-injury" value="injury" onclick="event.stopPropagation()">
                     <div class="template-info">
-                        <h5>Injury Configuration</h5>
-                        <p>Schedules structural symptoms and physical location impacts.</p>
+                        <h5>Injury Configuration Report</h5>
+                        <p>Formats symptom profiles, physical impacts, and notification tracks.</p>
                     </div>
                 </div>
                 <div class="template-option" onclick="toggleCheckbox('tmpl-witness')">
                     <input type="checkbox" id="tmpl-witness" value="witness" onclick="event.stopPropagation()">
                     <div class="template-info">
-                        <h5>Witness Matrix</h5>
-                        <p>Maps unprompted statements and verbal metrics.</p>
+                        <h5>Witness Matrix Outline</h5>
+                        <p>Schedules verbal metrics, individual identities, and exact tracking quotes.</p>
+                    </div>
+                </div>
+                <div class="template-option" onclick="toggleCheckbox('tmpl-scene')">
+                    <input type="checkbox" id="tmpl-scene" value="scene" onclick="event.stopPropagation()">
+                    <div class="template-info">
+                        <h5>Environmental Baseline Assessment</h5>
+                        <p>Logs structural parameters, hazard verification configurations, and machine states.</p>
                     </div>
                 </div>
             </div>
-            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px;">
-                <button class="action-btn secondary" style="border:none; height:38px;" onclick="closeTemplateModal()">Cancel</button>
-                <button class="action-btn" style="height:38px;" onclick="applySelectedTemplates()">Mount</button>
+            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
+                <button class="action-btn secondary" style="border: none;" onclick="closeTemplateModal()">Cancel</button>
+                <button class="action-btn" onclick="applySelectedTemplates()">Mount Selected</button>
             </div>
         </div>
     </div>
 
     <footer>
-        WorkTimeline Platforms Inc. • Secure Canadian Infrastructure Core
+        WorkTimeline™ Platforms Inc. • Secure Canadian Infrastructure Core
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -477,47 +446,14 @@
 
     <script>
         let activeLocalTimelineData = [];
-        let separatePrivateNotepadMemory = []; 
-        let currentWorkspaceMode = "timeline"; 
-        
         let mediaRecorder = null;
         let audioChunks = [];
 
         const templateLibrary = {
-            injury: "=== FORMAL INJURY LOG LAYOUT ===\n[TIMESTAMP]: \n[FIELD AREA]: \n[SYMPTOM PROFILE]: \n\n",
-            witness: "=== FORMAL WITNESS LOG LAYOUT ===\n[WITNESS IDENTITY]: \n[VERBAL STATEMENT]: \n\n"
+            injury: "=== FORMAL INJURY LOG LAYOUT ===\n[TIMESTAMP]: \n[EXACT LOGISTICS / FIELD AREA]: \n[SYMPTOM PROFILE]: \n\n",
+            witness: "=== FORMAL WITNESS LOG LAYOUT ===\n[INDIVIDUAL IDENTITY]: \n[VERBAL STATEMENT RECORDED]: \n\n",
+            scene: "=== ENVIRONMENTAL STATE LOG LAYOUT ===\n[INFRASTRUCTURE STATUS]: \n[HAZARD CHECK VERIFICATION]: \n\n"
         };
-
-        function changeUserFont(fontType) {
-            const body = document.body;
-            if (fontType === 'sans') body.style.fontFamily = '-apple-system, BlinkMacSystemFont, sans-serif';
-            else if (fontType === 'serif') body.style.fontFamily = 'Georgia, serif';
-            else if (fontType === 'mono') body.style.fontFamily = 'Courier New, monospace';
-        }
-
-        function togglePrivacyShieldView() { document.body.classList.toggle('privacy-shielded'); }
-
-        function toggleNotesCanvasMode(targetMode) {
-            currentWorkspaceMode = targetMode;
-            const inputTitle = document.getElementById('workspace-input-title');
-            const txtArea = document.getElementById('raw-human-entry');
-            const blueprintBtn = document.getElementById('blueprint-modal-trigger');
-            const feedContainer = document.getElementById('timeline-feed');
-
-            if (targetMode === "notes") {
-                inputTitle.innerText = "Private Notepad Space";
-                txtArea.placeholder = "Enter reference notes here. This data remains outside the certified court timeline records...";
-                blueprintBtn.style.display = "none";
-                feedContainer.innerHTML = `<p style='color:var(--text-muted); font-style:italic; font-size:12px;'>Displaying private scratchpad notes view...</p>`;
-                separatePrivateNotepadMemory.forEach(note => renderFeedItemToView(note, true));
-            } else {
-                inputTitle.innerText = "Add Direct Entry";
-                txtArea.placeholder = "Record contemporaneous verification metrics...";
-                blueprintBtn.style.display = "inline-block";
-                feedContainer.innerHTML = activeLocalTimelineData.length === 0 ? `<p id="empty-state-msg" style="color: var(--text-muted); font-style: italic; font-size: 12px; margin: 0;">No chronological entries recorded.</p>` : "";
-                activeLocalTimelineData.forEach(entry => renderFeedItemToView(entry, false));
-            }
-        }
 
         function openTemplateModal() { document.getElementById('template-modal').style.display = 'flex'; }
         function closeTemplateModal() {
@@ -531,78 +467,43 @@
             let compiledText = "";
             if (document.getElementById('tmpl-injury').checked) compiledText += templateLibrary.injury;
             if (document.getElementById('tmpl-witness').checked) compiledText += templateLibrary.witness;
+            if (document.getElementById('tmpl-scene').checked) compiledText += templateLibrary.scene;
             
             if (compiledText) { entryArea.value = compiledText + entryArea.value; entryArea.focus(); }
             closeTemplateModal();
         }
 
-        function executeCommitEntryPayload() {
+        function executeAddEntry() {
             const inputField = document.getElementById('raw-human-entry');
-            const rawContentText = inputField.value.trim();
-            if (!rawContentText) return;
+            const userWords = inputField.value.trim();
+            if (!userWords) { alert("Input required."); return; }
 
-            // STATUTORY TIME LOGGING MEETS BOTH TIME FORMAT AND MONTH DIRECTIVES AUTOMATICALLY
-            const legalTimeFormattedString = new Date().toLocaleDateString('en-US', {
-                year: 'numeric', month: 'long', day: 'numeric'
-            }) + " " + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-
-            if (currentWorkspaceMode === "notes") {
-                const notePackage = { id: `note_${Date.now()}`, timestamp: legalTimeFormattedString, content: rawContentText };
-                separatePrivateNotepadMemory.push(notePackage);
-                renderFeedItemToView(notePackage, true);
-            } else {
-                const uniqueId = `entry_${Date.now()}`;
-                const entryPackage = {
-                    id: uniqueId,
-                    type: "Text Log",
-                    timestamp: legalTimeFormattedString,
-                    content: rawContentText.replace(/\n/g, '<br>')
-                };
-
-                activeLocalTimelineData.push(entryPackage);
-                renderFeedItemToView(entryPackage, false);
-                appendNodeToVerticalChronologyTrack(uniqueId, "text", legalTimeFormattedString);
-                if (typeof WorkTimelineMaster !== 'undefined') { WorkTimelineMaster.triggerNotification('entryLocked'); }
-            }
-            inputField.value = "";
-        }
-
-        function appendNodeToVerticalChronologyTrack(id, assetType, formattedTime) {
-            const visualTrack = document.getElementById('visual-node-track');
-            const nodeElement = document.createElement('div');
-            nodeElement.id = `node_link_${id}`;
-            nodeElement.className = "timeline-node";
-            
-            let svgIconPath = `<path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>`;
-            if (assetType === "photo") svgIconPath = `<path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>`;
-            if (assetType === "audio") svgIconPath = `<path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.42 2.72 6.2 6 6.72V21h2v-3.28c3.28-.52 6-3.3 6-6.72h-1.7z"/>`;
-
-            nodeElement.innerHTML = `<svg class="node-icon" viewBox="0 0 24 24">${svgIconPath}</svg>`;
-            nodeElement.onclick = () => {
-                alert(`Event ID: ${id}\nTime: ${formattedTime}`);
+            const newEntry = {
+                id: `entry_${Date.now()}`,
+                type: "Text Log Layer",
+                timestamp: new Date().toLocaleTimeString(),
+                content: userWords.replace(/\n/g, '<br>')
             };
 
-            visualTrack.appendChild(nodeElement);
-            visualTrack.scrollLeft = visualTrack.scrollWidth; /* Focus sliding mobile view container rightward */
-        }
-
-        function executePatternRecognitionPass(targetNodeId) {
-            const targetedNode = document.getElementById(`node_link_${targetNodeId}`);
-            if (targetedNode) { targetedNode.classList.add('pattern-triggered'); }
+            activeLocalTimelineData.push(newEntry);
+            renderFeedItem(newEntry);
+            inputField.value = "";
+            document.getElementById('empty-state-msg').style.display = 'none';
+            if (typeof WorkTimelineMaster !== 'undefined') { WorkTimelineMaster.triggerNotification('entryLocked'); }
         }
 
         async function handleCameraCapture(input) {
             if (input.files.length > 0) {
                 const targetPhoto = input.files[0];
-                const legalTime = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) + " " + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-                const id = `img_${Date.now()}`;
-                
-                const mockEntry = { id: id, type: "Forensic Photo", timestamp: legalTime, content: `Captured: ${targetPhoto.name}` };
+                const mockEntry = {
+                    id: `img_${Date.now()}`,
+                    type: "Forensic Photo Asset",
+                    timestamp: new Date().toLocaleTimeString(),
+                    content: `Asset: ${targetPhoto.name} linked. Forensic preservation bifurcated.`
+                };
                 activeLocalTimelineData.push(mockEntry);
-                renderFeedItemToView(mockEntry, false);
-                appendNodeToVerticalChronologyTrack(id, "photo", legalTime);
-                
-                setTimeout(() => { executePatternRecognitionPass(id); }, 800);
+                renderFeedItem(mockEntry);
+                document.getElementById('empty-state-msg').style.display = 'none';
                 if (typeof WorkTimelineMaster !== 'undefined') { await WorkTimelineMaster.processAndSecureImage(targetPhoto); }
             }
         }
@@ -610,13 +511,15 @@
         function handleDocumentUpload(input) {
             if (input.files.length > 0) {
                 const docFile = input.files[0];
-                const legalTime = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) + " " + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-                const id = `doc_${Date.now()}`;
-                
-                const docEntry = { id: id, type: "Document File", timestamp: legalTime, content: `Linked: ${docFile.name}` };
+                const docEntry = {
+                    id: `doc_${Date.now()}`,
+                    type: "Documentary Evidence File",
+                    timestamp: new Date().toLocaleTimeString(),
+                    content: `Document Registered: ${docFile.name}`
+                };
                 activeLocalTimelineData.push(docEntry);
-                renderFeedItemToView(docEntry, false);
-                appendNodeToVerticalChronologyTrack(id, "text", legalTime);
+                renderFeedItem(docEntry);
+                document.getElementById('empty-state-msg').style.display = 'none';
             }
         }
 
@@ -629,49 +532,43 @@
                     audioChunks = [];
                     mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
                     mediaRecorder.onstop = () => {
-                        const legalTime = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) + " " + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-                        const id = `audio_${Date.now()}`;
-                        
-                        const audioEntry = { id: id, type: "Audio Log", timestamp: legalTime, content: "Audio asset registered to layout track." };
+                        const audioEntry = {
+                            id: `audio_${Date.now()}`,
+                            type: "Contemporaneous Audio Log",
+                            timestamp: new Date().toLocaleTimeString(),
+                            content: `Audio Capture verified and logged to environment.`
+                        };
                         activeLocalTimelineData.push(audioEntry);
-                        renderFeedItemToView(audioEntry, false);
-                        appendNodeToVerticalChronologyTrack(id, "audio", legalTime);
+                        renderFeedItem(audioEntry);
+                        document.getElementById('empty-state-msg').style.display = 'none';
                     };
-                    mediaRecorder.start(); micStatus.innerText = "RECORDING LIVE"; micStatus.style.color = "#EF4444";
-                } catch (err) { alert("Mic hardware error."); }
-            } else { mediaRecorder.stop(); micStatus.innerText = "Audio"; micStatus.style.color = "inherit"; }
+                    mediaRecorder.start(); micStatus.innerText = "RECORDING STREAM LIVE"; micStatus.style.color = "#EF4444";
+                } catch (err) { alert("Microphone capture access offline."); }
+            } else { mediaRecorder.stop(); micStatus.innerText = "Audio Log"; micStatus.style.color = "var(--text-muted)"; }
         }
 
-        function renderFeedItemToView(item, isNoteMode) {
+        function renderFeedItem(item) {
             const container = document.getElementById('timeline-feed');
-            if (document.getElementById('empty-state-msg')) document.getElementById('empty-state-msg').style.display = 'none';
-            
             const card = document.createElement('div');
             card.className = 'feed-item';
-            card.style.padding = "14px";
-            card.style.borderRadius = "10px";
-            card.style.marginBottom = "10px";
-            card.style.background = isNoteMode ? "#FFFBEB" : "var(--surface-card)";
-            card.style.border = "1px solid var(--border-subtle)";
-            card.style.borderLeft = isNoteMode ? "4px solid #D97706" : "4px solid var(--accent-teal)";
-            
             card.innerHTML = `
-                <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">
-                    <span>${item.type || 'Note'}</span><span>${item.timestamp}</span>
+                <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--accent-teal); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">
+                    <span>${item.type}</span><span>${item.timestamp}</span>
                 </div>
-                <div style="font-size: 13px; line-height: 1.4; color: var(--text-primary);">${item.content}</div>
+                <div style="font-size: 14px; line-height: 1.6; color: var(--text-primary);">${item.content}</div>
             `;
             container.appendChild(card);
-            container.scrollTop = container.scrollHeight;
         }
 
         async function executeMasterClioLock() {
             if (activeLocalTimelineData.length === 0) { alert("Ledger empty."); return; }
-            const beacon = document.getElementById('pipeline-beacon');
-            const statusText = document.getElementById('pipeline-text');
+            const statusLabel = document.getElementById('connection-status');
             
-            beacon.style.backgroundColor = "#4B5563";
-            statusText.innerText = "LOCKING...";
+            // Bright white 'active' status indicator
+            statusLabel.style.background = "#FFFFFF";
+            statusLabel.style.color = var(--text-primary);
+            statusLabel.style.borderColor = var(--border-subtle);
+            statusLabel.innerText = "LOCK PROTOCOL ACTIVE";
 
             if (typeof WorkTimelineMaster !== 'undefined') {
                 const baselineStringData = JSON.stringify(activeLocalTimelineData);
@@ -682,9 +579,13 @@
 
                 const syncCompleted = await WorkTimelineMaster.syncToClioEcosystem(activeLocalTimelineData, systemForensicFingerprint);
                 if (syncCompleted) {
-                    alert(`AMENDMENT IMMUTABILITY SEALED\n\nLedger array compiled under Canada Evidence Act parameters.\n\nHash Token:\n${systemForensicFingerprint}\n\nPackage transmitted to secure Clio case pipeline files.`);
-                    beacon.style.backgroundColor = "var(--accent-teal)";
-                    statusText.innerText = "Clio";
+                    alert(`AMENDMENT IMMUTABILITY SEALED\n\nLedger array compiled under Canada Evidence Act parameters.\n\nHash: ${systemForensicFingerprint}\n\nPackage transmitted to secure Clio case pipeline.`);
+                    
+                    // Reset to default white status
+                    statusLabel.style.background = "rgba(255,255,255,0.8)";
+                    statusLabel.style.color = var(--text-primary);
+                    statusLabel.style.borderColor = var(--border-subtle);
+                    statusLabel.innerText = "TIMELINE SEALED TO CLIO";
                 }
             }
         }
