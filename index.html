@@ -3,210 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Guardian Lab | Premium Legal Tool</title>
+    <title>Guardian | The Lab</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --platinum: #F3F4F6;      /* Platinum Base */
-            --teal-brand: #008080;    /* Precision Teal */
-            --gunmetal: #1F2937;      /* Text Authority */
-            --silver-border: #D1D5DB;
-            --glass: rgba(243, 244, 246, 0.95);
+            --platinum: #F3F4F6;
+            --teal: #008080;
+            --slate: #1F2937;
+            --silver: #D1D5DB;
         }
 
         body {
             margin: 0;
-            font-family: 'Inter', -apple-system, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--platinum);
-            color: var(--gunmetal);
-            overflow-x: hidden;
+            color: var(--slate);
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* --- THE DOWNTOWN HEADER --- */
+        /* --- CLASSIC HEADER --- */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 15px 20px;
-            background: white;
-            border-bottom: 1px solid var(--silver-border);
+            background: #fff;
+            border-bottom: 1px solid var(--silver);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .menu-trigger {
+        .lab-trigger {
             font-size: 24px;
-            color: var(--teal-brand);
+            color: var(--teal);
             cursor: pointer;
         }
 
-        /* --- THE SLIDE-OUT LAB (SIDEBAR) --- */
+        /* --- THE SIDEBAR (NOW THE LAB) --- */
         .sidebar {
             position: fixed;
             top: 0;
-            left: -100%; /* Hidden by default */
-            width: 85%;
-            max-width: 350px;
+            left: -280px;
+            width: 280px;
             height: 100%;
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            z-index: 2000;
-            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 5px 0 25px rgba(0,0,0,0.1);
+            background: #fff;
+            z-index: 1000;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 2px 0 15px rgba(0,0,0,0.1);
             display: flex;
             flex-direction: column;
         }
 
-        .sidebar.active { left: 0; }
+        .sidebar.open { left: 0; }
 
         .sidebar-header {
             padding: 30px 20px;
-            border-bottom: 1px solid var(--silver-border);
-            background: white;
+            border-bottom: 1px solid #eee;
         }
 
-        .sidebar-nav {
-            padding: 20px 0;
+        .sidebar-content {
+            padding: 20px;
             flex-grow: 1;
             overflow-y: auto;
         }
 
-        .nav-link {
+        .lab-item {
             display: flex;
             align-items: center;
-            padding: 15px 25px;
-            color: var(--gunmetal);
+            padding: 15px 0;
+            color: var(--slate);
             text-decoration: none;
-            font-weight: 500;
-            transition: 0.2s;
+            font-size: 15px;
+            border-bottom: 1px solid #f9f9f9;
         }
 
-        .nav-link i {
-            width: 30px;
-            color: var(--teal-brand);
+        .lab-item i {
+            margin-right: 15px;
+            color: var(--teal);
+            width: 20px;
             font-size: 18px;
         }
 
-        .nav-link:active { background: rgba(0,128,128,0.05); }
-
-        /* --- LAB SPECIAL CATEGORIES --- */
         .lab-section-title {
-            padding: 20px 25px 10px;
             font-size: 11px;
             font-weight: 800;
-            color: #94a3b8;
+            color: #999;
             text-transform: uppercase;
             letter-spacing: 1px;
+            margin: 20px 0 10px 0;
         }
 
-        /* --- THE GROUNDED ACTION BAR (STAYS THE SAME) --- */
-        .action-bar {
+        /* --- THE GROUNDED BOTTOM BAR --- */
+        .bottom-bar {
             position: fixed;
             bottom: 0;
             width: 100%;
-            height: 80px;
-            background: white;
-            border-top: 1px solid var(--silver-border);
+            height: 75px;
+            background: #fff;
+            border-top: 1px solid var(--silver);
             display: flex;
             justify-content: space-around;
             align-items: center;
-            z-index: 1000;
+            padding-bottom: env(safe-area-inset-bottom);
         }
 
-        .tool-icon {
-            font-size: 22px;
-            color: var(--gunmetal);
+        .tool {
             text-align: center;
+            color: var(--slate);
         }
 
-        .tool-icon span { display: block; font-size: 10px; margin-top: 5px; }
+        .tool span {
+            display: block;
+            font-size: 10px;
+            margin-top: 4px;
+            font-weight: 600;
+        }
 
         /* --- OVERLAY --- */
         .overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.4);
             display: none;
-            z-index: 1500;
+            z-index: 900;
         }
     </style>
 </head>
 <body>
 
-<div class="overlay" id="overlay" onclick="closeLab()"></div>
+<div class="overlay" id="overlay" onclick="toggleLab()"></div>
 
 <header>
-    <div class="menu-trigger" onclick="openLab()">
-        <i class="fa-solid fa-bars-staggered"></i>
+    <div class="lab-trigger" onclick="toggleLab()">
+        <i class="fas fa-bars-staggered"></i>
     </div>
-    <div style="font-weight: 800; color: var(--teal-brand); letter-spacing: -0.5px;">GUARDIAN</div>
-    <div style="width: 24px;"></div> </header>
+    <div style="font-weight: 900; color: var(--teal); letter-spacing: -1px;">GUARDIAN</div>
+    <div style="width: 24px;"></div>
+</header>
 
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
-        <h2 style="margin:0; font-weight: 900; color: var(--gunmetal);">The Lab</h2>
-        <p style="margin: 5px 0 0; font-size: 12px; color: #64748b;">Precision Analysis & Legal Research</p>
+        <h2 style="margin:0; font-weight: 900; color: var(--slate);">The Lab</h2>
+        <p style="margin: 5px 0 0; font-size: 12px; color: #666;">Intelligence & Pattern Discovery</p>
     </div>
-
-    <div class="sidebar-nav">
-        <div class="lab-section-title">Analysis Tools</div>
-        <a href="#" class="nav-link" onclick="runScanner()">
-            <i class="fa-solid fa-microscope"></i> Run Pattern Recognition
+    
+    <div class="sidebar-content">
+        <div class="lab-section-title">Analysis</div>
+        <a href="#" class="lab-item" onclick="alert('Running Pattern Scan...')">
+            <i class="fas fa-microscope"></i> Run Pattern Recognition
         </a>
 
-        <div class="lab-section-title">Intelligence Vault</div>
-        <a href="#" class="nav-link">
-            <i class="fa-solid fa-gavel"></i> Case Law Library
+        <div class="lab-section-title">Legal Library</div>
+        <a href="#" class="lab-item">
+            <i class="fas fa-gavel"></i> Case Law Library
         </a>
-        <a href="#" class="nav-link">
-            <i class="fa-solid fa-book-scale"></i> Breach Encyclopedia
+        <a href="#" class="lab-item">
+            <i class="fas fa-book-open"></i> Statutory Breaches
         </a>
-        <a href="#" class="nav-link">
-            <i class="fa-solid fa-shield-halved"></i> Rights & Statutes
+        <a href="#" class="lab-item">
+            <i class="fas fa-shield-alt"></i> Rights Encyclopedia
         </a>
 
-        <div class="lab-section-title">Account</div>
-        <a href="#" class="nav-link">
-            <i class="fa-solid fa-envelope"></i> Message Lawyer
-        </a>
-        <a href="#" class="nav-link">
-            <i class="fa-solid fa-gear"></i> App Settings
+        <div class="lab-section-title">Support</div>
+        <a href="#" class="lab-item">
+            <i class="fas fa-envelope"></i> Message Lawyer
         </a>
     </div>
 
-    <div style="padding: 20px; border-top: 1px solid var(--silver-border); background: white;">
-        <div style="font-size: 14px; font-weight: 700;">Client Portal</div>
-        <div style="font-size: 11px; color: #64748b;">client@vancouver-law.com</div>
+    <div style="padding: 20px; border-top: 1px solid #eee; background: #fcfcfc;">
+        <div style="font-size: 13px; font-weight: 700; color: var(--teal);">Account Access</div>
+        <div id="userEmail" style="font-size: 11px; color: #888;">user@vancouver-law.com</div>
     </div>
 </div>
 
 <main style="padding: 20px;">
-    <div style="background: white; border-radius: 12px; padding: 20px; border: 1px solid var(--silver-border);">
-        <p style="color: #64748b; font-size: 14px;">Your timeline is ready. Select a tool below to log data.</p>
+    <div style="background: #fff; padding: 25px; border-radius: 12px; border: 1px solid var(--silver); box-shadow: 0 2px 5px rgba(0,0,0,0.02);">
+        <h3 style="margin-top:0; font-weight: 800;">Private Timeline</h3>
+        <p style="font-size: 14px; color: #666; line-height: 1.5;">Logs are strictly confidential. Use the tools below to record facts. Patterns are analyzed within <strong>The Lab</strong> sidebar.</p>
     </div>
 </main>
 
-<nav class="action-bar">
-    <div class="tool-icon"><i class="fa-solid fa-camera"></i><span>Camera</span></div>
-    <div class="tool-icon"><i class="fa-solid fa-microphone"></i><span>Mic</span></div>
-    <div class="tool-icon" style="color: var(--teal-brand);"><i class="fa-solid fa-plus-circle"></i><span>Log</span></div>
-    <div class="tool-icon"><i class="fa-solid fa-file-lines"></i><span>Docs</span></div>
-    <div class="tool-icon"><i class="fa-solid fa-calendar-day"></i><span>History</span></div>
+<nav class="bottom-bar">
+    <div class="tool"><i class="fas fa-camera"></i><span>Camera</span></div>
+    <div class="tool"><i class="fas fa-microphone"></i><span>Mic</span></div>
+    <div class="tool" style="color: var(--teal);"><i class="fas fa-circle-plus" style="font-size: 32px;"></i></div>
+    <div class="tool"><i class="fas fa-file-invoice"></i><span>Docs</span></div>
+    <div class="tool"><i class="fas fa-clock-rotate-left"></i><span>History</span></div>
 </nav>
 
 <script>
-    function openLab() {
-        document.getElementById('sidebar').classList.add('active');
-        document.getElementById('overlay').style.display = 'block';
-    }
-
-    function closeLab() {
-        document.getElementById('sidebar').classList.remove('active');
-        document.getElementById('overlay').style.display = 'none';
-    }
-
-    function runScanner() {
-        alert("Initializing Pattern Recognition Scanner...");
-        closeLab();
+    function toggleLab() {
+        const sb = document.getElementById('sidebar');
+        const ov = document.getElementById('overlay');
+        sb.classList.toggle('open');
+        ov.style.display = sb.classList.contains('open') ? 'block' : 'none';
     }
 </script>
 
