@@ -8,7 +8,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
         
         :root {
-            /* FROSTED SILVER METALLIC PALETTE */
+            /* FROSTED SILVER METALLIC PALETTE (DEFAULT DAY) */
             --app-bg: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
             --glass-bg: rgba(255, 255, 255, 0.65);
             --glass-border: rgba(255, 255, 255, 0.9);
@@ -21,15 +21,20 @@
             
             --metallic-silver: linear-gradient(180deg, #f1f5f9 0%, #cbd5e0 100%);
             --metallic-teal: linear-gradient(135deg, #008080 0%, #004d4d 100%);
+            --chip-bg: #ffffff;
         }
 
         body.night-deck {
+            /* HIGH-CONTRAST TIMELOCKED NIGHT MATRIX */
             --app-bg: linear-gradient(135deg, #2d3135 0%, #16181a 100%);
-            --glass-bg: rgba(35, 38, 41, 0.75);
+            --glass-bg: rgba(35, 38, 41, 0.85);
             --glass-border: rgba(255, 255, 255, 0.15);
-            --text-dark: #f3f4f6;
-            --text-light: #9ca3af;
+            
+            /* CRITICAL FIX: Explicitly forces text to high-contrast crisp white when background turns dark */
+            --text-dark: #ffffff; 
+            --text-light: #cbd5e1;
             --metallic-silver: linear-gradient(180deg, #3f444a 0%, #1a1c1e 100%);
+            --chip-bg: #2d3135;
         }
         
         body, html {
@@ -39,6 +44,7 @@
             -webkit-tap-highlight-color: transparent;
         }
 
+        /* Phone Bezel */
         .phone-bezel {
             width: 375px; height: 812px; background-color: #000;
             border-radius: 45px; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
@@ -50,9 +56,11 @@
             display: flex; flex-direction: column; position: relative;
         }
 
+        /* PRIVACY BLUR STATE */
         .privacy-active #timelineBody { filter: blur(16px); pointer-events: none; opacity: 0.2; transition: 0.3s; }
         #timelineBody { transition: 0.3s; }
 
+        /* CLIO STATUS LED */
         .clio-status-led {
             position: absolute; top: 20px; right: 20px; width: 10px; height: 10px;
             background-color: var(--active-green); border-radius: 50%;
@@ -60,6 +68,7 @@
         }
         @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.6; } }
 
+        /* TOP TOGGLE BAR */
         .top-toggles {
             display: flex; justify-content: space-between; align-items: center;
             padding: 45px 20px 10px; z-index: 20;
@@ -75,6 +84,7 @@
         .toggle-btn.active { background: var(--metallic-teal); color: white; border-color: var(--active-teal); }
         .notes-dot { width: 6px; height: 6px; background: var(--active-green); border-radius: 50%; }
 
+        /* HEADER */
         .header {
             display: flex; justify-content: space-between; align-items: center;
             padding: 10px 20px 15px; z-index: 10;
@@ -87,12 +97,14 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex;
         }
 
+        /* BRANDING */
         .main-title {
             font-weight: 900; font-size: 24px; color: var(--active-teal);
             letter-spacing: -0.5px; display: flex; align-items: center; gap: 6px;
         }
         .main-title svg { width: 22px; height: 22px; fill: var(--active-teal); }
 
+        /* HARDWARE & INPUT */
         .input-panel {
             background: var(--glass-bg); backdrop-filter: blur(20px);
             margin: 0 15px; border-radius: 24px; border: 1px solid var(--glass-border);
@@ -102,7 +114,7 @@
 
         .template-row { display: flex; gap: 8px; justify-content: space-between; margin-bottom: 5px; }
         .template-chip {
-            flex: 1; background: white; border: 1px solid #e2e8f0; border-radius: 12px;
+            flex: 1; background: var(--chip-bg); border: 1px solid var(--glass-border); border-radius: 12px;
             padding: 10px 0; font-size: 10px; font-weight: 900; color: var(--text-dark);
             text-align: center; cursor: pointer; text-transform: uppercase;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: 0.2s;
@@ -110,24 +122,25 @@
         .template-chip.selected { background: var(--active-teal); color: white; border-color: var(--active-teal); }
 
         .hardware-icons { display: flex; justify-content: space-evenly; align-items: center; }
-        .hw-item { position: relative; width: 44px; height: 44px; background: var(--metallic-silver); border-radius: 14px; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 2px 4px rgba(255,255,255,0.8), 0 4px 6px rgba(0,0,0,0.05); cursor: pointer; border: 1px solid #cbd5e0; }
+        .hw-item { position: relative; width: 44px; height: 44px; background: var(--metallic-silver); border-radius: 14px; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 2px 4px rgba(255,255,255,0.8), 0 4px 6px rgba(0,0,0,0.05); cursor: pointer; border: 1px solid var(--glass-border); }
         .hw-item svg { width: 22px; height: 22px; stroke: var(--active-teal); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
         .hw-item input { position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer; z-index:10; }
 
-        .input-wrapper { background: rgba(255,255,255,0.8); border-radius: 14px; padding: 15px; border: 1px solid #e2e8f0; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+        .input-wrapper { background: rgba(255,255,255,0.15); border-radius: 14px; padding: 15px; border: 1px solid var(--glass-border); }
+        body:not(.night-deck) .input-wrapper { background: rgba(255,255,255,0.8); }
         .input-wrapper textarea { width: 100%; background: transparent; border: none; color: var(--text-dark); font-size: 14px; font-weight: 600; font-family: 'Nunito', sans-serif; resize: none; outline: none; height: 40px; }
-        .input-wrapper textarea::placeholder { color: #94a3b8; }
+        .input-wrapper textarea::placeholder { color: var(--text-light); }
 
         .workspace-layout-matrix {
             flex: 1; display: flex; gap: 12px; margin: 0 15px; overflow: hidden; position: relative;
         }
 
         .vertical-spine-track {
-            width: 44px; min-width: 44px; background: var(--metallic-silver); border: 1px solid #cbd5e0;
+            width: 44px; min-width: 44px; background: var(--metallic-silver); border: 1px solid var(--glass-border);
             border-radius: 20px; padding: 16px 0; display: flex; flex-direction: column-reverse;
             align-items: center; position: relative; gap: 16px; overflow-y: auto; box-sizing: border-box;
         }
-        .vertical-spine-track::before { content: ''; position: absolute; top: 0; bottom: 0; width: 2px; background: #cbd5e0; z-index: 1; }
+        .vertical-spine-track::before { content: ''; position: absolute; top: 0; bottom: 0; width: 2px; background: var(--glass-border); z-index: 1; }
         .vertical-spine-track::-webkit-scrollbar { display: none; }
 
         .timeline-container { flex: 1; overflow-y: auto; padding: 0 0 100px; }
@@ -136,8 +149,8 @@
         .log-entry { position: relative; display: flex; flex-direction: column; gap: 6px; z-index: 2; width: 100%; }
         
         .timeline-squircle {
-            width: 32px; height: 32px; min-height: 32px; background: white;
-            border: 1px solid #cbd5e0; border-radius: 10px; display: flex; align-items: center;
+            width: 32px; height: 32px; min-height: 32px; background: var(--chip-bg);
+            border: 1px solid var(--glass-border); border-radius: 10px; display: flex; align-items: center;
             justify-content: center; z-index: 2; box-shadow: 0 2px 6px rgba(0,0,0,0.02);
             cursor: pointer; transition: transform 0.2s;
         }
@@ -168,12 +181,13 @@
         }
 
         .log-bubble.historical-version {
-            background: rgba(226, 232, 240, 0.4);
+            background: rgba(226, 232, 240, 0.2);
             margin-top: -24px;
             z-index: 5;
-            opacity: 0.6;
+            opacity: 0.5;
             transform: scale(0.96);
             border-style: dashed;
+            color: var(--text-light);
         }
 
         .amend-badge {
@@ -181,6 +195,7 @@
             color: white; padding: 2px 6px; border-radius: 4px; margin-left: auto;
         }
 
+        /* FOOTER NAV */
         .footer-nav {
             position: absolute; bottom: 0; left: 0; width: 100%; height: 80px; 
             background: var(--glass-bg); backdrop-filter: blur(20px);
@@ -190,10 +205,10 @@
         }
 
         .footer-pill {
-            background: white; color: var(--text-dark); padding: 12px 20px;
+            background: var(--chip-bg); color: var(--text-dark); padding: 12px 20px;
             border-radius: 20px; font-size: 10px; font-weight: 900; cursor: pointer;
             display: flex; flex-direction: column; align-items: center; gap: 4px;
-            border: 1px solid #e2e8f0; box-shadow: 0 4px 10px rgba(0,0,0,0.03); text-transform: uppercase;
+            border: 1px solid var(--glass-border); box-shadow: 0 4px 10px rgba(0,0,0,0.03); text-transform: uppercase;
         }
         .footer-pill svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
         .footer-pill.disabled-gate { opacity: 0.4; pointer-events: none; }
@@ -210,25 +225,25 @@
         /* THE LAB SIDEBAR DRAWER STYLING */
         .sidebar {
             position: absolute; top: 0; left: -100%; width: 280px; height: 100%;
-            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(25px);
+            background: var(--glass-bg); backdrop-filter: blur(25px);
             transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 8000;
             padding: 50px 25px; box-sizing: border-box; box-shadow: 20px 0 50px rgba(0,0,0,0.1);
             border-right: 1px solid var(--glass-border);
+            color: var(--text-dark); /* Contrast Locked */
         }
-        body.night-deck .sidebar { background: rgba(35, 38, 41, 0.85); }
         .sidebar.open { left: 0; }
         .sidebar-header { display: flex; justify-content: space-between; align-items: center; font-weight: 900; font-size: 22px; color: var(--active-teal); margin-bottom: 40px; text-transform: uppercase; letter-spacing: -1px; }
-        .close-sidebar { cursor: pointer; background: var(--metallic-silver); padding: 8px; border-radius: 12px; display: flex; color: var(--text-dark); }
+        
+        .close-sidebar { cursor: pointer; background: var(--metallic-silver); padding: 8px; border-radius: 12px; display: flex; color: var(--text-dark); border: 1px solid var(--glass-border); }
         .close-sidebar svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
         
         .sidebar-item {
             padding: 16px 20px; margin-bottom: 15px; border-radius: 18px;
-            background: white; font-weight: 800; font-size: 11px; color: var(--text-dark);
+            background: var(--chip-bg); font-weight: 800; font-size: 11px; color: var(--text-dark);
             display: flex; align-items: center; gap: 15px; cursor: pointer;
-            border: 1px solid #e2e8f0; text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            border: 1px solid var(--glass-border); text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.02);
         }
-        body.night-deck .sidebar-item { background: var(--surface-card); border-color: var(--glass-border); }
-        .sidebar-item .circle-icon { width: 32px; height: 32px; background: var(--metallic-silver); color: var(--active-teal); border-radius: 10px; display: flex; justify-content: center; align-items: center; }
+        .sidebar-item .circle-icon { width: 32px; height: 32px; background: var(--metallic-silver); color: var(--active-teal); border-radius: 10px; display: flex; justify-content: center; align-items: center; border: 1px solid var(--glass-border); }
         .sidebar-item .circle-icon svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 
         .modal-overlay {
@@ -239,12 +254,12 @@
             opacity: 0; pointer-events: none; transition: 0.3s;
         }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal-box { background: rgba(255,255,255,0.9); padding: 45px 30px; border-radius: 35px; box-shadow: var(--glass-shadow); border: 1px solid var(--glass-border); width: 100%; }
+        .modal-box { background: var(--glass-bg); backdrop-filter: blur(20px); padding: 45px 30px; border-radius: 35px; box-shadow: var(--glass-shadow); border: 1px solid var(--glass-border); width: 100%; }
         .greeting { font-weight: 900; font-size: 28px; color: var(--active-teal); margin-bottom: 5px; text-transform: uppercase; letter-spacing: -1px; }
         .location { font-size: 11px; font-weight: 800; color: var(--text-light); text-transform: uppercase; margin-bottom: 25px; letter-spacing: 1px; }
         .modal-body { font-size: 14px; font-weight: 700; color: var(--text-dark); line-height: 1.6; margin-bottom: 35px; }
         .ok-btn { background: var(--metallic-teal); color: white; padding: 18px; border-radius: 20px; font-weight: 900; font-size: 13px; text-transform: uppercase; cursor: pointer; box-shadow: 0 8px 20px rgba(0, 128, 128, 0.3); border: 1px solid rgba(255,255,255,0.2); flex: 1; }
-        .ok-btn.ghost { background: var(--metallic-silver); color: var(--text-dark); box-shadow: none; border: 1px solid #cbd5e0; }
+        .ok-btn.ghost { background: var(--metallic-silver); color: var(--text-dark); box-shadow: none; border: 1px solid var(--glass-border); }
         .spinner { width: 30px; height: 30px; border: 4px solid #cbd5e0; border-top: 4px solid var(--active-teal); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
@@ -415,7 +430,6 @@
         };
 
         function evaluateCircadianTimeSystem() {
-            // Respect manual overrides in current session, otherwise default to circadian tracking rules
             if (sessionStorage.getItem('theme_override')) return;
             
             const currentHour = new Date().getHours();
@@ -426,7 +440,6 @@
             }
         }
 
-        /* SOVEREIGN LAB DRAWER MANUAL INTERFACE THEME OVERRIDE PASS */
         function toggleSovereignLuminanceOverride() {
             const isCurrentlyDark = document.body.classList.contains('night-deck');
             if (isCurrentlyDark) {
