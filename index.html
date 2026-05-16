@@ -23,7 +23,7 @@
 
         /* PROTECTIVE NIGHTTIME SLATE PROFILE VARIANT */
         body.night-deck {
-            --bg-canvas: #1E2022; /* Dark Platinum Gray Base */
+            --bg-canvas: #1E2022; 
             --surface-metallic: linear-gradient(180deg, #2D3135 0%, #1A1C1E 100%); 
             --surface-card: #25282B; 
             --surface-input: #1A1C1E; 
@@ -44,6 +44,7 @@
             transition: background-color 0.4s ease, color 0.4s ease;
         }
 
+        /* PRIVACY ACTUATED SWITCH (Blurs viewport cleanly) */
         body.privacy-shielded #app-viewport-container {
             filter: blur(20px) grayscale(1);
             pointer-events: none;
@@ -133,6 +134,7 @@
             width: 100%;
         }
 
+        /* VERTICAL SPINE TRACK CHASSIS */
         .vertical-timeline-spine-track {
             width: 56px;
             min-width: 56px;
@@ -205,6 +207,7 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
         }
 
+        /* The Tabs Control Strip Container */
         .utility-strip {
             display: flex;
             background: var(--surface-card);
@@ -321,6 +324,7 @@
             cursor: pointer;
         }
 
+        /* LAB SIDEBAR SYSTEM PANEL */
         .lab-sidebar-drawer {
             position: fixed;
             top: 0;
@@ -397,6 +401,7 @@
             position: relative;
             user-select: none;
             pointer-events: none;
+            transition: all 0.3s ease;
         }
 
         .disabled-badge-notice {
@@ -635,14 +640,14 @@
                     <input type="checkbox" id="tmpl-injury" value="injury" onclick="event.stopPropagation()">
                     <div class="template-info">
                         <h5>Injury Configuration</h5>
-                        <p>Schedules structural symptoms and field location markers.</p>
+                        <p>Schedules structural symptoms and field logistics area elements.</p>
                     </div>
                 </div>
                 <div class="template-option" onclick="toggleCheckbox('tmpl-witness')">
                     <input type="checkbox" id="tmpl-witness" value="witness" onclick="event.stopPropagation()">
                     <div class="template-info">
                         <h5>Witness Matrix</h5>
-                        <p>Maps unprompted statements and verbal tracking records.</p>
+                        <p>Maps unprompted statements and verbal tracking records metrics.</p>
                     </div>
                 </div>
             </div>
@@ -654,6 +659,7 @@
     </div>
 
     <script>
+        // Core Array Registries
         let activeLocalTimelineData = [];
         let separatePrivateNotepadMemory = []; 
         let currentWorkspaceMode = "timeline"; 
@@ -662,6 +668,7 @@
         let mediaRecorder = null;
         let audioChunks = [];
         
+        // Counter Metrification Loops
         let fileCounter = 0;
         let audioCounter = 0;
         let photoCounter = 0;
@@ -671,13 +678,12 @@
             witness: "=== FORMAL WITNESS LOG LAYOUT ===\n[WITNESS IDENTITY]: \n[VERBAL STATEMENT]: \n\n"
         };
 
-        /* AUTOMATED CIRCADIAN THEME ENGINE MECHANICS */
+        /* CIRCADIAN TIME LOGIC */
         function evaluateCircadianTimeSystem() {
             const currentHour = new Date().getHours();
             const selectedOverride = document.getElementById('theme-override-selector').value;
 
             if (selectedOverride === "auto") {
-                // Daytime boundary configuration: 6:00 AM to 6:00 PM (18:00)
                 if (currentHour >= 6 && currentHour < 18) {
                     document.body.classList.remove('night-deck');
                 } else {
@@ -687,19 +693,15 @@
         }
 
         function applyManualThemeOverride(mode) {
-            if (mode === "day") {
-                document.body.classList.remove('night-deck');
-            } else if (mode === "night") {
-                document.body.classList.add('night-deck');
-            } else {
-                evaluateCircadianTimeSystem();
-            }
+            if (mode === "day") document.body.classList.remove('night-deck');
+            else if (mode === "night") document.body.classList.add('night-deck');
+            else evaluateCircadianTimeSystem();
         }
 
-        // Clock validation loop interval pass to prevent lag spikes on layout transitions
         setInterval(evaluateCircadianTimeSystem, 60000);
         window.addEventListener('DOMContentLoaded', evaluateCircadianTimeSystem);
 
+        /* PRIVACY SYSTEM BLUR CORES */
         function executePrivacyShieldFilterSwitch() {
             const body = document.body;
             const btn = document.getElementById('privacy-trigger-btn');
@@ -716,6 +718,7 @@
             }
         }
 
+        /* LAB SIDEBAR NAVIGATION TRIGGERS */
         function openLabSidebarDrawer() {
             document.getElementById('lab-sidebar').classList.add('open');
             document.getElementById('sidebar-overlay-mask').style.display = 'block';
@@ -733,6 +736,7 @@
             else if (fontType === 'mono') container.style.fontFamily = 'Courier New, monospace';
         }
 
+        /* TABS VISUAL STATE ENGINE SWITCHER (完全機能) */
         function toggleWorkspaceContextMode(targetMode) {
             currentWorkspaceMode = targetMode;
             const inputTitle = document.getElementById('workspace-input-title');
@@ -740,26 +744,39 @@
             const blueprintBtn = document.getElementById('blueprint-modal-trigger');
             const feedContainer = document.getElementById('timeline-feed');
             
+            // Clean active display states
             document.getElementById('notes-mode-btn').classList.remove('active-toggle');
             document.getElementById('timeline-mode-btn').classList.remove('active-toggle');
+
+            // Wipe out current visible layout feed to prepare target structural dump
+            feedContainer.innerHTML = "";
 
             if (targetMode === "notes") {
                 document.getElementById('notes-mode-btn').classList.add('active-toggle');
                 inputTitle.innerText = "Private Notepad Space";
-                txtArea.placeholder = "Enter references here. This scratchpad memory data remains outside court timeline records...";
+                txtArea.placeholder = "Enter internal reference notes here. This data remains outside the certified court timeline records...";
                 blueprintBtn.style.display = "none";
-                feedContainer.innerHTML = `<p style='color:var(--text-muted); font-style:italic; font-size:12px;'>Displaying private reference notes view canvas...</p>`;
-                separatePrivateNotepadMemory.forEach(note => renderFeedItemToView(note, true));
+                
+                if (separatePrivateNotepadMemory.length === 0) {
+                    feedContainer.innerHTML = `<p id="empty-state-msg" style='color:var(--text-muted); font-style:italic; font-size:12px; margin:0;'>No local scratchpad notes recorded.</p>`;
+                } else {
+                    separatePrivateNotepadMemory.forEach(note => renderFeedItemToView(note, true));
+                }
             } else {
                 document.getElementById('timeline-mode-btn').classList.add('active-toggle');
                 inputTitle.innerText = "Add Direct Entry";
                 txtArea.placeholder = "Record contemporaneous verification metrics...";
                 blueprintBtn.style.display = "inline-block";
-                feedContainer.innerHTML = activeLocalTimelineData.length === 0 ? `<p id="empty-state-msg" style="color: var(--text-muted); font-style: italic; font-size: 12px; margin: 0;">No chronological entries recorded.</p>` : "";
-                activeLocalTimelineData.forEach(entry => renderFeedItemToView(entry, false));
+                
+                if (activeLocalTimelineData.length === 0) {
+                    feedContainer.innerHTML = `<p id="empty-state-msg" style="color: var(--text-muted); font-style: italic; font-size: 12px; margin: 0;">No chronological entries recorded.</p>`;
+                } else {
+                    activeLocalTimelineData.forEach(entry => renderFeedItemToView(entry, false));
+                }
             }
         }
 
+        /* TEMPLATE BLUEPRINT HANDLERS */
         function openTemplateModal() { document.getElementById('template-modal').style.display = 'flex'; }
         function closeTemplateModal() {
             document.querySelectorAll('#template-modal input[type="checkbox"]').forEach(cb => cb.checked = false);
@@ -777,6 +794,7 @@
             closeTemplateModal();
         }
 
+        /* DATA ENTRY INTERACTION DOCK ENGINE */
         function executeCommitEntryPayload() {
             const inputField = document.getElementById('raw-human-entry');
             const rawContentText = inputField.value.trim();
@@ -796,7 +814,7 @@
 
                 activeLocalTimelineData.push(entryPackage);
                 renderFeedItemToView(entryPackage, false);
-                appendNodeToHorizontalChronologyTrack(uniqueId, "text", legalTimeFormattedString);
+                appendNodeToVerticalChronologyTrack(uniqueId, "text", legalTimeFormattedString);
                 
                 fileCounter++;
                 document.getElementById('count-files').innerText = fileCounter;
@@ -806,7 +824,7 @@
             inputField.value = "";
         }
 
-        function appendNodeToHorizontalChronologyTrack(id, assetType, formattedTime) {
+        function appendNodeToVerticalChronologyTrack(id, assetType, formattedTime) {
             const visualTrack = document.getElementById('visual-node-track');
             const nodeElement = document.createElement('div');
             nodeElement.id = `node_link_${id}`;
@@ -823,6 +841,7 @@
             visualTrack.scrollTop = visualTrack.scrollHeight; 
         }
 
+        /* COMPLIANT HARDWARE SIMULATION PIPELINES */
         async function handleCameraCapture(input) {
             if (input.files.length > 0) {
                 const targetPhoto = input.files[0];
@@ -830,12 +849,17 @@
                 const id = `img_${Date.now()}`;
                 
                 const mockEntry = { id: id, type: "Forensic Photo", timestamp: legalTime, content: `Captured Photo Asset: ${targetPhoto.name}` };
-                activeLocalTimelineData.push(mockEntry);
-                renderFeedItemToView(mockEntry, false);
-                appendNodeToHorizontalChronologyTrack(id, "photo", legalTime);
                 
-                photoCounter++;
-                document.getElementById('count-photos').innerText = photoCounter;
+                if (currentWorkspaceMode === "timeline") {
+                    activeLocalTimelineData.push(mockEntry);
+                    renderFeedItemToView(mockEntry, false);
+                    appendNodeToVerticalChronologyTrack(id, "photo", legalTime);
+                    photoCounter++;
+                    document.getElementById('count-photos').innerText = photoCounter;
+                } else {
+                    separatePrivateNotepadMemory.push(mockEntry);
+                    renderFeedItemToView(mockEntry, true);
+                }
 
                 if (typeof WorkTimelineMaster !== 'undefined') { await WorkTimelineMaster.processAndSecureImage(targetPhoto); }
             }
@@ -848,12 +872,17 @@
                 const id = `doc_${Date.now()}`;
                 
                 const docEntry = { id: id, type: "Document File", timestamp: legalTime, content: `Registered Document: ${docFile.name}` };
-                activeLocalTimelineData.push(docEntry);
-                renderFeedItemToView(docEntry, false);
-                appendNodeToHorizontalChronologyTrack(id, "text", legalTime);
                 
-                fileCounter++;
-                document.getElementById('count-files').innerText = fileCounter;
+                if (currentWorkspaceMode === "timeline") {
+                    activeLocalTimelineData.push(docEntry);
+                    renderFeedItemToView(docEntry, false);
+                    appendNodeToVerticalChronologyTrack(id, "text", legalTime);
+                    fileCounter++;
+                    document.getElementById('count-files').innerText = fileCounter;
+                } else {
+                    separatePrivateNotepadMemory.push(docEntry);
+                    renderFeedItemToView(docEntry, true);
+                }
             }
         }
 
@@ -870,12 +899,17 @@
                         const id = `audio_${Date.now()}`;
                         
                         const audioEntry = { id: id, type: "Audio Log", timestamp: legalTime, content: "Contemporaneous audio note recorded and locked to repository memory layers." };
-                        activeLocalTimelineData.push(audioEntry);
-                        renderFeedItemToView(audioEntry, false);
-                        appendNodeToHorizontalChronologyTrack(id, "audio", legalTime);
                         
-                        audioCounter++;
-                        document.getElementById('count-audio').innerText = audioCounter;
+                        if (currentWorkspaceMode === "timeline") {
+                            activeLocalTimelineData.push(audioEntry);
+                            renderFeedItemToView(audioEntry, false);
+                            appendNodeToVerticalChronologyTrack(id, "audio", legalTime);
+                            audioCounter++;
+                            document.getElementById('count-audio').innerText = audioCounter;
+                        } else {
+                            separatePrivateNotepadMemory.push(audioEntry);
+                            renderFeedItemToView(audioEntry, true);
+                        }
                     };
                     mediaRecorder.start(); micStatus.innerText = "RECORDING"; micStatus.style.color = "#EF4444";
                 } catch (err) { alert("Mic hardware error."); }
@@ -884,7 +918,10 @@
 
         function renderFeedItemToView(item, isNoteMode) {
             const container = document.getElementById('timeline-feed');
-            if (document.getElementById('empty-state-msg')) document.getElementById('empty-state-msg').style.display = 'none';
+            
+            // Clean empty state string lines safely
+            const targetEmptyMsg = document.getElementById('empty-state-msg');
+            if (targetEmptyMsg) targetEmptyMsg.remove();
             
             const card = document.createElement('div');
             card.className = 'feed-item';
@@ -901,6 +938,7 @@
             container.scrollTop = container.scrollHeight;
         }
 
+        /* CLIO SYNCHRONIZATION IMMUTABILITY SEALS */
         async function executeMasterClioLock() {
             if (activeLocalTimelineData.length === 0) { alert("Ledger empty."); return; }
             const beacon = document.getElementById('pipeline-beacon');
@@ -922,6 +960,7 @@
                     beacon.style.backgroundColor = "var(--accent-teal)";
                     statusText.innerText = "Clio Connected";
 
+                    // LIVE RECOGNITION BLOCK ACTIVATION LINK
                     const prCard = document.getElementById('pattern-recognition-card');
                     prCard.style.opacity = "1";
                     prCard.style.pointerEvents = "auto";
