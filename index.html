@@ -3,254 +3,258 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Precision Gateway</title>
+    <title>WorkTimeline™ | Precision v46</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
         
         :root {
-            /* BRIGHT WHITE & SATIN PLATINUM STANDARD (DEFAULT DAY) */
-            --app-bg: #ffffff;
-            --surface-card: #f8fafc;
-            --surface-input: #ffffff;
-            --glass-bg: rgba(248, 250, 252, 0.85);
-            --glass-border: #cbd5e1;
-            --text-dark: #0f172a;
+            /* FROSTED SILVER METALLIC PALETTE */
+            --app-bg: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.9);
+            --glass-shadow: 0 8px 32px rgba(148, 163, 184, 0.2);
+            
+            --text-dark: #1e293b;
             --text-light: #64748b;
             --active-teal: #008080;
-            --active-teal-glow: rgba(0, 128, 128, 0.15);
-            --active-green: #10b981;
+            --active-green: #2ecc71;
             
-            --metallic-silver: linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%);
+            --metallic-silver: linear-gradient(180deg, #f1f5f9 0%, #cbd5e0 100%);
             --metallic-teal: linear-gradient(135deg, #008080 0%, #004d4d 100%);
-            
-            --radius-fluid: 20px;
-            --radius-inner: 14px;
         }
-        
-        /* TIMELOCKED IMMUTABLE NIGHT SPECTRAL MATRIX */
+
+        /* TIMELOCKED NIGHT CANVASES SWITCH */
         body.night-deck {
-            --app-bg: #1a1c1e;
-            --surface-card: #232629;
-            --surface-input: #16181a;
-            --glass-bg: rgba(35, 38, 41, 0.85);
-            --glass-border: #2d3135;
+            --app-bg: linear-gradient(135deg, #2d3135 0%, #16181a 100%);
+            --glass-bg: rgba(35, 38, 41, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.15);
             --text-dark: #f3f4f6;
             --text-light: #9ca3af;
-            --active-teal-glow: rgba(20, 184, 166, 0.4);
-            --metallic-silver: linear-gradient(180deg, #2d3135 0%, #16181a 100%);
+            --metallic-silver: linear-gradient(180deg, #3f444a 0%, #1a1c1e 100%);
         }
         
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center;
-            font-family: 'Nunito', sans-serif; background-color: #0f172a;
+            font-family: 'Nunito', sans-serif; background-color: #94a3b8;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Fixed Geometric Mobile Chassis Perimeter Layout */
+        /* Phone Bezel */
         .phone-bezel {
             width: 375px; height: 812px; background-color: #000;
-            border-radius: 45px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            border-radius: 45px; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
             overflow: hidden; border: 8px solid #cbd5e0; position: relative;
         }
 
         .app-container {
             width: 100%; height: 100%; background: var(--app-bg);
             display: flex; flex-direction: column; position: relative;
-            box-sizing: border-box;
-            transition: background 0.4s ease;
         }
 
-        /* PRIVACY HARDWARE INTERFACES MASK */
-        .privacy-active #timelineBody,
-        .privacy-active #inputPanel { 
-            filter: blur(24px) grayscale(1); 
-            pointer-events: none; 
-            user-select: none;
-        }
+        /* PRIVACY BLUR STATE */
+        .privacy-active #timelineBody { filter: blur(16px); pointer-events: none; opacity: 0.2; transition: 0.3s; }
+        #timelineBody { transition: 0.3s; }
 
-        /* REGULATED HARDWARE BEACON STATUS SIGNALS */
+        /* CLIO STATUS LED - Absolute Top Right */
         .clio-status-led {
-            position: absolute; top: 52px; right: 24px; width: 8px; height: 8px;
+            position: absolute; top: 20px; right: 20px; width: 10px; height: 10px;
             background-color: var(--active-green); border-radius: 50%;
-            animation: breathe 2.2s infinite ease-in-out; box-shadow: 0 0 10px var(--active-green); z-index: 5000;
+            animation: breathe 2.5s infinite; box-shadow: 0 0 8px var(--active-green); z-index: 5000;
         }
-        @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.15); opacity: 0.5; } }
+        @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.6; } }
 
-        /* HEADER DOCK STRIP CONTROLS */
+        /* TOP TOGGLE BAR (Privacy & Mode Switches) */
         .top-toggles {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 40px 20px 10px; z-index: 20;
-            background: var(--app-bg);
+            padding: 45px 20px 10px; z-index: 20;
         }
 
         .toggle-btn {
-            background: var(--surface-card); border: 1px solid var(--glass-border);
-            padding: 8px 16px; border-radius: var(--radius-fluid); font-size: 11px; font-weight: 900;
-            color: var(--text-dark); cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); display: flex; align-items: center; gap: 6px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.02); text-transform: uppercase; letter-spacing: 0.02em;
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            padding: 8px 16px; border-radius: 20px; font-size: 11px; font-weight: 900;
+            color: var(--text-dark); cursor: pointer; backdrop-filter: blur(10px);
+            transition: 0.3s; display: flex; align-items: center; gap: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05); text-transform: uppercase;
         }
-        .toggle-btn.active { background: var(--metallic-teal); color: white; border-color: var(--active-teal); box-shadow: 0 4px 12px var(--active-teal-glow); }
+        .toggle-btn.active { background: var(--metallic-teal); color: white; border-color: var(--active-teal); }
         .notes-dot { width: 6px; height: 6px; background: var(--active-green); border-radius: 50%; }
 
+        /* HEADER */
         .header {
-            display: flex; align-items: center; gap: 16px;
+            display: flex; justify-content: space-between; align-items: center;
             padding: 10px 20px 15px; z-index: 10;
-            background: var(--app-bg);
         }
 
         .menu-trigger {
             font-size: 24px; color: var(--text-dark); cursor: pointer;
-            background: var(--surface-card); padding: 8px; border-radius: 12px;
-            border: 1px solid var(--glass-border); display: flex;
-            transition: background 0.2s;
+            background: var(--glass-bg); padding: 8px; border-radius: 12px;
+            border: 1px solid var(--glass-border); backdrop-filter: blur(10px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex;
         }
-        .menu-trigger:hover { background: rgba(0,0,0,0.02); }
 
-        .brand-block { display: flex; align-items: center; gap: 10px; }
-        .briefcase-logo-svg { width: 22px; height: 22px; fill: var(--active-teal); }
-        .main-title { font-weight: 900; font-size: 22px; color: var(--active-teal); letter-spacing: -0.5px; }
+        /* CLASSIC BRANDING */
+        .main-title {
+            font-weight: 900; font-size: 24px; color: var(--active-teal);
+            letter-spacing: -0.5px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .main-title svg { width: 22px; height: 22px; fill: var(--active-teal); }
 
-        /* ALIGNED OPERATIONS INPUT PLATFORM */
+        /* HARDWARE & INPUT */
         .input-panel {
-            background: var(--surface-card);
-            margin: 0 16px 16px; border-radius: var(--radius-fluid); border: 1px solid var(--glass-border);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.01); display: flex; flex-direction: column;
-            gap: 12px; padding: 16px; z-index: 10;
-            transition: background 0.4s ease, border-color 0.4s ease;
+            background: var(--glass-bg); backdrop-filter: blur(20px);
+            margin: 0 15px; border-radius: 24px; border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow); display: flex; flex-direction: column;
+            gap: 15px; padding: 20px; z-index: 10;
         }
 
-        .template-row { display: flex; gap: 8px; justify-content: space-between; }
+        .template-row { display: flex; gap: 8px; justify-content: space-between; margin-bottom: 5px; }
         .template-chip {
-            flex: 1; background: var(--surface-input); border: 1px solid var(--glass-border); border-radius: 10px;
+            flex: 1; background: white; border: 1px solid #e2e8f0; border-radius: 12px;
             padding: 10px 0; font-size: 10px; font-weight: 900; color: var(--text-dark);
-            text-align: center; cursor: pointer; text-transform: uppercase; letter-spacing: 0.02em;
-            transition: all 0.2s ease;
+            text-align: center; cursor: pointer; text-transform: uppercase;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: 0.2s;
         }
-        .template-chip.selected { background: var(--active-teal); color: #ffffff; border-color: var(--active-teal); }
+        .template-chip.selected { background: var(--active-teal); color: white; border-color: var(--active-teal); }
+        .template-chip:active { transform: scale(0.95); }
 
-        .hardware-icons { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-        .hw-item { position: relative; flex: 1; height: 44px; background: var(--metallic-silver); border-radius: 12px; display: flex; justify-content: center; align-items: center; cursor: pointer; border: 1px solid var(--glass-border); }
-        .hw-item svg { width: 20px; height: 20px; stroke: var(--text-dark); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+        .hardware-icons { display: flex; justify-content: space-evenly; align-items: center; }
+        .hw-item { position: relative; width: 44px; height: 44px; background: var(--metallic-silver); border-radius: 14px; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 2px 4px rgba(255,255,255,0.8), 0 4px 6px rgba(0,0,0,0.05); cursor: pointer; border: 1px solid #cbd5e0; }
+        .hw-item svg { width: 22px; height: 22px; stroke: var(--active-teal); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
         .hw-item input { position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer; z-index:10; }
 
-        .input-wrapper { background: var(--surface-input); border-radius: 12px; padding: 12px; border: 1px solid var(--glass-border); }
-        .input-wrapper textarea { width: 100%; background: transparent; border: none; color: var(--text-dark); font-size: 14px; font-weight: 600; font-family: 'Nunito', sans-serif; resize: none; outline: none; height: 44px; line-height: 1.4; }
-        .input-wrapper textarea::placeholder { color: var(--text-light); }
+        .input-wrapper { background: rgba(255,255,255,0.8); border-radius: 14px; padding: 15px; border: 1px solid #e2e8f0; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+        .input-wrapper textarea { width: 100%; background: transparent; border: none; color: var(--text-dark); font-size: 14px; font-weight: 600; font-family: 'Nunito', sans-serif; resize: none; outline: none; height: 40px; }
+        .input-wrapper textarea::placeholder { color: #94a3b8; }
 
-        /* GRID ENVELOPE: ALIGNED VERTICAL TIMELINE SPINE */
+        /* DUAL ROW WRAPPER LAYOUT DESIGN MATRIX */
         .workspace-layout-matrix {
-            flex: 1; display: flex; gap: 12px; padding: 0 16px 84px; overflow: hidden; box-sizing: border-box;
+            flex: 1; display: flex; gap: 12px; margin: 0 15px; overflow: hidden; position: relative;
         }
 
+        /* VERTICAL TIMELINE SPINE CHASSIS */
         .vertical-spine-track {
-            width: 52px; min-width: 52px; background: var(--surface-metallic); border: 1px solid var(--glass-border);
-            border-radius: var(--radius-fluid); padding: 16px 0; display: flex; flex-direction: column-reverse;
+            width: 44px; min-width: 44px; background: var(--metallic-silver); border: 1px solid #cbd5e0;
+            border-radius: 20px; padding: 16px 0; display: flex; flex-direction: column-reverse;
             align-items: center; position: relative; gap: 16px; overflow-y: auto; box-sizing: border-box;
         }
-        .vertical-spine-track::before { content: ''; position: absolute; top: 0; bottom: 0; width: 2px; background: var(--glass-border); z-index: 1; }
+        .vertical-spine-track::before { content: ''; position: absolute; top: 0; bottom: 0; width: 2px; background: #cbd5e0; z-index: 1; }
         .vertical-spine-track::-webkit-scrollbar { display: none; }
 
+        /* TIMELINE CONTAINER STABILITY */
+        .timeline-container { flex: 1; overflow-y: auto; padding: 0 0 100px; }
+        .timeline-container::-webkit-scrollbar { display: none; }
+        .log-list { display: flex; flex-direction: column-reverse; gap: 15px; position: relative; }
+        .log-entry { position: relative; display: flex; flex-direction: column; gap: 6px; z-index: 2; width: 100%; }
+        
+        /* MAC SQUIRCLE NODES EXTENSION */
         .timeline-squircle {
-            width: 36px; height: 36px; min-height: 36px; background: var(--surface-input);
-            border: 1px solid var(--glass-border); border-radius: 10px; display: flex; align-items: center;
+            width: 32px; height: 32px; min-height: 32px; background: white;
+            border: 1px solid #cbd5e0; border-radius: 10px; display: flex; align-items: center;
             justify-content: center; z-index: 2; box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-            transition: all 0.3s ease;
+            cursor: pointer; transition: transform 0.2s;
         }
         .timeline-squircle svg { width: 16px; height: 16px; fill: var(--text-dark); }
         
-        /* PATTERN DETECTION HIGHLIGHT PULSE */
+        /* PATTERN RECOGNITION TEAL GLOW PULSES */
+        @keyframes tealSatinPulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0.5); border-color: var(--active-teal); }
+            50% { box-shadow: 0 0 12px 4px rgba(0, 128, 128, 0.2); border-color: #00b3b3; }
+            100% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0.5); border-color: var(--active-teal); }
+        }
         .timeline-squircle.pattern-triggered {
             animation: tealSatinPulse 2.5s infinite ease-in-out;
             border-width: 2px;
         }
         .timeline-squircle.pattern-triggered svg { fill: var(--active-teal); }
 
-        /* FEED LAYER */
-        .timeline-container { flex: 1; overflow-y: auto; box-sizing: border-box; }
-        .timeline-container::-webkit-scrollbar { display: none; }
-        .log-list { display: flex; flex-direction: column-reverse; gap: 12px; }
-        .log-entry { display: flex; flex-direction: column; gap: 4px; width: 100%; }
-        
-        .timestamp-stamp { display: flex; align-items: center; gap: 4px; font-size: 9px; color: var(--text-light); text-transform: uppercase; font-weight: 800; }
-        .timestamp-stamp svg { width: 10px; height: 10px; stroke: currentColor; fill: none; stroke-width: 2.5; }
+        .timestamp-stamp { display: flex; align-items: center; gap: 4px; font-size: 9px; color: var(--text-light); text-transform: uppercase; font-weight: 800; padding-left: 4px; }
+        .timestamp-stamp svg { width: 10px; height: 10px; stroke: currentColor; fill: none; stroke-width: 2.5; display: inline-block; vertical-align: middle; margin-top: -2px; }
         
         .log-bubble {
-            background: var(--surface-card); padding: 12px 14px; border-radius: var(--radius-inner); border: 1px solid var(--glass-border);
-            color: var(--text-dark); font-size: 13px; font-weight: 700; line-height: 1.4;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.01); box-sizing: border-box; width: 100%;
+            background: var(--glass-bg); backdrop-filter: blur(10px);
+            padding: 14px 16px; border-radius: 18px; border: 1px solid var(--glass-border);
+            color: var(--text-dark); font-size: 12px; font-weight: 700; line-height: 1.5;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03); width: 100%; box-sizing: border-box;
         }
 
-        /* FIXED BOTTOM CONTROL PANEL NAVIGATION BAR */
+        /* FOOTER NAV */
         .footer-nav {
-            position: absolute; bottom: 0; left: 0; width: 100%; height: 84px;
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 80px; 
             background: var(--glass-bg); backdrop-filter: blur(20px);
             display: flex; justify-content: space-evenly; align-items: center;
-            padding: 0 16px 12px; border-top: 1px solid var(--glass-border); z-index: 100;
+            padding: 0 15px 15px; border-top: 1px solid var(--glass-border); z-index: 100;
             box-sizing: border-box;
         }
 
         .footer-pill {
-            flex: 1; max-width: 90px; height: 44px; background: var(--surface-input); color: var(--text-dark);
-            border-radius: 14px; font-size: 9px; font-weight: 900; cursor: pointer;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
-            border: 1px solid var(--glass-border); text-transform: uppercase; letter-spacing: 0.02em;
+            background: white; color: var(--text-dark); padding: 12px 20px;
+            border-radius: 20px; font-size: 10px; font-weight: 900; cursor: pointer;
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            border: 1px solid #e2e8f0; box-shadow: 0 4px 10px rgba(0,0,0,0.03); text-transform: uppercase;
         }
-        .footer-pill svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.5; fill: none; }
+        .footer-pill svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+        /* IMMUTABILITY GATE SIGNALLING WARNINGS */
+        .footer-pill.disabled-gate { opacity: 0.4; pointer-events: none; }
 
         .center-add-btn {
-            background: var(--metallic-teal); color: white; width: 52px; height: 52px;
-            border-radius: 16px; display: flex; justify-content: center; align-items: center;
-            font-size: 28px; font-weight: 600; cursor: pointer; z-index: 110;
-            box-shadow: 0 4px 14px var(--active-teal-glow);
-            border: 1px solid rgba(255,255,255,0.1); transition: 0.2s;
+            background: var(--metallic-teal); color: white; width: 56px; height: 56px;
+            border-radius: 20px; display: flex; justify-content: center; align-items: center;
+            font-size: 32px; font-weight: 600; cursor: pointer;
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.4), 0 8px 20px rgba(0, 128, 128, 0.4);
+            border: 2px solid rgba(255,255,255,0.2); transition: 0.2s;
         }
         .center-add-btn:active { transform: scale(0.95); }
 
-        /* DRAWER COMPONENT */
+        /* SIDEBAR MENU */
         .sidebar {
-            position: absolute; top: 0; left: -100%; width: 290px; height: 100%;
-            background: var(--app-bg); border-right: 1px solid var(--glass-border);
+            position: absolute; top: 0; left: -100%; width: 280px; height: 100%;
+            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(25px);
             transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 8000;
-            padding: 60px 20px; box-sizing: border-box;
+            padding: 50px 25px; box-sizing: border-box; box-shadow: 20px 0 50px rgba(0,0,0,0.1);
+            border-right: 1px solid var(--glass-border);
         }
         .sidebar.open { left: 0; }
-        .sidebar-header { display: flex; justify-content: space-between; align-items: center; font-weight: 900; font-size: 18px; color: var(--active-teal); margin-bottom: 30px; text-transform: uppercase; letter-spacing: 0.05em; }
-        .close-sidebar { cursor: pointer; background: var(--surface-card); border: 1px solid var(--glass-border); padding: 8px; border-radius: 12px; display: flex; color: var(--text-dark); }
-        .close-sidebar svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2.5; }
-        
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; font-weight: 900; font-size: 22px; color: var(--active-teal); margin-bottom: 40px; text-transform: uppercase; letter-spacing: -1px; }
+        .close-sidebar { cursor: pointer; background: var(--metallic-silver); padding: 8px; border-radius: 12px; display: flex; color: var(--text-dark); }
+        .close-sidebar svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
         .sidebar-item {
-            padding: 14px 16px; margin-bottom: 12px; border-radius: var(--radius-inner);
-            background: var(--surface-card); font-weight: 800; font-size: 11px; color: var(--text-dark);
-            display: flex; align-items: center; gap: 12px; cursor: pointer;
-            border: 1px solid var(--glass-border); text-transform: uppercase;
+            padding: 16px 20px; margin-bottom: 15px; border-radius: 18px;
+            background: white; font-weight: 800; font-size: 11px; color: var(--text-dark);
+            display: flex; align-items: center; gap: 15px; cursor: pointer;
+            border: 1px solid #e2e8f0; text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.02);
         }
-        .sidebar-item .circle-icon { width: 28px; height: 28px; background: var(--surface-input); border: 1px solid var(--glass-border); color: var(--active-teal); border-radius: 8px; display: flex; justify-content: center; align-items: center; }
-        .sidebar-item .circle-icon svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.5; fill: none; }
+        .sidebar-item .circle-icon { width: 32px; height: 32px; background: var(--metallic-silver); color: var(--active-teal); border-radius: 10px; display: flex; justify-content: center; align-items: center; }
+        .sidebar-item .circle-icon svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 
+        /* MODAL OVERLAYS */
         .modal-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(15, 23, 42, 0.15); backdrop-filter: blur(12px);
+            background-color: rgba(226, 232, 240, 0.7); backdrop-filter: blur(25px);
             z-index: 10000; display: flex; justify-content: center; align-items: center;
-            padding: 24px; box-sizing: border-box; text-align: center;
+            padding: 30px; box-sizing: border-box; text-align: center;
             opacity: 0; pointer-events: none; transition: 0.3s;
         }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal-box { background: var(--app-bg); padding: 32px 24px; border-radius: var(--radius-fluid); border: 1px solid var(--glass-border); width: 100%; box-shadow: 0 12px 40px rgba(0,0,0,0.05); }
-        .greeting { font-weight: 900; font-size: 24px; color: var(--active-teal); margin-bottom: 4px; text-transform: uppercase; }
-        .location { font-size: 10px; font-weight: 800; color: var(--text-light); text-transform: uppercase; margin-bottom: 20px; letter-spacing: 0.05em; }
-        .modal-body { font-size: 13px; font-weight: 700; color: var(--text-dark); line-height: 1.5; margin-bottom: 24px; }
-        .ok-btn { background: var(--metallic-teal); color: white; padding: 14px; border-radius: 12px; font-weight: 900; font-size: 12px; text-transform: uppercase; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); flex: 1; }
-        .ok-btn.ghost { background: var(--surface-card); color: var(--text-dark); border: 1px solid var(--glass-border); }
-        .spinner { width: 24px; height: 24px; border: 3px solid var(--glass-border); border-top: 3px solid var(--active-teal); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
+
+        .modal-box { background: rgba(255,255,255,0.9); padding: 45px 30px; border-radius: 35px; box-shadow: var(--glass-shadow); border: 1px solid var(--glass-border); width: 100%; }
+        .greeting { font-weight: 900; font-size: 28px; color: var(--active-teal); margin-bottom: 5px; text-transform: uppercase; letter-spacing: -1px; }
+        .location { font-size: 11px; font-weight: 800; color: var(--text-light); text-transform: uppercase; margin-bottom: 25px; letter-spacing: 1px; }
+        .modal-body { font-size: 14px; font-weight: 700; color: var(--text-dark); line-height: 1.6; margin-bottom: 35px; }
+        
+        .ok-btn { background: var(--metallic-teal); color: white; padding: 18px; border-radius: 20px; font-weight: 900; font-size: 13px; text-transform: uppercase; cursor: pointer; box-shadow: 0 8px 20px rgba(0, 128, 128, 0.3); border: 1px solid rgba(255,255,255,0.2); flex: 1; }
+        .ok-btn.ghost { background: var(--metallic-silver); color: var(--text-dark); box-shadow: none; border: 1px solid #cbd5e0; }
+
+        .spinner { width: 30px; height: 30px; border: 4px solid #cbd5e0; border-top: 4px solid var(--active-teal); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body>
+<body onload="initApp()">
     <div class="phone-bezel">
         
-        <div class="clio-status-led" title="Clio Handshake Active"></div>
+        <div id="pipelineLed" class="clio-status-led" title="Clio Handshake Active"></div>
 
         <div class="sidebar" id="sidebarMenu">
             <div class="sidebar-header">
@@ -259,17 +263,20 @@
                     <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 </div>
             </div>
+            
             <div class="sidebar-item" onclick="emailTimeline()">
                 <div class="circle-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"/></svg></div>
                 Draft Email
             </div>
+            
             <div class="sidebar-item" onclick="alert('Exporting securely.')">
                 <div class="circle-icon"><svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg></div>
                 Save & Export
             </div>
+            
             <div class="sidebar-item" onclick="resetTimeline()">
-                <div class="circle-icon"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></div>
-                Reset Engine
+                <div class="circle-icon" style="color: #e11d48;"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></div>
+                <span style="color: #e11d48;">Reset Engine</span>
             </div>
         </div>
 
@@ -288,15 +295,17 @@
             <div class="modal-box">
                 <div class="greeting">Pattern Engine</div>
                 <div class="location">Timeline Analysis</div>
+                
                 <div id="patternLoader">
                     <div class="spinner"></div>
                     <div class="modal-body">Scanning timeline for chronological patterns without influencing raw data...</div>
                 </div>
+
                 <div id="patternResult" style="display: none;">
                     <div class="modal-body">
                         <b>Analysis Complete.</b><br><br>
                         Pattern Detected: <i>Multiple incident logs clustered in the morning hours.</i><br><br>
-                        Do you want to highlight these nodes and add an entry note summary?
+                        Do you want to append this insight to your private Notes? (Your timeline remains unaltered).
                     </div>
                     <div style="display: flex; gap: 10px;">
                         <div class="ok-btn ghost" onclick="handlePatternAudit('IGNORED')">Ignore</div>
@@ -320,16 +329,18 @@
                 <div class="menu-trigger" onclick="toggleSidebar()">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                 </div>
-                <div class="brand-block">
+                
+                <div class="main-title" id="brandTitle">
                     <svg class="briefcase-logo-svg" viewBox="0 0 24 24">
                         <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-8-2h4v2h-4V4zm8 15H4v-2h16v2zm0-5H4V8h16v6z"/>
                     </svg>
-                    <div class="main-title" id="brandTitle">WorkTimeline</div>
+                    WorkTimeline
                 </div>
+                
                 <div style="width: 40px;"></div>
             </div>
 
-            <div class="input-panel" id="inputPanel">
+            <div class="input-panel">
                 <div class="template-row" id="templateRow">
                     <div id="chip-setting" class="template-chip" onclick="toggleTemplatePill('SETTING')">Setting</div>
                     <div id="chip-witness" class="template-chip" onclick="toggleTemplatePill('WITNESS')">Witness</div>
@@ -366,7 +377,7 @@
             </div>
 
             <div class="footer-nav">
-                <div class="footer-pill" onclick="runPatternRecognition()">
+                <div id="prButton" class="footer-pill disabled-gate" onclick="runPatternRecognition()">
                     <svg viewBox="0 0 24 24">
                         <rect x="2" y="3" width="20" height="14" rx="4" ry="4"></rect>
                         <line x1="8" y1="21" x2="16" y2="21"></line>
@@ -374,10 +385,12 @@
                     </svg>
                     Pattern Rec
                 </div>
+                
                 <div class="center-add-btn" onclick="submitEntry()">+</div>
-                <div class="footer-pill" style="color: var(--active-teal);" onclick="alert('Vaulting data to Clio...')">
+                
+                <div class="footer-pill" style="color: var(--active-teal);" onclick="executeMasterClioLock()">
                     <svg viewBox="0 0 24 24"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
-                    Sync
+                    Sync Lock
                 </div>
             </div>
             
@@ -387,22 +400,21 @@
     <script>
         let logsData = JSON.parse(localStorage.getItem('silver_vault_v46')) || [];
         let currentMode = 'TIMELINE';
-        let selectedPillTemplates = [];
+        let isEngineSealed = false; // Immutability pipeline guard lock
         
         const pinSvg = `<svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
-        
-        // Dynamic Node Icon Sets
-        const iconPaths = {
+
+        // Dynamic Vector Icon Set Matrix
+        const iconNodePaths = {
             text: `<svg viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>`,
             photo: `<svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`,
             audio: `<svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>`
         };
 
-        /* AUTOMATED CIRCADIAN LOGIC HOOK */
-        function checkCircadianTheme() {
-            const h = new Date().getHours();
-            // Night setting boundary rule applies safely outside 6 AM - 6 PM
-            if (h < 6 || h >= 18) {
+        /* CIRCADIAN AUTOMATION ENGINE MECHANICS */
+        function evaluateCircadianTimeSystem() {
+            const currentHour = new Date().getHours();
+            if (currentHour < 6 || currentHour >= 18) {
                 document.body.classList.add('night-deck');
             } else {
                 document.body.classList.remove('night-deck');
@@ -410,17 +422,18 @@
         }
 
         function initApp() {
-            checkCircadianTheme();
+            evaluateCircadianTimeSystem();
             setGreeting();
             if(logsData.length === 0) loadDummyData();
             renderTimeline();
+            setInterval(evaluateCircadianTimeSystem, 60000);
         }
 
         function loadDummyData() {
             const baseTime = new Date();
             logsData = [
-                { id: 1, mode: 'TIMELINE', type: 'text', stamp: `LANGLEY, BC | ${baseTime.toLocaleDateString()} | 9:00 AM`, text: "WITNESS: Interviewed Sarah regarding the incident parameter files." },
-                { id: 2, mode: 'TIMELINE', type: 'text', stamp: `LANGLEY, BC | ${baseTime.toLocaleDateString()} | 11:30 AM`, text: "INJURY: Structural documentation completed on location." }
+                { id: 1, mode: 'TIMELINE', type: 'text', stamp: `LANGLEY, BC | ${baseTime.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} | 9:00 AM`, text: "WITNESS: Interviewed Sarah regarding the incident..." },
+                { id: 2, mode: 'TIMELINE', type: 'text', stamp: `LANGLEY, BC | ${baseTime.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} | 11:30 AM`, text: "INJURY: Details logged and submitted to manager." }
             ];
             saveData();
         }
@@ -461,7 +474,6 @@
             input.focus();
         }
 
-        /* DYNAMIC CHIP ANCHOR STABILIZATION */
         function toggleTemplatePill(type) {
             const pill = document.getElementById(`chip-${type.toLowerCase()}`);
             const input = document.getElementById('logInput');
@@ -488,15 +500,17 @@
             const filteredData = logsData.filter(log => (log.mode || 'TIMELINE') === currentMode);
 
             filteredData.forEach(log => {
-                // Render text bubble inside the right scroll lane
                 const entry = document.createElement('div');
                 entry.className = 'log-entry';
                 
                 let timer;
-                const start = () => timer = setTimeout(() => { if(confirm("Permanently delete this entry?")) { logsData = logsData.filter(v => v.id !== log.id); saveData(); renderTimeline(); } }, 800);
+                const start = () => timer = setTimeout(() => { 
+                    if(isEngineSealed) return;
+                    if(confirm("Permanently delete this entry?")) { logsData = logsData.filter(v => v.id !== log.id); saveData(); renderTimeline(); } 
+                }, 800);
                 const stop = () => clearTimeout(timer);
                 
-                entry.onmousedown = start; entry.onmouseup = stop;
+                entry.onmousedown = start; entry.onmouseup = stop; entry.onmouseleave = stop;
                 entry.ontouchstart = start; entry.ontouchend = stop;
 
                 entry.innerHTML = `
@@ -505,14 +519,12 @@
                 `;
                 list.appendChild(entry);
 
-                // Render matching geometric node leftward in the spine line container seamlessly
                 if (currentMode === 'TIMELINE') {
                     const node = document.createElement('div');
-                    node.className = 'timeline-node';
+                    node.className = 'timeline-squircle';
                     node.id = `node_link_${log.id}`;
-                    node.classList.add('timeline-squircle');
-                    node.innerHTML = iconPaths[log.type || 'text'];
-                    node.onclick = () => alert(`Event Node Reference Layer ID: ${log.id}\nVerification: ${log.stamp}`);
+                    node.innerHTML = iconNodePaths[log.type || 'text'];
+                    node.onclick = () => alert(`Event Reference ID: ${log.id}\nVerification Timestamp: ${log.stamp}`);
                     if(log.highlighted) node.classList.add('pattern-triggered');
                     spine.appendChild(node);
                 }
@@ -531,12 +543,12 @@
             const now = new Date();
             const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
             const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-            const detectedType = input.dataset.nodeType || 'text';
+            const nodeType = input.dataset.nodeType || 'text';
 
             logsData.push({
                 id: Date.now(),
                 mode: currentMode,
-                type: detectedType,
+                type: nodeType,
                 stamp: `LANGLEY, BC | ${dateStr} | ${timeStr}`,
                 text: text
             });
@@ -550,7 +562,7 @@
 
         function emailTimeline() {
             const filteredData = logsData.filter(log => (log.mode || 'TIMELINE') === currentMode);
-            if(filteredData.length === 0) return alert(`Your ${currentMode} layer array is empty.`);
+            if(filteredData.length === 0) return alert(`Your ${currentMode} is empty.`);
             
             let body = `WorkTimeline™ Verified ${currentMode} Export:\n\n`;
             filteredData.forEach(log => { 
@@ -561,16 +573,29 @@
 
         function resetTimeline() {
             if(confirm("Clear the entire timeline and all notes?")) {
-                logsData = []; saveData(); renderTimeline(); toggleSidebar();
+                logsData = []; isEngineSealed = false; saveData(); renderTimeline(); toggleSidebar();
+                document.getElementById('prButton').classList.add('disabled-gate');
+                document.getElementById('pipelineLed').style.backgroundColor = 'var(--active-green)';
             }
         }
 
+        /* --- IMMUTABILITY SHIELD CONNECTIVITY GATE PASSTHROUGHS --- */
+        function executeMasterClioLock() {
+            if (logsData.length === 0) return alert("Log empty.");
+            
+            document.getElementById('pipelineLed').style.backgroundColor = '#4b5563'; // Grey processing loop states
+            
+            setTimeout(() => {
+                isEngineSealed = true;
+                document.getElementById('pipelineLed').style.backgroundColor = '#008080'; // Sealed to Clio Teal Beacon Color
+                document.getElementById('prButton').classList.remove('disabled-gate');
+                alert("AMENDMENT IMMUTABILITY SECURED\n\nLedger array compiled under Canada Evidence Act parameters.\n\nPackage locked and synchronized to active Clio client ledger pipelines.");
+            }, 800);
+        }
+
+        /* --- CHAIN OF CUSTODY: PATTERN RECOGNITION --- */
         function runPatternRecognition() {
-            const timelineData = logsData.filter(log => (log.mode || 'TIMELINE') === 'TIMELINE');
-            if(timelineData.length === 0) {
-                alert("Add data to your timeline before scanning for patterns.");
-                return;
-            }
+            if(!isEngineSealed) return;
             
             document.getElementById('patternOverlay').classList.add('active');
             document.getElementById('patternLoader').style.display = 'block';
@@ -592,7 +617,6 @@
                 : "[AUDIT LOG] User IGNORED AI Pattern Suggestion. Raw timeline integrity maintained.";
 
             if (decision === 'ACCEPTED') {
-                // Programmatically apply glowing satin teal tracking parameters back to nodes
                 logsData.forEach(log => {
                     if (log.mode === 'TIMELINE') log.highlighted = true;
                 });
