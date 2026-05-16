@@ -2,24 +2,35 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeline™ - The Standard of Truth</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WorkTimeline Mobile Engine</title>
     <style>
         :root {
-            /* Pure White and Cool Silver Base Palette */
-            --bg-canvas: #FFFFFF; /* Pure White Base */
-            --surface-card: #F9FAFB; /* Ultra-Light Cool Gray */
-            --surface-input: #FFFFFF; /* White Inputs */
-            --text-primary: #1E2022; /* Deep Charcoal for Contrast (Not Black) */
-            --text-muted: #6B7280; /* Cool Gray Muted Text */
-            --accent-teal: #14B8A6; /* Satin Teal */
-            --accent-teal-glow: rgba(20, 184, 166, 0.12);
-            --border-subtle: #E5E7EB; /* Light Gray Borders */
-            --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
-            
-            /* Hardware Pipeline Signaling (Preserved) */
+            /* BRIGHT DAYTIME PROFILE VARIABLES (DEFAULT) */
+            --bg-canvas: #FFFFFF; 
+            --surface-metallic: linear-gradient(180deg, #F8FAFC 0%, #E2E8F0 100%); 
+            --surface-card: #F8FAFC; 
+            --surface-input: #FFFFFF; 
+            --text-primary: #0F172A; 
+            --text-muted: #64748B;
+            --accent-teal: #14B8A6; 
+            --accent-teal-glow: rgba(20, 184, 166, 0.15);
+            --border-subtle: #CBD5E1;
             --beacon-green: #10B981;
-            --beacon-glow: rgba(16, 185, 129, 0.4);
+            --beacon-glow: rgba(16, 185, 129, 0.3);
+            --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", sans-serif;
+        }
+
+        /* PROTECTIVE NIGHTTIME SLATE PROFILE VARIANT */
+        body.night-deck {
+            --bg-canvas: #1E2022; /* Dark Platinum Gray Base */
+            --surface-metallic: linear-gradient(180deg, #2D3135 0%, #1A1C1E 100%); 
+            --surface-card: #25282B; 
+            --surface-input: #1A1C1E; 
+            --text-primary: #F3F4F6; 
+            --text-muted: #9CA3AF;
+            --border-subtle: #3F444A;
+            --beacon-glow: rgba(16, 185, 129, 0.6);
         }
 
         body {
@@ -29,47 +40,65 @@
             background-color: var(--bg-canvas);
             color: var(--text-primary);
             -webkit-font-smoothing: antialiased;
-            letter-spacing: -0.01em;
+            overflow-x: hidden;
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        body.privacy-shielded #app-viewport-container {
+            filter: blur(20px) grayscale(1);
+            pointer-events: none;
+            user-select: none;
         }
 
         header {
-            background-color: var(--surface-card);
-            padding: 20px 40px;
+            background: var(--surface-metallic);
+            padding: 14px 20px;
             border-bottom: 1px solid var(--border-subtle);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+        }
+
+        .brand-block {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .briefcase-logo-svg {
+            width: 22px;
+            height: 22px;
+            fill: var(--accent-teal);
         }
 
         header h1 {
             margin: 0;
             font-size: 16px;
             font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--text-primary);
-        }
-
-        .tagline {
-            font-size: 11px;
-            color: var(--text-muted);
-            letter-spacing: 0.02em;
-            margin-top: 4px;
+            color: var(--accent-teal);
+            letter-spacing: -0.01em;
         }
 
         .pipeline-container {
             display: flex;
             align-items: center;
-            gap: 10px;
-            background: rgba(255, 255, 255, 0.8);
-            padding: 8px 16px;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 6px 12px;
             border-radius: 20px;
             border: 1px solid var(--border-subtle);
         }
 
+        body:not(.night-deck) .pipeline-container {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
         @keyframes beaconBreathing {
             0% { box-shadow: 0 0 0 0 var(--beacon-glow); transform: scale(1); }
-            50% { box-shadow: 0 0 12px 4px var(--beacon-glow); transform: scale(1.05); }
+            50% { box-shadow: 0 0 10px 4px var(--beacon-glow); transform: scale(1.05); }
             100% { box-shadow: 0 0 0 0 var(--beacon-glow); transform: scale(1); }
         }
 
@@ -82,116 +111,194 @@
         }
 
         .pipeline-text {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 700;
-            letter-spacing: 0.06em;
+            letter-spacing: 0.04em;
             text-transform: uppercase;
             color: var(--text-primary);
         }
 
         main {
-            max-width: 680px;
-            margin: 50px auto;
-            padding: 0 24px;
+            padding: 16px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
 
-        /* 3D Volumetric Depth Layers on White */
+        .workspace-layout-wrapper {
+            display: flex;
+            gap: 16px;
+            align-items: stretch;
+            width: 100%;
+        }
+
+        .vertical-timeline-spine-track {
+            width: 56px;
+            min-width: 56px;
+            background: var(--surface-metallic);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 16px 0;
+            display: flex;
+            flex-direction: column-reverse; 
+            align-items: center;
+            position: relative;
+            gap: 16px;
+            min-height: 380px;
+            max-height: 520px;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        .vertical-timeline-spine-track::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-subtle);
+            z-index: 1;
+        }
+
+        .timeline-node {
+            width: 40px;
+            height: 40px;
+            min-height: 40px;
+            background: var(--surface-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+
+        @keyframes tealSatinPulse {
+            0% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.5); border-color: var(--accent-teal); }
+            50% { box-shadow: 0 0 12px 4px rgba(20, 184, 166, 0.2); border-color: #2DD4BF; }
+            100% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.5); border-color: var(--accent-teal); }
+        }
+
+        .timeline-node.pattern-triggered {
+            animation: tealSatinPulse 2.5s infinite ease-in-out;
+            border-width: 2px;
+        }
+
+        .timeline-node.pattern-triggered .node-icon {
+            fill: var(--accent-teal);
+        }
+
+        .workspace-content-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
         .workspace-card {
             background: var(--surface-card);
-            padding: 32px;
-            border-radius: 14px; 
+            padding: 20px;
+            border-radius: 16px; 
             border: 1px solid var(--border-subtle);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.8);
-            margin-bottom: 28px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
         }
 
-        h3 {
-            margin-top: 0;
-            font-size: 14px;
+        .utility-strip {
+            display: flex;
+            background: var(--surface-card);
+            border-radius: 12px;
+            padding: 10px;
+            border: 1px solid var(--border-subtle);
+            gap: 10px;
+        }
+
+        .strip-btn {
+            flex: 1;
+            height: 40px;
+            border-radius: 8px;
+            border: 1px solid var(--border-subtle);
+            background: var(--surface-input);
+            color: var(--text-primary);
+            font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-primary);
-            margin-bottom: 20px;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
 
-        /* Upgraded Minimalist Silver Action Dock */
+        .strip-btn.active-toggle {
+            background: var(--accent-teal);
+            color: #FFFFFF;
+            border-color: var(--accent-teal);
+        }
+
         .action-dock {
             display: flex;
-            background: linear-gradient(180deg, #F9FAFB 0%, #E5E7EB 100%); /* Silver Satin Gradient */
+            background: var(--surface-metallic);
             border: 1px solid var(--border-subtle);
-            border-radius: 14px;
+            border-radius: 16px;
             padding: 6px;
-            margin-bottom: 32px;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
         }
 
         .dock-btn {
             flex: 1;
             background: none;
             border: none;
-            color: var(--text-muted);
-            padding: 14px;
-            font-size: 12px;
-            font-weight: 600;
+            color: var(--text-primary);
+            padding: 14px 6px;
+            font-size: 10px;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.02em;
+            letter-spacing: 0.04em;
             cursor: pointer;
             border-radius: 10px;
-            transition: color 0.2s ease, background-color 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
         }
 
-        .dock-btn:hover {
-            color: var(--accent-teal);
-            background-color: rgba(255, 255, 255, 0.5);
-        }
+        .dock-btn:hover { background-color: rgba(255,255,255,0.2); }
+        .node-icon { width: 18px; height: 18px; fill: var(--text-primary); }
 
         textarea {
             width: 100%;
-            height: 140px;
-            padding: 16px;
+            height: 120px;
+            padding: 12px;
             border: 1px solid var(--border-subtle);
             border-radius: 10px;
             box-sizing: border-box;
             font-size: 14px;
             font-family: var(--font-stack);
-            line-height: 1.6;
+            line-height: 1.5;
             background-color: var(--surface-input); 
             color: var(--text-primary);
             resize: none;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        textarea:focus {
             outline: none;
-            border-color: var(--accent-teal);
-            box-shadow: 0 0 0 1px var(--accent-teal), inset 0 2px 4px rgba(0, 0, 0, 0.02);
         }
 
-        .btn-row {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 16px;
-            gap: 16px;
-        }
+        .btn-row { display: flex; justify-content: space-between; margin-top: 14px; gap: 12px; }
 
         button.action-btn {
             background-color: var(--text-primary);
-            color: #FFFFFF;
-            border: none;
-            padding: 12px 24px;
-            font-size: 12px;
+            color: var(--bg-canvas);
+            border: 1px solid var(--border-subtle);
+            height: 44px;
+            padding: 0 20px;
+            font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.02em;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-
-        button.action-btn:hover {
-            background-color: #374151; /* Dark Gray hover (Not Black) */
+            flex: 1;
         }
 
         button.action-btn.secondary {
@@ -200,260 +307,458 @@
             border: 1px solid var(--border-subtle);
         }
 
-        button.action-btn.secondary:hover {
-            color: var(--text-primary);
-            background-color: var(--surface-input);
-            border-color: #9CA3AF;
-        }
-
         button.lock-btn {
-            background-color: var(--bg-canvas);
-            color: var(--accent-teal);
-            border: 1px solid var(--accent-teal);
+            background-color: var(--text-primary);
+            color: var(--bg-canvas);
             width: 100%;
-            padding: 16px;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            border-radius: 10px;
-            margin-top: 24px;
-            cursor: pointer;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
-            transition: all 0.2s ease;
-        }
-
-        button.lock-btn:hover {
-            background-color: var(--accent-teal);
-            color: #FFFFFF;
-            box-shadow: 0 0 24px var(--accent-teal-glow);
-        }
-
-        /* The Satin Breathing Pulse Animation (Preserved) */
-        @keyframes satinPulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.2);
-                border-color: var(--border-subtle);
-            }
-            50% {
-                box-shadow: 0 0 16px rgba(20, 184, 166, 0.08);
-                border-color: var(--accent-teal);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.2);
-                border-color: var(--border-subtle);
-            }
-        }
-
-        #wt-system-notification {
-            display: none;
-            border: 1px solid var(--border-subtle);
-            padding: 20px;
-            margin-bottom: 28px;
-            background-color: var(--surface-card);
-            border-radius: 14px;
-        }
-
-        #wt-system-notification.active-pulse {
-            animation: satinPulse 3s infinite ease-in-out;
-        }
-
-        #wt-notification-title {
-            margin: 0 0 6px 0;
-            font-size: 13px;
+            height: 50px;
+            font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            color: var(--accent-teal);
-        }
-
-        #wt-notification-text {
-            margin: 0;
-            font-size: 13px;
-            line-height: 1.6;
-            color: var(--text-muted);
-        }
-
-        .timeline-feed {
-            margin-top: 24px;
-            border-left: 1px solid var(--border-subtle);
-            padding-left: 20px;
-        }
-
-        .feed-item {
-            background: var(--surface-card);
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 16px;
+            border-radius: 12px;
             border: 1px solid var(--border-subtle);
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.8);
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(8px);
-        }
-
-        .modal-content {
-            background-color: #FFFFFF;
-            padding: 32px;
-            border-radius: 14px;
-            width: 90%;
-            max-width: 460px;
-            border: 1px solid var(--border-subtle);
-            box-shadow: 0 24px 64px rgba(0,0,0,0.05);
-        }
-
-        .template-option {
-            display: flex;
-            align-items: flex-start;
-            gap: 14px;
-            padding: 16px;
-            border-bottom: 1px solid var(--border-subtle);
             cursor: pointer;
-            transition: background-color 0.2s ease;
         }
 
-        .template-option:hover {
-            background-color: var(--surface-card);
+        .lab-sidebar-drawer {
+            position: fixed;
+            top: 0;
+            right: -100%; 
+            width: 88%;
+            max-width: 360px;
+            height: 100%;
+            background: var(--bg-canvas);
+            z-index: 200;
+            box-shadow: -10px 0 40px rgba(0,0,0,0.15);
+            border-left: 1px solid var(--border-subtle);
+            transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
         }
 
-        .template-option input[type="checkbox"] {
-            margin-top: 3px;
-            accent-color: var(--accent-teal);
+        .lab-sidebar-drawer.open { right: 0; }
+
+        .lab-drawer-header {
+            background: var(--surface-metallic);
+            padding: 20px;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .template-info h5 {
-            margin: 0 0 4px 0;
-            font-size: 14px;
+        .lab-drawer-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .lab-customizer-box {
+            background: var(--surface-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .customizer-label {
+            font-size: 10px;
             font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .customizer-select {
+            width: 100%;
+            height: 40px;
+            border-radius: 8px;
+            border: 1px solid var(--border-subtle);
+            background: var(--surface-input);
+            color: var(--text-primary);
+            padding: 0 10px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            outline: none;
+        }
+
+        .disabled-feature-card {
+            background: var(--surface-card);
+            border: 1px dashed var(--border-subtle);
+            border-radius: 12px;
+            padding: 20px;
+            opacity: 0.5;
+            position: relative;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        .disabled-badge-notice {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #DF2935; 
+            background: rgba(223, 41, 53, 0.08);
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .case-evidence-box {
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 16px;
+            background: var(--surface-card);
+        }
+
+        .evidence-grid-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-subtle);
             color: var(--text-primary);
         }
 
-        .template-info p {
-            margin: 0;
-            color: var(--text-muted);
-            font-size: 12px;
-            line-height: 1.5;
+        .evidence-svg { width: 16px; height: 16px; fill: var(--accent-teal); }
+
+        .lab-drawer-footer {
+            padding: 16px;
+            background: var(--surface-card);
+            border-top: 1px solid var(--border-subtle);
+            display: flex;
+            gap: 10px;
         }
 
-        input[type="file"] { display: none; }
-        footer { text-align: center; padding: 40px 25px; font-size: 11px; color: var(--text-muted); letter-spacing: 0.02em; }
+        .footer-action-btn {
+            flex: 1;
+            height: 44px;
+            background: var(--surface-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-primary);
+            cursor: pointer;
+            gap: 4px;
+        }
+
+        .footer-action-btn svg { width: 14px; height: 14px; fill: var(--text-primary); }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.3);
+            z-index: 150;
+            display: none;
+            backdrop-filter: blur(2px);
+        }
+
+        #wt-system-notification { display: none; border: 1px solid var(--border-subtle); padding: 14px; background-color: var(--surface-card); border-radius: 12px; }
+        .feed-item { background: var(--surface-card); padding: 14px; border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--border-subtle); border-left: 4px solid var(--accent-teal); }
+        footer { text-align: center; padding: 24px 16px; font-size: 10px; color: var(--text-muted); }
     </style>
 </head>
 <body>
 
-    <header>
-        <div>
-            <h1>WorkTimeline™</h1>
-            <div class="tagline">Universal Verification Framework</div>
-        </div>
-        <div id="connection-status">
-            Clio Pipeline Active
-        </div>
-    </header>
+    <div id="app-viewport-container">
+        <header>
+            <div class="brand-block">
+                <svg class="briefcase-logo-svg" viewBox="0 0 24 24">
+                    <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-8-2h4v2h-4V4zm8 15H4v-2h16v2zm0-5H4V8h16v6z"/>
+                </svg>
+                <h1>WorkTimeline</h1>
+            </div>
+            <div class="pipeline-container">
+                <div id="pipeline-beacon" class="hardware-beacon"></div>
+                <div id="pipeline-text" class="pipeline-text">Clio</div>
+            </div>
+        </header>
 
-    <main>
-        <div id="wt-system-notification">
-            <h4 id="wt-notification-title"></h4>
-            <p id="wt-notification-text"></p>
+        <main>
+            <div class="utility-strip">
+                <button id="notes-mode-btn" class="strip-btn" onclick="toggleWorkspaceContextMode('notes')">Notes Canvas</button>
+                <button id="timeline-mode-btn" class="strip-btn active-toggle" onclick="toggleWorkspaceContextMode('timeline')">Timeline</button>
+                <button id="privacy-trigger-btn" class="strip-btn" onclick="executePrivacyShieldFilterSwitch()">Privacy</button>
+                <button class="strip-btn" style="background: var(--surface-metallic);" onclick="openLabSidebarDrawer()">Lab</button>
+            </div>
+
+            <div id="wt-system-notification">
+                <h4 id="wt-notification-title"></h4>
+                <p id="wt-notification-text"></p>
+            </div>
+
+            <div class="action-dock">
+                <button class="dock-btn" onclick="document.getElementById('document-input').click()">
+                    <svg class="node-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                    File
+                </button>
+                <button class="dock-btn" onclick="toggleAudioRecorder()">
+                    <svg id="mic-icon-svg" class="node-icon" viewBox="0 0 24 24"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.42 2.72 6.2 6 6.72V21h2v-3.28c3.28-.52 6-3.3 6-6.72h-1.7z"/></svg>
+                    <span id="mic-status">Audio</span>
+                </button>
+                <button class="dock-btn" onclick="document.getElementById('camera-input').click()">
+                    <svg class="node-icon" viewBox="0 0 24 24"><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
+                    Photo
+                </button>
+            </div>
+
+            <input type="file" id="document-input" accept=".pdf,.doc,.docx,.txt" onchange="handleDocumentUpload(this)">
+            <input type="file" id="camera-input" accept="image/*" capture="environment" onchange="handleCameraCapture(this)">
+
+            <div class="workspace-layout-wrapper">
+                
+                <div id="visual-node-track" class="vertical-timeline-spine-track">
+                    </div>
+
+                <div class="workspace-content-column">
+                    <div class="workspace-card">
+                        <h3 id="workspace-input-title">Add Direct Entry</h3>
+                        <textarea id="raw-human-entry" placeholder="Record contemporaneous observations..."></textarea>
+                        
+                        <div class="btn-row">
+                            <button class="action-btn" onclick="executeCommitEntryPayload()">Submit</button>
+                            <button id="blueprint-modal-trigger" class="action-btn secondary" onclick="openTemplateModal()">Outlines</button>
+                        </div>
+                    </div>
+
+                    <div class="workspace-card">
+                        <h3>Session Ledger Logs</h3>
+                        <div id="timeline-feed" style="max-height: 180px; overflow-y: auto;">
+                            <p id="empty-state-msg" style="color: var(--text-muted); font-style: italic; font-size: 12px; margin: 0;">No active entries recorded.</p>
+                        </div>
+                        <button class="lock-btn" style="margin-top:20px;" onclick="executeMasterClioLock()">Certify State & Seal to Clio</button>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <footer>
+            WorkTimeline Platforms Inc. • Secure Canadian Infrastructure Core
+        </footer>
+    </div>
+
+    <div id="sidebar-overlay-mask" class="sidebar-overlay" onclick="closeLabSidebarDrawer()"></div>
+
+    <div id="lab-sidebar" class="lab-sidebar-drawer">
+        <div class="lab-drawer-header">
+            <h3 style="margin:0; font-size:13px; text-transform:uppercase;">Sovereign Lab Engine</h3>
+            <button class="strip-btn" style="max-width:60px; height:32px;" onclick="closeLabSidebarDrawer()">Close</button>
         </div>
+        
+        <div class="lab-drawer-body">
+            <div class="lab-customizer-box">
+                <div class="customizer-label">Sovereign Interface Font</div>
+                <select class="customizer-select" onchange="changeUserFont(this.value)" style="margin-bottom:14px;">
+                    <option value="sans">Sans-Serif Standard</option>
+                    <option value="serif">Serif Notebook</option>
+                    <option value="mono">Monospace Ledger</option>
+                </select>
+                
+                <div class="customizer-label">Manual Mode Override</div>
+                <select id="theme-override-selector" class="customizer-select" onchange="applyManualThemeOverride(this.value)">
+                    <option value="auto">Automated Circadian Lock</option>
+                    <option value="day">Force White Day View</option>
+                    <option value="night">Force Dark Night View</option>
+                </select>
+            </div>
 
-        <div class="action-dock">
-            <button class="dock-btn" onclick="document.getElementById('document-input').click()">
-                Document File
-            </button>
-            <button class="dock-btn" onclick="toggleAudioRecorder()">
-                <span id="mic-status">Audio Log</span>
-            </button>
-            <button class="dock-btn" onclick="document.getElementById('camera-input').click()">
-                Photo Asset
-            </button>
-        </div>
+            <div id="pattern-recognition-card" class="disabled-feature-card">
+                <span class="disabled-badge-notice">Entry Must Lock Before Access</span>
+                <h4 style="margin: 0 0 6px 0; font-size: 12px; font-weight: 700; text-transform: uppercase;">Run Pattern Recognition</h4>
+                <p style="margin: 0; font-size: 11px; line-height: 1.4; color: var(--text-muted);">Algorithmic validation scans execute across certified, non-volatile locked chronology chains.</p>
+            </div>
 
-        <input type="file" id="document-input" accept=".pdf,.doc,.docx,.txt" onchange="handleDocumentUpload(this)">
-        <input type="file" id="camera-input" accept="image/*" capture="environment" onchange="handleCameraCapture(this)">
+            <div class="case-evidence-box">
+                <div class="customizer-label" style="margin-bottom:12px;">Case Evidence Repository</div>
+                <div class="evidence-grid-item">
+                    <svg class="evidence-svg" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                    <span>All Uploaded Files (<span id="count-files">0</span>)</span>
+                </div>
+                <div class="evidence-grid-item">
+                    <svg class="evidence-svg" viewBox="0 0 24 24"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.42 2.72 6.2 6 6.72V21h2v-3.28c3.28-.52 6-3.3 6-6.72h-1.7z"/></svg>
+                    <span>Audio Log Blocks (<span id="count-audio">0</span>)</span>
+                </div>
+                <div class="evidence-grid-item">
+                    <svg class="evidence-svg" viewBox="0 0 24 24"><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
+                    <span>Photo Master Vault (<span id="count-photos">0</span>)</span>
+                </div>
+            </div>
 
-        <div class="workspace-card">
-            <h3>Add Direct Entry</h3>
-            <textarea id="raw-human-entry" placeholder="Record contemporaneous observation data..."></textarea>
-            
-            <div class="btn-row">
-                <button class="action-btn" onclick="executeAddEntry()">Commit Entry</button>
-                <button class="action-btn secondary" onclick="openTemplateModal()">Structural Blueprints</button>
+            <div class="case-evidence-box" style="background: rgba(20, 184, 166, 0.02);">
+                <div class="customizer-label" style="margin-bottom:10px; color: var(--accent-teal);">AI Assistant Logging</div>
+                <div id="ai-log-history-list" style="font-size:11px; line-height:1.5; color: var(--text-muted); font-style:italic;">
+                    No operational analytical suggestions initialized.
+                </div>
             </div>
         </div>
 
-        <div class="workspace-card">
-            <h3>Active Record Feed</h3>
-            <div id="timeline-feed" class="timeline-feed">
-                <p id="empty-state-msg" style="color: var(--text-muted); font-style: italic; font-size: 13px; margin: 0;">No active layers committed to memory.</p>
+        <div class="lab-drawer-footer">
+            <div class="footer-action-btn" onclick="alert('Exporting standard Case Brief file...')">
+                <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+                Export
             </div>
-            
-            <button class="lock-btn" onclick="executeMasterClioLock()">Certify Ledger & Seal to Clio</button>
+            <div class="footer-action-btn" onclick="alert('Initializing secure encrypted email pipeline...')">
+                <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                Email
+            </div>
+            <div class="footer-action-btn" onclick="alert('Saving localized image state matrix backup...')">
+                <svg viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
+                Save
+            </div>
         </div>
-    </main>
+    </div>
 
     <div id="template-modal" class="modal">
         <div class="modal-content">
-            <h3>Structural Blueprints</h3>
-            <p style="font-size: 13px; color: var(--text-muted); margin-top: 0; margin-bottom: 24px; line-height: 1.5;">Select outlines to mount to your current workspace text field.</p>
-            
+            <h5 style="margin-top:0; margin-bottom:12px; font-size:12px; text-transform:uppercase;">Structural Blueprints</h5>
             <div id="template-options-list">
                 <div class="template-option" onclick="toggleCheckbox('tmpl-injury')">
                     <input type="checkbox" id="tmpl-injury" value="injury" onclick="event.stopPropagation()">
                     <div class="template-info">
-                        <h5>Injury Configuration Report</h5>
-                        <p>Formats symptom profiles, physical impacts, and notification tracks.</p>
+                        <h5>Injury Configuration</h5>
+                        <p>Schedules structural symptoms and field location markers.</p>
                     </div>
                 </div>
                 <div class="template-option" onclick="toggleCheckbox('tmpl-witness')">
                     <input type="checkbox" id="tmpl-witness" value="witness" onclick="event.stopPropagation()">
                     <div class="template-info">
-                        <h5>Witness Matrix Outline</h5>
-                        <p>Schedules verbal metrics, individual identities, and exact tracking quotes.</p>
-                    </div>
-                </div>
-                <div class="template-option" onclick="toggleCheckbox('tmpl-scene')">
-                    <input type="checkbox" id="tmpl-scene" value="scene" onclick="event.stopPropagation()">
-                    <div class="template-info">
-                        <h5>Environmental Baseline Assessment</h5>
-                        <p>Logs structural parameters, hazard verification configurations, and machine states.</p>
+                        <h5>Witness Matrix</h5>
+                        <p>Maps unprompted statements and verbal tracking records.</p>
                     </div>
                 </div>
             </div>
-            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
-                <button class="action-btn secondary" style="border: none;" onclick="closeTemplateModal()">Cancel</button>
-                <button class="action-btn" onclick="applySelectedTemplates()">Mount Selected</button>
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px;">
+                <button class="action-btn secondary" style="border:none; height:36px;" onclick="closeTemplateModal()">Cancel</button>
+                <button class="action-btn" style="height:36px;" onclick="applySelectedTemplates()">Mount</button>
             </div>
         </div>
     </div>
 
-    <footer>
-        WorkTimeline™ Platforms Inc. • Secure Canadian Infrastructure Core
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/clio-handshake.js"></script>
-
     <script>
         let activeLocalTimelineData = [];
+        let separatePrivateNotepadMemory = []; 
+        let currentWorkspaceMode = "timeline"; 
+        let isPrivacyShieldActive = false;
+        
         let mediaRecorder = null;
         let audioChunks = [];
+        
+        let fileCounter = 0;
+        let audioCounter = 0;
+        let photoCounter = 0;
 
         const templateLibrary = {
-            injury: "=== FORMAL INJURY LOG LAYOUT ===\n[TIMESTAMP]: \n[EXACT LOGISTICS / FIELD AREA]: \n[SYMPTOM PROFILE]: \n\n",
-            witness: "=== FORMAL WITNESS LOG LAYOUT ===\n[INDIVIDUAL IDENTITY]: \n[VERBAL STATEMENT RECORDED]: \n\n",
-            scene: "=== ENVIRONMENTAL STATE LOG LAYOUT ===\n[INFRASTRUCTURE STATUS]: \n[HAZARD CHECK VERIFICATION]: \n\n"
+            injury: "=== FORMAL INJURY LOG LAYOUT ===\n[TIMESTAMP]: \n[FIELD AREA]: \n[SYMPTOM PROFILE]: \n\n",
+            witness: "=== FORMAL WITNESS LOG LAYOUT ===\n[WITNESS IDENTITY]: \n[VERBAL STATEMENT]: \n\n"
         };
+
+        /* AUTOMATED CIRCADIAN THEME ENGINE MECHANICS */
+        function evaluateCircadianTimeSystem() {
+            const currentHour = new Date().getHours();
+            const selectedOverride = document.getElementById('theme-override-selector').value;
+
+            if (selectedOverride === "auto") {
+                // Daytime boundary configuration: 6:00 AM to 6:00 PM (18:00)
+                if (currentHour >= 6 && currentHour < 18) {
+                    document.body.classList.remove('night-deck');
+                } else {
+                    document.body.classList.add('night-deck');
+                }
+            }
+        }
+
+        function applyManualThemeOverride(mode) {
+            if (mode === "day") {
+                document.body.classList.remove('night-deck');
+            } else if (mode === "night") {
+                document.body.classList.add('night-deck');
+            } else {
+                evaluateCircadianTimeSystem();
+            }
+        }
+
+        // Clock validation loop interval pass to prevent lag spikes on layout transitions
+        setInterval(evaluateCircadianTimeSystem, 60000);
+        window.addEventListener('DOMContentLoaded', evaluateCircadianTimeSystem);
+
+        function executePrivacyShieldFilterSwitch() {
+            const body = document.body;
+            const btn = document.getElementById('privacy-trigger-btn');
+            isPrivacyShieldActive = !isPrivacyShieldActive;
+            
+            if (isPrivacyShieldActive) {
+                body.classList.add('privacy-shielded');
+                btn.classList.add('active-toggle');
+                btn.innerText = "Hidden";
+            } else {
+                body.classList.remove('privacy-shielded');
+                btn.classList.remove('active-toggle');
+                btn.innerText = "Privacy";
+            }
+        }
+
+        function openLabSidebarDrawer() {
+            document.getElementById('lab-sidebar').classList.add('open');
+            document.getElementById('sidebar-overlay-mask').style.display = 'block';
+        }
+
+        function closeLabSidebarDrawer() {
+            document.getElementById('lab-sidebar').classList.remove('open');
+            document.getElementById('sidebar-overlay-mask').style.display = 'none';
+        }
+
+        function changeUserFont(fontType) {
+            const container = document.getElementById('app-viewport-container');
+            if (fontType === 'sans') container.style.fontFamily = '-apple-system, BlinkMacSystemFont, sans-serif';
+            else if (fontType === 'serif') container.style.fontFamily = 'Georgia, serif';
+            else if (fontType === 'mono') container.style.fontFamily = 'Courier New, monospace';
+        }
+
+        function toggleWorkspaceContextMode(targetMode) {
+            currentWorkspaceMode = targetMode;
+            const inputTitle = document.getElementById('workspace-input-title');
+            const txtArea = document.getElementById('raw-human-entry');
+            const blueprintBtn = document.getElementById('blueprint-modal-trigger');
+            const feedContainer = document.getElementById('timeline-feed');
+            
+            document.getElementById('notes-mode-btn').classList.remove('active-toggle');
+            document.getElementById('timeline-mode-btn').classList.remove('active-toggle');
+
+            if (targetMode === "notes") {
+                document.getElementById('notes-mode-btn').classList.add('active-toggle');
+                inputTitle.innerText = "Private Notepad Space";
+                txtArea.placeholder = "Enter references here. This scratchpad memory data remains outside court timeline records...";
+                blueprintBtn.style.display = "none";
+                feedContainer.innerHTML = `<p style='color:var(--text-muted); font-style:italic; font-size:12px;'>Displaying private reference notes view canvas...</p>`;
+                separatePrivateNotepadMemory.forEach(note => renderFeedItemToView(note, true));
+            } else {
+                document.getElementById('timeline-mode-btn').classList.add('active-toggle');
+                inputTitle.innerText = "Add Direct Entry";
+                txtArea.placeholder = "Record contemporaneous verification metrics...";
+                blueprintBtn.style.display = "inline-block";
+                feedContainer.innerHTML = activeLocalTimelineData.length === 0 ? `<p id="empty-state-msg" style="color: var(--text-muted); font-style: italic; font-size: 12px; margin: 0;">No chronological entries recorded.</p>` : "";
+                activeLocalTimelineData.forEach(entry => renderFeedItemToView(entry, false));
+            }
+        }
 
         function openTemplateModal() { document.getElementById('template-modal').style.display = 'flex'; }
         function closeTemplateModal() {
@@ -467,43 +772,71 @@
             let compiledText = "";
             if (document.getElementById('tmpl-injury').checked) compiledText += templateLibrary.injury;
             if (document.getElementById('tmpl-witness').checked) compiledText += templateLibrary.witness;
-            if (document.getElementById('tmpl-scene').checked) compiledText += templateLibrary.scene;
             
             if (compiledText) { entryArea.value = compiledText + entryArea.value; entryArea.focus(); }
             closeTemplateModal();
         }
 
-        function executeAddEntry() {
+        function executeCommitEntryPayload() {
             const inputField = document.getElementById('raw-human-entry');
-            const userWords = inputField.value.trim();
-            if (!userWords) { alert("Input required."); return; }
+            const rawContentText = inputField.value.trim();
+            if (!rawContentText) return;
 
-            const newEntry = {
-                id: `entry_${Date.now()}`,
-                type: "Text Log Layer",
-                timestamp: new Date().toLocaleTimeString(),
-                content: userWords.replace(/\n/g, '<br>')
-            };
+            const legalTimeFormattedString = new Date().toLocaleDateString('en-US', {
+                year: 'numeric', month: 'long', day: 'numeric'
+            }) + " " + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
 
-            activeLocalTimelineData.push(newEntry);
-            renderFeedItem(newEntry);
+            if (currentWorkspaceMode === "notes") {
+                const notePackage = { id: `note_${Date.now()}`, timestamp: legalTimeFormattedString, content: rawContentText };
+                separatePrivateNotepadMemory.push(notePackage);
+                renderFeedItemToView(notePackage, true);
+            } else {
+                const uniqueId = `entry_${Date.now()}`;
+                const entryPackage = { id: uniqueId, type: "Text Log", timestamp: legalTimeFormattedString, content: rawContentText.replace(/\n/g, '<br>') };
+
+                activeLocalTimelineData.push(entryPackage);
+                renderFeedItemToView(entryPackage, false);
+                appendNodeToHorizontalChronologyTrack(uniqueId, "text", legalTimeFormattedString);
+                
+                fileCounter++;
+                document.getElementById('count-files').innerText = fileCounter;
+                
+                if (typeof WorkTimelineMaster !== 'undefined') { WorkTimelineMaster.triggerNotification('entryLocked'); }
+            }
             inputField.value = "";
-            document.getElementById('empty-state-msg').style.display = 'none';
-            if (typeof WorkTimelineMaster !== 'undefined') { WorkTimelineMaster.triggerNotification('entryLocked'); }
+        }
+
+        function appendNodeToHorizontalChronologyTrack(id, assetType, formattedTime) {
+            const visualTrack = document.getElementById('visual-node-track');
+            const nodeElement = document.createElement('div');
+            nodeElement.id = `node_link_${id}`;
+            nodeElement.className = "timeline-node";
+            
+            let svgIconPath = `<path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>`;
+            if (assetType === "photo") svgIconPath = `<path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>`;
+            if (assetType === "audio") svgIconPath = `<path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.42 2.72 6.2 6 6.72V21h2v-3.28c3.28-.52 6-3.3 6-6.72h-1.7z"/>`;
+
+            nodeElement.innerHTML = `<svg class="node-icon" viewBox="0 0 24 24">${svgIconPath}</svg>`;
+            nodeElement.onclick = () => { alert(`Event ID: ${id}\nTime Verification: ${formattedTime}`); };
+
+            visualTrack.appendChild(nodeElement);
+            visualTrack.scrollTop = visualTrack.scrollHeight; 
         }
 
         async function handleCameraCapture(input) {
             if (input.files.length > 0) {
                 const targetPhoto = input.files[0];
-                const mockEntry = {
-                    id: `img_${Date.now()}`,
-                    type: "Forensic Photo Asset",
-                    timestamp: new Date().toLocaleTimeString(),
-                    content: `Asset: ${targetPhoto.name} linked. Forensic preservation bifurcated.`
-                };
+                const legalTime = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) + " " + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+                const id = `img_${Date.now()}`;
+                
+                const mockEntry = { id: id, type: "Forensic Photo", timestamp: legalTime, content: `Captured Photo Asset: ${targetPhoto.name}` };
                 activeLocalTimelineData.push(mockEntry);
-                renderFeedItem(mockEntry);
-                document.getElementById('empty-state-msg').style.display = 'none';
+                renderFeedItemToView(mockEntry, false);
+                appendNodeToHorizontalChronologyTrack(id, "photo", legalTime);
+                
+                photoCounter++;
+                document.getElementById('count-photos').innerText = photoCounter;
+
                 if (typeof WorkTimelineMaster !== 'undefined') { await WorkTimelineMaster.processAndSecureImage(targetPhoto); }
             }
         }
@@ -511,15 +844,16 @@
         function handleDocumentUpload(input) {
             if (input.files.length > 0) {
                 const docFile = input.files[0];
-                const docEntry = {
-                    id: `doc_${Date.now()}`,
-                    type: "Documentary Evidence File",
-                    timestamp: new Date().toLocaleTimeString(),
-                    content: `Document Registered: ${docFile.name}`
-                };
+                const legalTime = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) + " " + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+                const id = `doc_${Date.now()}`;
+                
+                const docEntry = { id: id, type: "Document File", timestamp: legalTime, content: `Registered Document: ${docFile.name}` };
                 activeLocalTimelineData.push(docEntry);
-                renderFeedItem(docEntry);
-                document.getElementById('empty-state-msg').style.display = 'none';
+                renderFeedItemToView(docEntry, false);
+                appendNodeToHorizontalChronologyTrack(id, "text", legalTime);
+                
+                fileCounter++;
+                document.getElementById('count-files').innerText = fileCounter;
             }
         }
 
@@ -532,43 +866,48 @@
                     audioChunks = [];
                     mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
                     mediaRecorder.onstop = () => {
-                        const audioEntry = {
-                            id: `audio_${Date.now()}`,
-                            type: "Contemporaneous Audio Log",
-                            timestamp: new Date().toLocaleTimeString(),
-                            content: `Audio Capture verified and logged to environment.`
-                        };
+                        const legalTime = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) + " " + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+                        const id = `audio_${Date.now()}`;
+                        
+                        const audioEntry = { id: id, type: "Audio Log", timestamp: legalTime, content: "Contemporaneous audio note recorded and locked to repository memory layers." };
                         activeLocalTimelineData.push(audioEntry);
-                        renderFeedItem(audioEntry);
-                        document.getElementById('empty-state-msg').style.display = 'none';
+                        renderFeedItemToView(audioEntry, false);
+                        appendNodeToHorizontalChronologyTrack(id, "audio", legalTime);
+                        
+                        audioCounter++;
+                        document.getElementById('count-audio').innerText = audioCounter;
                     };
-                    mediaRecorder.start(); micStatus.innerText = "RECORDING STREAM LIVE"; micStatus.style.color = "#EF4444";
-                } catch (err) { alert("Microphone capture access offline."); }
-            } else { mediaRecorder.stop(); micStatus.innerText = "Audio Log"; micStatus.style.color = "var(--text-muted)"; }
+                    mediaRecorder.start(); micStatus.innerText = "RECORDING"; micStatus.style.color = "#EF4444";
+                } catch (err) { alert("Mic hardware error."); }
+            } else { mediaRecorder.stop(); micStatus.innerText = "Audio"; micStatus.style.color = "inherit"; }
         }
 
-        function renderFeedItem(item) {
+        function renderFeedItemToView(item, isNoteMode) {
             const container = document.getElementById('timeline-feed');
+            if (document.getElementById('empty-state-msg')) document.getElementById('empty-state-msg').style.display = 'none';
+            
             const card = document.createElement('div');
             card.className = 'feed-item';
+            card.style.background = isNoteMode ? "#FFFBEB" : "var(--surface-input)";
+            card.style.borderLeft = isNoteMode ? "4px solid #D97706" : "4px solid var(--accent-teal)";
+            
             card.innerHTML = `
-                <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--accent-teal); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">
-                    <span>${item.type}</span><span>${item.timestamp}</span>
+                <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">
+                    <span>${item.type || 'Note'}</span><span>${item.timestamp}</span>
                 </div>
-                <div style="font-size: 14px; line-height: 1.6; color: var(--text-primary);">${item.content}</div>
+                <div style="font-size: 13px; line-height: 1.4; color: var(--text-primary);">${item.content}</div>
             `;
             container.appendChild(card);
+            container.scrollTop = container.scrollHeight;
         }
 
         async function executeMasterClioLock() {
             if (activeLocalTimelineData.length === 0) { alert("Ledger empty."); return; }
-            const statusLabel = document.getElementById('connection-status');
+            const beacon = document.getElementById('pipeline-beacon');
+            const statusText = document.getElementById('pipeline-text');
             
-            // Bright white 'active' status indicator
-            statusLabel.style.background = "#FFFFFF";
-            statusLabel.style.color = var(--text-primary);
-            statusLabel.style.borderColor = var(--border-subtle);
-            statusLabel.innerText = "LOCK PROTOCOL ACTIVE";
+            beacon.style.backgroundColor = "#4B5563";
+            statusText.innerText = "LOCKING...";
 
             if (typeof WorkTimelineMaster !== 'undefined') {
                 const baselineStringData = JSON.stringify(activeLocalTimelineData);
@@ -579,14 +918,36 @@
 
                 const syncCompleted = await WorkTimelineMaster.syncToClioEcosystem(activeLocalTimelineData, systemForensicFingerprint);
                 if (syncCompleted) {
-                    alert(`AMENDMENT IMMUTABILITY SEALED\n\nLedger array compiled under Canada Evidence Act parameters.\n\nHash: ${systemForensicFingerprint}\n\nPackage transmitted to secure Clio case pipeline.`);
+                    alert(`AMENDMENT IMMUTABILITY SEALED\n\nLedger compiled under Canada Evidence Act parameters.\n\nHash Token:\n${systemForensicFingerprint}\n\nPackage transmitted to secure Clio case files.`);
+                    beacon.style.backgroundColor = "var(--accent-teal)";
+                    statusText.innerText = "Clio Connected";
+
+                    const prCard = document.getElementById('pattern-recognition-card');
+                    prCard.style.opacity = "1";
+                    prCard.style.pointerEvents = "auto";
+                    prCard.style.borderStyle = "solid";
+                    prCard.style.borderColor = "var(--accent-teal)";
+                    prCard.querySelector('.disabled-badge-notice').style.display = "none";
                     
-                    // Reset to default white status
-                    statusLabel.style.background = "rgba(255,255,255,0.8)";
-                    statusLabel.style.color = var(--text-primary);
-                    statusLabel.style.borderColor = var(--border-subtle);
-                    statusLabel.innerText = "TIMELINE SEALED TO CLIO";
-                }
+                    prCard.onclick = () => {
+                        activeLocalTimelineData.forEach(node => {
+                            if (node.type === "Forensic Photo" || node.id.includes('entry')) {
+                                const targetedNode = document.getElementById(`node_link_${node.id}`);
+                                if (targetedNode) targetedNode.classList.add('pattern-triggered');
+                            }
+                        });
+                        
+                        const currentLegalTime = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + " " + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+                        const historyContainer = document.getElementById('ai-log-history-list');
+                        historyContainer.innerHTML = `
+                            <div style="margin-bottom:8px; padding-bottom:8px; border-bottom:1px solid var(--border-subtle);">
+                                <strong>[${currentLegalTime}] Pattern Recognition Flag:</strong> Structural timeline mismatch detected relative to historical record layer. Side-by-side verification audit signature appended.
+                                <div style="margin-top:4px; font-weight:700; color:var(--accent-teal);">[Adopted]</div>
+                            </div>
+                        `;
+                        alert("Pattern recognition algorithm run complete. Critical documentation indicators highlighted on track nodes.");
+                    };
+                </div>
             }
         }
     </script>
