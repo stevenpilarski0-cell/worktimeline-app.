@@ -34,7 +34,7 @@
             --glass-border: rgba(255, 255, 255, 0.15);
             --text-dark: #ffffff; 
             --text-light: #cbd5e1;
-            --metallic-silver: linear-gradient(180deg, #3f444a 0%, #1a1c1e 100%);
+            --metallic-silver: linear-gradient(180deg, #3f444a 0%, #1ia1c1e 100%);
             --chip-bg: #2d3135;
             --silver-platinum: #2d3135;
         }
@@ -58,7 +58,7 @@
             display: flex; flex-direction: column; position: relative;
         }
 
-        /* PRIVACY SWITCH HARDWARE BLUR COVERS */
+        /* PRIVACY SWITCH INSTANT HARDWARE BLUR MASK */
         .privacy-active #timelineBody,
         .privacy-active .input-panel { 
             filter: blur(18px) grayscale(1); 
@@ -68,7 +68,7 @@
         }
         #timelineBody, .input-panel { transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
 
-        /* HEADER LED BEACON */
+        /* HEADER LED BEACON PLACEMENT */
         .clio-status-led {
             width: 10px; height: 10px; background-color: var(--active-green); border-radius: 50%;
             animation: breathe 2.5s infinite; box-shadow: 0 0 8px var(--active-green);
@@ -107,10 +107,10 @@
         .brand-block { display: flex; align-items: center; gap: 8px; }
         .main-title { font-weight: 900; font-size: 24px; color: var(--active-teal); letter-spacing: -0.5px; display: flex; align-items: center; gap: 6px; }
         
-        /* LOGO SVG WITH HORIZONTAL SPLINE TRACK PATH AND THREE NODES */
-        .briefcase-logo-svg { width: 32px; height: 32px; display: inline-block; vertical-align: middle; }
+        /* FIXED BRAND LOGO: RAZOR-THIN PROFILE EXTENDED SPLINE AXIS WITH TEAL INDEX MARKS */
+        .briefcase-logo-svg { width: 36px; height: 36px; display: inline-block; vertical-align: middle; }
         .briefcase-body { fill: var(--active-teal); }
-        .briefcase-timeline-path { stroke: #ffffff; stroke-width: 0.6px; stroke-dasharray: 1,1; fill: none; }
+        .briefcase-timeline-path { stroke: #ffffff; stroke-width: 0.5px; stroke-dasharray: 1,1; fill: none; }
         .briefcase-node { fill: var(--active-teal); }
 
         .input-panel {
@@ -139,7 +139,6 @@
         .input-wrapper textarea { width: 100%; background: transparent; border: none; color: var(--text-dark); font-size: 14px; font-weight: 600; font-family: inherit; resize: none; outline: none; height: 40px; }
         .input-wrapper textarea::placeholder { color: var(--text-light); }
 
-        /* THE STANDARD TIMELINE FEED GRID TRACK LAYOUT BASELINE */
         .workspace-layout-matrix {
             flex: 1; display: flex; gap: 12px; margin: 0 15px; overflow: hidden; position: relative;
         }
@@ -181,7 +180,7 @@
         
         .log-bubble-stack { position: relative; width: 100%; display: flex; flex-direction: column; gap: 4px; }
         
-        /* SOLID SILVER PLATINUM TOP LAYER */
+        /* SOLID SILVER-PLATINUM BASELINE CORES */
         .log-bubble {
             background: var(--silver-platinum);
             padding: 14px 16px; border-radius: 18px; border: 1px solid var(--glass-border);
@@ -190,7 +189,7 @@
             position: relative; z-index: 10;
         }
 
-        /* SUPERSEDED REVERSION OVERLAYS: DROPS TRANSPARENT DIRECTLY UNDERNEATH */
+        /* AMENDMENT SUBSTRATES */
         .log-bubble.historical-version {
             background: rgba(255, 255, 255, 0.15); 
             backdrop-filter: blur(4px);
@@ -204,7 +203,7 @@
         }
         body.night-deck .log-bubble.historical-version { background: rgba(0, 0, 0, 0.2); }
 
-        /* THE PATTERN INSIGHT CARDS POPOVER SPECIFICATION: MOUNTS UNDERNEATH THE PRIMARY CARD LAYER */
+        /* PATTERN RECOGNITION SHADOW CORE WRAPPER CONTAINER */
         .log-bubble.pattern-insight-layer {
             background: rgba(0, 128, 128, 0.08) !important;
             border: 1px solid rgba(0, 128, 128, 0.3) !important;
@@ -244,7 +243,7 @@
         }
         .center-add-btn:active { transform: scale(0.95); }
 
-        /* THE LAB CORE SIDEBAR DRAWER */
+        /* LAB CORE DRAWER CONTROLS */
         .sidebar {
             position: absolute; top: 0; left: -100%; width: 280px; height: 100%;
             background: var(--glass-bg); backdrop-filter: blur(25px);
@@ -432,10 +431,10 @@
                     <div class="main-title" id="brandTitle">
                         <svg class="briefcase-logo-svg" viewBox="0 0 24 24">
                             <path class="briefcase-body" d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-8-2h4v2h-4V4zm8 7H4V8h16v3zm-16 2h16v1H4v-1zm16 6H4v-3h16v3z"/>
-                            <line class="briefcase-timeline-path" x1="2" y1="14.5" x2="22" y2="14.5"/>
-                            <circle class="briefcase-node" cx="6" cy="14.5" r="0.8"/>
+                            <line class="briefcase-timeline-path" x1="0.5" y1="14.5" x2="23.5" y2="14.5"/>
+                            <circle class="briefcase-node" cx="5.5" cy="14.5" r="0.8"/>
                             <circle class="briefcase-node" cx="12" cy="14.5" r="0.8"/>
-                            <circle class="briefcase-node" cx="18" cy="14.5" r="0.8"/>
+                            <circle class="briefcase-node" cx="18.5" cy="14.5" r="0.8"/>
                         </svg>
                         WorkTimeline
                         <div id="pipelineLed" class="clio-status-led" title="Clio Handshake Active"></div>
@@ -503,7 +502,7 @@
         let currentMode = 'TIMELINE';
         let isEngineSealed = false;
         let activeAmendingId = null;
-        let isPatternRecognitionTriggeredInSession = false; // Shadow tracking indicator state
+        let isPatternRecognitionTriggeredInSession = false;
         
         const pinSvg = `<svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
 
@@ -594,7 +593,6 @@
             mask.style.display = sidebar.classList.contains('open') ? 'block' : 'none';
         }
         
-        /* THE INSTANT PRIVACY SYSTEM SWITCH LOOP INJECTION */
         function togglePrivacy() { 
             const app = document.getElementById('mainApp');
             app.classList.toggle('privacy-active');
@@ -706,27 +704,23 @@
                 entry.onmousedown = start; entry.onmouseup = stop; entry.onmouseleave = stop;
                 entry.ontouchstart = start; entry.ontouchend = stop;
 
-                // MAIN TIMELINE CARD: STAYS ON TOP, RETAINS SOLID SILVER PLATINUM GRAPHICS
                 entry.innerHTML = `
                     <div class="timestamp-stamp">${pinSvg} ${topMostActiveVersion.stamp}</div>
                     <div class="log-bubble" title="Hold to Supersede entry parameters">${topMostActiveVersion.text.replace(/\n/g, '<br>')}</div>
                 `;
                 stackContainer.appendChild(entry);
 
-                // HISTORY OVERLAY BACKING CARDS (TRANSPARENT PASS)
                 if (completeVersionHistoryChain.length > 1) {
                     for (let i = completeVersionHistoryChain.length - 2; i >= 0; i--) {
                         const historyNode = completeVersionHistoryChain[i];
                         const historyBubble = document.createElement('div');
                         historyBubble.className = 'log-bubble historical-version';
                         const internalVersionLabel = i === 0 ? 'ORIGINAL BASELINE' : `AMENDMENT #${i}`;
-                        historyBubble.innerHTML = `<span style="font-size:8px; opacity:0.6; font-weight:900; color:var(--active-teal);">[${internalVersionLabel}: ${historyNode.stamp}]</span><br>${historyNode.text.replace(/\n/g, '<br>')}`;
+                        historyBubble.innerHTML = `<span style="font-size:8px; opacity:0.6; font-weight:900; color:var(--active-teal);">[${internalVersionLabel}: ${historyNode.stamp}]</span><br>${historyNode.text.replace(/\n/g, '<br>')}</div>`;
                         stackContainer.appendChild(historyBubble);
                     }
                 }
 
-                // INVERTED REVERSAL SPECIFICATION PASSTHROUGH: 
-                // When an analytical suggestion is validated, it loads in lock-state, nested directly in the shadows *underneath* your original logs.
                 if (currentMode === 'TIMELINE' && isPatternRecognitionTriggeredInSession) {
                     const aiShadowInsightBox = document.createElement('div');
                     aiShadowInsightBox.className = 'log-bubble pattern-insight-layer';
@@ -841,7 +835,6 @@
                 : "[AUDIT LOG] User IGNORED AI Pattern Suggestion. Raw timeline integrity unperturbed.";
 
             if (decision === 'ACCEPTED') {
-                // FLIPS RUN-STATE: Automatically forces the background analytics container to slide into view underneath your logs.
                 isPatternRecognitionTriggeredInSession = true;
                 logsData.forEach(log => { if (log.mode === 'TIMELINE' || !log.parentId) log.highlighted = true; });
                 
