@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Guardian | The Lab</title>
+    <title>Guardian | Legal Intelligence Lab</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
         :root {
             --platinum: #F3F4F6;
             --teal: #008080;
             --slate: #1F2937;
             --silver: #D1D5DB;
+            --white: #ffffff;
         }
 
         body {
@@ -20,38 +22,49 @@
             background-color: var(--platinum);
             color: var(--slate);
             -webkit-font-smoothing: antialiased;
+            height: 100vh;
+            overflow: hidden;
         }
 
-        /* --- CLASSIC HEADER --- */
+        /* --- THE DOWNTOWN HEADER --- */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 20px;
-            background: #fff;
+            padding: 15px 22px;
+            background: var(--white);
             border-bottom: 1px solid var(--silver);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            height: 60px;
+            box-sizing: border-box;
         }
 
         .lab-trigger {
             font-size: 24px;
             color: var(--teal);
             cursor: pointer;
+            transition: transform 0.2s;
         }
 
-        /* --- THE SIDEBAR (NOW THE LAB) --- */
+        .lab-trigger:active { transform: scale(0.9); }
+
+        .brand {
+            font-weight: 900;
+            letter-spacing: -1px;
+            color: var(--teal);
+            font-size: 20px;
+        }
+
+        /* --- THE SIDEBAR LAB --- */
         .sidebar {
             position: fixed;
             top: 0;
-            left: -280px;
-            width: 280px;
+            left: -290px;
+            width: 290px;
             height: 100%;
-            background: #fff;
-            z-index: 1000;
-            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 2px 0 15px rgba(0,0,0,0.1);
+            background: var(--white);
+            z-index: 1001;
+            transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 10px 0 30px rgba(0,0,0,0.1);
             display: flex;
             flex-direction: column;
         }
@@ -59,75 +72,93 @@
         .sidebar.open { left: 0; }
 
         .sidebar-header {
-            padding: 30px 20px;
+            padding: 40px 25px 20px;
             border-bottom: 1px solid #eee;
         }
 
-        .sidebar-content {
-            padding: 20px;
+        .sidebar-scroll {
             flex-grow: 1;
             overflow-y: auto;
+            padding: 20px 25px;
         }
 
         .lab-item {
             display: flex;
             align-items: center;
-            padding: 15px 0;
+            padding: 16px 0;
             color: var(--slate);
             text-decoration: none;
+            font-weight: 500;
             font-size: 15px;
             border-bottom: 1px solid #f9f9f9;
         }
 
         .lab-item i {
-            margin-right: 15px;
+            width: 35px;
             color: var(--teal);
-            width: 20px;
             font-size: 18px;
         }
 
-        .lab-section-title {
-            font-size: 11px;
+        .section-tag {
+            font-size: 10px;
             font-weight: 800;
-            color: #999;
+            color: #94a3b8;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin: 20px 0 10px 0;
+            letter-spacing: 1.5px;
+            margin: 25px 0 10px 0;
         }
 
-        /* --- THE GROUNDED BOTTOM BAR --- */
+        /* --- MAIN CONTENT AREA --- */
+        main {
+            padding: 25px;
+            height: calc(100vh - 145px);
+            overflow-y: auto;
+        }
+
+        .timeline-card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid var(--silver);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            margin-bottom: 20px;
+        }
+
+        /* --- GROUNDED TOOLBAR --- */
         .bottom-bar {
             position: fixed;
             bottom: 0;
             width: 100%;
-            height: 75px;
-            background: #fff;
+            height: 85px;
+            background: var(--white);
             border-top: 1px solid var(--silver);
             display: flex;
             justify-content: space-around;
             align-items: center;
-            padding-bottom: env(safe-area-inset-bottom);
+            z-index: 1000;
+            padding-bottom: 15px;
+            box-sizing: border-box;
         }
 
         .tool {
             text-align: center;
             color: var(--slate);
+            flex: 1;
         }
 
-        .tool span {
-            display: block;
-            font-size: 10px;
-            margin-top: 4px;
-            font-weight: 600;
-        }
+        .tool i { font-size: 22px; }
+        .tool span { display: block; font-size: 10px; margin-top: 5px; font-weight: 700; }
+        .plus-btn { color: var(--teal); }
+        .plus-btn i { font-size: 34px; }
 
         /* --- OVERLAY --- */
         .overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.4);
+            background: rgba(31, 41, 55, 0.4);
             display: none;
-            z-index: 900;
+            z-index: 1000;
+            backdrop-filter: blur(2px);
         }
     </style>
 </head>
@@ -139,66 +170,99 @@
     <div class="lab-trigger" onclick="toggleLab()">
         <i class="fas fa-bars-staggered"></i>
     </div>
-    <div style="font-weight: 900; color: var(--teal); letter-spacing: -1px;">GUARDIAN</div>
-    <div style="width: 24px;"></div>
-</header>
+    <div class="brand">GUARDIAN</div>
+    <div style="width: 24px;"></div> </header>
 
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <h2 style="margin:0; font-weight: 900; color: var(--slate);">The Lab</h2>
-        <p style="margin: 5px 0 0; font-size: 12px; color: #666;">Intelligence & Pattern Discovery</p>
+        <p style="margin: 4px 0 0; font-size: 12px; color: #64748b;">Precision Analysis Engine</p>
     </div>
     
-    <div class="sidebar-content">
-        <div class="lab-section-title">Analysis</div>
-        <a href="#" class="lab-item" onclick="alert('Running Pattern Scan...')">
+    <div class="sidebar-scroll">
+        <div class="section-tag">Intelligence Tools</div>
+        <a href="#" class="lab-item" onclick="startScan()">
             <i class="fas fa-microscope"></i> Run Pattern Recognition
         </a>
 
-        <div class="lab-section-title">Legal Library</div>
-        <a href="#" class="lab-item">
-            <i class="fas fa-gavel"></i> Case Law Library
-        </a>
-        <a href="#" class="lab-item">
-            <i class="fas fa-book-open"></i> Statutory Breaches
-        </a>
-        <a href="#" class="lab-item">
-            <i class="fas fa-shield-alt"></i> Rights Encyclopedia
-        </a>
+        <div class="section-tag">Library Access</div>
+        <a href="#" class="lab-item"><i class="fas fa-gavel"></i> Case Law Library</a>
+        <a href="#" class="lab-item"><i class="fas fa-file-shield"></i> Statutory Breaches</a>
+        <a href="#" class="lab-item"><i class="fas fa-landmark"></i> Canadian Rights Act</a>
 
-        <div class="lab-section-title">Support</div>
-        <a href="#" class="lab-item">
-            <i class="fas fa-envelope"></i> Message Lawyer
-        </a>
+        <div class="section-tag">System</div>
+        <a href="#" class="lab-item"><i class="fas fa-envelope-open-text"></i> Legal Correspondence</a>
+        <a href="#" class="lab-item"><i class="fas fa-user-circle"></i> Profile Settings</a>
     </div>
 
-    <div style="padding: 20px; border-top: 1px solid #eee; background: #fcfcfc;">
-        <div style="font-size: 13px; font-weight: 700; color: var(--teal);">Account Access</div>
-        <div id="userEmail" style="font-size: 11px; color: #888;">user@vancouver-law.com</div>
+    <div style="padding: 25px; border-top: 1px solid #eee; background: #fcfcfc;">
+        <div style="font-size: 14px; font-weight: 800; color: var(--teal);">Client Portal</div>
+        <div id="userEmailDisplay" style="font-size: 11px; color: #888;">user@vancouver-law.com</div>
     </div>
 </div>
 
-<main style="padding: 20px;">
-    <div style="background: #fff; padding: 25px; border-radius: 12px; border: 1px solid var(--silver); box-shadow: 0 2px 5px rgba(0,0,0,0.02);">
-        <h3 style="margin-top:0; font-weight: 800;">Private Timeline</h3>
-        <p style="font-size: 14px; color: #666; line-height: 1.5;">Logs are strictly confidential. Use the tools below to record facts. Patterns are analyzed within <strong>The Lab</strong> sidebar.</p>
+<main id="mainContent">
+    <div class="timeline-card">
+        <h3 style="margin-top:0; font-weight: 800;">Secure Timeline</h3>
+        <p style="font-size: 14px; color: #64748b; line-height: 1.6; margin: 0;">
+            This is your private, encrypted record. Patterns detected in your logs will be flagged in <strong>The Lab</strong>.
+        </p>
     </div>
 </main>
 
 <nav class="bottom-bar">
     <div class="tool"><i class="fas fa-camera"></i><span>Camera</span></div>
     <div class="tool"><i class="fas fa-microphone"></i><span>Mic</span></div>
-    <div class="tool" style="color: var(--teal);"><i class="fas fa-circle-plus" style="font-size: 32px;"></i></div>
+    <div class="tool plus-btn"><i class="fas fa-circle-plus"></i></div>
     <div class="tool"><i class="fas fa-file-invoice"></i><span>Docs</span></div>
     <div class="tool"><i class="fas fa-clock-rotate-left"></i><span>History</span></div>
 </nav>
 
 <script>
+    // --- SIDEBAR LOGIC ---
     function toggleLab() {
         const sb = document.getElementById('sidebar');
         const ov = document.getElementById('overlay');
-        sb.classList.toggle('open');
-        ov.style.display = sb.classList.contains('open') ? 'block' : 'none';
+        const isOpen = sb.classList.contains('open');
+        
+        if (isOpen) {
+            sb.classList.remove('open');
+            ov.style.display = 'none';
+        } else {
+            sb.classList.add('open');
+            ov.style.display = 'block';
+        }
+    }
+
+    // --- MOCK SCAN FOR DEMO ---
+    function startScan() {
+        toggleLab(); // Close menu
+        const main = document.getElementById('mainContent');
+        const originalContent = main.innerHTML;
+        
+        main.innerHTML = `<p style="text-align:center; color:var(--teal); font-weight:bold; margin-top:50px;">
+            <i class="fas fa-circle-notch fa-spin"></i> Analyzing Federal & Provincial Statutes...
+        </p>`;
+        
+        setTimeout(() => {
+            main.innerHTML = `
+                <div class="timeline-card" style="border-left: 5px solid var(--teal);">
+                    <div style="font-size:10px; font-weight:900; color:var(--teal); text-transform:uppercase; margin-bottom:5px;">Pattern Recognized</div>
+                    <h3 style="margin:0;">Canada Labour Code Violation</h3>
+                    <p style="font-size:14px; color:#64748b;">Your entries match criteria for Section 240 (Unjust Dismissal) under Federal jurisdiction.</p>
+                </div>
+            ` + originalContent;
+        }, 2000);
+    }
+
+    // --- LOGIN LOGIC (READY FOR YOUR CLIENT SECRET) ---
+    async function signInWithGoogle() {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: window.location.origin
+            }
+        });
     }
 </script>
 
