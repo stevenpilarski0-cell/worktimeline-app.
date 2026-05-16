@@ -2,238 +2,228 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline Pro v12.2 - Guardian Edition</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkTimeline™ - The Standard of Truth</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&family=Nunito+Sans:wght@400;700&display=swap');
-        
-        :root { 
-            --teal: #008080; 
-            --slate: #475569; 
-            --gray-bg: #f1f5f9; 
-            --mac-border: #cbd5e0; 
-            --white: #ffffff; 
-            --mac-shadow: 0 10px 25px rgba(0,0,0,0.1); 
-            --clio-green: #2ecc71; /* The High-Visibility Legal Green */
-        }
-        
-        body { 
-            font-family: 'Nunito', sans-serif; 
-            background: var(--gray-bg); 
-            margin: 0; padding: 0; 
-            height: 100dvh; 
-            display: flex; 
-            flex-direction: column;
-            overflow: hidden;
+        :root {
+            --industrial-gray: #4A4A4A;
+            --steel-light: #F5F5F5;
+            --legal-teal: #008080;
+            --charcoal: #222222;
+            --white: #FFFFFF;
         }
 
-        /* --- THE PULSING CLIO LIGHT --- */
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 10px;
-            font-weight: 800;
-            color: var(--slate);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--steel-light);
+            color: var(--charcoal);
         }
 
-        .pulse-dot {
-            width: 8px;
-            height: 8px;
-            background-color: var(--clio-green);
-            border-radius: 50%;
-            box-shadow: 0 0 0 rgba(46, 204, 113, 0.4);
-            animation: pulse-green 2s infinite;
-        }
-
-        @keyframes pulse-green {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(46, 204, 113, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
-        }
-
-        /* Header */
         header {
-            background: var(--white);
-            padding: 15px 20px;
+            background-color: var(--charcoal);
+            color: var(--white);
+            padding: 20px;
+            border-bottom: 4px solid var(--legal-teal);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--mac-border);
-            z-index: 100;
         }
 
-        .menu-icon { font-size: 24px; color: var(--teal); cursor: pointer; }
-        .logo { font-weight: 900; color: var(--teal); font-size: 18px; }
+        header h1 {
+            margin: 0;
+            font-size: 22px;
+            letter-spacing: 0.5px;
+        }
 
-        /* Sidebar - The Lab Hub */
-        .sidebar {
-            position: fixed;
-            top: 0; left: -300px;
-            width: 300px; height: 100%;
+        .tagline {
+            font-size: 12px;
+            color: #AAA;
+            text-transform: uppercase;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* The Compliance Notification Space (Managed by WorkTimelineMaster) */
+        #wt-system-notification {
+            display: none;
+            border-left: 4px solid var(--legal-teal);
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 4px;
+            background-color: var(--white);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .workspace-card {
             background: var(--white);
-            z-index: 2000;
-            transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            box-shadow: var(--mac-shadow);
-            display: flex; 
-            flex-direction: column;
+            padding: 25px;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border-top: 3px solid var(--industrial-gray);
+            margin-bottom: 25px;
         }
-        .sidebar.open { left: 0; }
 
-        .sidebar-header { padding: 40px 25px 20px; border-bottom: 1px solid var(--gray-bg); }
-        .sidebar-menu { padding: 20px; flex-grow: 1; overflow-y: auto; }
+        h3 {
+            margin-top: 0;
+            color: var(--industrial-gray);
+            border-bottom: 1px solid #EAEAEE;
+            padding-bottom: 10px;
+        }
 
-        .menu-item {
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--charcoal);
+            font-size: 14px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 12px;
+            border: 1px solid #CCC;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 15px;
+            resize: vertical;
+            background-color: #FAFABA; /* Slight tint to signify organic blind entry mode */
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--legal-teal);
+            background-color: var(--white);
+        }
+
+        .btn-container {
             display: flex;
-            align-items: center;
-            padding: 14px 0;
-            color: var(--slate);
-            text-decoration: none;
-            font-family: 'Nunito Sans', sans-serif;
-            font-weight: 700;
-            border-bottom: 1px solid #f8f8f8;
-        }
-        .menu-item i { margin-right: 15px; color: var(--teal); width: 22px; }
-
-        /* Privacy Toggle Style */
-        .privacy-box {
-            margin-top: 20px; padding: 15px;
-            background: #f8fafc; border-radius: 10px;
-            display: flex; justify-content: space-between; align-items: center;
+            gap: 15px;
         }
 
-        /* Templates Section */
-        .template-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;
-        }
-        .template-btn {
-            background: var(--white); border: 1px solid var(--mac-border);
-            padding: 15px; border-radius: 12px; font-size: 11px; font-weight: 800;
-            color: var(--teal); text-align: center; cursor: pointer;
+        button, .file-upload-label {
+            background-color: var(--legal-teal);
+            color: var(--white);
+            border: none;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            display: inline-block;
+            text-align: center;
         }
 
-        /* Bottom Bar */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0; width: 100%; height: 85px;
-            background: var(--white);
-            border-top: 1px solid var(--mac-border);
-            display: flex; justify-content: space-around;
-            align-items: center; padding-bottom: 15px;
-            z-index: 1000;
+        button:hover, .file-upload-label:hover {
+            background-color: #006666;
         }
-        .nav-tool { text-align: center; color: var(--slate); flex: 1; cursor: pointer; }
-        .nav-tool span { display: block; font-size: 10px; font-weight: 800; margin-top: 4px; }
-        .plus-btn { color: var(--teal); }
 
-        .overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.4); display: none; z-index: 1500;
+        .btn-secondary {
+            background-color: var(--industrial-gray);
+        }
+
+        .btn-secondary:hover {
+            background-color: #333333;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            font-size: 12px;
+            color: #777;
         }
     </style>
 </head>
 <body>
 
-<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
-
-<header>
-    <div class="menu-icon" onclick="toggleSidebar()"><i class="fas fa-bars-staggered"></i></div>
-    <div class="logo">WorkTimeline Pro</div>
-    <div class="status-indicator">
-        <div class="pulse-dot"></div>
-        <span>SECURE</span>
-    </div>
-</header>
-
-<div class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-        <h2 style="margin:0; color: var(--teal);">The Lab</h2>
-        <div class="privacy-box">
-            <span style="font-size: 12px; font-weight: 800;">Privacy Shield</span>
-            <input type="checkbox" checked>
+    <header>
+        <div>
+            <h1>WorkTimeline™</h1>
+            <div class="tagline">The Universal Architecture of Integrity</div>
         </div>
-    </div>
-    <div class="sidebar-menu">
-        <a href="#" class="menu-item" onclick="triggerDateReader()"><i class="fas fa-calendar-check"></i> OCR Date Reader</a>
-        <a href="#" class="menu-item"><i class="fas fa-gavel"></i> Case Law Library</a>
-        <a href="#" class="menu-item"><i class="fas fa-file-contract"></i> Statutory Breaches</a>
-        <a href="#" class="menu-item"><i class="fas fa-shield-alt"></i> Human Civil Rights</a>
-        <a href="#" class="menu-item"><i class="fas fa-user-shield"></i> Privacy Violations</a>
-        <a href="#" class="menu-item"><i class="fas fa-briefcase"></i> Employment Standards</a>
+        <div style="font-size: 14px; color: var(--legal-teal); font-weight: bold;">● Active Sandbox Mode</div>
+    </header>
+
+    <main id="workspace">
         
-        <div style="margin-top: 40px; padding: 15px; background: var(--gray-bg); border-radius: 8px;">
-            <p style="font-size: 11px; color: #666; margin: 0;">ACCOUNT ACCESS</p>
-            <p style="font-size: 13px; font-weight: 800; margin: 5px 0;">user@v12.2-pro.com</p>
+        <div id="wt-system-notification" class="wt-card-gray">
+            <h4 id="wt-notification-title" style="margin-top: 0; color: var(--charcoal); font-weight: 600;"></h4>
+            <p id="wt-notification-text" style="color: #555; font-size: 14px; line-height: 1.5; margin-bottom: 0;"></p>
         </div>
-    </div>
-</div>
 
-<main id="mainDisplay" style="padding: 20px; flex-grow: 1; overflow-y: auto;">
-    <div style="background: white; padding: 25px; border-radius: 15px; box-shadow: var(--mac-shadow); border: 1px solid var(--mac-border);">
-        <h3 style="margin-top:0; color: var(--teal);">Timeline Active</h3>
-        <p style="font-size: 14px; color: var(--slate); font-weight: 700;">Select a template below to log facts.</p>
-        
-        <div class="template-grid">
-            <div class="template-btn" onclick="logTemplate('Medical Inquiry')">Medical Inquiry</div>
-            <div class="template-btn" onclick="logTemplate('Overtime Fact')">Overtime Fact</div>
-            <div class="template-btn" onclick="logTemplate('Safety Issue')">Safety Issue</div>
-            <div class="template-btn" onclick="logTemplate('Harassment')">Harassment</div>
+        <div class="workspace-card">
+            <h3>Contemporaneous Incident Log</h3>
+            <div class="form-group">
+                <label for="incident-notes">Record your observations directly. (No AI processing is active during input stage)</label>
+                <textarea id="incident-notes" placeholder="Describe events clearly with locations, dates, and plain facts..."></textarea>
+            </div>
+            
+            <div class="btn-container">
+                <button type="button" onclick="WorkTimelineMaster.triggerNotification('entryLocked')">Certify & Lock Entry</button>
+                <button type="button" class="btn-secondary" onclick="WorkTimelineMaster.triggerNotification('newTimelineStarted')">Launch Parallel Layer</button>
+            </div>
         </div>
-    </div>
-</main>
 
-<nav class="bottom-nav">
-    <div class="nav-tool" onclick="triggerCamera()"><i class="fas fa-camera"></i><span>Camera</span></div>
-    <div class="nav-tool" onclick="triggerMic()"><i class="fas fa-microphone"></i><span>Mic</span></div>
-    <div class="nav-tool plus-btn" onclick="logGeneric()"><i class="fas fa-circle-plus" style="font-size: 34px;"></i></div>
-    <div class="nav-tool" onclick="triggerDocs()"><i class="fas fa-file-alt"></i><span>Docs</span></div>
-    <div class="nav-tool"><i class="fas fa-history"></i><span>History</span></div>
-</nav>
-
-<input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none">
-<input type="file" id="dateReaderInput" accept="image/*" style="display:none">
-
-<script>
-    const sb = document.getElementById('sidebar');
-    const ov = document.getElementById('overlay');
-    const main = document.getElementById('mainDisplay');
-
-    function toggleSidebar() {
-        sb.classList.toggle('open');
-        ov.style.display = sb.classList.contains('open') ? 'block' : 'none';
-    }
-
-    function triggerCamera() { document.getElementById('cameraInput').click(); }
-    function triggerMic() { alert("Microphone Listening..."); }
-    function triggerDocs() { alert("Opening Document Vault..."); }
-
-    function triggerDateReader() {
-        toggleSidebar();
-        document.getElementById('dateReaderInput').click();
-    }
-
-    document.getElementById('dateReaderInput').onchange = function() {
-        main.innerHTML += `
-            <div style="background: #e0f2f1; padding: 15px; border-radius: 10px; margin-top: 15px; border: 1px solid var(--teal);">
-                <small style="color: var(--teal); font-weight: 900;">OCR DATE READER</small>
-                <p style="margin: 5px 0; font-size: 13px;">Extracted Timestamp: May 15, 2026</p>
+        <div class="workspace-card">
+            <h3>Forensic Asset Capture</h3>
+            <p style="font-size: 13px; color: #666; margin-top: -5px; margin-bottom: 20px;">
+                Images uploaded are instantly split into an archive-locked Master Copy and an extraction-ready system working duplicate.
+            </p>
+            
+            <div class="form-group">
+                <label class="file-upload-label" for="myCameraInputButton">
+                    📷 Take/Upload Incident Image
+                </label>
+                <input type="file" id="myCameraInputButton" accept="image/*" onchange="handleImageSelection(this)">
             </div>
-        `;
-    };
+        </div>
 
-    function logTemplate(type) {
-        main.innerHTML += `
-            <div style="background: white; padding: 15px; border-radius: 10px; margin-top: 15px; border-left: 5px solid var(--teal); box-shadow: var(--mac-shadow);">
-                <small style="color: var(--teal); font-weight: 900;">${type.toUpperCase()}</small>
-                <p style="margin: 5px 0; font-size: 14px;">Entry logged successfully.</p>
-            </div>
-        `;
-    }
-</script>
+    </main>
+
+    <footer>
+        WorkTimeline™ Platforms Inc. • Administrative Assistance & Electronic Verification Architecture • Secure Local Canadian Cloud Hosting
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        // Placeholder initialized client parameters for your Supabase project instance
+        const SUPABASE_URL = "https://your-project-id.supabase.co";
+        const SUPABASE_KEY = "your-anon-key";
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    </script>
+
+    <script src="js/clio-handshake.js"></script>
+
+    <script>
+        /**
+         * Intercepts standard file picker events to trigger our forensic split
+         */
+        async function handleImageSelection(inputElement) {
+            if (inputElement.files.length > 0) {
+                const targetFile = inputElement.files[0];
+                console.log(`[UI Control] File identified: ${targetFile.name}. Forwarding to master framework.`);
+                
+                // Triggers the dual-upload system inside clio-handshake.js
+                await WorkTimelineMaster.processAndSecureImage(targetFile);
+            }
+        }
+    </script>
 
 </body>
 </html>
