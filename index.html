@@ -25,6 +25,7 @@
             
             /* BRIGHT SILVER PLATINUM FOR TOP LOG CARD LAYERS */
             --silver-platinum: #f1f5f9;
+            --font-family-override: 'Nunito', sans-serif;
         }
 
         body.night-deck {
@@ -42,8 +43,9 @@
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center;
-            font-family: 'Nunito', sans-serif; background-color: #94a3b8;
+            font-family: var(--font-family-override); background-color: #94a3b8;
             -webkit-tap-highlight-color: transparent;
+            transition: font-family 0.2s ease;
         }
 
         .phone-bezel {
@@ -60,10 +62,11 @@
         .privacy-active #timelineBody { filter: blur(16px); pointer-events: none; opacity: 0.2; transition: 0.3s; }
         #timelineBody { transition: 0.3s; }
 
+        /* RE-ALIGNED HANDSHAKE BEACON (Sits right beside branding layout now) */
         .clio-status-led {
-            position: absolute; top: 20px; right: 20px; width: 10px; height: 10px;
-            background-color: var(--active-green); border-radius: 50%;
-            animation: breathe 2.5s infinite; box-shadow: 0 0 8px var(--active-green); z-index: 5000;
+            width: 10px; height: 10px; background-color: var(--active-green); border-radius: 50%;
+            animation: breathe 2.5s infinite; box-shadow: 0 0 8px var(--active-green);
+            display: inline-block; margin-left: 2px;
         }
         @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.6; } }
 
@@ -94,11 +97,20 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex;
         }
 
+        /* INTEGRATED HIGH-CONTRAST HEADER CONTAINMENT */
+        .brand-block {
+            display: flex; align-items: center; gap: 8px;
+        }
+
         .main-title {
             font-weight: 900; font-size: 24px; color: var(--active-teal);
             letter-spacing: -0.5px; display: flex; align-items: center; gap: 6px;
         }
-        .main-title svg { width: 22px; height: 22px; fill: var(--active-teal); }
+        
+        /* DYNAMIC THREE-DOT TIMELINE BRIEFCASE LOGO SVG */
+        .briefcase-logo-svg { 
+            width: 26px; height: 26px; fill: var(--active-teal); 
+        }
 
         .input-panel {
             background: var(--glass-bg); backdrop-filter: blur(20px);
@@ -123,7 +135,7 @@
 
         .input-wrapper { background: rgba(255, 255, 255, 0.15); border-radius: 14px; padding: 15px; border: 1px solid var(--glass-border); }
         body:not(.night-deck) .input-wrapper { background: rgba(255, 255, 255, 0.8); }
-        .input-wrapper textarea { width: 100%; background: transparent; border: none; color: var(--text-dark); font-size: 14px; font-weight: 600; font-family: 'Nunito', sans-serif; resize: none; outline: none; height: 40px; }
+        .input-wrapper textarea { width: 100%; background: transparent; border: none; color: var(--text-dark); font-size: 14px; font-weight: 600; font-family: inherit; resize: none; outline: none; height: 40px; }
         .input-wrapper textarea::placeholder { color: var(--text-light); }
 
         .workspace-layout-matrix {
@@ -167,7 +179,6 @@
         
         .log-bubble-stack { position: relative; width: 100%; }
         
-        /* SOLID BRIGHT SILVER-PLATINUM TOP CORES */
         .log-bubble {
             background: var(--silver-platinum);
             padding: 14px 16px; border-radius: 18px; border: 1px solid var(--glass-border);
@@ -176,7 +187,6 @@
             position: relative; z-index: 10;
         }
 
-        /* INVERTED REVERSAL: OLD HISTORY ENTRIES SHIFT TO SEMI-TRANSPARENT GLASS UNDERNEATH */
         .log-bubble.historical-version {
             background: rgba(255, 255, 255, 0.15); 
             backdrop-filter: blur(4px);
@@ -188,9 +198,7 @@
             color: var(--text-light);
             box-shadow: none;
         }
-        body.night-deck .log-bubble.historical-version {
-            background: rgba(0, 0, 0, 0.2);
-        }
+        body.night-deck .log-bubble.historical-version { background: rgba(0, 0, 0, 0.2); }
 
         .amend-badge {
             font-size: 8px; font-weight: 900; background: var(--active-teal);
@@ -223,7 +231,7 @@
         }
         .center-add-btn:active { transform: scale(0.95); }
 
-        /* THE LAB SIDEBAR DRAWER STYLING */
+        /* THE EXTENDED LAB CORE SIDEBAR DRAWER */
         .sidebar {
             position: absolute; top: 0; left: -100%; width: 280px; height: 100%;
             background: var(--glass-bg); backdrop-filter: blur(25px);
@@ -246,17 +254,20 @@
             border: 1px solid var(--glass-border); text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.01);
         }
         .sidebar-item .circle-icon { width: 32px; height: 32px; background: var(--metallic-silver); color: var(--active-teal); border-radius: 10px; display: flex; justify-content: center; align-items: center; border: 1px solid var(--glass-border); }
-        .sidebar-item .circle-icon svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+        .sidebar-item .circle-icon svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.5; fill: none; }
+
+        .lab-customizer-box {
+            background: var(--chip-bg); border: 1px solid var(--glass-border);
+            border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.01);
+        }
+        .customizer-label { font-size: 10px; font-weight: 900; text-transform: uppercase; color: var(--text-light); letter-spacing: 0.04em; }
+        .customizer-select { width: 100%; height: 38px; border-radius: 8px; border: 1px solid var(--glass-border); background: var(--app-bg); color: var(--text-dark); padding: 0 8px; font-size: 11px; font-weight: 800; outline: none; text-transform: uppercase; }
 
         .lab-metric-panel {
-            background: rgba(0, 128, 128, 0.04);
-            border: 1px solid var(--glass-border);
-            border-radius: 14px;
-            padding: 12px 14px;
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--text-dark);
-            display: flex; flex-direction: column; gap: 6px;
+            background: rgba(0, 128, 128, 0.04); border: 1px solid var(--glass-border);
+            border-radius: 14px; padding: 12px 14px; font-size: 11px; font-weight: 700;
+            color: var(--text-dark); display: flex; flex-direction: column; gap: 6px;
         }
         .metric-row { display: flex; justify-content: space-between; align-items: center; font-weight: 800; }
         .metric-badge { font-size: 11px; color: var(--active-teal); font-weight: 900; }
@@ -279,11 +290,9 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body onload="initApp()">
+<body>
     <div class="phone-bezel">
         
-        <div id="pipelineLed" class="clio-status-led" title="Clio Handshake Active"></div>
-
         <div class="sidebar" id="sidebarMenu">
             <div class="sidebar-header">
                 LAB CORE
@@ -292,9 +301,23 @@
                 </div>
             </div>
             
-            <div class="sidebar-item" onclick="toggleSovereignLuminanceOverride()">
-                <div class="circle-icon"><svg viewBox="0 0 24 24"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
-                Shift Day / Night
+            <div class="lab-customizer-box">
+                <div>
+                    <div class="customizer-label">Typography Profile</div>
+                    <select class="customizer-select" onchange="applySovereignFontProfile(this.value)">
+                        <option value="nunito">Nunito Pro Standard</option>
+                        <option value="serif">Serif Reference Ledger</option>
+                        <option value="mono">Monospace Evidence Track</option>
+                    </select>
+                </div>
+                <div>
+                    <div class="customizer-label">Sovereign Canvas Tint</div>
+                    <select id="labThemeSelector" class="customizer-select" onchange="applySovereignLuminanceOverride(this.value)">
+                        <option value="auto">Automated Circadian Lock</option>
+                        <option value="day">Force Silver Platinum View</option>
+                        <option value="night">Force Matte Slate Night View</option>
+                    </select>
+                </div>
             </div>
 
             <div class="sidebar-item" onclick="emailTimeline()">
@@ -378,11 +401,18 @@
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                 </div>
                 
-                <div class="main-title" id="brandTitle">
-                    <svg class="briefcase-logo-svg" viewBox="0 0 24 24">
-                        <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-8-2h4v2h-4V4zm8 15H4v-2h16v2zm0-5H4V8h16v6z"/>
-                    </svg>
-                    WorkTimeline
+                <div class="brand-block">
+                    <div class="main-title" id="brandTitle">
+                        <svg class="briefcase-logo-svg" viewBox="0 0 24 24">
+                            <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-8-2h4v2h-4V4zm8 7H4V8h16v3zm-16 2h16v1H4v-1zm16 6H4v-3h16v3z"/>
+                            <line x1="3" y1="14.5" x2="21" y2="14.5" stroke="#ffffff" stroke-width="1" stroke-dasharray="1,1"/>
+                            <circle cx="7" cy="14.5" r="1" fill="#008080"/>
+                            <circle cx="12" cy="14.5" r="1" fill="#008080"/>
+                            <circle cx="17" cy="14.5" r="1" fill="#008080"/>
+                        </svg>
+                        WorkTimeline
+                        <div id="pipelineLed" class="clio-status-led" title="Clio Handshake Active"></div>
+                    </div>
                 </div>
                 
                 <div style="width: 40px;"></div>
@@ -459,6 +489,7 @@
             audio: `<svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>`
         };
 
+        /* AUTOMATED CIRCADIAN ENGINE COMPILATION TRACKS */
         function evaluateCircadianTimeSystem() {
             if (sessionStorage.getItem('theme_override')) return;
             
@@ -470,21 +501,40 @@
             }
         }
 
-        function toggleSovereignLuminanceOverride() {
-            const isCurrentlyDark = document.body.classList.contains('night-deck');
-            if (isCurrentlyDark) {
+        /* DYNAMIC SELECTOR HOOKS FROM THE LAB SIDEBAR CORE */
+        function applySovereignFontProfile(fontProfile) {
+            if (fontProfile === 'serif') {
+                document.documentElement.style.setProperty('--font-family-override', 'Georgia, serif');
+            } else if (fontProfile === 'mono') {
+                document.documentElement.style.setProperty('--font-family-override', '"Courier New", monospace');
+            } else {
+                document.documentElement.style.setProperty('--font-family-override', "'Nunito', sans-serif");
+            }
+        }
+
+        function applySovereignLuminanceOverride(themeSelection) {
+            if (themeSelection === 'day') {
                 document.body.classList.remove('night-deck');
                 sessionStorage.setItem('theme_override', 'day');
-            } else {
+            } else if (themeSelection === 'night') {
                 document.body.classList.add('night-deck');
                 sessionStorage.setItem('theme_override', 'night');
+            } else {
+                sessionStorage.removeItem('theme_override');
+                evaluateCircadianTimeSystem();
             }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             const override = sessionStorage.getItem('theme_override');
-            if (override === 'day') document.body.classList.remove('night-deck');
-            else if (override === 'night') document.body.classList.add('night-deck');
+            const selector = document.getElementById('labThemeSelector');
+            if (override === 'day') {
+                document.body.classList.remove('night-deck');
+                if (selector) selector.value = 'day';
+            } else if (override === 'night') {
+                document.body.classList.add('night-deck');
+                if (selector) selector.value = 'night';
+            }
             updateLabSidebarCounters();
         });
 
