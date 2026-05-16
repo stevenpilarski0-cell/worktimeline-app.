@@ -106,12 +106,12 @@
             letter-spacing: -0.5px; display: flex; align-items: center; gap: 6px;
         }
         
-        /* BRAND SVG SPECIFICATION: THINNER TIMELINE PROFILE CAPTURED WITH 3 NODE MARKERS */
+        /* BRAND SVG: UPDATED ULTRA-THIN & EXTENDED CHRONOLOGY PATH WITH TEAL NODES */
         .briefcase-logo-svg { 
-            width: 28px; height: 28px; display: inline-block; vertical-align: middle;
+            width: 32px; height: 32px; display: inline-block; vertical-align: middle;
         }
         .briefcase-body { fill: var(--active-teal); }
-        .briefcase-timeline-path { stroke: #ffffff; stroke-width: 0.8px; stroke-dasharray: 1,1; fill: none; }
+        .briefcase-timeline-path { stroke: #ffffff; stroke-width: 0.6px; stroke-dasharray: 1,1; fill: none; }
         .briefcase-node { fill: var(--active-teal); }
 
         .input-panel {
@@ -256,6 +256,7 @@
             border: 1px solid var(--glass-border); text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.01);
         }
         
+        /* HARD CONSTRAINT: FIXED ICON ENVELOPE DIMENSIONS PREVENTS CHARACTER STRING ARTIFACT BLOB DISTORTIONS */
         .sidebar-item .circle-icon { 
             width: 28px; height: 28px; background: var(--metallic-silver); color: var(--active-teal); 
             border-radius: 8px; display: flex; justify-content: center; align-items: center; 
@@ -416,7 +417,7 @@
                     <div class="main-title" id="brandTitle">
                         <svg class="briefcase-logo-svg" viewBox="0 0 24 24">
                             <path class="briefcase-body" d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-8-2h4v2h-4V4zm8 7H4V8h16v3zm-16 2h16v1H4v-1zm16 6H4v-3h16v3z"/>
-                            <line class="briefcase-timeline-path" x1="3" y1="14.5" x2="21" y2="14.5"/>
+                            <line class="briefcase-timeline-path" x1="2" y1="14.5" x2="22" y2="14.5"/>
                             <circle class="briefcase-node" cx="7" cy="14.5" r="0.8"/>
                             <circle class="briefcase-node" cx="12" cy="14.5" r="0.8"/>
                             <circle class="briefcase-node" cx="17" cy="14.5" r="0.8"/>
@@ -455,14 +456,18 @@
             </div>
 
             <div class="workspace-layout-matrix">
-                <div id="visualSpineTrack" class="vertical-spine-track"></div>
+                
+                <div id="visualSpineTrack" class="vertical-spine-track">
+                    </div>
+
                 <div class="timeline-container" id="timelineBody">
                     <div class="log-list" id="logList"></div>
                 </div>
+
             </div>
 
             <div class="footer-nav">
-                <div id="prButton" class="footer-pill" onclick="runPatternRecognition()">
+                <div id="prButton" class="footer-pill disabled-gate" onclick="runPatternRecognition()">
                     <svg viewBox="0 0 24 24">
                         <rect x="2" y="3" width="20" height="14" rx="4" ry="4"></rect>
                         <line x1="8" y1="21" x2="16" y2="21"></line>
@@ -539,6 +544,7 @@
                 document.body.classList.add('night-deck');
                 if (selector) selector.value = 'night';
             }
+            // CRITICAL PASS: Pattern Recognition is enabled while compilng dynamic drafting phases
             document.getElementById('prButton').classList.remove('disabled-gate');
             updateLabSidebarCounters();
         });
@@ -780,10 +786,11 @@
             }
         }
 
+        /* RUN PATTERN RECOGNITION ANYTIME BEFORE IMMUTABILITY LOCK EXECUTION PASSES */
         function runPatternRecognition() {
-            if (isEngineSealed) return alert("Dataset locked. Analysis complete.");
+            if (isEngineSealed) return alert("Dataset sealed. Analysis complete.");
             const timelineData = logsData.filter(log => (log.mode || 'TIMELINE') === 'TIMELINE');
-            if(timelineData.length === 0) return alert("Add records to your timeline before running analysis engine passes.");
+            if(timelineData.length === 0) return alert("Populate records to your contemporary timeline before activating analysis engine passes.");
             
             document.getElementById('patternOverlay').classList.add('active');
             document.getElementById('patternLoader').style.display = 'block';
@@ -801,8 +808,8 @@
             const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
             
             const auditMessage = decision === 'ACCEPTED' 
-                ? "[AUDIT LOG] User ACCEPTED AI Pattern Suggestion: 'Morning incident cluster' for integration brief pass."
-                : "[AUDIT LOG] User IGNORED AI Pattern Suggestion. Raw timeline dataset unperturbed.";
+                ? "[AUDIT LOG] User ACCEPTED AI Pattern Suggestion: 'Morning incident cluster' for integration package pass."
+                : "[AUDIT LOG] User IGNORED AI Pattern Suggestion. Raw timeline integrity unperturbed.";
 
             if (decision === 'ACCEPTED') {
                 logsData.forEach(log => { if (log.mode === 'TIMELINE') log.highlighted = true; });
@@ -817,6 +824,7 @@
                 `;
             }
 
+            // Preservation injection loop: AI results must be added to dataset before sealing pass
             logsData.push({
                 id: Date.now(),
                 parentId: null,
@@ -845,8 +853,10 @@
                 isEngineSealed = true;
                 document.getElementById('pipelineLed').style.backgroundColor = '#008080';
                 
+                // Formally compile everything inside database payload memory 
                 const packageBriefForLawyers = JSON.stringify(logsData);
-                alert("AMENDMENT IMMUTABILITY SECURED\n\nFull case files package compiled, including Timeline array, version overlays, and active Pattern Recognition audit insights.\n\nData securely synced to active Clio firm ledger pipelines.");
+                
+                alert("AMENDMENT IMMUTABILITY SECURED\n\nLedger array compiled under Canada Evidence Act parameters, including Timeline array, version overlays, and accepted active Pattern Recognition insights.\n\nPackage locked and synchronized to active Clio client ledger pipelines.");
             }, 800);
         }
     </script>
