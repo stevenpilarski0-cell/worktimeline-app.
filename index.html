@@ -3,249 +3,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Legal Guardian | Precision Log</title>
+    <title>Guardian Lab | Premium Legal Tool</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --platinum: #F3F4F6;      /* Main Background */
-            --teal-brand: #008080;    /* Primary Action */
-            --gunmetal: #1F2937;      /* Professional Text */
-            --silver-glass: rgba(255, 255, 255, 0.7);
-            --border-line: #D1D5DB;   /* Silver Accents */
+            --platinum: #F3F4F6;      /* Platinum Base */
+            --teal-brand: #008080;    /* Precision Teal */
+            --gunmetal: #1F2937;      /* Text Authority */
+            --silver-border: #D1D5DB;
+            --glass: rgba(243, 244, 246, 0.95);
         }
 
         body {
             margin: 0;
-            padding: 0;
             font-family: 'Inter', -apple-system, sans-serif;
             background-color: var(--platinum);
             color: var(--gunmetal);
-            padding-bottom: 90px; /* Space for the grounded bar */
+            overflow-x: hidden;
         }
 
-        /* --- THE LOGO/HEADER --- */
+        /* --- THE DOWNTOWN HEADER --- */
         header {
-            padding: 20px;
-            background: white;
-            border-bottom: 1px solid var(--border-line);
-            text-align: center;
-        }
-
-        .brand-logo {
-            font-weight: 800;
-            letter-spacing: -1px;
-            color: var(--teal-brand);
-            font-size: 20px;
-            text-transform: uppercase;
-        }
-
-        /* --- THE LAB TAB & TOGGLE --- */
-        .lab-container {
-            padding: 20px;
-        }
-
-        .toggle-box {
-            background: white;
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid var(--border-line);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 26px;
-        }
-
-        .switch input { opacity: 0; width: 0; height: 0; }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 34px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 18px; width: 18px;
-            left: 4px; bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider { background-color: var(--teal-brand); }
-        input:checked + .slider:before { transform: translateX(24px); }
-
-        /* --- THE CARDS (MIDDLE GROUND) --- */
-        .card {
+            padding: 15px 20px;
             background: white;
-            border-radius: 12px;
-            border: 1px solid var(--border-line);
-            padding: 18px;
-            margin-bottom: 12px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            border-bottom: 1px solid var(--silver-border);
         }
 
-        .card-label {
+        .menu-trigger {
+            font-size: 24px;
+            color: var(--teal-brand);
+            cursor: pointer;
+        }
+
+        /* --- THE SLIDE-OUT LAB (SIDEBAR) --- */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -100%; /* Hidden by default */
+            width: 85%;
+            max-width: 350px;
+            height: 100%;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            z-index: 2000;
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 5px 0 25px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar.active { left: 0; }
+
+        .sidebar-header {
+            padding: 30px 20px;
+            border-bottom: 1px solid var(--silver-border);
+            background: white;
+        }
+
+        .sidebar-nav {
+            padding: 20px 0;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: var(--gunmetal);
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .nav-link i {
+            width: 30px;
+            color: var(--teal-brand);
+            font-size: 18px;
+        }
+
+        .nav-link:active { background: rgba(0,128,128,0.05); }
+
+        /* --- LAB SPECIAL CATEGORIES --- */
+        .lab-section-title {
+            padding: 20px 25px 10px;
             font-size: 11px;
             font-weight: 800;
-            color: var(--teal-brand);
+            color: #94a3b8;
             text-transform: uppercase;
-            margin-bottom: 8px;
+            letter-spacing: 1px;
         }
 
-        /* --- THE GROUNDED BOTTOM BAR --- */
-        .bottom-nav {
+        /* --- THE GROUNDED ACTION BAR (STAYS THE SAME) --- */
+        .action-bar {
             position: fixed;
             bottom: 0;
-            left: 0;
-            right: 0;
-            height: 75px;
-            background: var(--silver-glass);
-            backdrop-filter: blur(15px);
-            border-top: 1px solid var(--border-line);
+            width: 100%;
+            height: 80px;
+            background: white;
+            border-top: 1px solid var(--silver-border);
             display: flex;
             justify-content: space-around;
             align-items: center;
             z-index: 1000;
         }
 
-        .nav-item {
-            text-align: center;
-            color: var(--gunmetal);
-            text-decoration: none;
+        .tool-icon {
             font-size: 22px;
-            flex: 1;
+            color: var(--gunmetal);
+            text-align: center;
         }
 
-        .nav-item.active {
-            color: var(--teal-brand);
-        }
+        .tool-icon span { display: block; font-size: 10px; margin-top: 5px; }
 
-        .nav-label {
-            display: block;
-            font-size: 10px;
-            font-weight: 600;
-            margin-top: 4px;
-        }
-
-        /* Scan Button Styling */
-        .btn-scan {
-            width: 100%;
-            background: var(--teal-brand);
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 10px;
+        /* --- OVERLAY --- */
+        .overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.3);
+            display: none;
+            z-index: 1500;
         }
     </style>
 </head>
 <body>
 
+<div class="overlay" id="overlay" onclick="closeLab()"></div>
+
 <header>
-    <div class="brand-logo">Guardian Lab</div>
-</header>
-
-<div id="logsView" class="lab-container">
-    <div class="card">
-        <div class="card-label">Recent Activity</div>
-        <p style="font-size: 14px; margin: 0;">Your timeline is encrypted and private.</p>
+    <div class="menu-trigger" onclick="openLab()">
+        <i class="fa-solid fa-bars-staggered"></i>
     </div>
-    
-    <div id="templates" style="margin-top: 20px;">
-        <h4 style="font-size: 12px; color: #666;">SELECT TEMPLATE</h4>
-        <div class="card" style="padding: 12px; background: #fff;">Workplace Observation</div>
-        <div class="card" style="padding: 12px; background: #fff;">Medical Inquiry Log</div>
+    <div style="font-weight: 800; color: var(--teal-brand); letter-spacing: -0.5px;">GUARDIAN</div>
+    <div style="width: 24px;"></div> </header>
+
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h2 style="margin:0; font-weight: 900; color: var(--gunmetal);">The Lab</h2>
+        <p style="margin: 5px 0 0; font-size: 12px; color: #64748b;">Precision Analysis & Legal Research</p>
+    </div>
+
+    <div class="sidebar-nav">
+        <div class="lab-section-title">Analysis Tools</div>
+        <a href="#" class="nav-link" onclick="runScanner()">
+            <i class="fa-solid fa-microscope"></i> Run Pattern Recognition
+        </a>
+
+        <div class="lab-section-title">Intelligence Vault</div>
+        <a href="#" class="nav-link">
+            <i class="fa-solid fa-gavel"></i> Case Law Library
+        </a>
+        <a href="#" class="nav-link">
+            <i class="fa-solid fa-book-scale"></i> Breach Encyclopedia
+        </a>
+        <a href="#" class="nav-link">
+            <i class="fa-solid fa-shield-halved"></i> Rights & Statutes
+        </a>
+
+        <div class="lab-section-title">Account</div>
+        <a href="#" class="nav-link">
+            <i class="fa-solid fa-envelope"></i> Message Lawyer
+        </a>
+        <a href="#" class="nav-link">
+            <i class="fa-solid fa-gear"></i> App Settings
+        </a>
+    </div>
+
+    <div style="padding: 20px; border-top: 1px solid var(--silver-border); background: white;">
+        <div style="font-size: 14px; font-weight: 700;">Client Portal</div>
+        <div style="font-size: 11px; color: #64748b;">client@vancouver-law.com</div>
     </div>
 </div>
 
-<div id="labView" class="lab-container" style="display:none;">
-    <div class="toggle-box">
-        <div>
-            <strong style="display:block;">Pattern Recognition</strong>
-            <small style="color: #666;">Scan Federal & BC Statutes</small>
-        </div>
-        <label class="switch">
-            <input type="checkbox" id="labToggle" onchange="toggleLabMode()">
-            <span class="slider"></span>
-        </label>
+<main style="padding: 20px;">
+    <div style="background: white; border-radius: 12px; padding: 20px; border: 1px solid var(--silver-border);">
+        <p style="color: #64748b; font-size: 14px;">Your timeline is ready. Select a tool below to log data.</p>
     </div>
+</main>
 
-    <div id="labContent" style="opacity: 0.5; pointer-events: none;">
-        <button class="btn-scan" onclick="startScan()">RUN FULL LEGAL SCAN</button>
-        <div id="scanResults" style="margin-top: 20px;"></div>
-    </div>
-</div>
-
-<nav class="bottom-nav">
-    <a href="#" class="nav-item active" onclick="showView('logs')">
-        <i class="fa-solid fa-book"></i>
-        <span class="nav-label">Logs</span>
-    </a>
-    <a href="#" class="nav-item">
-        <i class="fa-solid fa-camera"></i>
-        <span class="nav-label">Camera</span>
-    </a>
-    <a href="#" class="nav-item">
-        <i class="fa-solid fa-microphone"></i>
-        <span class="nav-label">Mic</span>
-    </a>
-    <a href="#" class="nav-item">
-        <i class="fa-solid fa-file-lines"></i>
-        <span class="nav-label">Docs</span>
-    </a>
-    <a href="#" class="nav-item" onclick="showView('lab')">
-        <i class="fa-solid fa-flask"></i>
-        <span class="nav-label">The Lab</span>
-    </a>
+<nav class="action-bar">
+    <div class="tool-icon"><i class="fa-solid fa-camera"></i><span>Camera</span></div>
+    <div class="tool-icon"><i class="fa-solid fa-microphone"></i><span>Mic</span></div>
+    <div class="tool-icon" style="color: var(--teal-brand);"><i class="fa-solid fa-plus-circle"></i><span>Log</span></div>
+    <div class="tool-icon"><i class="fa-solid fa-file-lines"></i><span>Docs</span></div>
+    <div class="tool-icon"><i class="fa-solid fa-calendar-day"></i><span>History</span></div>
 </nav>
 
 <script>
-    function showView(view) {
-        document.getElementById('logsView').style.display = view === 'logs' ? 'block' : 'none';
-        document.getElementById('labView').style.display = view === 'lab' ? 'block' : 'none';
+    function openLab() {
+        document.getElementById('sidebar').classList.add('active');
+        document.getElementById('overlay').style.display = 'block';
     }
 
-    function toggleLabMode() {
-        const isActive = document.getElementById('labToggle').checked;
-        const content = document.getElementById('labContent');
-        content.style.opacity = isActive ? "1" : "0.5";
-        content.style.pointerEvents = isActive ? "all" : "none";
+    function closeLab() {
+        document.getElementById('sidebar').classList.remove('active');
+        document.getElementById('overlay').style.display = 'none';
     }
 
-    function startScan() {
-        const results = document.getElementById('scanResults');
-        results.innerHTML = "<p style='text-align:center; color:var(--teal-brand);'>Scanning Canada Labour Code & BC Statutes...</p>";
-        
-        // Mocking the AI detection for Federal and Provincial patterns
-        setTimeout(() => {
-            results.innerHTML = `
-                <div class="card" style="border-left: 4px solid var(--teal-brand);">
-                    <div class="card-label">Federal Pattern Detected</div>
-                    <strong>Canada Labour Code: Div XV.2</strong>
-                    <p style="font-size: 13px; color: #444;">Fact pattern matches criteria for medical leave non-interference.</p>
-                </div>
-                <div class="card" style="border-left: 4px solid #999;">
-                    <div class="card-label">Provincial Pattern Detected</div>
-                    <strong>BC ESA: Section 32</strong>
-                    <p style="font-size: 13px; color: #444;">Detected potential gap in overtime calculation based on log timestamps.</p>
-                </div>
-            `;
-        }, 2000);
+    function runScanner() {
+        alert("Initializing Pattern Recognition Scanner...");
+        closeLab();
     }
 </script>
 
