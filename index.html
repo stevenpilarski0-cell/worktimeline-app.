@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeline™ - Core Architecture</title>
+    <title>WorkTimeline Framework</title>
     <style>
         :root {
             --bg-canvas: #090A0B;
@@ -15,6 +15,10 @@
             --accent-teal-glow: rgba(20, 184, 166, 0.15);
             --border-subtle: #24282C;
             --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+            
+            /* Hardware Pipeline Color Variables */
+            --beacon-green: #10B981;
+            --beacon-glow: rgba(16, 185, 129, 0.4);
         }
 
         body {
@@ -38,7 +42,7 @@
 
         header h1 {
             margin: 0;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.1em;
@@ -52,17 +56,39 @@
             margin-top: 4px;
         }
 
-        #connection-status {
+        /* The Live Hardware Connection Pill */
+        .pipeline-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #16191B;
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        /* Continuous Live Hardware Pulse Animation */
+        @keyframes beaconBreathing {
+            0% { box-shadow: 0 0 0 0 var(--beacon-glow); transform: scale(1); }
+            50% { box-shadow: 0 0 12px 4px var(--beacon-glow); transform: scale(1.05); }
+            100% { box-shadow: 0 0 0 0 var(--beacon-glow); transform: scale(1); }
+        }
+
+        .hardware-beacon {
+            width: 8px;
+            height: 8px;
+            background-color: var(--beacon-green);
+            border-radius: 50%;
+            animation: beaconBreathing 2s infinite ease-in-out;
+            transition: background-color 0.3s ease, var(--beacon-glow) 0.3s ease;
+        }
+
+        .pipeline-text {
             font-size: 11px;
             font-weight: 600;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.06em;
             text-transform: uppercase;
-            color: var(--accent-teal);
-            background: var(--accent-teal-glow);
-            padding: 6px 14px;
-            border-radius: 30px;
-            border: 1px solid rgba(20, 184, 166, 0.2);
-            transition: all 0.4s ease;
+            color: var(--text-primary);
         }
 
         main {
@@ -71,7 +97,6 @@
             padding: 0 24px;
         }
 
-        /* 3D Volumetric Depth Layers */
         .workspace-card {
             background: var(--surface-card);
             padding: 32px;
@@ -83,7 +108,7 @@
 
         h3 {
             margin-top: 0;
-            font-size: 15px;
+            font-size: 13px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.05em;
@@ -91,7 +116,6 @@
             margin-bottom: 20px;
         }
 
-        /* Premium Minimalist Control Rack */
         .action-dock {
             display: flex;
             background: var(--surface-card);
@@ -108,8 +132,10 @@
             border: none;
             color: var(--text-muted);
             padding: 14px;
-            font-size: 13px;
-            font-weight: 500;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
             cursor: pointer;
             border-radius: 10px;
             transition: color 0.2s ease, background-color 0.2s ease;
@@ -134,7 +160,6 @@
             color: var(--text-primary);
             resize: none;
             box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
 
         textarea:focus {
@@ -155,16 +180,16 @@
             color: var(--bg-canvas);
             border: none;
             padding: 12px 24px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
             border-radius: 8px;
             cursor: pointer;
             transition: background-color 0.2s ease;
         }
 
-        button.action-btn:hover {
-            background-color: #E5E7EB;
-        }
+        button.action-btn:hover { background-color: #E5E7EB; }
 
         button.action-btn.secondary {
             background-color: transparent;
@@ -184,8 +209,8 @@
             border: 1px solid rgba(20, 184, 166, 0.3);
             width: 100%;
             padding: 16px;
-            font-size: 13px;
-            font-weight: 600;
+            font-size: 12px;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.08em;
             border-radius: 10px;
@@ -201,20 +226,10 @@
             box-shadow: 0 0 24px var(--accent-teal-glow);
         }
 
-        /* Continuous High-End Satin Breathing Pulse Animation */
         @keyframes satinPulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.2);
-                border-color: var(--border-subtle);
-            }
-            50% {
-                box-shadow: 0 0 16px rgba(20, 184, 166, 0.08);
-                border-color: var(--accent-teal);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.2);
-                border-color: var(--border-subtle);
-            }
+            0% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.2); border-color: var(--border-subtle); }
+            50% { box-shadow: 0 0 16px rgba(20, 184, 166, 0.08); border-color: var(--accent-teal); }
+            100% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.2); border-color: var(--border-subtle); }
         }
 
         #wt-system-notification {
@@ -226,13 +241,11 @@
             border-radius: 14px;
         }
 
-        #wt-system-notification.active-pulse {
-            animation: satinPulse 3s infinite ease-in-out;
-        }
+        #wt-system-notification.active-pulse { animation: satinPulse 3s infinite ease-in-out; }
 
         #wt-notification-title {
             margin: 0 0 6px 0;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.05em;
@@ -281,7 +294,6 @@
             width: 90%;
             max-width: 460px;
             border: 1px solid var(--border-subtle);
-            box-shadow: 0 24px 64px rgba(0,0,0,0.4);
         }
 
         .template-option {
@@ -291,32 +303,12 @@
             padding: 16px;
             border-bottom: 1px solid var(--border-subtle);
             cursor: pointer;
-            transition: background-color 0.2s ease;
         }
 
-        .template-option:hover {
-            background-color: var(--surface-input);
-        }
-
-        .template-option input[type="checkbox"] {
-            margin-top: 3px;
-            accent-color: var(--accent-teal);
-        }
-
-        .template-info h5 {
-            margin: 0 0 4px 0;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .template-info p {
-            margin: 0;
-            color: var(--text-muted);
-            font-size: 12px;
-            line-height: 1.5;
-        }
-
+        .template-option:hover { background-color: var(--surface-input); }
+        .template-option input[type="checkbox"] { margin-top: 3px; accent-color: var(--accent-teal); }
+        .template-info h5 { margin: 0 0 4px 0; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; color: var(--text-primary); }
+        .template-info p { margin: 0; color: var(--text-muted); font-size: 12px; line-height: 1.5; }
         input[type="file"] { display: none; }
         footer { text-align: center; padding: 40px 25px; font-size: 11px; color: var(--text-muted); letter-spacing: 0.02em; }
     </style>
@@ -325,11 +317,12 @@
 
     <header>
         <div>
-            <h1>WorkTimeline™</h1>
+            <h1>WorkTimeline</h1>
             <div class="tagline">Universal Verification Framework</div>
         </div>
-        <div id="connection-status">
-            Clio Pipeline Active
+        <div class="pipeline-container">
+            <div id="pipeline-beacon" class="hardware-beacon"></div>
+            <div id="pipeline-text" class="pipeline-text">Clio Pipeline Active</div>
         </div>
     </header>
 
@@ -340,15 +333,9 @@
         </div>
 
         <div class="action-dock">
-            <button class="dock-btn" onclick="document.getElementById('document-input').click()">
-                Document File
-            </button>
-            <button class="dock-btn" onclick="toggleAudioRecorder()">
-                <span id="mic-status">Audio Log</span>
-            </button>
-            <button class="dock-btn" onclick="document.getElementById('camera-input').click()">
-                Photo Asset
-            </button>
+            <button class="dock-btn" onclick="document.getElementById('document-input').click()">Document File</button>
+            <button class="dock-btn" onclick="toggleAudioRecorder()"><span id="mic-status">Audio Log</span></button>
+            <button class="dock-btn" onclick="document.getElementById('camera-input').click()">Photo Asset</button>
         </div>
 
         <input type="file" id="document-input" accept=".pdf,.doc,.docx,.txt" onchange="handleDocumentUpload(this)">
@@ -360,7 +347,7 @@
             
             <div class="btn-row">
                 <button class="action-btn" onclick="executeAddEntry()">Commit Entry</button>
-                <button class="action-btn secondary" onclick="openTemplateModal()">Structural Formats</button>
+                <button class="action-btn secondary" onclick="openTemplateModal()">Structural Blueprints</button>
             </div>
         </div>
 
@@ -370,7 +357,7 @@
                 <p id="empty-state-msg" style="color: var(--text-muted); font-style: italic; font-size: 13px; margin: 0;">No active layers committed to memory.</p>
             </div>
             
-            <button class="lock-btn" onclick="executeMasterClioLock()">Certify Ledger & Seal to Clio</button>
+            <button class="lock-btn" onclick="executeMasterClioLock()">Certify Ledger and Seal to Clio</button>
         </div>
     </main>
 
@@ -410,7 +397,7 @@
     </div>
 
     <footer>
-        WorkTimeline™ Platforms Inc. • Secure Canadian Infrastructure Core
+        WorkTimeline Platforms Inc. • Secure Canadian Infrastructure Core
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -422,7 +409,7 @@
         let audioChunks = [];
 
         const templateLibrary = {
-            injury: "=== FORMAL INJURY LOG LAYOUT ===\n[TIMESTAMP]: \n[EXACT LOGISTICS / FIELD AREA]: \n[SYMPTOM PROFILE]: \n\n",
+            injury: "=== FORMAL INJURY LOG LAYOUT ===\n[TIMESTAMP]: \n[EXACT FIELD AREA]: \n[SYMPTOM PROFILE]: \n\n",
             witness: "=== FORMAL WITNESS LOG LAYOUT ===\n[INDIVIDUAL IDENTITY]: \n[VERBAL STATEMENT RECORDED]: \n\n",
             scene: "=== ENVIRONMENTAL STATE LOG LAYOUT ===\n[INFRASTRUCTURE STATUS]: \n[HAZARD CHECK VERIFICATION]: \n\n"
         };
@@ -534,11 +521,14 @@
 
         async function executeMasterClioLock() {
             if (activeLocalTimelineData.length === 0) { alert("Ledger empty."); return; }
-            const statusLabel = document.getElementById('connection-status');
-            statusLabel.style.background = "rgba(255,255,255,0.03)";
-            statusLabel.style.color = "var(--text-muted)";
-            statusLabel.style.borderColor = "var(--border-subtle)";
-            statusLabel.innerText = "LOCK PROTOCOL ACTIVE";
+            
+            const beacon = document.getElementById('pipeline-beacon');
+            const statusText = document.getElementById('pipeline-text');
+            
+            // Shift hardware state visualization to processing profile (Satin White pulse transition)
+            beacon.style.backgroundColor = "#FFFFFF";
+            document.documentElement.style.setProperty('--beacon-glow', 'rgba(255, 255, 255, 0.3)');
+            statusText.innerText = "Sealing Immutability Layer";
 
             if (typeof WorkTimelineMaster !== 'undefined') {
                 const baselineStringData = JSON.stringify(activeLocalTimelineData);
@@ -550,10 +540,11 @@
                 const syncCompleted = await WorkTimelineMaster.syncToClioEcosystem(activeLocalTimelineData, systemForensicFingerprint);
                 if (syncCompleted) {
                     alert(`AMENDMENT IMMUTABILITY SEALED\n\nLedger array compiled under Canada Evidence Act parameters.\n\nHash: ${systemForensicFingerprint}\n\nPackage transmitted to secure Clio case pipeline.`);
-                    statusLabel.style.background = "var(--accent-teal-glow)";
-                    statusLabel.style.color = "var(--accent-teal)";
-                    statusLabel.style.borderColor = "rgba(20, 184, 166, 0.2)";
-                    statusLabel.innerText = "TIMELINE SEALED TO CLIO";
+                    
+                    // Lock state complete: Return beacon to true locked live state (Deep Teal / Green variant)
+                    beacon.style.backgroundColor = "var(--accent-teal)";
+                    document.documentElement.style.setProperty('--beacon-glow', 'rgba(20, 184, 166, 0.4)');
+                    statusText.innerText = "Timeline Sealed to Clio";
                 }
             }
         }
