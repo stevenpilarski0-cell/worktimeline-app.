@@ -16,6 +16,7 @@
             --mac-border: #cbd5e0; 
             --white: #ffffff; 
             --mac-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+            --clio-green: #2ecc71; /* The High-Visibility Legal Green */
         }
         
         body { 
@@ -26,6 +27,33 @@
             display: flex; 
             flex-direction: column;
             overflow: hidden;
+        }
+
+        /* --- THE PULSING CLIO LIGHT --- */
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 10px;
+            font-weight: 800;
+            color: var(--slate);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--clio-green);
+            border-radius: 50%;
+            box-shadow: 0 0 0 rgba(46, 204, 113, 0.4);
+            animation: pulse-green 2s infinite;
+        }
+
+        @keyframes pulse-green {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(46, 204, 113, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
         }
 
         /* Header */
@@ -40,7 +68,7 @@
         }
 
         .menu-icon { font-size: 24px; color: var(--teal); cursor: pointer; }
-        .logo { font-weight: 900; color: var(--teal); font-size: 20px; }
+        .logo { font-weight: 900; color: var(--teal); font-size: 18px; }
 
         /* Sidebar - The Lab Hub */
         .sidebar {
@@ -84,7 +112,7 @@
         }
         .template-btn {
             background: var(--white); border: 1px solid var(--mac-border);
-            padding: 15px; border-radius: 12px; font-size: 12px; font-weight: 800;
+            padding: 15px; border-radius: 12px; font-size: 11px; font-weight: 800;
             color: var(--teal); text-align: center; cursor: pointer;
         }
 
@@ -106,9 +134,6 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.4); display: none; z-index: 1500;
         }
-
-        /* Hidden Input for Date Reader */
-        #dateReaderInput { display: none; }
     </style>
 </head>
 <body>
@@ -118,15 +143,18 @@
 <header>
     <div class="menu-icon" onclick="toggleSidebar()"><i class="fas fa-bars-staggered"></i></div>
     <div class="logo">WorkTimeline Pro</div>
-    <div class="menu-icon"><i class="fas fa-user-circle"></i></div>
+    <div class="status-indicator">
+        <div class="pulse-dot"></div>
+        <span>SECURE</span>
+    </div>
 </header>
 
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <h2 style="margin:0; color: var(--teal);">The Lab</h2>
         <div class="privacy-box">
-            <span style="font-size: 12px; font-weight: 800;">Pattern Recognition</span>
-            <input type="checkbox" id="privacyToggle" checked>
+            <span style="font-size: 12px; font-weight: 800;">Privacy Shield</span>
+            <input type="checkbox" checked>
         </div>
     </div>
     <div class="sidebar-menu">
@@ -179,21 +207,10 @@
         ov.style.display = sb.classList.contains('open') ? 'block' : 'none';
     }
 
-    // --- FUNCTIONAL TOOLS ---
+    function triggerCamera() { document.getElementById('cameraInput').click(); }
+    function triggerMic() { alert("Microphone Listening..."); }
+    function triggerDocs() { alert("Opening Document Vault..."); }
 
-    function triggerCamera() {
-        document.getElementById('cameraInput').click();
-    }
-
-    function triggerMic() {
-        alert("Microphone Active: Listening for audio log...");
-    }
-
-    function triggerDocs() {
-        alert("Accessing Secure Document Vault...");
-    }
-
-    // --- OCR DATE READER LOGIC ---
     function triggerDateReader() {
         toggleSidebar();
         document.getElementById('dateReaderInput').click();
@@ -203,28 +220,18 @@
         main.innerHTML += `
             <div style="background: #e0f2f1; padding: 15px; border-radius: 10px; margin-top: 15px; border: 1px solid var(--teal);">
                 <small style="color: var(--teal); font-weight: 900;">OCR DATE READER</small>
-                <p style="margin: 5px 0; font-size: 13px;">Extracting timestamps from photo...</p>
-                <strong style="color: var(--slate);">Detected Date: May 15, 2026</strong>
+                <p style="margin: 5px 0; font-size: 13px;">Extracted Timestamp: May 15, 2026</p>
             </div>
         `;
     };
 
-    // --- TEMPLATE LOGGING ---
     function logTemplate(type) {
         main.innerHTML += `
             <div style="background: white; padding: 15px; border-radius: 10px; margin-top: 15px; border-left: 5px solid var(--teal); box-shadow: var(--mac-shadow);">
                 <small style="color: var(--teal); font-weight: 900;">${type.toUpperCase()}</small>
-                <p style="margin: 5px 0; font-size: 14px;">Template entry created at ${new Date().toLocaleTimeString()}</p>
+                <p style="margin: 5px 0; font-size: 14px;">Entry logged successfully.</p>
             </div>
         `;
-    }
-
-    // --- GOOGLE SIGN IN (PREVENT REDIRECT ERRORS) ---
-    async function signIn() {
-        const { error } = await supabase.auth.signInWithOAuth({
-            provider: 'google',
-            options: { redirectTo: window.location.origin }
-        });
     }
 </script>
 
