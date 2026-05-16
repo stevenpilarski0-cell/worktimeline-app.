@@ -210,7 +210,9 @@
       // Correct unified Developer Platform API Authorization endpoint
       const AUTH_GATEWAY = 'https://developers.api.clio.com/oauth/authorize';
       const redirectUri = window.location.origin + '/api/callback'; 
-      const scopes = 'read profile accounts'; 
+      
+      // FIX: Clio platform scopes MUST be strictly comma-separated (no spaces)
+      const scopes = 'read,profile,accounts'; 
       
       // Secure state token bundling payload details for verification logic mapping
       const statePayload = {
@@ -270,7 +272,7 @@
         circadianBtn.textContent = '🌙';
         circadianBtn.classList.replace('bg-slate-700/50', 'bg-slate-200');
         circadianBtn.classList.replace('text-amber-400', 'text-slate-700');
-        circadianBtn.classList.replace('border-slate-600/40', 'border-slate-300');
+        circadianBtn.classList.replace('border-slate-300', 'border-slate-300');
       } else {
         document.body.classList.replace('bg-slate-50', 'bg-slate-900');
         document.body.classList.replace('text-slate-900', 'text-slate-100');
