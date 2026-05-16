@@ -23,7 +23,6 @@
             --metallic-teal: linear-gradient(135deg, #008080 0%, #004d4d 100%);
             --chip-bg: #ffffff;
             
-            /* BRIGHT SILVER PLATINUM FOR TOP LOG CARD LAYERS */
             --silver-platinum: #f1f5f9;
             --font-family-override: 'Nunito', sans-serif;
         }
@@ -62,11 +61,11 @@
         .privacy-active #timelineBody { filter: blur(16px); pointer-events: none; opacity: 0.2; transition: 0.3s; }
         #timelineBody { transition: 0.3s; }
 
-        /* RE-ALIGNED HANDSHAKE BEACON (Sits right beside branding layout now) */
+        /* HANDSHAKE BEACON INTEGRATED INTO BRAND CORE */
         .clio-status-led {
             width: 10px; height: 10px; background-color: var(--active-green); border-radius: 50%;
             animation: breathe 2.5s infinite; box-shadow: 0 0 8px var(--active-green);
-            display: inline-block; margin-left: 2px;
+            display: inline-block; margin-left: 4px; vertical-align: middle;
         }
         @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.6; } }
 
@@ -87,7 +86,7 @@
 
         .header {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 20px 15px; z-index: 10;
+            padding: 10px 20px 15px; z-index: 1000;
         }
 
         .menu-trigger {
@@ -95,9 +94,10 @@
             background: var(--glass-bg); padding: 8px; border-radius: 12px;
             border: 1px solid var(--glass-border); backdrop-filter: blur(10px);
             box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex;
+            transition: background 0.2s ease;
         }
+        .menu-trigger.open-active { background: var(--metallic-teal); color: #ffffff; border-color: var(--active-teal); }
 
-        /* INTEGRATED HIGH-CONTRAST HEADER CONTAINMENT */
         .brand-block {
             display: flex; align-items: center; gap: 8px;
         }
@@ -107,9 +107,9 @@
             letter-spacing: -0.5px; display: flex; align-items: center; gap: 6px;
         }
         
-        /* DYNAMIC THREE-DOT TIMELINE BRIEFCASE LOGO SVG */
+        /* TIMELINE IN BRIEFCASE BRAND GRAPHIC PARAMETERS (THINNER LINE WITH 3 DOTS) */
         .briefcase-logo-svg { 
-            width: 26px; height: 26px; fill: var(--active-teal); 
+            width: 26px; height: 26px; fill: var(--active-teal); display: inline-block; vertical-align: middle;
         }
 
         .input-panel {
@@ -200,11 +200,6 @@
         }
         body.night-deck .log-bubble.historical-version { background: rgba(0, 0, 0, 0.2); }
 
-        .amend-badge {
-            font-size: 8px; font-weight: 900; background: var(--active-teal);
-            color: white; padding: 2px 6px; border-radius: 4px; margin-left: auto;
-        }
-
         .footer-nav {
             position: absolute; bottom: 0; left: 0; width: 100%; height: 80px; 
             background: var(--glass-bg); backdrop-filter: blur(20px);
@@ -231,31 +226,19 @@
         }
         .center-add-btn:active { transform: scale(0.95); }
 
-        /* THE EXTENDED LAB CORE SIDEBAR DRAWER */
+        /* THE LAB SIDEBAR DRAWER STYLING */
         .sidebar {
             position: absolute; top: 0; left: -100%; width: 280px; height: 100%;
             background: var(--glass-bg); backdrop-filter: blur(25px);
             transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 8000;
-            padding: 50px 20px; box-sizing: border-box; box-shadow: 20px 0 50px rgba(0,0,0,0.1);
+            padding: 55px 20px; box-sizing: border-box; box-shadow: 20px 0 50px rgba(0,0,0,0.1);
             border-right: 1px solid var(--glass-border);
             color: var(--text-dark);
             display: flex; flex-direction: column; gap: 10px;
         }
         .sidebar.open { left: 0; }
-        .sidebar-header { display: flex; justify-content: space-between; align-items: center; font-weight: 900; font-size: 22px; color: var(--active-teal); margin-bottom: 20px; text-transform: uppercase; letter-spacing: -1px; }
+        .sidebar-header { font-weight: 900; font-size: 22px; color: var(--active-teal); margin-bottom: 20px; text-transform: uppercase; letter-spacing: -1px; }
         
-        .close-sidebar { cursor: pointer; background: var(--metallic-silver); padding: 8px; border-radius: 12px; display: flex; color: var(--text-dark); border: 1px solid var(--glass-border); }
-        .close-sidebar svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2.5; }
-        
-        .sidebar-item {
-            padding: 14px 16px; margin-bottom: 4px; border-radius: 14px;
-            background: var(--chip-bg); font-weight: 800; font-size: 11px; color: var(--text-dark);
-            display: flex; align-items: center; gap: 12px; cursor: pointer;
-            border: 1px solid var(--glass-border); text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.01);
-        }
-        .sidebar-item .circle-icon { width: 32px; height: 32px; background: var(--metallic-silver); color: var(--active-teal); border-radius: 10px; display: flex; justify-content: center; align-items: center; border: 1px solid var(--glass-border); }
-        .sidebar-item .circle-icon svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.5; fill: none; }
-
         .lab-customizer-box {
             background: var(--chip-bg); border: 1px solid var(--glass-border);
             border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 12px;
@@ -271,6 +254,13 @@
         }
         .metric-row { display: flex; justify-content: space-between; align-items: center; font-weight: 800; }
         .metric-badge { font-size: 11px; color: var(--active-teal); font-weight: 900; }
+
+        /* OUTSIDE DISMISSAL HITBOX SCREEN OVERLAY */
+        .drawer-outside-overlay {
+            position: absolute; top:0; left:0; width:100%; height:100%;
+            background: rgba(15, 23, 42, 0.08); backdrop-filter: blur(1px);
+            z-index: 7000; display: none;
+        }
 
         .modal-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -290,16 +280,13 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body>
+<body onload="initApp()">
     <div class="phone-bezel">
         
+        <div id="drawerOutsideOverlay" class="drawer-outside-overlay" onclick="toggleSidebar()"></div>
+
         <div class="sidebar" id="sidebarMenu">
-            <div class="sidebar-header">
-                LAB CORE
-                <div class="close-sidebar" onclick="toggleSidebar()">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                </div>
-            </div>
+            <div class="sidebar-header">LAB CORE</div>
             
             <div class="lab-customizer-box">
                 <div>
@@ -369,14 +356,14 @@
                 
                 <div id="patternLoader">
                     <div class="spinner"></div>
-                    <div class="modal-body">Scanning timeline for chronological patterns without influencing raw data...</div>
+                    <div class="modal-body">Scanning timeline for chronological patterns...</div>
                 </div>
 
                 <div id="patternResult" style="display: none;">
                     <div class="modal-body">
                         <b>Analysis Complete.</b><br><br>
                         Pattern Detected: <i>Multiple incident logs clustered in the morning hours.</i><br><br>
-                        Do you want to append this insight to your private Notes? (Your timeline remains unaltered).
+                        Do you want to append this insight to your private Notes?
                     </div>
                     <div style="display: flex; gap: 10px;">
                         <div class="ok-btn ghost" onclick="handlePatternAudit('IGNORED')">Ignore</div>
@@ -397,7 +384,7 @@
             </div>
 
             <div class="header">
-                <div class="menu-trigger" onclick="toggleSidebar()">
+                <div id="menuBtn" class="menu-trigger" onclick="toggleSidebar()">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                 </div>
                 
@@ -405,10 +392,10 @@
                     <div class="main-title" id="brandTitle">
                         <svg class="briefcase-logo-svg" viewBox="0 0 24 24">
                             <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-8-2h4v2h-4V4zm8 7H4V8h16v3zm-16 2h16v1H4v-1zm16 6H4v-3h16v3z"/>
-                            <line x1="3" y1="14.5" x2="21" y2="14.5" stroke="#ffffff" stroke-width="1" stroke-dasharray="1,1"/>
-                            <circle cx="7" cy="14.5" r="1" fill="#008080"/>
-                            <circle cx="12" cy="14.5" r="1" fill="#008080"/>
-                            <circle cx="17" cy="14.5" r="1" fill="#008080"/>
+                            <line x1="3" y1="14.5" x2="21" y2="14.5" stroke="#ffffff" stroke-width="0.85" stroke-dasharray="1,1"/>
+                            <circle cx="7" cy="14.5" r="0.9" fill="#008080"/>
+                            <circle cx="12" cy="14.5" r="0.9" fill="#008080"/>
+                            <circle cx="17" cy="14.5" r="0.9" fill="#008080"/>
                         </svg>
                         WorkTimeline
                         <div id="pipelineLed" class="clio-status-led" title="Clio Handshake Active"></div>
@@ -489,7 +476,6 @@
             audio: `<svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>`
         };
 
-        /* AUTOMATED CIRCADIAN ENGINE COMPILATION TRACKS */
         function evaluateCircadianTimeSystem() {
             if (sessionStorage.getItem('theme_override')) return;
             
@@ -501,7 +487,6 @@
             }
         }
 
-        /* DYNAMIC SELECTOR HOOKS FROM THE LAB SIDEBAR CORE */
         function applySovereignFontProfile(fontProfile) {
             if (fontProfile === 'serif') {
                 document.documentElement.style.setProperty('--font-family-override', 'Georgia, serif');
@@ -563,7 +548,21 @@
             document.getElementById('greetingText').innerText = greeting;
         }
 
-        function toggleSidebar() { document.getElementById('sidebarMenu').classList.toggle('open'); }
+        /* DRAWER INTERFACE DISMISSAL SYSTEMS OVERHAUL (NO 'X' - DISMISS VIA BACKGROUND CLICK OR MENU TOGGLE) */
+        function toggleSidebar() { 
+            const sidebar = document.getElementById('sidebarMenu');
+            const menuBtn = document.getElementById('menuBtn');
+            const mask = document.getElementById('drawerOutsideOverlay');
+            
+            sidebar.classList.toggle('open');
+            menuBtn.classList.toggle('open-active');
+            
+            if (sidebar.classList.contains('open')) {
+                mask.style.display = 'block';
+            } else {
+                mask.style.display = 'none';
+            }
+        }
         
         function togglePrivacy() { 
             const app = document.getElementById('mainApp');
@@ -627,8 +626,9 @@
             const activeLayersCount = logsData.filter(v => v.id === rootLookupId || v.parentId === rootLookupId).length;
             const projectedAmendmentIndexNumber = activeLayersCount + 1;
 
+            // TRACKS THE CAUTION PROMPT EVERY TIME USER INITIATES CHANGES
             const userConsentToSupersede = confirm(
-                `SUPERSEDE CHRONOLOGY RECORD?\n\nDo you want to amend this section?\nThis will create Amendment #${projectedAmendmentIndexNumber} for this log file.\n\nWe are keeping track of all background layers to maintain court integrity metrics.`
+                `SUPERSEDE CHRONOLOGY RECORD?\n\nDo you want to amend this section?\nThis will file Amendment #${projectedAmendmentIndexNumber} for this log file entry.\n\nWe are keeping track of all background layers to maintain court integrity metrics inside the Lab.`
             );
 
             if (!userConsentToSupersede) return;
@@ -679,9 +679,9 @@
                 entry.onmousedown = start; entry.onmouseup = stop; entry.onmouseleave = stop;
                 entry.ontouchstart = start; entry.ontouchend = stop;
 
-                const isAmendedBadge = completeVersionHistoryChain.length > 1 ? `<span class="amend-badge">Amendment #${completeVersionHistoryChain.length - 1}</span>` : '';
+                // REMOVED THE VISUAL "AMENDMENT #X" TEXT CHIPS FROM CORE CARDS
                 entry.innerHTML = `
-                    <div class="timestamp-stamp">${pinSvg} ${topMostActiveVersion.stamp} ${isAmendedBadge}</div>
+                    <div class="timestamp-stamp">${pinSvg} ${topMostActiveVersion.stamp}</div>
                     <div class="log-bubble" title="Hold to Supersede entry parameters">${topMostActiveVersion.text.replace(/\n/g, '<br>')}</div>
                 `;
                 stackContainer.appendChild(entry);
