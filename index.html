@@ -157,11 +157,7 @@
         .timestamp-stamp { display: flex; align-items: center; gap: 4px; font-size: 9px; color: var(--text-light); text-transform: uppercase; font-weight: 800; padding-left: 4px; }
         .timestamp-stamp svg { width: 10px; height: 10px; stroke: currentColor; fill: none; stroke-width: 2.5; display: inline-block; vertical-align: middle; margin-top: -2px; }
         
-        /* VISUAL SUPERIMPOSITION (STACKING LAYOUT FOR HISTORICAL OVERLAYS) */
-        .log-bubble-stack {
-            position: relative;
-            width: 100%;
-        }
+        .log-bubble-stack { position: relative; width: 100%; }
         
         .log-bubble {
             background: var(--glass-bg); backdrop-filter: blur(10px);
@@ -171,7 +167,6 @@
             position: relative; z-index: 10;
         }
 
-        /* Historical version layers peek out from beneath the current active top card */
         .log-bubble.historical-version {
             background: rgba(226, 232, 240, 0.4);
             margin-top: -24px;
@@ -212,6 +207,7 @@
         }
         .center-add-btn:active { transform: scale(0.95); }
 
+        /* THE LAB SIDEBAR DRAWER STYLING */
         .sidebar {
             position: absolute; top: 0; left: -100%; width: 280px; height: 100%;
             background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(25px);
@@ -219,16 +215,19 @@
             padding: 50px 25px; box-sizing: border-box; box-shadow: 20px 0 50px rgba(0,0,0,0.1);
             border-right: 1px solid var(--glass-border);
         }
+        body.night-deck .sidebar { background: rgba(35, 38, 41, 0.85); }
         .sidebar.open { left: 0; }
         .sidebar-header { display: flex; justify-content: space-between; align-items: center; font-weight: 900; font-size: 22px; color: var(--active-teal); margin-bottom: 40px; text-transform: uppercase; letter-spacing: -1px; }
         .close-sidebar { cursor: pointer; background: var(--metallic-silver); padding: 8px; border-radius: 12px; display: flex; color: var(--text-dark); }
         .close-sidebar svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+        
         .sidebar-item {
             padding: 16px 20px; margin-bottom: 15px; border-radius: 18px;
             background: white; font-weight: 800; font-size: 11px; color: var(--text-dark);
             display: flex; align-items: center; gap: 15px; cursor: pointer;
             border: 1px solid #e2e8f0; text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.02);
         }
+        body.night-deck .sidebar-item { background: var(--surface-card); border-color: var(--glass-border); }
         .sidebar-item .circle-icon { width: 32px; height: 32px; background: var(--metallic-silver); color: var(--active-teal); border-radius: 10px; display: flex; justify-content: center; align-items: center; }
         .sidebar-item .circle-icon svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 
@@ -257,12 +256,17 @@
 
         <div class="sidebar" id="sidebarMenu">
             <div class="sidebar-header">
-                MENU
+                LAB CORE
                 <div class="close-sidebar" onclick="toggleSidebar()">
                     <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 </div>
             </div>
             
+            <div class="sidebar-item" onclick="toggleSovereignLuminanceOverride()">
+                <div class="circle-icon"><svg viewBox="0 0 24 24"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
+                Shift Day / Night
+            </div>
+
             <div class="sidebar-item" onclick="emailTimeline()">
                 <div class="circle-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"/></svg></div>
                 Draft Email
@@ -400,7 +404,7 @@
         let logsData = JSON.parse(localStorage.getItem('silver_vault_v46')) || [];
         let currentMode = 'TIMELINE';
         let isEngineSealed = false;
-        let activeAmendingId = null; // State holder for active amendment layer routines
+        let activeAmendingId = null;
         
         const pinSvg = `<svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
 
@@ -411,6 +415,9 @@
         };
 
         function evaluateCircadianTimeSystem() {
+            // Respect manual overrides in current session, otherwise default to circadian tracking rules
+            if (sessionStorage.getItem('theme_override')) return;
+            
             const currentHour = new Date().getHours();
             if (currentHour < 6 || currentHour >= 18) {
                 document.body.classList.add('night-deck');
@@ -418,6 +425,24 @@
                 document.body.classList.remove('night-deck');
             }
         }
+
+        /* SOVEREIGN LAB DRAWER MANUAL INTERFACE THEME OVERRIDE PASS */
+        function toggleSovereignLuminanceOverride() {
+            const isCurrentlyDark = document.body.classList.contains('night-deck');
+            if (isCurrentlyDark) {
+                document.body.classList.remove('night-deck');
+                sessionStorage.setItem('theme_override', 'day');
+            } else {
+                document.body.classList.add('night-deck');
+                sessionStorage.setItem('theme_override', 'night');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const override = sessionStorage.getItem('theme_override');
+            if (override === 'day') document.body.classList.remove('night-deck');
+            else if (override === 'night') document.body.classList.add('night-deck');
+        });
 
         function initApp() {
             evaluateCircadianTimeSystem();
@@ -490,7 +515,6 @@
 
         function saveData() { localStorage.setItem('silver_vault_v46', JSON.stringify(logsData)); }
 
-        /* LEGAL FORENSIC AMENDMENT INTERFACES SYSTEM */
         function triggerAmendmentRoutine(targetId) {
             if (isEngineSealed) return;
             const itemToAmend = logsData.find(v => v.id === targetId);
@@ -499,7 +523,6 @@
             activeAmendingId = targetId;
             const inputField = document.getElementById('logInput');
             
-            // Prefill with old text content to allow crisp write-over correction passes
             inputField.value = itemToAmend.text;
             inputField.placeholder = "Amending entry... Old data is preserved as a background layer.";
             inputField.style.border = "1px solid var(--active-teal)";
@@ -521,18 +544,14 @@
             list.innerHTML = '';
             spine.innerHTML = '';
             
-            // Separate data layers
             const baseEntries = logsData.filter(log => (log.mode || 'TIMELINE') === currentMode && !log.parentId);
 
             baseEntries.forEach(log => {
                 const stackContainer = document.createElement('div');
                 stackContainer.className = 'log-bubble-stack';
 
-                // Look up if any amendment overrides exist for this specific record tree tracking index
                 const childAmendments = logsData.filter(v => v.parentId === log.id);
                 const completeVersionHistoryChain = [log, ...childAmendments];
-                
-                // The newest update sits at the absolute front top position of the visualization layout
                 const topMostActiveVersion = completeVersionHistoryChain[completeVersionHistoryChain.length - 1];
 
                 const entry = document.createElement('div');
@@ -547,7 +566,6 @@
                 entry.onmousedown = start; entry.onmouseup = stop; entry.onmouseleave = stop;
                 entry.ontouchstart = start; entry.ontouchend = stop;
 
-                // Render current active top bubble element pass
                 const isAmendedBadge = completeVersionHistoryChain.length > 1 ? `<span class="amend-badge">Amended Layer</span>` : '';
                 entry.innerHTML = `
                     <div class="timestamp-stamp">${pinSvg} ${topMostActiveVersion.stamp} ${isAmendedBadge}</div>
@@ -555,7 +573,6 @@
                 `;
                 stackContainer.appendChild(entry);
 
-                // If historical backgrounds exist, superimpose them underneath structurally
                 if (completeVersionHistoryChain.length > 1) {
                     for (let i = completeVersionHistoryChain.length - 2; i >= 0; i--) {
                         const historyNode = completeVersionHistoryChain[i];
@@ -595,15 +612,12 @@
             const nodeType = input.dataset.nodeType || 'text';
 
             if (activeAmendingId !== null) {
-                // RUN WRITEOVER AMENDMENT COMPILATION ROUTINE PASS
                 const targetNodeRecord = logsData.find(v => v.id === activeAmendingId);
-                
-                // Track back down to find base chronological root link anchor safely
                 const baseParentIdNodeLink = targetNodeRecord.parentId ? targetNodeRecord.parentId : targetNodeRecord.id;
 
                 logsData.push({
                     id: Date.now(),
-                    parentId: baseParentIdIdNodeLink = baseParentIdNodeLink,
+                    parentId: baseParentIdNodeLink,
                     mode: currentMode,
                     type: nodeType,
                     stamp: `AMENDMENT FILED | ${dateStr} | ${timeStr}`,
@@ -611,7 +625,6 @@
                 });
                 cancelActiveAmendment();
             } else {
-                // NORMAL LOGGING PROCESS PATHWAYS
                 logsData.push({
                     id: Date.now(),
                     parentId: null,
