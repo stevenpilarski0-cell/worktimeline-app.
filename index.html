@@ -61,7 +61,7 @@
         .privacy-active #timelineBody { filter: blur(16px); pointer-events: none; opacity: 0.2; transition: 0.3s; }
         #timelineBody { transition: 0.3s; }
 
-        /* PIPELINE BEACON LINKED DIRECTLY TO THE LOGO BRAND HEADER ONLY */
+        /* HANDSHAKE BEACON INTEGRATED INTO BRAND CORE ONLY */
         .clio-status-led {
             width: 10px; height: 10px; background-color: var(--active-green); border-radius: 50%;
             animation: breathe 2.5s infinite; box-shadow: 0 0 8px var(--active-green);
@@ -256,7 +256,7 @@
             border: 1px solid var(--glass-border); text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.01);
         }
         
-        /* HARD CONSTRAINT: ENFORCES EXPLICIT VECTOR LAYOUT DIMENSIONS FOR SIDEBAR ITEMS */
+        /* HARD CONSTRAINT: FIXED ICON ENVELOPE DIMENSIONS PREVENTS CHARACTER STRING ARTIFACT BLOB DISTORTIONS */
         .sidebar-item .circle-icon { 
             width: 28px; height: 28px; background: var(--metallic-silver); color: var(--active-teal); 
             border-radius: 8px; display: flex; justify-content: center; align-items: center; 
@@ -275,7 +275,6 @@
         .metric-row { display: flex; justify-content: space-between; align-items: center; font-weight: 800; }
         .metric-badge { font-size: 11px; color: var(--active-teal); font-weight: 900; }
 
-        /* BLUR MASK HITBOX */
         .drawer-outside-overlay {
             position: absolute; top:0; left:0; width:100%; height:100%;
             background: rgba(15, 23, 42, 0.08); backdrop-filter: blur(1px);
@@ -405,7 +404,7 @@
                 <div class="toggle-btn" id="privacyBtn" onclick="togglePrivacy()">Privacy</div>
                 <div style="display: flex; gap: 8px;">
                     <div class="toggle-btn active" id="timelineToggle" onclick="switchMode('TIMELINE')">Timeline</div>
-                    <div class="toggle-btn" id="notesToggle" onclick="switchMode('NOTES')">Notes <div class="notes-dot"></div></div>
+                    <div class="toggle-btn" id="notesToggle" onclick="switchMode('NOTES')">Notes</div>
                 </div>
             </div>
 
@@ -799,6 +798,7 @@
             }
         }
 
+        // CLIO PARAPET PIPELINE DISPATCH PROTOCOLS
         function executeMasterClioLock() {
             if (logsData.length === 0) return alert("Log empty.");
             cancelActiveAmendment();
