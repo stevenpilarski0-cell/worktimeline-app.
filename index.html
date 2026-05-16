@@ -3,34 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline Mobile Engine</title>
+    <title>WorkTimeline Modern Mobile Gateway</title>
     <style>
         :root {
-            /* BRIGHT DAYTIME PROFILE VARIABLES (DEFAULT) */
+            /* PURE BRIGHT DAYTIME VARIABLE SPECTRAL MATRIX */
             --bg-canvas: #FFFFFF; 
-            --surface-metallic: linear-gradient(180deg, #F8FAFC 0%, #E2E8F0 100%); 
+            --surface-metallic: linear-gradient(135deg, #F8FAFC 0%, #E2E8F0 100%); 
             --surface-card: #F8FAFC; 
             --surface-input: #FFFFFF; 
             --text-primary: #0F172A; 
             --text-muted: #64748B;
             --accent-teal: #14B8A6; 
-            --accent-teal-glow: rgba(20, 184, 166, 0.15);
-            --border-subtle: #CBD5E1;
+            --accent-teal-glow: rgba(20, 184, 166, 0.18);
+            --border-subtle: #E2E8F0;
             --beacon-green: #10B981;
-            --beacon-glow: rgba(16, 185, 129, 0.3);
+            --beacon-glow: rgba(16, 185, 129, 0.25);
             --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", sans-serif;
+            --radius-fluid: 20px; /* Mac-Style Fluid Squircle Perimeter Paradigm */
+            --radius-inner: 14px;
         }
 
-        /* PROTECTIVE NIGHTTIME SLATE PROFILE VARIANT */
+        /* PROTECTIVE LOW-STRAIN AUTOMATED NIGHTTIME MATRIX */
         body.night-deck {
-            --bg-canvas: #1E2022; 
-            --surface-metallic: linear-gradient(180deg, #2D3135 0%, #1A1C1E 100%); 
-            --surface-card: #25282B; 
-            --surface-input: #1A1C1E; 
+            --bg-canvas: #1A1C1E; 
+            --surface-metallic: linear-gradient(135deg, #2D3135 0%, #16181A 100%); 
+            --surface-card: #232629; 
+            --surface-input: #16181A; 
             --text-primary: #F3F4F6; 
             --text-muted: #9CA3AF;
-            --border-subtle: #3F444A;
-            --beacon-glow: rgba(16, 185, 129, 0.6);
+            --border-subtle: #2D3135;
+            --beacon-glow: rgba(16, 185, 129, 0.5);
         }
 
         body {
@@ -41,19 +43,19 @@
             color: var(--text-primary);
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
-            transition: background-color 0.4s ease, color 0.4s ease;
+            transition: background-color 0.5s cubic-bezier(0.16, 1, 0.3, 1), color 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* PRIVACY ACTUATED SWITCH (Blurs viewport cleanly) */
+        /* PRIVACY HARDWARE-ACCELERATED SHIELD MASK */
         body.privacy-shielded #app-viewport-container {
-            filter: blur(20px) grayscale(1);
+            filter: blur(24px) grayscale(1);
             pointer-events: none;
             user-select: none;
         }
 
         header {
             background: var(--surface-metallic);
-            padding: 14px 20px;
+            padding: 16px 20px;
             border-bottom: 1px solid var(--border-subtle);
             display: flex;
             justify-content: space-between;
@@ -61,45 +63,48 @@
             position: sticky;
             top: 0;
             z-index: 90;
+            backdrop-filter: blur(12px);
         }
 
         .brand-block {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .briefcase-logo-svg {
-            width: 22px;
-            height: 22px;
+            width: 24px;
+            height: 24px;
             fill: var(--accent-teal);
+            filter: drop-shadow(0 2px 8px var(--accent-teal-glow));
         }
 
         header h1 {
             margin: 0;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 700;
             color: var(--accent-teal);
-            letter-spacing: -0.01em;
+            letter-spacing: -0.02em;
         }
 
         .pipeline-container {
             display: flex;
             align-items: center;
             gap: 8px;
-            background: rgba(255, 255, 255, 0.15);
-            padding: 6px 12px;
-            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.12);
+            padding: 8px 14px;
+            border-radius: 30px;
             border: 1px solid var(--border-subtle);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
         }
 
         body:not(.night-deck) .pipeline-container {
-            background: rgba(255, 255, 255, 0.9);
+            background: #FFFFFF;
         }
 
         @keyframes beaconBreathing {
             0% { box-shadow: 0 0 0 0 var(--beacon-glow); transform: scale(1); }
-            50% { box-shadow: 0 0 10px 4px var(--beacon-glow); transform: scale(1.05); }
+            50% { box-shadow: 0 0 12px 5px var(--beacon-glow); transform: scale(1.05); }
             100% { box-shadow: 0 0 0 0 var(--beacon-glow); transform: scale(1); }
         }
 
@@ -108,13 +113,13 @@
             height: 8px;
             background-color: var(--beacon-green);
             border-radius: 50%;
-            animation: beaconBreathing 2s infinite ease-in-out;
+            animation: beaconBreathing 2.2s infinite ease-in-out;
         }
 
         .pipeline-text {
             font-size: 10px;
             font-weight: 700;
-            letter-spacing: 0.04em;
+            letter-spacing: 0.05em;
             text-transform: uppercase;
             color: var(--text-primary);
         }
@@ -124,9 +129,10 @@
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 18px;
         }
 
+        /* PREMIUM FLUID SQUIRCLE CONTROL CONTAINERS */
         .workspace-layout-wrapper {
             display: flex;
             gap: 16px;
@@ -134,23 +140,24 @@
             width: 100%;
         }
 
-        /* VERTICAL SPINE TRACK CHASSIS */
+        /* MODERNISED VERTICAL SPINE TRACK */
         .vertical-timeline-spine-track {
-            width: 56px;
-            min-width: 56px;
+            width: 60px;
+            min-width: 60px;
             background: var(--surface-metallic);
             border: 1px solid var(--border-subtle);
-            border-radius: 16px;
-            padding: 16px 0;
+            border-radius: var(--radius-fluid);
+            padding: 20px 0;
             display: flex;
             flex-direction: column-reverse; 
             align-items: center;
             position: relative;
-            gap: 16px;
-            min-height: 380px;
-            max-height: 520px;
+            gap: 20px;
+            min-height: 400px;
+            max-height: 540px;
             overflow-y: auto;
             box-sizing: border-box;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
         }
 
         .vertical-timeline-spine-track::before {
@@ -164,23 +171,22 @@
         }
 
         .timeline-node {
-            width: 40px;
-            height: 40px;
-            min-height: 40px;
+            width: 44px;
+            height: 44px;
+            min-height: 44px;
             background: var(--surface-input);
             border: 1px solid var(--border-subtle);
-            border-radius: 12px;
+            border-radius: var(--radius-inner);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 2;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        @keyframes tealSatinPulse {
-            0% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.5); border-color: var(--accent-teal); }
-            50% { box-shadow: 0 0 12px 4px rgba(20, 184, 166, 0.2); border-color: #2DD4BF; }
-            100% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.5); border-color: var(--accent-teal); }
+        .timeline-node:active {
+            transform: scale(0.92);
         }
 
         .timeline-node.pattern-triggered {
@@ -196,35 +202,39 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 18px;
         }
 
         .workspace-card {
             background: var(--surface-card);
-            padding: 20px;
-            border-radius: 16px; 
+            padding: 24px;
+            border-radius: var(--radius-fluid); 
             border: 1px solid var(--border-subtle);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.015), inset 0 1px 0 rgba(255,255,255,0.6);
         }
 
-        /* The Tabs Control Strip Container */
+        body.night-deck .workspace-card {
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        /* MAC STRIP CONTROLS MATRIX */
         .utility-strip {
             display: flex;
             background: var(--surface-card);
-            border-radius: 12px;
-            padding: 10px;
+            border-radius: var(--radius-inner);
+            padding: 8px;
             border: 1px solid var(--border-subtle);
-            gap: 10px;
+            gap: 8px;
         }
 
         .strip-btn {
             flex: 1;
-            height: 40px;
-            border-radius: 8px;
-            border: 1px solid var(--border-subtle);
-            background: var(--surface-input);
+            height: 44px;
+            border-radius: 10px;
+            border: 1px solid transparent;
+            background: transparent;
             color: var(--text-primary);
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.02em;
@@ -233,21 +243,26 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
+            transition: all 0.2s ease;
         }
 
         .strip-btn.active-toggle {
-            background: var(--accent-teal);
-            color: #FFFFFF;
-            border-color: var(--accent-teal);
+            background: var(--surface-input);
+            border-color: var(--border-subtle);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+        }
+
+        body.night-deck .strip-btn.active-toggle {
+            background: #2D3135;
         }
 
         .action-dock {
             display: flex;
             background: var(--surface-metallic);
             border: 1px solid var(--border-subtle);
-            border-radius: 16px;
-            padding: 6px;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+            border-radius: var(--radius-fluid);
+            padding: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.03);
         }
 
         .dock-btn {
@@ -256,53 +271,61 @@
             border: none;
             color: var(--text-primary);
             padding: 14px 6px;
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.04em;
             cursor: pointer;
-            border-radius: 10px;
+            border-radius: var(--radius-inner);
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 6px;
+            transition: background-color 0.2s ease;
         }
 
-        .dock-btn:hover { background-color: rgba(255,255,255,0.2); }
-        .node-icon { width: 18px; height: 18px; fill: var(--text-primary); }
+        .dock-btn:hover, .dock-btn:active { background-color: rgba(255,255,255,0.4); }
+        body.night-deck .dock-btn:hover, body.night-deck .dock-btn:active { background-color: rgba(255,255,255,0.06); }
+        .node-icon { width: 20px; height: 20px; fill: var(--text-primary); }
 
         textarea {
             width: 100%;
-            height: 120px;
-            padding: 12px;
+            height: 130px;
+            padding: 16px;
             border: 1px solid var(--border-subtle);
-            border-radius: 10px;
+            border-radius: var(--radius-inner);
             box-sizing: border-box;
             font-size: 14px;
             font-family: var(--font-stack);
-            line-height: 1.5;
+            line-height: 1.6;
             background-color: var(--surface-input); 
             color: var(--text-primary);
             resize: none;
             outline: none;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.01);
+            transition: border-color 0.2s ease;
         }
 
-        .btn-row { display: flex; justify-content: space-between; margin-top: 14px; gap: 12px; }
+        textarea:focus { border-color: var(--accent-teal); }
+        .btn-row { display: flex; justify-content: space-between; margin-top: 16px; gap: 12px; }
 
         button.action-btn {
             background-color: var(--text-primary);
             color: var(--bg-canvas);
             border: 1px solid var(--border-subtle);
-            height: 44px;
-            padding: 0 20px;
-            font-size: 11px;
+            height: 48px;
+            padding: 0 24px;
+            font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.02em;
-            border-radius: 10px;
+            border-radius: var(--radius-inner);
             cursor: pointer;
             flex: 1;
+            transition: opacity 0.2s ease;
         }
+
+        button.action-btn:active { opacity: 0.85; }
 
         button.action-btn.secondary {
             background-color: transparent;
@@ -314,29 +337,30 @@
             background-color: var(--text-primary);
             color: var(--bg-canvas);
             width: 100%;
-            height: 50px;
-            font-size: 11px;
+            height: 52px;
+            font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            border-radius: 12px;
+            border-radius: var(--radius-inner);
             border: 1px solid var(--border-subtle);
             cursor: pointer;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.03);
         }
 
-        /* LAB SIDEBAR SYSTEM PANEL */
+        /* PREMIUM NATIVE SIDEBAR IMPLEMENTATION */
         .lab-sidebar-drawer {
             position: fixed;
             top: 0;
             right: -100%; 
-            width: 88%;
-            max-width: 360px;
+            width: 90%;
+            max-width: 365px;
             height: 100%;
             background: var(--bg-canvas);
             z-index: 200;
-            box-shadow: -10px 0 40px rgba(0,0,0,0.15);
+            box-shadow: -15px 0 45px rgba(0,0,0,0.08);
             border-left: 1px solid var(--border-subtle);
-            transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: right 0.45s cubic-bezier(0.16, 1, 0.3, 1);
             display: flex;
             flex-direction: column;
             box-sizing: border-box;
@@ -346,7 +370,7 @@
 
         .lab-drawer-header {
             background: var(--surface-metallic);
-            padding: 20px;
+            padding: 22px 20px;
             border-bottom: 1px solid var(--border-subtle);
             display: flex;
             justify-content: space-between;
@@ -355,7 +379,7 @@
 
         .lab-drawer-body {
             flex: 1;
-            padding: 20px;
+            padding: 24px 20px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
@@ -365,28 +389,28 @@
         .lab-customizer-box {
             background: var(--surface-card);
             border: 1px solid var(--border-subtle);
-            border-radius: 12px;
-            padding: 16px;
+            border-radius: var(--radius-inner);
+            padding: 18px;
         }
 
         .customizer-label {
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.06em;
             color: var(--text-muted);
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
         .customizer-select {
             width: 100%;
-            height: 40px;
-            border-radius: 8px;
+            height: 44px;
+            border-radius: 10px;
             border: 1px solid var(--border-subtle);
             background: var(--surface-input);
             color: var(--text-primary);
-            padding: 0 10px;
-            font-size: 11px;
+            padding: 0 12px;
+            font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
             outline: none;
@@ -395,13 +419,13 @@
         .disabled-feature-card {
             background: var(--surface-card);
             border: 1px dashed var(--border-subtle);
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: var(--radius-inner);
+            padding: 22px;
             opacity: 0.5;
             position: relative;
             user-select: none;
             pointer-events: none;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .disabled-badge-notice {
@@ -410,51 +434,51 @@
             text-transform: uppercase;
             color: #DF2935; 
             background: rgba(223, 41, 53, 0.08);
-            padding: 4px 8px;
-            border-radius: 4px;
+            padding: 4px 10px;
+            border-radius: 6px;
             display: inline-block;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
         .case-evidence-box {
             border: 1px solid var(--border-subtle);
-            border-radius: 12px;
-            padding: 16px;
+            border-radius: var(--radius-inner);
+            padding: 18px;
             background: var(--surface-card);
         }
 
         .evidence-grid-item {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 12px;
+            gap: 12px;
+            font-size: 13px;
             font-weight: 600;
-            padding: 10px 0;
+            padding: 12px 0;
             border-bottom: 1px solid var(--border-subtle);
             color: var(--text-primary);
         }
 
-        .evidence-svg { width: 16px; height: 16px; fill: var(--accent-teal); }
+        .evidence-svg { width: 18px; height: 18px; fill: var(--accent-teal); }
 
         .lab-drawer-footer {
-            padding: 16px;
+            padding: 18px;
             background: var(--surface-card);
             border-top: 1px solid var(--border-subtle);
             display: flex;
-            gap: 10px;
+            gap: 12px;
         }
 
         .footer-action-btn {
             flex: 1;
-            height: 44px;
+            height: 46px;
             background: var(--surface-input);
             border: 1px solid var(--border-subtle);
-            border-radius: 8px;
+            border-radius: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 9px;
+            font-size: 10px;
             font-weight: 700;
             text-transform: uppercase;
             color: var(--text-primary);
@@ -462,7 +486,7 @@
             gap: 4px;
         }
 
-        .footer-action-btn svg { width: 14px; height: 14px; fill: var(--text-primary); }
+        .footer-action-btn svg { width: 16px; height: 16px; fill: var(--text-primary); }
 
         .sidebar-overlay {
             position: fixed;
@@ -470,15 +494,15 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.25);
             z-index: 150;
             display: none;
-            backdrop-filter: blur(2px);
+            backdrop-filter: blur(4px);
         }
 
-        #wt-system-notification { display: none; border: 1px solid var(--border-subtle); padding: 14px; background-color: var(--surface-card); border-radius: 12px; }
-        .feed-item { background: var(--surface-card); padding: 14px; border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--border-subtle); border-left: 4px solid var(--accent-teal); }
-        footer { text-align: center; padding: 24px 16px; font-size: 10px; color: var(--text-muted); }
+        #wt-system-notification { display: none; border: 1px solid var(--border-subtle); padding: 16px; background-color: var(--surface-card); border-radius: var(--radius-inner); }
+        .feed-item { background: var(--surface-card); padding: 16px; border-radius: var(--radius-inner); margin-bottom: 12px; border: 1px solid var(--border-subtle); border-left: 4px solid var(--accent-teal); }
+        footer { text-align: center; padding: 28px 16px; font-size: 11px; color: var(--text-muted); }
     </style>
 </head>
 <body>
@@ -499,10 +523,10 @@
 
         <main>
             <div class="utility-strip">
-                <button id="notes-mode-btn" class="strip-btn" onclick="toggleWorkspaceContextMode('notes')">Notes Canvas</button>
+                <button id="notes-mode-btn" class="strip-btn" onclick="toggleWorkspaceContextMode('notes')">Notes</button>
                 <button id="timeline-mode-btn" class="strip-btn active-toggle" onclick="toggleWorkspaceContextMode('timeline')">Timeline</button>
                 <button id="privacy-trigger-btn" class="strip-btn" onclick="executePrivacyShieldFilterSwitch()">Privacy</button>
-                <button class="strip-btn" style="background: var(--surface-metallic);" onclick="openLabSidebarDrawer()">Lab</button>
+                <button class="strip-btn" style="background: var(--surface-metallic); border-radius:10px;" onclick="openLabSidebarDrawer()">Lab</button>
             </div>
 
             <div id="wt-system-notification">
@@ -536,7 +560,7 @@
                 <div class="workspace-content-column">
                     <div class="workspace-card">
                         <h3 id="workspace-input-title">Add Direct Entry</h3>
-                        <textarea id="raw-human-entry" placeholder="Record contemporaneous observations..."></textarea>
+                        <textarea id="raw-human-entry" placeholder="Record contemporaneous verification metrics..."></textarea>
                         
                         <div class="btn-row">
                             <button class="action-btn" onclick="executeCommitEntryPayload()">Submit</button>
@@ -546,7 +570,7 @@
 
                     <div class="workspace-card">
                         <h3>Session Ledger Logs</h3>
-                        <div id="timeline-feed" style="max-height: 180px; overflow-y: auto;">
+                        <div id="timeline-feed" style="max-height: 190px; overflow-y: auto;">
                             <p id="empty-state-msg" style="color: var(--text-muted); font-style: italic; font-size: 12px; margin: 0;">No active entries recorded.</p>
                         </div>
                         <button class="lock-btn" style="margin-top:20px;" onclick="executeMasterClioLock()">Certify State & Seal to Clio</button>
@@ -565,8 +589,8 @@
 
     <div id="lab-sidebar" class="lab-sidebar-drawer">
         <div class="lab-drawer-header">
-            <h3 style="margin:0; font-size:13px; text-transform:uppercase;">Sovereign Lab Engine</h3>
-            <button class="strip-btn" style="max-width:60px; height:32px;" onclick="closeLabSidebarDrawer()">Close</button>
+            <h3 style="margin:0; font-size:14px; text-transform:uppercase; letter-spacing:0.02em;">Sovereign Lab Drawer</h3>
+            <button class="strip-btn" style="max-width:65px; height:34px; background:var(--surface-input); border:1px solid var(--border-subtle);" onclick="closeLabSidebarDrawer()">Close</button>
         </div>
         
         <div class="lab-drawer-body">
@@ -588,8 +612,8 @@
 
             <div id="pattern-recognition-card" class="disabled-feature-card">
                 <span class="disabled-badge-notice">Entry Must Lock Before Access</span>
-                <h4 style="margin: 0 0 6px 0; font-size: 12px; font-weight: 700; text-transform: uppercase;">Run Pattern Recognition</h4>
-                <p style="margin: 0; font-size: 11px; line-height: 1.4; color: var(--text-muted);">Algorithmic validation scans execute across certified, non-volatile locked chronology chains.</p>
+                <h4 style="margin: 0 0 6px 0; font-size: 13px; font-weight: 700; text-transform: uppercase; color:var(--text-primary);">Run Pattern Recognition</h4>
+                <p style="margin: 0; font-size: 12px; line-height: 1.4; color: var(--text-muted);">Scans analyze structured timelines across non-volatile, locked chronological datasets inside your secure repository.</p>
             </div>
 
             <div class="case-evidence-box">
@@ -610,8 +634,8 @@
 
             <div class="case-evidence-box" style="background: rgba(20, 184, 166, 0.02);">
                 <div class="customizer-label" style="margin-bottom:10px; color: var(--accent-teal);">AI Assistant Logging</div>
-                <div id="ai-log-history-list" style="font-size:11px; line-height:1.5; color: var(--text-muted); font-style:italic;">
-                    No operational analytical suggestions initialized.
+                <div id="ai-log-history-list" style="font-size:12px; line-height:1.5; color: var(--text-muted); font-style:italic;">
+                    No operational analytical suggestions initialized in this session layer.
                 </div>
             </div>
         </div>
@@ -621,11 +645,11 @@
                 <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
                 Export
             </div>
-            <div class="footer-action-btn" onclick="alert('Initializing secure encrypted email pipeline...')">
+            <div class="footer-action-btn" onclick="alert('Initializing secure encrypted email transmission layout...')">
                 <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
                 Email
             </div>
-            <div class="footer-action-btn" onclick="alert('Saving localized image state matrix backup...')">
+            <div class="footer-action-btn" onclick="alert('Saving localized ledger state tracking manifest...')">
                 <svg viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
                 Save
             </div>
@@ -634,32 +658,34 @@
 
     <div id="template-modal" class="modal">
         <div class="modal-content">
-            <h5 style="margin-top:0; margin-bottom:12px; font-size:12px; text-transform:uppercase;">Structural Blueprints</h5>
+            <h5 style="margin-top:0; margin-bottom:12px; font-size:13px; text-transform:uppercase; color:var(--text-primary);">Structural Framework Blueprints</h5>
             <div id="template-options-list">
                 <div class="template-option" onclick="toggleCheckbox('tmpl-injury')">
                     <input type="checkbox" id="tmpl-injury" value="injury" onclick="event.stopPropagation()">
                     <div class="template-info">
                         <h5>Injury Configuration</h5>
-                        <p>Schedules structural symptoms and field logistics area elements.</p>
+                        <p>Schedules structural symptoms and field location parameters.</p>
                     </div>
                 </div>
                 <div class="template-option" onclick="toggleCheckbox('tmpl-witness')">
                     <input type="checkbox" id="tmpl-witness" value="witness" onclick="event.stopPropagation()">
                     <div class="template-info">
                         <h5>Witness Matrix</h5>
-                        <p>Maps unprompted statements and verbal tracking records metrics.</p>
+                        <p>Maps unprompted statements and verbal tracking records.</p>
                     </div>
                 </div>
             </div>
-            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px;">
-                <button class="action-btn secondary" style="border:none; height:36px;" onclick="closeTemplateModal()">Cancel</button>
-                <button class="action-btn" style="height:36px;" onclick="applySelectedTemplates()">Mount</button>
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px;">
+                <button class="action-btn secondary" style="border:none; height:38px;" onclick="closeTemplateModal()">Cancel</button>
+                <button class="action-btn" style="height:38px;" onclick="applySelectedTemplates()">Mount</button>
             </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/clio-handshake.js"></script>
+
     <script>
-        // Core Array Registries
         let activeLocalTimelineData = [];
         let separatePrivateNotepadMemory = []; 
         let currentWorkspaceMode = "timeline"; 
@@ -668,7 +694,6 @@
         let mediaRecorder = null;
         let audioChunks = [];
         
-        // Counter Metrification Loops
         let fileCounter = 0;
         let audioCounter = 0;
         let photoCounter = 0;
@@ -678,7 +703,7 @@
             witness: "=== FORMAL WITNESS LOG LAYOUT ===\n[WITNESS IDENTITY]: \n[VERBAL STATEMENT]: \n\n"
         };
 
-        /* CIRCADIAN TIME LOGIC */
+        /* LUMINANCE THEME ENGAGEMENT CONTROLLER ROUTINE */
         function evaluateCircadianTimeSystem() {
             const currentHour = new Date().getHours();
             const selectedOverride = document.getElementById('theme-override-selector').value;
@@ -701,7 +726,7 @@
         setInterval(evaluateCircadianTimeSystem, 60000);
         window.addEventListener('DOMContentLoaded', evaluateCircadianTimeSystem);
 
-        /* PRIVACY SYSTEM BLUR CORES */
+        /* PRIVACY HARDWARE SHIELD ACTION MASK INTERACTION LOOP */
         function executePrivacyShieldFilterSwitch() {
             const body = document.body;
             const btn = document.getElementById('privacy-trigger-btn');
@@ -718,7 +743,7 @@
             }
         }
 
-        /* LAB SIDEBAR NAVIGATION TRIGGERS */
+        /* LAB SIDEBAR SYSTEM ANIMATION DRAWER METHODS */
         function openLabSidebarDrawer() {
             document.getElementById('lab-sidebar').classList.add('open');
             document.getElementById('sidebar-overlay-mask').style.display = 'block';
@@ -736,7 +761,7 @@
             else if (fontType === 'mono') container.style.fontFamily = 'Courier New, monospace';
         }
 
-        /* TABS VISUAL STATE ENGINE SWITCHER (完全機能) */
+        /* CANVAS ISOLATION CONTROL ENGINE SWITCH LOOP */
         function toggleWorkspaceContextMode(targetMode) {
             currentWorkspaceMode = targetMode;
             const inputTitle = document.getElementById('workspace-input-title');
@@ -744,17 +769,15 @@
             const blueprintBtn = document.getElementById('blueprint-modal-trigger');
             const feedContainer = document.getElementById('timeline-feed');
             
-            // Clean active display states
             document.getElementById('notes-mode-btn').classList.remove('active-toggle');
             document.getElementById('timeline-mode-btn').classList.remove('active-toggle');
 
-            // Wipe out current visible layout feed to prepare target structural dump
             feedContainer.innerHTML = "";
 
             if (targetMode === "notes") {
                 document.getElementById('notes-mode-btn').classList.add('active-toggle');
                 inputTitle.innerText = "Private Notepad Space";
-                txtArea.placeholder = "Enter internal reference notes here. This data remains outside the certified court timeline records...";
+                txtArea.placeholder = "Enter reference notes here. This data remains outside certified court timeline logs...";
                 blueprintBtn.style.display = "none";
                 
                 if (separatePrivateNotepadMemory.length === 0) {
@@ -776,7 +799,6 @@
             }
         }
 
-        /* TEMPLATE BLUEPRINT HANDLERS */
         function openTemplateModal() { document.getElementById('template-modal').style.display = 'flex'; }
         function closeTemplateModal() {
             document.querySelectorAll('#template-modal input[type="checkbox"]').forEach(cb => cb.checked = false);
@@ -794,12 +816,13 @@
             closeTemplateModal();
         }
 
-        /* DATA ENTRY INTERACTION DOCK ENGINE */
+        /* DATA EMISSION INGESTION TRANSLATOR HANDLERS */
         function executeCommitEntryPayload() {
             const inputField = document.getElementById('raw-human-entry');
             const rawContentText = inputField.value.trim();
             if (!rawContentText) return;
 
+            // TRACKS THE REQUIRED FORENSIC TIME STRINGS AUTOMATICALLY
             const legalTimeFormattedString = new Date().toLocaleDateString('en-US', {
                 year: 'numeric', month: 'long', day: 'numeric'
             }) + " " + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
@@ -835,13 +858,13 @@
             if (assetType === "audio") svgIconPath = `<path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.42 2.72 6.2 6 6.72V21h2v-3.28c3.28-.52 6-3.3 6-6.72h-1.7z"/>`;
 
             nodeElement.innerHTML = `<svg class="node-icon" viewBox="0 0 24 24">${svgIconPath}</svg>`;
-            nodeElement.onclick = () => { alert(`Event ID: ${id}\nTime Verification: ${formattedTime}`); };
+            nodeElement.onclick = () => { alert(`Event Node: ${id}\nTime Seal Verification: ${formattedTime}`); };
 
             visualTrack.appendChild(nodeElement);
             visualTrack.scrollTop = visualTrack.scrollHeight; 
         }
 
-        /* COMPLIANT HARDWARE SIMULATION PIPELINES */
+        /* NATIVE HARDWARE PIPELINE HOOK ATTACHMENTS */
         async function handleCameraCapture(input) {
             if (input.files.length > 0) {
                 const targetPhoto = input.files[0];
@@ -919,7 +942,6 @@
         function renderFeedItemToView(item, isNoteMode) {
             const container = document.getElementById('timeline-feed');
             
-            // Clean empty state string lines safely
             const targetEmptyMsg = document.getElementById('empty-state-msg');
             if (targetEmptyMsg) targetEmptyMsg.remove();
             
@@ -938,7 +960,7 @@
             container.scrollTop = container.scrollHeight;
         }
 
-        /* CLIO SYNCHRONIZATION IMMUTABILITY SEALS */
+        /* HARDWARE IMMUTABILITY ENVELOPE SEALS FOR CLIO PIPELINING */
         async function executeMasterClioLock() {
             if (activeLocalTimelineData.length === 0) { alert("Ledger empty."); return; }
             const beacon = document.getElementById('pipeline-beacon');
@@ -956,11 +978,11 @@
 
                 const syncCompleted = await WorkTimelineMaster.syncToClioEcosystem(activeLocalTimelineData, systemForensicFingerprint);
                 if (syncCompleted) {
-                    alert(`AMENDMENT IMMUTABILITY SEALED\n\nLedger compiled under Canada Evidence Act parameters.\n\nHash Token:\n${systemForensicFingerprint}\n\nPackage transmitted to secure Clio case files.`);
+                    alert(`AMENDMENT IMMUTABILITY SEALED\n\nLedger array compiled under Canada Evidence Act parameters.\n\nHash Token:\n${systemForensicFingerprint}\n\nPackage transmitted to secure Clio case files.`);
                     beacon.style.backgroundColor = "var(--accent-teal)";
                     statusText.innerText = "Clio Connected";
 
-                    // LIVE RECOGNITION BLOCK ACTIVATION LINK
+                    // PROGRAMMATICALLY ACCESS UNLOCK VIA GAITED PATTERN CARD INTERFACES
                     const prCard = document.getElementById('pattern-recognition-card');
                     prCard.style.opacity = "1";
                     prCard.style.pointerEvents = "auto";
