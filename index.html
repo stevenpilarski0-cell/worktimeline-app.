@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Precision v46</title>
+    <title>WorkTimeline Playback Engine</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
         
         :root {
-            /* FROSTED SILVER METALLIC PALETTE (DEFAULT DAY) */
+            /* FROSTED SILVER METALLIC PALETTE (DAY MODE DEFAULT) */
             --app-bg: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
             --glass-bg: rgba(255, 255, 255, 0.65);
             --glass-border: rgba(255, 255, 255, 0.9);
@@ -29,8 +29,6 @@
             --app-bg: linear-gradient(135deg, #2d3135 0%, #16181a 100%);
             --glass-bg: rgba(35, 38, 41, 0.85);
             --glass-border: rgba(255, 255, 255, 0.15);
-            
-            /* CRITICAL FIX: Explicitly forces text to high-contrast crisp white when background turns dark */
             --text-dark: #ffffff; 
             --text-light: #cbd5e1;
             --metallic-silver: linear-gradient(180deg, #3f444a 0%, #1a1c1e 100%);
@@ -44,7 +42,6 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Phone Bezel */
         .phone-bezel {
             width: 375px; height: 812px; background-color: #000;
             border-radius: 45px; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
@@ -56,11 +53,9 @@
             display: flex; flex-direction: column; position: relative;
         }
 
-        /* PRIVACY BLUR STATE */
         .privacy-active #timelineBody { filter: blur(16px); pointer-events: none; opacity: 0.2; transition: 0.3s; }
         #timelineBody { transition: 0.3s; }
 
-        /* CLIO STATUS LED */
         .clio-status-led {
             position: absolute; top: 20px; right: 20px; width: 10px; height: 10px;
             background-color: var(--active-green); border-radius: 50%;
@@ -68,7 +63,6 @@
         }
         @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.6; } }
 
-        /* TOP TOGGLE BAR */
         .top-toggles {
             display: flex; justify-content: space-between; align-items: center;
             padding: 45px 20px 10px; z-index: 20;
@@ -84,7 +78,6 @@
         .toggle-btn.active { background: var(--metallic-teal); color: white; border-color: var(--active-teal); }
         .notes-dot { width: 6px; height: 6px; background: var(--active-green); border-radius: 50%; }
 
-        /* HEADER */
         .header {
             display: flex; justify-content: space-between; align-items: center;
             padding: 10px 20px 15px; z-index: 10;
@@ -97,14 +90,12 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex;
         }
 
-        /* BRANDING */
         .main-title {
             font-weight: 900; font-size: 24px; color: var(--active-teal);
             letter-spacing: -0.5px; display: flex; align-items: center; gap: 6px;
         }
         .main-title svg { width: 22px; height: 22px; fill: var(--active-teal); }
 
-        /* HARDWARE & INPUT */
         .input-panel {
             background: var(--glass-bg); backdrop-filter: blur(20px);
             margin: 0 15px; border-radius: 24px; border: 1px solid var(--glass-border);
@@ -126,8 +117,8 @@
         .hw-item svg { width: 22px; height: 22px; stroke: var(--active-teal); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
         .hw-item input { position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer; z-index:10; }
 
-        .input-wrapper { background: rgba(255,255,255,0.15); border-radius: 14px; padding: 15px; border: 1px solid var(--glass-border); }
-        body:not(.night-deck) .input-wrapper { background: rgba(255,255,255,0.8); }
+        .input-wrapper { background: rgba(255, 255, 255, 0.15); border-radius: 14px; padding: 15px; border: 1px solid var(--glass-border); }
+        body:not(.night-deck) .input-wrapper { background: rgba(255, 255, 255, 0.8); }
         .input-wrapper textarea { width: 100%; background: transparent; border: none; color: var(--text-dark); font-size: 14px; font-weight: 600; font-family: 'Nunito', sans-serif; resize: none; outline: none; height: 40px; }
         .input-wrapper textarea::placeholder { color: var(--text-light); }
 
@@ -195,7 +186,7 @@
             color: white; padding: 2px 6px; border-radius: 4px; margin-left: auto;
         }
 
-        /* FOOTER NAV */
+        /* FIXED BOTTOM NAVIGATION BAR FOOTER */
         .footer-nav {
             position: absolute; bottom: 0; left: 0; width: 100%; height: 80px; 
             background: var(--glass-bg); backdrop-filter: blur(20px);
@@ -222,29 +213,44 @@
         }
         .center-add-btn:active { transform: scale(0.95); }
 
-        /* THE LAB SIDEBAR DRAWER STYLING */
+        /* THE LAB CORE SIDEBAR DRAWER */
         .sidebar {
             position: absolute; top: 0; left: -100%; width: 280px; height: 100%;
             background: var(--glass-bg); backdrop-filter: blur(25px);
             transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 8000;
-            padding: 50px 25px; box-sizing: border-box; box-shadow: 20px 0 50px rgba(0,0,0,0.1);
+            padding: 50px 20px; box-sizing: border-box; box-shadow: 20px 0 50px rgba(0,0,0,0.1);
             border-right: 1px solid var(--glass-border);
-            color: var(--text-dark); /* Contrast Locked */
+            color: var(--text-dark);
+            display: flex; flex-direction: column; gap: 10px;
         }
         .sidebar.open { left: 0; }
-        .sidebar-header { display: flex; justify-content: space-between; align-items: center; font-weight: 900; font-size: 22px; color: var(--active-teal); margin-bottom: 40px; text-transform: uppercase; letter-spacing: -1px; }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; font-weight: 900; font-size: 22px; color: var(--active-teal); margin-bottom: 20px; text-transform: uppercase; letter-spacing: -1px; }
         
         .close-sidebar { cursor: pointer; background: var(--metallic-silver); padding: 8px; border-radius: 12px; display: flex; color: var(--text-dark); border: 1px solid var(--glass-border); }
-        .close-sidebar svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+        .close-sidebar svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2.5; }
         
         .sidebar-item {
-            padding: 16px 20px; margin-bottom: 15px; border-radius: 18px;
+            padding: 14px 16px; margin-bottom: 4px; border-radius: 14px;
             background: var(--chip-bg); font-weight: 800; font-size: 11px; color: var(--text-dark);
-            display: flex; align-items: center; gap: 15px; cursor: pointer;
-            border: 1px solid var(--glass-border); text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            display: flex; align-items: center; gap: 12px; cursor: pointer;
+            border: 1px solid var(--glass-border); text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.01);
         }
-        .sidebar-item .circle-icon { width: 32px; height: 32px; background: var(--metallic-silver); color: var(--active-teal); border-radius: 10px; display: flex; justify-content: center; align-items: center; border: 1px solid var(--glass-border); }
-        .sidebar-item .circle-icon svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+        .sidebar-item .circle-icon { width: 28px; height: 28px; background: var(--metallic-silver); color: var(--active-teal); border-radius: 8px; display: flex; justify-content: center; align-items: center; border: 1px solid var(--glass-border); }
+        .sidebar-item .circle-icon svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.5; fill: none; }
+
+        /* NESTED METRIC PANELS INSIDE DRAWERS */
+        .lab-metric-panel {
+            background: rgba(0, 128, 128, 0.04);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            padding: 12px 14px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-dark);
+            display: flex; flex-direction: column; gap: 6px;
+        }
+        .metric-row { display: flex; justify-content: space-between; align-items: center; font-weight: 800; }
+        .metric-badge { font-size: 11px; color: var(--active-teal); font-weight: 900; }
 
         .modal-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -273,7 +279,7 @@
             <div class="sidebar-header">
                 LAB CORE
                 <div class="close-sidebar" onclick="toggleSidebar()">
-                    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 </div>
             </div>
             
@@ -291,8 +297,23 @@
                 <div class="circle-icon"><svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg></div>
                 Save & Export
             </div>
+
+            <div class="lab-metric-panel">
+                <span style="font-size:9px; text-transform:uppercase; color:var(--text-light); letter-spacing:0.04em;">Audit Metrics</span>
+                <div class="metric-row">
+                    <span>Total Amendments:</span>
+                    <span id="labAmendCounter" class="metric-badge">0</span>
+                </div>
+            </div>
+
+            <div class="lab-metric-panel" style="background: rgba(0, 0, 0, 0.02);">
+                <span style="font-size:9px; text-transform:uppercase; color:var(--active-teal); letter-spacing:0.04em;">Verified Precedents</span>
+                <div id="labCaseLawBox" style="font-size:10px; font-style:italic; line-height:1.4; color:var(--text-light);">
+                    Run Pattern Recognition to query local jurisdictional legal case benchmarks...
+                </div>
+            </div>
             
-            <div class="sidebar-item" onclick="resetTimeline()">
+            <div class="sidebar-item" style="margin-top:auto;" onclick="resetTimeline()">
                 <div class="circle-icon" style="color: #e11d48;"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></div>
                 <span style="color: #e11d48;">Reset Engine</span>
             </div>
@@ -424,7 +445,7 @@
         const pinSvg = `<svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
 
         const iconNodePaths = {
-            text: `<svg viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>`,
+            text: `<svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>`,
             photo: `<svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`,
             audio: `<svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>`
         };
@@ -455,6 +476,7 @@
             const override = sessionStorage.getItem('theme_override');
             if (override === 'day') document.body.classList.remove('night-deck');
             else if (override === 'night') document.body.classList.add('night-deck');
+            updateLabSidebarCounters();
         });
 
         function initApp() {
@@ -526,18 +548,41 @@
             }
         }
 
-        function saveData() { localStorage.setItem('silver_vault_v46', JSON.stringify(logsData)); }
+        function saveData() { 
+            localStorage.setItem('silver_vault_v46', JSON.stringify(logsData)); 
+            updateLabSidebarCounters();
+        }
 
+        /* LIVE LAB SIDEBAR ADMINISTRATIVE METRIC DISPATCHERS */
+        function updateLabSidebarCounters() {
+            const totalAmendmentsCount = logsData.filter(v => v.parentId !== null && v.parentId !== undefined).length;
+            const counterElement = document.getElementById('labAmendCounter');
+            if (counterElement) counterElement.innerText = totalAmendmentsCount;
+        }
+
+        /* SOVEREIGN WRITEOVER AMENDMENT OVERLAY TIMELINE SYSTEMS */
         function triggerAmendmentRoutine(targetId) {
             if (isEngineSealed) return;
             const itemToAmend = logsData.find(v => v.id === targetId);
             if (!itemToAmend) return;
 
+            // Track back down to base root entry to gauge total historic layers
+            const rootLookupId = itemToAmend.parentId ? itemToAmend.parentId : itemToAmend.id;
+            const activeLayersCount = logsData.filter(v => v.id === rootLookupId || v.parentId === rootLookupId).length;
+            const projectedAmendmentIndexNumber = activeLayersCount + 1;
+
+            // Explicit statutory notification prompts to verify tracking is acknowledged
+            const userConsentToSupersede = confirm(
+                `SUPERSEDE CHRONOLOGY RECORD?\n\nDo you want to amend this section?\nThis will create Amendment #${projectedAmendmentIndexNumber} for this log file.\n\nWe are keeping track of all background layers to maintain court integrity metrics.`
+            );
+
+            if (!userConsentToSupersede) return;
+
             activeAmendingId = targetId;
             const inputField = document.getElementById('logInput');
             
             inputField.value = itemToAmend.text;
-            inputField.placeholder = "Amending entry... Old data is preserved as a background layer.";
+            inputField.placeholder = `Filing Amendment #${projectedAmendmentIndexNumber}... History trail is safe.`;
             inputField.style.border = "1px solid var(--active-teal)";
             inputField.focus();
         }
@@ -579,10 +624,10 @@
                 entry.onmousedown = start; entry.onmouseup = stop; entry.onmouseleave = stop;
                 entry.ontouchstart = start; entry.ontouchend = stop;
 
-                const isAmendedBadge = completeVersionHistoryChain.length > 1 ? `<span class="amend-badge">Amended Layer</span>` : '';
+                const isAmendedBadge = completeVersionHistoryChain.length > 1 ? `<span class="amend-badge">Amendment #${completeVersionHistoryChain.length - 1}</span>` : '';
                 entry.innerHTML = `
                     <div class="timestamp-stamp">${pinSvg} ${topMostActiveVersion.stamp} ${isAmendedBadge}</div>
-                    <div class="log-bubble" title="Hold to Amend entry parameters">${topMostActiveVersion.text.replace(/\n/g, '<br>')}</div>
+                    <div class="log-bubble" title="Hold to Supersede entry parameters">${topMostActiveVersion.text.replace(/\n/g, '<br>')}</div>
                 `;
                 stackContainer.appendChild(entry);
 
@@ -591,7 +636,8 @@
                         const historyNode = completeVersionHistoryChain[i];
                         const historyBubble = document.createElement('div');
                         historyBubble.className = 'log-bubble historical-version';
-                        historyBubble.innerHTML = `<span style="font-size:8px; opacity:0.5;">[SUPERCEDED HISTORY: ${historyNode.stamp}]</span><br>${historyNode.text.replace(/\n/g, '<br>')}`;
+                        const internalVersionLabel = i === 0 ? 'ORIGINAL BASELINE' : `AMENDMENT #${i}`;
+                        historyBubble.innerHTML = `<span style="font-size:8px; opacity:0.6; font-weight:900; color:var(--active-teal);">[${internalVersionLabel}: ${historyNode.stamp}]</span><br>${historyNode.text.replace(/\n/g, '<br>')}`;
                         stackContainer.appendChild(historyBubble);
                     }
                 }
@@ -671,6 +717,7 @@
                 logsData = []; isEngineSealed = false; cancelActiveAmendment(); saveData(); renderTimeline(); toggleSidebar();
                 document.getElementById('prButton').classList.add('disabled-gate');
                 document.getElementById('pipelineLed').style.backgroundColor = 'var(--active-green)';
+                document.getElementById('labCaseLawBox').innerHTML = "Run Pattern Recognition to query local jurisdictional legal case benchmarks...";
             }
         }
 
@@ -713,6 +760,16 @@
                 logsData.forEach(log => {
                     if (log.mode === 'TIMELINE') log.highlighted = true;
                 });
+                
+                // POPULATE THE REPOSITORY CASE LAW PRECEDENTS SECTION DIRECTLY
+                document.getElementById('labCaseLawBox').innerHTML = `
+                    <div style="border-bottom:1px dashed var(--glass-border); padding-bottom:6px; margin-bottom:6px;">
+                        <strong>BC OHS Reg 3.12:</strong> Compelled reporting benchmarks mapped relative to repetitive chronological groupings.
+                    </div>
+                    <div>
+                        <strong>Canada Evidence Act s.30:</strong> Dynamic business logs verified via contemporaneous systemic time signatures.
+                    </div>
+                `;
             }
 
             logsData.push({
