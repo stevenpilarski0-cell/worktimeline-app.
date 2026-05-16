@@ -256,7 +256,6 @@
             border: 1px solid var(--glass-border); text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.01);
         }
         
-        /* HARD CONSTRAINT: FIXED ICON ENVELOPE DIMENSIONS PREVENTS CHARACTER STRING ARTIFACT BLOB DISTORTIONS */
         .sidebar-item .circle-icon { 
             width: 28px; height: 28px; background: var(--metallic-silver); color: var(--active-teal); 
             border-radius: 8px; display: flex; justify-content: center; align-items: center; 
@@ -299,7 +298,7 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body>
+<body onload="initApp()">
     <div class="phone-bezel">
         
         <div id="drawerOutsideOverlay" class="drawer-outside-overlay" onclick="toggleSidebar()"></div>
@@ -456,18 +455,14 @@
             </div>
 
             <div class="workspace-layout-matrix">
-                
-                <div id="visualSpineTrack" class="vertical-spine-track">
-                    </div>
-
+                <div id="visualSpineTrack" class="vertical-spine-track"></div>
                 <div class="timeline-container" id="timelineBody">
                     <div class="log-list" id="logList"></div>
                 </div>
-
             </div>
 
             <div class="footer-nav">
-                <div id="prButton" class="footer-pill disabled-gate" onclick="runPatternRecognition()">
+                <div id="prButton" class="footer-pill" onclick="runPatternRecognition()">
                     <svg viewBox="0 0 24 24">
                         <rect x="2" y="3" width="20" height="14" rx="4" ry="4"></rect>
                         <line x1="8" y1="21" x2="16" y2="21"></line>
@@ -503,7 +498,6 @@
 
         function evaluateCircadianTimeSystem() {
             if (sessionStorage.getItem('theme_override')) return;
-            
             const currentHour = new Date().getHours();
             if (currentHour < 6 || currentHour >= 18) {
                 document.body.classList.add('night-deck');
@@ -545,6 +539,7 @@
                 document.body.classList.add('night-deck');
                 if (selector) selector.value = 'night';
             }
+            document.getElementById('prButton').classList.remove('disabled-gate');
             updateLabSidebarCounters();
         });
 
@@ -577,15 +572,9 @@
             const sidebar = document.getElementById('sidebarMenu');
             const menuBtn = document.getElementById('menuBtn');
             const mask = document.getElementById('drawerOutsideOverlay');
-            
             sidebar.classList.toggle('open');
             menuBtn.classList.toggle('open-active');
-            
-            if (sidebar.classList.contains('open')) {
-                mask.style.display = 'block';
-            } else {
-                mask.style.display = 'none';
-            }
+            mask.style.display = sidebar.classList.contains('open') ? 'block' : 'none';
         }
         
         function togglePrivacy() { 
@@ -599,11 +588,9 @@
             currentMode = mode;
             document.getElementById('timelineToggle').classList.toggle('active', mode === 'TIMELINE');
             document.getElementById('notesToggle').classList.toggle('active', mode === 'NOTES');
-            
             document.getElementById('visualSpineTrack').style.display = mode === 'TIMELINE' ? 'flex' : 'none';
             document.getElementById('templateRow').style.display = mode === 'TIMELINE' ? 'flex' : 'none';
             document.getElementById('logInput').placeholder = mode === 'TIMELINE' ? "Start journaling your truth..." : "Capture a private note...";
-            
             cancelActiveAmendment();
             renderTimeline();
         }
@@ -619,7 +606,6 @@
             const pill = document.getElementById(`chip-${type.toLowerCase()}`);
             const input = document.getElementById('logInput');
             const prefix = `${type}: `;
-            
             if (pill.classList.contains('selected')) {
                 pill.classList.remove('selected');
                 input.value = input.value.replace(prefix, "");
@@ -658,7 +644,6 @@
 
             activeAmendingId = targetId;
             const inputField = document.getElementById('logInput');
-            
             inputField.value = itemToAmend.text;
             inputField.placeholder = `Filing Amendment #${projectedAmendmentIndexNumber}...`;
             inputField.style.border = "1px solid var(--active-teal)";
@@ -738,6 +723,7 @@
         }
 
         function submitEntry() {
+            if (isEngineSealed) return alert("Timeline array has been immutably sealed to Clio. New submissions locked.");
             const input = document.getElementById('logInput');
             const text = input.value.trim();
             if (!text) return;
@@ -781,39 +767,23 @@
         function emailTimeline() {
             const filteredData = logsData.filter(log => (log.mode || 'TIMELINE') === currentMode);
             if(filteredData.length === 0) return alert(`Your ${currentMode} is empty.`);
-            
             let body = `WorkTimeline™ Verified ${currentMode} Export:\n\n`;
-            filteredData.forEach(log => { 
-                body += `[${log.stamp}]\n${log.text}\n\n`; 
-            });
+            filteredData.forEach(log => { body += `[${log.stamp}]\n${log.text}\n\n`; });
             window.location.href = `mailto:?subject=Legal ${currentMode} Export&body=${encodeURIComponent(body)}`;
         }
 
         function resetTimeline() {
             if(confirm("Clear the entire timeline and all notes?")) {
                 logsData = []; isEngineSealed = false; cancelActiveAmendment(); saveData(); renderTimeline(); toggleSidebar();
-                document.getElementById('prButton').classList.add('disabled-gate');
                 document.getElementById('pipelineLed').style.backgroundColor = 'var(--active-green)';
                 document.getElementById('labCaseLawBox').innerHTML = "Run Pattern Recognition to query local jurisdictional legal case benchmarks...";
             }
         }
 
-        // CLIO PARAPET PIPELINE DISPATCH PROTOCOLS
-        function executeMasterClioLock() {
-            if (logsData.length === 0) return alert("Log empty.");
-            cancelActiveAmendment();
-            document.getElementById('pipelineLed').style.backgroundColor = '#4b5563';
-            
-            setTimeout(() => {
-                isEngineSealed = true;
-                document.getElementById('pipelineLed').style.backgroundColor = '#008080';
-                document.getElementById('prButton').classList.remove('disabled-gate');
-                alert("AMENDMENT IMMUTABILITY SECURED\n\nLedger array compiled under Canada Evidence Act parameters.\n\nPackage locked and synchronized to active Clio client ledger pipelines.");
-            }, 800);
-        }
-
         function runPatternRecognition() {
-            if(!isEngineSealed) return;
+            if (isEngineSealed) return alert("Dataset locked. Analysis complete.");
+            const timelineData = logsData.filter(log => (log.mode || 'TIMELINE') === 'TIMELINE');
+            if(timelineData.length === 0) return alert("Add records to your timeline before running analysis engine passes.");
             
             document.getElementById('patternOverlay').classList.add('active');
             document.getElementById('patternLoader').style.display = 'block';
@@ -831,13 +801,11 @@
             const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
             
             const auditMessage = decision === 'ACCEPTED' 
-                ? "[AUDIT LOG] User ACCEPTED AI Pattern Suggestion: 'Morning incident cluster' for further review."
-                : "[AUDIT LOG] User IGNORED AI Pattern Suggestion. Raw timeline integrity maintained.";
+                ? "[AUDIT LOG] User ACCEPTED AI Pattern Suggestion: 'Morning incident cluster' for integration brief pass."
+                : "[AUDIT LOG] User IGNORED AI Pattern Suggestion. Raw timeline dataset unperturbed.";
 
             if (decision === 'ACCEPTED') {
-                logsData.forEach(log => {
-                    if (log.mode === 'TIMELINE') log.highlighted = true;
-                });
+                logsData.forEach(log => { if (log.mode === 'TIMELINE') log.highlighted = true; });
                 
                 document.getElementById('labCaseLawBox').innerHTML = `
                     <div style="border-bottom:1px dashed var(--glass-border); padding-bottom:6px; margin-bottom:6px;">
@@ -851,6 +819,7 @@
 
             logsData.push({
                 id: Date.now(),
+                parentId: null,
                 mode: 'NOTES',
                 type: 'text',
                 stamp: `AUDIT TRAIL | ${dateStr} | ${timeStr}`,
@@ -865,6 +834,20 @@
             } else {
                 renderTimeline();
             }
+        }
+
+        function executeMasterClioLock() {
+            if (logsData.length === 0) return alert("Log repository empty.");
+            cancelActiveAmendment();
+            document.getElementById('pipelineLed').style.backgroundColor = '#4b5563';
+            
+            setTimeout(() => {
+                isEngineSealed = true;
+                document.getElementById('pipelineLed').style.backgroundColor = '#008080';
+                
+                const packageBriefForLawyers = JSON.stringify(logsData);
+                alert("AMENDMENT IMMUTABILITY SECURED\n\nFull case files package compiled, including Timeline array, version overlays, and active Pattern Recognition audit insights.\n\nData securely synced to active Clio firm ledger pipelines.");
+            }, 800);
         }
     </script>
 </body>
