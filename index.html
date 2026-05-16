@@ -22,6 +22,9 @@
             --metallic-silver: linear-gradient(180deg, #f1f5f9 0%, #cbd5e0 100%);
             --metallic-teal: linear-gradient(135deg, #008080 0%, #004d4d 100%);
             --chip-bg: #ffffff;
+            
+            /* BRIGHT SILVER PLATINUM FOR TOP LOG CARD LAYERS */
+            --silver-platinum: #f1f5f9;
         }
 
         body.night-deck {
@@ -33,6 +36,7 @@
             --text-light: #cbd5e1;
             --metallic-silver: linear-gradient(180deg, #3f444a 0%, #1a1c1e 100%);
             --chip-bg: #2d3135;
+            --silver-platinum: #2d3135;
         }
         
         body, html {
@@ -163,22 +167,29 @@
         
         .log-bubble-stack { position: relative; width: 100%; }
         
+        /* SOLID BRIGHT SILVER-PLATINUM TOP CORES */
         .log-bubble {
-            background: var(--glass-bg); backdrop-filter: blur(10px);
+            background: var(--silver-platinum);
             padding: 14px 16px; border-radius: 18px; border: 1px solid var(--glass-border);
             color: var(--text-dark); font-size: 12px; font-weight: 700; line-height: 1.5;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03); width: 100%; box-sizing: border-box;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04); width: 100%; box-sizing: border-box;
             position: relative; z-index: 10;
         }
 
+        /* INVERTED REVERSAL: OLD HISTORY ENTRIES SHIFT TO SEMI-TRANSPARENT GLASS UNDERNEATH */
         .log-bubble.historical-version {
-            background: rgba(226, 232, 240, 0.2);
+            background: rgba(255, 255, 255, 0.15); 
+            backdrop-filter: blur(4px);
             margin-top: -24px;
             z-index: 5;
-            opacity: 0.5;
+            opacity: 0.45;
             transform: scale(0.96);
-            border-style: dashed;
+            border: 1px dashed var(--glass-border);
             color: var(--text-light);
+            box-shadow: none;
+        }
+        body.night-deck .log-bubble.historical-version {
+            background: rgba(0, 0, 0, 0.2);
         }
 
         .amend-badge {
@@ -186,7 +197,6 @@
             color: white; padding: 2px 6px; border-radius: 4px; margin-left: auto;
         }
 
-        /* FIXED BOTTOM NAVIGATION BAR FOOTER */
         .footer-nav {
             position: absolute; bottom: 0; left: 0; width: 100%; height: 80px; 
             background: var(--glass-bg); backdrop-filter: blur(20px);
@@ -213,7 +223,7 @@
         }
         .center-add-btn:active { transform: scale(0.95); }
 
-        /* THE LAB CORE SIDEBAR DRAWER */
+        /* THE LAB SIDEBAR DRAWER STYLING */
         .sidebar {
             position: absolute; top: 0; left: -100%; width: 280px; height: 100%;
             background: var(--glass-bg); backdrop-filter: blur(25px);
@@ -235,10 +245,9 @@
             display: flex; align-items: center; gap: 12px; cursor: pointer;
             border: 1px solid var(--glass-border); text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.01);
         }
-        .sidebar-item .circle-icon { width: 28px; height: 28px; background: var(--metallic-silver); color: var(--active-teal); border-radius: 8px; display: flex; justify-content: center; align-items: center; border: 1px solid var(--glass-border); }
-        .sidebar-item .circle-icon svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.5; fill: none; }
+        .sidebar-item .circle-icon { width: 32px; height: 32px; background: var(--metallic-silver); color: var(--active-teal); border-radius: 10px; display: flex; justify-content: center; align-items: center; border: 1px solid var(--glass-border); }
+        .sidebar-item .circle-icon svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 
-        /* NESTED METRIC PANELS INSIDE DRAWERS */
         .lab-metric-panel {
             background: rgba(0, 128, 128, 0.04);
             border: 1px solid var(--glass-border);
@@ -553,25 +562,21 @@
             updateLabSidebarCounters();
         }
 
-        /* LIVE LAB SIDEBAR ADMINISTRATIVE METRIC DISPATCHERS */
         function updateLabSidebarCounters() {
             const totalAmendmentsCount = logsData.filter(v => v.parentId !== null && v.parentId !== undefined).length;
             const counterElement = document.getElementById('labAmendCounter');
             if (counterElement) counterElement.innerText = totalAmendmentsCount;
         }
 
-        /* SOVEREIGN WRITEOVER AMENDMENT OVERLAY TIMELINE SYSTEMS */
         function triggerAmendmentRoutine(targetId) {
             if (isEngineSealed) return;
             const itemToAmend = logsData.find(v => v.id === targetId);
             if (!itemToAmend) return;
 
-            // Track back down to base root entry to gauge total historic layers
             const rootLookupId = itemToAmend.parentId ? itemToAmend.parentId : itemToAmend.id;
             const activeLayersCount = logsData.filter(v => v.id === rootLookupId || v.parentId === rootLookupId).length;
             const projectedAmendmentIndexNumber = activeLayersCount + 1;
 
-            // Explicit statutory notification prompts to verify tracking is acknowledged
             const userConsentToSupersede = confirm(
                 `SUPERSEDE CHRONOLOGY RECORD?\n\nDo you want to amend this section?\nThis will create Amendment #${projectedAmendmentIndexNumber} for this log file.\n\nWe are keeping track of all background layers to maintain court integrity metrics.`
             );
@@ -582,7 +587,7 @@
             const inputField = document.getElementById('logInput');
             
             inputField.value = itemToAmend.text;
-            inputField.placeholder = `Filing Amendment #${projectedAmendmentIndexNumber}... History trail is safe.`;
+            inputField.placeholder = `Filing Amendment #${projectedAmendmentIndexNumber}...`;
             inputField.style.border = "1px solid var(--active-teal)";
             inputField.focus();
         }
@@ -761,7 +766,6 @@
                     if (log.mode === 'TIMELINE') log.highlighted = true;
                 });
                 
-                // POPULATE THE REPOSITORY CASE LAW PRECEDENTS SECTION DIRECTLY
                 document.getElementById('labCaseLawBox').innerHTML = `
                     <div style="border-bottom:1px dashed var(--glass-border); padding-bottom:6px; margin-bottom:6px;">
                         <strong>BC OHS Reg 3.12:</strong> Compelled reporting benchmarks mapped relative to repetitive chronological groupings.
