@@ -58,10 +58,17 @@
             display: flex; flex-direction: column; position: relative;
         }
 
-        .privacy-active #timelineBody { filter: blur(16px); pointer-events: none; opacity: 0.2; transition: 0.3s; }
-        #timelineBody { transition: 0.3s; }
+        /* PRIVACY SWITCH HARDWARE BLUR COVERS */
+        .privacy-active #timelineBody,
+        .privacy-active .input-panel { 
+            filter: blur(18px) grayscale(1); 
+            pointer-events: none; 
+            opacity: 0.25; 
+            transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1); 
+        }
+        #timelineBody, .input-panel { transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
 
-        /* HEADER LED */
+        /* HEADER LED BEACON */
         .clio-status-led {
             width: 10px; height: 10px; background-color: var(--active-green); border-radius: 50%;
             animation: breathe 2.5s infinite; box-shadow: 0 0 8px var(--active-green);
@@ -100,7 +107,7 @@
         .brand-block { display: flex; align-items: center; gap: 8px; }
         .main-title { font-weight: 900; font-size: 24px; color: var(--active-teal); letter-spacing: -0.5px; display: flex; align-items: center; gap: 6px; }
         
-        /* LOGO ARCHITECTURE: FIXED HORIZONTAL TIMELINE DESIGN */
+        /* LOGO SVG WITH HORIZONTAL SPLINE TRACK PATH AND THREE NODES */
         .briefcase-logo-svg { width: 32px; height: 32px; display: inline-block; vertical-align: middle; }
         .briefcase-body { fill: var(--active-teal); }
         .briefcase-timeline-path { stroke: #ffffff; stroke-width: 0.6px; stroke-dasharray: 1,1; fill: none; }
@@ -132,6 +139,7 @@
         .input-wrapper textarea { width: 100%; background: transparent; border: none; color: var(--text-dark); font-size: 14px; font-weight: 600; font-family: inherit; resize: none; outline: none; height: 40px; }
         .input-wrapper textarea::placeholder { color: var(--text-light); }
 
+        /* THE STANDARD TIMELINE FEED GRID TRACK LAYOUT BASELINE */
         .workspace-layout-matrix {
             flex: 1; display: flex; gap: 12px; margin: 0 15px; overflow: hidden; position: relative;
         }
@@ -157,7 +165,6 @@
         }
         .timeline-squircle svg { width: 16px; height: 16px; fill: var(--text-dark); }
         
-        /* HARD STYLESHEET RE-ANCHOR: STABILIZES THE SATIN TEAL GLOW RUNNING PASS */
         @keyframes tealSatinPulse {
             0% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0.7); border-color: var(--active-teal); transform: scale(1); }
             50% { box-shadow: 0 0 14px 6px rgba(0, 128, 128, 0.3); border-color: #00b3b3; transform: scale(1.05); }
@@ -174,6 +181,7 @@
         
         .log-bubble-stack { position: relative; width: 100%; display: flex; flex-direction: column; gap: 4px; }
         
+        /* SOLID SILVER PLATINUM TOP LAYER */
         .log-bubble {
             background: var(--silver-platinum);
             padding: 14px 16px; border-radius: 18px; border: 1px solid var(--glass-border);
@@ -182,6 +190,7 @@
             position: relative; z-index: 10;
         }
 
+        /* SUPERSEDED REVERSION OVERLAYS: DROPS TRANSPARENT DIRECTLY UNDERNEATH */
         .log-bubble.historical-version {
             background: rgba(255, 255, 255, 0.15); 
             backdrop-filter: blur(4px);
@@ -194,6 +203,21 @@
             box-shadow: none;
         }
         body.night-deck .log-bubble.historical-version { background: rgba(0, 0, 0, 0.2); }
+
+        /* THE PATTERN INSIGHT CARDS POPOVER SPECIFICATION: MOUNTS UNDERNEATH THE PRIMARY CARD LAYER */
+        .log-bubble.pattern-insight-layer {
+            background: rgba(0, 128, 128, 0.08) !important;
+            border: 1px solid rgba(0, 128, 128, 0.3) !important;
+            box-shadow: inset 0 1px 3px rgba(0, 128, 128, 0.1) !important;
+            margin-top: -4px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+            z-index: 8;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 11px;
+            line-height: 1.4;
+        }
 
         .footer-nav {
             position: absolute; bottom: 0; left: 0; width: 100%; height: 80px; 
@@ -347,7 +371,7 @@
             </div>
             
             <div class="sidebar-item" style="margin-top:auto;" onclick="resetTimeline()">
-                <div class="circle-icon" style="color: #e11d48;">
+                <div class="circle-icon">
                     <svg viewBox="0 0 24 24" style="stroke: #e11d48;"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
                 </div>
                 <span style="color: #e11d48;">Reset Engine</span>
@@ -377,13 +401,13 @@
 
                 <div id="patternResult" style="display: none;">
                     <div class="modal-body">
-                        <b>Analysis Complete.</b><br><br>
+                        <b>Analysis Pass Complete.</b><br><br>
                         Pattern Detected: <i>Multiple incident logs clustered in the morning hours.</i><br><br>
-                        Do you want to append this insight to your private Notes?
+                        Do you want to append this analytical insight into the unalterable chronology record layout track?
                     </div>
                     <div style="display: flex; gap: 10px;">
-                        <div class="ok-btn ghost" onclick="handlePatternAudit('IGNORED')">Ignore</div>
-                        <div class="ok-btn" onclick="handlePatternAudit('ACCEPTED')">Accept</div>
+                        <div class="ok-btn ghost" onclick="handlePatternAudit('IGNORED')">Ignore Pass</div>
+                        <div class="ok-btn" onclick="handlePatternAudit('ACCEPTED')">Inject Recognition</div>
                     </div>
                 </div>
             </div>
@@ -392,7 +416,7 @@
         <div class="app-container" id="mainApp">
             
             <div class="top-toggles">
-                <div class="toggle-btn" id="privacyBtn" onclick="togglePrivacy()">Privacy</div>
+                <div class="toggle-btn" id="privacyBtn" onclick="togglePrivacy()">Privacy Switch</div>
                 <div style="display: flex; gap: 8px;">
                     <div class="toggle-btn active" id="timelineToggle" onclick="switchMode('TIMELINE')">Timeline</div>
                     <div class="toggle-btn" id="notesToggle" onclick="switchMode('NOTES')">Notes</div>
@@ -408,7 +432,7 @@
                     <div class="main-title" id="brandTitle">
                         <svg class="briefcase-logo-svg" viewBox="0 0 24 24">
                             <path class="briefcase-body" d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-8-2h4v2h-4V4zm8 7H4V8h16v3zm-16 2h16v1H4v-1zm16 6H4v-3h16v3z"/>
-                            <line class="briefcase-timeline-path" x1="1" y1="14.5" x2="23" y2="14.5"/>
+                            <line class="briefcase-timeline-path" x1="2" y1="14.5" x2="22" y2="14.5"/>
                             <circle class="briefcase-node" cx="6" cy="14.5" r="0.8"/>
                             <circle class="briefcase-node" cx="12" cy="14.5" r="0.8"/>
                             <circle class="briefcase-node" cx="18" cy="14.5" r="0.8"/>
@@ -423,9 +447,9 @@
 
             <div class="input-panel">
                 <div class="template-row" id="templateRow">
-                    <div id="chip-setting" class="template-chip" onclick="toggleTemplatePill('SETTING')">Setting</div>
-                    <div id="chip-witness" class="template-chip" onclick="toggleTemplatePill('WITNESS')">Witness</div>
-                    <div id="chip-injury" class="template-chip" onclick="toggleTemplatePill('INJURY')">Injury</div>
+                    <div id="chip-setting" class="template-chip" onclick="toggleTemplatePill('SETTING')">Setting Template</div>
+                    <div id="chip-witness" class="template-chip" onclick="toggleTemplatePill('WITNESS')">Witness Template</div>
+                    <div id="chip-injury" class="template-chip" onclick="toggleTemplatePill('INJURY')">Injury Template</div>
                 </div>
                 <div class="hardware-icons">
                     <div class="hw-item">
@@ -479,6 +503,7 @@
         let currentMode = 'TIMELINE';
         let isEngineSealed = false;
         let activeAmendingId = null;
+        let isPatternRecognitionTriggeredInSession = false; // Shadow tracking indicator state
         
         const pinSvg = `<svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
 
@@ -569,6 +594,7 @@
             mask.style.display = sidebar.classList.contains('open') ? 'block' : 'none';
         }
         
+        /* THE INSTANT PRIVACY SYSTEM SWITCH LOOP INJECTION */
         function togglePrivacy() { 
             const app = document.getElementById('mainApp');
             app.classList.toggle('privacy-active');
@@ -576,7 +602,6 @@
             btn.classList.toggle('active', app.classList.contains('privacy-active'));
         }
 
-        /* HARD CORE STRUCTURAL LAYER MAINTENANCE PASS */
         function switchMode(mode) {
             currentMode = mode;
             document.getElementById('timelineToggle').classList.toggle('active', mode === 'TIMELINE');
@@ -598,7 +623,8 @@
         function toggleTemplatePill(type) {
             const pill = document.getElementById(`chip-${type.toLowerCase()}`);
             const input = document.getElementById('logInput');
-            const prefix = `${type}: `;
+            const prefix = `${type} INJECTION LAYOUT: \n[TIME]: \n[LOG FIELD]: \n\n`;
+            
             if (pill.classList.contains('selected')) {
                 pill.classList.remove('selected');
                 input.value = input.value.replace(prefix, "");
@@ -680,12 +706,14 @@
                 entry.onmousedown = start; entry.onmouseup = stop; entry.onmouseleave = stop;
                 entry.ontouchstart = start; entry.ontouchend = stop;
 
+                // MAIN TIMELINE CARD: STAYS ON TOP, RETAINS SOLID SILVER PLATINUM GRAPHICS
                 entry.innerHTML = `
                     <div class="timestamp-stamp">${pinSvg} ${topMostActiveVersion.stamp}</div>
                     <div class="log-bubble" title="Hold to Supersede entry parameters">${topMostActiveVersion.text.replace(/\n/g, '<br>')}</div>
                 `;
                 stackContainer.appendChild(entry);
 
+                // HISTORY OVERLAY BACKING CARDS (TRANSPARENT PASS)
                 if (completeVersionHistoryChain.length > 1) {
                     for (let i = completeVersionHistoryChain.length - 2; i >= 0; i--) {
                         const historyNode = completeVersionHistoryChain[i];
@@ -697,6 +725,18 @@
                     }
                 }
 
+                // INVERTED REVERSAL SPECIFICATION PASSTHROUGH: 
+                // When an analytical suggestion is validated, it loads in lock-state, nested directly in the shadows *underneath* your original logs.
+                if (currentMode === 'TIMELINE' && isPatternRecognitionTriggeredInSession) {
+                    const aiShadowInsightBox = document.createElement('div');
+                    aiShadowInsightBox.className = 'log-bubble pattern-insight-layer';
+                    aiShadowInsightBox.innerHTML = `
+                        <div style="font-size:9px; text-transform:uppercase; font-weight:900; color:var(--active-teal); letter-spacing:0.02em; margin-bottom:2px;">[AI Core Track Analytics Locked Underneath]</div>
+                        Chronological proximity audit: Clustered morning event sequence signature captured. Integrity metrics cataloged.
+                    `;
+                    stackContainer.appendChild(aiShadowInsightBox);
+                }
+
                 list.appendChild(stackContainer);
 
                 if (currentMode === 'TIMELINE') {
@@ -704,10 +744,9 @@
                     node.className = 'timeline-squircle';
                     node.id = `node_link_${log.id}`;
                     node.innerHTML = iconNodePaths[topMostActiveVersion.type || 'text'];
-                    node.onclick = () => alert(`Event Chain Base Reference ID: ${log.id}\nActive Layers: ${completeVersionHistoryChain.length}\nLast Updated: ${topMostActiveVersion.stamp}`);
+                    node.onclick = () => alert(`Event Chain Base Reference ID: ${log.id}\nLayers Compiled: ${completeVersionHistoryChain.length}\nLast State: ${topMostActiveVersion.stamp}`);
                     
-                    // RE-ANCHOR PULSING SYSTEM MARKERS BACK TO VIEWPORT DURING MATRIX UPDATES
-                    if(topMostActiveVersion.highlighted) {
+                    if(topMostActiveVersion.highlighted || (isPatternRecognitionTriggeredInSession && log.id === 1)) {
                         node.classList.add('pattern-triggered');
                     }
                     spine.appendChild(node);
@@ -771,7 +810,7 @@
 
         function resetTimeline() {
             if(confirm("Clear the entire timeline and all notes?")) {
-                logsData = []; isEngineSealed = false; cancelActiveAmendment(); saveData(); renderTimeline(); toggleSidebar();
+                logsData = []; isEngineSealed = false; isPatternRecognitionTriggeredInSession = false; cancelActiveAmendment(); saveData(); renderTimeline(); toggleSidebar();
                 document.getElementById('pipelineLed').style.backgroundColor = 'var(--active-green)';
                 document.getElementById('labCaseLawBox').innerHTML = "Run Pattern Recognition to query local jurisdictional legal case benchmarks...";
             }
@@ -792,21 +831,19 @@
             }, 1500);
         }
 
-        /* FIXED RE-ENTRY REDIRECT PASS: RETAINS VERTICAL GRID SPLIT STABILITY UNALIGNED SHIFTS COMPLETELY PREVENTED */
         function handlePatternAudit(decision) {
             const now = new Date();
             const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
             const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
             
             const auditMessage = decision === 'ACCEPTED' 
-                ? "[AUDIT LOG] User ACCEPTED AI Pattern Suggestion: 'Morning incident cluster' for integration package pass."
+                ? "[AUDIT LOG] User ACCEPTED AI Pattern Suggestion: 'Morning incident cluster' for shadow alignment pass."
                 : "[AUDIT LOG] User IGNORED AI Pattern Suggestion. Raw timeline integrity unperturbed.";
 
             if (decision === 'ACCEPTED') {
-                logsData.forEach(log => { 
-                    // Forces accurate highlight parameter logs
-                    if (log.mode === 'TIMELINE' || !log.parentId) log.highlighted = true; 
-                });
+                // FLIPS RUN-STATE: Automatically forces the background analytics container to slide into view underneath your logs.
+                isPatternRecognitionTriggeredInSession = true;
+                logsData.forEach(log => { if (log.mode === 'TIMELINE' || !log.parentId) log.highlighted = true; });
                 
                 document.getElementById('labCaseLawBox').innerHTML = `
                     <div style="border-bottom:1px dashed var(--glass-border); padding-bottom:6px; margin-bottom:6px;">
@@ -827,7 +864,6 @@
                 text: auditMessage
             });
 
-            // CRITICAL RESET PASS: Strictly saves and runs a comprehensive rendering loop to keep format completely unified
             saveData();
             document.getElementById('patternOverlay').classList.remove('active');
             
@@ -847,8 +883,8 @@
                 isEngineSealed = true;
                 document.getElementById('pipelineLed').style.backgroundColor = '#008080';
                 const packageBriefForLawyers = JSON.stringify(logsData);
-                alert("AMENDMENT IMMUTABILITY SECURED\n\nFull case files package compiled, including Timeline array, version overlays, and active Pattern Recognition audit insights.\n\nData securely synced to active Clio client ledger pipelines.");
-                renderTimeline(); // Locks structural visibility
+                alert("AMENDMENT IMMUTABILITY SECURED\n\nFull case files package compiled, including Timeline array, version overlays, and active Pattern Recognition shadow layers.\n\nData securely synced to active Clio client ledger pipelines.");
+                renderTimeline();
             }, 800);
         }
     </script>
