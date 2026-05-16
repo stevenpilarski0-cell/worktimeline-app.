@@ -2,218 +2,252 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline™ | Precision v70</title>
-    
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Legal Guardian | Precision Log</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
-        
         :root {
-            --app-bg: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            --glass-bg: rgba(255, 255, 255, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.9);
-            --text-dark: #1e293b;
-            --active-teal: #008080;
-            --rose: #e11d48;
-            --metallic-silver: linear-gradient(180deg, #f1f5f9 0%, #cbd5e0 100%);
-            --metallic-teal: linear-gradient(135deg, #008080 0%, #004d4d 100%);
+            --platinum: #F3F4F6;      /* Main Background */
+            --teal-brand: #008080;    /* Primary Action */
+            --gunmetal: #1F2937;      /* Professional Text */
+            --silver-glass: rgba(255, 255, 255, 0.7);
+            --border-line: #D1D5DB;   /* Silver Accents */
         }
-        
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; font-family: 'Nunito', sans-serif; background-color: #94a3b8; overflow: hidden; }
-        .phone-bezel { width: 375px; height: 812px; background-color: #000; border-radius: 45px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); overflow: hidden; border: 8px solid #cbd5e0; position: relative; }
 
-        /* MODALS - TOP LAYER */
-        .modal-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(226, 232, 240, 0.98); backdrop-filter: blur(20px); z-index: 99999; display: none; justify-content: center; align-items: center; padding: 30px; box-sizing: border-box; }
-        .modal-layer.active { display: flex !important; }
-        .modal-box { background: white; padding: 40px 30px; border-radius: 35px; width: 100%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #fff; }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--platinum);
+            color: var(--gunmetal);
+            padding-bottom: 90px; /* Space for the grounded bar */
+        }
 
-        /* SIDEBAR */
-        #menuOverlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 50000; display: none; }
-        #menuOverlay.active { display: block; }
-        .sidebar { position: absolute; top: 0; left: 0; width: 300px; height: 100%; background: white; transform: translateX(-100%); transition: transform 0.4s ease; padding: 60px 20px; box-sizing: border-box; }
-        #menuOverlay.active .sidebar { transform: translateX(0); }
+        /* --- THE LOGO/HEADER --- */
+        header {
+            padding: 20px;
+            background: white;
+            border-bottom: 1px solid var(--border-line);
+            text-align: center;
+        }
 
-        /* CONTENT */
-        .app-container { width: 100%; height: 100%; background: var(--app-bg); display: flex; flex-direction: column; position: relative; z-index: 1; }
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 55px 20px 10px; }
-        .menu-trigger { cursor: pointer; font-size: 24px; padding: 10px; background: white; border-radius: 12px; border: 1px solid #eee; display: flex; }
-        .main-title { font-weight: 900; font-size: 20px; color: var(--active-teal); }
-        
-        /* HW PANEL */
-        .input-panel { background: var(--glass-bg); margin: 10px 15px; border-radius: 24px; border: 1px solid var(--glass-border); padding: 20px; }
-        .hw-row { display: flex; justify-content: space-evenly; margin-bottom: 15px; }
-        .hw-item { position: relative; width: 44px; height: 44px; background: var(--metallic-silver); border-radius: 14px; display: flex; justify-content: center; align-items: center; border: 1px solid #cbd5e0; }
-        .hw-item input { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; z-index: 10; }
-        .hw-item svg { width: 22px; height: 22px; stroke: var(--active-teal); fill: none; stroke-width: 2.5; }
+        .brand-logo {
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: var(--teal-brand);
+            font-size: 20px;
+            text-transform: uppercase;
+        }
 
-        .input-wrapper { background: white; border-radius: 14px; padding: 12px; border: 1px solid #e2e8f0; }
-        textarea { width: 100%; border: none; font-family: inherit; font-weight: 700; height: 45px; outline: none; resize: none; background: transparent; }
+        /* --- THE LAB TAB & TOGGLE --- */
+        .lab-container {
+            padding: 20px;
+        }
 
-        .timeline-container { flex: 1; overflow-y: auto; padding: 20px; }
-        .log-list { padding-left: 20px; border-left: 3px solid var(--metallic-silver); display: flex; flex-direction: column; gap: 15px; }
-        .log-bubble { background: white; padding: 12px; border-radius: 15px; border: 1px solid #eee; font-size: 13px; font-weight: 700; }
-        .log-bubble.gold { border-left: 4px solid #f59e0b; }
+        .toggle-box {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--border-line);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-        .footer-nav { height: 85px; background: white; display: flex; justify-content: space-evenly; align-items: center; border-top: 1px solid #eee; padding-bottom: 15px; }
-        .add-btn { background: var(--metallic-teal); color: white; width: 60px; height: 60px; border-radius: 20px; display: flex; justify-content: center; align-items: center; font-size: 32px; cursor: pointer; border:none; box-shadow: 0 5px 15px rgba(0,128,128,0.3); }
-        
-        .mac-item { display: flex; align-items: center; gap: 12px; padding: 15px; background: #f8fafc; border-radius: 15px; margin-bottom: 10px; cursor: pointer; font-weight: 800; border: 1px solid #e2e8f0; }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .switch input { opacity: 0; width: 0; height: 0; }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px; width: 18px;
+            left: 4px; bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider { background-color: var(--teal-brand); }
+        input:checked + .slider:before { transform: translateX(24px); }
+
+        /* --- THE CARDS (MIDDLE GROUND) --- */
+        .card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border-line);
+            padding: 18px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .card-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--teal-brand);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        /* --- THE GROUNDED BOTTOM BAR --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 75px;
+            background: var(--silver-glass);
+            backdrop-filter: blur(15px);
+            border-top: 1px solid var(--border-line);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            text-align: center;
+            color: var(--gunmetal);
+            text-decoration: none;
+            font-size: 22px;
+            flex: 1;
+        }
+
+        .nav-item.active {
+            color: var(--teal-brand);
+        }
+
+        .nav-label {
+            display: block;
+            font-size: 10px;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        /* Scan Button Styling */
+        .btn-scan {
+            width: 100%;
+            background: var(--teal-brand);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+        }
     </style>
 </head>
-<body onload="initApp()">
+<body>
 
-    <div class="phone-bezel">
+<header>
+    <div class="brand-logo">Guardian Lab</div>
+</header>
 
-        <div class="modal-layer active" id="intakeModal">
-            <div class="modal-box">
-                <h2 style="color:var(--active-teal); margin:0 0 15px;">WorkTimeline™</h2>
-                <p style="font-weight:700; line-height:1.6; font-size:14px;">
-                    Welcome. If this is an emergency, call 911.<br><br>
-                    <span style="color:var(--rose);">We do not give legal advice.</span><br>
-                    However, we <b>do</b> stop gaslighting.<br><br>
-                    This is a secure journal for your truth.
-                </p>
-                <button class="add-btn" id="startBtn" style="width:100%; font-size:16px; margin-top:20px;">I Understand</button>
-            </div>
+<div id="logsView" class="lab-container">
+    <div class="card">
+        <div class="card-label">Recent Activity</div>
+        <p style="font-size: 14px; margin: 0;">Your timeline is encrypted and private.</p>
+    </div>
+    
+    <div id="templates" style="margin-top: 20px;">
+        <h4 style="font-size: 12px; color: #666;">SELECT TEMPLATE</h4>
+        <div class="card" style="padding: 12px; background: #fff;">Workplace Observation</div>
+        <div class="card" style="padding: 12px; background: #fff;">Medical Inquiry Log</div>
+    </div>
+</div>
+
+<div id="labView" class="lab-container" style="display:none;">
+    <div class="toggle-box">
+        <div>
+            <strong style="display:block;">Pattern Recognition</strong>
+            <small style="color: #666;">Scan Federal & BC Statutes</small>
         </div>
-
-        <div class="modal-layer" id="vaultModal">
-            <div class="modal-box" style="text-align:left;">
-                <h3 style="color:var(--active-teal);">AI Vault</h3>
-                <div style="font-weight:800;">Pattern Rec: <span id="vOff">0</span></div>
-                <div style="font-weight:800; color:var(--rose);">Rejections: <span id="vRej">0</span></div>
-                <hr>
-                <div id="vLw" style="font-size:11px; font-weight:700;">No Law Cited.</div>
-                <button class="add-btn" style="width:100%; font-size:16px; margin-top:20px;" onclick="closeVault()">Close</button>
-            </div>
-        </div>
-
-        <div id="menuOverlay" onclick="closeSidebar(event)">
-            <div class="sidebar">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
-                    <span style="font-weight:900; font-size:22px;">Menu</span>
-                    <div style="cursor:pointer;" onclick="toggleMenu()">✕</div>
-                </div>
-                <div class="mac-item" onclick="emailLog()">Draft Email</div>
-                <div class="mac-item" onclick="showVault()">AI Interaction Vault</div>
-                <div class="mac-item" onclick="exportFile()">Save & Export</div>
-                <div class="mac-item" style="color:red;" onclick="restartApp()">Restart</div>
-            </div>
-        </div>
-
-        <div class="app-container">
-            <div class="header">
-                <div class="menu-trigger" onclick="toggleMenu()">☰</div>
-                <div class="main-title" id="appTitle">WorkTimeline™</div>
-                <div style="width:24px;"></div>
-            </div>
-
-            <div class="input-panel">
-                <div class="hw-row">
-                    <div class="hw-item"><input type="file" accept="image/*" onchange="vaultFile(this, 'PHOTO')"><svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"/></svg></div>
-                    <div class="hw-item"><input type="file" accept="audio/*" onchange="vaultFile(this, 'AUDIO')"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path></svg></div>
-                </div>
-                <div class="input-wrapper"><textarea id="userInput" placeholder="Document the truth..."></textarea></div>
-            </div>
-
-            <div class="timeline-container">
-                <div class="log-list" id="logList"></div>
-            </div>
-
-            <div class="footer-nav">
-                <div style="font-size:10px; font-weight:900; cursor:pointer;" onclick="aiPattern()">PATTERN REC</div>
-                <div class="add-btn" onclick="submitLog()">+</div>
-                <div style="font-size:10px; font-weight:900; color:teal; cursor:pointer;" onclick="clioLink()">CLIO SYNC</div>
-            </div>
-        </div>
+        <label class="switch">
+            <input type="checkbox" id="labToggle" onchange="toggleLabMode()">
+            <span class="slider"></span>
+        </label>
     </div>
 
-    <script>
-        const supabaseUrl = 'https://btscu9wmphyellztza9slqfynbaqudwja.supabase.co'; 
-        const supabaseKey = 'Sb_publishable_VL3kSjtNHGvLcmZYi1YXnA_Xlo8zpXy';
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    <div id="labContent" style="opacity: 0.5; pointer-events: none;">
+        <button class="btn-scan" onclick="startScan()">RUN FULL LEGAL SCAN</button>
+        <div id="scanResults" style="margin-top: 20px;"></div>
+    </div>
+</div>
 
-        let logs = JSON.parse(localStorage.getItem('wt_logs')) || [];
-        let stats = JSON.parse(localStorage.getItem('wt_stats')) || { offers:0, rejects:0, law: "None." };
+<nav class="bottom-nav">
+    <a href="#" class="nav-item active" onclick="showView('logs')">
+        <i class="fa-solid fa-book"></i>
+        <span class="nav-label">Logs</span>
+    </a>
+    <a href="#" class="nav-item">
+        <i class="fa-solid fa-camera"></i>
+        <span class="nav-label">Camera</span>
+    </a>
+    <a href="#" class="nav-item">
+        <i class="fa-solid fa-microphone"></i>
+        <span class="nav-label">Mic</span>
+    </a>
+    <a href="#" class="nav-item">
+        <i class="fa-solid fa-file-lines"></i>
+        <span class="nav-label">Docs</span>
+    </a>
+    <a href="#" class="nav-item" onclick="showView('lab')">
+        <i class="fa-solid fa-flask"></i>
+        <span class="nav-label">The Lab</span>
+    </a>
+</nav>
 
-        function initApp() { 
-            render(); 
-            // FIXED BUTTON LISTENER
-            const btn = document.getElementById('startBtn');
-            const modal = document.getElementById('intakeModal');
-            const handler = (e) => {
-                e.preventDefault();
-                modal.style.display = 'none';
-                modal.classList.remove('active');
-            };
-            btn.addEventListener('click', handler);
-            btn.addEventListener('touchstart', handler);
-        }
+<script>
+    function showView(view) {
+        document.getElementById('logsView').style.display = view === 'logs' ? 'block' : 'none';
+        document.getElementById('labView').style.display = view === 'lab' ? 'block' : 'none';
+    }
 
-        function toggleMenu() { document.getElementById('menuOverlay').classList.toggle('active'); }
-        function closeSidebar(e) { if(e.target.id === 'menuOverlay') toggleMenu(); }
-        function showVault() { 
-            document.getElementById('vOff').innerText = stats.offers;
-            document.getElementById('vRej').innerText = stats.rejects;
-            document.getElementById('vLw').innerText = stats.law;
-            document.getElementById('vaultModal').classList.add('active'); 
-            toggleMenu(); 
-        }
-        function closeVault() { document.getElementById('vaultModal').classList.remove('active'); }
+    function toggleLabMode() {
+        const isActive = document.getElementById('labToggle').checked;
+        const content = document.getElementById('labContent');
+        content.style.opacity = isActive ? "1" : "0.5";
+        content.style.pointerEvents = isActive ? "all" : "none";
+    }
 
-        function submitLog() {
-            const val = document.getElementById('userInput').value;
-            if(!val) return;
-            logs.push({ id: Date.now(), text: val, time: new Date().toLocaleString(), gold: false });
-            document.getElementById('userInput').value = '';
-            save();
-        }
+    function startScan() {
+        const results = document.getElementById('scanResults');
+        results.innerHTML = "<p style='text-align:center; color:var(--teal-brand);'>Scanning Canada Labour Code & BC Statutes...</p>";
+        
+        // Mocking the AI detection for Federal and Provincial patterns
+        setTimeout(() => {
+            results.innerHTML = `
+                <div class="card" style="border-left: 4px solid var(--teal-brand);">
+                    <div class="card-label">Federal Pattern Detected</div>
+                    <strong>Canada Labour Code: Div XV.2</strong>
+                    <p style="font-size: 13px; color: #444;">Fact pattern matches criteria for medical leave non-interference.</p>
+                </div>
+                <div class="card" style="border-left: 4px solid #999;">
+                    <div class="card-label">Provincial Pattern Detected</div>
+                    <strong>BC ESA: Section 32</strong>
+                    <p style="font-size: 13px; color: #444;">Detected potential gap in overtime calculation based on log timestamps.</p>
+                </div>
+            `;
+        }, 2000);
+    }
+</script>
 
-        async function vaultFile(input, type) {
-            const file = input.files[0];
-            if(!file) return;
-            document.getElementById('appTitle').innerText = "VAULTING...";
-            const name = `${Date.now()}_${file.name}`;
-            const { data, error } = await supabase.storage.from('evidence').upload(name, file);
-            if(error) alert("Error: " + error.message);
-            const { data: pub } = supabase.storage.from('evidence').getPublicUrl(name);
-            document.getElementById('userInput').value += `\n[${type} ATTACHED]\n${pub.publicUrl}\n`;
-            document.getElementById('appTitle').innerText = "WorkTimeline™";
-            save();
-        }
-
-        function aiPattern() {
-            stats.offers++;
-            if(confirm("AI Pattern match. Add gold insight?")) {
-                if(logs.length > 0) logs[logs.length-1].gold = true;
-            } else { stats.rejects++; }
-            save();
-        }
-
-        function save() {
-            localStorage.setItem('wt_logs', JSON.stringify(logs));
-            localStorage.setItem('wt_stats', JSON.stringify(stats));
-            render();
-        }
-
-        function render() {
-            const list = document.getElementById('logList');
-            list.innerHTML = '';
-            logs.forEach(l => {
-                const div = document.createElement('div');
-                div.className = `log-bubble ${l.gold ? 'gold' : ''}`;
-                div.innerHTML = `<small style="color:gray;">${l.time}</small><br>${l.text}`;
-                list.appendChild(div);
-            });
-        }
-
-        function emailLog() { window.location.href = `mailto:?subject=Export&body=${encodeURIComponent(JSON.stringify(logs))}`; }
-        function exportFile() { alert("Data saved."); }
-        function restartApp() { if(confirm("Restart?")) { localStorage.clear(); location.reload(); } }
-        function clioLink() { alert("Clio Sync Activated."); }
-    </script>
 </body>
 </html>
