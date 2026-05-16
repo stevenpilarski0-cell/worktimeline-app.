@@ -17,3 +17,13 @@ export default async function handler(req, res) {
         res.status(500).json({ error: 'Auth Exchange Failed' });
     }
 }
+// Add this helper logic to your existing data event listeners
+function handleTimelineStateChange(actionType) {
+    if (actionType === 'start_new_overlap') {
+        // Triggers the relatable note when a parallel timeline is opened
+        WorkTimelineCompliance.triggerNotification('newTimelineStarted');
+    } else if (actionType === 'lock_entry') {
+        // Triggers the security confirmation note when an entry seals
+        WorkTimelineCompliance.triggerNotification('entryLocked');
+    }
+}
