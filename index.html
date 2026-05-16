@@ -6,29 +6,47 @@
     <title>WorkTimeline Framework</title>
     <style>
         :root {
-            --bg-canvas: #090A0B;
-            --surface-card: #131517;
-            --surface-input: #1A1D20;
-            --text-primary: #F3F4F6;
-            --text-muted: #8E939E;
-            --accent-teal: #14B8A6;
-            --accent-teal-glow: rgba(20, 184, 166, 0.15);
-            --border-subtle: #24282C;
-            --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+            /* Master Industrial Gray, Silver & Satin Teal Palette */
+            --bg-canvas: #E9EBEF; /* Matte Industrial Gray-Silver Base */
+            --surface-card: #FFFFFF;
+            --surface-input: #F3F4F6;
+            --text-primary: #1E2022; /* Soft deep charcoal for crisp reading */
+            --text-muted: #5E636E;
+            --accent-teal: #008080; /* Premium Satin Teal */
+            --accent-teal-glow: rgba(0, 128, 128, 0.12);
+            --border-subtle: #D1D5DB;
+            --user-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             
-            /* Hardware Pipeline Color Variables */
+            /* Hardware Pipeline Signaling */
             --beacon-green: #10B981;
             --beacon-glow: rgba(16, 185, 129, 0.4);
+        }
+
+        /* SOVEREIGN OPTION 1: Metallic Silver Slate Theme Variant */
+        body.silver-theme {
+            --bg-canvas: #D1D5DB;
+            --surface-card: #F9FAFB;
+            --surface-input: #FFFFFF;
+            --border-subtle: #9CA3AF;
+        }
+
+        /* SOVEREIGN OPTION 2: Protective Matte Cream Theme Variant */
+        body.cream-theme {
+            --bg-canvas: #EFECE6;
+            --surface-card: #FDFBF7;
+            --surface-input: #F5F2EB;
+            --border-subtle: #D6D0C4;
         }
 
         body {
             margin: 0;
             padding: 0;
-            font-family: var(--font-stack);
+            font-family: var(--user-font-family);
             background-color: var(--bg-canvas);
             color: var(--text-primary);
             -webkit-font-smoothing: antialiased;
             letter-spacing: -0.01em;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         header {
@@ -43,7 +61,7 @@
         header h1 {
             margin: 0;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.1em;
             color: var(--text-primary);
@@ -56,18 +74,16 @@
             margin-top: 4px;
         }
 
-        /* The Live Hardware Connection Pill */
         .pipeline-container {
             display: flex;
             align-items: center;
             gap: 10px;
-            background: #16191B;
+            background: var(--surface-input);
             padding: 8px 16px;
             border-radius: 20px;
             border: 1px solid var(--border-subtle);
         }
 
-        /* Continuous Live Hardware Pulse Animation */
         @keyframes beaconBreathing {
             0% { box-shadow: 0 0 0 0 var(--beacon-glow); transform: scale(1); }
             50% { box-shadow: 0 0 12px 4px var(--beacon-glow); transform: scale(1.05); }
@@ -80,15 +96,51 @@
             background-color: var(--beacon-green);
             border-radius: 50%;
             animation: beaconBreathing 2s infinite ease-in-out;
-            transition: background-color 0.3s ease, var(--beacon-glow) 0.3s ease;
         }
 
         .pipeline-text {
             font-size: 11px;
-            font-weight: 600;
+            font-weight: 700;
             letter-spacing: 0.06em;
             text-transform: uppercase;
             color: var(--text-primary);
+        }
+
+        /* Dynamic Sovereign Workspace Option Drawer */
+        .workspace-controls {
+            max-width: 632px;
+            margin: 24px auto -24px auto;
+            padding: 12px 24px;
+            background: var(--surface-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+        }
+
+        .control-select {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border-subtle);
+            background: var(--surface-input);
+            color: var(--text-primary);
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
         }
 
         main {
@@ -102,14 +154,14 @@
             padding: 32px;
             border-radius: 14px; 
             border: 1px solid var(--border-subtle);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.6);
             margin-bottom: 28px;
         }
 
         h3 {
             margin-top: 0;
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             color: var(--text-primary);
@@ -123,7 +175,7 @@
             border-radius: 14px;
             padding: 6px;
             margin-bottom: 32px;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.05);
         }
 
         .dock-btn {
@@ -132,17 +184,17 @@
             border: none;
             color: var(--text-muted);
             padding: 14px;
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 11px;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.02em;
+            letter-spacing: 0.04em;
             cursor: pointer;
             border-radius: 10px;
             transition: color 0.2s ease, background-color 0.2s ease;
         }
 
         .dock-btn:hover {
-            color: var(--text-primary);
+            color: var(--accent-teal);
             background-color: var(--surface-input);
         }
 
@@ -154,18 +206,17 @@
             border-radius: 10px;
             box-sizing: border-box;
             font-size: 14px;
-            font-family: var(--font-stack);
+            font-family: var(--user-font-family);
             line-height: 1.6;
             background-color: var(--surface-input); 
             color: var(--text-primary);
             resize: none;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         textarea:focus {
             outline: none;
             border-color: var(--accent-teal);
-            box-shadow: 0 0 0 1px var(--accent-teal), inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 0 1px var(--accent-teal);
         }
 
         .btn-row {
@@ -177,11 +228,11 @@
 
         button.action-btn {
             background-color: var(--text-primary);
-            color: var(--bg-canvas);
+            color: var(--surface-card);
             border: none;
             padding: 12px 24px;
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 11px;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.02em;
             border-radius: 8px;
@@ -189,7 +240,7 @@
             transition: background-color 0.2s ease;
         }
 
-        button.action-btn:hover { background-color: #E5E7EB; }
+        button.action-btn:hover { background-color: #374151; }
 
         button.action-btn.secondary {
             background-color: transparent;
@@ -200,13 +251,12 @@
         button.action-btn.secondary:hover {
             color: var(--text-primary);
             background-color: var(--surface-input);
-            border-color: #4B5563;
         }
 
         button.lock-btn {
-            background-color: var(--surface-input);
+            background-color: var(--surface-card);
             color: var(--accent-teal);
-            border: 1px solid rgba(20, 184, 166, 0.3);
+            border: 1px solid var(--accent-teal);
             width: 100%;
             padding: 16px;
             font-size: 12px;
@@ -216,20 +266,20 @@
             border-radius: 10px;
             margin-top: 24px;
             cursor: pointer;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
             transition: all 0.2s ease;
         }
 
         button.lock-btn:hover {
             background-color: var(--accent-teal);
-            color: var(--bg-canvas);
+            color: var(--surface-card);
             box-shadow: 0 0 24px var(--accent-teal-glow);
         }
 
         @keyframes satinPulse {
-            0% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.2); border-color: var(--border-subtle); }
-            50% { box-shadow: 0 0 16px rgba(20, 184, 166, 0.08); border-color: var(--accent-teal); }
-            100% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.2); border-color: var(--border-subtle); }
+            0% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0.2); border-color: var(--border-subtle); }
+            50% { box-shadow: 0 0 16px rgba(0, 128, 128, 0.1); border-color: var(--accent-teal); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0.2); border-color: var(--border-subtle); }
         }
 
         #wt-system-notification {
@@ -245,8 +295,8 @@
 
         #wt-notification-title {
             margin: 0 0 6px 0;
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 11px;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             color: var(--accent-teal);
@@ -271,6 +321,7 @@
             border-radius: 10px;
             margin-bottom: 16px;
             border: 1px solid var(--border-subtle);
+            border-left: 4px solid var(--accent-teal);
         }
 
         .modal {
@@ -281,10 +332,10 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(5, 5, 5, 0.85);
+            background-color: rgba(30, 30, 30, 0.4);
             align-items: center;
             justify-content: center;
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(4px);
         }
 
         .modal-content {
@@ -307,7 +358,7 @@
 
         .template-option:hover { background-color: var(--surface-input); }
         .template-option input[type="checkbox"] { margin-top: 3px; accent-color: var(--accent-teal); }
-        .template-info h5 { margin: 0 0 4px 0; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; color: var(--text-primary); }
+        .template-info h5 { margin: 0 0 4px 0; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; color: var(--text-primary); }
         .template-info p { margin: 0; color: var(--text-muted); font-size: 12px; line-height: 1.5; }
         input[type="file"] { display: none; }
         footer { text-align: center; padding: 40px 25px; font-size: 11px; color: var(--text-muted); letter-spacing: 0.02em; }
@@ -325,6 +376,25 @@
             <div id="pipeline-text" class="pipeline-text">Clio Pipeline Active</div>
         </div>
     </header>
+
+    <div class="workspace-controls">
+        <div class="control-group">
+            <span>Sovereign Font:</span>
+            <select class="control-select" onchange="changeUserFont(this.value)">
+                <option value="sans">Modern Clean (Sans-Serif)</option>
+                <option value="serif">Classic Notebook (Serif)</option>
+                <option value="mono">Technical Ledger (Monospace)</option>
+            </select>
+        </div>
+        <div class="control-group">
+            <span>Sovereign Canvas Tint:</span>
+            <select class="control-select" onchange="changeUserTheme(this.value)">
+                <option value="industrial">Industrial Gray</option>
+                <option value="silver">Metallic Silver</option>
+                <option value="cream">Matte Cream</option>
+            </select>
+        </div>
+    </div>
 
     <main>
         <div id="wt-system-notification">
@@ -414,6 +484,20 @@
             scene: "=== ENVIRONMENTAL STATE LOG LAYOUT ===\n[INFRASTRUCTURE STATUS]: \n[HAZARD CHECK VERIFICATION]: \n\n"
         };
 
+        /* SOVEREIGN USER ADJUSTMENT DRIVERS */
+        function changeUserFont(fontType) {
+            const root = document.documentElement;
+            if (fontType === 'sans') root.style.setProperty('--user-font-family', '-apple-system, BlinkMacSystemFont, sans-serif');
+            else if (fontType === 'serif') root.style.setProperty('--user-font-family', 'Georgia, serif');
+            else if (fontType === 'mono') root.style.setProperty('--user-font-family', 'monospace');
+        }
+
+        function changeUserTheme(themeType) {
+            document.body.classList.remove('silver-theme', 'cream-theme');
+            if (themeType === 'silver') document.body.classList.add('silver-theme');
+            else if (themeType === 'cream') document.body.classList.add('cream-theme');
+        }
+
         function openTemplateModal() { document.getElementById('template-modal').style.display = 'flex'; }
         function closeTemplateModal() {
             document.querySelectorAll('#template-modal input[type="checkbox"]').forEach(cb => cb.checked = false);
@@ -432,15 +516,22 @@
             closeTemplateModal();
         }
 
+        /**
+         * STATUTORY COMPLIANT EVENT CAPTURE
+         * Enforces unalterable chronological capturing parameters automatically
+         */
         function executeAddEntry() {
             const inputField = document.getElementById('raw-human-entry');
             const userWords = inputField.value.trim();
             if (!userWords) { alert("Input required."); return; }
 
+            // FORENSIC COMPLIANCE SECURED: Dynamic unalterable client clock extraction
+            const systemTimestamp = new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString();
+
             const newEntry = {
                 id: `entry_${Date.now()}`,
                 type: "Text Log Layer",
-                timestamp: new Date().toLocaleTimeString(),
+                timestamp: systemTimestamp, // Bound signature
                 content: userWords.replace(/\n/g, '<br>')
             };
 
@@ -454,10 +545,12 @@
         async function handleCameraCapture(input) {
             if (input.files.length > 0) {
                 const targetPhoto = input.files[0];
+                const systemTimestamp = new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString();
+                
                 const mockEntry = {
                     id: `img_${Date.now()}`,
                     type: "Forensic Photo Asset",
-                    timestamp: new Date().toLocaleTimeString(),
+                    timestamp: systemTimestamp,
                     content: `Asset: ${targetPhoto.name} linked. Forensic preservation bifurcated.`
                 };
                 activeLocalTimelineData.push(mockEntry);
@@ -470,10 +563,12 @@
         function handleDocumentUpload(input) {
             if (input.files.length > 0) {
                 const docFile = input.files[0];
+                const systemTimestamp = new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString();
+                
                 const docEntry = {
                     id: `doc_${Date.now()}`,
                     type: "Documentary Evidence File",
-                    timestamp: new Date().toLocaleTimeString(),
+                    timestamp: systemTimestamp,
                     content: `Document Registered: ${docFile.name}`
                 };
                 activeLocalTimelineData.push(docEntry);
@@ -491,17 +586,18 @@
                     audioChunks = [];
                     mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
                     mediaRecorder.onstop = () => {
+                        const systemTimestamp = new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString();
                         const audioEntry = {
                             id: `audio_${Date.now()}`,
                             type: "Contemporaneous Audio Log",
-                            timestamp: new Date().toLocaleTimeString(),
+                            timestamp: systemTimestamp,
                             content: `Audio Capture verified and logged to environment.`
                         };
                         activeLocalTimelineData.push(audioEntry);
                         renderFeedItem(audioEntry);
                         document.getElementById('empty-state-msg').style.display = 'none';
                     };
-                    mediaRecorder.start(); micStatus.innerText = "RECORDING STREAM LIVE"; micStatus.style.color = "#EF4444";
+                    mediaRecorder.start(); micStatus.innerText = "STREAM RECORDING ACTIVE"; micStatus.style.color = "#EF4444";
                 } catch (err) { alert("Microphone capture access offline."); }
             } else { mediaRecorder.stop(); micStatus.innerText = "Audio Log"; micStatus.style.color = "var(--text-muted)"; }
         }
@@ -511,10 +607,10 @@
             const card = document.createElement('div');
             card.className = 'feed-item';
             card.innerHTML = `
-                <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--accent-teal); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">
+                <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--accent-teal); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">
                     <span>${item.type}</span><span>${item.timestamp}</span>
                 </div>
-                <div style="font-size: 14px; line-height: 1.6; color: var(--text-primary);">${item.content}</div>
+                <div style="font-size: 14px; line-height: 1.6; color: var(--text-primary); font-family: var(--user-font-family);">${item.content}</div>
             `;
             container.appendChild(card);
         }
@@ -525,10 +621,10 @@
             const beacon = document.getElementById('pipeline-beacon');
             const statusText = document.getElementById('pipeline-text');
             
-            // Shift hardware state visualization to processing profile (Satin White pulse transition)
-            beacon.style.backgroundColor = "#FFFFFF";
-            document.documentElement.style.setProperty('--beacon-glow', 'rgba(255, 255, 255, 0.3)');
-            statusText.innerText = "Sealing Immutability Layer";
+            // System Packaging Shift (Transition tracking color mapping)
+            beacon.style.backgroundColor = "#4B5563";
+            document.documentElement.style.setProperty('--beacon-glow', 'rgba(75, 85, 99, 0.4)');
+            statusText.innerText = "Packaging Brief Array...";
 
             if (typeof WorkTimelineMaster !== 'undefined') {
                 const baselineStringData = JSON.stringify(activeLocalTimelineData);
@@ -537,13 +633,13 @@
                 const hashArray = Array.from(new Uint8Array(hashBuffer));
                 const systemForensicFingerprint = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
+                // THE SECURE TRANSMISSION TO CLIO STAGES A FLATTENED STANDARD HELVETICA STRUCTURE
                 const syncCompleted = await WorkTimelineMaster.syncToClioEcosystem(activeLocalTimelineData, systemForensicFingerprint);
                 if (syncCompleted) {
                     alert(`AMENDMENT IMMUTABILITY SEALED\n\nLedger array compiled under Canada Evidence Act parameters.\n\nHash: ${systemForensicFingerprint}\n\nPackage transmitted to secure Clio case pipeline.`);
                     
-                    // Lock state complete: Return beacon to true locked live state (Deep Teal / Green variant)
                     beacon.style.backgroundColor = "var(--accent-teal)";
-                    document.documentElement.style.setProperty('--beacon-glow', 'rgba(20, 184, 166, 0.4)');
+                    document.documentElement.style.setProperty('--beacon-glow', 'rgba(0, 128, 128, 0.4)');
                     statusText.innerText = "Timeline Sealed to Clio";
                 }
             }
