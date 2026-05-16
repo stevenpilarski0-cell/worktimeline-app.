@@ -223,7 +223,7 @@
       // Construct pure production 3-legged redirection string bypassing previous errors
       const authUrl = `${AUTH_GATEWAY}?` + 
         `response_type=code` +
-        `&client_id=${encodeURIComponent(cachedClioClientId)}` +
+        `&client_id=${encodeURIComponent(cachedClioClientId)}` + 
         `&redirect_uri=${encodeURIComponent(redirectUri)}` +
         `&state=${encodeURIComponent(state)}` +
         `&scope=${encodeURIComponent(scopes)}`;
