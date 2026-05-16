@@ -106,7 +106,7 @@
             letter-spacing: -0.5px; display: flex; align-items: center; gap: 6px;
         }
         
-        /* BRAND SVG: UPDATED ULTRA-THIN & EXTENDED CHRONOLOGY PATH WITH TEAL NODES */
+        /* BRAND SVG: ULTRA-THIN & EXTENDED CHRONOLOGY PATH WITH TEAL NODES */
         .briefcase-logo-svg { 
             width: 32px; height: 32px; display: inline-block; vertical-align: middle;
         }
@@ -456,18 +456,14 @@
             </div>
 
             <div class="workspace-layout-matrix">
-                
-                <div id="visualSpineTrack" class="vertical-spine-track">
-                    </div>
-
+                <div id="visualSpineTrack" class="vertical-spine-track"></div>
                 <div class="timeline-container" id="timelineBody">
                     <div class="log-list" id="logList"></div>
                 </div>
-
             </div>
 
             <div class="footer-nav">
-                <div id="prButton" class="footer-pill disabled-gate" onclick="runPatternRecognition()">
+                <div id="prButton" class="footer-pill" onclick="runPatternRecognition()">
                     <svg viewBox="0 0 24 24">
                         <rect x="2" y="3" width="20" height="14" rx="4" ry="4"></rect>
                         <line x1="8" y1="21" x2="16" y2="21"></line>
@@ -544,7 +540,6 @@
                 document.body.classList.add('night-deck');
                 if (selector) selector.value = 'night';
             }
-            // CRITICAL PASS: Pattern Recognition is enabled while compilng dynamic drafting phases
             document.getElementById('prButton').classList.remove('disabled-gate');
             updateLabSidebarCounters();
         });
@@ -786,11 +781,10 @@
             }
         }
 
-        /* RUN PATTERN RECOGNITION ANYTIME BEFORE IMMUTABILITY LOCK EXECUTION PASSES */
         function runPatternRecognition() {
-            if (isEngineSealed) return alert("Dataset sealed. Analysis complete.");
+            if (isEngineSealed) return alert("Dataset locked. Analysis complete.");
             const timelineData = logsData.filter(log => (log.mode || 'TIMELINE') === 'TIMELINE');
-            if(timelineData.length === 0) return alert("Populate records to your contemporary timeline before activating analysis engine passes.");
+            if(timelineData.length === 0) return alert("Add records to your timeline before running analysis engine passes.");
             
             document.getElementById('patternOverlay').classList.add('active');
             document.getElementById('patternLoader').style.display = 'block';
@@ -824,7 +818,6 @@
                 `;
             }
 
-            // Preservation injection loop: AI results must be added to dataset before sealing pass
             logsData.push({
                 id: Date.now(),
                 parentId: null,
@@ -853,10 +846,8 @@
                 isEngineSealed = true;
                 document.getElementById('pipelineLed').style.backgroundColor = '#008080';
                 
-                // Formally compile everything inside database payload memory 
                 const packageBriefForLawyers = JSON.stringify(logsData);
-                
-                alert("AMENDMENT IMMUTABILITY SECURED\n\nLedger array compiled under Canada Evidence Act parameters, including Timeline array, version overlays, and accepted active Pattern Recognition insights.\n\nPackage locked and synchronized to active Clio client ledger pipelines.");
+                alert("AMENDMENT IMMUTABILITY SECURED\n\nFull case files package compiled, including Timeline array, version overlays, and active Pattern Recognition audit insights.\n\nData securely synced to active Clio client ledger pipelines.");
             }, 800);
         }
     </script>
