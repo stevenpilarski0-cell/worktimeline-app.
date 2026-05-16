@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeline™ - The Standard of Truth</title>
+    <title>WorkTimeline™ Prototype Workspace</title>
     <style>
         :root {
             --industrial-gray: #4A4A4A;
@@ -11,12 +11,13 @@
             --legal-teal: #008080;
             --charcoal: #222222;
             --white: #FFFFFF;
+            --alert-yellow: #FAFABA;
         }
 
         body {
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
             background-color: var(--steel-light);
             color: var(--charcoal);
         }
@@ -31,33 +32,10 @@
             align-items: center;
         }
 
-        header h1 {
-            margin: 0;
-            font-size: 22px;
-            letter-spacing: 0.5px;
-        }
-
-        .tagline {
-            font-size: 12px;
-            color: #AAA;
-            text-transform: uppercase;
-        }
-
         main {
             max-width: 800px;
             margin: 30px auto;
             padding: 0 20px;
-        }
-
-        /* The Compliance Notification Space (Managed by WorkTimelineMaster) */
-        #wt-system-notification {
-            display: none;
-            border-left: 4px solid var(--legal-teal);
-            padding: 15px;
-            margin-bottom: 25px;
-            border-radius: 4px;
-            background-color: var(--white);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
         }
 
         .workspace-card {
@@ -65,53 +43,69 @@
             padding: 25px;
             border-radius: 6px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            border-top: 3px solid var(--industrial-gray);
             margin-bottom: 25px;
         }
 
-        h3 {
-            margin-top: 0;
-            color: var(--industrial-gray);
-            border-bottom: 1px solid #EAEAEE;
-            padding-bottom: 10px;
+        /* Functional Quick-Action Icon Bar */
+        .icon-bar {
+            display: flex;
+            justify-content: space-around;
+            background: var(--charcoal);
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 25px;
         }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--white);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 12px;
             font-weight: 600;
-            color: var(--charcoal);
-            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .icon-btn:hover {
+            color: var(--legal-teal);
+        }
+
+        .icon-btn span {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        /* Raw Data Entry Feed Section */
+        .timeline-feed {
+            margin-top: 20px;
+            border-left: 3px solid var(--industrial-gray);
+            padding-left: 20px;
+        }
+
+        .feed-item {
+            background: #FAFAFA;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--legal-teal);
+            position: relative;
         }
 
         textarea {
             width: 100%;
-            height: 120px;
+            height: 100px;
             padding: 12px;
             border: 1px solid #CCC;
             border-radius: 4px;
             box-sizing: border-box;
             font-size: 15px;
-            resize: vertical;
-            background-color: #FAFABA; /* Slight tint to signify organic blind entry mode */
+            margin-bottom: 10px;
         }
 
-        textarea:focus {
-            outline: none;
-            border-color: var(--legal-teal);
-            background-color: var(--white);
-        }
-
-        .btn-container {
-            display: flex;
-            gap: 15px;
-        }
-
-        button, .file-upload-label {
+        button.action-btn {
             background-color: var(--legal-teal);
             color: var(--white);
             border: none;
@@ -120,110 +114,246 @@
             font-weight: 600;
             border-radius: 4px;
             cursor: pointer;
-            transition: background 0.2s ease;
-            display: inline-block;
-            text-align: center;
         }
 
-        button:hover, .file-upload-label:hover {
-            background-color: #006666;
+        button.lock-btn {
+            background-color: #A30000;
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 20px;
         }
 
-        .btn-secondary {
-            background-color: var(--industrial-gray);
+        button.lock-btn:hover {
+            background-color: #7A0000;
         }
 
-        .btn-secondary:hover {
-            background-color: #333333;
-        }
-
-        input[type="file"] {
-            display: none;
-        }
-
-        footer {
-            text-align: center;
-            padding: 40px 20px;
-            font-size: 12px;
-            color: #777;
-        }
+        /* Hidden device triggers */
+        input[type="file"] { display: none; }
     </style>
 </head>
 <body>
 
     <header>
         <div>
-            <h1>WorkTimeline™</h1>
-            <div class="tagline">The Universal Architecture of Integrity</div>
+            <h1 style="margin:0;">WorkTimeline™</h1>
+            <div style="font-size:11px; color:#AAA;">UNIVERSAL ARCHITECTURE OF INTEGRITY</div>
         </div>
-        <div style="font-size: 14px; color: var(--legal-teal); font-weight: bold;">● Active Sandbox Mode</div>
+        <div id="connection-status" style="color: var(--legal-teal); font-weight: bold;">● CLIO SANDBOX PIPELINE ACTIVE</div>
     </header>
 
-    <main id="workspace">
-        
-        <div id="wt-system-notification" class="wt-card-gray">
-            <h4 id="wt-notification-title" style="margin-top: 0; color: var(--charcoal); font-weight: 600;"></h4>
-            <p id="wt-notification-text" style="color: #555; font-size: 14px; line-height: 1.5; margin-bottom: 0;"></p>
+    <main>
+        <div id="wt-system-notification" style="display:none; border-left:4px solid var(--legal-teal); padding:15px; margin-bottom:25px; background:var(--white); border-radius:4px;">
+            <h4 id="wt-notification-title" style="margin:0 0 5px 0;"></h4>
+            <p id="wt-notification-text" style="margin:0; font-size:14px; color:#555;"></p>
+        </div>
+
+        <div class="icon-bar">
+            <button class="icon-btn" onclick="document.getElementById('document-input').click()">
+                <span>📄</span>Documents
+            </button>
+            <button class="icon-btn" onclick="toggleAudioRecorder()">
+                <span id="mic-icon">🎙️</span><span id="mic-text">Kitchen Rec</span>
+            </button>
+            <button class="icon-btn" onclick="document.getElementById('camera-input').click()">
+                <span>📷</span>Camera
+            </button>
+        </div>
+
+        <input type="file" id="document-input" accept=".pdf,.doc,.docx,.txt" onchange="handleDocumentUpload(this)">
+        <input type="file" id="camera-input" accept="image/*" capture="environment" onchange="handleCameraCapture(this)">
+
+        <div class="workspace-card">
+            <h3>Add Direct Entry</h3>
+            <p style="font-size:12px; color:#666; margin-top:-10px;">Templates are optional shortcuts for speed and legal form—type your raw truth directly in your own words.</p>
+            
+            <textarea id="raw-human-entry" placeholder="Type exactly what happened in your own words..."></textarea>
+            
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <button class="action-btn" onclick="executeAddEntry()">Add Entry to Timeline</button>
+                <button class="action-btn btn-secondary" style="background:#666;" onclick="useQuickTemplate()">Insert Formal Template Layout</button>
+            </div>
         </div>
 
         <div class="workspace-card">
-            <h3>Contemporaneous Incident Log</h3>
-            <div class="form-group">
-                <label for="incident-notes">Record your observations directly. (No AI processing is active during input stage)</label>
-                <textarea id="incident-notes" placeholder="Describe events clearly with locations, dates, and plain facts..."></textarea>
+            <h3>Active Entry Ledger</h3>
+            <div id="timeline-feed" class="timeline-feed">
+                <p id="empty-state-msg" style="color:#888; font-style:italic;">No log layers recorded yet. Type an entry or capture an asset above.</p>
             </div>
             
-            <div class="btn-container">
-                <button type="button" onclick="WorkTimelineMaster.triggerNotification('entryLocked')">Certify & Lock Entry</button>
-                <button type="button" class="btn-secondary" onclick="WorkTimelineMaster.triggerNotification('newTimelineStarted')">Launch Parallel Layer</button>
-            </div>
+            <button class="action-btn lock-btn" onclick="executeMasterClioLock()">🔒 Certify & Lock Master Timeline to Clio</button>
         </div>
-
-        <div class="workspace-card">
-            <h3>Forensic Asset Capture</h3>
-            <p style="font-size: 13px; color: #666; margin-top: -5px; margin-bottom: 20px;">
-                Images uploaded are instantly split into an archive-locked Master Copy and an extraction-ready system working duplicate.
-            </p>
-            
-            <div class="form-group">
-                <label class="file-upload-label" for="myCameraInputButton">
-                    📷 Take/Upload Incident Image
-                </label>
-                <input type="file" id="myCameraInputButton" accept="image/*" onchange="handleImageSelection(this)">
-            </div>
-        </div>
-
     </main>
 
-    <footer>
-        WorkTimeline™ Platforms Inc. • Administrative Assistance & Electronic Verification Architecture • Secure Local Canadian Cloud Hosting
-    </footer>
-
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
-    <script>
-        // Placeholder initialized client parameters for your Supabase project instance
-        const SUPABASE_URL = "https://your-project-id.supabase.co";
-        const SUPABASE_KEY = "your-anon-key";
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    </script>
-
     <script src="js/clio-handshake.js"></script>
 
     <script>
+        // Internal data structure matrix holding entries before sealing
+        let activeLocalTimelineData = [];
+        let mediaRecorder = null;
+        let audioChunks = [];
+
         /**
-         * Intercepts standard file picker events to trigger our forensic split
+         * FUNCTIONAL ADD ENTRY: Captures the user's organic, custom word inputs
          */
-        async function handleImageSelection(inputElement) {
-            if (inputElement.files.length > 0) {
-                const targetFile = inputElement.files[0];
-                console.log(`[UI Control] File identified: ${targetFile.name}. Forwarding to master framework.`);
+        function executeAddEntry() {
+            const inputField = document.getElementById('raw-human-entry');
+            const userWords = inputField.value.trim();
+            
+            if (!userWords) {
+                alert("Please input your entry notes first.");
+                return;
+            }
+
+            const newEntry = {
+                id: `entry_${Date.now()}`,
+                type: "Text Log",
+                timestamp: new Date().toLocaleTimeString(),
+                content: userWords,
+                verification: "Organic Human Expression"
+            };
+
+            activeLocalTimelineData.push(newEntry);
+            renderFeedItem(newEntry);
+            
+            // Wipe input workspace clean for the next entry pass
+            inputField.value = "";
+            document.getElementById('empty-state-msg').style.display = 'none';
+            
+            if (typeof WorkTimelineMaster !== 'undefined') {
+                WorkTimelineMaster.triggerNotification('entryLocked');
+            }
+        }
+
+        /**
+         * OPTIONAL SPEED TEMPLATE: Inserts structural text layout without changing human facts
+         */
+        function useQuickTemplate() {
+            const area = document.getElementById('raw-human-entry');
+            area.value = "[INCIDENT REPORT TEMPLATE]\nDATE/TIME OF EVENT:\nLOCATION:\nINDIVIDUALS PRESENT:\nRAW DESCRIPTION:\nIMPACT / CONTEXT:";
+            area.focus();
+        }
+
+        /**
+         * FUNCTIONAL CAMERA HANDSHAKE: Triggers hardware split automatically
+         */
+        async function handleCameraCapture(input) {
+            if (input.files.length > 0) {
+                const targetPhoto = input.files[0];
+                const mockEntry = {
+                    id: `img_${Date.now()}`,
+                    type: "Forensic Photo Asset",
+                    timestamp: new Date().toLocaleTimeString(),
+                    content: `Asset Attached: ${targetPhoto.name} (Bifurcated: Master Lock Container & Work Scratchpad initialized).`
+                };
                 
-                // Triggers the dual-upload system inside clio-handshake.js
-                await WorkTimelineMaster.processAndSecureImage(targetFile);
+                activeLocalTimelineData.push(mockEntry);
+                renderFeedItem(mockEntry);
+                document.getElementById('empty-state-msg').style.display = 'none';
+
+                if (typeof WorkTimelineMaster !== 'undefined') {
+                    await WorkTimelineMaster.processAndSecureImage(targetPhoto);
+                }
+            }
+        }
+
+        /**
+         * FUNCTIONAL DOCUMENT HANDSHAKE: Handles file attachment tracking
+         */
+        function handleDocumentUpload(input) {
+            if (input.files.length > 0) {
+                const docFile = input.files[0];
+                const docEntry = {
+                    id: `doc_${Date.now()}`,
+                    type: "Documentary Evidence File",
+                    timestamp: new Date().toLocaleTimeString(),
+                    content: `Document Registered: ${docFile.name} (${(docFile.size/1024).toFixed(1)} KB)`
+                };
+                activeLocalTimelineData.push(docEntry);
+                renderFeedItem(docEntry);
+                document.getElementById('empty-state-msg').style.display = 'none';
+            }
+        }
+
+        /**
+         * FUNCTIONAL KITCHEN AUDIO RECORDER: Toggles active microphone access loops
+         */
+        async function toggleAudioRecorder() {
+            const micText = document.getElementById('mic-text');
+            const micIcon = document.getElementById('mic-icon');
+
+            if (!mediaRecorder || mediaRecorder.state === "inactive") {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+
+                    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+                    mediaRecorder.onstop = () => {
+                        const audioEntry = {
+                            id: `audio_${Date.now()}`,
+                            type: "Kitchen Audio File Log",
+                            timestamp: new Date().toLocaleTimeString(),
+                            content: `Contemporaneous Audio Note Captured (${audioChunks.length} data streams registered).`
+                        };
+                        activeLocalTimelineData.push(audioEntry);
+                        renderFeedItem(audioEntry);
+                        document.getElementById('empty-state-msg').style.display = 'none';
+                    };
+
+                    mediaRecorder.start();
+                    micText.innerText = "RECORDING LIVE...";
+                    micIcon.innerText = "🔴";
+                } catch (err) {
+                    alert("Microphone hardware access denied or missing configuration setup.");
+                }
+            } else {
+                mediaRecorder.stop();
+                micText.innerText = "Kitchen Rec";
+                micIcon.innerText = "🎙️";
+            }
+        }
+
+        /**
+         * RENDERING UTILITY: Updates the visual ledger space immediately
+         */
+        function renderFeedItem(item) {
+            const container = document.getElementById('timeline-feed');
+            const card = document.createElement('div');
+            card.className = 'feed-item';
+            card.innerHTML = `
+                <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--legal-teal); font-weight:bold; margin-bottom:5px;">
+                    <span>${item.type}</span><span>${item.timestamp}</span>
+                </div>
+                <div style="font-size:14px; color:#333;">${item.content}</div>
+            `;
+            container.appendChild(card);
+        }
+
+        /**
+         * THE MASTER CLIO TRANSMISSION SECURE SWITCH
+         */
+        async function executeMasterClioLock() {
+            if (activeLocalTimelineData.length === 0) {
+                alert("Your active timeline workspace is currently empty. Add records before executing lock protocol.");
+                return;
+            }
+
+            document.getElementById('connection-status').innerText = "⏳ EXECUTING CRITICAL PACKAGING...";
+            document.getElementById('connection-status').style.color = "#A30000";
+
+            if (typeof WorkTimelineMaster !== 'undefined') {
+                const syncCompleted = await WorkTimelineMaster.syncToClioEcosystem(activeLocalTimelineData);
+                if (syncCompleted) {
+                    alert("🔒 TRANSIT IMMUTABILITY CERTIFIED\n\nYour entire timeline ledger array has been successfully bundled, timestamped, and transmitted directly into your secure Clio firm dashboard system portal.");
+                    document.getElementById('connection-status').innerText = "🔒 TIMELINE DATA SYNCHRONIZED TO CLIO";
+                    document.getElementById('connection-status').style.color = "#008080";
+                }
             }
         }
     </script>
-
 </body>
 </html>
