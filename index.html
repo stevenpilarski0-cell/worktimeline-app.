@@ -3,134 +3,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeline™ Prototype Workspace</title>
+    <title>WorkTimeline™ - The Standard of Truth</title>
     <style>
         :root {
-            --industrial-gray: #4A4A4A;
-            --steel-light: #F5F5F5;
-            --legal-teal: #008080;
-            --charcoal: #222222;
-            --white: #FFFFFF;
-            --alert-yellow: #FAFABA;
+            --bg-matte-milk: #F8F9FA;
+            --card-white: #FFFFFF;
+            --charcoal-soft: #1E2022;
+            --premium-teal: #0A8484; 
+            --industrial-text: #4E5154;
+            --system-border: #E5E7EB;
+            --cream-soft: #FAF9F6;
+            
+            /* Dynamic font hook default */
+            --user-font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+        }
+
+        /* THEME VARIANT: Protective Dark Mode Configuration */
+        body.dark-theme {
+            --bg-matte-milk: #121314;
+            --card-white: #1A1C1E;
+            --charcoal-soft: #F3F4F6;
+            --industrial-text: #9CA3AF;
+            --system-border: #2D3135;
+            --cream-soft: #222426;
         }
 
         body {
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: var(--steel-light);
-            color: var(--charcoal);
+            font-family: var(--user-font-family);
+            background-color: var(--bg-matte-milk);
+            color: var(--charcoal-soft);
+            -webkit-font-smoothing: antialiased;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         header {
-            background-color: var(--charcoal);
-            color: var(--white);
-            padding: 20px;
-            border-bottom: 4px solid var(--legal-teal);
+            background-color: var(--card-white);
+            color: var(--charcoal-soft);
+            padding: 24px 40px;
+            border-bottom: 1px solid var(--system-border);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        /* Modern Sovereign Workspace Controls */
+        .workspace-controls {
+            max-width: 712px;
+            margin: 20px auto -20px auto;
+            padding: 12px 24px;
+            background: var(--card-white);
+            border-radius: 12px;
+            border: 1px solid var(--system-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-select {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--system-border);
+            background: var(--bg-matte-milk);
+            color: var(--charcoal-soft);
+            font-size: 12px;
+            cursor: pointer;
+            outline: none;
         }
 
         main {
-            max-width: 800px;
-            margin: 30px auto;
-            padding: 0 20px;
+            max-width: 760px;
+            margin: 40px auto;
+            padding: 0 24px;
         }
 
         .workspace-card {
-            background: var(--white);
-            padding: 25px;
-            border-radius: 6px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            margin-bottom: 25px;
+            background: var(--card-white);
+            padding: 32px;
+            border-radius: 16px; 
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.02);
+            border: 1px solid var(--system-border);
+            margin-bottom: 28px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
-        /* Functional Quick-Action Icon Bar */
         .icon-bar {
             display: flex;
             justify-content: space-around;
-            background: var(--charcoal);
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 25px;
+            background: #1E2022;
+            padding: 18px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            margin-bottom: 32px;
+            transition: background-color 0.3s ease;
+        }
+
+        body.dark-theme .icon-bar {
+            background: #2D3135;
         }
 
         .icon-btn {
             background: none;
             border: none;
-            color: var(--white);
+            color: #A0A5AA;
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
-            font-size: 12px;
-            font-weight: 600;
-            transition: color 0.2s;
+            font-size: 13px;
+            font-weight: 500;
+            transition: color 0.2s ease;
         }
 
-        .icon-btn:hover {
-            color: var(--legal-teal);
-        }
-
-        .icon-btn span {
-            font-size: 28px;
-            margin-bottom: 5px;
-        }
-
-        /* Raw Data Entry Feed Section */
-        .timeline-feed {
-            margin-top: 20px;
-            border-left: 3px solid var(--industrial-gray);
-            padding-left: 20px;
-        }
-
-        .feed-item {
-            background: #FAFAFA;
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 15px;
-            border-left: 4px solid var(--legal-teal);
-            position: relative;
-        }
+        .icon-btn:hover { color: #FFFFFF; }
+        .icon-btn span { font-size: 24px; margin-bottom: 6px; }
 
         textarea {
             width: 100%;
             height: 150px;
-            padding: 12px;
-            border: 1px solid #CCC;
-            border-radius: 4px;
+            padding: 16px;
+            border: 1px solid var(--system-border);
+            border-radius: 12px;
             box-sizing: border-box;
             font-size: 15px;
-            margin-bottom: 10px;
+            font-family: var(--user-font-family);
+            line-height: 1.6;
+            background-color: var(--cream-soft); 
+            color: var(--charcoal-soft);
+            resize: vertical;
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--premium-teal);
+            box-shadow: 0 0 0 4px rgba(10, 132, 132, 0.1);
         }
 
         button.action-btn {
-            background-color: var(--legal-teal);
-            color: var(--white);
+            background-color: var(--premium-teal);
+            color: #FFFFFF;
             border: none;
-            padding: 12px 24px;
+            padding: 14px 28px;
             font-size: 14px;
             font-weight: 600;
-            border-radius: 4px;
+            border-radius: 12px;
             cursor: pointer;
+            box-shadow: 0 2px 8px rgba(10, 132, 132, 0.15);
+            transition: background-color 0.2s ease;
+        }
+
+        button.action-btn:hover {
+            background-color: #006666;
         }
 
         button.lock-btn {
-            background-color: #A30000;
+            background-color: var(--charcoal-soft);
+            color: var(--card-white);
+            border: 1px solid var(--system-border);
             width: 100%;
-            padding: 15px;
-            font-size: 16px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 20px;
+            padding: 18px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 14px;
+            margin-top: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
         }
 
         button.lock-btn:hover {
-            background-color: #7A0000;
+            background-color: #2D3135;
         }
 
-        /* POP-UP MODAL SELECTION STYLING */
+        body.dark-theme button.lock-btn:hover {
+            background-color: #121314;
+        }
+
+        .timeline-feed {
+            margin-top: 20px;
+            border-left: 2px solid var(--system-border);
+            padding-left: 20px;
+        }
+
+        .feed-item {
+            background: var(--bg-matte-milk);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            border: 1px solid var(--system-border);
+            border-left: 4px solid var(--premium-teal);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -139,67 +221,77 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(0,0,0,0.4);
             align-items: center;
             justify-content: center;
+            backdrop-filter: blur(4px);
         }
 
         .modal-content {
-            background-color: var(--white);
-            padding: 25px;
-            border-radius: 6px;
+            background-color: var(--card-white);
+            padding: 32px;
+            border-radius: 16px;
             width: 90%;
             max-width: 500px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            border: 1px solid var(--system-border);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
         .template-option {
             display: flex;
             align-items: flex-start;
-            gap: 12px;
-            padding: 12px;
-            border-bottom: 1px solid #EEE;
+            gap: 14px;
+            padding: 16px;
+            border-bottom: 1px solid var(--system-border);
             cursor: pointer;
-        }
-
-        .template-option:hover {
-            background-color: var(--steel-light);
         }
 
         .template-option input[type="checkbox"] {
             transform: scale(1.2);
             margin-top: 3px;
+            accent-color: var(--premium-teal);
         }
 
-        .template-info h5 {
-            margin: 0 0 4px 0;
-            color: var(--charcoal);
-            font-size: 15px;
-        }
-
-        .template-info p {
-            margin: 0;
-            color: #666;
-            font-size: 12px;
-        }
-
+        .template-info h5 { margin: 0 0 4px 0; font-size: 15px; font-weight: 600; }
+        .template-info p { margin: 0; color: var(--industrial-text); font-size: 13px; line-height: 1.4; }
         input[type="file"] { display: none; }
+        footer { text-align: center; padding: 40px 20px; font-size: 12px; color: var(--industrial-text); }
     </style>
 </head>
 <body>
 
     <header>
         <div>
-            <h1 style="margin:0;">WorkTimeline™</h1>
-            <div style="font-size:11px; color:#AAA;">UNIVERSAL ARCHITECTURE OF INTEGRITY</div>
+            <h1>WorkTimeline™</h1>
+            <div style="font-size: 11px; color: var(--industrial-text); uppercase; letter-spacing: 0.5px;">Universal Architecture of Integrity</div>
         </div>
-        <div id="connection-status" style="color: var(--legal-teal); font-weight: bold;">● CLIO SANDBOX PIPELINE ACTIVE</div>
+        <div id="connection-status" style="color: var(--premium-teal); font-size: 13px; font-weight: 600; background: rgba(10, 132, 132, 0.08); padding: 6px 14px; border-radius: 20px; transition: all 0.3s ease;">
+            ● Clio Sandbox Pipeline Connected
+        </div>
     </header>
 
+    <div class="workspace-controls">
+        <div class="control-group">
+            <span>👁️ Layout Comfort:</span>
+            <select class="control-select" onchange="changeUserFont(this.value)">
+                <option value="sans">Modern Clean (Sans-Serif)</option>
+                <option value="serif">Classic Journal (Serif)</option>
+                <option value="mono">Technical Ledger (Monospace)</option>
+            </select>
+        </div>
+        <div class="control-group">
+            <span>🌙 Workspace Tint:</span>
+            <select class="control-select" onchange="changeUserTheme(this.value)">
+                <option value="milk">Matte Milk (Calm)</option>
+                <option value="dark">Deep Night (Protective)</option>
+            </select>
+        </div>
+    </div>
+
     <main>
-        <div id="wt-system-notification" style="display:none; border-left:4px solid var(--legal-teal); padding:15px; margin-bottom:25px; background:var(--white); border-radius:4px;">
-            <h4 id="wt-notification-title" style="margin:0 0 5px 0;"></h4>
-            <p id="wt-notification-text" style="margin:0; font-size:14px; color:#555;"></p>
+        <div id="wt-system-notification">
+            <h4 id="wt-notification-title" style="margin: 0 0 6px 0; font-size: 15px;"></h4>
+            <p id="wt-notification-text" style="margin: 0; font-size: 14px; line-height: 1.5;"></p>
         </div>
 
         <div class="icon-bar">
@@ -218,62 +310,67 @@
         <input type="file" id="camera-input" accept="image/*" capture="environment" onchange="handleCameraCapture(this)">
 
         <div class="workspace-card">
-            <h3>Add Direct Entry</h3>
-            <p style="font-size:12px; color:#666; margin-top:-10px;">Templates are optional shortcuts to format layout structures faster for legal overview—they do not influence your raw facts.</p>
+            <h3 style="margin:0 0 4px 0;">Add Direct Entry</h3>
+            <p style="font-size: 13px; color: var(--industrial-text); margin-top: 0; margin-bottom: 20px; line-height: 1.5;">
+                This workspace belongs entirely to you. Customize your view options above to make logging comfortable.
+            </p>
             
             <textarea id="raw-human-entry" placeholder="Type exactly what happened in your own words..."></textarea>
             
-            <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px;">
                 <button class="action-btn" onclick="executeAddEntry()">Add Entry to Timeline</button>
-                <button class="action-btn btn-secondary" style="background:#4A4A4A;" onclick="openTemplateModal()">📋 Choose Layout Templates</button>
+                <button class="action-btn" style="background: var(--industrial-text); box-shadow: none;" onclick="openTemplateModal()">📋 Choose Layout Templates</button>
             </div>
         </div>
 
         <div class="workspace-card">
             <h3>Active Entry Ledger</h3>
             <div id="timeline-feed" class="timeline-feed">
-                <p id="empty-state-msg" style="color:#888; font-style:italic;">No log layers recorded yet. Type an entry or capture an asset above.</p>
+                <p id="empty-state-msg" style="color: #888; font-style: italic; font-size: 14px;">No log layers recorded yet.</p>
             </div>
             
-            <button class="action-btn lock-btn" onclick="executeMasterClioLock()">🔒 Certify & Lock Master Timeline to Clio</button>
+            <button class="lock-btn" onclick="executeMasterClioLock()">🔒 Certify & Lock Master Timeline to Clio</button>
         </div>
     </main>
 
     <div id="template-modal" class="modal">
         <div class="modal-content">
-            <h3 style="margin-bottom:10px;">Select Formal Layout Frameworks</h3>
-            <p style="font-size:12px; color:#666; margin-top:0; margin-bottom:20px;">Select multiple structures to compile them into your entry text block simultaneously.</p>
+            <h3 style="margin-bottom: 6px;">Select Layout Frameworks</h3>
+            <p style="font-size: 13px; color: var(--industrial-text); margin-top: 0; margin-bottom: 24px;">Select structures to compile into your workspace entry block.</p>
             
             <div id="template-options-list">
                 <div class="template-option" onclick="toggleCheckbox('tmpl-injury')">
                     <input type="checkbox" id="tmpl-injury" value="injury" onclick="event.stopPropagation()">
                     <div class="template-info">
                         <h5>Injury / Medical Report Outline</h5>
-                        <p>Structures symptoms, treatment checks, physical impacts, and site reports.</p>
+                        <p>Structures symptoms, bodily impacts, and first aid dispatches.</p>
                     </div>
                 </div>
                 <div class="template-option" onclick="toggleCheckbox('tmpl-witness')">
                     <input type="checkbox" id="tmpl-witness" value="witness" onclick="event.stopPropagation()">
                     <div class="template-info">
                         <h5>Witness Statement Framework</h5>
-                        <p>Organizes direct observations, third-party positions, and spoken quotes.</p>
+                        <p>Organizes explicit observations, identities, and direct quotes.</p>
                     </div>
                 </div>
                 <div class="template-option" onclick="toggleCheckbox('tmpl-scene')">
                     <input type="checkbox" id="tmpl-scene" value="scene" onclick="event.stopPropagation()">
                     <div class="template-info">
                         <h5>Scene / Environment Context</h5>
-                        <p>Logs layout conditions, environmental safety settings, tools used, and machinery states.</p>
+                        <p>Logs machinery states, tool conditions, safety settings, and visible hazard warnings.</p>
                     </div>
                 </div>
             </div>
-
-            <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px;">
-                <button class="action-btn" style="background:#666;" onclick="closeTemplateModal()">Cancel</button>
+            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
+                <button class="action-btn" style="background: #6B7280; box-shadow: none;" onclick="closeTemplateModal()">Cancel</button>
                 <button class="action-btn" onclick="applySelectedTemplates()">Insert Selected Frameworks</button>
             </div>
         </div>
     </div>
+
+    <footer>
+        WorkTimeline™ Platforms Inc. • Administrative Verification Architecture • Secure Local Canadian Hosting
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/clio-handshake.js"></script>
@@ -283,61 +380,56 @@
         let mediaRecorder = null;
         let audioChunks = [];
 
-        // Master dictionary of actual template layout structures
         const templateLibrary = {
-            injury: "=== FORMAL INJURY LOG LAYOUT ===\n[TIME OF INCIDENT]: \n[SPECIFIC LOCATION ON SITE]: \n[NATURE OF COMPLAINT / PHYSICAL IMPACT]: \n[FIRST AID / DISPATCH REQUIREMENT]: \n[WITNESSES TO IMPACT]: \n\n",
-            witness: "=== FORMAL WITNESS LOG LAYOUT ===\n[WITNESS NAME / IDENTITY]: \n[POSITION / RELATION TO USER]: \n[EXACT STATEMENTS RECALLED]: \n[CORROBORATING CHANNELS (TEXT/EMAIL/VERBAL)]: \n\n",
-            scene: "=== ENVIRONMENTAL STATE LOG LAYOUT ===\n[WORKSPACE SETTING / MACHINERY USED]: \n[SAFETY SYSTEM CONFIGURATIONS AT ACCIDENT TIME]: \n[SUPERVISOR DIRECTIVES ACTIVE]: \n[EQUIPMENT SHIFT CHANGES OR OVERHEAD FAULTS]: \n\n"
+            injury: "=== FORMAL INJURY LOG LAYOUT ===\n[TIME OF INCIDENT]: \n[SPECIFIC LOCATION ON SITE]: \n[NATURE OF COMPLAINT / PHYSICAL IMPACT]: \n\n",
+            witness: "=== FORMAL WITNESS LOG LAYOUT ===\n[WITNESS NAME / IDENTITY]: \n[EXACT STATEMENTS RECALLED]: \n\n",
+            scene: "=== ENVIRONMENTAL STATE LOG LAYOUT ===\n[WORKSPACE SETTING / MACHINERY USED]: \n[SAFETY SYSTEM CONFIGURATIONS AT ACCIDENT TIME]: \n[SUPERVISOR DIRECTIVES ACTIVE]: \n\n"
         };
 
-        /* MODAL WINDOW DISPLAY UTILITIES */
-        function openTemplateModal() {
-            document.getElementById('template-modal').style.display = 'flex';
+        /* VIEW TRANSITION CONTROLLERS */
+        function changeUserFont(fontType) {
+            const root = document.documentElement;
+            if (fontType === 'sans') {
+                root.style.setProperty('--user-font-family', '-apple-system, BlinkMacSystemFont, sans-serif');
+            } else if (fontType === 'serif') {
+                root.style.setProperty('--user-font-family', 'Georgia, "Times New Roman", serif');
+            } else if (fontType === 'mono') {
+                root.style.setProperty('--user-font-family', '"SF Mono", Menlo, Consolas, monospace');
+            }
         }
 
+        function changeUserTheme(themeType) {
+            if (themeType === 'dark') {
+                document.body.classList.add('dark-theme');
+            } else {
+                document.body.classList.remove('dark-theme');
+            }
+        }
+
+        /* MODAL DRAWER LOGIC */
+        function openTemplateModal() { document.getElementById('template-modal').style.display = 'flex'; }
         function closeTemplateModal() {
-            // Uncheck items so it starts fresh next click
             document.querySelectorAll('#template-modal input[type="checkbox"]').forEach(cb => cb.checked = false);
             document.getElementById('template-modal').style.display = 'none';
         }
+        function toggleCheckbox(id) { document.getElementById(id).checked = !document.getElementById(id).checked; }
 
-        function toggleCheckbox(id) {
-            const cb = document.getElementById(id);
-            cb.checked = !cb.checked;
-        }
-
-        /**
-         * MULTI-SELECT INSERTER: Appends layouts safely to what the user is typing
-         */
         function applySelectedTemplates() {
             const entryArea = document.getElementById('raw-human-entry');
-            let compiledTemplatesText = "";
-
-            // Identify every item checked by the user
-            if (document.getElementById('tmpl-injury').checked) compiledTemplatesText += templateLibrary.injury;
-            if (document.getElementById('tmpl-witness').checked) compiledTemplatesText += templateLibrary.witness;
-            if (document.getElementById('tmpl-scene').checked) compiledTemplatesText += templateLibrary.scene;
-
-            if (compiledTemplatesText) {
-                // Prepend or append to existing content so the user never loses their original typed notes
-                entryArea.value = compiledTemplatesText + entryArea.value;
-                entryArea.focus();
-            }
-
+            let compiledText = "";
+            if (document.getElementById('tmpl-injury').checked) compiledText += templateLibrary.injury;
+            if (document.getElementById('tmpl-witness').checked) compiledText += templateLibrary.witness;
+            if (document.getElementById('tmpl-scene').checked) compiledText += templateLibrary.scene;
+            
+            if (compiledText) { entryArea.value = compiledText + entryArea.value; entryArea.focus(); }
             closeTemplateModal();
         }
 
-        /**
-         * FUNCTIONAL ADD ENTRY: Captures the entry array block
-         */
+        /* COMPILING DATA FIELDS */
         function executeAddEntry() {
             const inputField = document.getElementById('raw-human-entry');
             const userWords = inputField.value.trim();
-            
-            if (!userWords) {
-                alert("Please input your entry notes first.");
-                return;
-            }
+            if (!userWords) { alert("Please input your entry notes first."); return; }
 
             const newEntry = {
                 id: `entry_${Date.now()}`,
@@ -348,16 +440,12 @@
 
             activeLocalTimelineData.push(newEntry);
             renderFeedItem(newEntry);
-            
             inputField.value = "";
             document.getElementById('empty-state-msg').style.display = 'none';
-            
-            if (typeof WorkTimelineMaster !== 'undefined') {
-                WorkTimelineMaster.triggerNotification('entryLocked');
-            }
+            if (typeof WorkTimelineMaster !== 'undefined') { WorkTimelineMaster.triggerNotification('entryLocked'); }
         }
 
-        /* DEVICE CAPTURE ASSIGNMENTS */
+        /* ASSET STREAM HANDLING */
         async function handleCameraCapture(input) {
             if (input.files.length > 0) {
                 const targetPhoto = input.files[0];
@@ -365,16 +453,12 @@
                     id: `img_${Date.now()}`,
                     type: "Forensic Photo Asset",
                     timestamp: new Date().toLocaleTimeString(),
-                    content: `Asset Attached: ${targetPhoto.name} (Bifurcated: Master Lock Container & Work Scratchpad initialized).`
+                    content: `Asset Attached: ${targetPhoto.name} (Bifurcated for Forensic Preservation).`
                 };
-                
                 activeLocalTimelineData.push(mockEntry);
                 renderFeedItem(mockEntry);
                 document.getElementById('empty-state-msg').style.display = 'none';
-
-                if (typeof WorkTimelineMaster !== 'undefined') {
-                    await WorkTimelineMaster.processAndSecureImage(targetPhoto);
-                }
+                if (typeof WorkTimelineMaster !== 'undefined') { await WorkTimelineMaster.processAndSecureImage(targetPhoto); }
             }
         }
 
@@ -385,7 +469,7 @@
                     id: `doc_${Date.now()}`,
                     type: "Documentary Evidence File",
                     timestamp: new Date().toLocaleTimeString(),
-                    content: `Document Registered: ${docFile.name} (${(docFile.size/1024).toFixed(1)} KB)`
+                    content: `Document Registered: ${docFile.name}`
                 };
                 activeLocalTimelineData.push(docEntry);
                 renderFeedItem(docEntry);
@@ -396,37 +480,26 @@
         async function toggleAudioRecorder() {
             const micText = document.getElementById('mic-text');
             const micIcon = document.getElementById('mic-icon');
-
             if (!mediaRecorder || mediaRecorder.state === "inactive") {
                 try {
                     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                     mediaRecorder = new MediaRecorder(stream);
                     audioChunks = [];
-
                     mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
                     mediaRecorder.onstop = () => {
                         const audioEntry = {
                             id: `audio_${Date.now()}`,
                             type: "Kitchen Audio File Log",
                             timestamp: new Date().toLocaleTimeString(),
-                            content: `Contemporaneous Audio Note Captured (${audioChunks.length} data streams registered).`
+                            content: `Audio Capture registered.`
                         };
                         activeLocalTimelineData.push(audioEntry);
                         renderFeedItem(audioEntry);
                         document.getElementById('empty-state-msg').style.display = 'none';
                     };
-
-                    mediaRecorder.start();
-                    micText.innerText = "RECORDING LIVE...";
-                    micIcon.innerText = "🔴";
-                } catch (err) {
-                    alert("Microphone hardware access denied or missing configuration setup.");
-                }
-            } else {
-                mediaRecorder.stop();
-                micText.innerText = "Kitchen Rec";
-                micIcon.innerText = "🎙️";
-            }
+                    mediaRecorder.start(); micText.innerText = "RECORDING LIVE..."; micIcon.innerText = "🔴";
+                } catch (err) { alert("Microphone hardware access missing."); }
+            } else { mediaRecorder.stop(); micText.innerText = "Kitchen Rec"; micIcon.innerText = "🎙️"; }
         }
 
         function renderFeedItem(item) {
@@ -434,29 +507,29 @@
             const card = document.createElement('div');
             card.className = 'feed-item';
             card.innerHTML = `
-                <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--legal-teal); font-weight:bold; margin-bottom:5px;">
+                <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--premium-teal); font-weight: 600; margin-bottom: 6px;">
                     <span>${item.type}</span><span>${item.timestamp}</span>
                 </div>
-                <div style="font-size:14px; color:#333; line-height:1.4;">${item.content}</div>
+                <div style="font-size: 14px; line-height: 1.5;">${item.content}</div>
             `;
             container.appendChild(card);
         }
 
+        /* CONNECTED MASTER TRANSMISSION GATEWAY */
         async function executeMasterClioLock() {
-            if (activeLocalTimelineData.length === 0) {
-                alert("Your active timeline workspace is currently empty. Add records before executing lock protocol.");
-                return;
-            }
-
-            document.getElementById('connection-status').innerText = "⏳ EXECUTING CRITICAL PACKAGING...";
-            document.getElementById('connection-status').style.color = "#A30000";
+            if (activeLocalTimelineData.length === 0) { alert("Workspace empty."); return; }
+            const statusLabel = document.getElementById('connection-status');
+            statusLabel.style.background = "rgba(220, 38, 38, 0.08)";
+            statusLabel.style.color = "#DC2626";
+            statusLabel.innerText = "⏳ Standardizing Evidentiary Structure for Export...";
 
             if (typeof WorkTimelineMaster !== 'undefined') {
                 const syncCompleted = await WorkTimelineMaster.syncToClioEcosystem(activeLocalTimelineData);
                 if (syncCompleted) {
-                    alert("🔒 TRANSIT IMMUTABILITY CERTIFIED\n\nYour entire timeline ledger array has been successfully bundled, timestamped, and transmitted directly into your secure Clio firm dashboard system portal.");
-                    document.getElementById('connection-status').innerText = "🔒 TIMELINE DATA SYNCHRONIZED TO CLIO";
-                    document.getElementById('connection-status').style.color = "#008080";
+                    alert("🔒 TRANSIT IMMUTABILITY CERTIFIED\n\nYour entire timeline ledger array has been successfully bundled, stripped of custom workspace fonts, flattened into legal-standard Helvetica typography, and transmitted directly into your secure Clio firm dashboard system portal as a professional Case Brief Chronology.");
+                    statusLabel.style.background = "rgba(10, 132, 132, 0.08)";
+                    statusLabel.style.color = "#0A8484";
+                    statusLabel.innerText = "🔒 Timeline Synchronized to Clio";
                 }
             }
         }
