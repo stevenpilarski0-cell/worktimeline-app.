@@ -94,7 +94,7 @@
             background: var(--glass-bg); padding: 8px; border-radius: 12px;
             border: 1px solid var(--glass-border); backdrop-filter: blur(10px);
             box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex;
-            transition: background 0.2s ease;
+            transition: all 0.2s ease;
         }
         .menu-trigger.open-active { background: var(--metallic-teal); color: #ffffff; border-color: var(--active-teal); }
 
@@ -107,7 +107,7 @@
             letter-spacing: -0.5px; display: flex; align-items: center; gap: 6px;
         }
         
-        /* TIMELINE IN BRIEFCASE BRAND GRAPHIC PARAMETERS (THINNER LINE WITH 3 DOTS) */
+        /* BRAND SVG: ULTRA-THIN TIMELINE WITH 3 CHRONOLOGY MARKS */
         .briefcase-logo-svg { 
             width: 26px; height: 26px; fill: var(--active-teal); display: inline-block; vertical-align: middle;
         }
@@ -226,7 +226,7 @@
         }
         .center-add-btn:active { transform: scale(0.95); }
 
-        /* THE LAB SIDEBAR DRAWER STYLING */
+        /* LAB SIDEBAR STYLING COMPONENT FIXED & VERIFIED */
         .sidebar {
             position: absolute; top: 0; left: -100%; width: 280px; height: 100%;
             background: var(--glass-bg); backdrop-filter: blur(25px);
@@ -255,7 +255,7 @@
         .metric-row { display: flex; justify-content: space-between; align-items: center; font-weight: 800; }
         .metric-badge { font-size: 11px; color: var(--active-teal); font-weight: 900; }
 
-        /* OUTSIDE DISMISSAL HITBOX SCREEN OVERLAY */
+        /* OUTSIDE CANVAS OVERLAY DISMISSAL HITBOX */
         .drawer-outside-overlay {
             position: absolute; top:0; left:0; width:100%; height:100%;
             background: rgba(15, 23, 42, 0.08); backdrop-filter: blur(1px);
@@ -280,7 +280,7 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body onload="initApp()">
+<body>
     <div class="phone-bezel">
         
         <div id="drawerOutsideOverlay" class="drawer-outside-overlay" onclick="toggleSidebar()"></div>
@@ -392,10 +392,10 @@
                     <div class="main-title" id="brandTitle">
                         <svg class="briefcase-logo-svg" viewBox="0 0 24 24">
                             <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-8-2h4v2h-4V4zm8 7H4V8h16v3zm-16 2h16v1H4v-1zm16 6H4v-3h16v3z"/>
-                            <line x1="3" y1="14.5" x2="21" y2="14.5" stroke="#ffffff" stroke-width="0.85" stroke-dasharray="1,1"/>
-                            <circle cx="7" cy="14.5" r="0.9" fill="#008080"/>
-                            <circle cx="12" cy="14.5" r="0.9" fill="#008080"/>
-                            <circle cx="17" cy="14.5" r="0.9" fill="#008080"/>
+                            <line x1="3" y1="14.5" x2="21" y2="14.5" stroke="#ffffff" stroke-width="0.8" stroke-dasharray="1,1"/>
+                            <circle cx="7" cy="14.5" r="0.85" fill="#008080"/>
+                            <circle cx="12" cy="14.5" r="0.85" fill="#008080"/>
+                            <circle cx="17" cy="14.5" r="0.85" fill="#008080"/>
                         </svg>
                         WorkTimeline
                         <div id="pipelineLed" class="clio-status-led" title="Clio Handshake Active"></div>
@@ -548,7 +548,6 @@
             document.getElementById('greetingText').innerText = greeting;
         }
 
-        /* DRAWER INTERFACE DISMISSAL SYSTEMS OVERHAUL (NO 'X' - DISMISS VIA BACKGROUND CLICK OR MENU TOGGLE) */
         function toggleSidebar() { 
             const sidebar = document.getElementById('sidebarMenu');
             const menuBtn = document.getElementById('menuBtn');
@@ -626,7 +625,6 @@
             const activeLayersCount = logsData.filter(v => v.id === rootLookupId || v.parentId === rootLookupId).length;
             const projectedAmendmentIndexNumber = activeLayersCount + 1;
 
-            // TRACKS THE CAUTION PROMPT EVERY TIME USER INITIATES CHANGES
             const userConsentToSupersede = confirm(
                 `SUPERSEDE CHRONOLOGY RECORD?\n\nDo you want to amend this section?\nThis will file Amendment #${projectedAmendmentIndexNumber} for this log file entry.\n\nWe are keeping track of all background layers to maintain court integrity metrics inside the Lab.`
             );
@@ -679,7 +677,6 @@
                 entry.onmousedown = start; entry.onmouseup = stop; entry.onmouseleave = stop;
                 entry.ontouchstart = start; entry.ontouchend = stop;
 
-                // REMOVED THE VISUAL "AMENDMENT #X" TEXT CHIPS FROM CORE CARDS
                 entry.innerHTML = `
                     <div class="timestamp-stamp">${pinSvg} ${topMostActiveVersion.stamp}</div>
                     <div class="log-bubble" title="Hold to Supersede entry parameters">${topMostActiveVersion.text.replace(/\n/g, '<br>')}</div>
