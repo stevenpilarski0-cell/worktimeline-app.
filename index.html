@@ -2,1013 +2,617 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline Modern Mobile Gateway</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>WorkTimeline™ | Precision Gateway</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+        
         :root {
-            /* PURE BRIGHT DAYTIME VARIABLE SPECTRAL MATRIX */
-            --bg-canvas: #FFFFFF; 
-            --surface-metallic: linear-gradient(135deg, #F8FAFC 0%, #E2E8F0 100%); 
-            --surface-card: #F8FAFC; 
-            --surface-input: #FFFFFF; 
-            --text-primary: #0F172A; 
-            --text-muted: #64748B;
-            --accent-teal: #14B8A6; 
-            --accent-teal-glow: rgba(20, 184, 166, 0.18);
-            --border-subtle: #E2E8F0;
-            --beacon-green: #10B981;
-            --beacon-glow: rgba(16, 185, 129, 0.25);
-            --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", sans-serif;
-            --radius-fluid: 20px; /* Mac-Style Fluid Squircle Perimeter Paradigm */
+            /* BRIGHT WHITE & SATIN PLATINUM STANDARD (DEFAULT DAY) */
+            --app-bg: #ffffff;
+            --surface-card: #f8fafc;
+            --surface-input: #ffffff;
+            --glass-bg: rgba(248, 250, 252, 0.85);
+            --glass-border: #cbd5e1;
+            --text-dark: #0f172a;
+            --text-light: #64748b;
+            --active-teal: #008080;
+            --active-teal-glow: rgba(0, 128, 128, 0.15);
+            --active-green: #10b981;
+            
+            --metallic-silver: linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%);
+            --metallic-teal: linear-gradient(135deg, #008080 0%, #004d4d 100%);
+            
+            --radius-fluid: 20px;
             --radius-inner: 14px;
         }
-
-        /* PROTECTIVE LOW-STRAIN AUTOMATED NIGHTTIME MATRIX */
+        
+        /* TIMELOCKED IMMUTABLE NIGHT SPECTRAL MATRIX */
         body.night-deck {
-            --bg-canvas: #1A1C1E; 
-            --surface-metallic: linear-gradient(135deg, #2D3135 0%, #16181A 100%); 
-            --surface-card: #232629; 
-            --surface-input: #16181A; 
-            --text-primary: #F3F4F6; 
-            --text-muted: #9CA3AF;
-            --border-subtle: #2D3135;
-            --beacon-glow: rgba(16, 185, 129, 0.5);
+            --app-bg: #1a1c1e;
+            --surface-card: #232629;
+            --surface-input: #16181a;
+            --glass-bg: rgba(35, 38, 41, 0.85);
+            --glass-border: #2d3135;
+            --text-dark: #f3f4f6;
+            --text-light: #9ca3af;
+            --active-teal-glow: rgba(20, 184, 166, 0.4);
+            --metallic-silver: linear-gradient(180deg, #2d3135 0%, #16181a 100%);
+        }
+        
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            font-family: 'Nunito', sans-serif; background-color: #0f172a;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: var(--font-stack);
-            background-color: var(--bg-canvas);
-            color: var(--text-primary);
-            -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
-            transition: background-color 0.5s cubic-bezier(0.16, 1, 0.3, 1), color 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        /* Fixed Geometric Mobile Chassis Perimeter Layout */
+        .phone-bezel {
+            width: 375px; height: 812px; background-color: #000;
+            border-radius: 45px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            overflow: hidden; border: 8px solid #cbd5e0; position: relative;
         }
 
-        /* PRIVACY HARDWARE-ACCELERATED SHIELD MASK */
-        body.privacy-shielded #app-viewport-container {
-            filter: blur(24px) grayscale(1);
-            pointer-events: none;
+        .app-container {
+            width: 100%; height: 100%; background: var(--app-bg);
+            display: flex; flex-direction: column; position: relative;
+            box-sizing: border-box;
+            transition: background 0.4s ease;
+        }
+
+        /* PRIVACY HARDWARE INTERFACES MASK */
+        .privacy-active #timelineBody,
+        .privacy-active #inputPanel { 
+            filter: blur(24px) grayscale(1); 
+            pointer-events: none; 
             user-select: none;
         }
 
-        header {
-            background: var(--surface-metallic);
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border-subtle);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 90;
-            backdrop-filter: blur(12px);
+        /* REGULATED HARDWARE BEACON STATUS SIGNALS */
+        .clio-status-led {
+            position: absolute; top: 52px; right: 24px; width: 8px; height: 8px;
+            background-color: var(--active-green); border-radius: 50%;
+            animation: breathe 2.2s infinite ease-in-out; box-shadow: 0 0 10px var(--active-green); z-index: 5000;
+        }
+        @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.15); opacity: 0.5; } }
+
+        /* HEADER DOCK STRIP CONTROLS */
+        .top-toggles {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 40px 20px 10px; z-index: 20;
+            background: var(--app-bg);
         }
 
-        .brand-block {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        .toggle-btn {
+            background: var(--surface-card); border: 1px solid var(--glass-border);
+            padding: 8px 16px; border-radius: var(--radius-fluid); font-size: 11px; font-weight: 900;
+            color: var(--text-dark); cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); display: flex; align-items: center; gap: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02); text-transform: uppercase; letter-spacing: 0.02em;
+        }
+        .toggle-btn.active { background: var(--metallic-teal); color: white; border-color: var(--active-teal); box-shadow: 0 4px 12px var(--active-teal-glow); }
+        .notes-dot { width: 6px; height: 6px; background: var(--active-green); border-radius: 50%; }
+
+        .header {
+            display: flex; align-items: center; gap: 16px;
+            padding: 10px 20px 15px; z-index: 10;
+            background: var(--app-bg);
         }
 
-        .briefcase-logo-svg {
-            width: 24px;
-            height: 24px;
-            fill: var(--accent-teal);
-            filter: drop-shadow(0 2px 8px var(--accent-teal-glow));
+        .menu-trigger {
+            font-size: 24px; color: var(--text-dark); cursor: pointer;
+            background: var(--surface-card); padding: 8px; border-radius: 12px;
+            border: 1px solid var(--glass-border); display: flex;
+            transition: background 0.2s;
+        }
+        .menu-trigger:hover { background: rgba(0,0,0,0.02); }
+
+        .brand-block { display: flex; align-items: center; gap: 10px; }
+        .briefcase-logo-svg { width: 22px; height: 22px; fill: var(--active-teal); }
+        .main-title { font-weight: 900; font-size: 22px; color: var(--active-teal); letter-spacing: -0.5px; }
+
+        /* ALIGNED OPERATIONS INPUT PLATFORM */
+        .input-panel {
+            background: var(--surface-card);
+            margin: 0 16px 16px; border-radius: var(--radius-fluid); border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.01); display: flex; flex-direction: column;
+            gap: 12px; padding: 16px; z-index: 10;
+            transition: background 0.4s ease, border-color 0.4s ease;
         }
 
-        header h1 {
-            margin: 0;
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--accent-teal);
-            letter-spacing: -0.02em;
+        .template-row { display: flex; gap: 8px; justify-content: space-between; }
+        .template-chip {
+            flex: 1; background: var(--surface-input); border: 1px solid var(--glass-border); border-radius: 10px;
+            padding: 10px 0; font-size: 10px; font-weight: 900; color: var(--text-dark);
+            text-align: center; cursor: pointer; text-transform: uppercase; letter-spacing: 0.02em;
+            transition: all 0.2s ease;
+        }
+        .template-chip.selected { background: var(--active-teal); color: #ffffff; border-color: var(--active-teal); }
+
+        .hardware-icons { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .hw-item { position: relative; flex: 1; height: 44px; background: var(--metallic-silver); border-radius: 12px; display: flex; justify-content: center; align-items: center; cursor: pointer; border: 1px solid var(--glass-border); }
+        .hw-item svg { width: 20px; height: 20px; stroke: var(--text-dark); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+        .hw-item input { position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer; z-index:10; }
+
+        .input-wrapper { background: var(--surface-input); border-radius: 12px; padding: 12px; border: 1px solid var(--glass-border); }
+        .input-wrapper textarea { width: 100%; background: transparent; border: none; color: var(--text-dark); font-size: 14px; font-weight: 600; font-family: 'Nunito', sans-serif; resize: none; outline: none; height: 44px; line-height: 1.4; }
+        .input-wrapper textarea::placeholder { color: var(--text-light); }
+
+        /* GRID ENVELOPE: ALIGNED VERTICAL TIMELINE SPINE */
+        .workspace-layout-matrix {
+            flex: 1; display: flex; gap: 12px; padding: 0 16px 84px; overflow: hidden; box-sizing: border-box;
         }
 
-        .pipeline-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.12);
-            padding: 8px 14px;
-            border-radius: 30px;
-            border: 1px solid var(--border-subtle);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        .vertical-spine-track {
+            width: 52px; min-width: 52px; background: var(--surface-metallic); border: 1px solid var(--glass-border);
+            border-radius: var(--radius-fluid); padding: 16px 0; display: flex; flex-direction: column-reverse;
+            align-items: center; position: relative; gap: 16px; overflow-y: auto; box-sizing: border-box;
         }
+        .vertical-spine-track::before { content: ''; position: absolute; top: 0; bottom: 0; width: 2px; background: var(--glass-border); z-index: 1; }
+        .vertical-spine-track::-webkit-scrollbar { display: none; }
 
-        body:not(.night-deck) .pipeline-container {
-            background: #FFFFFF;
+        .timeline-squircle {
+            width: 36px; height: 36px; min-height: 36px; background: var(--surface-input);
+            border: 1px solid var(--glass-border); border-radius: 10px; display: flex; align-items: center;
+            justify-content: center; z-index: 2; box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            transition: all 0.3s ease;
         }
-
-        @keyframes beaconBreathing {
-            0% { box-shadow: 0 0 0 0 var(--beacon-glow); transform: scale(1); }
-            50% { box-shadow: 0 0 12px 5px var(--beacon-glow); transform: scale(1.05); }
-            100% { box-shadow: 0 0 0 0 var(--beacon-glow); transform: scale(1); }
-        }
-
-        .hardware-beacon {
-            width: 8px;
-            height: 8px;
-            background-color: var(--beacon-green);
-            border-radius: 50%;
-            animation: beaconBreathing 2.2s infinite ease-in-out;
-        }
-
-        .pipeline-text {
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            color: var(--text-primary);
-        }
-
-        main {
-            padding: 16px;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-        }
-
-        /* PREMIUM FLUID SQUIRCLE CONTROL CONTAINERS */
-        .workspace-layout-wrapper {
-            display: flex;
-            gap: 16px;
-            align-items: stretch;
-            width: 100%;
-        }
-
-        /* MODERNISED VERTICAL SPINE TRACK */
-        .vertical-timeline-spine-track {
-            width: 60px;
-            min-width: 60px;
-            background: var(--surface-metallic);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-fluid);
-            padding: 20px 0;
-            display: flex;
-            flex-direction: column-reverse; 
-            align-items: center;
-            position: relative;
-            gap: 20px;
-            min-height: 400px;
-            max-height: 540px;
-            overflow-y: auto;
-            box-sizing: border-box;
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
-        }
-
-        .vertical-timeline-spine-track::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: var(--border-subtle);
-            z-index: 1;
-        }
-
-        .timeline-node {
-            width: 44px;
-            height: 44px;
-            min-height: 44px;
-            background: var(--surface-input);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-inner);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .timeline-node:active {
-            transform: scale(0.92);
-        }
-
-        .timeline-node.pattern-triggered {
+        .timeline-squircle svg { width: 16px; height: 16px; fill: var(--text-dark); }
+        
+        /* PATTERN DETECTION HIGHLIGHT PULSE */
+        .timeline-squircle.pattern-triggered {
             animation: tealSatinPulse 2.5s infinite ease-in-out;
             border-width: 2px;
         }
+        .timeline-squircle.pattern-triggered svg { fill: var(--active-teal); }
 
-        .timeline-node.pattern-triggered .node-icon {
-            fill: var(--accent-teal);
+        /* FEED LAYER */
+        .timeline-container { flex: 1; overflow-y: auto; box-sizing: border-box; }
+        .timeline-container::-webkit-scrollbar { display: none; }
+        .log-list { display: flex; flex-direction: column-reverse; gap: 12px; }
+        .log-entry { display: flex; flex-direction: column; gap: 4px; width: 100%; }
+        
+        .timestamp-stamp { display: flex; align-items: center; gap: 4px; font-size: 9px; color: var(--text-light); text-transform: uppercase; font-weight: 800; }
+        .timestamp-stamp svg { width: 10px; height: 10px; stroke: currentColor; fill: none; stroke-width: 2.5; }
+        
+        .log-bubble {
+            background: var(--surface-card); padding: 12px 14px; border-radius: var(--radius-inner); border: 1px solid var(--glass-border);
+            color: var(--text-dark); font-size: 13px; font-weight: 700; line-height: 1.4;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.01); box-sizing: border-box; width: 100%;
         }
 
-        .workspace-content-column {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-        }
-
-        .workspace-card {
-            background: var(--surface-card);
-            padding: 24px;
-            border-radius: var(--radius-fluid); 
-            border: 1px solid var(--border-subtle);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.015), inset 0 1px 0 rgba(255,255,255,0.6);
-        }
-
-        body.night-deck .workspace-card {
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-        }
-
-        /* MAC STRIP CONTROLS MATRIX */
-        .utility-strip {
-            display: flex;
-            background: var(--surface-card);
-            border-radius: var(--radius-inner);
-            padding: 8px;
-            border: 1px solid var(--border-subtle);
-            gap: 8px;
-        }
-
-        .strip-btn {
-            flex: 1;
-            height: 44px;
-            border-radius: 10px;
-            border: 1px solid transparent;
-            background: transparent;
-            color: var(--text-primary);
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.02em;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            transition: all 0.2s ease;
-        }
-
-        .strip-btn.active-toggle {
-            background: var(--surface-input);
-            border-color: var(--border-subtle);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-        }
-
-        body.night-deck .strip-btn.active-toggle {
-            background: #2D3135;
-        }
-
-        .action-dock {
-            display: flex;
-            background: var(--surface-metallic);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-fluid);
-            padding: 8px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.03);
-        }
-
-        .dock-btn {
-            flex: 1;
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            padding: 14px 6px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            cursor: pointer;
-            border-radius: var(--radius-inner);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            transition: background-color 0.2s ease;
-        }
-
-        .dock-btn:hover, .dock-btn:active { background-color: rgba(255,255,255,0.4); }
-        body.night-deck .dock-btn:hover, body.night-deck .dock-btn:active { background-color: rgba(255,255,255,0.06); }
-        .node-icon { width: 20px; height: 20px; fill: var(--text-primary); }
-
-        textarea {
-            width: 100%;
-            height: 130px;
-            padding: 16px;
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-inner);
-            box-sizing: border-box;
-            font-size: 14px;
-            font-family: var(--font-stack);
-            line-height: 1.6;
-            background-color: var(--surface-input); 
-            color: var(--text-primary);
-            resize: none;
-            outline: none;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.01);
-            transition: border-color 0.2s ease;
-        }
-
-        textarea:focus { border-color: var(--accent-teal); }
-        .btn-row { display: flex; justify-content: space-between; margin-top: 16px; gap: 12px; }
-
-        button.action-btn {
-            background-color: var(--text-primary);
-            color: var(--bg-canvas);
-            border: 1px solid var(--border-subtle);
-            height: 48px;
-            padding: 0 24px;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.02em;
-            border-radius: var(--radius-inner);
-            cursor: pointer;
-            flex: 1;
-            transition: opacity 0.2s ease;
-        }
-
-        button.action-btn:active { opacity: 0.85; }
-
-        button.action-btn.secondary {
-            background-color: transparent;
-            color: var(--text-muted);
-            border: 1px solid var(--border-subtle);
-        }
-
-        button.lock-btn {
-            background-color: var(--text-primary);
-            color: var(--bg-canvas);
-            width: 100%;
-            height: 52px;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            border-radius: var(--radius-inner);
-            border: 1px solid var(--border-subtle);
-            cursor: pointer;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.03);
-        }
-
-        /* PREMIUM NATIVE SIDEBAR IMPLEMENTATION */
-        .lab-sidebar-drawer {
-            position: fixed;
-            top: 0;
-            right: -100%; 
-            width: 90%;
-            max-width: 365px;
-            height: 100%;
-            background: var(--bg-canvas);
-            z-index: 200;
-            box-shadow: -15px 0 45px rgba(0,0,0,0.08);
-            border-left: 1px solid var(--border-subtle);
-            transition: right 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-            display: flex;
-            flex-direction: column;
+        /* FIXED BOTTOM CONTROL PANEL NAVIGATION BAR */
+        .footer-nav {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 84px;
+            background: var(--glass-bg); backdrop-filter: blur(20px);
+            display: flex; justify-content: space-evenly; align-items: center;
+            padding: 0 16px 12px; border-top: 1px solid var(--glass-border); z-index: 100;
             box-sizing: border-box;
         }
 
-        .lab-sidebar-drawer.open { right: 0; }
-
-        .lab-drawer-header {
-            background: var(--surface-metallic);
-            padding: 22px 20px;
-            border-bottom: 1px solid var(--border-subtle);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .footer-pill {
+            flex: 1; max-width: 90px; height: 44px; background: var(--surface-input); color: var(--text-dark);
+            border-radius: 14px; font-size: 9px; font-weight: 900; cursor: pointer;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+            border: 1px solid var(--glass-border); text-transform: uppercase; letter-spacing: 0.02em;
         }
+        .footer-pill svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.5; fill: none; }
 
-        .lab-drawer-body {
-            flex: 1;
-            padding: 24px 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
+        .center-add-btn {
+            background: var(--metallic-teal); color: white; width: 52px; height: 52px;
+            border-radius: 16px; display: flex; justify-content: center; align-items: center;
+            font-size: 28px; font-weight: 600; cursor: pointer; z-index: 110;
+            box-shadow: 0 4px 14px var(--active-teal-glow);
+            border: 1px solid rgba(255,255,255,0.1); transition: 0.2s;
         }
+        .center-add-btn:active { transform: scale(0.95); }
 
-        .lab-customizer-box {
-            background: var(--surface-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-inner);
-            padding: 18px;
+        /* DRAWER COMPONENT */
+        .sidebar {
+            position: absolute; top: 0; left: -100%; width: 290px; height: 100%;
+            background: var(--app-bg); border-right: 1px solid var(--glass-border);
+            transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 8000;
+            padding: 60px 20px; box-sizing: border-box;
         }
-
-        .customizer-label {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: var(--text-muted);
-            margin-bottom: 10px;
+        .sidebar.open { left: 0; }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; font-weight: 900; font-size: 18px; color: var(--active-teal); margin-bottom: 30px; text-transform: uppercase; letter-spacing: 0.05em; }
+        .close-sidebar { cursor: pointer; background: var(--surface-card); border: 1px solid var(--glass-border); padding: 8px; border-radius: 12px; display: flex; color: var(--text-dark); }
+        .close-sidebar svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2.5; }
+        
+        .sidebar-item {
+            padding: 14px 16px; margin-bottom: 12px; border-radius: var(--radius-inner);
+            background: var(--surface-card); font-weight: 800; font-size: 11px; color: var(--text-dark);
+            display: flex; align-items: center; gap: 12px; cursor: pointer;
+            border: 1px solid var(--glass-border); text-transform: uppercase;
         }
+        .sidebar-item .circle-icon { width: 28px; height: 28px; background: var(--surface-input); border: 1px solid var(--glass-border); color: var(--active-teal); border-radius: 8px; display: flex; justify-content: center; align-items: center; }
+        .sidebar-item .circle-icon svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.5; fill: none; }
 
-        .customizer-select {
-            width: 100%;
-            height: 44px;
-            border-radius: 10px;
-            border: 1px solid var(--border-subtle);
-            background: var(--surface-input);
-            color: var(--text-primary);
-            padding: 0 12px;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            outline: none;
+        .modal-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(15, 23, 42, 0.15); backdrop-filter: blur(12px);
+            z-index: 10000; display: flex; justify-content: center; align-items: center;
+            padding: 24px; box-sizing: border-box; text-align: center;
+            opacity: 0; pointer-events: none; transition: 0.3s;
         }
-
-        .disabled-feature-card {
-            background: var(--surface-card);
-            border: 1px dashed var(--border-subtle);
-            border-radius: var(--radius-inner);
-            padding: 22px;
-            opacity: 0.5;
-            position: relative;
-            user-select: none;
-            pointer-events: none;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .disabled-badge-notice {
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: #DF2935; 
-            background: rgba(223, 41, 53, 0.08);
-            padding: 4px 10px;
-            border-radius: 6px;
-            display: inline-block;
-            margin-bottom: 10px;
-        }
-
-        .case-evidence-box {
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-inner);
-            padding: 18px;
-            background: var(--surface-card);
-        }
-
-        .evidence-grid-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 13px;
-            font-weight: 600;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border-subtle);
-            color: var(--text-primary);
-        }
-
-        .evidence-svg { width: 18px; height: 18px; fill: var(--accent-teal); }
-
-        .lab-drawer-footer {
-            padding: 18px;
-            background: var(--surface-card);
-            border-top: 1px solid var(--border-subtle);
-            display: flex;
-            gap: 12px;
-        }
-
-        .footer-action-btn {
-            flex: 1;
-            height: 46px;
-            background: var(--surface-input);
-            border: 1px solid var(--border-subtle);
-            border-radius: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: var(--text-primary);
-            cursor: pointer;
-            gap: 4px;
-        }
-
-        .footer-action-btn svg { width: 16px; height: 16px; fill: var(--text-primary); }
-
-        .sidebar-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.25);
-            z-index: 150;
-            display: none;
-            backdrop-filter: blur(4px);
-        }
-
-        #wt-system-notification { display: none; border: 1px solid var(--border-subtle); padding: 16px; background-color: var(--surface-card); border-radius: var(--radius-inner); }
-        .feed-item { background: var(--surface-card); padding: 16px; border-radius: var(--radius-inner); margin-bottom: 12px; border: 1px solid var(--border-subtle); border-left: 4px solid var(--accent-teal); }
-        footer { text-align: center; padding: 28px 16px; font-size: 11px; color: var(--text-muted); }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-box { background: var(--app-bg); padding: 32px 24px; border-radius: var(--radius-fluid); border: 1px solid var(--glass-border); width: 100%; box-shadow: 0 12px 40px rgba(0,0,0,0.05); }
+        .greeting { font-weight: 900; font-size: 24px; color: var(--active-teal); margin-bottom: 4px; text-transform: uppercase; }
+        .location { font-size: 10px; font-weight: 800; color: var(--text-light); text-transform: uppercase; margin-bottom: 20px; letter-spacing: 0.05em; }
+        .modal-body { font-size: 13px; font-weight: 700; color: var(--text-dark); line-height: 1.5; margin-bottom: 24px; }
+        .ok-btn { background: var(--metallic-teal); color: white; padding: 14px; border-radius: 12px; font-weight: 900; font-size: 12px; text-transform: uppercase; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); flex: 1; }
+        .ok-btn.ghost { background: var(--surface-card); color: var(--text-dark); border: 1px solid var(--glass-border); }
+        .spinner { width: 24px; height: 24px; border: 3px solid var(--glass-border); border-top: 3px solid var(--active-teal); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
-
-    <div id="app-viewport-container">
-        <header>
-            <div class="brand-block">
-                <svg class="briefcase-logo-svg" viewBox="0 0 24 24">
-                    <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-8-2h4v2h-4V4zm8 15H4v-2h16v2zm0-5H4V8h16v6z"/>
-                </svg>
-                <h1>WorkTimeline</h1>
-            </div>
-            <div class="pipeline-container">
-                <div id="pipeline-beacon" class="hardware-beacon"></div>
-                <div id="pipeline-text" class="pipeline-text">Clio</div>
-            </div>
-        </header>
-
-        <main>
-            <div class="utility-strip">
-                <button id="notes-mode-btn" class="strip-btn" onclick="toggleWorkspaceContextMode('notes')">Notes</button>
-                <button id="timeline-mode-btn" class="strip-btn active-toggle" onclick="toggleWorkspaceContextMode('timeline')">Timeline</button>
-                <button id="privacy-trigger-btn" class="strip-btn" onclick="executePrivacyShieldFilterSwitch()">Privacy</button>
-                <button class="strip-btn" style="background: var(--surface-metallic); border-radius:10px;" onclick="openLabSidebarDrawer()">Lab</button>
-            </div>
-
-            <div id="wt-system-notification">
-                <h4 id="wt-notification-title"></h4>
-                <p id="wt-notification-text"></p>
-            </div>
-
-            <div class="action-dock">
-                <button class="dock-btn" onclick="document.getElementById('document-input').click()">
-                    <svg class="node-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-                    File
-                </button>
-                <button class="dock-btn" onclick="toggleAudioRecorder()">
-                    <svg id="mic-icon-svg" class="node-icon" viewBox="0 0 24 24"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.42 2.72 6.2 6 6.72V21h2v-3.28c3.28-.52 6-3.3 6-6.72h-1.7z"/></svg>
-                    <span id="mic-status">Audio</span>
-                </button>
-                <button class="dock-btn" onclick="document.getElementById('camera-input').click()">
-                    <svg class="node-icon" viewBox="0 0 24 24"><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
-                    Photo
-                </button>
-            </div>
-
-            <input type="file" id="document-input" accept=".pdf,.doc,.docx,.txt" onchange="handleDocumentUpload(this)">
-            <input type="file" id="camera-input" accept="image/*" capture="environment" onchange="handleCameraCapture(this)">
-
-            <div class="workspace-layout-wrapper">
-                
-                <div id="visual-node-track" class="vertical-timeline-spine-track">
-                    </div>
-
-                <div class="workspace-content-column">
-                    <div class="workspace-card">
-                        <h3 id="workspace-input-title">Add Direct Entry</h3>
-                        <textarea id="raw-human-entry" placeholder="Record contemporaneous verification metrics..."></textarea>
-                        
-                        <div class="btn-row">
-                            <button class="action-btn" onclick="executeCommitEntryPayload()">Submit</button>
-                            <button id="blueprint-modal-trigger" class="action-btn secondary" onclick="openTemplateModal()">Outlines</button>
-                        </div>
-                    </div>
-
-                    <div class="workspace-card">
-                        <h3>Session Ledger Logs</h3>
-                        <div id="timeline-feed" style="max-height: 190px; overflow-y: auto;">
-                            <p id="empty-state-msg" style="color: var(--text-muted); font-style: italic; font-size: 12px; margin: 0;">No active entries recorded.</p>
-                        </div>
-                        <button class="lock-btn" style="margin-top:20px;" onclick="executeMasterClioLock()">Certify State & Seal to Clio</button>
-                    </div>
-                </div>
-
-            </div>
-        </main>
-
-        <footer>
-            WorkTimeline Platforms Inc. • Secure Canadian Infrastructure Core
-        </footer>
-    </div>
-
-    <div id="sidebar-overlay-mask" class="sidebar-overlay" onclick="closeLabSidebarDrawer()"></div>
-
-    <div id="lab-sidebar" class="lab-sidebar-drawer">
-        <div class="lab-drawer-header">
-            <h3 style="margin:0; font-size:14px; text-transform:uppercase; letter-spacing:0.02em;">Sovereign Lab Drawer</h3>
-            <button class="strip-btn" style="max-width:65px; height:34px; background:var(--surface-input); border:1px solid var(--border-subtle);" onclick="closeLabSidebarDrawer()">Close</button>
-        </div>
+    <div class="phone-bezel">
         
-        <div class="lab-drawer-body">
-            <div class="lab-customizer-box">
-                <div class="customizer-label">Sovereign Interface Font</div>
-                <select class="customizer-select" onchange="changeUserFont(this.value)" style="margin-bottom:14px;">
-                    <option value="sans">Sans-Serif Standard</option>
-                    <option value="serif">Serif Notebook</option>
-                    <option value="mono">Monospace Ledger</option>
-                </select>
+        <div class="clio-status-led" title="Clio Handshake Active"></div>
+
+        <div class="sidebar" id="sidebarMenu">
+            <div class="sidebar-header">
+                MENU
+                <div class="close-sidebar" onclick="toggleSidebar()">
+                    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </div>
+            </div>
+            <div class="sidebar-item" onclick="emailTimeline()">
+                <div class="circle-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"/></svg></div>
+                Draft Email
+            </div>
+            <div class="sidebar-item" onclick="alert('Exporting securely.')">
+                <div class="circle-icon"><svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg></div>
+                Save & Export
+            </div>
+            <div class="sidebar-item" onclick="resetTimeline()">
+                <div class="circle-icon"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></div>
+                Reset Engine
+            </div>
+        </div>
+
+        <div class="modal-overlay active" id="intakeOverlay">
+            <div class="modal-box">
+                <div class="greeting" id="greetingText">Good Morning</div>
+                <div class="location">Langley Township, BC</div>
+                <div class="modal-body">
+                    We do not practice law and we're not giving advice. <br><br><b>Look at this like it's a journal. Welcome to WorkTimeline™.</b>
+                </div>
+                <div class="ok-btn" onclick="document.getElementById('intakeOverlay').classList.remove('active')">I Understand</div>
+            </div>
+        </div>
+
+        <div class="modal-overlay" id="patternOverlay">
+            <div class="modal-box">
+                <div class="greeting">Pattern Engine</div>
+                <div class="location">Timeline Analysis</div>
+                <div id="patternLoader">
+                    <div class="spinner"></div>
+                    <div class="modal-body">Scanning timeline for chronological patterns without influencing raw data...</div>
+                </div>
+                <div id="patternResult" style="display: none;">
+                    <div class="modal-body">
+                        <b>Analysis Complete.</b><br><br>
+                        Pattern Detected: <i>Multiple incident logs clustered in the morning hours.</i><br><br>
+                        Do you want to highlight these nodes and add an entry note summary?
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <div class="ok-btn ghost" onclick="handlePatternAudit('IGNORED')">Ignore</div>
+                        <div class="ok-btn" onclick="handlePatternAudit('ACCEPTED')">Accept</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="app-container" id="mainApp">
+            
+            <div class="top-toggles">
+                <div class="toggle-btn" id="privacyBtn" onclick="togglePrivacy()">Privacy</div>
+                <div style="display: flex; gap: 8px;">
+                    <div class="toggle-btn active" id="timelineToggle" onclick="switchMode('TIMELINE')">Timeline</div>
+                    <div class="toggle-btn" id="notesToggle" onclick="switchMode('NOTES')">Notes <div class="notes-dot"></div></div>
+                </div>
+            </div>
+
+            <div class="header">
+                <div class="menu-trigger" onclick="toggleSidebar()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </div>
+                <div class="brand-block">
+                    <svg class="briefcase-logo-svg" viewBox="0 0 24 24">
+                        <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-8-2h4v2h-4V4zm8 15H4v-2h16v2zm0-5H4V8h16v6z"/>
+                    </svg>
+                    <div class="main-title" id="brandTitle">WorkTimeline</div>
+                </div>
+                <div style="width: 40px;"></div>
+            </div>
+
+            <div class="input-panel" id="inputPanel">
+                <div class="template-row" id="templateRow">
+                    <div id="chip-setting" class="template-chip" onclick="toggleTemplatePill('SETTING')">Setting</div>
+                    <div id="chip-witness" class="template-chip" onclick="toggleTemplatePill('WITNESS')">Witness</div>
+                    <div id="chip-injury" class="template-chip" onclick="toggleTemplatePill('INJURY')">Injury</div>
+                </div>
+                <div class="hardware-icons">
+                    <div class="hw-item">
+                        <input type="file" accept="image/*" capture="environment" onchange="hwFeedback('PHOTO ATTACHED', 'photo')">
+                        <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                    </div>
+                    <div class="hw-item">
+                        <input type="file" accept="audio/*" capture="microphone" onchange="hwFeedback('AUDIO RECORDED', 'audio')">
+                        <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+                    </div>
+                    <div class="hw-item">
+                        <input type="file" onchange="hwFeedback('DOCUMENT LINKED', 'text')">
+                        <svg viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                    </div>
+                </div>
+                <div class="input-wrapper">
+                    <textarea id="logInput" placeholder="Start journaling your truth..."></textarea>
+                </div>
+            </div>
+
+            <div class="workspace-layout-matrix">
                 
-                <div class="customizer-label">Manual Mode Override</div>
-                <select id="theme-override-selector" class="customizer-select" onchange="applyManualThemeOverride(this.value)">
-                    <option value="auto">Automated Circadian Lock</option>
-                    <option value="day">Force White Day View</option>
-                    <option value="night">Force Dark Night View</option>
-                </select>
+                <div id="visualSpineTrack" class="vertical-spine-track">
+                    </div>
+
+                <div class="timeline-container" id="timelineBody">
+                    <div class="log-list" id="logList"></div>
+                </div>
+
             </div>
 
-            <div id="pattern-recognition-card" class="disabled-feature-card">
-                <span class="disabled-badge-notice">Entry Must Lock Before Access</span>
-                <h4 style="margin: 0 0 6px 0; font-size: 13px; font-weight: 700; text-transform: uppercase; color:var(--text-primary);">Run Pattern Recognition</h4>
-                <p style="margin: 0; font-size: 12px; line-height: 1.4; color: var(--text-muted);">Scans analyze structured timelines across non-volatile, locked chronological datasets inside your secure repository.</p>
-            </div>
-
-            <div class="case-evidence-box">
-                <div class="customizer-label" style="margin-bottom:12px;">Case Evidence Repository</div>
-                <div class="evidence-grid-item">
-                    <svg class="evidence-svg" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-                    <span>All Uploaded Files (<span id="count-files">0</span>)</span>
+            <div class="footer-nav">
+                <div class="footer-pill" onclick="runPatternRecognition()">
+                    <svg viewBox="0 0 24 24">
+                        <rect x="2" y="3" width="20" height="14" rx="4" ry="4"></rect>
+                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                    </svg>
+                    Pattern Rec
                 </div>
-                <div class="evidence-grid-item">
-                    <svg class="evidence-svg" viewBox="0 0 24 24"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.42 2.72 6.2 6 6.72V21h2v-3.28c3.28-.52 6-3.3 6-6.72h-1.7z"/></svg>
-                    <span>Audio Log Blocks (<span id="count-audio">0</span>)</span>
-                </div>
-                <div class="evidence-grid-item">
-                    <svg class="evidence-svg" viewBox="0 0 24 24"><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
-                    <span>Photo Master Vault (<span id="count-photos">0</span>)</span>
+                <div class="center-add-btn" onclick="submitEntry()">+</div>
+                <div class="footer-pill" style="color: var(--active-teal);" onclick="alert('Vaulting data to Clio...')">
+                    <svg viewBox="0 0 24 24"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
+                    Sync
                 </div>
             </div>
-
-            <div class="case-evidence-box" style="background: rgba(20, 184, 166, 0.02);">
-                <div class="customizer-label" style="margin-bottom:10px; color: var(--accent-teal);">AI Assistant Logging</div>
-                <div id="ai-log-history-list" style="font-size:12px; line-height:1.5; color: var(--text-muted); font-style:italic;">
-                    No operational analytical suggestions initialized in this session layer.
-                </div>
-            </div>
-        </div>
-
-        <div class="lab-drawer-footer">
-            <div class="footer-action-btn" onclick="alert('Exporting standard Case Brief file...')">
-                <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
-                Export
-            </div>
-            <div class="footer-action-btn" onclick="alert('Initializing secure encrypted email transmission layout...')">
-                <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-                Email
-            </div>
-            <div class="footer-action-btn" onclick="alert('Saving localized ledger state tracking manifest...')">
-                <svg viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
-                Save
-            </div>
+            
         </div>
     </div>
-
-    <div id="template-modal" class="modal">
-        <div class="modal-content">
-            <h5 style="margin-top:0; margin-bottom:12px; font-size:13px; text-transform:uppercase; color:var(--text-primary);">Structural Framework Blueprints</h5>
-            <div id="template-options-list">
-                <div class="template-option" onclick="toggleCheckbox('tmpl-injury')">
-                    <input type="checkbox" id="tmpl-injury" value="injury" onclick="event.stopPropagation()">
-                    <div class="template-info">
-                        <h5>Injury Configuration</h5>
-                        <p>Schedules structural symptoms and field location parameters.</p>
-                    </div>
-                </div>
-                <div class="template-option" onclick="toggleCheckbox('tmpl-witness')">
-                    <input type="checkbox" id="tmpl-witness" value="witness" onclick="event.stopPropagation()">
-                    <div class="template-info">
-                        <h5>Witness Matrix</h5>
-                        <p>Maps unprompted statements and verbal tracking records.</p>
-                    </div>
-                </div>
-            </div>
-            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px;">
-                <button class="action-btn secondary" style="border:none; height:38px;" onclick="closeTemplateModal()">Cancel</button>
-                <button class="action-btn" style="height:38px;" onclick="applySelectedTemplates()">Mount</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/clio-handshake.js"></script>
 
     <script>
-        let activeLocalTimelineData = [];
-        let separatePrivateNotepadMemory = []; 
-        let currentWorkspaceMode = "timeline"; 
-        let isPrivacyShieldActive = false;
+        let logsData = JSON.parse(localStorage.getItem('silver_vault_v46')) || [];
+        let currentMode = 'TIMELINE';
+        let selectedPillTemplates = [];
         
-        let mediaRecorder = null;
-        let audioChunks = [];
+        const pinSvg = `<svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
         
-        let fileCounter = 0;
-        let audioCounter = 0;
-        let photoCounter = 0;
-
-        const templateLibrary = {
-            injury: "=== FORMAL INJURY LOG LAYOUT ===\n[TIMESTAMP]: \n[FIELD AREA]: \n[SYMPTOM PROFILE]: \n\n",
-            witness: "=== FORMAL WITNESS LOG LAYOUT ===\n[WITNESS IDENTITY]: \n[VERBAL STATEMENT]: \n\n"
+        // Dynamic Node Icon Sets
+        const iconPaths = {
+            text: `<svg viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>`,
+            photo: `<svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`,
+            audio: `<svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>`
         };
 
-        /* LUMINANCE THEME ENGAGEMENT CONTROLLER ROUTINE */
-        function evaluateCircadianTimeSystem() {
-            const currentHour = new Date().getHours();
-            const selectedOverride = document.getElementById('theme-override-selector').value;
-
-            if (selectedOverride === "auto") {
-                if (currentHour >= 6 && currentHour < 18) {
-                    document.body.classList.remove('night-deck');
-                } else {
-                    document.body.classList.add('night-deck');
-                }
-            }
-        }
-
-        function applyManualThemeOverride(mode) {
-            if (mode === "day") document.body.classList.remove('night-deck');
-            else if (mode === "night") document.body.classList.add('night-deck');
-            else evaluateCircadianTimeSystem();
-        }
-
-        setInterval(evaluateCircadianTimeSystem, 60000);
-        window.addEventListener('DOMContentLoaded', evaluateCircadianTimeSystem);
-
-        /* PRIVACY HARDWARE SHIELD ACTION MASK INTERACTION LOOP */
-        function executePrivacyShieldFilterSwitch() {
-            const body = document.body;
-            const btn = document.getElementById('privacy-trigger-btn');
-            isPrivacyShieldActive = !isPrivacyShieldActive;
-            
-            if (isPrivacyShieldActive) {
-                body.classList.add('privacy-shielded');
-                btn.classList.add('active-toggle');
-                btn.innerText = "Hidden";
+        /* AUTOMATED CIRCADIAN LOGIC HOOK */
+        function checkCircadianTheme() {
+            const h = new Date().getHours();
+            // Night setting boundary rule applies safely outside 6 AM - 6 PM
+            if (h < 6 || h >= 18) {
+                document.body.classList.add('night-deck');
             } else {
-                body.classList.remove('privacy-shielded');
-                btn.classList.remove('active-toggle');
-                btn.innerText = "Privacy";
+                document.body.classList.remove('night-deck');
             }
         }
 
-        /* LAB SIDEBAR SYSTEM ANIMATION DRAWER METHODS */
-        function openLabSidebarDrawer() {
-            document.getElementById('lab-sidebar').classList.add('open');
-            document.getElementById('sidebar-overlay-mask').style.display = 'block';
+        function initApp() {
+            checkCircadianTheme();
+            setGreeting();
+            if(logsData.length === 0) loadDummyData();
+            renderTimeline();
         }
 
-        function closeLabSidebarDrawer() {
-            document.getElementById('lab-sidebar').classList.remove('open');
-            document.getElementById('sidebar-overlay-mask').style.display = 'none';
+        function loadDummyData() {
+            const baseTime = new Date();
+            logsData = [
+                { id: 1, mode: 'TIMELINE', type: 'text', stamp: `LANGLEY, BC | ${baseTime.toLocaleDateString()} | 9:00 AM`, text: "WITNESS: Interviewed Sarah regarding the incident parameter files." },
+                { id: 2, mode: 'TIMELINE', type: 'text', stamp: `LANGLEY, BC | ${baseTime.toLocaleDateString()} | 11:30 AM`, text: "INJURY: Structural documentation completed on location." }
+            ];
+            saveData();
         }
 
-        function changeUserFont(fontType) {
-            const container = document.getElementById('app-viewport-container');
-            if (fontType === 'sans') container.style.fontFamily = '-apple-system, BlinkMacSystemFont, sans-serif';
-            else if (fontType === 'serif') container.style.fontFamily = 'Georgia, serif';
-            else if (fontType === 'mono') container.style.fontFamily = 'Courier New, monospace';
+        function setGreeting() {
+            const h = new Date().getHours();
+            let greeting = "Good Evening";
+            if (h >= 4 && h < 12) greeting = "Good Morning";
+            else if (h >= 12 && h < 18) greeting = "Good Afternoon";
+            document.getElementById('greetingText').innerText = greeting;
         }
 
-        /* CANVAS ISOLATION CONTROL ENGINE SWITCH LOOP */
-        function toggleWorkspaceContextMode(targetMode) {
-            currentWorkspaceMode = targetMode;
-            const inputTitle = document.getElementById('workspace-input-title');
-            const txtArea = document.getElementById('raw-human-entry');
-            const blueprintBtn = document.getElementById('blueprint-modal-trigger');
-            const feedContainer = document.getElementById('timeline-feed');
+        function toggleSidebar() { document.getElementById('sidebarMenu').classList.toggle('open'); }
+        
+        function togglePrivacy() { 
+            const app = document.getElementById('mainApp');
+            app.classList.toggle('privacy-active');
+            const btn = document.getElementById('privacyBtn');
+            btn.classList.toggle('active', app.classList.contains('privacy-active'));
+        }
+
+        function switchMode(mode) {
+            currentMode = mode;
+            document.getElementById('timelineToggle').classList.toggle('active', mode === 'TIMELINE');
+            document.getElementById('notesToggle').classList.toggle('active', mode === 'NOTES');
             
-            document.getElementById('notes-mode-btn').classList.remove('active-toggle');
-            document.getElementById('timeline-mode-btn').classList.remove('active-toggle');
+            document.getElementById('visualSpineTrack').style.display = mode === 'TIMELINE' ? 'flex' : 'none';
+            document.getElementById('templateRow').style.display = mode === 'TIMELINE' ? 'flex' : 'none';
+            document.getElementById('logInput').placeholder = mode === 'TIMELINE' ? "Start journaling your truth..." : "Capture a private note...";
+            
+            renderTimeline();
+        }
+        
+        function hwFeedback(label, iconType) {
+            const input = document.getElementById('logInput');
+            input.value += (input.value ? '\n' : '') + `[${label} @ ${new Date().toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit'})}]\n`;
+            input.dataset.nodeType = iconType;
+            input.focus();
+        }
 
-            feedContainer.innerHTML = "";
-
-            if (targetMode === "notes") {
-                document.getElementById('notes-mode-btn').classList.add('active-toggle');
-                inputTitle.innerText = "Private Notepad Space";
-                txtArea.placeholder = "Enter reference notes here. This data remains outside certified court timeline logs...";
-                blueprintBtn.style.display = "none";
-                
-                if (separatePrivateNotepadMemory.length === 0) {
-                    feedContainer.innerHTML = `<p id="empty-state-msg" style='color:var(--text-muted); font-style:italic; font-size:12px; margin:0;'>No local scratchpad notes recorded.</p>`;
-                } else {
-                    separatePrivateNotepadMemory.forEach(note => renderFeedItemToView(note, true));
-                }
+        /* DYNAMIC CHIP ANCHOR STABILIZATION */
+        function toggleTemplatePill(type) {
+            const pill = document.getElementById(`chip-${type.toLowerCase()}`);
+            const input = document.getElementById('logInput');
+            const prefix = `${type}: `;
+            
+            if (pill.classList.contains('selected')) {
+                pill.classList.remove('selected');
+                input.value = input.value.replace(prefix, "");
             } else {
-                document.getElementById('timeline-mode-btn').classList.add('active-toggle');
-                inputTitle.innerText = "Add Direct Entry";
-                txtArea.placeholder = "Record contemporaneous verification metrics...";
-                blueprintBtn.style.display = "inline-block";
+                pill.classList.add('selected');
+                input.value = prefix + input.value;
+                input.focus();
+            }
+        }
+
+        function saveData() { localStorage.setItem('silver_vault_v46', JSON.stringify(logsData)); }
+
+        function renderTimeline() {
+            const list = document.getElementById('logList');
+            const spine = document.getElementById('visualSpineTrack');
+            list.innerHTML = '';
+            spine.innerHTML = '';
+            
+            const filteredData = logsData.filter(log => (log.mode || 'TIMELINE') === currentMode);
+
+            filteredData.forEach(log => {
+                // Render text bubble inside the right scroll lane
+                const entry = document.createElement('div');
+                entry.className = 'log-entry';
                 
-                if (activeLocalTimelineData.length === 0) {
-                    feedContainer.innerHTML = `<p id="empty-state-msg" style="color: var(--text-muted); font-style: italic; font-size: 12px; margin: 0;">No chronological entries recorded.</p>`;
-                } else {
-                    activeLocalTimelineData.forEach(entry => renderFeedItemToView(entry, false));
+                let timer;
+                const start = () => timer = setTimeout(() => { if(confirm("Permanently delete this entry?")) { logsData = logsData.filter(v => v.id !== log.id); saveData(); renderTimeline(); } }, 800);
+                const stop = () => clearTimeout(timer);
+                
+                entry.onmousedown = start; entry.onmouseup = stop;
+                entry.ontouchstart = start; entry.ontouchend = stop;
+
+                entry.innerHTML = `
+                    <div class="timestamp-stamp">${pinSvg} ${log.stamp}</div>
+                    <div class="log-bubble">${log.text.replace(/\n/g, '<br>')}</div>
+                `;
+                list.appendChild(entry);
+
+                // Render matching geometric node leftward in the spine line container seamlessly
+                if (currentMode === 'TIMELINE') {
+                    const node = document.createElement('div');
+                    node.className = 'timeline-node';
+                    node.id = `node_link_${log.id}`;
+                    node.classList.add('timeline-squircle');
+                    node.innerHTML = iconPaths[log.type || 'text'];
+                    node.onclick = () => alert(`Event Node Reference Layer ID: ${log.id}\nVerification: ${log.stamp}`);
+                    if(log.highlighted) node.classList.add('pattern-triggered');
+                    spine.appendChild(node);
                 }
-            }
-        }
-
-        function openTemplateModal() { document.getElementById('template-modal').style.display = 'flex'; }
-        function closeTemplateModal() {
-            document.querySelectorAll('#template-modal input[type="checkbox"]').forEach(cb => cb.checked = false);
-            document.getElementById('template-modal').style.display = 'none';
-        }
-        function toggleCheckbox(id) { document.getElementById(id).checked = !document.getElementById(id).checked; }
-
-        function applySelectedTemplates() {
-            const entryArea = document.getElementById('raw-human-entry');
-            let compiledText = "";
-            if (document.getElementById('tmpl-injury').checked) compiledText += templateLibrary.injury;
-            if (document.getElementById('tmpl-witness').checked) compiledText += templateLibrary.witness;
+            });
             
-            if (compiledText) { entryArea.value = compiledText + entryArea.value; entryArea.focus(); }
-            closeTemplateModal();
-        }
-
-        /* DATA EMISSION INGESTION TRANSLATOR HANDLERS */
-        function executeCommitEntryPayload() {
-            const inputField = document.getElementById('raw-human-entry');
-            const rawContentText = inputField.value.trim();
-            if (!rawContentText) return;
-
-            // TRACKS THE REQUIRED FORENSIC TIME STRINGS AUTOMATICALLY
-            const legalTimeFormattedString = new Date().toLocaleDateString('en-US', {
-                year: 'numeric', month: 'long', day: 'numeric'
-            }) + " " + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-
-            if (currentWorkspaceMode === "notes") {
-                const notePackage = { id: `note_${Date.now()}`, timestamp: legalTimeFormattedString, content: rawContentText };
-                separatePrivateNotepadMemory.push(notePackage);
-                renderFeedItemToView(notePackage, true);
-            } else {
-                const uniqueId = `entry_${Date.now()}`;
-                const entryPackage = { id: uniqueId, type: "Text Log", timestamp: legalTimeFormattedString, content: rawContentText.replace(/\n/g, '<br>') };
-
-                activeLocalTimelineData.push(entryPackage);
-                renderFeedItemToView(entryPackage, false);
-                appendNodeToVerticalChronologyTrack(uniqueId, "text", legalTimeFormattedString);
-                
-                fileCounter++;
-                document.getElementById('count-files').innerText = fileCounter;
-                
-                if (typeof WorkTimelineMaster !== 'undefined') { WorkTimelineMaster.triggerNotification('entryLocked'); }
-            }
-            inputField.value = "";
-        }
-
-        function appendNodeToVerticalChronologyTrack(id, assetType, formattedTime) {
-            const visualTrack = document.getElementById('visual-node-track');
-            const nodeElement = document.createElement('div');
-            nodeElement.id = `node_link_${id}`;
-            nodeElement.className = "timeline-node";
-            
-            let svgIconPath = `<path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>`;
-            if (assetType === "photo") svgIconPath = `<path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>`;
-            if (assetType === "audio") svgIconPath = `<path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.42 2.72 6.2 6 6.72V21h2v-3.28c3.28-.52 6-3.3 6-6.72h-1.7z"/>`;
-
-            nodeElement.innerHTML = `<svg class="node-icon" viewBox="0 0 24 24">${svgIconPath}</svg>`;
-            nodeElement.onclick = () => { alert(`Event Node: ${id}\nTime Seal Verification: ${formattedTime}`); };
-
-            visualTrack.appendChild(nodeElement);
-            visualTrack.scrollTop = visualTrack.scrollHeight; 
-        }
-
-        /* NATIVE HARDWARE PIPELINE HOOK ATTACHMENTS */
-        async function handleCameraCapture(input) {
-            if (input.files.length > 0) {
-                const targetPhoto = input.files[0];
-                const legalTime = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) + " " + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-                const id = `img_${Date.now()}`;
-                
-                const mockEntry = { id: id, type: "Forensic Photo", timestamp: legalTime, content: `Captured Photo Asset: ${targetPhoto.name}` };
-                
-                if (currentWorkspaceMode === "timeline") {
-                    activeLocalTimelineData.push(mockEntry);
-                    renderFeedItemToView(mockEntry, false);
-                    appendNodeToVerticalChronologyTrack(id, "photo", legalTime);
-                    photoCounter++;
-                    document.getElementById('count-photos').innerText = photoCounter;
-                } else {
-                    separatePrivateNotepadMemory.push(mockEntry);
-                    renderFeedItemToView(mockEntry, true);
-                }
-
-                if (typeof WorkTimelineMaster !== 'undefined') { await WorkTimelineMaster.processAndSecureImage(targetPhoto); }
-            }
-        }
-
-        function handleDocumentUpload(input) {
-            if (input.files.length > 0) {
-                const docFile = input.files[0];
-                const legalTime = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) + " " + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-                const id = `doc_${Date.now()}`;
-                
-                const docEntry = { id: id, type: "Document File", timestamp: legalTime, content: `Registered Document: ${docFile.name}` };
-                
-                if (currentWorkspaceMode === "timeline") {
-                    activeLocalTimelineData.push(docEntry);
-                    renderFeedItemToView(docEntry, false);
-                    appendNodeToVerticalChronologyTrack(id, "text", legalTime);
-                    fileCounter++;
-                    document.getElementById('count-files').innerText = fileCounter;
-                } else {
-                    separatePrivateNotepadMemory.push(docEntry);
-                    renderFeedItemToView(docEntry, true);
-                }
-            }
-        }
-
-        async function toggleAudioRecorder() {
-            const micStatus = document.getElementById('mic-status');
-            if (!mediaRecorder || mediaRecorder.state === "inactive") {
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    mediaRecorder = new MediaRecorder(stream);
-                    audioChunks = [];
-                    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-                    mediaRecorder.onstop = () => {
-                        const legalTime = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) + " " + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-                        const id = `audio_${Date.now()}`;
-                        
-                        const audioEntry = { id: id, type: "Audio Log", timestamp: legalTime, content: "Contemporaneous audio note recorded and locked to repository memory layers." };
-                        
-                        if (currentWorkspaceMode === "timeline") {
-                            activeLocalTimelineData.push(audioEntry);
-                            renderFeedItemToView(audioEntry, false);
-                            appendNodeToVerticalChronologyTrack(id, "audio", legalTime);
-                            audioCounter++;
-                            document.getElementById('count-audio').innerText = audioCounter;
-                        } else {
-                            separatePrivateNotepadMemory.push(audioEntry);
-                            renderFeedItemToView(audioEntry, true);
-                        }
-                    };
-                    mediaRecorder.start(); micStatus.innerText = "RECORDING"; micStatus.style.color = "#EF4444";
-                } catch (err) { alert("Mic hardware error."); }
-            } else { mediaRecorder.stop(); micStatus.innerText = "Audio"; micStatus.style.color = "inherit"; }
-        }
-
-        function renderFeedItemToView(item, isNoteMode) {
-            const container = document.getElementById('timeline-feed');
-            
-            const targetEmptyMsg = document.getElementById('empty-state-msg');
-            if (targetEmptyMsg) targetEmptyMsg.remove();
-            
-            const card = document.createElement('div');
-            card.className = 'feed-item';
-            card.style.background = isNoteMode ? "#FFFBEB" : "var(--surface-input)";
-            card.style.borderLeft = isNoteMode ? "4px solid #D97706" : "4px solid var(--accent-teal)";
-            
-            card.innerHTML = `
-                <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">
-                    <span>${item.type || 'Note'}</span><span>${item.timestamp}</span>
-                </div>
-                <div style="font-size: 13px; line-height: 1.4; color: var(--text-primary);">${item.content}</div>
-            `;
-            container.appendChild(card);
+            const container = document.getElementById('timelineBody');
             container.scrollTop = container.scrollHeight;
+            spine.scrollTop = spine.scrollHeight;
         }
 
-        /* HARDWARE IMMUTABILITY ENVELOPE SEALS FOR CLIO PIPELINING */
-        async function executeMasterClioLock() {
-            if (activeLocalTimelineData.length === 0) { alert("Ledger empty."); return; }
-            const beacon = document.getElementById('pipeline-beacon');
-            const statusText = document.getElementById('pipeline-text');
+        function submitEntry() {
+            const input = document.getElementById('logInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+            const detectedType = input.dataset.nodeType || 'text';
+
+            logsData.push({
+                id: Date.now(),
+                mode: currentMode,
+                type: detectedType,
+                stamp: `LANGLEY, BC | ${dateStr} | ${timeStr}`,
+                text: text
+            });
+
+            input.value = '';
+            delete input.dataset.nodeType;
+            document.querySelectorAll('.template-chip').forEach(c => c.classList.remove('selected'));
+            saveData();
+            renderTimeline();
+        }
+
+        function emailTimeline() {
+            const filteredData = logsData.filter(log => (log.mode || 'TIMELINE') === currentMode);
+            if(filteredData.length === 0) return alert(`Your ${currentMode} layer array is empty.`);
             
-            beacon.style.backgroundColor = "#4B5563";
-            statusText.innerText = "LOCKING...";
+            let body = `WorkTimeline™ Verified ${currentMode} Export:\n\n`;
+            filteredData.forEach(log => { 
+                body += `[${log.stamp}]\n${log.text}\n\n`; 
+            });
+            window.location.href = `mailto:?subject=Legal ${currentMode} Export&body=${encodeURIComponent(body)}`;
+        }
 
-            if (typeof WorkTimelineMaster !== 'undefined') {
-                const baselineStringData = JSON.stringify(activeLocalTimelineData);
-                const msgUint8 = new TextEncoder().encode(baselineStringData);
-                const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
-                const hashArray = Array.from(new Uint8Array(hashBuffer));
-                const systemForensicFingerprint = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        function resetTimeline() {
+            if(confirm("Clear the entire timeline and all notes?")) {
+                logsData = []; saveData(); renderTimeline(); toggleSidebar();
+            }
+        }
 
-                const syncCompleted = await WorkTimelineMaster.syncToClioEcosystem(activeLocalTimelineData, systemForensicFingerprint);
-                if (syncCompleted) {
-                    alert(`AMENDMENT IMMUTABILITY SEALED\n\nLedger array compiled under Canada Evidence Act parameters.\n\nHash Token:\n${systemForensicFingerprint}\n\nPackage transmitted to secure Clio case files.`);
-                    beacon.style.backgroundColor = "var(--accent-teal)";
-                    statusText.innerText = "Clio Connected";
+        function runPatternRecognition() {
+            const timelineData = logsData.filter(log => (log.mode || 'TIMELINE') === 'TIMELINE');
+            if(timelineData.length === 0) {
+                alert("Add data to your timeline before scanning for patterns.");
+                return;
+            }
+            
+            document.getElementById('patternOverlay').classList.add('active');
+            document.getElementById('patternLoader').style.display = 'block';
+            document.getElementById('patternResult').style.display = 'none';
 
-                    // PROGRAMMATICALLY ACCESS UNLOCK VIA GAITED PATTERN CARD INTERFACES
-                    const prCard = document.getElementById('pattern-recognition-card');
-                    prCard.style.opacity = "1";
-                    prCard.style.pointerEvents = "auto";
-                    prCard.style.borderStyle = "solid";
-                    prCard.style.borderColor = "var(--accent-teal)";
-                    prCard.querySelector('.disabled-badge-notice').style.display = "none";
-                    
-                    prCard.onclick = () => {
-                        activeLocalTimelineData.forEach(node => {
-                            if (node.type === "Forensic Photo" || node.id.includes('entry')) {
-                                const targetedNode = document.getElementById(`node_link_${node.id}`);
-                                if (targetedNode) targetedNode.classList.add('pattern-triggered');
-                            }
-                        });
-                        
-                        const currentLegalTime = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + " " + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-                        const historyContainer = document.getElementById('ai-log-history-list');
-                        historyContainer.innerHTML = `
-                            <div style="margin-bottom:8px; padding-bottom:8px; border-bottom:1px solid var(--border-subtle);">
-                                <strong>[${currentLegalTime}] Pattern Recognition Flag:</strong> Structural timeline mismatch detected relative to historical record layer. Side-by-side verification audit signature appended.
-                                <div style="margin-top:4px; font-weight:700; color:var(--accent-teal);">[Adopted]</div>
-                            </div>
-                        `;
-                        alert("Pattern recognition algorithm run complete. Critical documentation indicators highlighted on track nodes.");
-                    };
-                </div>
+            setTimeout(() => {
+                document.getElementById('patternLoader').style.display = 'none';
+                document.getElementById('patternResult').style.display = 'block';
+            }, 1500);
+        }
+
+        function handlePatternAudit(decision) {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+            
+            const auditMessage = decision === 'ACCEPTED' 
+                ? "[AUDIT LOG] User ACCEPTED AI Pattern Suggestion: 'Morning incident cluster' for further review."
+                : "[AUDIT LOG] User IGNORED AI Pattern Suggestion. Raw timeline integrity maintained.";
+
+            if (decision === 'ACCEPTED') {
+                // Programmatically apply glowing satin teal tracking parameters back to nodes
+                logsData.forEach(log => {
+                    if (log.mode === 'TIMELINE') log.highlighted = true;
+                });
+            }
+
+            logsData.push({
+                id: Date.now(),
+                mode: 'NOTES',
+                type: 'text',
+                stamp: `AUDIT TRAIL | ${dateStr} | ${timeStr}`,
+                text: auditMessage
+            });
+
+            saveData();
+            document.getElementById('patternOverlay').classList.remove('active');
+            
+            if (decision === 'ACCEPTED') {
+                switchMode('NOTES');
+            } else {
+                renderTimeline();
             }
         }
     </script>
