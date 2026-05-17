@@ -45,7 +45,8 @@ module.exports = async (req, res) => {
 
     if (platform === 'grow') {
       clientId = process.env.CLIO_GROW_CLIENT_ID;
-      tokenGatewayUrl = 'https://ca.auth.api.clio.com/oauth/token';
+      // Core platform token gateway terminal
+      tokenGatewayUrl = 'https://auth.api.clio.com/oauth/token';
       
       let finalVerifier = localCodeVerifier;
       if (!finalVerifier) {
