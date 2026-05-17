@@ -1,4 +1,3 @@
-// api/callback.js
 export default async function handler(req, res) {
     const { code, error } = req.query;
 
@@ -11,7 +10,6 @@ export default async function handler(req, res) {
     }
 
     try {
-        // Construct the form data exactly as Clio expects
         const params = new URLSearchParams();
         params.append('client_id', process.env.CLIO_CLIENT_ID);
         params.append('client_secret', process.env.CLIO_CLIENT_SECRET);
@@ -19,7 +17,7 @@ export default async function handler(req, res) {
         params.append('code', code);
         params.append('redirect_uri', process.env.CLIO_REDIRECT_URI);
 
-        // Native fetch call to Clio CA for Canadian data residency
+        // Native exchange targeting the Canadian Clio authentication hub
         const tokenResponse = await fetch('https://ca.app.clio.com/oauth/token', {
             method: 'POST',
             headers: {
@@ -34,10 +32,14 @@ export default async function handler(req, res) {
             throw new Error(data.error_description || data.error || 'Failed token exchange');
         }
 
-        const { access_token, refresh_token } = data;
+        // Grabbing the valid access token issued by Clio
+        const { access_token } = data;
 
-        // Redirect back to your main UI on success
-        res.writeHead(302, { Location: '/timeline.html?status=connected' });
+        // STRATEGIC FIX: Securely pass the token to your UI inside the URL redirect 
+        // This ensures timeline.html can extract it and store it in sessionStorage
+        res.writeHead(302, { 
+            Location: `/timeline.html?status=connected&token=${encodeURIComponent(access_token)}` 
+        });
         res.end();
 
     } catch (err) {
