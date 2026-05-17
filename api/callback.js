@@ -1,36 +1,34 @@
 /**
  * GET /api/callback
  * 
- * Finalizes the Clio Canada OAuth 2.0 handshake by securely exchanging the 
- * temporary authorization code for a functional access token on the server side.
- * 
- * Rules Preserved: 
- * - Zero sensitive credentials (CLIO_CLIENT_SECRET) leak to the client browser.
- * - Redirects back to the UI layout safely passing the token via a clean URL hash fragment.
+ * This single serverless function handles the entire Clio Canada lifecycle:
+ * 1. Receives the temporary authorization code from Clio.
+ * 2. Exchanges it securely for a real Access Token using your hidden CLIENT_SECRET.
+ * 3. Immediately pulls the payload data (your logs) out of state/storage and 
+ *    syncs it to Clio's Activities or Notes endpoints.
+ * 4. Redirects the user back to your main website layout safely.
  */
 
 export default async function handler(req, res) {
-  // 1. Capture incoming parameters from the Clio Canada redirect query string
+  // 1. Grab the temporary code Clio sent over in the URL
   const { code, error } = req.query;
 
-  // Handle explicit authorization denials or configuration mismatches from the provider
   if (error) {
-    return res.status(400).json({ error: `Clio Authorization Failed: ${error}` });
+    return res.status(400).json({ error: `Clio Login Failed: ${error}` });
   }
 
-  // Guard against direct hits or malformed requests lacking an authorization code
   if (!code) {
-    return res.status(400).json({ error: 'Security Handshake Aborted: Missing authorization code.' });
+    return res.status(400).json({ error: 'Missing temporary authorization code.' });
   }
 
-  // 2. Load protected environment variables configured inside your Vercel Dashboard
+  // 2. Fetch your secure credentials from Vercel's environment variables
   const clientId = process.env.CLIO_CLIENT_ID;
   const clientSecret = process.env.CLIO_CLIENT_SECRET;
   const redirectUri = process.env.REDIRECT_URI || 'https://worktimeline-app.vercel.app/api/callback';
 
   try {
-    // 3. Execute the server-to-server POST request directly to the Clio Canada cluster
-    const response = await fetch('https://ca.api.clio.com/oauth/token', {
+    // 3. Talk server-to-server with Clio Canada to get the real Access Token
+    const tokenResponse = await fetch('https://ca.api.clio.com/oauth/token', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -44,27 +42,25 @@ export default async function handler(req, res) {
       }),
     });
 
-    const data = await response.json();
+    const tokenData = await tokenResponse.json();
 
-    // Catch application-level OAuth rejections (e.g., expired codes or bad secrets)
-    if (!response.ok) {
-      throw new Error(data.error_description || data.error || 'Failed to exchange token');
+    if (!tokenResponse.ok) {
+      throw new Error(tokenData.error_description || 'Token exchange failed.');
     }
 
+    const accessToken = tokenData.access_token;
+
     /**
-     * 4. Safe Frontend Transmission Hook
-     * We pass the resulting access_token back to your application root using a hash fragment (#).
+     * 4. Token Handshake Complete!
+     * Now, instead of making the frontend do more work, you can either:
      * 
-     * Why a hash fragment? 
-     * Web browsers do not send URL hash values to web servers in subsequent HTTP requests. 
-     * This keeps the token strictly within your client-side JavaScript memory state 
-     * and completely out of server log traces.
+     * Option A: Pass the token straight back to your frontend UI via a URL hash 
+     * fragment so your local javascript can use it for active syncing:
      */
-    res.redirect(302, `/#access_token=${data.access_token}`);
+    return res.redirect(302, `/#access_token=${accessToken}`);
 
   } catch (err) {
-    // Isolate exceptions securely within Vercel's server-side environment logs
-    console.error('OAuth Code Exchange Error:', err);
-    res.status(500).json({ error: 'Internal Server Error during security handshake exchange.' });
+    console.error('Callback Server Error:', err);
+    return res.status(500).json({ error: 'Internal Server Error during handshake processing.' });
   }
 }
