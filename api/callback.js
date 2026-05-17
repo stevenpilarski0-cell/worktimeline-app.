@@ -1,7 +1,6 @@
 // api/callback.js
 
 export default async function handler(req, res) {
-    // 1. Capture the temporary authorization code returned by Clio
     const { code, error } = req.query;
 
     if (error) {
@@ -13,13 +12,12 @@ export default async function handler(req, res) {
         return res.status(400).send('Missing authorization code from Clio infrastructure.');
     }
 
-    // 2. Exact configuration variables matching your Clio Developer Portal screen
     const clientId = process.env.CLIO_CLIENT_ID || '18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s';
-    const clientSecret = process.env.CLIO_CLIENT_SECRET; // Pulled securely from Vercel env
+    const clientSecret = process.env.CLIO_CLIENT_SECRET; 
     const redirectUri = 'https://worktimeline-app.vercel.app/api/callback';
 
     try {
-        // 3. Trade the temporary code for a secure, authenticated Account Token
+        // STRATEGIC FIX: Routed explicitly through Clio's Canadian Token Exchange Authority
         const tokenResponse = await fetch('https://ca.app.clio.com/oauth/token', {
             method: 'POST',
             headers: {
@@ -40,10 +38,9 @@ export default async function handler(req, res) {
             throw new Error(tokenData.error_description || tokenData.error || 'Token exchange failed.');
         }
 
-        // 4. Capture the Fresh Access Token
         const accessToken = tokenData.access_token;
 
-        // 5. Bounce the user back to your timeline panel, passing the token safely in the URL
+        // Pass the verified token straight back to your modern control center
         res.writeHead(302, { 
             Location: `/timeline.html?token=${encodeURIComponent(accessToken)}` 
         });
