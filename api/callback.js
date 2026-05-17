@@ -1,13 +1,11 @@
 const { createClient } = require('@supabase/supabase-js');
 
-// Initialize your Supabase database access securely
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
 module.exports = async (req, res) => {
-  // 1. Extract the secure authentication code returned from Clio's servers
   const { code, state } = req.query;
 
   if (!code) {
@@ -16,9 +14,9 @@ module.exports = async (req, res) => {
   }
 
   try {
-    // 2. Decode tracking parameters
     let userId = '01KPZB4ZCXHE3Z92S1KM3AT96V'; 
     let platform = 'grow';
+    let localCodeVerifier = '';
 
     if (state) {
       try {
@@ -26,6 +24,7 @@ module.exports = async (req, res) => {
         if (decodedState) {
           userId = decodedState.pilot_firm || '01KPZB4ZCXHE3Z92S1KM3AT96V';
           platform = decodedState.platform || 'grow';
+          localCodeVerifier = decodedState.verifier || ''; 
         }
       } catch (e) {
         console.warn("WorkTimeline Backend | State decoding fallback initialized.", e);
@@ -35,7 +34,6 @@ module.exports = async (req, res) => {
 
     console.log(`WorkTimeline Matrix | Processing Code Exchange for: [${platform.toUpperCase()}]`);
 
-    // 3. Establish parameters based on the core API structure
     let clientId = '';
     let tokenGatewayUrl = '';
     
@@ -47,15 +45,18 @@ module.exports = async (req, res) => {
 
     if (platform === 'grow') {
       clientId = process.env.CLIO_GROW_CLIENT_ID;
-      tokenGatewayUrl = 'https://auth.api.clio.com/oauth/token';
+      // Core Grow token processing gateway
+      tokenGatewayUrl = 'https://app.clio.com/grow/oauth/token';
       
-      // Pull the original unhashed code verifier out of cookie memory to validate the PKCE check
-      const cookieHeader = req.headers.cookie || '';
-      const match = cookieHeader.match(/clio_pkce_verifier=([^;]+)/);
-      const codeVerifier = match ? match[1] : '';
+      let finalVerifier = localCodeVerifier;
+      if (!finalVerifier) {
+        const cookieHeader = req.headers.cookie || '';
+        const match = cookieHeader.match(/clio_pkce_verifier=([^;]+)/);
+        if (match) finalVerifier = match[1];
+      }
       
-      if (codeVerifier) {
-        requestParams.append('code_verifier', codeVerifier);
+      if (finalVerifier) {
+        requestParams.append('code_verifier', finalVerifier);
       }
       requestParams.append('client_id', clientId);
     } else {
@@ -76,7 +77,6 @@ module.exports = async (req, res) => {
 
     console.log(`WorkTimeline Network Outbound | Shipping validation trade packet to: ${tokenGatewayUrl}`);
 
-    // 4. Swap the temporary authorization code for real system data access tokens
     const clioResponse = await fetch(tokenGatewayUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -90,13 +90,11 @@ module.exports = async (req, res) => {
       throw new Error(data.error_description || data.error || 'Token validation swap failed.');
     }
 
-    // 5. Calculate date windows for secure access lifespan token expiration tracking
     const expiresAt = new Date();
     expiresAt.setSeconds(expiresAt.getSeconds() + (data.expires_in || 3600));
 
     console.log(`WorkTimeline Database Engine | Committing secure token layer to Supabase vault for user_id: ${userId}`);
 
-    // 6. Securely upsert the fresh access and refresh token layers into your Supabase database tables
     const { error: dbError } = await supabase
       .from('clio_connections')
       .upsert({
