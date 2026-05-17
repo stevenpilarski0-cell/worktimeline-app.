@@ -1,11 +1,7 @@
 // api/callback.js
-import axios from 'axios';
-
 export default async function handler(req, res) {
-    // 1. Catch the temporary authorization code sent by Clio
     const { code, error } = req.query;
 
-    // Handle any access denials or user cancellations
     if (error) {
         return res.status(400).json({ error: `Authorization denied by user: ${error}` });
     }
@@ -15,35 +11,37 @@ export default async function handler(req, res) {
     }
 
     try {
-        // 2. Exchange the temporary code for permanent access tokens
-        // Always targeting the ca.app.clio.com endpoint for Canadian Data Residency
-        const tokenResponse = await axios.post('https://ca.app.clio.com/oauth/token', {
-            client_id: process.env.CLIO_CLIENT_ID,
-            client_secret: process.env.CLIO_CLIENT_SECRET,
-            grant_type: 'authorization_code',
-            code: code,
-            redirect_uri: process.env.CLIO_REDIRECT_URI
-        }, {
+        // Construct the form data exactly as Clio expects
+        const params = new URLSearchParams();
+        params.append('client_id', process.env.CLIO_CLIENT_ID);
+        params.append('client_secret', process.env.CLIO_CLIENT_SECRET);
+        params.append('grant_type', 'authorization_code');
+        params.append('code', code);
+        params.append('redirect_uri', process.env.CLIO_REDIRECT_URI);
+
+        // Native fetch call to Clio CA for Canadian data residency
+        const tokenResponse = await fetch('https://ca.app.clio.com/oauth/token', {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
-            }
+            },
+            body: params
         });
 
-        // The secure tokens returned by the firm's system
-        const { access_token, refresh_token, expires_in } = tokenResponse.data;
+        const data = await tokenResponse.json();
 
-        // 3. TODO: Save these tokens securely (e.g., in your database or encrypted session)
-        // For security, never expose the raw access_token to the frontend index.html
+        if (!tokenResponse.ok) {
+            throw new Error(data.error_description || data.error || 'Failed token exchange');
+        }
 
-        // 4. Redirect the user back to your main timeline interface on success
+        const { access_token, refresh_token } = data;
+
+        // Redirect back to your main UI on success
         res.writeHead(302, { Location: '/timeline.html?status=connected' });
         res.end();
 
     } catch (err) {
-        console.error('Clio Handshake Token Exchange Error:', err.response?.data || err.message);
-        return res.status(500).json({ 
-            error: 'Failed to exchange authentication code with Clio.', 
-            details: err.response?.data || err.message 
-        });
+        console.error('Clio Handshake Token Error:', err.message);
+        return res.status(500).json({ error: 'Handshake failed', details: err.message });
     }
 }
