@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeline - Chronology Control</title>
+    <title>WorkTimeline - Firm Control</title>
     <style>
-        /* Modern Apple-style slate & teal design */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: #f5f5f7;
@@ -26,31 +25,11 @@
             max-width: 600px;
             width: 100%;
         }
-        h2 {
-            font-size: 22px;
-            font-weight: 600;
-            margin-top: 0;
-            margin-bottom: 5px;
-            color: #1d1d1f;
-        }
-        .subtitle {
-            font-size: 13px;
-            color: #86868b;
-            margin-bottom: 2rem;
-        }
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            color: #86868b;
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        input[type="text"], textarea {
+        h2 { font-size: 22px; font-weight: 600; margin: 0 0 5px; color: #1d1d1f; }
+        .subtitle { font-size: 13px; color: #86868b; margin-bottom: 2rem; }
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; font-size: 13px; font-weight: 600; color: #86868b; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        select, textarea {
             width: 100%;
             padding: 12px;
             border: 1px solid #d2d2d7;
@@ -60,38 +39,11 @@
             background-color: #fbfbfd;
             font-family: inherit;
         }
-        textarea {
-            height: 150px;
-            resize: vertical;
-        }
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: #008080; /* Teal focus */
-            background-color: #ffffff;
-        }
-        .btn-sync {
-            background-color: #008080;
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            font-size: 15px;
-            font-weight: 500;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
-            transition: background-color 0.2s;
-        }
-        .btn-sync:hover {
-            background-color: #006666;
-        }
-        .status-banner {
-            margin-top: 1rem;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            display: none;
-        }
+        textarea { height: 150px; resize: vertical; }
+        select:focus, textarea:focus { outline: none; border-color: #008080; background-color: #ffffff; }
+        .btn-sync { background-color: #008080; color: white; border: none; padding: 14px 28px; font-size: 15px; font-weight: 500; border-radius: 8px; cursor: pointer; width: 100%; transition: background-color 0.2s; }
+        .btn-sync:hover { background-color: #006666; }
+        .status-banner { margin-top: 1rem; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: 500; display: none; }
         .success { background-color: #e6f2f2; color: #008080; border: 1px solid #008080; }
         .error { background-color: #ffebe9; color: #ff3b30; border: 1px solid #ff3b30; }
     </style>
@@ -100,62 +52,61 @@
 
 <div class="wrapper">
     <h2>Transmit to Firm Infrastructure</h2>
-    <div class="subtitle">Pipeline: WorkTimeline ➔ Clio Grow Intake</div>
+    <div class="subtitle">Pipeline: WorkTimeline ➔ Clio Grow Target Authorized Workspace</div>
     
     <div class="form-group">
-        <label for="leadName">Client Name / Reference</label>
-        <input type="text" id="leadName" placeholder="e.g., Spencer Densmore" value="Spencer Densmore">
+        <label for="firmSelect">Select Authorized Target Firm</label>
+        <select id="firmSelect">
+            <option value="GROW-FIRM-9832" selected>My Active Clio Grow Firm (Primary)</option>
+            <option value="SANDBOX-FIRM-1102">Development Sandbox Testing Account</option>
+        </select>
     </div>
 
     <div class="form-group">
         <label for="logText">Contemporaneous Log Content</label>
-        <textarea id="logText" placeholder="Enter the verified, structured chronology statements here...">[08:15 AM] Safety incident reported at prep station.
+        <textarea id="logText" placeholder="Enter chronological evidence logs...">[08:15 AM] Safety incident reported at prep station.
 [08:30 AM] Area secured by safety committee.
-[08:45 AM] Initial witness statements recorded.
-[09:00 AM] Photographic evidence authenticated.</textarea>
+[08:45 AM] Initial witness statements recorded.</textarea>
     </div>
 
-    <button id="syncBtn" class="btn-sync">Sync to Clio Grow Intake</button>
-
+    <button id="syncBtn" class="btn-sync">Sync directly to Chosen Firm Infrastructure</button>
     <div id="banner" class="status-banner"></div>
 </div>
 
 <script>
     document.getElementById('syncBtn').addEventListener('click', async () => {
-        const leadName = document.getElementById('leadName').value.trim();
+        const firmSelect = document.getElementById('firmSelect');
+        const firmId = firmSelect.value;
+        const firmName = firmSelect.options[firmSelect.selectedIndex].text;
         const logText = document.getElementById('logText').value.trim();
         const banner = document.getElementById('banner');
 
-        if (!leadName || !logText) {
-            showBanner('Please fill out both the Client Name and the Log Content.', 'error');
+        if (!logText) {
+            showBanner('Please enter the log content before executing transmission.', 'error');
             return;
         }
 
-        showBanner('Establishing handshake and packaging timeline...', 'success');
+        showBanner(`Packaging chronology timeline for ${firmName}...`, 'success');
 
         try {
-            // Firing cleanly to your Vercel serverless background function
             const response = await fetch('/api/sync', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    leadName: leadName,
+                    firmId: firmId,
+                    firmName: firmName,
                     logText: logText,
-                    timestamp: new Date().toISOString(),
-                    routingTarget: 'GROW_INTAKE'
+                    timestamp: new Date().toISOString()
                 })
             });
 
             const result = await response.json();
 
             if (response.ok && result.success) {
-                showBanner(`Success! Locked inside Clio Grow Inbox. Lead Name: ${leadName}`, 'success');
+                showBanner(`Success! Locked securely inside ${firmName} infrastructure. (ID: ${firmId})`, 'success');
             } else {
-                throw new Error(result.error || 'Clio Grow connection refused.');
+                throw new Error(result.error || 'Clio connection refused application routing.');
             }
-
         } catch (err) {
             showBanner(`Sync Failed: ${err.message}`, 'error');
         }
