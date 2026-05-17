@@ -1,49 +1,56 @@
+// api/callback.js
+
 export default async function handler(req, res) {
+    // 1. Capture the temporary authorization code returned by Clio
     const { code, error } = req.query;
 
     if (error) {
-        return res.status(400).json({ error: `Authorization denied by user: ${error}` });
+        console.error('Clio Handshake Denied by User:', error);
+        return res.status(400).send(`Authorization Denied: ${error}`);
     }
 
     if (!code) {
-        return res.status(400).json({ error: 'Missing authorization code from Clio.' });
+        return res.status(400).send('Missing authorization code from Clio infrastructure.');
     }
 
-    try {
-        const params = new URLSearchParams();
-        params.append('client_id', process.env.CLIO_CLIENT_ID);
-        params.append('client_secret', process.env.CLIO_CLIENT_SECRET);
-        params.append('grant_type', 'authorization_code');
-        params.append('code', code);
-        params.append('redirect_uri', process.env.CLIO_REDIRECT_URI);
+    // 2. Exact configuration variables matching your Clio Developer Portal screen
+    const clientId = process.env.CLIO_CLIENT_ID || '18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s';
+    const clientSecret = process.env.CLIO_CLIENT_SECRET; // Pulled securely from Vercel env
+    const redirectUri = 'https://worktimeline-app.vercel.app/api/callback';
 
-        // Native exchange targeting the Canadian Clio authentication hub
+    try {
+        // 3. Trade the temporary code for a secure, authenticated Account Token
         const tokenResponse = await fetch('https://ca.app.clio.com/oauth/token', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: params
+            body: new URLSearchParams({
+                grant_type: 'authorization_code',
+                code: code,
+                client_id: clientId,
+                client_secret: clientSecret,
+                redirect_uri: redirectUri
+            })
         });
 
-        const data = await tokenResponse.json();
+        const tokenData = await tokenResponse.json();
 
         if (!tokenResponse.ok) {
-            throw new Error(data.error_description || data.error || 'Failed token exchange');
+            throw new Error(tokenData.error_description || tokenData.error || 'Token exchange failed.');
         }
 
-        // Grabbing the valid access token issued by Clio
-        const { access_token } = data;
+        // 4. Capture the Fresh Access Token
+        const accessToken = tokenData.access_token;
 
-        // STRATEGIC FIX: Securely pass the token to your UI inside the URL redirect 
-        // This ensures timeline.html can extract it and store it in sessionStorage
+        // 5. Bounce the user back to your timeline panel, passing the token safely in the URL
         res.writeHead(302, { 
-            Location: `/timeline.html?status=connected&token=${encodeURIComponent(access_token)}` 
+            Location: `/timeline.html?token=${encodeURIComponent(accessToken)}` 
         });
         res.end();
 
     } catch (err) {
-        console.error('Clio Handshake Token Error:', err.message);
-        return res.status(500).json({ error: 'Handshake failed', details: err.message });
+        console.error('Callback Pipeline Exchange Failure:', err.message);
+        return res.status(500).send(`Pipeline Exchange Failed: ${err.message}`);
     }
 }
