@@ -113,7 +113,7 @@
       const statusIndicator = document.getElementById('syncStatusIndicator');
       const handshakeBtn = document.getElementById('handshakeBtn');
 
-      // Locked in with your brand new Canadian Manage Client ID string
+      // Locked in with your precise Canadian Manage Client ID string
       cachedClioClientId = "btscu9WmPHYellZtZA9slQfynBAQudwjaR7pEDdq"; 
       
       statusText.textContent = "Pipeline Verified & Locked";
@@ -131,14 +131,9 @@
     function initiateClioHandshake() {
       if (!cachedClioClientId) return;
 
-      // Points specifically to the Canadian Data Cluster endpoint
+      // Primary Canadian Authorization Gateway
       const AUTH_GATEWAY = 'https://ca.app.clio.com/oauth/authorize';
-      
-      // Explicitly matching the exact whitelisted Redirect URI pattern in your console
       const redirectUri = 'https://worktimeline-app.vercel.app/api/callback'; 
-      
-      // Standardize requested permissions scopes to match your specific app capabilities
-      const scope = 'activities accounting api billing calendars communications documents identity matters users';
       
       const statePayload = {
         platform: 'manage',
@@ -147,14 +142,14 @@
       };
       const state = btoa(JSON.stringify(statePayload));
 
+      // Notice how &scope= is completely removed here. Clio Manage loads scopes directly from your portal profile checkboxes automatically.
       const authUrl = `${AUTH_GATEWAY}?` + 
         `response_type=code` +
         `&client_id=${encodeURIComponent(cachedClioClientId)}` + 
         `&redirect_uri=${encodeURIComponent(redirectUri)}` +
-        `&state=${encodeURIComponent(state)}` +
-        `&scope=${encodeURIComponent(scope)}`;
+        `&state=${encodeURIComponent(state)}`;
 
-      console.log("WorkTimeline™ Core Matrix | Canadian Manage Handshake Initialized: ", authUrl);
+      console.log("WorkTimeline™ Matrix | Canadian Handshake Initialized: ", authUrl);
       window.location.href = authUrl;
     }
 
