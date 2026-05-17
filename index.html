@@ -11,9 +11,12 @@
             background-color: #f5f5f7;
             color: #1d1d1f;
             margin: 0;
-            padding: 2rem;
+            padding: 1.5rem;
             display: flex;
             justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
         }
         .wrapper {
             background: #ffffff;
@@ -27,7 +30,13 @@
             font-size: 22px;
             font-weight: 600;
             margin-top: 0;
+            margin-bottom: 5px;
             color: #1d1d1f;
+        }
+        .subtitle {
+            font-size: 13px;
+            color: #86868b;
+            margin-bottom: 2rem;
         }
         .form-group {
             margin-bottom: 1.5rem;
@@ -91,61 +100,60 @@
 
 <div class="wrapper">
     <h2>Transmit to Firm Infrastructure</h2>
+    <div class="subtitle">Pipeline: WorkTimeline ➔ Clio Grow Intake</div>
     
     <div class="form-group">
-        <label for="matterId">Clio Matter ID</label>
-        <input type="text" id="matterId" placeholder="e.g., 123456789">
+        <label for="leadName">Client Name / Reference</label>
+        <input type="text" id="leadName" placeholder="e.g., Spencer Densmore" value="Spencer Densmore">
     </div>
 
     <div class="form-group">
         <label for="logText">Contemporaneous Log Content</label>
-        <textarea id="logText" placeholder="Enter the verified, structured chronology statements here..."></textarea>
+        <textarea id="logText" placeholder="Enter the verified, structured chronology statements here...">[08:15 AM] Safety incident reported at prep station.
+[08:30 AM] Area secured by safety committee.
+[08:45 AM] Initial witness statements recorded.
+[09:00 AM] Photographic evidence authenticated.</textarea>
     </div>
 
-    <button id="syncBtn" class="btn-sync">Sync to Firm File</button>
+    <button id="syncBtn" class="btn-sync">Sync to Clio Grow Intake</button>
 
     <div id="banner" class="status-banner"></div>
 </div>
 
 <script>
     document.getElementById('syncBtn').addEventListener('click', async () => {
-        const matterId = document.getElementById('matterId').value;
-        const logText = document.getElementById('logText').value;
+        const leadName = document.getElementById('leadName').value.trim();
+        const logText = document.getElementById('logText').value.trim();
         const banner = document.getElementById('banner');
 
-        if (!matterId || !logText) {
-            showBanner('Please fill out both the Matter ID and the Log Content.', 'error');
+        if (!leadName || !logText) {
+            showBanner('Please fill out both the Client Name and the Log Content.', 'error');
             return;
         }
 
-        // For testing, mock an active session token. 
-        // In full production, your backend session will handle this silently.
-        const mockToken = 'YOUR_ACTIVE_CLIO_ACCESS_TOKEN';
-
-        showBanner('Packaging and validating payload...', 'success');
+        showBanner('Establishing handshake and packaging timeline...', 'success');
 
         try {
-            // Pointing directly to your native Vercel serverless endpoint
+            // Firing cleanly to your Vercel serverless background function
             const response = await fetch('/api/sync', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    matterId: matterId,
+                    leadName: leadName,
                     logText: logText,
                     timestamp: new Date().toISOString(),
-                    referenceId: 'WT-' + Math.floor(1000 + Math.random() * 9000),
-                    accessToken: mockToken
+                    routingTarget: 'GROW_INTAKE'
                 })
             });
 
             const result = await response.json();
 
             if (response.ok && result.success) {
-                showBanner(`Success! Transmitted beautifully. Clio Note ID: ${result.clio_note_id}`, 'success');
+                showBanner(`Success! Locked inside Clio Grow Inbox. Lead Name: ${leadName}`, 'success');
             } else {
-                throw new Error(result.error || 'Transmission failure');
+                throw new Error(result.error || 'Clio Grow connection refused.');
             }
 
         } catch (err) {
