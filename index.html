@@ -18,19 +18,16 @@
       border-radius: 3px;
     }
     
-    /* Circadian Mode Smooth State Transitions */
     body {
       transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
-    /* Premium Privacy Shield Blur Utility */
     .privacy-blur {
       filter: blur(12px);
       pointer-events: none;
       user-select: none;
     }
 
-    /* Core Chromatic Validation Theme Adjustments */
     .spine-track::before {
       content: '';
       position: absolute;
@@ -53,12 +50,8 @@
     </div>
     
     <div class="flex items-center gap-2.5">
-      <button id="circadianToggle" class="p-2 rounded-xl bg-slate-700/50 hover:bg-slate-700 text-amber-400 border border-slate-600/40 transition-all duration-200 active:scale-95" title="Toggle Circadian Mode">
-        ☀️
-      </button>
-      <button id="privacySwitch" class="px-3 py-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 text-[11px] font-mono font-bold uppercase tracking-wider transition-all duration-200 active:scale-95">
-        Shield Off
-      </button>
+      <button id="circadianToggle" class="p-2 rounded-xl bg-slate-700/50 hover:bg-slate-700 text-amber-400 border border-slate-600/40 transition-all duration-200 active:scale-95">☀️</button>
+      <button id="privacySwitch" class="px-3 py-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 text-[11px] font-mono font-bold uppercase tracking-wider transition-all duration-200 active:scale-95">Shield Off</button>
     </div>
   </header>
 
@@ -70,15 +63,15 @@
       <div class="flex justify-between items-start mb-4">
         <div>
           <span class="text-[9px] font-mono uppercase bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded-md border border-blue-500/20 font-bold tracking-wider">
-            Clio Canadian Account Gateway
+            Clio Manage Canadian Core Nodes
           </span>
-          <h2 class="text-xl font-extrabold mt-1 text-white tracking-tight">3-Legged OAuth Handshake</h2>
+          <h2 class="text-xl font-extrabold mt-1 text-white tracking-tight">Phase 1: Core Portal Sync</h2>
         </div>
         <div class="h-2.5 w-2.5 rounded-full bg-red-500 animate-pulse mt-2 shadow-lg shadow-red-500/50" id="syncStatusIndicator"></div>
       </div>
       
       <p class="text-xs text-slate-300 leading-relaxed mb-4">
-        Establishing legal logging pathways straight into your target pilot practice firm configuration using verified application profile constraints.
+        Connecting core firm architecture. This pipeline routes directly to the Canadian platform cluster using verified workspace permissions.
       </p>
 
       <div class="bg-slate-900/80 rounded-xl p-3.5 border border-slate-800 mb-5 font-mono text-[11px] text-slate-400 space-y-1.5 shadow-inner">
@@ -87,7 +80,7 @@
         <div class="flex justify-between"><span class="text-slate-500">VAULT_STATUS:</span> <span id="vaultStatusText" class="text-red-400 font-bold">Awaiting Pipeline Data...</span></div>
       </div>
 
-      <button onclick="initiateClioHandshake('grow')" id="handshakeBtn" disabled class="w-full py-3.5 bg-slate-700 text-slate-400 cursor-not-allowed font-bold text-sm tracking-wide rounded-xl shadow-lg transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2">
+      <button onclick="initiateClioHandshake('manage')" id="handshakeBtn" disabled class="w-full py-3.5 bg-slate-700 text-slate-400 cursor-not-allowed font-bold text-sm tracking-wide rounded-xl shadow-lg transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2">
         <span>Initializing Vault Tunnel...</span> ⚡
       </button>
     </section>
@@ -102,33 +95,7 @@
             <span class="text-[10px] font-mono text-slate-400">14:10 PDT // Original Log Entry</span>
             <span class="text-[9px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20 font-bold uppercase tracking-wider">Verified</span>
           </div>
-          <p class="text-xs text-slate-200 leading-normal">Incident logged at staging bay. Physical assets inspected, camera footage secured matching field manifest.</p>
-        </div>
-      </div>
-
-      <div class="relative group">
-        <div class="absolute -left-[21px] top-2 h-2.5 w-2.5 rounded-full bg-amber-400 border-4 border-slate-900 ring-2 ring-amber-500/30 z-10"></div>
-        <div id="timelineCard2" class="bg-slate-800/40 border border-slate-700/40 rounded-xl p-4 space-y-2 relative overflow-hidden hover:border-slate-600/60 transition-colors pt-7">
-          
-          <div class="absolute inset-x-0 top-0 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-b border-amber-500/20 px-4 py-1 flex justify-between items-center">
-            <span class="text-[9px] font-mono uppercase tracking-wider text-amber-400 font-extrabold">Superseding Amendment Layer</span>
-            <span class="text-[9px] font-mono text-slate-500 font-semibold">v1.2 Active</span>
-          </div>
-
-          <div class="space-y-2">
-            <div class="flex justify-between items-center">
-              <span class="text-[10px] font-mono text-slate-400">11:15 PDT // Amended Ledger Record</span>
-              <span class="text-[9px] font-mono text-slate-500 line-through">Prev Ref: #0421</span>
-            </div>
-            <p class="text-xs text-slate-200 leading-normal">
-              Witness location marker corrected from generic grid string to exact site asset tag location. Verified via system track logging.
-            </p>
-            <div class="bg-slate-900/60 rounded-lg p-2 text-[10px] font-mono text-slate-400 border border-slate-800/80 flex justify-between items-center">
-              <div><span class="text-amber-500/70 font-semibold">Audit Hash:</span> <span class="text-slate-300 font-bold">8f3c1a92e47b01b6...</span></div>
-              <span class="text-[9px] text-emerald-400 bg-emerald-500/10 px-1 rounded border border-emerald-500/20">Locked</span>
-            </div>
-          </div>
-
+          <p class="text-xs text-slate-200 leading-normal">System initialized. Awaiting confirmation loop data from core Manage API cluster channels.</p>
         </div>
       </div>
     </section>
@@ -140,27 +107,21 @@
   </footer>
 
   <script>
-    // System Runtime State
     let cachedClioClientId = "";
 
-    // =========================================================================
-    // 1. HARDCODED PILOT CONFIGURATION (Direct Handshake Activation)
-    // =========================================================================
     function loadConfig() {
       const statusText = document.getElementById('vaultStatusText');
       const statusIndicator = document.getElementById('syncStatusIndicator');
       const handshakeBtn = document.getElementById('handshakeBtn');
 
-      // True Canadian Regional client key mapping from application info portal
-      cachedClioClientId = "18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s"; 
+      // Locked in with your exact Canadian Manage Client ID from screenshot 2
+      cachedClioClientId = "7d10fc8d-d7e5-4d08-be13-ef37f191f693"; 
       
-      // Instantly flip visual tracking states to verified
       statusText.textContent = "Pipeline Verified & Locked";
       statusText.classList.replace('text-red-400', 'text-emerald-400');
       statusIndicator.classList.replace('bg-red-500', 'bg-emerald-400');
       statusIndicator.classList.replace('shadow-red-500/50', 'shadow-emerald-500/50');
       
-      // Unlock the interactive button panel
       handshakeBtn.disabled = false;
       handshakeBtn.className = "w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-sm tracking-wide rounded-xl shadow-lg shadow-emerald-950/40 transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer";
       handshakeBtn.innerHTML = "<span>Execute Live Handshake Sync</span> ⚡";
@@ -168,16 +129,10 @@
 
     window.addEventListener('DOMContentLoaded', loadConfig);
 
-    // =========================================================================
-    // 2. FIXED OAUTH 3-LEGGED HANDSHAKE ROUTING CONTEXT
-    // =========================================================================
-    function initiateClioHandshake(targetPlatform = 'grow') {
-      if (!cachedClioClientId) {
-        alert("Pipeline Error: No authorization client parameters fetched from vault context.");
-        return;
-      }
+    function initiateClioHandshake(targetPlatform = 'manage') {
+      if (!cachedClioClientId) return;
 
-      // Route through the standard Canadian account login gateway
+      // Point directly to the core account platform server
       const AUTH_GATEWAY = 'https://ca.app.clio.com/oauth/authorize';
       const redirectUri = window.location.origin + '/api/callback'; 
       const scope = 'read'; 
@@ -196,54 +151,36 @@
         `&state=${encodeURIComponent(state)}` +
         `&scope=${encodeURIComponent(scope)}`;
 
-      console.log("WorkTimeline™ Core Matrix | Handshake Triggered: ", authUrl);
+      console.log("WorkTimeline™ Core Matrix | Manage Handshake Initialized: ", authUrl);
       window.location.href = authUrl;
     }
 
-    // =========================================================================
-    // 3. PREMIUM MOBILE VISUAL UI SUBSYSTEM CONTROLS
-    // =========================================================================
+    // UI CONTROLS
     const privacyBtn = document.getElementById('privacySwitch');
     const card1 = document.getElementById('timelineCard1');
-    const card2 = document.getElementById('timelineCard2');
     let isBlurred = false;
 
     privacyBtn.addEventListener('click', () => {
       isBlurred = !isBlurred;
       if (isBlurred) {
         card1.classList.add('privacy-blur');
-        card2.classList.add('privacy-blur');
         privacyBtn.textContent = 'Shield On';
-        privacyBtn.classList.replace('bg-red-500/10', 'bg-emerald-500/20');
-        privacyBtn.classList.replace('text-red-400', 'text-emerald-400');
-        privacyBtn.classList.add('border-emerald-500/30');
       } else {
         card1.classList.remove('privacy-blur');
-        card2.classList.remove('privacy-blur');
         privacyBtn.textContent = 'Shield Off';
-        privacyBtn.classList.replace('bg-emerald-500/20', 'bg-red-500/10');
-        privacyBtn.classList.replace('text-emerald-400', 'text-red-400');
-        privacyBtn.classList.remove('border-emerald-500/30');
       }
     });
 
     const circadianBtn = document.getElementById('circadianToggle');
     let isLightMode = false;
-
     circadianBtn.addEventListener('click', () => {
       isLightMode = !isLightMode;
       if (isLightMode) {
         document.body.classList.replace('bg-slate-900', 'bg-slate-50');
         document.body.classList.replace('text-slate-100', 'text-slate-900');
-        circadianBtn.textContent = '🌙';
-        circadianBtn.classList.replace('bg-slate-700/50', 'bg-slate-200');
-        circadianBtn.classList.replace('text-amber-400', 'text-slate-700');
       } else {
         document.body.classList.replace('bg-slate-50', 'bg-slate-900');
         document.body.classList.replace('text-slate-900', 'text-slate-100');
-        circadianBtn.textContent = '☀️';
-        circadianBtn.classList.replace('bg-slate-200', 'bg-slate-700/50');
-        circadianBtn.classList.replace('text-slate-700', 'text-amber-400');
       }
     });
   </script>
