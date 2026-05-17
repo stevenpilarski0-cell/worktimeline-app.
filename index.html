@@ -84,6 +84,9 @@
 
 <script>
     document.getElementById('syncBtn').addEventListener('click', async () => {
+        const firmSelect = document.getElementById('firmSelect');
+        const firmId = firmSelect.value; // Explicitly pull the 01KPZB4... ID from the menu
+        const firmName = firmSelect.options[firmSelect.selectedIndex].text;
         const logText = document.getElementById('logText').value.trim();
         const banner = document.getElementById('banner');
 
@@ -98,7 +101,11 @@
             const response = await fetch('/api/sync', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ logText: logText })
+                body: JSON.stringify({ 
+                    firmId: firmId, 
+                    firmName: firmName, 
+                    logText: logText 
+                })
             });
 
             const result = await response.json();
