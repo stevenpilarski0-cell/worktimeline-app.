@@ -46,12 +46,12 @@
       </div>
       
       <p class="text-xs text-slate-300 leading-relaxed mb-4">
-        Routing cryptographic pipeline handshakes directly to the dedicated Clio Grow authorization engine.
+        Routing cryptographic pipeline handshakes directly to the Canadian platform authorization hub.
       </p>
 
       <div class="bg-slate-900/80 rounded-xl p-3.5 border border-slate-800 mb-5 font-mono text-[11px] text-slate-400 space-y-1.5 shadow-inner">
         <div class="flex justify-between"><span class="text-slate-500">GROW_FIRM_ID:</span> <span class="text-blue-400 font-semibold select-all">01KPZB4ZCXHE3Z92S1KM3AT96V</span></div>
-        <div class="flex justify-between"><span class="text-slate-500">AUTH_ENDPOINT:</span> <span class="text-amber-400">app.clio.com/grow</span></div>
+        <div class="flex justify-between"><span class="text-slate-500">AUTH_ENDPOINT:</span> <span class="text-amber-400">ca.auth.api.clio.com</span></div>
         <div class="flex justify-between"><span class="text-slate-500">VAULT_STATUS:</span> <span class="text-emerald-400 font-bold">Engine Calibrated</span></div>
       </div>
 
@@ -88,8 +88,8 @@
     }
 
     async function initiateClioGrowPKCEHandshake() {
-      // Pointing directly to the active core Grow app login gateway route
-      const AUTH_GATEWAY = 'https://app.clio.com/grow/oauth/authorize';
+      // Direct unified Canadian platform authentication gateway endpoint
+      const AUTH_GATEWAY = 'https://ca.auth.api.clio.com/oauth/authorize';
       const redirectUri = 'https://worktimeline-app.vercel.app/api/callback';
       
       const codeVerifier = generateRandomString(64);
