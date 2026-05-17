@@ -1,124 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>WorkTimeline™ // LegalTech Grow Suite</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.3); border-radius: 3px; }
-    body { transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkTimeline - Portal</title>
+    <style>
+        /* Sleek, Mac-style minimalist design */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background: #ffffff;
+            padding: 2.5rem;
+            border-radius: 18px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            max-width: 400px;
+            width: 90%;
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        p {
+            color: #86868b;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 2rem;
+        }
+        .btn-connect {
+            background-color: #008080; /* Teal accent */
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 15px;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-connect:hover {
+            background-color: #006666;
+        }
+        .btn-connect:active {
+            transform: scale(0.98);
+        }
+        .status-message {
+            margin-top: 1.5rem;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .status-success { color: #008080; }
+        .status-error { color: #ff3b30; }
+    </style>
 </head>
-<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col items-center justify-between antialiased selection:bg-emerald-500/30">
+<body>
 
-  <header class="w-full max-w-md bg-slate-800/90 backdrop-blur-md border-b border-slate-700/50 p-4 sticky top-0 z-50 flex justify-between items-center shadow-md">
-    <div>
-      <h1 class="text-lg font-bold tracking-tight text-white flex items-center gap-1.5">
-        WorkTimeline<span class="text-[10px] font-bold text-emerald-400 px-1.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 uppercase tracking-widest">TM</span>
-      </h1>
-      <p class="text-[10px] text-slate-400 tracking-wider font-mono uppercase">Intake & Grow Pipeline</p>
-    </div>
-  </header>
-
-  <main class="w-full max-w-md flex-1 p-4 flex flex-col justify-start space-y-6">
-    <section class="bg-gradient-to-br from-slate-800 to-slate-850 border border-slate-700/60 rounded-2xl p-5 shadow-xl relative overflow-hidden">
-      <div class="flex justify-between items-start mb-4">
-        <div>
-          <span class="text-[9px] font-mono uppercase bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded-md border border-amber-500/20 font-bold tracking-wider">Clio Platform Secure Gateway</span>
-          <h2 class="text-xl font-extrabold mt-1 text-white tracking-tight">Phase 1: Grow Engine Sync</h2>
-        </div>
-        <div class="h-2.5 w-2.5 rounded-full bg-emerald-400 shadow-lg shadow-emerald-500/50"></div>
-      </div>
-      
-      <p class="text-xs text-slate-300 leading-relaxed mb-4">Routing cryptographic pipeline handshakes directly to the unified Canadian Clio Platform authorization engine.</p>
-
-      <div class="bg-slate-900/80 rounded-xl p-3.5 border border-slate-800 mb-5 font-mono text-[11px] text-slate-400 space-y-1.5 shadow-inner">
-        <div class="flex justify-between"><span class="text-slate-500">GROW_FIRM_ID:</span> <span class="text-blue-400 font-semibold select-all">01KPZB4ZCXHE3Z92S1KM3AT96V</span></div>
-        <div class="flex justify-between"><span class="text-slate-500">AUTH_ENDPOINT:</span> <span class="text-amber-400">ca.auth.api.clio.com</span></div>
-        <div class="flex justify-between"><span class="text-slate-500">VAULT_STATUS:</span> <span class="text-emerald-400 font-bold">Engine Calibrated</span></div>
-      </div>
-
-      <button onclick="initiateClioGrowPKCEHandshake()" id="handshakeBtn" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-bold text-sm tracking-wide rounded-xl shadow-lg transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
-        <span id="btnText">Execute Clio Grow Sync</span> ⚡
-      </button>
-    </section>
-  </main>
-
-  <footer class="w-full max-w-md bg-slate-900/50 border-t border-slate-800/60 p-3 text-center text-[10px] font-mono text-slate-500 tracking-widest">
-    WORKTIMELINE SECURITY FRAMEWORK // PRODUCTION ACTIVE
-  </footer>
-
-  <script>
-    const GROW_CLIENT_ID = "18C4eBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s";
-    const AUTH_GATEWAY = "https://ca.auth.api.clio.com/oauth/authorize";
+<div class="container">
+    <h1>Connect to the Firm</h1>
+    <p>Securely link WorkTimeline with your Clio account to seamlessly route contemporaneous evidence and verified chronologies into your case files.</p>
     
-    // Fixed domain match matching dashboard portal settings perfectly
-    const REDIRECT_URI = "https://worktimeline-app.vercel.app/api/callback";
+    <button id="connectBtn" class="btn-connect">Connect to Clio</button>
+    
+    <div id="statusOutput" class="status-message"></div>
+</div>
 
-    function generateRandomString(length) {
-      const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
-      let result = '';
-      const values = new Uint8Array(length);
-      window.crypto.getRandomValues(values);
-      for (let i = 0; i < length; i++) {
-        result += charset[values[i] % charset.length];
-      }
-      return result;
+<script>
+    // 1. Point the button to initiate the handshake
+    document.getElementById('connectBtn').addEventListener('click', () => {
+        // Change this client ID to match your Clio Developer Credentials
+        const CLIENT_ID = 'YOUR_CLIO_CLIENT_ID'; 
+        
+        // This targets your Vercel URL/api/callback setup dynamically
+        const REDIRECT_URI = encodeURIComponent(window.location.origin + '/api/callback');
+        
+        // Routing explicitly via Clio's NA interface, which passes control safely
+        const authUrl = `https://app.clio.com/oauth/authorize?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}`;
+        
+        // Hand off the user to the secure login screen
+        window.location.href = authUrl;
+    });
+
+    // 2. Check if the user just returned from a failed handshake attempt
+    const urlParams = new URLSearchParams(window.location.search);
+    const statusOutput = document.getElementById('statusOutput');
+    
+    if (urlParams.has('error')) {
+        statusOutput.className = 'status-message status-error';
+        statusOutput.textContent = 'Connection failed: ' + urlParams.get('error');
     }
+</script>
 
-    function makeBase64UrlSafe(base64String) {
-      return base64String.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-    }
-
-    async function generateCodeChallenge(verifier) {
-      const encoder = new TextEncoder();
-      const data = encoder.encode(verifier);
-      const digest = await window.crypto.subtle.digest('SHA-256', data);
-      const binaryString = String.fromCharCode(...new Uint8Array(digest));
-      return makeBase64UrlSafe(btoa(binaryString));
-    }
-
-    async function initiateClioGrowPKCEHandshake() {
-      const handshakeButton = document.getElementById('handshakeBtn');
-      const textNode = document.getElementById('btnText');
-      
-      try {
-        handshakeButton.disabled = true;
-        textNode.innerText = "Calibrating Security Vectors...";
-
-        const codeVerifier = generateRandomString(64);
-        const codeChallenge = await generateCodeChallenge(codeVerifier);
-
-        const statePayload = {
-          platform: 'grow',
-          pilot_firm: '01KPZB4ZCXHE3Z92S1KM3AT96V',
-          verifier: codeVerifier, 
-          timestamp: Date.now()
-        };
-        const rawBase64State = btoa(JSON.stringify(statePayload));
-        const urlSafeState = makeBase64UrlSafe(rawBase64State);
-
-        const urlParams = new URLSearchParams({
-          response_type: 'code',
-          client_id: GROW_CLIENT_ID,
-          redirect_uri: REDIRECT_URI,
-          state: urlSafeState,
-          code_challenge: codeChallenge,
-          code_challenge_method: 'S256'
-        });
-
-        const explicitOutboundTarget = `${AUTH_GATEWAY}?${urlParams.toString()}`;
-        window.location.href = explicitOutboundTarget;
-
-      } catch (error) {
-        console.error("Critical Authentication Gateway Exception:", error);
-        handshakeButton.disabled = false;
-        textNode.innerText = "Engine Handshake Failed. Retry Sync";
-      }
-    }
-  </script>
 </body>
 </html>
