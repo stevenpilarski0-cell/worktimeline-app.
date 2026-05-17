@@ -16,19 +16,20 @@ export default async function handler(req, res) {
     }
 
     try {
-        // Corrected payload keys explicitly for the standardized Clio Grow Lead endpoint
+        // Formatted exactly to match Clio Grow's legacy Lead Inbox validation schemas
         const leadPayload = {
-            lead: {
-                first_name: "WorkTimeline",
-                last_name: "Log Entry",
-                email: "stevenpilarski0@gmail.com",
-                description: `TIMESTAMPED CHRONOLOGY STATEMENT:\n\n${logText}\n\n--------------------------------------------\nMETADATA:\n- Target Firm ID: 01KPZB4ZCXHE3Z92S1KM3AT96V\n- Security Protocol: Lead Capture Pipeline`,
-                status: "received"
+            inbox_lead: {
+                from_first: "WorkTimeline",
+                from_last: "Log Entry",
+                from_email: "stevenpilarski0@gmail.com",
+                from_message: `TIMESTAMPED CHRONOLOGY STATEMENT:\n\n${logText}\n\n--------------------------------------------\nMETADATA:\n- Target Firm ID: 01KPZB4ZCXHE3Z92S1KM3AT96V`,
+                from_source: "WorkTimeline Integration",
+                referring_url: "https://worktimeline-app.vercel.app"
             }
         };
 
-        // FIXED ENDPOINT: Changed from /inbox_leads to /leads to match the Canadian schema
-        const growResponse = await fetch('https://ca.grow.clio.com/api/v1/leads', {
+        // TARGET URL: Shifted directly to Clio Canada's absolute inbox portal endpoint
+        const growResponse = await fetch('https://ca.grow.clio.com/inbox_leads', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${staticToken}`,
@@ -39,8 +40,9 @@ export default async function handler(req, res) {
 
         const responseText = await growResponse.text();
 
-        if (!growResponse.ok) {
-            throw new Error(`Clio rejected the lead sync. Server says: ${responseText}`);
+        // Clio returns a 201 Created status code upon transmission success
+        if (!growResponse.ok && growResponse.status !== 201) {
+            throw new Error(`Clio rejected validation. Server status: ${growResponse.status}. Details: ${responseText}`);
         }
 
         return res.status(200).json({ success: true });
