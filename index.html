@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>WorkTimeline™ // LegalTech Core Suite</title>
-  <!-- Tailwind CSS Production CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     /* Custom Scrollbar for the Vertical Spine Track */
@@ -45,7 +44,6 @@
 </head>
 <body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col items-center justify-between antialiased selection:bg-emerald-500/30">
 
-  <!-- TOP APP BAR: Premium System Header & Security Toggles -->
   <header class="w-full max-w-md bg-slate-800/90 backdrop-blur-md border-b border-slate-700/50 p-4 sticky top-0 z-50 flex justify-between items-center shadow-md">
     <div>
       <h1 class="text-lg font-bold tracking-tight text-white flex items-center gap-1.5">
@@ -55,21 +53,17 @@
     </div>
     
     <div class="flex items-center gap-2.5">
-      <!-- Circadian Light/Dark Engine Button -->
       <button id="circadianToggle" class="p-2 rounded-xl bg-slate-700/50 hover:bg-slate-700 text-amber-400 border border-slate-600/40 transition-all duration-200 active:scale-95" title="Toggle Circadian Mode">
         ☀️
       </button>
-      <!-- Privacy Screen Tool Switch -->
       <button id="privacySwitch" class="px-3 py-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 text-[11px] font-mono font-bold uppercase tracking-wider transition-all duration-200 active:scale-95">
         Shield Off
       </button>
     </div>
   </header>
 
-  <!-- MAIN CONTAINER: Premium Mobile Playback Layout -->
   <main class="w-full max-w-md flex-1 p-4 flex flex-col justify-start overflow-y-auto space-y-6">
     
-    <!-- Integration Pipeline Gateway Card -->
     <section class="bg-gradient-to-br from-slate-800 to-slate-850 border border-slate-700/60 rounded-2xl p-5 shadow-xl relative overflow-hidden">
       <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl pointer-events-none"></div>
       
@@ -87,24 +81,20 @@
         Bypassing standard regional app routing. This operational block targets the global developer authorization layer to establish legal logging pathways straight into your target pilot practice firm configuration.
       </p>
 
-      <!-- Connection Hard-Configuration Context Metadata -->
       <div class="bg-slate-900/80 rounded-xl p-3.5 border border-slate-800 mb-5 font-mono text-[11px] text-slate-400 space-y-1.5 shadow-inner">
         <div class="flex justify-between"><span class="text-slate-500">PILOT_FIRM_ID:</span> <span class="text-blue-400 font-semibold select-all">01KPZB4ZCXHE3Z92S1KM3AT96V</span></div>
         <div class="flex justify-between"><span class="text-slate-500">AUTH_ENDPOINT:</span> <span class="text-emerald-400">developers.api.clio.com</span></div>
         <div class="flex justify-between"><span class="text-slate-500">VAULT_STATUS:</span> <span id="vaultStatusText" class="text-red-400 font-bold">Awaiting Pipeline Data...</span></div>
       </div>
 
-      <!-- EXECUTION ACTION CONTROL -->
       <button onclick="initiateClioHandshake('grow')" id="handshakeBtn" disabled class="w-full py-3.5 bg-slate-700 text-slate-400 cursor-not-allowed font-bold text-sm tracking-wide rounded-xl shadow-lg transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2">
         <span>Initializing Vault Tunnel...</span> ⚡
       </button>
     </section>
 
-    <!-- VISUAL TIMELINE JOURNAL COMPONENT (Targets for Shields and Layering) -->
     <section class="space-y-4 relative ml-2 pl-4 spine-track">
       <h3 class="text-[10px] font-mono uppercase tracking-widest text-slate-400 font-extrabold mb-3 -ml-4">Live Playback Log Feed</h3>
       
-      <!-- Timeline Entry Block 1 -->
       <div class="relative group">
         <div class="absolute -left-[21px] top-2 h-2.5 w-2.5 rounded-full bg-emerald-400 border-4 border-slate-900 ring-2 ring-emerald-500/30 z-10"></div>
         <div id="timelineCard1" class="bg-slate-800/40 border border-slate-700/40 rounded-xl p-4 space-y-2 hover:border-slate-600/60 transition-colors">
@@ -116,12 +106,10 @@
         </div>
       </div>
 
-      <!-- Timeline Entry Block 2: Courtroom-Ready Superseding Amendment Layer -->
       <div class="relative group">
         <div class="absolute -left-[21px] top-2 h-2.5 w-2.5 rounded-full bg-amber-400 border-4 border-slate-900 ring-2 ring-amber-500/30 z-10"></div>
         <div id="timelineCard2" class="bg-slate-800/40 border border-slate-700/40 rounded-xl p-4 space-y-2 relative overflow-hidden hover:border-slate-600/60 transition-colors pt-7">
           
-          <!-- Superseding Immutable Layer Banner -->
           <div class="absolute inset-x-0 top-0 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-b border-amber-500/20 px-4 py-1 flex justify-between items-center">
             <span class="text-[9px] font-mono uppercase tracking-wider text-amber-400 font-extrabold">Superseding Amendment Layer</span>
             <span class="text-[9px] font-mono text-slate-500 font-semibold">v1.2 Active</span>
@@ -147,12 +135,10 @@
 
   </main>
 
-  <!-- SECURE INTEGRITY FOOTER -->
   <footer class="w-full max-w-md bg-slate-900/50 border-t border-slate-800/60 p-3 text-center text-[10px] font-mono text-slate-500 tracking-widest">
     WORKTIMELINE SECURITY FRAMEWORK // PRODUCTION ACTIVE
   </footer>
 
-  <!-- CORE UI INTERACTION & HANDSHAKE ROUTING LOGIC ENGINE -->
   <script>
     // System Runtime State
     let cachedClioClientId = "";
@@ -211,8 +197,8 @@
       const AUTH_GATEWAY = 'https://developers.api.clio.com/oauth/authorize';
       const redirectUri = window.location.origin + '/api/callback'; 
       
-      // FIX: Clio platform scopes MUST be strictly comma-separated (no spaces)
-      const scopes = 'read,profile,accounts'; 
+      // Strict structural mapping: Clio platform gateway requires comma separation
+      const scope = 'read,profile,accounts'; 
       
       // Secure state token bundling payload details for verification logic mapping
       const statePayload = {
@@ -222,13 +208,13 @@
       };
       const state = btoa(JSON.stringify(statePayload));
 
-      // Construct pure production 3-legged redirection string bypassing previous errors
+      // Construct pure production 3-legged redirection string
       const authUrl = `${AUTH_GATEWAY}?` + 
         `response_type=code` +
         `&client_id=${encodeURIComponent(cachedClioClientId)}` + 
         `&redirect_uri=${encodeURIComponent(redirectUri)}` +
         `&state=${encodeURIComponent(state)}` +
-        `&scope=${encodeURIComponent(scopes)}`;
+        `&scope=${encodeURIComponent(scope)}`;
 
       console.log("WorkTimeline™ Core Matrix | Handshake Triggered to Gateway: ", authUrl);
       window.location.href = authUrl;
@@ -272,14 +258,12 @@
         circadianBtn.textContent = '🌙';
         circadianBtn.classList.replace('bg-slate-700/50', 'bg-slate-200');
         circadianBtn.classList.replace('text-amber-400', 'text-slate-700');
-        circadianBtn.classList.replace('border-slate-300', 'border-slate-300');
       } else {
         document.body.classList.replace('bg-slate-50', 'bg-slate-900');
         document.body.classList.replace('text-slate-900', 'text-slate-100');
         circadianBtn.textContent = '☀️';
         circadianBtn.classList.replace('bg-slate-200', 'bg-slate-700/50');
         circadianBtn.classList.replace('text-slate-700', 'text-amber-400');
-        circadianBtn.classList.replace('border-slate-300', 'border-slate-600/40');
       }
     });
   </script>
