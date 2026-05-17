@@ -17,20 +17,19 @@ module.exports = async (req, res) => {
 
   try {
     // 2. Safely unpack your custom base64 state wrapper layer
-    let userId = 'default_pilot_user';
+    let userId = '01KPZB4ZCXHE3Z92S1KM3AT96V'; // Fallback to your Pilot Firm ID
     let platform = 'manage';
 
     if (state) {
       try {
         const decodedState = JSON.parse(Buffer.from(decodeURIComponent(state), 'base64').toString());
         if (decodedState) {
-          // If a strict user tracking context exists, map it; otherwise fall back to firm tracking strings
           userId = decodedState.pilot_firm || '01KPZB4ZCXHE3Z92S1KM3AT96V';
           platform = decodedState.platform || 'manage';
         }
       } catch (e) {
-        console.warn("WorkTimeline Backend | State decoding fallback initialized. Processing as raw string.", e);
-        userId = state; // Fallback to raw string if state isn't base64 JSON
+        console.warn("WorkTimeline Backend | State decoding fallback initialized.", e);
+        userId = state; 
       }
     }
 
@@ -45,21 +44,20 @@ module.exports = async (req, res) => {
       clientId = process.env.CLIO_GROW_CLIENT_ID;
       tokenGatewayUrl = 'https://developers.api.clio.com/oauth/token';
     } else {
-      // Phase 1 Target: Explicitly routing to the clean global Manage core node
+      // Phase 1 Target: Locked perfectly to the true Canadian platform API cluster node
       clientId = process.env.CLIO_MANAGE_CLIENT_ID;
       clientSecret = process.env.CLIO_MANAGE_CLIENT_SECRET;
-      tokenGatewayUrl = 'https://app.clio.com/oauth/token';
+      tokenGatewayUrl = 'https://ca.app.clio.com/oauth/token';
     }
 
     // Verify system validation configuration inside the active Vercel panel
     if (!clientId) {
       console.error(`WorkTimeline Architecture Fault | Required environment variables are missing from your Vercel console.`);
-      throw new Error(`Server Configuration Error: Missing key mappings on Vercel for platform tier: ${platform}`);
+      throw new Error(`Server Configuration Error: Missing key mappings on Vercel.`);
     }
 
-    // 4. Securely reconstruct your true active Vercel redirect URI string 
-    const originUrl = req.headers.host ? `https://${req.headers.host}` : 'https://worktimeline-app.vercel.app';
-    const redirectUri = `${originUrl}/api/callback`;
+    // 4. Hardcoded Redirect URI to eliminate dynamic header mapping errors
+    const redirectUri = 'https://worktimeline-app.vercel.app/api/callback';
 
     console.log(`WorkTimeline Network Outbound | Shipping validation trade packet to: ${tokenGatewayUrl}`);
     console.log(`WorkTimeline Network Outbound | Asserting verification match URL: ${redirectUri}`);
@@ -76,7 +74,7 @@ module.exports = async (req, res) => {
       requestParams.append('client_secret', clientSecret);
     }
 
-    // 6. Execute direct backend code swap trade with Clio's root cluster node
+    // 6. Execute direct backend code swap trade with Clio's Canadian cluster node
     const clioResponse = await fetch(tokenGatewayUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -86,11 +84,11 @@ module.exports = async (req, res) => {
     const data = await clioResponse.json();
 
     if (!clioResponse.ok) {
-      console.error("Clio Root API Cluster Refused Token Exchange Request. Diagnostic payload: ", data);
+      console.error("Clio Canadian API Cluster Refused Token Exchange Request. Diagnostic payload: ", data);
       throw new Error(data.error_description || data.error || 'Token validation swap failed.');
     }
 
-    // 7. Calculate cryptographic date window limits for secure token lifespan tracking
+    // 7. Calculate date window limits for secure token lifespan tracking
     const expiresAt = new Date();
     expiresAt.setSeconds(expiresAt.getSeconds() + (data.expires_in || 3600));
 
