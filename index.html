@@ -6,19 +6,10 @@
   <title>WorkTimeline™ // LegalTech Grow Suite</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: rgba(156, 163, 175, 0.3);
-      border-radius: 3px;
-    }
-    body {
-      transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.3); border-radius: 3px; }
+    body { transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
   </style>
 </head>
 <body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col items-center justify-between antialiased selection:bg-emerald-500/30">
@@ -46,7 +37,7 @@
       </div>
       
       <p class="text-xs text-slate-300 leading-relaxed mb-4">
-        Routing cryptographic pipeline handshakes directly to the Canadian platform authorization hub.
+        Routing cryptographic pipeline handshakes directly to the Canadian platform authorization hub with verified scopes.
       </p>
 
       <div class="bg-slate-900/80 rounded-xl p-3.5 border border-slate-800 mb-5 font-mono text-[11px] text-slate-400 space-y-1.5 shadow-inner">
@@ -88,7 +79,7 @@
     }
 
     async function initiateClioGrowPKCEHandshake() {
-      // Direct unified Canadian platform authentication gateway endpoint
+      // Canadian platform regional gateway
       const AUTH_GATEWAY = 'https://ca.auth.api.clio.com/oauth/authorize';
       const redirectUri = 'https://worktimeline-app.vercel.app/api/callback';
       
@@ -96,6 +87,9 @@
       document.cookie = "clio_pkce_verifier=" + codeVerifier + "; path=/; max-age=3600; Secure; SameSite=Lax";
       
       const codeChallenge = await generateCodeChallenge(codeVerifier);
+
+      // Explicitly matching the exact read scopes enabled on your app dashboard screenshot
+      const scope = "grow_lead_inbox_read grow_custom_action_read grow_matter_read grow_matter_note_read grow_contact_read grow_contact_note_read grow_user_read";
 
       const statePayload = {
         platform: 'grow',
@@ -110,6 +104,7 @@
         `&client_id=${encodeURIComponent(GROW_CLIENT_ID)}` + 
         `&redirect_uri=${encodeURIComponent(redirectUri)}` +
         `&state=${encodeURIComponent(state)}` +
+        `&scope=${encodeURIComponent(scope)}` +
         `&code_challenge=${encodeURIComponent(codeChallenge)}` +
         `&code_challenge_method=S256`;
 
