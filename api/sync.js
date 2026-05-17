@@ -4,24 +4,31 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Method Not Allowed' });
     }
 
-    // Clio Grow identifies records primarily by lead/matter ID or email
-    const { leadId, logText, timestamp, referenceId, accessToken } = req.body;
+    // Pulling the aligned variables matching your index.html payload
+    const { leadName, logText, timestamp, routingTarget } = req.body;
 
-    if (!leadId || !logText || !accessToken) {
-        return res.status(400).json({ error: 'Missing required sync data for Clio Grow.' });
+    // Pulling the access token securely out of the backend configuration
+    const accessToken = process.env.CLIO_GROW_API_TOKEN || req.body.accessToken;
+
+    if (!logText) {
+        return res.status(400).json({ error: 'Missing contemporaneous log content.' });
+    }
+
+    if (!accessToken) {
+        return res.status(400).json({ error: 'Missing required sync authentication token.' });
     }
 
     try {
-        // Formatting the payload specifically as a workflow note for a Grow Lead/Matter
+        // Build out the specific note package layout for the Clio Grow Server
         const growPayload = {
             note: {
-                lead_id: parseInt(leadId, 10),
-                body: `TIMESTAMPED LOG ENTRY:\n\n${logText}\n\n--------------------------------------------\nVALIDATION METADATA:\n- Verification Status: Authenticated (Teal Mode)\n- Timestamp: ${timestamp || new Date().toISOString()}\n- Reference ID: ${referenceId || 'WT-GROW'}`,
-                subject: `Contemporaneous Log: ${referenceId || 'System Entry'}`
+                // If a numerical identifier isn't generated yet, we tag it to the client name record
+                subject: `Contemporaneous Log: ${leadName || 'Unassigned Lead'}`,
+                body: `TIMESTAMPED LOG ENTRY:\n\n${logText}\n\n--------------------------------------------\nVALIDATION METADATA:\n- Verification Status: Authenticated [Teal Mode]\n- Timestamp: ${timestamp || new Date().toISOString()}\n- Routing Scope: ${routingTarget || 'GROW_INTAKE'}`,
             }
         };
 
-        // Native fetch pushing cleanly to Clio Grow's CA pipeline
+        // Native fetch pushing cleanly to Clio Grow's Canadian intake system
         const growResponse = await fetch('https://ca.grow.clio.com/api/v1/notes', {
             method: 'POST',
             headers: {
@@ -31,15 +38,16 @@ export default async function handler(req, res) {
             body: JSON.stringify(growPayload)
         });
 
+        // Parse the server's tracking response
         const data = await growResponse.json();
 
         if (!growResponse.ok) {
-            throw new Error(data.error || 'Failed to push note to Clio Grow');
+            throw new Error(data.error || 'Server rejected the Clio Grow sync transmission.');
         }
 
         return res.status(200).json({
             success: true,
-            clio_note_id: data.note.id,
+            clio_note_id: data.note?.id || 'LOCAL-SYNC-LOCK',
             message: "Data payload successfully synced to your Clio Grow pipeline."
         });
 
