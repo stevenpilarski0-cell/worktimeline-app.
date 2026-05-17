@@ -1,76 +1,49 @@
-/**
- * GET /api/callback
- * 
- * Finalizes the server-side Clio Canada OAuth 2.0 handshake for WorkTimeline™.
- * Decodes the custom PKCE state payload, extracts the verifier, executes the
- * server-to-server token exchange, and returns the token to the application view layer.
- */
+// api/callback.js
+import axios from 'axios';
 
 export default async function handler(req, res) {
-  // 1. Capture incoming query parameters from Clio Canada
-  const { code, error, state } = req.query;
+    // 1. Catch the temporary authorization code sent by Clio
+    const { code, error } = req.query;
 
-  if (error) {
-    return res.status(400).json({ error: `Clio Gateway Authorization Failure: ${error}` });
-  }
-
-  if (!code || !state) {
-    return res.status(400).json({ error: 'Security Handshake Aborted: Missing code or state parameters.' });
-  }
-
-  try {
-    // 2. Reconstruct the base64 string from the URL-safe state and decode it
-    let base64 = state.replace(/-/g, '+').replace(/_/g, '/');
-    while (base64.length % 4) {
-      base64 += '=';
-    }
-    
-    const decodedStateString = Buffer.from(base64, 'base64').toString('utf-8');
-    const statePayload = JSON.parse(decodedStateString);
-    
-    // Extract the frontend code verifier required by the PKCE validation process
-    const codeVerifier = statePayload.verifier;
-
-    if (!codeVerifier) {
-      throw new Error('Verification failure: code_verifier not found in state telemetry.');
+    // Handle any access denials or user cancellations
+    if (error) {
+        return res.status(400).json({ error: `Authorization denied by user: ${error}` });
     }
 
-    // 3. Load secret credentials securely stored inside your Vercel Environment Settings
-    const clientId = process.env.CLIO_CLIENT_ID;
-    const clientSecret = process.env.CLIO_CLIENT_SECRET;
-    const redirectUri = process.env.REDIRECT_URI || 'https://worktimeline-app.vercel.app/api/callback';
-
-    // 4. Post the payload directly to the Clio Canada token engine
-    const tokenResponse = await fetch('https://ca.auth.api.clio.com/oauth/token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        grant_type: 'authorization_code',
-        code: code,
-        client_id: clientId,
-        client_secret: clientSecret,
-        redirect_uri: redirectUri,
-        code_verifier: codeVerifier // Proves this request originated from your frontend script
-      }),
-    });
-
-    const tokenData = await tokenResponse.json();
-
-    if (!tokenResponse.ok) {
-      throw new Error(tokenData.error_description || tokenData.error || 'Token exchange failed.');
+    if (!code) {
+        return res.status(400).json({ error: 'Missing authorization code from Clio.' });
     }
 
-    /**
-     * 5. Handshake Complete!
-     * Redirect the user back to your main high-fidelity mobile view dashboard interface,
-     * passing the access token safely inside a secure URL hash fragment (#).
-     */
-    return res.redirect(302, `/#access_token=${tokenData.access_token}`);
+    try {
+        // 2. Exchange the temporary code for permanent access tokens
+        // Always targeting the ca.app.clio.com endpoint for Canadian Data Residency
+        const tokenResponse = await axios.post('https://ca.app.clio.com/oauth/token', {
+            client_id: process.env.CLIO_CLIENT_ID,
+            client_secret: process.env.CLIO_CLIENT_SECRET,
+            grant_type: 'authorization_code',
+            code: code,
+            redirect_uri: process.env.CLIO_REDIRECT_URI
+        }, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        });
 
-  } catch (err) {
-    console.error('Critical Serverless Callback Exception:', err);
-    return res.status(500).json({ error: 'Internal Server Error during serverless token authentication.' });
-  }
+        // The secure tokens returned by the firm's system
+        const { access_token, refresh_token, expires_in } = tokenResponse.data;
+
+        // 3. TODO: Save these tokens securely (e.g., in your database or encrypted session)
+        // For security, never expose the raw access_token to the frontend index.html
+
+        // 4. Redirect the user back to your main timeline interface on success
+        res.writeHead(302, { Location: '/timeline.html?status=connected' });
+        res.end();
+
+    } catch (err) {
+        console.error('Clio Handshake Token Exchange Error:', err.response?.data || err.message);
+        return res.status(500).json({ 
+            error: 'Failed to exchange authentication code with Clio.', 
+            details: err.response?.data || err.message 
+        });
+    }
 }
