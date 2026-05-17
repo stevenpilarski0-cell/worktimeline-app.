@@ -70,7 +70,7 @@
       <div class="flex justify-between items-start mb-4">
         <div>
           <span class="text-[9px] font-mono uppercase bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded-md border border-blue-500/20 font-bold tracking-wider">
-            Clio Canadian Grow Engine Cluster
+            Clio Account Gateway Cluster
           </span>
           <h2 class="text-xl font-extrabold mt-1 text-white tracking-tight">3-Legged OAuth Handshake</h2>
         </div>
@@ -78,12 +78,12 @@
       </div>
       
       <p class="text-xs text-slate-300 leading-relaxed mb-4">
-        Bypassing standard regional app routing. This operational block targets the global developer authorization layer to establish legal logging pathways straight into your target pilot practice firm configuration.
+        Establishing legal logging pathways straight into your target pilot practice firm configuration using verified application profile constraints.
       </p>
 
       <div class="bg-slate-900/80 rounded-xl p-3.5 border border-slate-800 mb-5 font-mono text-[11px] text-slate-400 space-y-1.5 shadow-inner">
         <div class="flex justify-between"><span class="text-slate-500">PILOT_FIRM_ID:</span> <span class="text-blue-400 font-semibold select-all">01KPZB4ZCXHE3Z92S1KM3AT96V</span></div>
-        <div class="flex justify-between"><span class="text-slate-500">AUTH_ENDPOINT:</span> <span class="text-emerald-400">ca.grow.clio.com</span></div>
+        <div class="flex justify-between"><span class="text-slate-500">AUTH_ENDPOINT:</span> <span class="text-emerald-400">ca.app.clio.com</span></div>
         <div class="flex justify-between"><span class="text-slate-500">VAULT_STATUS:</span> <span id="vaultStatusText" class="text-red-400 font-bold">Awaiting Pipeline Data...</span></div>
       </div>
 
@@ -151,7 +151,7 @@
       const statusIndicator = document.getElementById('syncStatusIndicator');
       const handshakeBtn = document.getElementById('handshakeBtn');
 
-      // Seamless key binding: Feeds your verified Grow Client ID straight to execution layers
+      // Seamless key binding: Feeds your verified Client ID straight to execution layers
       cachedClioClientId = "btscu9WmPHYellZtZA9sIQfynBAQxdwjaR7pEDdq";
       
       // Instantly flip visual tracking states to verified
@@ -178,11 +178,11 @@
         return;
       }
 
-      // Point directly to the Canadian Grow Authorization gateway cluster node
-      const AUTH_GATEWAY = 'https://ca.grow.clio.com/oauth/authorize';
+      // Route through the main regional account verification server endpoint
+      const AUTH_GATEWAY = 'https://ca.app.clio.com/oauth/authorize';
       const redirectUri = window.location.origin + '/api/callback'; 
       
-      // Strict parameter alignment: Only require target read scopes to process connection safely
+      // Request standard application access verification profile permissions
       const scope = 'read'; 
       
       // Secure state token bundling payload details for verification logic mapping
@@ -193,7 +193,7 @@
       };
       const state = btoa(JSON.stringify(statePayload));
 
-      // Construct pure production 3-legged redirection string targeting Canadian servers
+      // Construct pure production 3-legged redirection string
       const authUrl = `${AUTH_GATEWAY}?` + 
         `response_type=code` +
         `&client_id=${encodeURIComponent(cachedClioClientId)}` + 
