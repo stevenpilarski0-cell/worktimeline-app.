@@ -1,34 +1,47 @@
 /**
  * GET /api/callback
  * 
- * This single serverless function handles the entire Clio Canada lifecycle:
- * 1. Receives the temporary authorization code from Clio.
- * 2. Exchanges it securely for a real Access Token using your hidden CLIENT_SECRET.
- * 3. Immediately pulls the payload data (your logs) out of state/storage and 
- *    syncs it to Clio's Activities or Notes endpoints.
- * 4. Redirects the user back to your main website layout safely.
+ * Finalizes the server-side Clio Canada OAuth 2.0 handshake for WorkTimeline™.
+ * Decodes the custom PKCE state payload, extracts the verifier, executes the
+ * server-to-server token exchange, and returns the token to the application view layer.
  */
 
 export default async function handler(req, res) {
-  // 1. Grab the temporary code Clio sent over in the URL
-  const { code, error } = req.query;
+  // 1. Capture incoming query parameters from Clio Canada
+  const { code, error, state } = req.query;
 
   if (error) {
-    return res.status(400).json({ error: `Clio Login Failed: ${error}` });
+    return res.status(400).json({ error: `Clio Gateway Authorization Failure: ${error}` });
   }
 
-  if (!code) {
-    return res.status(400).json({ error: 'Missing temporary authorization code.' });
+  if (!code || !state) {
+    return res.status(400).json({ error: 'Security Handshake Aborted: Missing code or state parameters.' });
   }
-
-  // 2. Fetch your secure credentials from Vercel's environment variables
-  const clientId = process.env.CLIO_CLIENT_ID;
-  const clientSecret = process.env.CLIO_CLIENT_SECRET;
-  const redirectUri = process.env.REDIRECT_URI || 'https://worktimeline-app.vercel.app/api/callback';
 
   try {
-    // 3. Talk server-to-server with Clio Canada to get the real Access Token
-    const tokenResponse = await fetch('https://ca.api.clio.com/oauth/token', {
+    // 2. Reconstruct the base64 string from the URL-safe state and decode it
+    let base64 = state.replace(/-/g, '+').replace(/_/g, '/');
+    while (base64.length % 4) {
+      base64 += '=';
+    }
+    
+    const decodedStateString = Buffer.from(base64, 'base64').toString('utf-8');
+    const statePayload = JSON.parse(decodedStateString);
+    
+    // Extract the frontend code verifier required by the PKCE validation process
+    const codeVerifier = statePayload.verifier;
+
+    if (!codeVerifier) {
+      throw new Error('Verification failure: code_verifier not found in state telemetry.');
+    }
+
+    // 3. Load secret credentials securely stored inside your Vercel Environment Settings
+    const clientId = process.env.CLIO_CLIENT_ID;
+    const clientSecret = process.env.CLIO_CLIENT_SECRET;
+    const redirectUri = process.env.REDIRECT_URI || 'https://worktimeline-app.vercel.app/api/callback';
+
+    // 4. Post the payload directly to the Clio Canada token engine
+    const tokenResponse = await fetch('https://ca.auth.api.clio.com/oauth/token', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -39,28 +52,25 @@ export default async function handler(req, res) {
         client_id: clientId,
         client_secret: clientSecret,
         redirect_uri: redirectUri,
+        code_verifier: codeVerifier // Proves this request originated from your frontend script
       }),
     });
 
     const tokenData = await tokenResponse.json();
 
     if (!tokenResponse.ok) {
-      throw new Error(tokenData.error_description || 'Token exchange failed.');
+      throw new Error(tokenData.error_description || tokenData.error || 'Token exchange failed.');
     }
 
-    const accessToken = tokenData.access_token;
-
     /**
-     * 4. Token Handshake Complete!
-     * Now, instead of making the frontend do more work, you can either:
-     * 
-     * Option A: Pass the token straight back to your frontend UI via a URL hash 
-     * fragment so your local javascript can use it for active syncing:
+     * 5. Handshake Complete!
+     * Redirect the user back to your main high-fidelity mobile view dashboard interface,
+     * passing the access token safely inside a secure URL hash fragment (#).
      */
-    return res.redirect(302, `/#access_token=${accessToken}`);
+    return res.redirect(302, `/#access_token=${tokenData.access_token}`);
 
   } catch (err) {
-    console.error('Callback Server Error:', err);
-    return res.status(500).json({ error: 'Internal Server Error during handshake processing.' });
+    console.error('Critical Serverless Callback Exception:', err);
+    return res.status(500).json({ error: 'Internal Server Error during serverless token authentication.' });
   }
 }
