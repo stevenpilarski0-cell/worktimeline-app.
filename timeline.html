@@ -1,30 +1,80 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <title>WorkTimeline - Hub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkTimeline - Control Center</title>
     <style>
+        /* Modern Apple-style slate & teal design matching your premium workspace */
         body { 
-            background: #222; 
-            color: #fff; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; 
+            background: #f5f5f7; 
+            color: #1d1d1f; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
             min-height: 100vh; 
             margin: 0; 
-            padding: 15px; 
+            padding: 20px;
+            box-sizing: border-box;
         }
-        .v { 
-            background: #fff; 
-            color: #000; 
+        .wrapper { 
+            background: #ffffff; 
             width: 100%; 
-            max-width: 380px; 
-            padding: 25px; 
-            border-radius: 12px; 
+            max-width: 420px; 
+            padding: 30px; 
+            border-radius: 18px; 
             text-align: center; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        h2 {
+            color: #008080; 
+            margin: 0 0 5px; 
+            letter-spacing: 1px;
+            font-size: 22px;
+            font-weight: 600;
+        }
+        .status-badge {
+            display: inline-block;
+            background: #e6f2f2;
+            color: #008080;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .form-group {
+            text-align: left;
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: #86868b;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d2d2d7;
+            border-radius: 8px;
+            font-size: 14px;
+            box-sizing: border-box;
+            background-color: #fbfbfd;
+            font-family: inherit;
+            height: 120px;
+            resize: none;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #008080;
+            background-color: #ffffff;
         }
         button { 
             width: 100%; 
@@ -33,39 +83,100 @@
             color: #fff; 
             border: none; 
             border-radius: 8px; 
-            font-weight: 900; 
-            font-size: 16px; 
+            font-weight: 600; 
+            font-size: 15px; 
             cursor: pointer; 
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background: #006666;
+        }
+        .banner {
             margin-top: 15px;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            display: none;
         }
-        .status-badge {
-            display: inline-block;
-            background: #e6f2f2;
-            color: #008080;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
+        .success { background: #e6f2f2; color: #008080; border: 1px solid #008080; }
+        .error { background: #ffebe9; color: #ff3b30; border: 1px solid #ff3b30; }
     </style>
 </head>
 <body>
 
-<div class="v">
-    <h2 style="color:#008080; margin: 0 0 5px; letter-spacing: 1px;">WORKTIMELINE</h2>
-    <div class="status-badge">CONNECTED TO CLIO MANAGE</div>
+<div class="wrapper">
+    <h2>WORKTIMELINE</h2>
+    <div class="status-badge" id="syncStatus">CONNECTED TO CLIO GROW INTAKE</div>
     
-    <p style="color: #666; font-size: 14px; line-height: 1.4; margin-bottom: 20px;">
-        Contemporaneous legal evidence logging pipeline initialized for live case files.
-    </p>
+    <div class="form-group">
+        <label>Active Client Lead</label>
+        <div style="font-weight: 600; font-size: 15px; color: #1d1d1f; padding-left: 2px;">Spencer Densmore Intake</div>
+    </div>
+
+    <div class="form-group">
+        <label>Transmission Payload Summary</label>
+        <textarea id="transmissionLogs" placeholder="Loading authenticated timeline details..."></textarea>
+    </div>
     
-    <button onclick="window.location.href='/timeline.html'">OPEN TIMELINE CONTROL</button>
+    <button id="transmitBtn">EXECUTE PIPELINE SYNC</button>
+    <div id="statusBanner" class="banner"></div>
 </div>
 
 <script>
-    // Set the token session so the app stays authenticated during testing
-    sessionStorage.setItem('clio_access_token', 'Btscu9WmPHYelIZtZA9sIQfynBAQudwjaR7pEDdq');
+    // AUTOMATIC TOKEN EXTRACTION ON LANDING
+    window.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const incomingToken = urlParams.get('token');
+
+        if (incomingToken) {
+            // Securely cache the verified token received from your callback handler
+            sessionStorage.setItem('clio_access_token', incomingToken);
+            // Clean up the URL bar to keep it looking crisp on your phone
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+        // Pull backup text data into the preview panel for verification testing
+        document.getElementById('transmissionLogs').value = 
+            `[01:15 PM] Retaliatory penalty applied to profile.\n` +
+            `[01:30 PM] Constructive dismissal context validated via local trigger arrays.`;
+    });
+
+    document.getElementById('transmitBtn').addEventListener('click', async () => {
+        const logContent = document.getElementById('transmissionLogs').value.trim();
+        const cachedToken = sessionStorage.getItem('clio_access_token') || 'Btscu9WmPHYelIZtZA9sIQfynBAQudwjaR7pEDdq';
+        const banner = document.getElementById('statusBanner');
+
+        banner.style.display = 'block';
+        banner.className = 'banner success';
+        banner.textContent = 'Transmitting securely to Clio Grow Server...';
+
+        try {
+            const response = await fetch('/api/sync', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    leadName: "Spencer Densmore",
+                    logText: logContent,
+                    timestamp: new Date().toISOString(),
+                    routingTarget: "GROW_INTAKE",
+                    accessToken: cachedToken
+                })
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                banner.className = 'banner success';
+                banner.textContent = 'Success! Log safely added to your Grow Lead pipeline.';
+            } else {
+                throw new Error(result.error || 'Server rejected transmission pipeline parameters.');
+            }
+        } catch (err) {
+            banner.className = 'banner error';
+            banner.textContent = `Sync Failed: ${err.message}`;
+        }
+    });
 </script>
 </body>
 </html>
