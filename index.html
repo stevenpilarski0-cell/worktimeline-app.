@@ -79,7 +79,7 @@
         <div class="flex justify-between"><span class="text-slate-500">VAULT_STATUS:</span> <span id="vaultStatusText" class="text-red-400 font-bold">Awaiting Pipeline Data...</span></div>
       </div>
 
-      <button onclick="initiateClioHandshake('manage')" id="handshakeBtn" disabled class="w-full py-3.5 bg-slate-700 text-slate-400 cursor-not-allowed font-bold text-sm tracking-wide rounded-xl shadow-lg transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2">
+      <button onclick="initiateClioHandshake()" id="handshakeBtn" disabled class="w-full py-3.5 bg-slate-700 text-slate-400 cursor-not-allowed font-bold text-sm tracking-wide rounded-xl shadow-lg transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2">
         <span>Initializing Vault Tunnel...</span> ⚡
       </button>
     </section>
@@ -128,16 +128,20 @@
 
     window.addEventListener('DOMContentLoaded', loadConfig);
 
-    function initiateClioHandshake(targetPlatform = 'manage') {
+    function initiateClioHandshake() {
       if (!cachedClioClientId) return;
 
       // Points specifically to the Canadian Data Cluster endpoint
       const AUTH_GATEWAY = 'https://ca.app.clio.com/oauth/authorize';
-      const redirectUri = window.location.origin + '/api/callback'; 
-      const scope = 'read'; 
+      
+      // Explicitly matching the exact whitelisted Redirect URI pattern in your console
+      const redirectUri = 'https://worktimeline-app.vercel.app/api/callback'; 
+      
+      // Standardize requested permissions scopes to match your specific app capabilities
+      const scope = 'activities accounting api billing calendars communications documents identity matters users';
       
       const statePayload = {
-        platform: targetPlatform,
+        platform: 'manage',
         pilot_firm: '01KPZB4ZCXHE3Z92S1KM3AT96V',
         timestamp: Date.now()
       };
