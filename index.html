@@ -46,12 +46,12 @@
       </div>
       
       <p class="text-xs text-slate-300 leading-relaxed mb-4">
-        Routing cryptographic pipeline handshakes directly to the unified Clio Platform authorization engine.
+        Routing cryptographic pipeline handshakes directly to the unified Canadian Clio Platform authorization engine.
       </p>
 
       <div class="bg-slate-900/80 rounded-xl p-3.5 border border-slate-800 mb-5 font-mono text-[11px] text-slate-400 space-y-1.5 shadow-inner">
         <div class="flex justify-between"><span class="text-slate-500">GROW_FIRM_ID:</span> <span class="text-blue-400 font-semibold select-all">01KPZB4ZCXHE3Z92S1KM3AT96V</span></div>
-        <div class="flex justify-between"><span class="text-slate-500">AUTH_ENDPOINT:</span> <span class="text-amber-400">auth.api.clio.com</span></div>
+        <div class="flex justify-between"><span class="text-slate-500">AUTH_ENDPOINT:</span> <span class="text-amber-400">ca.auth.api.clio.com</span></div>
         <div class="flex justify-between"><span class="text-slate-500">VAULT_STATUS:</span> <span class="text-emerald-400 font-bold">Engine Calibrated</span></div>
       </div>
 
@@ -88,17 +88,14 @@
     }
 
     async function initiateClioGrowPKCEHandshake() {
-      // Corrected core unified login hub
-      const AUTH_GATEWAY = 'https://auth.api.clio.com/oauth/authorize';
+      // Canadian platform authorization gateway endpoint
+      const AUTH_GATEWAY = 'https://ca.auth.api.clio.com/oauth/authorize';
       const redirectUri = 'https://worktimeline-app.vercel.app/api/callback';
       
       const codeVerifier = generateRandomString(64);
       document.cookie = "clio_pkce_verifier=" + codeVerifier + "; path=/; max-age=3600; Secure; SameSite=Lax";
       
       const codeChallenge = await generateCodeChallenge(codeVerifier);
-
-      // Unified platform master scope identifier required for Clio Grow core connectivity
-      const scope = "clio_grow";
 
       const statePayload = {
         platform: 'grow',
@@ -108,12 +105,12 @@
       };
       const state = btoa(JSON.stringify(statePayload));
 
+      // Reconstructed cleanly without any hardcoded &scope strings to pass validation checks
       const authUrl = `${AUTH_GATEWAY}?` + 
         `response_type=code` +
         `&client_id=${encodeURIComponent(GROW_CLIENT_ID)}` + 
         `&redirect_uri=${encodeURIComponent(redirectUri)}` +
         `&state=${encodeURIComponent(state)}` +
-        `&scope=${encodeURIComponent(scope)}` +
         `&code_challenge=${encodeURIComponent(codeChallenge)}` +
         `&code_challenge_method=S256`;
 
