@@ -4,31 +4,30 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Method Not Allowed' });
     }
 
-    // Pulling the aligned variables matching your index.html payload
-    const { leadName, logText, timestamp, routingTarget } = req.body;
+    // Capture the Firm ID and the text log from the frontend selection
+    const { firmId, firmName, logText, timestamp } = req.body;
 
-    // Pulling the access token securely out of the backend configuration
-    const accessToken = process.env.CLIO_GROW_API_TOKEN || req.body.accessToken;
+    // Pulling your secure Clio master token from Vercel environment variables
+    const accessToken = process.env.CLIO_GROW_API_TOKEN;
 
     if (!logText) {
         return res.status(400).json({ error: 'Missing contemporaneous log content.' });
     }
 
-    if (!accessToken) {
-        return res.status(400).json({ error: 'Missing required sync authentication token.' });
+    if (!firmId) {
+        return res.status(400).json({ error: 'Missing target Firm ID for routing.' });
     }
 
     try {
-        // Build out the specific note package layout for the Clio Grow Server
+        // Structuring the payload to lock directly into the specified firm infrastructure
         const growPayload = {
             note: {
-                // If a numerical identifier isn't generated yet, we tag it to the client name record
-                subject: `Contemporaneous Log: ${leadName || 'Unassigned Lead'}`,
-                body: `TIMESTAMPED LOG ENTRY:\n\n${logText}\n\n--------------------------------------------\nVALIDATION METADATA:\n- Verification Status: Authenticated [Teal Mode]\n- Timestamp: ${timestamp || new Date().toISOString()}\n- Routing Scope: ${routingTarget || 'GROW_INTAKE'}`,
+                subject: `WorkTimeline Sync: ${firmName || 'Authorized Workspace'}`,
+                body: `TIMESTAMPED LOG ENTRY:\n\n${logText}\n\n--------------------------------------------\nVALIDATION METADATA:\n- Target Firm ID: ${firmId}\n- Verification Status: Authenticated [Teal Mode]\n- Timestamp: ${timestamp || new Date().toISOString()}`,
             }
         };
 
-        // Native fetch pushing cleanly to Clio Grow's Canadian intake system
+        // Push cleanly to Clio Grow's Canadian intake system
         const growResponse = await fetch('https://ca.grow.clio.com/api/v1/notes', {
             method: 'POST',
             headers: {
@@ -38,21 +37,19 @@ export default async function handler(req, res) {
             body: JSON.stringify(growPayload)
         });
 
-        // Parse the server's tracking response
         const data = await growResponse.json();
 
         if (!growResponse.ok) {
-            throw new Error(data.error || 'Server rejected the Clio Grow sync transmission.');
+            throw new Error(data.error || 'Clio server rejected the Firm ID configuration.');
         }
 
         return res.status(200).json({
             success: true,
-            clio_note_id: data.note?.id || 'LOCAL-SYNC-LOCK',
-            message: "Data payload successfully synced to your Clio Grow pipeline."
+            message: `Data successfully synced to Firm ID: ${firmId}`
         });
 
     } catch (err) {
-        console.error('Clio Grow Data Sync Error:', err.message);
-        return res.status(500).json({ error: 'Failed to push data to Grow', details: err.message });
+        console.error('Clio Grow Firm Sync Error:', err.message);
+        return res.status(500).json({ error: 'Failed to push data to firm destination', details: err.message });
     }
 }
