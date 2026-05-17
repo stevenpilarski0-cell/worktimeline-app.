@@ -3,102 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeline - Portal</title>
+    <title>WorkTimeline - Chronology Control</title>
     <style>
-        /* Sleek, Mac-style minimalist design */
+        /* Modern Apple-style slate & teal design */
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: #f5f5f7;
             color: #1d1d1f;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
             margin: 0;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
         }
-        .container {
-            text-align: center;
+        .wrapper {
             background: #ffffff;
-            padding: 2.5rem;
             border-radius: 18px;
+            padding: 2.5rem;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-            max-width: 400px;
-            width: 90%;
+            max-width: 600px;
+            width: 100%;
         }
-        h1 {
-            font-size: 24px;
+        h2 {
+            font-size: 22px;
             font-weight: 600;
-            margin-bottom: 1rem;
+            margin-top: 0;
+            color: #1d1d1f;
         }
-        p {
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
             color: #86868b;
-            font-size: 14px;
-            line-height: 1.5;
-            margin-bottom: 2rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        .btn-connect {
-            background-color: #008080; /* Teal accent */
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d2d2d7;
+            border-radius: 8px;
+            font-size: 14px;
+            box-sizing: border-box;
+            background-color: #fbfbfd;
+            font-family: inherit;
+        }
+        textarea {
+            height: 150px;
+            resize: vertical;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #008080; /* Teal focus */
+            background-color: #ffffff;
+        }
+        .btn-sync {
+            background-color: #008080;
             color: white;
             border: none;
-            padding: 12px 24px;
+            padding: 14px 28px;
             font-size: 15px;
             font-weight: 500;
             border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.2s ease, transform 0.1s ease;
-            text-decoration: none;
-            display: inline-block;
+            width: 100%;
+            transition: background-color 0.2s;
         }
-        .btn-connect:hover {
+        .btn-sync:hover {
             background-color: #006666;
         }
-        .btn-connect:active {
-            transform: scale(0.98);
-        }
-        .status-message {
-            margin-top: 1.5rem;
+        .status-banner {
+            margin-top: 1rem;
+            padding: 12px;
+            border-radius: 8px;
             font-size: 14px;
             font-weight: 500;
+            display: none;
         }
-        .status-success { color: #008080; }
-        .status-error { color: #ff3b30; }
+        .success { background-color: #e6f2f2; color: #008080; border: 1px solid #008080; }
+        .error { background-color: #ffebe9; color: #ff3b30; border: 1px solid #ff3b30; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Connect to the Firm</h1>
-    <p>Securely link WorkTimeline with your Clio account to seamlessly route contemporaneous evidence and verified chronologies into your case files.</p>
+<div class="wrapper">
+    <h2>Transmit to Firm Infrastructure</h2>
     
-    <button id="connectBtn" class="btn-connect">Connect to Clio</button>
-    
-    <div id="statusOutput" class="status-message"></div>
+    <div class="form-group">
+        <label for="matterId">Clio Matter ID</label>
+        <input type="text" id="matterId" placeholder="e.g., 123456789">
+    </div>
+
+    <div class="form-group">
+        <label for="logText">Contemporaneous Log Content</label>
+        <textarea id="logText" placeholder="Enter the verified, structured chronology statements here..."></textarea>
+    </div>
+
+    <button id="syncBtn" class="btn-sync">Sync to Firm File</button>
+
+    <div id="banner" class="status-banner"></div>
 </div>
 
 <script>
-    // 1. Point the button to initiate the handshake
-    document.getElementById('connectBtn').addEventListener('click', () => {
-        // Change this client ID to match your Clio Developer Credentials
-        const CLIENT_ID = 'YOUR_CLIO_CLIENT_ID'; 
-        
-        // This targets your Vercel URL/api/callback setup dynamically
-        const REDIRECT_URI = encodeURIComponent(window.location.origin + '/api/callback');
-        
-        // Routing explicitly via Clio's NA interface, which passes control safely
-        const authUrl = `https://app.clio.com/oauth/authorize?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}`;
-        
-        // Hand off the user to the secure login screen
-        window.location.href = authUrl;
+    document.getElementById('syncBtn').addEventListener('click', async () => {
+        const matterId = document.getElementById('matterId').value;
+        const logText = document.getElementById('logText').value;
+        const banner = document.getElementById('banner');
+
+        if (!matterId || !logText) {
+            showBanner('Please fill out both the Matter ID and the Log Content.', 'error');
+            return;
+        }
+
+        // For testing, mock an active session token. 
+        // In full production, your backend session will handle this silently.
+        const mockToken = 'YOUR_ACTIVE_CLIO_ACCESS_TOKEN';
+
+        showBanner('Packaging and validating payload...', 'success');
+
+        try {
+            // Pointing directly to your native Vercel serverless endpoint
+            const response = await fetch('/api/sync', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    matterId: matterId,
+                    logText: logText,
+                    timestamp: new Date().toISOString(),
+                    referenceId: 'WT-' + Math.floor(1000 + Math.random() * 9000),
+                    accessToken: mockToken
+                })
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                showBanner(`Success! Transmitted beautifully. Clio Note ID: ${result.clio_note_id}`, 'success');
+            } else {
+                throw new Error(result.error || 'Transmission failure');
+            }
+
+        } catch (err) {
+            showBanner(`Sync Failed: ${err.message}`, 'error');
+        }
     });
 
-    // 2. Check if the user just returned from a failed handshake attempt
-    const urlParams = new URLSearchParams(window.location.search);
-    const statusOutput = document.getElementById('statusOutput');
-    
-    if (urlParams.has('error')) {
-        statusOutput.className = 'status-message status-error';
-        statusOutput.textContent = 'Connection failed: ' + urlParams.get('error');
+    function showBanner(message, type) {
+        banner.textContent = message;
+        banner.className = `status-banner ${type}`;
+        banner.style.display = 'block';
     }
 </script>
 
