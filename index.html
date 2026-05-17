@@ -63,7 +63,7 @@
       <div class="flex justify-between items-start mb-4">
         <div>
           <span class="text-[9px] font-mono uppercase bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded-md border border-blue-500/20 font-bold tracking-wider">
-            Clio Manage Canadian Core Nodes
+            Clio Manage Developer Core Node
           </span>
           <h2 class="text-xl font-extrabold mt-1 text-white tracking-tight">Phase 1: Core Portal Sync</h2>
         </div>
@@ -71,12 +71,12 @@
       </div>
       
       <p class="text-xs text-slate-300 leading-relaxed mb-4">
-        Connecting core firm architecture. This pipeline routes directly to the Canadian platform cluster using verified workspace permissions.
+        Connecting core firm architecture. This pipeline routes directly to the primary cluster server using verified workspace permissions.
       </p>
 
       <div class="bg-slate-900/80 rounded-xl p-3.5 border border-slate-800 mb-5 font-mono text-[11px] text-slate-400 space-y-1.5 shadow-inner">
         <div class="flex justify-between"><span class="text-slate-500">PILOT_FIRM_ID:</span> <span class="text-blue-400 font-semibold select-all">01KPZB4ZCXHE3Z92S1KM3AT96V</span></div>
-        <div class="flex justify-between"><span class="text-slate-500">AUTH_ENDPOINT:</span> <span class="text-emerald-400">ca.app.clio.com</span></div>
+        <div class="flex justify-between"><span class="text-slate-500">AUTH_ENDPOINT:</span> <span class="text-emerald-400">app.clio.com</span></div>
         <div class="flex justify-between"><span class="text-slate-500">VAULT_STATUS:</span> <span id="vaultStatusText" class="text-red-400 font-bold">Awaiting Pipeline Data...</span></div>
       </div>
 
@@ -114,7 +114,7 @@
       const statusIndicator = document.getElementById('syncStatusIndicator');
       const handshakeBtn = document.getElementById('handshakeBtn');
 
-      // Locked in with your exact Canadian Manage Client ID from screenshot 2
+      // Your absolute production Clio Manage Client ID string
       cachedClioClientId = "7d10fc8d-d7e5-4d08-be13-ef37f191f693"; 
       
       statusText.textContent = "Pipeline Verified & Locked";
@@ -132,8 +132,8 @@
     function initiateClioHandshake(targetPlatform = 'manage') {
       if (!cachedClioClientId) return;
 
-      // Point directly to the core account platform server
-      const AUTH_GATEWAY = 'https://ca.app.clio.com/oauth/authorize';
+      // Primary Global Server Endpoint Node (Bypasses regional ca. restrictions)
+      const AUTH_GATEWAY = 'https://app.clio.com/oauth/authorize';
       const redirectUri = window.location.origin + '/api/callback'; 
       const scope = 'read'; 
       
