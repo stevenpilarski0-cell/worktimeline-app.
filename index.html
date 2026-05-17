@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeline - Firm Control</title>
+    <title>WorkTimeline - Workspace Control</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -52,13 +52,13 @@
 
 <div class="wrapper">
     <h2>Transmit to Firm Infrastructure</h2>
-    <div class="subtitle">Pipeline: WorkTimeline ➔ Clio Grow Target Authorized Workspace</div>
+    <div class="subtitle">Pipeline: WorkTimeline ➔ Clio Grow Target Workspace</div>
     
     <div class="form-group">
         <label for="firmSelect">Select Authorized Target Firm</label>
         <select id="firmSelect">
-            <option value="GROW-FIRM-9832" selected>My Active Clio Grow Firm (Primary)</option>
-            <option value="SANDBOX-FIRM-1102">Development Sandbox Testing Account</option>
+            <option value="01KPZB4ZCXHE3Z92S1KM3AT96V" selected>Steve's Active Clio Grow Firm</option>
+            <option value="SANDBOX-TEST-ID">Development Sandbox Workspace</option>
         </select>
     </div>
 
@@ -82,7 +82,7 @@
         const banner = document.getElementById('banner');
 
         if (!logText) {
-            showBanner('Please enter the log content before executing transmission.', 'error');
+            showBanner('Please enter log content before executing transmission.', 'error');
             return;
         }
 
@@ -103,9 +103,9 @@
             const result = await response.json();
 
             if (response.ok && result.success) {
-                showBanner(`Success! Locked securely inside ${firmName} infrastructure. (ID: ${firmId})`, 'success');
+                showBanner(`Success! Locked securely inside ${firmName}. (ID: ${firmId})`, 'success');
             } else {
-                throw new Error(result.error || 'Clio connection refused application routing.');
+                throw new Error(result.error || 'Server rejected pipeline transmission.');
             }
         } catch (err) {
             showBanner(`Sync Failed: ${err.message}`, 'error');
