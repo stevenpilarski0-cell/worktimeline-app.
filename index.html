@@ -6,10 +6,19 @@
   <title>WorkTimeline™ // LegalTech Grow Suite</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.3); border-radius: 3px; }
-    body { transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(156, 163, 175, 0.3);
+      border-radius: 3px;
+    }
+    body {
+      transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
   </style>
 </head>
 <body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col items-center justify-between antialiased selection:bg-emerald-500/30">
@@ -29,7 +38,7 @@
       <div class="flex justify-between items-start mb-4">
         <div>
           <span class="text-[9px] font-mono uppercase bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded-md border border-amber-500/20 font-bold tracking-wider">
-            Clio Grow PKCE Secure Node
+            Clio Platform Secure Gateway
           </span>
           <h2 class="text-xl font-extrabold mt-1 text-white tracking-tight">Phase 1: Grow Engine Sync</h2>
         </div>
@@ -37,12 +46,12 @@
       </div>
       
       <p class="text-xs text-slate-300 leading-relaxed mb-4">
-        Routing cryptographic pipeline handshakes directly to the Canadian platform authorization hub with verified scopes.
+        Routing cryptographic pipeline handshakes directly to the unified Clio Platform authorization engine.
       </p>
 
       <div class="bg-slate-900/80 rounded-xl p-3.5 border border-slate-800 mb-5 font-mono text-[11px] text-slate-400 space-y-1.5 shadow-inner">
         <div class="flex justify-between"><span class="text-slate-500">GROW_FIRM_ID:</span> <span class="text-blue-400 font-semibold select-all">01KPZB4ZCXHE3Z92S1KM3AT96V</span></div>
-        <div class="flex justify-between"><span class="text-slate-500">AUTH_ENDPOINT:</span> <span class="text-amber-400">ca.auth.api.clio.com</span></div>
+        <div class="flex justify-between"><span class="text-slate-500">AUTH_ENDPOINT:</span> <span class="text-amber-400">auth.api.clio.com</span></div>
         <div class="flex justify-between"><span class="text-slate-500">VAULT_STATUS:</span> <span class="text-emerald-400 font-bold">Engine Calibrated</span></div>
       </div>
 
@@ -79,8 +88,8 @@
     }
 
     async function initiateClioGrowPKCEHandshake() {
-      // Canadian platform regional gateway
-      const AUTH_GATEWAY = 'https://ca.auth.api.clio.com/oauth/authorize';
+      // Corrected core unified login hub
+      const AUTH_GATEWAY = 'https://auth.api.clio.com/oauth/authorize';
       const redirectUri = 'https://worktimeline-app.vercel.app/api/callback';
       
       const codeVerifier = generateRandomString(64);
@@ -88,8 +97,8 @@
       
       const codeChallenge = await generateCodeChallenge(codeVerifier);
 
-      // Explicitly matching the exact read scopes enabled on your app dashboard screenshot
-      const scope = "grow_lead_inbox_read grow_custom_action_read grow_matter_read grow_matter_note_read grow_contact_read grow_contact_note_read grow_user_read";
+      // Unified platform master scope identifier required for Clio Grow core connectivity
+      const scope = "clio_grow";
 
       const statePayload = {
         platform: 'grow',
