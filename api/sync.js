@@ -3,7 +3,7 @@ export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
     if (req.method === 'OPTIONS') return res.status(200).end();
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method Not Allowed' });
@@ -16,7 +16,6 @@ export default async function handler(req, res) {
     }
 
     try {
-        // Formatted exactly to match Clio Grow's legacy Lead Inbox validation schemas
         const leadPayload = {
             inbox_lead: {
                 from_first: "WorkTimeline",
@@ -28,11 +27,12 @@ export default async function handler(req, res) {
             }
         };
 
-        // TARGET URL: Shifted directly to Clio Canada's absolute inbox portal endpoint
-        const growResponse = await fetch('https://ca.grow.clio.com/inbox_leads', {
+        // FIXED PIPELINE: Appending the token directly as a URL parameter to clear the 401 gate
+        const targetUrl = `https://ca.grow.clio.com/inbox_leads?token=${staticToken}`;
+
+        const growResponse = await fetch(targetUrl, {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${staticToken}`,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(leadPayload)
@@ -40,7 +40,7 @@ export default async function handler(req, res) {
 
         const responseText = await growResponse.text();
 
-        // Clio returns a 201 Created status code upon transmission success
+        // Standard confirmation check (Clio returns redirects or 200/201 on success)
         if (!growResponse.ok && growResponse.status !== 201) {
             throw new Error(`Clio rejected validation. Server status: ${growResponse.status}. Details: ${responseText}`);
         }
