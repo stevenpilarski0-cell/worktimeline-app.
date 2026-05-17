@@ -16,9 +16,9 @@ export default async function handler(req, res) {
     }
 
     try {
-        // Restructured payload explicitly for the Clio Grow Lead Capture endpoint
+        // Corrected payload keys explicitly for the standardized Clio Grow Lead endpoint
         const leadPayload = {
-            inbox_lead: {
+            lead: {
                 first_name: "WorkTimeline",
                 last_name: "Log Entry",
                 email: "stevenpilarski0@gmail.com",
@@ -27,8 +27,8 @@ export default async function handler(req, res) {
             }
         };
 
-        // Pushing directly to Clio Grow's dedicated Lead Intake endpoint
-        const growResponse = await fetch('https://ca.grow.clio.com/api/v1/inbox_leads', {
+        // FIXED ENDPOINT: Changed from /inbox_leads to /leads to match the Canadian schema
+        const growResponse = await fetch('https://ca.grow.clio.com/api/v1/leads', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${staticToken}`,
