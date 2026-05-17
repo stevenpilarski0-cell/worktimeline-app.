@@ -3,103 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeline - Control Center</title>
+    <title>WorkTimeline - Control Panel</title>
     <style>
-        :root {
-            --teal: #008080;
-            --teal-hover: #006666;
-            --slate: #4a5568;
-            --bg-gray: #f5f5f7;
-            --card-white: #ffffff;
-            --border: #d2d2d7;
-            --text-dark: #1d1d1f;
-            --text-muted: #86868b;
-        }
-
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg-gray);
-            color: var(--text-dark);
+            background-color: #f5f5f7;
+            color: #1d1d1f;
             margin: 0;
-            padding: 1rem;
+            padding: 1.5rem;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             box-sizing: border-box;
         }
-
         .app-container {
-            background: var(--card-white);
+            background: #ffffff;
             border-radius: 18px;
-            padding: 2rem;
+            padding: 2.5rem;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
-            max-width: 540px;
+            max-width: 500px;
             width: 100%;
-            position: relative;
-            overflow: hidden;
         }
-
-        .app-header {
-            text-align: center;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid #f5f5f7;
-            padding-bottom: 1.5rem;
-        }
-
-        h2 { font-size: 24px; font-weight: 600; margin: 0 0 6px; color: var(--text-dark); }
-        .subtitle { font-size: 13px; color: var(--text-muted); letter-spacing: -0.1px; }
-
-        /* Apple-Style Handshake Panel inside the App */
-        .handshake-card {
-            background: #fafafa;
-            border: 1px dashed var(--border);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .handshake-card.authenticated {
-            background: #e6f2f2;
-            border: 1px solid var(--teal);
-        }
-
-        .status-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background-color: #ff3b30;
-            border-radius: 50%;
-            margin-right: 6px;
-        }
-
-        .authenticated .status-dot {
-            background-color: var(--teal);
-        }
-
+        h2 { font-size: 24px; font-weight: 600; margin: 0 0 6px; text-align: center; }
+        .subtitle { font-size: 13px; color: #86868b; text-align: center; margin-bottom: 2rem; }
         .form-group { margin-bottom: 1.5rem; }
-        label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 0.6rem; text-transform: uppercase; letter-spacing: 0.5px; }
-        
+        label { display: block; font-size: 12px; font-weight: 600; color: #86868b; margin-bottom: 0.6rem; text-transform: uppercase; letter-spacing: 0.5px; }
         select, textarea {
             width: 100%;
             padding: 14px;
-            border: 1px solid var(--border);
+            border: 1px solid #d2d2d7;
             border-radius: 10px;
             font-size: 15px;
             box-sizing: border-box;
             background-color: #fbfbfd;
             font-family: inherit;
-            color: var(--text-dark);
-            transition: all 0.2s;
+            color: #1d1d1f;
         }
-
         textarea { height: 160px; resize: none; }
-        select:focus, textarea:focus { outline: none; border-color: var(--teal); background-color: var(--card-white); }
-
+        select:focus, textarea:focus { outline: none; border-color: #008080; background-color: #ffffff; }
         .btn {
-            background-color: var(--teal);
+            background-color: #008080;
             color: white;
             border: none;
             padding: 16px;
@@ -108,140 +52,64 @@
             border-radius: 10px;
             cursor: pointer;
             width: 100%;
-            transition: background-color 0.2s, transform 0.1s;
+            transition: background-color 0.2s;
         }
-
-        .btn:hover { background-color: var(--teal-hover); }
-        .btn:active { transform: scale(0.99); }
-        
-        .btn-secondary {
-            background-color: #e8e8ed;
-            color: var(--text-dark);
-            padding: 10px 16px;
-            font-size: 13px;
-            border-radius: 8px;
-            margin-top: 10px;
-            display: inline-block;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        .btn-secondary:hover { background-color: #dcdee4; }
-
-        .banner {
-            margin-top: 1.2rem;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            display: none;
-            text-align: center;
-        }
-        .success { background-color: #e6f2f2; color: var(--teal); border: 1px solid var(--teal); }
+        .btn:hover { background-color: #006666; }
+        .banner { margin-top: 1.2rem; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: 500; display: none; text-align: center; }
+        .success { background-color: #e6f2f2; color: #008080; border: 1px solid #008080; }
         .error { background-color: #ffebe9; color: #ff3b30; border: 1px solid #ff3b30; }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <div class="app-header">
-        <h2>WorkTimeline</h2>
-        <div class="subtitle">Contemporaneous Chronological Evidence Log</div>
-    </div>
+    <h2>WorkTimeline</h2>
+    <div class="subtitle">Secure Evidence Logging Portal</div>
     
-    <div id="handshakePanel" class="handshake-card">
-        <div style="font-size: 14px; font-weight: 500; margin-bottom: 8px;">
-            <span class="status-dot" id="statusDot"></span>
-            <span id="statusText">Clio Integration: Handshake Required</span>
-        </div>
-        <div id="handshakeAction">
-            <p style="font-size: 12px; color: var(--text-muted); margin: 0 0 12px;">To sync timeline data, authenticate your firm workspace securely below.</p>
-            <a href="/api/clio-handshake" class="btn-secondary" id="authLink">Initialize Handshake</a>
-        </div>
-    </div>
-
     <div class="form-group">
-        <label for="firmSelect">Target Workspace Selection</label>
-        <select id="firmSelect" disabled>
-            <option value="" disabled selected>Awaiting Secure Connection...</option>
-            <option value="01KPZB4ZCXHE3Z92S1KM3AT96V">Stephen Pilarski — Authorized Firm</option>
+        <label>Active Workspace Target</label>
+        <select id="firmSelect">
+            <option value="01KPZB4ZCXHE3Z92S1KM3AT96V" selected>Stephen Pilarski — Primary Workspace</option>
         </select>
     </div>
 
     <div class="form-group">
         <label for="logText">Contemporaneous Statement</label>
-        <textarea id="logText" placeholder="Log real-time events, safety records, or structural findings chronologically...">[08:15 AM] Entry point established. 
-[08:45 AM] Initial physical evidence documented under regional protocols.</textarea>
+        <textarea id="logText" placeholder="Enter chronological logs here...">[03:15 PM] Direct transmission pipeline fully unlocked. Ready to sync.</textarea>
     </div>
 
-    <button id="syncBtn" class="btn" disabled style="opacity: 0.5; cursor: not-allowed;">Transmit to Firm Workspace</button>
+    <button id="syncBtn" class="btn">Transmit to Clio Infrastructure</button>
     <div id="banner" class="banner"></div>
 </div>
 
 <script>
-    // Automatically detect if we are returning from a successful handshake loop
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('token');
-    
-    const handshakePanel = document.getElementById('handshakePanel');
-    const statusText = document.getElementById('statusText');
-    const handshakeAction = document.getElementById('handshakeAction');
-    const firmSelect = document.getElementById('firmSelect');
-    const syncBtn = document.getElementById('syncBtn');
-    const banner = document.getElementById('banner');
-
-    if (token) {
-        // Clear out the query parameter cleanly to protect the token from looking ugly in the URL bar
-        window.history.replaceState({}, document.title, window.location.pathname);
-        
-        // Lock the UI into verified Teal Mode
-        handshakePanel.classList.add('authenticated');
-        statusText.textContent = "Clio Integration: Securely Connected";
-        handshakeAction.style.display = 'none';
-        
-        // Unlock the control panels inside the app
-        firmSelect.removeAttribute('disabled');
-        firmSelect.options[0].textContent = "Select authenticated firm workspace...";
-        firmSelect.selectedIndex = 1; // Auto-select Stephen Pilarski's true firm profile
-        
-        syncBtn.removeAttribute('disabled');
-        syncBtn.style.opacity = "1";
-        syncBtn.style.cursor = "pointer";
-    }
-
-    syncBtn.addEventListener('click', async () => {
-        const firmId = firmSelect.value;
-        const firmName = firmSelect.options[firmSelect.selectedIndex].text;
+    document.getElementById('syncBtn').addEventListener('click', async () => {
         const logText = document.getElementById('logText').value.trim();
+        const banner = document.getElementById('banner');
 
         if (!logText) {
-            showBanner('Please provide chronological evidence log text before syncing.', 'error');
+            showBanner('Please enter log text before syncing.', 'error');
             return;
         }
 
-        showBanner('Packaging and encrypting timeline data transfer...', 'success');
+        showBanner('Transmitting directly to your firm portal...', 'success');
 
         try {
             const response = await fetch('/api/sync', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    firmId: firmId,
-                    firmName: firmName,
-                    logText: logText,
-                    token: token,
-                    timestamp: new Date().toISOString()
-                })
+                body: JSON.stringify({ logText: logText })
             });
 
             const result = await response.json();
 
             if (response.ok && result.success) {
-                showBanner('Transmission Success! Securely archived in Clio Grow.', 'success');
+                showBanner('Transmission Success! Logged securely inside your Clio account.', 'success');
             } else {
-                throw new Error(result.error || 'Clio pipeline gateway rejected transmission.');
+                throw new Error(result.error || 'Server rejected the transmission.');
             }
         } catch (err) {
-            showBanner(`Transmission Error: ${err.message}`, 'error');
+            showBanner(`Sync Failed: ${err.message}`, 'error');
         }
     });
 
