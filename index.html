@@ -1,113 +1,121 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>WorkTimeline™ // LegalTech Grow Suite</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.3); border-radius: 3px; }
-    body { transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-  </style>
-</head>
-<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col items-center justify-between antialiased selection:bg-emerald-500/30">
+const { createClient } = require('@supabase/supabase-js');
 
-  <header class="w-full max-w-md bg-slate-800/90 backdrop-blur-md border-b border-slate-700/50 p-4 sticky top-0 z-50 flex justify-between items-center shadow-md">
-    <div>
-      <h1 class="text-lg font-bold tracking-tight text-white flex items-center gap-1.5">
-        WorkTimeline<span class="text-[10px] font-bold text-emerald-400 px-1.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 uppercase tracking-widest">TM</span>
-      </h1>
-      <p class="text-[10px] text-slate-400 tracking-wider font-mono uppercase">Intake & Grow Pipeline</p>
-    </div>
-  </header>
+// Initialize your Supabase database access securely
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
 
-  <main class="w-full max-w-md flex-1 p-4 flex flex-col justify-start space-y-6">
-    <section class="bg-gradient-to-br from-slate-800 to-slate-850 border border-slate-700/60 rounded-2xl p-5 shadow-xl relative overflow-hidden">
-      
-      <div class="flex justify-between items-start mb-4">
-        <div>
-          <span class="text-[9px] font-mono uppercase bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded-md border border-amber-500/20 font-bold tracking-wider">
-            Clio Grow PKCE Secure Node
-          </span>
-          <h2 class="text-xl font-extrabold mt-1 text-white tracking-tight">Phase 1: Grow Engine Sync</h2>
-        </div>
-        <div class="h-2.5 w-2.5 rounded-full bg-emerald-400 shadow-lg shadow-emerald-500/50"></div>
-      </div>
-      
-      <p class="text-xs text-slate-300 leading-relaxed mb-4">
-        Routing cryptographic pipeline handshakes directly to the Clio Grow public developer cluster.
-      </p>
+module.exports = async (req, res) => {
+  // 1. Extract the secure authentication code returned from Clio's servers
+  const { code, state } = req.query;
 
-      <div class="bg-slate-900/80 rounded-xl p-3.5 border border-slate-800 mb-5 font-mono text-[11px] text-slate-400 space-y-1.5 shadow-inner">
-        <div class="flex justify-between"><span class="text-slate-500">GROW_FIRM_ID:</span> <span class="text-blue-400 font-semibold select-all">01KPZB4ZCXHE3Z92S1KM3AT96V</span></div>
-        <div class="flex justify-between"><span class="text-slate-500">AUTH_ENDPOINT:</span> <span class="text-amber-400">developers.api.clio.com</span></div>
-        <div class="flex justify-between"><span class="text-slate-500">VAULT_STATUS:</span> <span class="text-emerald-400 font-bold">PKCE Engine Active</span></div>
-      </div>
+  if (!code) {
+    console.error("WorkTimeline Backend Error | Missing authorization tracking code.");
+    return res.status(400).json({ error: 'Missing authorization code from Clio.' });
+  }
 
-      <button onclick="initiateClioGrowPKCEHandshake()" id="handshakeBtn" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-bold text-sm tracking-wide rounded-xl shadow-lg transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer">
-        <span>Execute Clio Grow Sync</span> ⚡
-      </button>
-    </section>
-  </main>
+  try {
+    // 2. Decode tracking parameters
+    let userId = '01KPZB4ZCXHE3Z92S1KM3AT96V'; 
+    let platform = 'grow';
 
-  <script>
-    // Your exact Clio Grow Client ID from your new screenshot
-    const GROW_CLIENT_ID = "18C4eBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s";
-
-    // Helper functions to generate PKCE values natively inside the phone browser
-    function generateRandomString(length) {
-      const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
-      let result = '';
-      const values = new Uint8Array(length);
-      window.crypto.getRandomValues(values);
-      for (let i = 0; i < length; i++) {
-        result += charset[values[i] % charset.length];
+    if (state) {
+      try {
+        const decodedState = JSON.parse(Buffer.from(decodeURIComponent(state), 'base64').toString());
+        if (decodedState) {
+          userId = decodedState.pilot_firm || '01KPZB4ZCXHE3Z92S1KM3AT96V';
+          platform = decodedState.platform || 'grow';
+        }
+      } catch (e) {
+        console.warn("WorkTimeline Backend | State decoding fallback initialized.", e);
+        userId = state; 
       }
-      return result;
     }
 
-    async function generateCodeChallenge(verifier) {
-      const encoder = new TextEncoder();
-      const data = encoder.encode(verifier);
-      const digest = await window.crypto.subtle.digest('SHA-256', data);
-      return btoa(String.fromCharCode(...new Uint8Array(digest)))
-        .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    console.log(`WorkTimeline Matrix | Processing Code Exchange for: [${platform.toUpperCase()}]`);
+
+    // 3. Establish parameters based on the core API structure
+    let clientId = '';
+    let tokenGatewayUrl = '';
+    
+    const requestParams = new URLSearchParams({
+      grant_type: 'authorization_code',
+      code: code,
+      redirect_uri: 'https://worktimeline-app.vercel.app/api/callback'
+    });
+
+    if (platform === 'grow') {
+      clientId = process.env.CLIO_GROW_CLIENT_ID;
+      tokenGatewayUrl = 'https://auth.api.clio.com/oauth/token';
+      
+      // Pull the original unhashed code verifier out of cookie memory to validate the PKCE check
+      const cookieHeader = req.headers.cookie || '';
+      const match = cookieHeader.match(/clio_pkce_verifier=([^;]+)/);
+      const codeVerifier = match ? match[1] : '';
+      
+      if (codeVerifier) {
+        requestParams.append('code_verifier', codeVerifier);
+      }
+      requestParams.append('client_id', clientId);
+    } else {
+      clientId = process.env.CLIO_MANAGE_CLIENT_ID;
+      const clientSecret = process.env.CLIO_MANAGE_CLIENT_SECRET;
+      tokenGatewayUrl = 'https://ca.app.clio.com/oauth/token';
+      
+      requestParams.append('client_id', clientId);
+      if (clientSecret) {
+        requestParams.append('client_secret', clientSecret);
+      }
     }
 
-    async function initiateClioGrowPKCEHandshake() {
-      const AUTH_GATEWAY = 'https://developers.api.clio.com/oauth/authorize';
-      const redirectUri = 'https://worktimeline-app.vercel.app/api/callback';
-      
-      // 1. Generate the master PKCE token validation code verifier string
-      const codeVerifier = generateRandomString(64);
-      
-      // 2. Save it temporarily in cookie storage so our backend callback can extract it later
-      document.cookie = "clio_pkce_verifier=" + codeVerifier + "; path=/; max-age=3600; Secure; SameSite=Lax";
-      
-      // 3. Hash the challenge string for Clio's validation node
-      const codeChallenge = await generateCodeChallenge(codeVerifier);
-
-      const statePayload = {
-        platform: 'grow',
-        pilot_firm: '01KPZB4ZCXHE3Z92S1KM3AT96V',
-        timestamp: Date.now()
-      };
-      const state = btoa(JSON.stringify(statePayload));
-
-      // Build the specialized URL layout mandated by the Clio Grow PKCE specifications
-      const authUrl = `${AUTH_GATEWAY}?` + 
-        `response_type=code` +
-        `&client_id=${encodeURIComponent(GROW_CLIENT_ID)}` + 
-        `&redirect_uri=${encodeURIComponent(redirectUri)}` +
-        `&state=${encodeURIComponent(state)}` +
-        `&code_challenge=${encodeURIComponent(codeChallenge)}` +
-        `&code_challenge_method=S256`;
-
-      console.log("WorkTimeline PKCE Engine | Outbound Flight:", authUrl);
-      window.location.href = authUrl;
+    if (!clientId) {
+      console.error(`WorkTimeline Fault | Configuration keys are missing inside your Vercel panel.`);
+      throw new Error(`Server Configuration Error: Missing environment variables on Vercel.`);
     }
-  </script>
-</body>
-</html>
+
+    console.log(`WorkTimeline Network Outbound | Shipping validation trade packet to: ${tokenGatewayUrl}`);
+
+    // 4. Swap the temporary authorization code for real system data access tokens
+    const clioResponse = await fetch(tokenGatewayUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: requestParams.toString(),
+    });
+
+    const data = await clioResponse.json();
+
+    if (!clioResponse.ok) {
+      console.error("Clio Hub Refused Token Exchange. Diagnostic data payload: ", data);
+      throw new Error(data.error_description || data.error || 'Token validation swap failed.');
+    }
+
+    // 5. Calculate date windows for secure access lifespan token expiration tracking
+    const expiresAt = new Date();
+    expiresAt.setSeconds(expiresAt.getSeconds() + (data.expires_in || 3600));
+
+    console.log(`WorkTimeline Database Engine | Committing secure token layer to Supabase vault for user_id: ${userId}`);
+
+    // 6. Securely upsert the fresh access and refresh token layers into your Supabase database tables
+    const { error: dbError } = await supabase
+      .from('clio_connections')
+      .upsert({
+        user_id: userId,
+        access_token: data.access_token,
+        refresh_token: data.refresh_token,
+        expires_at: expiresAt.toISOString(),
+      }, { onConflict: 'user_id' });
+
+    if (dbError) {
+      console.error("Supabase Security Vault Insertion Call Rejected: ", dbError);
+      throw dbError;
+    }
+
+    console.log("WorkTimeline Engine | Master Sync Complete. Redirecting to user interface dashboard panels.");
+    return res.redirect('/?status=clio_connected');
+
+  } catch (error) {
+    console.error('WorkTimeline Core Handshake System Failure:', error.message);
+    return res.redirect('/?status=error&message=' + encodeURIComponent(error.message));
+  }
+};
