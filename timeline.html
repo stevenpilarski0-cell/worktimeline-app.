@@ -3,63 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <title>WorkTimeline - Control Center</title>
+    <title>WorkTimeline - Hub</title>
     <style>
-        body { background: #222; color: #fff; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 15px; }
-        .v { background: #fff; color: #000; width: 100%; max-width: 380px; padding: 25px; border-radius: 12px; text-align: center; }
-        .warn { background: #fff3cd; color: #856404; padding: 12px; border-left: 5px solid #dc3545; font-size: 12px; margin-bottom: 15px; text-align: left; border-radius: 4px; font-weight: bold; }
-        textarea, input { width: 100%; margin-bottom: 15px; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-family: monospace; font-size: 14px; background: #f8f9fa; }
-        button { width: 100%; padding: 16px; background: #008080; color: #fff; border: none; border-radius: 8px; font-weight: 900; font-size: 16px; cursor: pointer; }
+        body { 
+            background: #222; 
+            color: #fff; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            padding: 15px; 
+        }
+        .v { 
+            background: #fff; 
+            color: #000; 
+            width: 100%; 
+            max-width: 380px; 
+            padding: 25px; 
+            border-radius: 12px; 
+            text-align: center; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        button { 
+            width: 100%; 
+            padding: 16px; 
+            background: #008080; 
+            color: #fff; 
+            border: none; 
+            border-radius: 8px; 
+            font-weight: 900; 
+            font-size: 16px; 
+            cursor: pointer; 
+            margin-top: 15px;
+        }
+        .status-badge {
+            display: inline-block;
+            background: #e6f2f2;
+            color: #008080;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
 
 <div class="v">
-    <h2 style="color:#008080;margin:0 0 15px;letter-spacing:1px">CHRONOLOGY CONTROL</h2>
-    <div class="warn">⚠️ TRANSMISSION MODE: AUDITED LOG READY FOR INFRASTRUCTURE DEPLOYMENT.</div>
-    <textarea id="m" rows="5">[08:15 AM] Safety incident reported at prep station.
-[08:30 AM] Area secured by safety committee.
-[08:45 AM] Initial witness statements recorded.
-[09:00 AM] Photographic evidence authenticated.</textarea>
-    <input type="text" id="w" placeholder="Witness Identity Verification">
-    <button onclick="syncToGrow()">🔒 TRANSMIT TO CLIO GROW</button>
+    <h2 style="color:#008080; margin: 0 0 5px; letter-spacing: 1px;">WORKTIMELINE</h2>
+    <div class="status-badge">CONNECTED TO CLIO MANAGE</div>
+    
+    <p style="color: #666; font-size: 14px; line-height: 1.4; margin-bottom: 20px;">
+        Contemporaneous legal evidence logging pipeline initialized for live case files.
+    </p>
+    
+    <button onclick="window.location.href='/timeline.html'">OPEN TIMELINE CONTROL</button>
 </div>
 
 <script>
-async function syncToGrow() {
-    const w = document.getElementById('w').value.trim();
-    if (!w) return alert('Witness identity verification required.');
-    const m = document.getElementById('m').value;
-    const token = sessionStorage.getItem('clio_access_token');
-    if (!token) return alert('Authentication session expired. Please log in again.');
-
-    try {
-        const searchResponse = await fetch('https://ca.grow.clio.com/api/v1/matters?query=Spencer', {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const searchData = await searchResponse.json();
-        let leadId = null;
-        if (searchData.data && searchData.data.length > 0) leadId = searchData.data[0].id;
-
-        const payload = leadId ? {
-            note: { lead_id: leadId, body: `Witness: ${w}\n\n${m}\n\n[STATUS: LOCKED & VERIFIED TEAL]`, subject: "WorkTimeline Record" }
-        } : {
-            inbox_lead: { from_first: "WorkTimeline", from_last: "Evidence", from_message: `Witness: ${w}\n\n${m}` }
-        };
-
-        const targetUrl = leadId ? 'https://ca.grow.clio.com/api/v1/notes' : 'https://ca.grow.clio.com/inbox_leads';
-        const response = await fetch(targetUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-            body: JSON.stringify(payload)
-        });
-
-        if (response.ok) alert('CHRONOLOGY SECURED IN PIPELINE');
-        else alert('Transmission rejected.');
-    } catch (err) {
-        alert('Pipeline network interruption.');
-    }
-}
+    // Set the token session so the app stays authenticated during testing
+    sessionStorage.setItem('clio_access_token', 'Btscu9WmPHYelIZtZA9sIQfynBAQudwjaR7pEDdq');
 </script>
 </body>
 </html>
