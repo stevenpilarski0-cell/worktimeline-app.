@@ -16,27 +16,31 @@ export default async function handler(req, res) {
     }
 
     try {
-        const growPayload = {
-            note: {
-                subject: "WorkTimeline - Contemporaneous Log",
-                body: `TIMESTAMPED CHRONOLOGY STATEMENT:\n\n${logText}\n\n--------------------------------------------\nMETADATA:\n- Target Firm ID: 01KPZB4ZCXHE3Z92S1KM3AT96V\n- Operator: Stephen Pilarski\n- Date: ${new Date().toISOString()}`
+        // Restructured payload explicitly for the Clio Grow Lead Capture endpoint
+        const leadPayload = {
+            inbox_lead: {
+                first_name: "WorkTimeline",
+                last_name: "Log Entry",
+                email: "stevenpilarski0@gmail.com",
+                description: `TIMESTAMPED CHRONOLOGY STATEMENT:\n\n${logText}\n\n--------------------------------------------\nMETADATA:\n- Target Firm ID: 01KPZB4ZCXHE3Z92S1KM3AT96V\n- Security Protocol: Lead Capture Pipeline`,
+                status: "received"
             }
         };
 
-        const growResponse = await fetch('https://ca.api.clio.com/grow/api/v1/notes', {
+        // Pushing directly to Clio Grow's dedicated Lead Intake endpoint
+        const growResponse = await fetch('https://ca.grow.clio.com/api/v1/inbox_leads', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${staticToken}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(growPayload)
+            body: JSON.stringify(leadPayload)
         });
 
-        // SAFE TEXT CHECK: Reads raw server response first to stop the 'Unexpected token A' crash
         const responseText = await growResponse.text();
 
         if (!growResponse.ok) {
-            throw new Error(`Clio rejected the sync. Server says: ${responseText}`);
+            throw new Error(`Clio rejected the lead sync. Server says: ${responseText}`);
         }
 
         return res.status(200).json({ success: true });
