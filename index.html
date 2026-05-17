@@ -70,7 +70,7 @@
       <div class="flex justify-between items-start mb-4">
         <div>
           <span class="text-[9px] font-mono uppercase bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded-md border border-blue-500/20 font-bold tracking-wider">
-            Clio Account Gateway Cluster
+            Clio Canadian Account Gateway
           </span>
           <h2 class="text-xl font-extrabold mt-1 text-white tracking-tight">3-Legged OAuth Handshake</h2>
         </div>
@@ -151,8 +151,8 @@
       const statusIndicator = document.getElementById('syncStatusIndicator');
       const handshakeBtn = document.getElementById('handshakeBtn');
 
-      // Seamless key binding: Feeds your verified Client ID straight to execution layers
-      cachedClioClientId = "btscu9WmPHYellZtZA9sIQfynBAQxdwjaR7pEDdq";
+      // Verified Canadian regional key mapping
+      cachedClioClientId = "18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s"; 
       
       // Instantly flip visual tracking states to verified
       statusText.textContent = "Pipeline Verified & Locked";
@@ -166,7 +166,6 @@
       handshakeBtn.innerHTML = "<span>Execute Live Handshake Sync</span> ⚡";
     }
 
-    // Run synchronization immediately when DOM is constructed
     window.addEventListener('DOMContentLoaded', loadConfig);
 
     // =========================================================================
@@ -178,14 +177,11 @@
         return;
       }
 
-      // Route through the main regional account verification server endpoint
+      // Route through the standard Canadian account login gateway
       const AUTH_GATEWAY = 'https://ca.app.clio.com/oauth/authorize';
       const redirectUri = window.location.origin + '/api/callback'; 
-      
-      // Request standard application access verification profile permissions
       const scope = 'read'; 
       
-      // Secure state token bundling payload details for verification logic mapping
       const statePayload = {
         platform: targetPlatform,
         pilot_firm: '01KPZB4ZCXHE3Z92S1KM3AT96V',
@@ -193,7 +189,6 @@
       };
       const state = btoa(JSON.stringify(statePayload));
 
-      // Construct pure production 3-legged redirection string
       const authUrl = `${AUTH_GATEWAY}?` + 
         `response_type=code` +
         `&client_id=${encodeURIComponent(cachedClioClientId)}` + 
@@ -201,7 +196,7 @@
         `&state=${encodeURIComponent(state)}` +
         `&scope=${encodeURIComponent(scope)}`;
 
-      console.log("WorkTimeline™ Core Matrix | Handshake Triggered to Gateway: ", authUrl);
+      console.log("WorkTimeline™ Core Matrix | Handshake Triggered: ", authUrl);
       window.location.href = authUrl;
     }
 
