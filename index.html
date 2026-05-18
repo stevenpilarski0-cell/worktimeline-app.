@@ -2,413 +2,170 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline — Secure Evidence & Milestone Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkTimeline - Secure Log</title>
     <style>
-        /* Apple-style minimalist layout and design aesthetics */
-        :root {
-            --primary-teal: #008080;
-            --hover-teal: #006666;
-            --slate-gray: #4a5568;
-            --bg-light: #f5f5f7;
-            --card-white: #ffffff;
-            --border-gray: #d2d2d7;
-            --text-dark: #1d1d1f;
-        }
-
-        body { 
+        /* Mac-like Minimalist Base */
+        body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-light);
-            color: var(--text-dark);
-            margin: 0;
-            padding: 0;
+            background-color: #f5f5f7;
+            color: #1d1d1f;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
+            height: 100vh;
+            margin: 0;
         }
 
+        /* Clean Gray Container with Rounded Corners */
         .container {
+            background-color: #ffffff;
             width: 100%;
             max-width: 480px;
-            background: var(--card-white);
-            border-radius: 20px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-            padding: 32px;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
             box-sizing: border-box;
-            margin: 16px;
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 24px;
-            position: relative;
-        }
-
-        .role-toggle-btn {
-            position: absolute;
-            top: -16px;
-            right: 0;
-            background: transparent;
-            border: 1px solid var(--border-gray);
-            padding: 5px 10px;
-            font-size: 10px;
-            border-radius: 6px;
-            color: var(--slate-gray);
-            cursor: pointer;
-            text-transform: uppercase;
+        h2 {
+            margin-top: 0;
             font-weight: 600;
-            transition: all 0.2s ease;
-        }
-
-        .role-toggle-btn:hover {
-            background-color: #f5f5f7;
-            color: var(--text-dark);
-        }
-
-        .header h1 {
             font-size: 24px;
-            font-weight: 600;
             letter-spacing: -0.5px;
-            margin: 0 0 4px 0;
+            color: #1d1d1f;
         }
 
-        .header p {
-            color: var(--slate-gray);
-            font-size: 13px;
-            margin: 0;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 6px 12px;
-            border-radius: 99px;
-            font-size: 11px;
-            font-weight: 500;
-            margin-top: 12px;
-        }
-
-        .status-connected {
-            background-color: rgba(0, 128, 128, 0.1);
-            color: var(--primary-teal);
-        }
-
-        .status-disconnected {
-            background-color: rgba(74, 85, 104, 0.1);
-            color: var(--slate-gray);
-        }
-
-        .attorney-panel {
-            background-color: #f8fafc;
-            border: 1px dashed var(--primary-teal);
-            border-radius: 14px;
-            padding: 18px;
+        p {
+            font-size: 14px;
+            color: #86868b;
             margin-bottom: 24px;
-            box-sizing: border-box;
         }
 
-        .attorney-panel h3 {
-            margin: 0 0 12px 0;
-            font-size: 12px;
-            text-transform: uppercase;
-            color: var(--primary-teal);
-            letter-spacing: 0.5px;
-        }
-
-        .form-group {
-            margin-bottom: 10px;
-        }
-
-        .form-control {
+        /* Text Input Area */
+        textarea {
             width: 100%;
-            padding: 10px 12px;
-            border-radius: 8px;
-            border: 1px solid var(--border-gray);
-            font-size: 13px;
-            box-sizing: border-box;
-            background-color: #ffffff;
-            font-family: inherit;
-        }
-
-        .timeline-stream {
-            position: relative;
-            padding-left: 24px;
-            margin-bottom: 24px;
-        }
-
-        .timeline-stream::before {
-            content: '';
-            position: absolute;
-            left: 4px; top: 0; bottom: 0; width: 2px;
-            background-color: var(--border-gray);
-        }
-
-        .timeline-node {
-            position: relative;
-            margin-bottom: 16px;
-            animation: fadeIn 0.3s ease-out forwards;
-        }
-
-        .timeline-dot {
-            position: absolute;
-            left: -24px; top: 5px; width: 10px; height: 10px;
-            border-radius: 50%; background-color: var(--primary-teal);
-            border: 2px solid var(--card-white);
-            box-shadow: 0 0 0 2px rgba(0, 128, 128, 0.15);
-        }
-
-        .node-card {
-            background: #fdfdfd;
-            border: 1px solid #e5e5ea;
-            border-radius: 12px;
-            padding: 14px;
-        }
-
-        .node-title {
-            font-size: 13px;
-            font-weight: 600;
-            margin: 0 0 4px 0;
-            color: var(--text-dark);
-        }
-
-        .node-desc {
-            font-size: 12px;
-            color: var(--slate-gray);
-            margin: 0;
-            line-height: 1.4;
-        }
-
-        .terminal-box {
-            background-color: #1d1d1f;
-            color: #f5f5f7;
-            font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
-            font-size: 11px;
+            height: 120px;
             padding: 16px;
+            border: 1px solid #d2d2d7;
             border-radius: 12px;
-            min-height: 60px;
-            margin-bottom: 24px;
-            white-space: pre-wrap;
-            word-break: break-all;
-            line-height: 1.5;
+            font-family: inherit;
+            font-size: 14px;
+            resize: none;
+            box-sizing: border-box;
+            background-color: #fafafa;
+            transition: border-color 0.2s ease;
         }
 
-        .action-btn {
+        textarea:focus {
+            outline: none;
+            border-color: #008080;
+            background-color: #ffffff;
+        }
+
+        /* Teal Primary Button */
+        button {
             width: 100%;
-            background-color: var(--primary-teal);
+            background-color: #008080;
             color: white;
             border: none;
-            padding: 14px;
-            border-radius: 12px;
+            padding: 16px;
             font-size: 15px;
-            font-weight: 500;
+            font-weight: 600;
+            border-radius: 12px;
+            margin-top: 24px;
             cursor: pointer;
             transition: background-color 0.2s ease, transform 0.1s ease;
         }
 
-        .action-btn:hover { background-color: var(--hover-teal); }
-        .action-btn:active { transform: scale(0.98); }
-        .hidden { display: none !important; }
+        button:hover {
+            background-color: #006666;
+        }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
+        button:active {
+            transform: scale(0.98);
+        }
+
+        /* Status Text */
+        #statusMsg {
+            margin-top: 16px;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            height: 20px;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header">
-        <button onclick="toggleSystemRole()" class="role-toggle-btn" id="roleToggle">Attorney Workspace 💼</button>
-        <h1>WorkTimeline</h1>
-        <p id="systemSubtitle">Secure Legal Verification Stream</p>
-        <div id="statusBadge" class="status-badge status-disconnected">Checking Auth Pipeline...</div>
-    </div>
+    <h2>WorkTimeline Engine</h2>
+    <p>Enter incident details to log a verified timeline entry.</p>
 
-    <div id="attorneyControlNode" class="attorney-panel hidden">
-        <h3>Publish Case Progress Node</h3>
-        <div class="form-group">
-            <input type="text" id="milestoneTitle" placeholder="Milestone Header (e.g., Lead Added)" class="form-control">
-        </div>
-        <div class="form-group">
-            <textarea id="milestoneDesc" placeholder="Context description for client timeline clarity..." rows="2" class="form-control"></textarea>
-        </div>
-        <button onclick="executeMilestonePublish()" class="action-btn" style="padding: 10px; font-size: 13px;">Publish Milestone ⚡</button>
-        
-        <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid #e5e5ea;">
-            <button onclick="simulateClioWebhookTrigger()" class="action-btn" style="background-color: #1d1d1f; font-family: monospace; font-size: 11px; padding: 8px;">
-                [Simulate Clio Grow Webhook Push]
-            </button>
-        </div>
-    </div>
-
-    <div class="timeline-stream" id="streamContainer">
-        <div class="timeline-node">
-            <div class="timeline-dot"></div>
-            <div class="node-card">
-                <h4 class="node-title">OAuth Identity Initialized</h4>
-                <p class="node-desc">Integration channels listening smoothly for Clio Grow authentication callbacks.</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="terminal-box" id="terminalLog">System standby. Awaiting initialization handshake signal...</div>
-
-    <button id="authTriggerBtn" onclick="initiateClioV4Handshake()" class="action-btn">
-        Initialize Secure Clio Grow Sync
-    </button>
+    <textarea id="logInput" placeholder="Incident notes, witness statements, or timeline details..."></textarea>
+    
+    <button onclick="transmitLog()" id="transmitBtn">Transmit to Clio Secure Core</button>
+    
+    <div id="statusMsg"></div>
 </div>
 
 <script>
-    const CLIO_CLIENT_ID = "18C4eBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s";
-    const REDIRECT_URI = "https://worktimeline-app.vercel.app/api/callback";
-    
-    // Core structural route fix: Clio Grow utilizes localized routing clusters
-    const AUTH_ENDPOINT = "https://ca.grow.clio.com/oauth/authorize"; 
-    
-    let activeRoleContext = "client";
-    let lastLoggedNodeCount = 1;
+    async function transmitLog() {
+        const logInput = document.getElementById('logInput').value.trim();
+        const statusMsg = document.getElementById('statusMsg');
+        const transmitBtn = document.getElementById('transmitBtn');
 
-    window.addEventListener('DOMContentLoaded', () => {
-        const params = new URLSearchParams(window.location.search);
-        const status = params.get('status');
-        const terminal = document.getElementById('terminalLog');
-        const badge = document.getElementById('statusBadge');
-        const btn = document.getElementById('authTriggerBtn');
-
-        if (status === 'connected') {
-            badge.textContent = "Clio Grow Connected";
-            badge.className = "status-badge status-connected";
-            terminal.textContent = "SUCCESS: Clio Grow OAuth 2.0 handshake completed safely. System tokens written to production vault.";
-            btn.textContent = "Re-authenticate Grow Cluster";
-        } else if (status === 'error') {
-            badge.textContent = "Connection Failure";
-            badge.className = "status-badge status-disconnected";
-            terminal.textContent = `ERROR: Authorization rejected. Info trace: ${params.get('message') || 'Scope verification variance'}`;
+        if (!logInput) {
+            statusMsg.textContent = "Please enter log details before transmitting.";
+            statusMsg.style.color = "#e30000";
+            return;
         }
 
-        setInterval(fetchLatestLiveTimelineNodes, 3000);
-    });
+        // Lock button and show processing status
+        transmitBtn.disabled = true;
+        transmitBtn.style.opacity = '0.7';
+        statusMsg.textContent = "Negotiating Secure Handshake...";
+        statusMsg.style.color = "#86868b";
 
-    async function fetchLatestLiveTimelineNodes() {
         try {
-            const response = await fetch('/api/get-milestones?firm_row_id=1');
-            if (!response.ok) return;
-            const currentMilestones = await response.json();
-            
-            if (currentMilestones.length > lastLoggedNodeCount) {
-                const container = document.getElementById('streamContainer');
-                container.innerHTML = ""; 
+            // This strictly targets our perfectly calibrated backend file
+            const response = await fetch('/api/sync', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ logText: logInput })
+            });
+
+            const data = await response.json();
+
+            // The Magic: If the backend says we need a token, the backend provides the exact URL
+            if (response.status === 401 && data.error === 'AUTH_REQUIRED') {
+                statusMsg.textContent = "Clearance required. Rerouting to authorization gate...";
+                statusMsg.style.color = "#008080";
                 
-                currentMilestones.forEach(node => {
-                    const accentColor = node.logged_by === 'automated_clio' ? '#2563eb' : 'var(--primary-teal)';
-                    const element = `
-                        <div class="timeline-node">
-                            <div class="timeline-dot" style="background-color: ${accentColor};"></div>
-                            <div class="node-card" style="border-left: 3px solid ${accentColor};">
-                                <h4 class="node-title">${node.title}</h4>
-                                <p class="node-desc">${node.description}</p>
-                            </div>
-                        </div>
-                    `;
-                    container.insertAdjacentHTML('beforeend', element);
-                });
-                lastLoggedNodeCount = currentMilestones.length;
+                // Immediately drops the user into the CORRECT Clio authorization screen
+                window.location.href = data.url; 
+            } 
+            else if (response.ok) {
+                statusMsg.textContent = "Transmission Successful. Log secured in Clio.";
+                statusMsg.style.color = "#008080";
+                document.getElementById('logInput').value = ''; // Clear text area on success
+            } 
+            else {
+                statusMsg.textContent = "Server Error: " + (data.error || "Payload rejected.");
+                statusMsg.style.color = "#e30000";
             }
-        } catch (err) {
-            console.warn("Background sync skipped: ", err.message);
+        } catch (error) {
+            statusMsg.textContent = "Network Error: Could not connect to gateway.";
+            statusMsg.style.color = "#e30000";
+        } finally {
+            // Unlock button
+            transmitBtn.disabled = false;
+            transmitBtn.style.opacity = '1';
         }
-    }
-
-    function toggleSystemRole() {
-        const overlay = document.getElementById('attorneyControlNode');
-        const toggleBtn = document.getElementById('roleToggle');
-        const subtitle = document.getElementById('systemSubtitle');
-
-        if (activeRoleContext === "client") {
-            activeRoleContext = "attorney";
-            toggleBtn.textContent = "Client Interface 📱";
-            subtitle.textContent = "Attorney Dashboard Panel";
-            overlay.classList.remove('hidden');
-        } else {
-            activeRoleContext = "client";
-            toggleBtn.textContent = "Attorney Workspace 💼";
-            subtitle.textContent = "Secure Legal Verification Stream";
-            overlay.classList.add('hidden');
-        }
-    }
-
-    async function executeMilestonePublish() {
-        const titleField = document.getElementById('milestoneTitle');
-        const descField = document.getElementById('milestoneDesc');
-        if (!titleField.value) return alert("Milestone heading parameter required.");
-
-        appendNodeToVisualTimeline(titleField.value, descField.value, "var(--primary-teal)");
-
-        await fetch('/api/add-milestone', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title: titleField.value, description: descField.value, firm_row_id: 1 })
-        });
-
-        titleField.value = "";
-        descField.value = "";
-    }
-
-    async function simulateClioWebhookTrigger() {
-        const simulationPayload = {
-            event: "tasks.completed",
-            data: {
-                name: "New Lead Intake Processed",
-                description: "Lead verified and structural chronology mapped smoothly into Clio Grow tracking systems."
-            }
-        };
-
-        const targetResponse = await fetch('/api/clio-webhook', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(simulationPayload)
-        });
-
-        if (targetResponse.ok) {
-            appendNodeToVisualTimeline("Clio Grow Auto-Sync // Intake Logged", "A fresh intake lead file was successfully initialized inside Clio Grow.", "#2563eb");
-        }
-    }
-
-    function appendNodeToVisualTimeline(title, desc, accentColor) {
-        const container = document.getElementById('streamContainer');
-        const element = `
-            <div class="timeline-node">
-                <div class="timeline-dot" style="background-color: ${accentColor};"></div>
-                <div class="node-card" style="border-left: 3px solid ${accentColor};">
-                    <h4 class="node-title">${title}</h4>
-                    <p class="node-desc">${desc}</p>
-                </div>
-            </div>
-        `;
-        container.insertAdjacentHTML('afterbegin', element);
-    }
-
-    function initiateClioV4Handshake() {
-        const terminal = document.getElementById('terminalLog');
-        terminal.textContent = "Structuring custom Grow scopes...\nRouting frame directly to Canadian Clio Grow Gateway...";
-        
-        const statePayload = { app: 'worktimeline', platform: 'grow', origin_seed: 1, timestamp: Date.now() };
-        const base64State = btoa(JSON.stringify(statePayload));
-
-        // Structural Parameter Resolution: Standardize scope formatting for Clio Grow
-        const growScopes = "grow_lead_inbox_read grow_lead_inbox_write grow_matter_read grow_matter_note_read grow_contact_read grow_user_read";
-
-        setTimeout(() => {
-            window.location.href = `${AUTH_ENDPOINT}?` + 
-                `response_type=code` +
-                `&client_id=${encodeURIComponent(CLIO_CLIENT_ID)}` +
-                `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}` +
-                `&state=${encodeURIComponent(base64State)}` +
-                `&scope=${encodeURIComponent(growScopes)}`;
-        }, 600);
     }
 </script>
+
 </body>
 </html>
