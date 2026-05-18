@@ -234,11 +234,10 @@
             syncButtonAction.style.background = "var(--clio-blue)";
             
             syncButtonAction.onclick = function() {
-                // FIXED CREDENTIAL SET: Locked directly onto your Grow App client parameters
                 const clientId = '18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s'; 
                 const redirectUri = 'https://worktimeline-app.vercel.app/api/sync'; 
                 
-                // NATIVE SYSTEM REDIRECT ROUTING FOR CANADIAN CLIO GROW PLATFORM APPLICATIONS
+                // REFINED STRINGS: Clean parsing format directly targeting standard OAuth parameters
                 const oauthDestination = `https://ca.grow.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
                 window.location.href = oauthDestination;
             };
