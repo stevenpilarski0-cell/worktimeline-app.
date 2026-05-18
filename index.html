@@ -26,7 +26,6 @@
             overflow: hidden; 
         }
 
-        /* --- ACTIVE INTERFACE --- */
         .heartbeat { position: absolute; top: 20px; right: 20px; display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 800; color: #00a859; z-index: 5; }
         .dot { height: 10px; width: 10px; background-color: #00a859; border-radius: 50%; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { transform: scale(0.95); } 70% { transform: scale(1); } 100% { transform: scale(0.95); } }
@@ -34,7 +33,6 @@
         .header-container { display: flex; align-items: center; padding: 35px 20px 25px; border-bottom: 3px solid var(--platinum-bg); text-align: left; }
         .lawyer-box { background: var(--teal-soft); padding: 18px; border-radius: 25px; margin-bottom: 15px; border: 2px solid transparent; transition: 0.3s; }
         
-        /* DUAL VIEW PORTS & TABS */
         .workspace-tab-bar { display: flex; gap: 8px; margin-bottom: 15px; background: var(--platinum-mid); padding: 6px; border-radius: 20px; }
         .workspace-tab { flex: 1; background: none; border: none; padding: 12px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 13px; color: var(--platinum-dark); cursor: pointer; border-radius: 15px; transition: 0.2s; }
         .workspace-tab.active { background: var(--teal); color: white; }
@@ -69,7 +67,6 @@
 </head>
 <body>
     <div id="appRoot" class="app-container">
-        
         <div class="privacy-overlay"></div>
         <div class="heartbeat"><span class="dot"></span> ACTIVE</div>
         
@@ -88,7 +85,6 @@
         </header>
 
         <div style="padding: 25px; flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto;">
-            
             <div id="briefingHeader" class="summary-header">
                 <h3 style="margin:0 0 10px 0; font-size:18px; color:var(--teal-soft);">Clio Vault Output</h3>
                 <div style="font-size:13px; font-weight: 600;">Lawyer: <b id="sumLawyer">--</b> | Ref: <b id="sumHash">--</b></div>
@@ -130,7 +126,6 @@
             </div>
 
             <div id="visualTimelineConsole" style="margin-top:10px;"></div>
-            
             <button id="lockBtn" class="lock-footer" onclick="openVerificationModal()">Lock & Prepare Records</button>
         </div>
 
@@ -144,16 +139,13 @@
                 </div>
             </div>
         </div>
-
     </div>
 
     <script>
-        // Memory Block Arrays (Zero-Footprint Protocol)
         let localTimelineStore = [];
         let localNotesStore = [];
         let currentActivePane = 'timeline';
 
-        // Tab Workspace Selection Toggles
         function switchPane(targetPane) {
             currentActivePane = targetPane;
             document.querySelectorAll('.tab-workspace-view').forEach(view => view.classList.remove('active-view'));
@@ -175,7 +167,6 @@
             activeInput.focus();
         }
 
-        // Processing Local Array Updates
         function processWorkspaceEntry(type) {
             const inputField = type === 'timeline' ? document.getElementById('timelineInput') : document.getElementById('notesInput');
             const payloadValue = inputField.value.trim();
@@ -218,7 +209,6 @@
         function closeVerificationModal() { document.getElementById('warningModal').style.display = "none"; }
         function togglePrivacy() { document.getElementById('appRoot').classList.toggle('privacy-active'); }
 
-        // Compile and Trigger Authorization Code Exchange Routing
         function executeAggregationFlow() {
             closeVerificationModal();
             
@@ -246,12 +236,12 @@
             syncButtonAction.onclick = function() {
                 const clientId = '18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s'; 
                 const redirectUri = 'https://worktimeline-app.vercel.app/api/sync'; 
+                // REGIONAL ALIGNMENT FIXED: Using native ca.app portal for verified global client accounts
                 const oauthDestination = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
                 window.location.href = oauthDestination;
             };
         }
 
-        // Intercept Inbound Redirection Sync Confirmations
         window.addEventListener('load', () => {
             const urlQueryMap = new URLSearchParams(window.location.search);
             
@@ -277,7 +267,6 @@
                     lockBtn.style.background = "#000000";
                     lockBtn.disabled = true;
                 }
-                
                 localStorage.clear();
             }
         });
