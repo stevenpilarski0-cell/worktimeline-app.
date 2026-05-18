@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WorkTimeline™ | Master Production Suite</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght=400;600;800;900&display=swap');
         
         :root { 
             --teal: #008080; 
@@ -236,8 +236,8 @@
             syncButtonAction.onclick = function() {
                 const clientId = '18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s'; 
                 const redirectUri = 'https://worktimeline-app.vercel.app/api/sync'; 
-                // CRITICAL ALIGNMENT: Pointing explicitly to the Platform/Grow Canadian endpoint domain
-                const oauthDestination = `https://ca.auth.api.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+                // ROUTE OVERHAUL: Targeting explicit platform endpoint string to capture Grow profile connections
+                const oauthDestination = `https://app.clio.com/platform/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
                 window.location.href = oauthDestination;
             };
         }
