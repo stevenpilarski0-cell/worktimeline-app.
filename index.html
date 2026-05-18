@@ -102,7 +102,8 @@
     <h2>WorkTimeline Engine</h2>
     <p>Enter incident details to log a verified timeline entry.</p>
 
-    <textarea id="logInput" placeholder="Incident notes, witness statements, or timeline details..."></textarea>
+    <!-- Subtly updated placeholder to reflect the internal validation system -->
+    <textarea id="logInput" placeholder="Incident notes, witness statements, or timeline details for Chromatic Validation..."></textarea>
     
     <button onclick="transmitLog()" id="transmitBtn">Transmit to Clio Secure Core</button>
     
@@ -110,17 +111,20 @@
 </div>
 
 <script>
-    // 1. PAGE LOAD LOGIC: Restore data if returning from authorization
+    // 1. PAGE LOAD LOGIC: Restore data and auto-transmit
     document.addEventListener('DOMContentLoaded', () => {
         const savedLog = localStorage.getItem('pendingWorkTimelineLog');
+        
         if (savedLog) {
+            // Restore the text the user typed
             document.getElementById('logInput').value = savedLog;
-            localStorage.removeItem('pendingWorkTimelineLog'); // Clean up storage
             
-            // Update the UI to let them know they are ready to go
-            const statusMsg = document.getElementById('statusMsg');
-            statusMsg.textContent = "Authorization successful. Ready to transmit.";
-            statusMsg.style.color = "#008080";
+            // Clean up the browser's storage
+            localStorage.removeItem('pendingWorkTimelineLog'); 
+            
+            // AUTOMATION: Immediately trigger the transmission process again
+            // Now that they are authenticated, this will successfully hit the backend
+            transmitLog(); 
         }
     });
 
@@ -130,20 +134,21 @@
         const statusMsg = document.getElementById('statusMsg');
         const transmitBtn = document.getElementById('transmitBtn');
 
+        // Validation check before attempting network request
         if (!logInput) {
             statusMsg.textContent = "Please enter log details before transmitting.";
             statusMsg.style.color = "#e30000";
             return;
         }
 
-        // Lock button and show processing status
+        // Lock button and show processing status to prevent double-clicks
         transmitBtn.disabled = true;
         transmitBtn.style.opacity = '0.7';
         statusMsg.textContent = "Negotiating Secure Handshake...";
         statusMsg.style.color = "#86868b";
 
         try {
-            // This strictly targets our perfectly calibrated backend file
+            // Target the Vercel serverless function
             const response = await fetch('/api/sync', {
                 method: 'POST',
                 headers: {
@@ -154,7 +159,7 @@
 
             const data = await response.json();
 
-            // The Magic: If the backend says we need a token, save text and reroute
+            // Intercept 401: Save text and reroute to Clio Gateway
             if (response.status === 401 && data.error === 'AUTH_REQUIRED') {
                 statusMsg.textContent = "Clearance required. Rerouting to authorization gate...";
                 statusMsg.style.color = "#008080";
@@ -162,23 +167,27 @@
                 // Save the typed text to the browser's memory
                 localStorage.setItem('pendingWorkTimelineLog', logInput);
                 
-                // Immediately drops the user into the CORRECT Clio authorization screen
+                // Drop the user into the CORRECT Clio authorization screen
                 window.location.href = data.url; 
             } 
+            // Handle successful backend transmission
             else if (response.ok) {
                 statusMsg.textContent = "Transmission Successful. Log secured in Clio.";
                 statusMsg.style.color = "#008080";
                 document.getElementById('logInput').value = ''; // Clear text area on success
             } 
+            // Catch expected backend errors
             else {
                 statusMsg.textContent = "Server Error: " + (data.error || "Payload rejected.");
                 statusMsg.style.color = "#e30000";
             }
         } catch (error) {
+            // Catch unexpected network failures
             statusMsg.textContent = "Network Error: Could not connect to gateway.";
             statusMsg.style.color = "#e30000";
+            console.error("Fetch error details:", error);
         } finally {
-            // Unlock button
+            // Unlock button regardless of success or failure
             transmitBtn.disabled = false;
             transmitBtn.style.opacity = '1';
         }
