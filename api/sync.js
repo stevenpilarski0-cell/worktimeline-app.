@@ -9,6 +9,8 @@ export default async function handler(req, res) {
 
     const clientId = process.env.CLIO_CLIENT_ID;
     const clientSecret = process.env.CLIO_CLIENT_SECRET;
+    
+    // Explicit character-for-character match to your Clio developer profile screenshot
     const redirectUri = 'https://worktimeline-app.vercel.app/api/sync';
 
     const supabaseUrl = process.env.SUPABASE_URL;
@@ -35,6 +37,7 @@ export default async function handler(req, res) {
                 return res.status(400).send(`OAuth Handshake Failed: ${JSON.stringify(tokenData)}`);
             }
 
+            // Save the validated token into Supabase row 1
             const supabaseResponse = await fetch(`${supabaseUrl}/rest/v1/clio_auth?id=eq.1`, {
                 method: 'PATCH',
                 headers: {
@@ -78,11 +81,8 @@ export default async function handler(req, res) {
             const accessToken = dbData[0]?.access_token;
 
             if (!accessToken || accessToken === 'empty') {
-                // ALTERNATIVE SCOPE ALIGNMENT: Requesting global grow permission scope explicitly 
-                // to cover all individual checked boxes on your private app profile layout
-                const scope = "grow";
-                
-                const authUrl = `https://ca.api.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scope)}`;
+                // Stripped down to bare essentials. Clio defaults to your profile checked boxes automatically
+                const authUrl = `https://ca.api.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
                 return res.status(401).json({ error: 'AUTH_REQUIRED', url: authUrl });
             }
 
@@ -114,7 +114,7 @@ export default async function handler(req, res) {
                     });
                     return res.status(401).json({ error: 'AUTH_REQUIRED' });
                 }
-                throw new Error(`Clio Grow API Rejected Entry: ${errorText}`);
+                throw new Error(`Clio API Rejected Entry: ${errorText}`);
             }
 
             return res.status(200).json({ success: true });
