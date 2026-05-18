@@ -1,134 +1,85 @@
 // api/sync.js
+
 export default async function handler(req, res) {
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  // 1. Handle CORS Preflight Request
+  if (req.method === 'OPTIONS') {
+    res.setHeader('Access-Control-Allow-Origin', '*'); // Update '*' to your specific domain in production
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    return res.status(200).end();
+  }
 
-    if (req.method === 'OPTIONS') return res.status(200).end();
+  // Set standard CORS headers for all other responses
+  res.setHeader('Access-Control-Allow-Origin', '*');
 
-    const clientId = process.env.CLIO_CLIENT_ID;
-    const clientSecret = process.env.CLIO_CLIENT_SECRET;
-    const redirectUri = 'https://worktimeline-app.vercel.app/api/sync';
+  // 2. Handle the GET request (Clio OAuth Callback)
+  if (req.method === 'GET') {
+    const { code, state, error } = req.query;
 
-    const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-    // --- CRITICAL ROUTING FIX ---
-    // Identity Server (for logins & tokens) vs. Data Server (for Grow notes)
-    const clioIdentityHost = 'https://ca.app.clio.com'; 
-    const clioGrowDataHost = 'https://ca.grow.clio.com';
-
-    // ---- OAUTH HANDSHAKE RECEIVER (GET REQUEST FROM CLIO) ----
-    if (req.method === 'GET' && req.query.code) {
-        try {
-            // Token exchange MUST happen at the Identity Host
-            const tokenResponse = await fetch(`${clioIdentityHost}/oauth/token`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({
-                    grant_type: 'authorization_code',
-                    code: req.query.code,
-                    client_id: clientId,
-                    client_secret: clientSecret,
-                    redirect_uri: redirectUri
-                })
-            });
-
-            const tokenData = await tokenResponse.json();
-
-            if (!tokenResponse.ok) {
-                return res.status(400).send(`OAuth Handshake Failed: ${JSON.stringify(tokenData)}`);
-            }
-
-            const supabaseResponse = await fetch(`${supabaseUrl}/rest/v1/clio_auth?id=eq.1`, {
-                method: 'PATCH',
-                headers: {
-                    'Authorization': `Bearer ${supabaseKey}`,
-                    'apikey': supabaseKey,
-                    'Content-Type': 'application/json',
-                    'Prefer': 'return=minimal'
-                },
-                body: JSON.stringify({
-                    access_token: tokenData.access_token,
-                    updated_at: new Date().toISOString()
-                })
-            });
-
-            if (!supabaseResponse.ok) {
-                const dbError = await supabaseResponse.text();
-                throw new Error(`Failed to save token to Supabase: ${dbError}`);
-            }
-
-            return res.redirect('/?status=connected');
-        } catch (err) {
-            return res.status(500).send(`Server Handshake Error: ${err.message}`);
-        }
+    if (error) {
+      return res.redirect('/?status=error&message=' + encodeURIComponent(error));
     }
 
-    // ---- DATA TRANSMISSION PIPELINE (POST REQUEST FROM APP) ----
-    if (req.method === 'POST') {
-        const { logText } = req.body;
-
-        try {
-            const dbCheck = await fetch(`${supabaseUrl}/rest/v1/clio_auth?id=eq.1&select=access_token`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${supabaseKey}`,
-                    'apikey': supabaseKey,
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            const dbData = await dbCheck.json();
-            const accessToken = dbData[0]?.access_token;
-
-            if (!accessToken || accessToken === 'empty') {
-                // The Login Screen URL MUST point to the Identity Host
-                const authUrl = `${clioIdentityHost}/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
-                return res.status(401).json({ error: 'AUTH_REQUIRED', url: authUrl });
-            }
-
-            // You wanted Grow first, so we format for Grow and target the Grow Host
-            const growNotePayload = {
-                note: {
-                    subject: "WorkTimeline Log",
-                    detail: logText,
-                    client_id: "01KPZB4ZCXHE3Z92S1KM3AT96V" 
-                }
-            };
-
-            const clioResponse = await fetch(`${clioGrowDataHost}/api/v1/notes`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(growNotePayload)
-            });
-
-            if (!clioResponse.ok) {
-                const errorText = await clioResponse.text();
-                
-                if (clioResponse.status === 401) {
-                    await fetch(`${supabaseUrl}/rest/v1/clio_auth?id=eq.1`, {
-                        method: 'PATCH',
-                        headers: { 'Authorization': `Bearer ${supabaseKey}`, 'apikey': supabaseKey, 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ access_token: 'empty' })
-                    });
-                    return res.status(401).json({ error: 'AUTH_REQUIRED' });
-                }
-                throw new Error(`Clio Grow API Rejected Entry: ${errorText}`);
-            }
-
-            return res.status(200).json({ success: true });
-
-        } catch (err) {
-            return res.status(500).json({ error: err.message });
-        }
+    if (code) {
+      // TODO: Exchange 'code' for access_token and refresh_token via ca.app.clio.com
+      // TODO: Save BOTH tokens to Supabase
+      
+      // After saving, redirect user back to the app interface
+      return res.redirect('/?status=connected');
     }
 
-    return res.status(405).json({ error: 'Method Not Allowed' });
+    return res.status(400).json({ error: 'Missing authorization code' });
+  }
+
+  // 3. Handle the POST request (Frontend Data Transmission)
+  if (req.method === 'POST') {
+    try {
+      const { noteText } = req.body;
+
+      // TODO: Fetch token from Supabase
+      let accessToken = "YOUR_SUPABASE_ACCESS_TOKEN"; 
+      let refreshToken = "YOUR_SUPABASE_REFRESH_TOKEN"; // You will need this!
+
+      if (!accessToken) {
+        // Build the dynamic URL
+        const authUrl = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=${process.env.CLIO_CLIENT_ID}&redirect_uri=${encodeURIComponent('https://yourdomain.com/api/sync')}&state=random_string`;
+        
+        return res.status(401).json({ 
+          error: 'AUTH_REQUIRED', 
+          authUrl: authUrl 
+        });
+      }
+
+      // Attempt to transmit data to Clio Grow
+      let clioResponse = await fetch('https://ca.grow.clio.com/api/v1/notes', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ data: { body: noteText } })
+      });
+
+      // 4. THE REFRESH BLINDSPOT FIX
+      if (clioResponse.status === 401) {
+         console.log("Token expired. Attempting refresh...");
+         // TODO: POST to ca.app.clio.com/oauth/token with grant_type=refresh_token
+         // TODO: Update Supabase with the new access_token
+         // TODO: Retry the original ca.grow.clio.com fetch with the NEW token
+      }
+
+      if (!clioResponse.ok) {
+         throw new Error(`Clio API Error: ${clioResponse.status}`);
+      }
+
+      return res.status(200).json({ success: true, message: "Timeline logged!" });
+
+    } catch (error) {
+      console.error("Sync Error:", error);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+
+  // If method is neither GET, POST, nor OPTIONS
+  return res.status(405).json({ error: 'Method Not Allowed' });
 }
-https://worktimeline-app.vercel.app/api/callback
-
