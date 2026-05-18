@@ -9,17 +9,18 @@ export default async function handler(req, res) {
 
     const clientId = process.env.CLIO_CLIENT_ID;
     const clientSecret = process.env.CLIO_CLIENT_SECRET;
-    
-    // Explicit character-for-character match to your Clio developer profile screenshot
     const redirectUri = 'https://worktimeline-app.vercel.app/api/sync';
 
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
+    // TARGET ALIGNED: Locked to Clio Canada Master Infrastructure
+    const clioBaseUrl = 'https://ca.api.clio.com'; 
+
     // ---- OAUTH HANDSHAKE RECEIVER (GET REQUEST FROM CLIO) ----
     if (req.method === 'GET' && req.query.code) {
         try {
-            const tokenResponse = await fetch('https://ca.api.clio.com/oauth/token', {
+            const tokenResponse = await fetch(`${clioBaseUrl}/oauth/token`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams({
@@ -37,7 +38,6 @@ export default async function handler(req, res) {
                 return res.status(400).send(`OAuth Handshake Failed: ${JSON.stringify(tokenData)}`);
             }
 
-            // Save the validated token into Supabase row 1
             const supabaseResponse = await fetch(`${supabaseUrl}/rest/v1/clio_auth?id=eq.1`, {
                 method: 'PATCH',
                 headers: {
@@ -81,26 +81,27 @@ export default async function handler(req, res) {
             const accessToken = dbData[0]?.access_token;
 
             if (!accessToken || accessToken === 'empty') {
-                // Stripped down to bare essentials. Clio defaults to your profile checked boxes automatically
-                const authUrl = `https://ca.api.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+                const authUrl = `${clioBaseUrl}/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
                 return res.status(401).json({ error: 'AUTH_REQUIRED', url: authUrl });
             }
 
-            const growNotePayload = {
-                note: {
-                    subject: "WorkTimeline Log",
-                    detail: logText,
-                    client_id: "01KPZB4ZCXHE3Z92S1KM3AT96V"
+            const notePayload = {
+                data: {
+                    type: "notes",
+                    attributes: {
+                        subject: "WorkTimeline Log",
+                        detail: logText
+                    }
                 }
             };
 
-            const clioResponse = await fetch('https://ca.grow.clio.com/api/v1/notes', {
+            const clioResponse = await fetch(`${clioBaseUrl}/api/v4/notes`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${accessToken}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(growNotePayload)
+                body: JSON.stringify(notePayload)
             });
 
             if (!clioResponse.ok) {
@@ -114,7 +115,7 @@ export default async function handler(req, res) {
                     });
                     return res.status(401).json({ error: 'AUTH_REQUIRED' });
                 }
-                throw new Error(`Clio API Rejected Entry: ${errorText}`);
+                throw new Error(`Clio Core API Rejected Entry: ${errorText}`);
             }
 
             return res.status(200).json({ success: true });
