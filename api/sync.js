@@ -1,132 +1,66 @@
 // api/sync.js
-const { createClient } = require('@supabase/supabase-js');
+const axios = require('axios');
 
-// Initialize permanent Supabase communication bridge
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
-
-module.exports = async function handler(req, res) {
-  // Establish explicit cross-origin resource sharing access rules
-  res.setHeader('Access-Control-Allow-Credentials', true);
-  res.setHeader('Access-Control-Allow-Origin', '*'); 
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,POST');
-  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
-
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
-  const CLIO_CLIENT_ID = process.env.CLIO_CLIENT_ID;
-  const CLIO_CLIENT_SECRET = process.env.CLIO_CLIENT_SECRET;
-  const REDIRECT_URI = process.env.REDIRECT_URI; 
-
-  // ===================================================
-  // ENDPOINT PHASE 1: OAuth Code Handshake Interceptor (GET)
-  // ===================================================
-  if (req.method === 'GET') {
+module.exports = async (req, res) => {
+    // Catch the authorization code returned by Clio Grow
     const { code } = req.query;
+
+    if (!code) {
+        return res.status(400).send('Error: Missing authorization code from Clio Grow.');
+    }
+
+    // --- EXACT CREDENTIAL MATCH FROM YOUR DASHBOARD SCREENSHOT ---
+    const CLIENT_ID = '18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s'; 
+    const REDIRECT_URI = 'https://worktimeline-app.vercel.app/api/sync';
+    const FIRM_ID = '01KPZB4ZCXHE3Z92S1KM3AT96V'; 
     
-    if (code) {
-      try {
-        const tokenResponse = await fetch('https://ca.app.clio.com/oauth/token', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams({
-            client_id: CLIO_CLIENT_ID,
-            client_secret: CLIO_CLIENT_SECRET,
+    // Pulled securely from Vercel's environment settings
+    const CLIENT_SECRET = process.env.CLIO_GROW_SECRET; 
+
+    try {
+        // Step 1: Secure OAuth2 Handshake
+        const tokenExchangeResponse = await axios.post('https://ca.app.clio.com/oauth/token', {
             grant_type: 'authorization_code',
             code: code,
+            client_id: CLIENT_ID,
+            client_secret: CLIENT_SECRET,
             redirect_uri: REDIRECT_URI
-          })
         });
 
-        const tokenData = await tokenResponse.json();
+        const accessToken = tokenExchangeResponse.data.access_token;
 
-        if (!tokenResponse.ok) {
-          throw new Error(tokenData.error_description || 'Token exchange failed');
-        }
+        // Step 2: Build a compliant Lead Message structure
+        const cleanMessageBody = `
+=== WORKTIMELINE™ PRODUCTION INTAKE ===
+Firm ID: ${FIRM_ID}
+Status: High-Fidelity Intake Initialized Successfully.
+Zero-Knowledge execution pipeline holding true.
+        `.trim();
 
-        // Lock access and refresh keys safely into Supabase row ID 1
-        const { error: dbError } = await supabase
-          .from('clio_auth')
-          .upsert({ 
-            id: 1, 
-            access_token: tokenData.access_token, 
-            refresh_token: tokenData.refresh_token 
-          });
-
-        if (dbError) throw dbError;
-
-        // Redirect user right back to the root application screen
-        return res.redirect('/');
-        
-      } catch (error) {
-        console.error("OAuth Processing Failure:", error);
-        return res.status(500).json({ error: "Failed to process internal vault handshake verification tokens." });
-      }
-    } else {
-      return res.status(400).json({ error: "Missing authorization validation parameters." });
-    }
-  } 
-  
-  // ===================================================
-  // ENDPOINT PHASE 2: Dispatch Log Entry payload to Clio Grow (POST)
-  // ===================================================
-  else if (req.method === 'POST') {
-    const { logText } = req.body;
-    
-    try {
-      // Pull down the token data stored inside your row 1 profile
-      const { data: authData } = await supabase
-        .from('clio_auth')
-        .select('access_token')
-        .eq('id', 1)
-        .maybeSingle();
-      
-      const accessToken = authData ? authData.access_token : null;
-      
-      // If missing, generate the exact callback url mapping to push the browser to Clio
-      if (!accessToken) {
-        const authUrl = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=${CLIO_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
-        return res.status(401).json({ error: 'AUTH_REQUIRED', url: authUrl });
-      }
-
-      // Format payload to comply directly with Clio Grow structural rules
-      const clioResponse = await fetch('https://ca.grow.clio.com/api/v1/notes', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          data: {
-            type: "notes",
-            attributes: {
-              subject: "WorkTimeline Log Verification Entry",
-              body: logText
+        // Step 3: Format the payload to match the Clio Grow inbox schema
+        const leadPayload = {
+            inbox_lead: {
+                from_first: "WorkTimeline",
+                from_last: "Intake Suite",
+                from_source: "Production Build Integration",
+                referring_url: REDIRECT_URI,
+                from_message: cleanMessageBody
             }
-          }
-        })
-      });
+        };
 
-      const clioResult = await clioResponse.json();
+        // Step 4: Vault the data natively into your Clio Grow Lead Inbox
+        await axios.post('https://ca.app.clio.com/api/v4/inbox_leads.json', leadPayload, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            }
+        });
 
-      if (!clioResponse.ok) {
-         console.error("Clio Engine Outbound Error:", clioResult);
-         throw new Error(clioResult.errors?.[0]?.detail || "Clio Platform rejected payload validation rules.");
-      }
-
-      return res.status(200).json({ success: true, data: clioResult });
+        // Redirect back home with a success flag
+        return res.redirect('/?sync=success');
 
     } catch (error) {
-      console.error("API Transmission Crash:", error);
-      return res.status(500).json({ error: error.message });
+        console.error('Clio Grow Sync Failure:', error.response ? error.response.data : error.message);
+        return res.status(500).send(`Synchronization Bridge Failed: ${error.message}`);
     }
-  } 
-  
-  else {
-    res.setHeader('Allow', ['GET', 'POST', 'OPTIONS']);
-    return res.status(405).end(`Method ${req.method} Not Allowed`);
-  }
 };
