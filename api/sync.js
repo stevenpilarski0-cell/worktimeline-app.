@@ -9,7 +9,6 @@ module.exports = async (req, res) => {
         return res.status(400).send('Error: Missing authorization execution code.');
     }
 
-    // Capture the cookie code challenge verifier safely
     let verifier = '';
     const cookieHeader = req.headers.cookie;
     if (cookieHeader) {
@@ -47,7 +46,7 @@ module.exports = async (req, res) => {
             compiledNotes += "\nNo active timeline logs found in database.";
         }
 
-        // ALIGNED EXCHANGE ENDPOINT: Using the Canadian regional server configuration
+        // ALIGNED EXCHANGE PASS: Directly swapping tokens via the Canadian regional endpoints
         const tokenExchangeResponse = await axios.post('https://ca.grow.clio.com/oauth/token', {
             grant_type: 'authorization_code',
             code: code,
@@ -68,7 +67,7 @@ module.exports = async (req, res) => {
             }
         };
 
-        // Post the records straight into your Canadian workspace inbox
+        // Inject the final record directly into your Canadian Grow endpoint dashboard logs
         await axios.post('https://ca.grow.clio.com/api/v4/inbox_leads.json', leadPayload, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
