@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™ | Manage Production Suite</title>
+    <title>WorkTimeline™ | Master Production Suite</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght=400;600;800;900&display=swap');
         :root { --teal: #008080; --teal-soft: #e0f2f1; --clio-blue: #0076CE; --platinum-bg: #d8e2ea; --platinum-mid: #eef1f5; --platinum-dark: #7a8b9e; --gray-dark: #2c3e50; }
@@ -51,12 +51,12 @@
 
         <div style="padding: 25px; flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto;">
             <div id="briefingHeader" class="summary-header">
-                <h3 style="margin:0 0 10px 0; font-size:18px; color:var(--teal-soft);">Clio Manage Vault</h3>
+                <h3 style="margin:0 0 10px 0; font-size:18px; color:var(--teal-soft);">Clio Grow Vault</h3>
                 <div style="font-size:13px; font-weight: 600;">Lawyer: <b id="sumLawyer">--</b> | Ref: <b id="sumHash">--</b></div>
             </div>
 
             <div id="duoSummaryBox" class="duo-box">
-                <h4 style="color: var(--teal); margin: 0 0 10px 0; font-size: 15px; font-weight: 900;">✨ Compiled Legal Datasets</h4>
+                <h4 style="color: var(--teal); margin: 0 0 10px 0; font-size: 15px; font-weight: 900;">✨ Compiled Intake Datasets</h4>
                 <p id="duoSummaryText" style="font-size: 13px; color: var(--gray-dark); margin: 0; line-height: 1.6; font-weight: 600;"></p>
             </div>
 
@@ -92,7 +92,7 @@
         <div id="warningModal" class="modal-overlay">
             <div class="modal-content">
                 <h3 style="color: var(--gray-dark); margin-top: 0; font-size: 20px; font-weight: 900;">⚠️ Confirm Finalization</h3>
-                <p style="color: var(--platinum-dark); font-size: 14px; font-weight: 700; line-height: 1.5;">Are you ready to lock down structures? Records will compile natively and vault into Clio Manage via a secure Canadian OAuth session handoff.</p>
+                <p style="color: var(--platinum-dark); font-size: 14px; font-weight: 700; line-height: 1.5;">Are you ready to lock down processing structures? Entries will compile natively and vault into Clio Grow via an explicit secure handshake.</p>
                 <div class="modal-btn-row">
                     <button class="btn-cancel" style="background:#eef1f5; border:none; padding:15px; border-radius:20px; flex:1; font-weight:800;" onclick="closeVerificationModal()">Cancel</button>
                     <button class="btn-proceed" style="background:var(--teal); color:white; border:none; padding:15px; border-radius:20px; flex:1; font-weight:800;" onclick="executeAggregationFlow()">Proceed</button>
@@ -143,7 +143,25 @@
         }
         function closeVerificationModal() { document.getElementById('warningModal').style.display = "none"; }
 
-        function executeAggregationFlow() {
+        // RUNTIME COMPLIANT PKCE挑戰碼產生器
+        function generateRandomString(length) {
+            const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+            let result = '';
+            const randomValues = new Uint32Array(length);
+            window.crypto.getRandomValues(randomValues);
+            for (let i = 0; i < length; i++) { result += charset[randomValues[i] % charset.length]; }
+            return result;
+        }
+
+        async function generateCodeChallenge(verifier) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(verifier);
+            const hash = await window.crypto.subtle.digest('SHA-256', data);
+            return btoa(String.fromCharCode.apply(null, new Uint8Array(hash)))
+                .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        }
+
+        async function executeAggregationFlow() {
             closeVerificationModal();
             document.getElementById('briefingHeader').style.display = 'block';
             document.getElementById('mainInputArea').style.display = 'none';
@@ -152,17 +170,23 @@
             const practitioner = document.getElementById('lawyerSelect').value;
             document.getElementById('sumLawyer').innerText = practitioner;
             document.getElementById('sumHash').innerText = Math.random().toString(36).substring(2, 8).toUpperCase();
-            document.getElementById('duoSummaryText').innerHTML = `<strong>Data Package Context Formatted:</strong><br>• Logs Captured: ${localTimelineStore.length} items.<br>• Backup Notes: ${localNotesStore.length} items.`;
+            document.getElementById('duoSummaryText').innerHTML = `<strong>Transient Summary Dataset Compiled:</strong><br>• Timeline Lines: ${localTimelineStore.length} items.<br>• Supplemental Notes: ${localNotesStore.length} items.`;
 
             const syncButtonAction = document.getElementById('lockBtn');
-            syncButtonAction.innerHTML = "Approve Records & Swap Token To Clio Manage 🚀";
+            syncButtonAction.innerHTML = "Approve Summaries & Swap Token To Clio Grow 🚀";
             syncButtonAction.style.background = "var(--clio-blue)";
             
+            // Build key structures before redirecting
+            const codeVerifier = generateRandomString(64);
+            const codeChallenge = await generateCodeChallenge(codeVerifier);
+            
+            // Pass the random verifier code along as a query parameter so the backend script reads it
             syncButtonAction.onclick = function() {
-                // REDIRECT TARGETING THE CANADIAN CLIO MANAGE APP ENGINES DIRECTLY
-                const clientId = 'btscu9WmPHYellZtZA9slQfynBAqudwjaR7pEDdq'; 
-                const redirectUri = 'https://worktimeline-app.vercel.app/api/sync'; 
-                const oauthDestination = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+                const clientId = '18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s'; 
+                const redirectUri = `https://worktimeline-app.vercel.app/api/sync?v=${codeVerifier}`; 
+                
+                // PKCE COMPLIANT ROUTING
+                const oauthDestination = `https://app.clio.com/platform/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
                 window.location.href = oauthDestination;
             };
         }
@@ -173,9 +197,9 @@
                 document.getElementById('mainInputArea').style.display = 'none';
                 document.getElementById('duoSummaryBox').style.display = 'block';
                 document.getElementById('sumLawyer').innerText = "Assigned Practitioner";
-                document.getElementById('sumHash').innerText = "MANAGE_OK";
-                document.getElementById('duoSummaryText').innerHTML = `<strong>Synchronization Pipeline Verified:</strong><br>Records successfully transmitted directly into your Canadian Clio Manage Activity database logs.`;
-                alert("🚀 SUCCESS!\n\nRecords compiled and vaulted directly into your Clio Manage Activity Feed!");
+                document.getElementById('sumHash').innerText = "GROW_OK";
+                document.getElementById('duoSummaryText').innerHTML = `<strong>Synchronization Pipeline Verified:</strong><br>Data parameters successfully transmitted directly to your Clio Grow Sandbox Lead Inbox workspace.`;
+                alert("🚀 SUCCESS!\n\nRecords vaulted directly to your Clio Grow Lead Inbox!");
                 const lockBtn = document.getElementById('lockBtn');
                 if (lockBtn) { lockBtn.innerHTML = "✅ Synchronization Complete"; lockBtn.style.background = "#000000"; lockBtn.disabled = true; }
             }
