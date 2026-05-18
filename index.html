@@ -169,7 +169,7 @@
             const practitioner = document.getElementById('lawyerSelect').value;
             document.getElementById('sumLawyer').innerText = practitioner;
             document.getElementById('sumHash').innerText = Math.random().toString(36).substring(2, 8).toUpperCase();
-            document.getElementById('duoSummaryText').innerHTML = `<strong>Transient Summary Dataset Compiled:</strong><br>• Timeline Lines: ${localTimelineStore.length} items.<br>• Supplemental Notes: ${localNotesStore.length} items.`;
+            document.getElementById('duoSummaryText').innerHTML = `<strong>Transient Summary Dataset Compiled:</strong><br>• Timeline Lines: ${localTimelineStore.length} items.<br>• Supplemental Notes: ${localNotesStore.length} items...`;
 
             const syncButtonAction = document.getElementById('lockBtn');
             syncButtonAction.innerHTML = "Approve Summaries & Swap Token To Clio Grow 🚀";
@@ -178,14 +178,14 @@
             const codeVerifier = generateRandomString(64);
             const codeChallenge = await generateCodeChallenge(codeVerifier);
             
-            // Secure cookie tracking to pass verification codes seamlessly without parameter contamination
+            // Safe, persistent session layer cache
             document.cookie = "pkce_v=" + codeVerifier + "; path=/; max-age=300; Secure; SameSite=Lax";
             
             syncButtonAction.onclick = function() {
                 const clientId = '18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s'; 
                 const redirectUri = 'https://worktimeline-app.vercel.app/api/sync'; 
                 
-                // ALIGNED REGIONAL URI: Targeting the exact Canadian Grow engine router as dictated by reference docs
+                // CORRECT SUBDOMAIN: Direct path to standard Canadian Grow OAuth endpoints
                 const oauthDestination = `https://ca.grow.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
                 window.location.href = oauthDestination;
             };
