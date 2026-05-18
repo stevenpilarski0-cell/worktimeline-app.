@@ -26,38 +26,6 @@
             overflow: hidden; 
         }
 
-        /* --- SPLASH SCREEN --- */
-        .splash-screen {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--platinum-bg); z-index: 9999;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: background 3s ease-in-out, opacity 1s ease-out;
-            padding: 30px; box-sizing: border-box; text-align: center;
-        }
-        .splash-screen.clio-transition { background: var(--clio-blue); }
-        .splash-screen.fade-out { opacity: 0; pointer-events: none; }
-        
-        .splash-step {
-            position: absolute; width: 85%; opacity: 0; pointer-events: none;
-            transition: opacity 1s ease-in-out, transform 1s ease-in-out;
-            transform: translateY(15px); color: var(--gray-dark); font-weight: 400;
-        }
-        .splash-step.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
-        .splash-step.light-text { color: #ffffff; }
-        .bold-brand { font-weight: 900 !important; }
-
-        .logo-container { background: white; padding: 20px; border-radius: 25px; margin-bottom: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); position: relative; display: inline-block; }
-        .svg-logo { width: 120px; height: auto; display: block; }
-
-        .clio-check-pop {
-            position: absolute; top: 43px; right: 23px; 
-            width: 32px; height: 32px; background: var(--clio-blue); border: 3px solid white; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0; transform: scale(0);
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .clio-check-pop.pop { opacity: 1; transform: scale(1); }
-
         /* --- ACTIVE INTERFACE --- */
         .heartbeat { position: absolute; top: 20px; right: 20px; display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 800; color: #00a859; z-index: 5; }
         .dot { height: 10px; width: 10px; background-color: #00a859; border-radius: 50%; animation: pulse 2s infinite; }
@@ -102,31 +70,6 @@
 <body>
     <div id="appRoot" class="app-container">
         
-        <div id="splashScreen" class="splash-screen">
-            <div id="step1" class="splash-step active">
-                <h1 style="font-size: 28px; margin-bottom: 10px;">Feel invisible?</h1>
-                <p style="font-size: 18px;">Well, you’re not. <b>We know you’re there.</b></p>
-                <p style="font-size: 18px; margin-top: 10px;">We see you. We hear you.</p>
-            </div>
-            <div id="step2" class="splash-step"><h2 style="font-size: 24px;">You feel trapped.</h2><p style="font-size: 18px; margin-top: 15px;">Stuck, like you're in a prison.</p></div>
-            <div id="step3" class="splash-step"><h2 style="font-size: 24px;">Don't know where to go?</h2><p style="font-size: 18px; margin-top: 10px;">Don't know what to do?</p><p style="font-size: 18px; margin-top: 15px; color: var(--teal); font-weight: 800;">But we're here to help you tear down the walls.</p></div>
-            <div id="step4" class="splash-step light-text"><h2 style="font-size: 26px;">Welcome to the Blue Skies.</h2></div>
-            <div id="step5" class="splash-step light-text"><h2 style="font-size: 22px;">Clio keeps the client at the center.</h2><p style="font-size: 16px; margin-top: 8px;">We do too. But with <span class="bold-brand">WorkTimeline</span>...</p><h2 style="font-size: 26px; margin-top: 8px;">We keep the client AHEAD.</h2></div>
-            <div id="step6" class="splash-step light-text">
-                <div class="logo-container">
-                    <svg class="svg-logo" viewBox="0 0 100 80">
-                        <rect x="10" y="20" width="80" height="55" rx="8" fill="none" stroke="#008080" stroke-width="5"/>
-                        <path d="M35 20 V10 Q35 5 40 5 H60 Q65 5 65 10 V20" fill="none" stroke="#008080" stroke-width="5"/>
-                        <line x1="5" y1="48" x2="95" y2="48" stroke="#5dade2" stroke-width="6" stroke-linecap="round"/>
-                    </svg>
-                    <div id="clioCheck" class="clio-check-pop">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    </div>
-                </div>
-                <h3 style="margin-top: 10px; font-size: 26px;" class="bold-brand">WorkTimeline</h3>
-            </div>
-        </div>
-
         <div class="privacy-overlay"></div>
         <div class="heartbeat"><span class="dot"></span> ACTIVE</div>
         
@@ -210,28 +153,6 @@
         let localNotesStore = [];
         let currentActivePane = 'timeline';
 
-        // Presentation Layout Animations
-        window.addEventListener('load', () => {
-            const splash = document.getElementById('splashScreen');
-            const steps = Array.from(document.querySelectorAll('.splash-step'));
-            
-            steps.forEach((step, index) => {
-                if(index > 0) {
-                    setTimeout(() => {
-                        steps[index-1].classList.remove('active');
-                        step.classList.add('active');
-                        if(index === 3) splash.classList.add('clio-transition');
-                        if(index === 5) setTimeout(() => document.getElementById('clioCheck').classList.add('pop'), 1500);
-                    }, index * 2200); 
-                }
-            });
-
-            setTimeout(() => {
-                splash.style.opacity = '0';
-                setTimeout(() => splash.style.display = 'none', 1000);
-            }, 15000);
-        });
-
         // Tab Workspace Selection Toggles
         function switchPane(targetPane) {
             currentActivePane = targetPane;
@@ -266,7 +187,6 @@
                 localNotesStore.push(payloadValue);
             }
 
-            // Save elements into temporary local storage arrays to survive across the authorization redirection bounce
             localStorage.setItem('cached_timeline_dataset', JSON.stringify(localTimelineStore));
             localStorage.setItem('cached_notes_dataset', JSON.stringify(localNotesStore));
 
@@ -296,4 +216,71 @@
             document.getElementById('warningModal').style.display = "flex";
         }
         function closeVerificationModal() { document.getElementById('warningModal').style.display = "none"; }
-        function togglePrivacy() { document.
+        function togglePrivacy() { document.getElementById('appRoot').classList.toggle('privacy-active'); }
+
+        // Compile and Trigger Authorization Code Exchange Routing
+        function executeAggregationFlow() {
+            closeVerificationModal();
+            
+            document.getElementById('briefingHeader').style.display = 'block';
+            document.getElementById('mainInputArea').style.display = 'none';
+            document.getElementById('duoSummaryBox').style.display = 'block';
+
+            const practitioner = document.getElementById('lawyerSelect').value;
+            localStorage.setItem('cached_practitioner_assignment', practitioner);
+
+            document.getElementById('sumLawyer').innerText = practitioner;
+            document.getElementById('sumHash').innerText = Math.random().toString(36).substring(2, 8).toUpperCase();
+
+            document.getElementById('duoSummaryText').innerHTML = `
+                <strong>Transient Manifest Summary Structure Compiled:</strong><br>
+                • Timeline Logs Captured: ${localTimelineStore.length} structural lines.<br>
+                • Case Note Elements Captured: ${localNotesStore.length} background entries.<br><br>
+                <em>Ready to bridge payload arrays securely via the Canadian OAuth Sandbox network interface.</em>
+            `;
+
+            const syncButtonAction = document.getElementById('lockBtn');
+            syncButtonAction.innerHTML = "Approve Summaries & Swap Token To Clio Grow 🚀";
+            syncButtonAction.style.background = "var(--clio-blue)";
+            
+            syncButtonAction.onclick = function() {
+                const clientId = '18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s'; 
+                const redirectUri = 'https://worktimeline-app.vercel.app/api/sync'; 
+                const oauthDestination = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+                window.location.href = oauthDestination;
+            };
+        }
+
+        // Intercept Inbound Redirection Sync Confirmations
+        window.addEventListener('load', () => {
+            const urlQueryMap = new URLSearchParams(window.location.search);
+            
+            if (urlQueryMap.get('sync') === 'success') {
+                document.getElementById('briefingHeader').style.display = 'block';
+                document.getElementById('mainInputArea').style.display = 'none';
+                document.getElementById('duoSummaryBox').style.display = 'block';
+                
+                document.getElementById('sumLawyer').innerText = localStorage.getItem('cached_practitioner_assignment') || "Assigned Practitioner";
+                document.getElementById('sumHash').innerText = "LIVE_OK";
+
+                document.getElementById('duoSummaryText').innerHTML = `
+                    <strong>Synchronization Pipeline Verified:</strong><br>
+                    Data parameters successfully transmitted directly to your Clio Grow Sandbox Lead Inbox workspace.<br>
+                    Zero-Footprint compliance validation check completed.
+                `;
+
+                alert("🚀 SUCCESS!\n\nBecause Clio keeps them centered, WorkTimeline keeps them a step ahead.\n\nSummary records mapped and vaulted directly into your Clio Grow Lead Inbox!");
+                
+                const lockBtn = document.getElementById('lockBtn');
+                if (lockBtn) {
+                    lockBtn.innerHTML = "✅ Synchronization Complete";
+                    lockBtn.style.background = "#000000";
+                    lockBtn.disabled = true;
+                }
+                
+                localStorage.clear();
+            }
+        });
+    </script>
+</body>
+</html>
