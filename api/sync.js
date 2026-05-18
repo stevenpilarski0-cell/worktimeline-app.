@@ -9,7 +9,7 @@ module.exports = async (req, res) => {
         return res.status(400).send('Error: Missing authorization execution code.');
     }
 
-    // Extract cookie verification tracking seamlessly
+    // Capture the cookie code challenge verifier safely
     let verifier = '';
     const cookieHeader = req.headers.cookie;
     if (cookieHeader) {
@@ -17,7 +17,6 @@ module.exports = async (req, res) => {
         if (match) verifier = match.split('=')[1].trim();
     }
 
-    // Fallback block to prevent structural execution hangs
     if (!verifier) verifier = "SamplePKCEChallengeVerificationStringValueLengthAlpha64CharsValid";
 
     const supabase = createClient(
@@ -48,7 +47,7 @@ module.exports = async (req, res) => {
             compiledNotes += "\nNo active timeline logs found in database.";
         }
 
-        // COMPLETE AUTH EXCHANGE: Uses clean matching paths targeting standard endpoints
+        // ALIGNED EXCHANGE ENDPOINT: Using the Canadian regional server configuration
         const tokenExchangeResponse = await axios.post('https://ca.grow.clio.com/oauth/token', {
             grant_type: 'authorization_code',
             code: code,
@@ -63,12 +62,13 @@ module.exports = async (req, res) => {
             inbox_lead: {
                 from_first: "WorkTimeline",
                 from_last: "Intake Suite",
-                from_source: "Supabase Public PKCE Bridge",
+                from_source: "Supabase Canadian PKCE Bridge",
                 referring_url: REDIRECT_URI,
                 from_message: `${compiledNotes}\n\nFirm ID Assignment: ${FIRM_ID}`
             }
         };
 
+        // Post the records straight into your Canadian workspace inbox
         await axios.post('https://ca.grow.clio.com/api/v4/inbox_leads.json', leadPayload, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
