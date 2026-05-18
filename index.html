@@ -245,7 +245,7 @@
         </div>
         <button onclick="executeMilestonePublish()" class="action-btn" style="padding: 10px; font-size: 13px;">Publish Milestone ⚡</button>
         
-        <div style="margin-top: 14px; pt-14px; border-t: 1px solid #e5e5ea; padding-top: 12px;">
+        <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid #e5e5ea;">
             <button onclick="simulateClioWebhookTrigger()" class="action-btn" style="background-color: #1d1d1f; font-family: monospace; font-size: 11px; padding: 8px;">
                 [Simulate Clio Background Task Webhook Push]
             </button>
@@ -275,6 +275,7 @@
     const AUTH_ENDPOINT = "https://ca.auth.api.clio.com/oauth/authorize"; 
     
     let activeRoleContext = "client";
+    let lastLoggedNodeCount = 1;
 
     window.addEventListener('DOMContentLoaded', () => {
         const params = new URLSearchParams(window.location.search);
@@ -293,7 +294,45 @@
             badge.className = "status-badge status-disconnected";
             terminal.textContent = `ERROR: Authorization rejected. Info trace: ${params.get('message') || 'Unknown variance error'}`;
         }
+
+        // Spin up the background polling engine to sync updates automatically every 3 seconds
+        setInterval(fetchLatestLiveTimelineNodes, 3000);
     });
+
+    async function fetchLatestLiveTimelineNodes() {
+        try {
+            // Queries your database proxy to see if Clio or the attorney added anything new
+            const response = await fetch('/api/get-milestones?firm_row_id=1');
+            if (!response.ok) return;
+            
+            const currentMilestones = await response.json();
+            
+            // Render updates instantly if database structural row count increases
+            if (currentMilestones.length > lastLoggedNodeCount) {
+                const container = document.getElementById('streamContainer');
+                container.innerHTML = ""; 
+                
+                currentMilestones.forEach(node => {
+                    const accentColor = node.logged_by === 'automated_clio' ? '#2563eb' : 'var(--primary-teal)';
+                    const element = `
+                        <div class="timeline-node">
+                            <div class="timeline-dot" style="background-color: ${accentColor};"></div>
+                            <div class="node-card" style="border-left: 3px solid ${accentColor};">
+                                <h4 class="node-title">${node.title}</h4>
+                                <p class="node-desc">${node.description}</p>
+                            </div>
+                        </div>
+                    `;
+                    container.insertAdjacentHTML('beforeend', element);
+                });
+                
+                lastLoggedNodeCount = currentMilestones.length;
+                console.log("WorkTimeline Core | Network sync completed gracefully.");
+            }
+        } catch (err) {
+            console.warn("Background listener heartbeat skipped: ", err.message);
+        }
+    }
 
     function toggleSystemRole() {
         const overlay = document.getElementById('attorneyControlNode');
@@ -331,7 +370,6 @@
         descField.value = "";
     }
 
-    // Dynamic simulation routing block to demo live Clio task execution sync logic
     async function simulateClioWebhookTrigger() {
         const simulationPayload = {
             event: "tasks.completed",
