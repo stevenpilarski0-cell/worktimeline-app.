@@ -2,53 +2,133 @@
 export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
     if (req.method === 'OPTIONS') return res.status(200).end();
-    if (req.method !== 'POST') return res.status(405).json({ error: 'Method Not Allowed' });
 
-    const { logText } = req.body;
-    const staticToken = process.env.CLIO_GROW_API_TOKEN;
+    const clientId = process.env.CLIO_CLIENT_ID;
+    const clientSecret = process.env.CLIO_CLIENT_SECRET;
+    const redirectUri = 'https://worktimeline-app.vercel.app/api/sync';
 
-    if (!staticToken) {
-        return res.status(500).json({ error: 'System Error: CLIO_GROW_API_TOKEN is missing.' });
-    }
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-    try {
-        const leadPayload = {
-            inbox_lead: {
-                from_first: "WorkTimeline",
-                from_last: "Log Entry",
-                from_email: "stevenpilarski0@gmail.com",
-                from_message: `TIMESTAMPED CHRONOLOGY STATEMENT:\n\n${logText}\n\n--------------------------------------------\nMETADATA:\n- Target Firm ID: 01KPZB4ZCXHE3Z92S1KM3AT96V`,
-                from_source: "WorkTimeline Integration",
-                referring_url: "https://worktimeline-app.vercel.app"
+    // ---- OAUTH HANDSHAKE RECEIVER (GET REQUEST FROM CLIO) ----
+    if (req.method === 'GET' && req.query.code) {
+        try {
+            // TARGET FIXED: Swapped to Clio Grow Canada's specific token exchange path
+            const tokenResponse = await fetch('https://ca.grow.clio.com/oauth/token', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                    grant_type: 'authorization_code',
+                    code: req.query.code,
+                    client_id: clientId,
+                    client_secret: clientSecret,
+                    redirect_uri: redirectUri
+                })
+            });
+
+            const tokenData = await tokenResponse.json();
+
+            if (!tokenResponse.ok) {
+                return res.status(400).send(`OAuth Handshake Failed: ${JSON.stringify(tokenData)}`);
             }
-        };
 
-        // FIXED PIPELINE: Appending the token directly as a URL parameter to clear the 401 gate
-        const targetUrl = `https://ca.grow.clio.com/inbox_leads?token=${staticToken}`;
+            // Securely update row ID 1 in your Supabase table with the fresh token
+            const supabaseResponse = await fetch(`${supabaseUrl}/rest/v1/clio_auth?id=eq.1`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${supabaseKey}`,
+                    'apikey': supabaseKey,
+                    'Content-Type': 'application/json',
+                    'Prefer': 'return=minimal'
+                },
+                body: JSON.stringify({
+                    access_token: tokenData.access_token,
+                    updated_at: new Date().toISOString()
+                })
+            });
 
-        const growResponse = await fetch(targetUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(leadPayload)
-        });
+            if (!supabaseResponse.ok) {
+                const dbError = await supabaseResponse.text();
+                throw new Error(`Failed to save token to Supabase: ${dbError}`);
+            }
 
-        const responseText = await growResponse.text();
-
-        // Standard confirmation check (Clio returns redirects or 200/201 on success)
-        if (!growResponse.ok && growResponse.status !== 201) {
-            throw new Error(`Clio rejected validation. Server status: ${growResponse.status}. Details: ${responseText}`);
+            return res.redirect('/?status=connected');
+        } catch (err) {
+            return res.status(500).send(`Server Handshake Error: ${err.message}`);
         }
-
-        return res.status(200).json({ success: true });
-
-    } catch (err) {
-        console.error('Sync Error:', err.message);
-        return res.status(500).json({ error: err.message });
     }
+
+    // ---- DATA TRANSMISSION PIPELINE (POST REQUEST FROM APP) ----
+    if (req.method === 'POST') {
+        const { logText } = req.body;
+
+        try {
+            const dbCheck = await fetch(`${supabaseUrl}/rest/v1/clio_auth?id=eq.1&select=access_token`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${supabaseKey}`,
+                    'apikey': supabaseKey,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const dbData = await dbCheck.json();
+            const accessToken = dbData[0]?.access_token;
+
+            // TARGET FIXED: Swapped to Clio Grow Canada's authorization entry link
+            if (!accessToken || accessToken === 'empty') {
+                const authUrl = `https://ca.grow.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+                return res.status(401).json({ error: 'AUTH_REQUIRED', url: authUrl });
+            }
+
+            const notePayload = {
+                data: {
+                    type: "notes",
+                    attributes: {
+                        subject: "WorkTimeline Log",
+                        detail: logText,
+                        regarding: {
+                            id: "01KPZB4ZCXHE3Z92S1KM3AT96V",
+                            type: "Firm"
+                        }
+                    }
+                }
+            };
+
+            // Post explicitly to Clio Grow's standard notes infrastructure
+            const clioResponse = await fetch('https://ca.grow.clio.com/api/v1/notes', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(notePayload)
+            });
+
+            if (!clioResponse.ok) {
+                const errorText = await clioResponse.text();
+                
+                if (clioResponse.status === 401) {
+                    await fetch(`${supabaseUrl}/rest/v1/clio_auth?id=eq.1`, {
+                        method: 'PATCH',
+                        headers: { 'Authorization': `Bearer ${supabaseKey}`, 'apikey': supabaseKey, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ access_token: 'empty' })
+                    });
+                    return res.status(401).json({ error: 'AUTH_REQUIRED' });
+                }
+                throw new Error(`Clio Core API Rejected Entry: ${errorText}`);
+            }
+
+            return res.status(200).json({ success: true });
+
+        } catch (err) {
+            return res.status(500).json({ error: err.message });
+        }
+    }
+
+    return res.status(405).json({ error: 'Method Not Allowed' });
 }
