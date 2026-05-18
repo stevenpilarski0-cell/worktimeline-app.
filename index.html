@@ -143,7 +143,6 @@
         }
         function closeVerificationModal() { document.getElementById('warningModal').style.display = "none"; }
 
-        // RUNTIME COMPLIANT PKCE挑戰碼產生器
         function generateRandomString(length) {
             const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
             let result = '';
@@ -176,17 +175,19 @@
             syncButtonAction.innerHTML = "Approve Summaries & Swap Token To Clio Grow 🚀";
             syncButtonAction.style.background = "var(--clio-blue)";
             
-            // Build key structures before redirecting
             const codeVerifier = generateRandomString(64);
             const codeChallenge = await generateCodeChallenge(codeVerifier);
             
-            // Pass the random verifier code along as a query parameter so the backend script reads it
+            // Safe sandbox cross-origin token storage allocation
+            sessionStorage.setItem('pkce_verifier_cache', codeVerifier);
+            document.cookie = "pkce_v=" + codeVerifier + "; path=/; max-age=300; Secure; SameSite=Lax";
+            
             syncButtonAction.onclick = function() {
                 const clientId = '18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s'; 
-                const redirectUri = `https://worktimeline-app.vercel.app/api/sync?v=${codeVerifier}`; 
+                const redirectUri = 'https://worktimeline-app.vercel.app/api/sync'; 
                 
-                // PKCE COMPLIANT ROUTING
-                const oauthDestination = `https://app.clio.com/platform/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
+                // FIXED PLATFORM ROUTE: Standard path structure for Canadian Public PKCE authentication
+                const oauthDestination = `https://ca.grow.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
                 window.location.href = oauthDestination;
             };
         }
