@@ -17,7 +17,6 @@ export default async function handler(req, res) {
     // ---- OAUTH HANDSHAKE RECEIVER (GET REQUEST FROM CLIO) ----
     if (req.method === 'GET' && req.query.code) {
         try {
-            // FIXED HANDSHAKE URL: Reverting token swap to the primary Clio Canada gateway
             const tokenResponse = await fetch('https://ca.api.clio.com/oauth/token', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -36,7 +35,7 @@ export default async function handler(req, res) {
                 return res.status(400).send(`OAuth Handshake Failed: ${JSON.stringify(tokenData)}`);
             }
 
-            // Securely save the validated token to Supabase row 1
+            // Save the validated token into Supabase row 1
             const supabaseResponse = await fetch(`${supabaseUrl}/rest/v1/clio_auth?id=eq.1`, {
                 method: 'PATCH',
                 headers: {
@@ -79,34 +78,31 @@ export default async function handler(req, res) {
             const dbData = await dbCheck.json();
             const accessToken = dbData[0]?.access_token;
 
-            // FIXED AUTH URL: Reverting login redirection gate to the correct primary endpoint
             if (!accessToken || accessToken === 'empty') {
-                const authUrl = `https://ca.api.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+                // Requesting the official cross-platform grow scope explicitly
+                const scopeValue = process.env.CLIO_SCOPE || 'grow';
+                
+                const authUrl = `https://ca.api.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopeValue)}`;
                 return res.status(401).json({ error: 'AUTH_REQUIRED', url: authUrl });
             }
 
-            const notePayload = {
-                data: {
-                    type: "notes",
-                    attributes: {
-                        subject: "WorkTimeline Log",
-                        detail: logText,
-                        regarding: {
-                            id: "01KPZB4ZCXHE3Z92S1KM3AT96V", // Matches your verified Firm ID perfectly
-                            type: "Firm"
-                        }
-                    }
+            // Payloads targeting Clio Grow notes require a flat structure mapping
+            const growNotePayload = {
+                note: {
+                    subject: "WorkTimeline Log",
+                    detail: logText,
+                    client_id: "01KPZB4ZCXHE3Z92S1KM3AT96V" // Your target ID descriptor
                 }
             };
 
-            // Post structured log content directly through Clio's Canada core v4 notes router
-            const clioResponse = await fetch('https://ca.api.clio.com/api/v4/notes', {
+            // Routing the payload straight into Clio Grow Canada's production REST engine
+            const clioResponse = await fetch('https://ca.grow.clio.com/api/v1/notes', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${accessToken}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(notePayload)
+                body: JSON.stringify(growNotePayload)
             });
 
             if (!clioResponse.ok) {
@@ -120,7 +116,7 @@ export default async function handler(req, res) {
                     });
                     return res.status(401).json({ error: 'AUTH_REQUIRED' });
                 }
-                throw new Error(`Clio Core API Rejected Entry: ${errorText}`);
+                throw new Error(`Clio Grow API Rejected Entry: ${errorText}`);
             }
 
             return res.status(200).json({ success: true });
