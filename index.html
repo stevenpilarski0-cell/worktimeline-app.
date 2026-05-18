@@ -110,6 +110,21 @@
 </div>
 
 <script>
+    // 1. PAGE LOAD LOGIC: Restore data if returning from authorization
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedLog = localStorage.getItem('pendingWorkTimelineLog');
+        if (savedLog) {
+            document.getElementById('logInput').value = savedLog;
+            localStorage.removeItem('pendingWorkTimelineLog'); // Clean up storage
+            
+            // Update the UI to let them know they are ready to go
+            const statusMsg = document.getElementById('statusMsg');
+            statusMsg.textContent = "Authorization successful. Ready to transmit.";
+            statusMsg.style.color = "#008080";
+        }
+    });
+
+    // 2. TRANSMIT LOGIC: Handle the API call and save data if needed
     async function transmitLog() {
         const logInput = document.getElementById('logInput').value.trim();
         const statusMsg = document.getElementById('statusMsg');
@@ -139,10 +154,13 @@
 
             const data = await response.json();
 
-            // The Magic: If the backend says we need a token, the backend provides the exact URL
+            // The Magic: If the backend says we need a token, save text and reroute
             if (response.status === 401 && data.error === 'AUTH_REQUIRED') {
                 statusMsg.textContent = "Clearance required. Rerouting to authorization gate...";
                 statusMsg.style.color = "#008080";
+                
+                // Save the typed text to the browser's memory
+                localStorage.setItem('pendingWorkTimelineLog', logInput);
                 
                 // Immediately drops the user into the CORRECT Clio authorization screen
                 window.location.href = data.url; 
