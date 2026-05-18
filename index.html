@@ -99,7 +99,6 @@
             color: var(--slate-gray);
         }
 
-        /* Attorney Dashboard Entry Panel Style Rules */
         .attorney-panel {
             background-color: #f8fafc;
             border: 1px dashed var(--primary-teal);
@@ -132,12 +131,6 @@
             font-family: inherit;
         }
 
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary-teal);
-        }
-
-        /* Interactive Chronology Stream Display Elements */
         .timeline-stream {
             position: relative;
             padding-left: 24px;
@@ -170,7 +163,6 @@
             border: 1px solid #e5e5ea;
             border-radius: 12px;
             padding: 14px;
-            transition: all 0.2s ease;
         }
 
         .node-title {
@@ -199,7 +191,6 @@
             white-space: pre-wrap;
             word-break: break-all;
             line-height: 1.5;
-            box-shadow: inset 0 2px 8px rgba(0,0,0,0.2);
         }
 
         .action-btn {
@@ -238,16 +229,16 @@
     <div id="attorneyControlNode" class="attorney-panel hidden">
         <h3>Publish Case Progress Node</h3>
         <div class="form-group">
-            <input type="text" id="milestoneTitle" placeholder="Milestone Header (e.g., Complaint Served)" class="form-control">
+            <input type="text" id="milestoneTitle" placeholder="Milestone Header (e.g., Lead Added)" class="form-control">
         </div>
         <div class="form-group">
-            <textarea id="milestoneDesc" placeholder="Context data description for client view clarity..." rows="2" class="form-control"></textarea>
+            <textarea id="milestoneDesc" placeholder="Context description for client timeline clarity..." rows="2" class="form-control"></textarea>
         </div>
         <button onclick="executeMilestonePublish()" class="action-btn" style="padding: 10px; font-size: 13px;">Publish Milestone ⚡</button>
         
         <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid #e5e5ea;">
             <button onclick="simulateClioWebhookTrigger()" class="action-btn" style="background-color: #1d1d1f; font-family: monospace; font-size: 11px; padding: 8px;">
-                [Simulate Clio Background Task Webhook Push]
+                [Simulate Clio Grow Webhook Push]
             </button>
         </div>
     </div>
@@ -257,7 +248,7 @@
             <div class="timeline-dot"></div>
             <div class="node-card">
                 <h4 class="node-title">OAuth Identity Initialized</h4>
-                <p class="node-desc">Integration channels listening smoothly for core system authentication callbacks.</p>
+                <p class="node-desc">Integration channels listening smoothly for Clio Grow authentication callbacks.</p>
             </div>
         </div>
     </div>
@@ -265,14 +256,16 @@
     <div class="terminal-box" id="terminalLog">System standby. Awaiting initialization handshake signal...</div>
 
     <button id="authTriggerBtn" onclick="initiateClioV4Handshake()" class="action-btn">
-        Initialize Secure Clio Sync
+        Initialize Secure Clio Grow Sync
     </button>
 </div>
 
 <script>
     const CLIO_CLIENT_ID = "18C4eBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s";
     const REDIRECT_URI = "https://worktimeline-app.vercel.app/api/callback";
-    const AUTH_ENDPOINT = "https://ca.auth.api.clio.com/oauth/authorize"; 
+    
+    // Core structural route fix: Clio Grow utilizes localized routing clusters
+    const AUTH_ENDPOINT = "https://ca.grow.clio.com/oauth/authorize"; 
     
     let activeRoleContext = "client";
     let lastLoggedNodeCount = 1;
@@ -285,29 +278,25 @@
         const btn = document.getElementById('authTriggerBtn');
 
         if (status === 'connected') {
-            badge.textContent = "Clio Core v4 Connected";
+            badge.textContent = "Clio Grow Connected";
             badge.className = "status-badge status-connected";
-            terminal.textContent = "SUCCESS: API handshake loop active. Live Clio event webhooks registered to capture task computations instantly.";
-            btn.textContent = "Re-authenticate Pipeline Cluster";
+            terminal.textContent = "SUCCESS: Clio Grow OAuth 2.0 handshake completed safely. System tokens written to production vault.";
+            btn.textContent = "Re-authenticate Grow Cluster";
         } else if (status === 'error') {
             badge.textContent = "Connection Failure";
             badge.className = "status-badge status-disconnected";
-            terminal.textContent = `ERROR: Authorization rejected. Info trace: ${params.get('message') || 'Unknown variance error'}`;
+            terminal.textContent = `ERROR: Authorization rejected. Info trace: ${params.get('message') || 'Scope verification variance'}`;
         }
 
-        // Spin up the background polling engine to sync updates automatically every 3 seconds
         setInterval(fetchLatestLiveTimelineNodes, 3000);
     });
 
     async function fetchLatestLiveTimelineNodes() {
         try {
-            // Queries your database proxy to see if Clio or the attorney added anything new
             const response = await fetch('/api/get-milestones?firm_row_id=1');
             if (!response.ok) return;
-            
             const currentMilestones = await response.json();
             
-            // Render updates instantly if database structural row count increases
             if (currentMilestones.length > lastLoggedNodeCount) {
                 const container = document.getElementById('streamContainer');
                 container.innerHTML = ""; 
@@ -325,12 +314,10 @@
                     `;
                     container.insertAdjacentHTML('beforeend', element);
                 });
-                
                 lastLoggedNodeCount = currentMilestones.length;
-                console.log("WorkTimeline Core | Network sync completed gracefully.");
             }
         } catch (err) {
-            console.warn("Background listener heartbeat skipped: ", err.message);
+            console.warn("Background sync skipped: ", err.message);
         }
     }
 
@@ -342,7 +329,7 @@
         if (activeRoleContext === "client") {
             activeRoleContext = "attorney";
             toggleBtn.textContent = "Client Interface 📱";
-            subtitle.textContent = "Attorney Milestone Dashboard Panel";
+            subtitle.textContent = "Attorney Dashboard Panel";
             overlay.classList.remove('hidden');
         } else {
             activeRoleContext = "client";
@@ -355,8 +342,7 @@
     async function executeMilestonePublish() {
         const titleField = document.getElementById('milestoneTitle');
         const descField = document.getElementById('milestoneDesc');
-        
-        if (!titleField.value) return alert("Milestone heading string parameter required.");
+        if (!titleField.value) return alert("Milestone heading parameter required.");
 
         appendNodeToVisualTimeline(titleField.value, descField.value, "var(--primary-teal)");
 
@@ -374,8 +360,8 @@
         const simulationPayload = {
             event: "tasks.completed",
             data: {
-                name: "Draft Medical Deposition Subpoena",
-                description: "Pleadings documents constructed and routed to the process server for active case file acceleration."
+                name: "New Lead Intake Processed",
+                description: "Lead verified and structural chronology mapped smoothly into Clio Grow tracking systems."
             }
         };
 
@@ -386,7 +372,7 @@
         });
 
         if (targetResponse.ok) {
-            appendNodeToVisualTimeline("Clio Auto-Sync // Task Completed: Draft Medical Deposition Subpoena", "Your legal team completed an internal milestone task inside Clio. Timeline updated dynamically.", "#2563eb");
+            appendNodeToVisualTimeline("Clio Grow Auto-Sync // Intake Logged", "A fresh intake lead file was successfully initialized inside Clio Grow.", "#2563eb");
         }
     }
 
@@ -406,14 +392,22 @@
 
     function initiateClioV4Handshake() {
         const terminal = document.getElementById('terminalLog');
-        terminal.textContent = "Formatting connection variables...\nRouting state packet variables to ca.auth.api.clio.com...";
+        terminal.textContent = "Structuring custom Grow scopes...\nRouting frame directly to Canadian Clio Grow Gateway...";
         
-        const statePayload = { app: 'worktimeline', platform: 'manage', origin_seed: 1, timestamp: Date.now() };
+        const statePayload = { app: 'worktimeline', platform: 'grow', origin_seed: 1, timestamp: Date.now() };
         const base64State = btoa(JSON.stringify(statePayload));
 
+        // Structural Parameter Resolution: Standardize scope formatting for Clio Grow
+        const growScopes = "grow_lead_inbox_read grow_lead_inbox_write grow_matter_read grow_matter_note_read grow_contact_read grow_user_read";
+
         setTimeout(() => {
-            window.location.href = `${AUTH_ENDPOINT}?response_type=code&client_id=${encodeURIComponent(CLIO_CLIENT_ID)}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&state=${encodeURIComponent(base64State)}`;
-        }, 800);
+            window.location.href = `${AUTH_ENDPOINT}?` + 
+                `response_type=code` +
+                `&client_id=${encodeURIComponent(CLIO_CLIENT_ID)}` +
+                `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}` +
+                `&state=${encodeURIComponent(base64State)}` +
+                `&scope=${encodeURIComponent(growScopes)}`;
+        }, 600);
     }
 </script>
 </body>
