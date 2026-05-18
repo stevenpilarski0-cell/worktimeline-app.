@@ -6,70 +6,36 @@
     <title>WorkTimeline™ | Master Production Suite</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght=400;600;800;900&display=swap');
-        
-        :root { 
-            --teal: #008080; 
-            --teal-soft: #e0f2f1;
-            --clio-blue: #0076CE;
-            --platinum-bg: #d8e2ea; 
-            --platinum-mid: #eef1f5; 
-            --platinum-dark: #7a8b9e;
-            --gray-dark: #2c3e50; 
-        }
-
+        :root { --teal: #008080; --teal-soft: #e0f2f1; --clio-blue: #0076CE; --platinum-bg: #d8e2ea; --platinum-mid: #eef1f5; --platinum-dark: #7a8b9e; --gray-dark: #2c3e50; }
         body { font-family: 'Nunito', sans-serif; background-color: var(--platinum-mid); margin: 0; padding: 10px; display: flex; justify-content: center; }
-        
-        .app-container { 
-            width: 100%; max-width: 500px; background: #ffffff; 
-            border-radius: 35px; min-height: 90vh; display: flex; flex-direction: column; 
-            position: relative; box-shadow: 0 15px 40px rgba(0, 128, 128, 0.08); 
-            overflow: hidden; 
-        }
-
+        .app-container { width: 100%; max-width: 500px; background: #ffffff; border-radius: 35px; min-height: 90vh; display: flex; flex-direction: column; position: relative; box-shadow: 0 15px 40px rgba(0, 128, 128, 0.08); overflow: hidden; }
         .heartbeat { position: absolute; top: 20px; right: 20px; display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 800; color: #00a859; z-index: 5; }
         .dot { height: 10px; width: 10px; background-color: #00a859; border-radius: 50%; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { transform: scale(0.95); } 70% { transform: scale(1); } 100% { transform: scale(0.95); } }
-
         .header-container { display: flex; align-items: center; padding: 35px 20px 25px; border-bottom: 3px solid var(--platinum-bg); text-align: left; }
         .lawyer-box { background: var(--teal-soft); padding: 18px; border-radius: 25px; margin-bottom: 15px; border: 2px solid transparent; transition: 0.3s; }
-        
         .workspace-tab-bar { display: flex; gap: 8px; margin-bottom: 15px; background: var(--platinum-mid); padding: 6px; border-radius: 20px; }
         .workspace-tab { flex: 1; background: none; border: none; padding: 12px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 13px; color: var(--platinum-dark); cursor: pointer; border-radius: 15px; transition: 0.2s; }
         .workspace-tab.active { background: var(--teal); color: white; }
-        
         .tab-workspace-view { display: none; }
         .tab-workspace-view.active-view { display: block; }
-
-        .template-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; }
-        .template-chip { background: #ffffff; border: 2px solid var(--teal-soft); color: var(--teal); padding: 8px 16px; border-radius: 50px; font-size: 12px; font-weight: 800; cursor: pointer; white-space: nowrap; transition: 0.2s; }
-        
         #timelineInput, #notesInput { width: 100%; height: 130px; border-radius: 25px; border: 2px solid var(--platinum-mid); background: var(--platinum-bg); padding: 18px; font-size: 15px; margin-bottom: 15px; resize: none; box-sizing: border-box; font-family: 'Nunito', sans-serif; transition: 0.3s; }
         #timelineInput:focus, #notesInput:focus { outline: none; border-color: var(--teal); background: #ffffff; }
-
         .submit-main { width: 100%; background: var(--teal); color: #ffffff; border: none; padding: 20px; border-radius: 30px; font-weight: 900; font-size: 16px; cursor: pointer; margin-bottom: 10px; box-shadow: 0 8px 20px rgba(0, 128, 128, 0.25); transition: 0.2s; font-family: 'Nunito', sans-serif; }
-
         .entry { background: #ffffff; border: 2px solid var(--platinum-mid); padding: 20px; border-radius: 25px; margin-bottom: 15px; text-align: left; }
         .entry-badge { font-size: 10px; font-weight: 900; color: white; background: var(--teal); padding: 4px 10px; border-radius: 8px; margin-left: 10px; vertical-align: middle; text-transform: uppercase; }
         .timestamp-box { color: var(--teal); font-size: 11px; font-weight: 900; text-transform: uppercase; background: var(--teal-soft); padding: 6px 14px; border-radius: 12px; display: inline-block; margin-bottom: 10px; }
-        
         .summary-header { background: var(--gray-dark); color: #ffffff; padding: 25px; border-radius: 30px; margin-bottom: 15px; display: none; text-align: center; }
         .duo-box { background: linear-gradient(135deg, #f0f7f7, #ffffff); border: 2px dashed var(--teal); border-radius: 25px; padding: 20px; margin-bottom: 20px; display: none; text-align: left; }
-
         .lock-footer { background: var(--gray-dark); color: #ffffff; border: none; border-radius: 30px; padding: 22px; width: 100%; cursor: pointer; font-weight: 900; text-transform: uppercase; margin-top: auto; font-family: 'Nunito', sans-serif; }
-        
         .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; backdrop-filter: blur(15px); background: rgba(255,255,255,0.7); z-index: 100; display: none; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; }
         .modal-content { background: white; border-radius: 30px; padding: 30px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.15); }
         .modal-btn-row { display: flex; gap: 10px; margin-top: 20px; }
-        
-        .privacy-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; backdrop-filter: blur(20px); z-index: 90; display: none; background: rgba(255,255,255,0.6); }
-        .privacy-active .privacy-overlay { display: block; }
     </style>
 </head>
 <body>
     <div id="appRoot" class="app-container">
-        <div class="privacy-overlay"></div>
         <div class="heartbeat"><span class="dot"></span> ACTIVE</div>
-        
         <header class="header-container">
             <div style="display: flex; align-items: center; gap: 12px; flex-grow: 1;">
                 <svg style="width:50px; height: auto;" viewBox="0 0 100 80">
@@ -81,7 +47,6 @@
                     <p style="margin: 2px 0 0 0; font-style: italic; color: var(--platinum-dark); font-size: 12px;">"Justice is truth in action."</p>
                 </div>
             </div>
-            <button class="submit-main" style="background: var(--platinum-bg); color: var(--gray-dark); box-shadow: none; height: 32px; width: 90px; font-size: 9px; margin: 0; padding: 0;" onclick="togglePrivacy()">PROTECT VIEW</button>
         </header>
 
         <div style="padding: 25px; flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto;">
@@ -108,11 +73,6 @@
                     <button id="tabBtnTimeline" class="workspace-tab active" onclick="switchPane('timeline')">Timeline View</button>
                     <button id="tabBtnNotes" class="workspace-tab" onclick="switchPane('notes')">Notes View</button>
                 </nav>
-
-                <div class="template-row">
-                    <div class="template-chip" onclick="applyActiveTemplate('Site')">+ Site Data</div>
-                    <div class="template-chip" onclick="applyActiveTemplate('Witness')">+ Witness Entry</div>
-                </div>
 
                 <div id="paneTimeline" class="tab-workspace-view active-view">
                     <textarea id="timelineInput" placeholder="Enter chronological narrative details..."></textarea>
@@ -150,7 +110,6 @@
             currentActivePane = targetPane;
             document.querySelectorAll('.tab-workspace-view').forEach(view => view.classList.remove('active-view'));
             document.querySelectorAll('.workspace-tab').forEach(tab => tab.classList.remove('active'));
-            
             if (targetPane === 'timeline') {
                 document.getElementById('paneTimeline').classList.add('active-view');
                 document.getElementById('tabBtnTimeline').classList.add('active');
@@ -160,27 +119,11 @@
             }
         }
 
-        function applyActiveTemplate(type) {
-            const activeInput = currentActivePane === 'timeline' ? document.getElementById('timelineInput') : document.getElementById('notesInput');
-            const markers = { Site: "📍 [SITE LOCATION]: \nDetails: ", Witness: "👤 [WITNESS PROFILE]: \nStatement: " };
-            activeInput.value += (activeInput.value.trim().length > 0 ? "\n\n" : "") + markers[type];
-            activeInput.focus();
-        }
-
         function processWorkspaceEntry(type) {
             const inputField = type === 'timeline' ? document.getElementById('timelineInput') : document.getElementById('notesInput');
             const payloadValue = inputField.value.trim();
             if(!payloadValue) return;
-
-            if(type === 'timeline') {
-                localTimelineStore.push(payloadValue);
-            } else {
-                localNotesStore.push(payloadValue);
-            }
-
-            localStorage.setItem('cached_timeline_dataset', JSON.stringify(localTimelineStore));
-            localStorage.setItem('cached_notes_dataset', JSON.stringify(localNotesStore));
-
+            if(type === 'timeline') { localTimelineStore.push(payloadValue); } else { localNotesStore.push(payloadValue); }
             renderConsoleBlock(payloadValue, type);
             inputField.value = "";
         }
@@ -189,45 +132,27 @@
             const visualConsole = document.getElementById('visualTimelineConsole');
             const entryBlock = document.createElement('div');
             entryBlock.className = 'entry';
-            
             const timestamp = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-            entryBlock.innerHTML = `
-                <span class="timestamp-box">${timestamp}</span>
-                <span class="entry-badge" style="background:${scopeType === 'timeline' ? 'var(--teal)' : 'var(--gray-dark)'}">${scopeType}</span>
-                <p style="margin:10px 0 0 0; font-weight:600; color:var(--gray-dark);">${text}</p>
-            `;
+            entryBlock.innerHTML = `<span class="timestamp-box">${timestamp}</span><span class="entry-badge" style="background:${scopeType === 'timeline' ? 'var(--teal)' : 'var(--gray-dark)'}">${scopeType}</span><p style="margin:10px 0 0 0; font-weight:600; color:var(--gray-dark);">${text}</p>`;
             visualConsole.prepend(entryBlock);
         }
 
         function openVerificationModal() {
-            if (document.getElementById('lawyerSelect').value === "none") { 
-                alert("Please select a Professional profile entry state first!"); 
-                return; 
-            }
+            if (document.getElementById('lawyerSelect').value === "none") { alert("Please select a Professional profile entry state first!"); return; }
             document.getElementById('warningModal').style.display = "flex";
         }
         function closeVerificationModal() { document.getElementById('warningModal').style.display = "none"; }
-        function togglePrivacy() { document.getElementById('appRoot').classList.toggle('privacy-active'); }
 
         function executeAggregationFlow() {
             closeVerificationModal();
-            
             document.getElementById('briefingHeader').style.display = 'block';
             document.getElementById('mainInputArea').style.display = 'none';
             document.getElementById('duoSummaryBox').style.display = 'block';
 
             const practitioner = document.getElementById('lawyerSelect').value;
-            localStorage.setItem('cached_practitioner_assignment', practitioner);
-
             document.getElementById('sumLawyer').innerText = practitioner;
             document.getElementById('sumHash').innerText = Math.random().toString(36).substring(2, 8).toUpperCase();
-
-            document.getElementById('duoSummaryText').innerHTML = `
-                <strong>Transient Manifest Summary Structure Compiled:</strong><br>
-                • Timeline Logs Captured: ${localTimelineStore.length} structural lines.<br>
-                • Case Note Elements Captured: ${localNotesStore.length} background entries.<br><br>
-                <em>Ready to bridge payload arrays securely via the Canadian OAuth Sandbox network interface.</em>
-            `;
+            document.getElementById('duoSummaryText').innerHTML = `<strong>Transient Summary Dataset Compiled:</strong><br>• Timeline Lines: ${localTimelineStore.length} items.<br>• Supplemental Notes: ${localNotesStore.length} items.`;
 
             const syncButtonAction = document.getElementById('lockBtn');
             syncButtonAction.innerHTML = "Approve Summaries & Swap Token To Clio Grow 🚀";
@@ -237,38 +162,23 @@
                 const clientId = '18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s'; 
                 const redirectUri = 'https://worktimeline-app.vercel.app/api/sync'; 
                 
-                // REFINED STRINGS: Clean parsing format directly targeting standard OAuth parameters
-                const oauthDestination = `https://ca.grow.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+                // UNIFIED PLATFORM AUTHORIZATION ROUTE
+                const oauthDestination = `https://app.clio.com/platform/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=grow_lead_inbox_write%20grow_matter_note_write`;
                 window.location.href = oauthDestination;
             };
         }
 
         window.addEventListener('load', () => {
-            const urlQueryMap = new URLSearchParams(window.location.search);
-            
-            if (urlQueryMap.get('sync') === 'success') {
+            if (new URLSearchParams(window.location.search).get('sync') === 'success') {
                 document.getElementById('briefingHeader').style.display = 'block';
                 document.getElementById('mainInputArea').style.display = 'none';
                 document.getElementById('duoSummaryBox').style.display = 'block';
-                
-                document.getElementById('sumLawyer').innerText = localStorage.getItem('cached_practitioner_assignment') || "Assigned Practitioner";
+                document.getElementById('sumLawyer').innerText = "Assigned Practitioner";
                 document.getElementById('sumHash').innerText = "LIVE_OK";
-
-                document.getElementById('duoSummaryText').innerHTML = `
-                    <strong>Synchronization Pipeline Verified:</strong><br>
-                    Data parameters successfully transmitted directly to your Clio Grow Sandbox Lead Inbox workspace.<br>
-                    Zero-Footprint compliance validation check completed.
-                `;
-
-                alert("🚀 SUCCESS!\n\nBecause Clio keeps them centered, WorkTimeline keeps them a step ahead.\n\nSummary records mapped and vaulted directly into your Clio Grow Lead Inbox!");
-                
+                document.getElementById('duoSummaryText').innerHTML = `<strong>Synchronization Pipeline Verified:</strong><br>Data parameters successfully transmitted directly to your Clio Grow Sandbox Lead Inbox workspace.`;
+                alert("🚀 SUCCESS!\n\nRecords vaulted directly to your Clio Grow Lead Inbox!");
                 const lockBtn = document.getElementById('lockBtn');
-                if (lockBtn) {
-                    lockBtn.innerHTML = "✅ Synchronization Complete";
-                    lockBtn.style.background = "#000000";
-                    lockBtn.disabled = true;
-                }
-                localStorage.clear();
+                if (lockBtn) { lockBtn.innerHTML = "✅ Synchronization Complete"; lockBtn.style.background = "#000000"; lockBtn.disabled = true; }
             }
         });
     </script>
