@@ -162,8 +162,8 @@
                 const clientId = '18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s'; 
                 const redirectUri = 'https://worktimeline-app.vercel.app/api/sync'; 
                 
-                // UNIFIED PLATFORM AUTHORIZATION ROUTE
-                const oauthDestination = `https://app.clio.com/platform/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=grow_lead_inbox_write%20grow_matter_note_write`;
+                // FIXED SCOPE FORMATTING: Sending clean name definitions to explicitly match dashboard settings
+                const oauthDestination = `https://ca.grow.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=lead_inbox%20matter_notes`;
                 window.location.href = oauthDestination;
             };
         }
