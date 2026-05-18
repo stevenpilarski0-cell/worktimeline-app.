@@ -14,13 +14,16 @@ export default async function handler(req, res) {
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-    // TARGET ALIGNED: Locked to Clio Canada Master Infrastructure
-    const clioBaseUrl = 'https://ca.api.clio.com'; 
+    // --- CRITICAL ROUTING FIX ---
+    // Identity Server (for logins & tokens) vs. Data Server (for Grow notes)
+    const clioIdentityHost = 'https://ca.app.clio.com'; 
+    const clioGrowDataHost = 'https://ca.grow.clio.com';
 
     // ---- OAUTH HANDSHAKE RECEIVER (GET REQUEST FROM CLIO) ----
     if (req.method === 'GET' && req.query.code) {
         try {
-            const tokenResponse = await fetch(`${clioBaseUrl}/oauth/token`, {
+            // Token exchange MUST happen at the Identity Host
+            const tokenResponse = await fetch(`${clioIdentityHost}/oauth/token`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams({
@@ -81,27 +84,27 @@ export default async function handler(req, res) {
             const accessToken = dbData[0]?.access_token;
 
             if (!accessToken || accessToken === 'empty') {
-                const authUrl = `${clioBaseUrl}/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+                // The Login Screen URL MUST point to the Identity Host
+                const authUrl = `${clioIdentityHost}/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
                 return res.status(401).json({ error: 'AUTH_REQUIRED', url: authUrl });
             }
 
-            const notePayload = {
-                data: {
-                    type: "notes",
-                    attributes: {
-                        subject: "WorkTimeline Log",
-                        detail: logText
-                    }
+            // You wanted Grow first, so we format for Grow and target the Grow Host
+            const growNotePayload = {
+                note: {
+                    subject: "WorkTimeline Log",
+                    detail: logText,
+                    client_id: "01KPZB4ZCXHE3Z92S1KM3AT96V" 
                 }
             };
 
-            const clioResponse = await fetch(`${clioBaseUrl}/api/v4/notes`, {
+            const clioResponse = await fetch(`${clioGrowDataHost}/api/v1/notes`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${accessToken}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(notePayload)
+                body: JSON.stringify(growNotePayload)
             });
 
             if (!clioResponse.ok) {
@@ -115,7 +118,7 @@ export default async function handler(req, res) {
                     });
                     return res.status(401).json({ error: 'AUTH_REQUIRED' });
                 }
-                throw new Error(`Clio Core API Rejected Entry: ${errorText}`);
+                throw new Error(`Clio Grow API Rejected Entry: ${errorText}`);
             }
 
             return res.status(200).json({ success: true });
