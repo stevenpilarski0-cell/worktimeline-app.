@@ -178,15 +178,14 @@
             const codeVerifier = generateRandomString(64);
             const codeChallenge = await generateCodeChallenge(codeVerifier);
             
-            // Safe sandbox cross-origin token storage allocation
-            sessionStorage.setItem('pkce_verifier_cache', codeVerifier);
+            // Secure cookie tracking to pass verification codes seamlessly without parameter contamination
             document.cookie = "pkce_v=" + codeVerifier + "; path=/; max-age=300; Secure; SameSite=Lax";
             
             syncButtonAction.onclick = function() {
                 const clientId = '18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s'; 
                 const redirectUri = 'https://worktimeline-app.vercel.app/api/sync'; 
                 
-                // FIXED PLATFORM ROUTE: Standard path structure for Canadian Public PKCE authentication
+                // ALIGNED REGIONAL URI: Targeting the exact Canadian Grow engine router as dictated by reference docs
                 const oauthDestination = `https://ca.grow.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
                 window.location.href = oauthDestination;
             };
