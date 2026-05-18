@@ -236,8 +236,8 @@
             syncButtonAction.onclick = function() {
                 const clientId = '18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s'; 
                 const redirectUri = 'https://worktimeline-app.vercel.app/api/sync'; 
-                // REGIONAL ALIGNMENT FIXED: Using native ca.app portal for verified global client accounts
-                const oauthDestination = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+                // CRITICAL ALIGNMENT: Pointing explicitly to the Platform/Grow Canadian endpoint domain
+                const oauthDestination = `https://ca.auth.api.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
                 window.location.href = oauthDestination;
             };
         }
