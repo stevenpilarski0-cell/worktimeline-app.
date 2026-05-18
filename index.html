@@ -3,196 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTimeline - Secure Log</title>
-    <style>
-        /* Mac-like Minimalist Base */
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f5f5f7;
-            color: #1d1d1f;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        /* Clean Gray Container with Rounded Corners */
-        .container {
-            background-color: #ffffff;
-            width: 100%;
-            max-width: 480px;
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
-            box-sizing: border-box;
-        }
-
-        h2 {
-            margin-top: 0;
-            font-weight: 600;
-            font-size: 24px;
-            letter-spacing: -0.5px;
-            color: #1d1d1f;
-        }
-
-        p {
-            font-size: 14px;
-            color: #86868b;
-            margin-bottom: 24px;
-        }
-
-        /* Text Input Area */
-        textarea {
-            width: 100%;
-            height: 120px;
-            padding: 16px;
-            border: 1px solid #d2d2d7;
-            border-radius: 12px;
-            font-family: inherit;
-            font-size: 14px;
-            resize: none;
-            box-sizing: border-box;
-            background-color: #fafafa;
-            transition: border-color 0.2s ease;
-        }
-
-        textarea:focus {
-            outline: none;
-            border-color: #008080;
-            background-color: #ffffff;
-        }
-
-        /* Teal Primary Button */
-        button {
-            width: 100%;
-            background-color: #008080;
-            color: white;
-            border: none;
-            padding: 16px;
-            font-size: 15px;
-            font-weight: 600;
-            border-radius: 12px;
-            margin-top: 24px;
-            cursor: pointer;
-            transition: background-color 0.2s ease, transform 0.1s ease;
-        }
-
-        button:hover {
-            background-color: #006666;
-        }
-
-        button:active {
-            transform: scale(0.98);
-        }
-
-        /* Status Text */
-        #statusMsg {
-            margin-top: 16px;
-            font-size: 14px;
-            font-weight: 500;
-            text-align: center;
-            height: 20px;
-        }
-    </style>
+    <title>WorkTimeline Engine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-slate-50 min-h-screen flex items-center justify-center p-4">
 
-<div class="container">
-    <h2>WorkTimeline Engine</h2>
-    <p>Enter incident details to log a verified timeline entry.</p>
+    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-slate-100">
+        <h1 class="text-2xl font-bold text-slate-800 mb-2">WorkTimeline Engine</h1>
+        <p class="text-sm text-slate-500 mb-6">Enter incident details to log a verified timeline entry.</p>
 
-    <!-- Subtly updated placeholder to reflect the internal validation system -->
-    <textarea id="logInput" placeholder="Incident notes, witness statements, or timeline details for Chromatic Validation..."></textarea>
-    
-    <button onclick="transmitLog()" id="transmitBtn">Transmit to Clio Secure Core</button>
-    
-    <div id="statusMsg"></div>
-</div>
+        <div class="space-y-4">
+            <textarea 
+                id="logInput" 
+                rows="4" 
+                class="w-full p-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-600 focus:border-transparent outline-none resize-none transition text-slate-700"
+                placeholder="Type incident details here..."
+            ></textarea>
 
-<script>
-    // 1. PAGE LOAD LOGIC: Restore data and auto-transmit
-    document.addEventListener('DOMContentLoaded', () => {
-        const savedLog = localStorage.getItem('pendingWorkTimelineLog');
-        
-        if (savedLog) {
-            // Restore the text the user typed
-            document.getElementById('logInput').value = savedLog;
-            
-            // Clean up the browser's storage
-            localStorage.removeItem('pendingWorkTimelineLog'); 
-            
-            // AUTOMATION: Immediately trigger the transmission process again
-            // Now that they are authenticated, this will successfully hit the backend
-            transmitLog(); 
-        }
-    });
+            <button 
+                id="transmitBtn"
+                onclick="transmitLog()"
+                class="w-full bg-teal-700 hover:bg-teal-800 text-white font-medium py-3 rounded-xl transition shadow-md hover:shadow-lg flex items-center justify-center"
+            >
+                Transmit to Clio Secure Core
+            </button>
 
-    // 2. TRANSMIT LOGIC: Handle the API call and save data if needed
-    async function transmitLog() {
-        const logInput = document.getElementById('logInput').value.trim();
-        const statusMsg = document.getElementById('statusMsg');
-        const transmitBtn = document.getElementById('transmitBtn');
+            <p id="statusMessage" class="text-sm text-center font-medium hidden"></p>
+        </div>
+    </div>
 
-        // Validation check before attempting network request
-        if (!logInput) {
-            statusMsg.textContent = "Please enter log details before transmitting.";
-            statusMsg.style.color = "#e30000";
-            return;
-        }
+    <script>
+        // Automatically check if we just returned from a successful Clio authentication handshake loop
+        window.addEventListener('load', () => {
+            const status = localStorage.getItem('sync_status');
+            const cachedText = localStorage.getItem('cached_log_text');
+            const statusEl = document.getElementById('statusMessage');
 
-        // Lock button and show processing status to prevent double-clicks
-        transmitBtn.disabled = true;
-        transmitBtn.style.opacity = '0.7';
-        statusMsg.textContent = "Negotiating Secure Handshake...";
-        statusMsg.style.color = "#86868b";
-
-        try {
-            // Target the Vercel serverless function
-            const response = await fetch('/api/sync', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ logText: logInput })
-            });
-
-            const data = await response.json();
-
-            // Intercept 401: Save text and reroute to Clio Gateway
-            if (response.status === 401 && data.error === 'AUTH_REQUIRED') {
-                statusMsg.textContent = "Clearance required. Rerouting to authorization gate...";
-                statusMsg.style.color = "#008080";
+            if (status === 'authenticated' && cachedText) {
+                statusEl.innerText = "Re-transmitting cached payload...";
+                statusEl.className = "text-sm text-center font-medium text-amber-600";
+                statusEl.classList.remove('hidden');
                 
-                // Save the typed text to the browser's memory
-                localStorage.setItem('pendingWorkTimelineLog', logInput);
-                
-                // Drop the user into the CORRECT Clio authorization screen
-                window.location.href = data.url; 
-            } 
-            // Handle successful backend transmission
-            else if (response.ok) {
-                statusMsg.textContent = "Transmission Successful. Log secured in Clio.";
-                statusMsg.style.color = "#008080";
-                document.getElementById('logInput').value = ''; // Clear text area on success
-            } 
-            // Catch expected backend errors
-            else {
-                statusMsg.textContent = "Server Error: " + (data.error || "Payload rejected.");
-                statusMsg.style.color = "#e30000";
+                // Fire the payload again now that the token table is full
+                document.getElementById('logInput').value = cachedText;
+                localStorage.removeItem('sync_status');
+                transmitLog();
             }
-        } catch (error) {
-            // Catch unexpected network failures
-            statusMsg.textContent = "Network Error: Could not connect to gateway.";
-            statusMsg.style.color = "#e30000";
-            console.error("Fetch error details:", error);
-        } finally {
-            // Unlock button regardless of success or failure
-            transmitBtn.disabled = false;
-            transmitBtn.style.opacity = '1';
-        }
-    }
-</script>
+        });
 
+        async function transmitLog() {
+            const logText = document.getElementById('logInput').value.trim();
+            const btn = document.getElementById('transmitBtn');
+            const statusEl = document.getElementById('statusMessage');
+
+            if (!logText) {
+                statusEl.innerText = "Please write a message before transmitting.";
+                statusEl.className = "text-sm text-center font-medium text-red-600";
+                statusEl.classList.remove('hidden');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "Processing Telemetry...";
+            statusEl.classList.add('hidden');
+
+            try {
+                // Hardwired directly to your verified personal production API link
+                const response = await fetch('https://worktimeline-app-stevenpilarski0-4988s-projects.vercel.app/api/sync', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ logText })
+                });
+
+                const result = await response.json();
+
+                // ROUTE A: Catch 401 Unauthorized -> Forward user to Clio Login Screen
+                if (response.status === 401 && result.url) {
+                    statusEl.innerText = "Authorization required. Re-routing to Clio Core...";
+                    statusEl.className = "text-sm text-center font-medium text-teal-600";
+                    statusEl.classList.remove('hidden');
+                    
+                    // Cache user log details locally so they don't type it twice
+                    localStorage.setItem('cached_log_text', logText);
+                    localStorage.setItem('sync_status', 'authenticated');
+                    
+                    // Jump to Clio's blue access login screen
+                    window.location.href = result.url;
+                    return;
+                }
+
+                if (!response.ok) throw new Error(result.error || 'Transmission rejected.');
+
+                // SUCCESS: Data verified and stored in Clio Grow
+                statusEl.innerText = "Success: Entry committed to Clio Secure Core!";
+                statusEl.className = "text-sm text-center font-medium text-green-600";
+                statusEl.classList.remove('hidden');
+                document.getElementById('logInput').value = "";
+                localStorage.removeItem('cached_log_text');
+
+            } catch (error) {
+                console.error("Network Error Stack:", error);
+                statusEl.innerText = "Network Error: Could not connect to gateway.";
+                statusEl.className = "text-sm text-center font-medium text-red-600";
+                statusEl.classList.remove('hidden');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Transmit to Clio Secure Core";
+            }
+        }
+    </script>
 </body>
 </html>
