@@ -35,7 +35,7 @@ export default async function handler(req, res) {
                 return res.status(400).send(`OAuth Handshake Failed: ${JSON.stringify(tokenData)}`);
             }
 
-            // Save the validated token into Supabase row 1
+            // Securely update row ID 1 in your Supabase table with the fresh token
             const supabaseResponse = await fetch(`${supabaseUrl}/rest/v1/clio_auth?id=eq.1`, {
                 method: 'PATCH',
                 headers: {
@@ -79,23 +79,23 @@ export default async function handler(req, res) {
             const accessToken = dbData[0]?.access_token;
 
             if (!accessToken || accessToken === 'empty') {
-                // Requesting the official cross-platform grow scope explicitly
-                const scopeValue = process.env.CLIO_SCOPE || 'grow';
+                // FIXED SCOPE ROUTING: Explicitly pass the strict cross-platform scopes Clio requires
+                const scope = "grow_lead_inbox_read grow_matter_note_read grow_matter_read";
                 
-                const authUrl = `https://ca.api.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopeValue)}`;
+                const authUrl = `https://ca.api.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scope)}`;
                 return res.status(401).json({ error: 'AUTH_REQUIRED', url: authUrl });
             }
 
-            // Payloads targeting Clio Grow notes require a flat structure mapping
+            // Formatting payload explicitly to conform to Clio Grow's structured API requirements
             const growNotePayload = {
                 note: {
                     subject: "WorkTimeline Log",
                     detail: logText,
-                    client_id: "01KPZB4ZCXHE3Z92S1KM3AT96V" // Your target ID descriptor
+                    client_id: "01KPZB4ZCXHE3Z92S1KM3AT96V"
                 }
             };
 
-            // Routing the payload straight into Clio Grow Canada's production REST engine
+            // Post explicitly to Clio Grow Canada's notes endpoint
             const clioResponse = await fetch('https://ca.grow.clio.com/api/v1/notes', {
                 method: 'POST',
                 headers: {
