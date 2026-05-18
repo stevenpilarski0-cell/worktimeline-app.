@@ -1,13 +1,13 @@
 // api/sync.js
-import { createClient } from '@supabase/supabase-js';
+const { createClient } = require('@supabase/supabase-js');
 
 // 1. INITIALIZE SUPABASE CLIENT
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-export default async function handler(req, res) {
-  // 2. STAGE GLOBAL CORS HEADERS FOR FRONTIEND COHESION
+module.exports = async function handler(req, res) {
+  // 2. STAGE GLOBAL CORS HEADERS FOR FRONTEND COHESION
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*'); 
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,POST');
@@ -142,4 +142,4 @@ export default async function handler(req, res) {
     res.setHeader('Allow', ['GET', 'POST', 'OPTIONS']);
     return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
-}
+};
