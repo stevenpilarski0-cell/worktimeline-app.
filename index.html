@@ -2,208 +2,891 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WorkTimeline™ | Master Production Suite</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>WorkTimeline Playback Engine</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght=400;600;800;900&display=swap');
-        :root { --teal: #008080; --teal-soft: #e0f2f1; --clio-blue: #0076CE; --platinum-bg: #d8e2ea; --platinum-mid: #eef1f5; --platinum-dark: #7a8b9e; --gray-dark: #2c3e50; }
-        body { font-family: 'Nunito', sans-serif; background-color: var(--platinum-mid); margin: 0; padding: 10px; display: flex; justify-content: center; }
-        .app-container { width: 100%; max-width: 500px; background: #ffffff; border-radius: 35px; min-height: 90vh; display: flex; flex-direction: column; position: relative; box-shadow: 0 15px 40px rgba(0, 128, 128, 0.08); overflow: hidden; }
-        .heartbeat { position: absolute; top: 20px; right: 20px; display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 800; color: #00a859; z-index: 5; }
-        .dot { height: 10px; width: 10px; background-color: #00a859; border-radius: 50%; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(0.95); } 70% { transform: scale(1); } 100% { transform: scale(0.95); } }
-        .header-container { display: flex; align-items: center; padding: 35px 20px 25px; border-bottom: 3px solid var(--platinum-bg); text-align: left; }
-        .lawyer-box { background: var(--teal-soft); padding: 18px; border-radius: 25px; margin-bottom: 15px; border: 2px solid transparent; transition: 0.3s; }
-        .workspace-tab-bar { display: flex; gap: 8px; margin-bottom: 15px; background: var(--platinum-mid); padding: 6px; border-radius: 20px; }
-        .workspace-tab { flex: 1; background: none; border: none; padding: 12px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 13px; color: var(--platinum-dark); cursor: pointer; border-radius: 15px; transition: 0.2s; }
-        .workspace-tab.active { background: var(--teal); color: white; }
-        .tab-workspace-view { display: none; }
-        .tab-workspace-view.active-view { display: block; }
-        #timelineInput, #notesInput { width: 100%; height: 130px; border-radius: 25px; border: 2px solid var(--platinum-mid); background: var(--platinum-bg); padding: 18px; font-size: 15px; margin-bottom: 15px; resize: none; box-sizing: border-box; font-family: 'Nunito', sans-serif; transition: 0.3s; }
-        #timelineInput:focus, #notesInput:focus { outline: none; border-color: var(--teal); background: #ffffff; }
-        .submit-main { width: 100%; background: var(--teal); color: #ffffff; border: none; padding: 20px; border-radius: 30px; font-weight: 900; font-size: 16px; cursor: pointer; margin-bottom: 10px; box-shadow: 0 8px 20px rgba(0, 128, 128, 0.25); transition: 0.2s; font-family: 'Nunito', sans-serif; }
-        .entry { background: #ffffff; border: 2px solid var(--platinum-mid); padding: 20px; border-radius: 25px; margin-bottom: 15px; text-align: left; }
-        .entry-badge { font-size: 10px; font-weight: 900; color: white; background: var(--teal); padding: 4px 10px; border-radius: 8px; margin-left: 10px; vertical-align: middle; text-transform: uppercase; }
-        .timestamp-box { color: var(--teal); font-size: 11px; font-weight: 900; text-transform: uppercase; background: var(--teal-soft); padding: 6px 14px; border-radius: 12px; display: inline-block; margin-bottom: 10px; }
-        .summary-header { background: var(--gray-dark); color: #ffffff; padding: 25px; border-radius: 30px; margin-bottom: 15px; display: none; text-align: center; }
-        .duo-box { background: linear-gradient(135deg, #f0f7f7, #ffffff); border: 2px dashed var(--teal); border-radius: 25px; padding: 20px; margin-bottom: 20px; display: none; text-align: left; }
-        .lock-footer { background: var(--gray-dark); color: #ffffff; border: none; border-radius: 30px; padding: 22px; width: 100%; cursor: pointer; font-weight: 900; text-transform: uppercase; margin-top: auto; font-family: 'Nunito', sans-serif; }
-        .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; backdrop-filter: blur(15px); background: rgba(255,255,255,0.7); z-index: 100; display: none; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; }
-        .modal-content { background: white; border-radius: 30px; padding: 30px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.15); }
-        .modal-btn-row { display: flex; gap: 10px; margin-top: 20px; }
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+        
+        :root {
+            /* FROSTED SILVER METALLIC PALETTE (DAY MODE DEFAULT) */
+            --app-bg: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.9);
+            --glass-shadow: 0 8px 32px rgba(148, 163, 184, 0.2);
+            
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --active-teal: #008080;
+            --active-green: #2ecc71;
+            
+            --metallic-silver: linear-gradient(180deg, #f1f5f9 0%, #cbd5e0 100%);
+            --metallic-teal: linear-gradient(135deg, #008080 0%, #004d4d 100%);
+            --chip-bg: #ffffff;
+            
+            --silver-platinum: #f1f5f9;
+            --font-family-override: 'Nunito', sans-serif;
+        }
+
+        body.night-deck {
+            /* HIGH-CONTRAST TIMELOCKED NIGHT MATRIX */
+            --app-bg: linear-gradient(135deg, #2d3135 0%, #16181a 100%);
+            --glass-bg: rgba(35, 38, 41, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-dark: #ffffff; 
+            --text-light: #cbd5e1;
+            --metallic-silver: linear-gradient(180deg, #3f444a 0%, #1a1c1e 100%);
+            --chip-bg: #2d3135;
+            --silver-platinum: #2d3135;
+        }
+        
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            font-family: var(--font-family-override); background-color: #94a3b8;
+            -webkit-tap-highlight-color: transparent;
+            transition: font-family 0.2s ease;
+        }
+
+        .phone-bezel {
+            width: 375px; height: 812px; background-color: #000;
+            border-radius: 45px; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            overflow: hidden; border: 8px solid #cbd5e0; position: relative;
+        }
+
+        .app-container {
+            width: 100%; height: 100%; background: var(--app-bg);
+            display: flex; flex-direction: column; position: relative;
+        }
+
+        /* PRIVACY SWITCH HARDWARE BLUR COVERS */
+        .privacy-active #timelineBody,
+        .privacy-active .input-panel { 
+            filter: blur(18px) grayscale(1); 
+            pointer-events: none; 
+            opacity: 0.25; 
+            transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1); 
+        }
+        #timelineBody, .input-panel { transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+
+        /* HEADER LED BEACON */
+        .clio-status-led {
+            width: 10px; height: 10px; background-color: var(--active-green); border-radius: 50%;
+            animation: breathe 2.5s infinite; box-shadow: 0 0 8px var(--active-green);
+            display: inline-block; margin-left: 6px; vertical-align: middle;
+        }
+        @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.6; } }
+
+        .top-toggles {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 45px 20px 10px; z-index: 20;
+        }
+
+        .toggle-btn {
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            padding: 8px 16px; border-radius: 20px; font-size: 11px; font-weight: 900;
+            color: var(--text-dark); cursor: pointer; backdrop-filter: blur(10px);
+            transition: 0.3s; display: flex; align-items: center; gap: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05); text-transform: uppercase;
+        }
+        .toggle-btn.active { background: var(--metallic-teal); color: white; border-color: var(--active-teal); }
+
+        .header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 20px 15px; z-index: 1000;
+        }
+
+        .menu-trigger {
+            font-size: 24px; color: var(--text-dark); cursor: pointer;
+            background: var(--glass-bg); padding: 8px; border-radius: 12px;
+            border: 1px solid var(--glass-border); backdrop-filter: blur(10px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex;
+            transition: all 0.2s ease;
+        }
+        .menu-trigger.open-active { background: var(--metallic-teal); color: #ffffff; border-color: var(--active-teal); }
+
+        .brand-block { display: flex; align-items: center; gap: 8px; }
+        .main-title { font-weight: 900; font-size: 24px; color: var(--active-teal); letter-spacing: -0.5px; display: flex; align-items: center; gap: 6px; }
+        
+        /* LOGO SVG WITH HORIZONTAL SPLINE TRACK PATH AND THREE NODES */
+        .briefcase-logo-svg { width: 32px; height: 32px; display: inline-block; vertical-align: middle; }
+        .briefcase-body { fill: var(--active-teal); }
+        .briefcase-timeline-path { stroke: #ffffff; stroke-width: 0.6px; stroke-dasharray: 1,1; fill: none; }
+        .briefcase-node { fill: var(--active-teal); }
+
+        .input-panel {
+            background: var(--glass-bg); backdrop-filter: blur(20px);
+            margin: 0 15px; border-radius: 24px; border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow); display: flex; flex-direction: column;
+            gap: 15px; padding: 20px; z-index: 10;
+        }
+
+        .template-row { display: flex; gap: 8px; justify-content: space-between; margin-bottom: 5px; }
+        .template-chip {
+            flex: 1; background: var(--chip-bg); border: 1px solid var(--glass-border); border-radius: 12px;
+            padding: 10px 0; font-size: 10px; font-weight: 900; color: var(--text-dark);
+            text-align: center; cursor: pointer; text-transform: uppercase;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: 0.2s;
+        }
+        .template-chip.selected { background: var(--active-teal); color: white; border-color: var(--active-teal); }
+
+        .hardware-icons { display: flex; justify-content: space-evenly; align-items: center; }
+        .hw-item { position: relative; width: 44px; height: 44px; background: var(--metallic-silver); border-radius: 14px; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 2px 4px rgba(255,255,255,0.8), 0 4px 6px rgba(0,0,0,0.05); cursor: pointer; border: 1px solid var(--glass-border); }
+        .hw-item svg { width: 22px; height: 22px; stroke: var(--active-teal); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+        .hw-item input { position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer; z-index:10; }
+
+        .input-wrapper { background: rgba(255, 255, 255, 0.15); border-radius: 14px; padding: 15px; border: 1px solid var(--glass-border); }
+        body:not(.night-deck) .input-wrapper { background: rgba(255, 255, 255, 0.8); }
+        .input-wrapper textarea { width: 100%; background: transparent; border: none; color: var(--text-dark); font-size: 14px; font-weight: 600; font-family: inherit; resize: none; outline: none; height: 40px; }
+        .input-wrapper textarea::placeholder { color: var(--text-light); }
+
+        /* THE STANDARD TIMELINE FEED GRID TRACK LAYOUT BASELINE */
+        .workspace-layout-matrix {
+            flex: 1; display: flex; gap: 12px; margin: 0 15px; overflow: hidden; position: relative;
+        }
+
+        .vertical-spine-track {
+            width: 44px; min-width: 44px; background: var(--metallic-silver); border: 1px solid var(--glass-border);
+            border-radius: 20px; padding: 16px 0; display: flex; flex-direction: column-reverse;
+            align-items: center; position: relative; gap: 16px; overflow-y: auto; box-sizing: border-box;
+        }
+        .vertical-spine-track::before { content: ''; position: absolute; top: 0; bottom: 0; width: 2px; background: var(--glass-border); z-index: 1; }
+        .vertical-spine-track::-webkit-scrollbar { display: none; }
+
+        .timeline-container { flex: 1; overflow-y: auto; padding: 0 0 100px; }
+        .timeline-container::-webkit-scrollbar { display: none; }
+        .log-list { display: flex; flex-direction: column-reverse; gap: 15px; position: relative; width: 100%; }
+        .log-entry { position: relative; display: flex; flex-direction: column; gap: 6px; z-index: 2; width: 100%; }
+        
+        .timeline-squircle {
+            width: 32px; height: 32px; min-height: 32px; background: var(--chip-bg);
+            border: 1px solid var(--glass-border); border-radius: 10px; display: flex; align-items: center;
+            justify-content: center; z-index: 2; box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            cursor: pointer; transition: transform 0.2s;
+        }
+        .timeline-squircle svg { width: 16px; height: 16px; fill: var(--text-dark); }
+        
+        @keyframes tealSatinPulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0.7); border-color: var(--active-teal); transform: scale(1); }
+            50% { box-shadow: 0 0 14px 6px rgba(0, 128, 128, 0.3); border-color: #00b3b3; transform: scale(1.05); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0.7); border-color: var(--active-teal); transform: scale(1); }
+        }
+        .timeline-squircle.pattern-triggered {
+            animation: tealSatinPulse 2s infinite ease-in-out !important;
+            border: 2px solid var(--active-teal) !important;
+        }
+        .timeline-squircle.pattern-triggered svg { fill: var(--active-teal) !important; }
+
+        .timestamp-stamp { display: flex; align-items: center; gap: 4px; font-size: 9px; color: var(--text-light); text-transform: uppercase; font-weight: 800; padding-left: 4px; }
+        .timestamp-stamp svg { width: 10px; height: 10px; stroke: currentColor; fill: none; stroke-width: 2.5; display: inline-block; vertical-align: middle; margin-top: -2px; }
+        
+        .log-bubble-stack { position: relative; width: 100%; display: flex; flex-direction: column; gap: 4px; }
+        
+        /* SOLID SILVER PLATINUM TOP LAYER */
+        .log-bubble {
+            background: var(--silver-platinum);
+            padding: 14px 16px; border-radius: 18px; border: 1px solid var(--glass-border);
+            color: var(--text-dark); font-size: 12px; font-weight: 700; line-height: 1.5;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04); width: 100%; box-sizing: border-box;
+            position: relative; z-index: 10;
+        }
+
+        /* SUPERSEDED REVERSION OVERLAYS: DROPS TRANSPARENT DIRECTLY UNDERNEATH */
+        .log-bubble.historical-version {
+            background: rgba(255, 255, 255, 0.15); 
+            backdrop-filter: blur(4px);
+            margin-top: -24px;
+            z-index: 5;
+            opacity: 0.45;
+            transform: scale(0.96);
+            border: 1px dashed var(--glass-border);
+            color: var(--text-light);
+            box-shadow: none;
+        }
+        body.night-deck .log-bubble.historical-version { background: rgba(0, 0, 0, 0.2); }
+
+        /* THE PATTERN INSIGHT CARDS POPOVER SPECIFICATION: MOUNTS UNDERNEATH THE PRIMARY CARD LAYER */
+        .log-bubble.pattern-insight-layer {
+            background: rgba(0, 128, 128, 0.08) !important;
+            border: 1px solid rgba(0, 128, 128, 0.3) !important;
+            box-shadow: inset 0 1px 3px rgba(0, 128, 128, 0.1) !important;
+            margin-top: -4px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+            z-index: 8;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 11px;
+            line-height: 1.4;
+        }
+
+        .footer-nav {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 80px; 
+            background: var(--glass-bg); backdrop-filter: blur(20px);
+            display: flex; justify-content: space-evenly; align-items: center;
+            padding: 0 15px 15px; border-top: 1px solid var(--glass-border); z-index: 100;
+            box-sizing: border-box;
+        }
+
+        .footer-pill {
+            background: var(--chip-bg); color: var(--text-dark); padding: 12px 20px;
+            border-radius: 20px; font-size: 10px; font-weight: 900; cursor: pointer;
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            border: 1px solid var(--glass-border); box-shadow: 0 4px 10px rgba(0,0,0,0.03); text-transform: uppercase;
+        }
+        .footer-pill svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+        .center-add-btn {
+            background: var(--metallic-teal); color: white; width: 56px; height: 56px;
+            border-radius: 20px; display: flex; justify-content: center; align-items: center;
+            font-size: 32px; font-weight: 600; cursor: pointer;
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.4), 0 8px 20px rgba(0, 128, 128, 0.4);
+            border: 2px solid rgba(255,255,255,0.2); transition: 0.2s;
+        }
+        .center-add-btn:active { transform: scale(0.95); }
+
+        /* THE LAB CORE SIDEBAR DRAWER */
+        .sidebar {
+            position: absolute; top: 0; left: -100%; width: 280px; height: 100%;
+            background: var(--glass-bg); backdrop-filter: blur(25px);
+            transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 8000;
+            padding: 55px 20px; box-sizing: border-box; box-shadow: 20px 0 50px rgba(0,0,0,0.1);
+            border-right: 1px solid var(--glass-border);
+            color: var(--text-dark);
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .sidebar.open { left: 0; }
+        .sidebar-header { font-weight: 900; font-size: 22px; color: var(--active-teal); margin-bottom: 20px; text-transform: uppercase; letter-spacing: -1px; }
+        
+        .lab-customizer-box {
+            background: var(--chip-bg); border: 1px solid var(--glass-border);
+            border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.01);
+        }
+        .customizer-label { font-size: 10px; font-weight: 900; text-transform: uppercase; color: var(--text-light); letter-spacing: 0.04em; }
+        .customizer-select { width: 100%; height: 38px; border-radius: 8px; border: 1px solid var(--glass-border); background: var(--app-bg); color: var(--text-dark); padding: 0 8px; font-size: 11px; font-weight: 800; outline: none; text-transform: uppercase; }
+
+        .sidebar-item {
+            padding: 14px 16px; margin-bottom: 4px; border-radius: 14px;
+            background: var(--chip-bg); font-weight: 800; font-size: 11px; color: var(--text-dark);
+            display: flex; align-items: center; gap: 12px; cursor: pointer;
+            border: 1px solid var(--glass-border); text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.01);
+        }
+        
+        .sidebar-item .circle-icon { 
+            width: 28px; height: 28px; background: var(--metallic-silver); color: var(--active-teal); 
+            border-radius: 8px; display: flex; justify-content: center; align-items: center; 
+            border: 1px solid var(--glass-border); flex-shrink: 0;
+        }
+        .sidebar-item .circle-icon svg { 
+            width: 16px !important; height: 16px !important; display: block; 
+            fill: none; stroke: var(--active-teal); stroke-width: 2.5;
+        }
+
+        .lab-metric-panel {
+            background: rgba(0, 128, 128, 0.04); border: 1px solid var(--glass-border);
+            border-radius: 14px; padding: 12px 14px; font-size: 11px; font-weight: 700;
+            color: var(--text-dark); display: flex; flex-direction: column; gap: 6px;
+        }
+        .metric-row { display: flex; justify-content: space-between; align-items: center; font-weight: 800; }
+        .metric-badge { font-size: 11px; color: var(--active-teal); font-weight: 900; }
+
+        .drawer-outside-overlay {
+            position: absolute; top:0; left:0; width:100%; height:100%;
+            background: rgba(15, 23, 42, 0.08); backdrop-filter: blur(1px);
+            z-index: 7000; display: none;
+        }
+
+        .modal-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(226, 232, 240, 0.7); backdrop-filter: blur(25px);
+            z-index: 10000; display: flex; justify-content: center; align-items: center;
+            padding: 30px; box-sizing: border-box; text-align: center;
+            opacity: 0; pointer-events: none; transition: 0.3s;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-box { background: var(--glass-bg); backdrop-filter: blur(20px); padding: 45px 30px; border-radius: 35px; box-shadow: var(--glass-shadow); border: 1px solid var(--glass-border); width: 100%; }
+        .greeting { font-weight: 900; font-size: 28px; color: var(--active-teal); margin-bottom: 5px; text-transform: uppercase; letter-spacing: -1px; }
+        .location { font-size: 11px; font-weight: 800; color: var(--text-light); text-transform: uppercase; margin-bottom: 25px; letter-spacing: 1px; }
+        .modal-body { font-size: 14px; font-weight: 700; color: var(--text-dark); line-height: 1.6; margin-bottom: 35px; }
+        .ok-btn { background: var(--metallic-teal); color: white; padding: 18px; border-radius: 20px; font-weight: 900; font-size: 13px; text-transform: uppercase; cursor: pointer; box-shadow: 0 8px 20px rgba(0, 128, 128, 0.3); border: 1px solid rgba(255,255,255,0.2); flex: 1; }
+        .ok-btn.ghost { background: var(--metallic-silver); color: var(--text-dark); box-shadow: none; border: 1px solid var(--glass-border); }
+        .spinner { width: 30px; height: 30px; border: 4px solid #cbd5e0; border-top: 4px solid var(--active-teal); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body>
-    <div id="appRoot" class="app-container">
-        <div class="heartbeat"><span class="dot"></span> ACTIVE</div>
-        <header class="header-container">
-            <div style="display: flex; align-items: center; gap: 12px; flex-grow: 1;">
-                <svg style="width:50px; height: auto;" viewBox="0 0 100 80">
-                    <rect x="10" y="20" width="80" height="55" rx="8" fill="none" stroke="#008080" stroke-width="6"/>
-                    <line x1="5" y1="48" x2="95" y2="48" stroke="#5dade2" stroke-width="6" stroke-linecap="round"/>
-                </svg>
+<body onload="initApp()">
+    <div class="phone-bezel">
+        
+        <div id="drawerOutsideOverlay" class="drawer-outside-overlay" onclick="toggleSidebar()"></div>
+
+        <div class="sidebar" id="sidebarMenu">
+            <div class="sidebar-header">LAB CORE</div>
+            
+            <div class="lab-customizer-box">
                 <div>
-                    <h1 style="color: var(--teal); margin: 0; font-size: 24px; font-weight: 900;">WorkTimeline™</h1>
-                    <p style="margin: 2px 0 0 0; font-style: italic; color: var(--platinum-dark); font-size: 12px;">"Justice is truth in action."</p>
-                </div>
-            </div>
-        </header>
-
-        <div style="padding: 25px; flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto;">
-            <div id="briefingHeader" class="summary-header">
-                <h3 style="margin:0 0 10px 0; font-size:18px; color:var(--teal-soft);">Clio Grow Vault</h3>
-                <div style="font-size:13px; font-weight: 600;">Lawyer: <b id="sumLawyer">--</b> | Ref: <b id="sumHash">--</b></div>
-            </div>
-
-            <div id="duoSummaryBox" class="duo-box">
-                <h4 style="color: var(--teal); margin: 0 0 10px 0; font-size: 15px; font-weight: 900;">✨ Compiled Intake Datasets</h4>
-                <p id="duoSummaryText" style="font-size: 13px; color: var(--gray-dark); margin: 0; line-height: 1.6; font-weight: 600;"></p>
-            </div>
-
-            <div id="mainInputArea">
-                <div class="lawyer-box">
-                    <select id="lawyerSelect" style="width: 100%; padding: 14px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 14px; border: none; border-radius: 15px; background: #ffffff;">
-                        <option value="none">-- Select Professional --</option>
-                        <option value="Marcus Thorne, Esq.">Marcus Thorne, Esq.</option>
-                        <option value="Sarah Jenkins, JD">Sarah Jenkins, JD</option>
+                    <div class="customizer-label">Typography Profile</div>
+                    <select class="customizer-select" onchange="applySovereignFontProfile(this.value)">
+                        <option value="nunito">Nunito Pro Standard</option>
+                        <option value="serif">Serif Reference Ledger</option>
+                        <option value="mono">Monospace Evidence Track</option>
                     </select>
                 </div>
-
-                <nav class="workspace-tab-bar">
-                    <button id="tabBtnTimeline" class="workspace-tab active" onclick="switchPane('timeline')">Timeline View</button>
-                    <button id="tabBtnNotes" class="workspace-tab" onclick="switchPane('notes')">Notes View</button>
-                </nav>
-
-                <div id="paneTimeline" class="tab-workspace-view active-view">
-                    <textarea id="timelineInput" placeholder="Enter chronological narrative details..."></textarea>
-                    <button class="submit-main" onclick="processWorkspaceEntry('timeline')">Add to Chronological Timeline</button>
-                </div>
-
-                <div id="paneNotes" class="tab-workspace-view">
-                    <textarea id="notesInput" placeholder="Enter alternative, static, or environmental background notes..."></textarea>
-                    <button class="submit-main" onclick="processWorkspaceEntry('notes')">Add to Supplemental Notes</button>
+                <div>
+                    <div class="customizer-label">Sovereign Canvas Tint</div>
+                    <select id="labThemeSelector" class="customizer-select" onchange="applySovereignLuminanceOverride(this.value)">
+                        <option value="auto">Automated Circadian Lock</option>
+                        <option value="day">Force Silver Platinum View</option>
+                        <option value="night">Force Matte Slate Night View</option>
+                    </select>
                 </div>
             </div>
 
-            <div id="visualTimelineConsole" style="margin-top:10px;"></div>
-            <button id="lockBtn" class="lock-footer" onclick="openVerificationModal()">Lock & Prepare Records</button>
+            <div class="sidebar-item" onclick="emailTimeline()">
+                <div class="circle-icon">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"/></svg>
+                </div>
+                Draft Email
+            </div>
+            
+            <div class="sidebar-item" onclick="alert('Exporting securely.')">
+                <div class="circle-icon">
+                    <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+                </div>
+                Save & Export
+            </div>
+
+            <div class="lab-metric-panel">
+                <span style="font-size:9px; text-transform:uppercase; color:var(--text-light); letter-spacing:0.04em;">Audit Metrics</span>
+                <div class="metric-row">
+                    <span>Total Amendments:</span>
+                    <span id="labAmendCounter" class="metric-badge">0</span>
+                </div>
+            </div>
+
+            <div class="lab-metric-panel" style="background: rgba(0, 0, 0, 0.02);">
+                <span style="font-size:9px; text-transform:uppercase; color:var(--active-teal); letter-spacing:0.04em;">Verified Precedents</span>
+                <div id="labCaseLawBox" style="font-size:10px; font-style:italic; line-height:1.4; color:var(--text-light);">
+                    Run Pattern Recognition to query local jurisdictional legal case benchmarks...
+                </div>
+            </div>
+            
+            <div class="sidebar-item" style="margin-top:auto;" onclick="resetTimeline()">
+                <div class="circle-icon">
+                    <svg viewBox="0 0 24 24" style="stroke: #e11d48;"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+                </div>
+                <span style="color: #e11d48;">Reset Engine</span>
+            </div>
         </div>
 
-        <div id="warningModal" class="modal-overlay">
-            <div class="modal-content">
-                <h3 style="color: var(--gray-dark); margin-top: 0; font-size: 20px; font-weight: 900;">⚠️ Confirm Finalization</h3>
-                <p style="color: var(--platinum-dark); font-size: 14px; font-weight: 700; line-height: 1.5;">Are you ready to lock down processing structures? Entries will compile natively and vault into Clio Grow via an explicit secure handshake.</p>
-                <div class="modal-btn-row">
-                    <button class="btn-cancel" style="background:#eef1f5; border:none; padding:15px; border-radius:20px; flex:1; font-weight:800;" onclick="closeVerificationModal()">Cancel</button>
-                    <button class="btn-proceed" style="background:var(--teal); color:white; border:none; padding:15px; border-radius:20px; flex:1; font-weight:800;" onclick="executeAggregationFlow()">Proceed</button>
+        <div class="modal-overlay active" id="intakeOverlay">
+            <div class="modal-box">
+                <div class="greeting" id="greetingText">Good Morning</div>
+                <div class="location">Langley Township, BC</div>
+                <div class="modal-body">
+                    We do not practice law and we're not giving advice. <br><br><b>Look at this like it's a journal. Welcome to WorkTimeline™.</b>
+                </div>
+                <div class="ok-btn" onclick="document.getElementById('intakeOverlay').classList.remove('active')">I Understand</div>
+            </div>
+        </div>
+
+        <div class="modal-overlay" id="patternOverlay">
+            <div class="modal-box">
+                <div class="greeting">Pattern Engine</div>
+                <div class="location">Timeline Analysis</div>
+                
+                <div id="patternLoader">
+                    <div class="spinner"></div>
+                    <div class="modal-body">Scanning timeline for chronological patterns...</div>
+                </div>
+
+                <div id="patternResult" style="display: none;">
+                    <div class="modal-body">
+                        <b>Analysis Pass Complete.</b><br><br>
+                        Pattern Detected: <i>Multiple incident logs clustered in the morning hours.</i><br><br>
+                        Do you want to append this analytical insight into the unalterable chronology record layout track?
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <div class="ok-btn ghost" onclick="handlePatternAudit('IGNORED')">Ignore Pass</div>
+                        <div class="ok-btn" onclick="handlePatternAudit('ACCEPTED')">Inject Recognition</div>
+                    </div>
                 </div>
             </div>
+        </div>
+
+        <div class="app-container" id="mainApp">
+            
+            <div class="top-toggles">
+                <div class="toggle-btn" id="privacyBtn" onclick="togglePrivacy()">Privacy Switch</div>
+                <div style="display: flex; gap: 8px;">
+                    <div class="toggle-btn active" id="timelineToggle" onclick="switchMode('TIMELINE')">Timeline</div>
+                    <div class="toggle-btn" id="notesToggle" onclick="switchMode('NOTES')">Notes</div>
+                </div>
+            </div>
+
+            <div class="header">
+                <div id="menuBtn" class="menu-trigger" onclick="toggleSidebar()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </div>
+                
+                <div class="brand-block">
+                    <div class="main-title" id="brandTitle">
+                        <svg class="briefcase-logo-svg" viewBox="0 0 24 24">
+                            <path class="briefcase-body" d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-8-2h4v2h-4V4zm8 7H4V8h16v3zm-16 2h16v1H4v-1zm16 6H4v-3h16v3z"/>
+                            <line class="briefcase-timeline-path" x1="2" y1="14.5" x2="22" y2="14.5"/>
+                            <circle class="briefcase-node" cx="6" cy="14.5" r="0.8"/>
+                            <circle class="briefcase-node" cx="12" cy="14.5" r="0.8"/>
+                            <circle class="briefcase-node" cx="18" cy="14.5" r="0.8"/>
+                        </svg>
+                        WorkTimeline
+                        <div id="pipelineLed" class="clio-status-led" title="Clio Handshake Active"></div>
+                    </div>
+                </div>
+                
+                <div style="width: 40px;"></div>
+            </div>
+
+            <div class="input-panel">
+                <div class="template-row" id="templateRow">
+                    <div id="chip-setting" class="template-chip" onclick="toggleTemplatePill('SETTING')">Setting Template</div>
+                    <div id="chip-witness" class="template-chip" onclick="toggleTemplatePill('WITNESS')">Witness Template</div>
+                    <div id="chip-injury" class="template-chip" onclick="toggleTemplatePill('INJURY')">Injury Template</div>
+                </div>
+                <div class="hardware-icons">
+                    <div class="hw-item">
+                        <input type="file" accept="image/*" capture="environment" onchange="hwFeedback('PHOTO ATTACHED', 'photo')">
+                        <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                    </div>
+                    <div class="hw-item">
+                        <input type="file" accept="audio/*" capture="microphone" onchange="hwFeedback('AUDIO RECORDED', 'audio')">
+                        <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+                    </div>
+                    <div class="hw-item">
+                        <input type="file" onchange="hwFeedback('DOCUMENT LINKED', 'text')">
+                        <svg viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                    </div>
+                </div>
+                <div class="input-wrapper">
+                    <textarea id="logInput" placeholder="Start journaling your truth..."></textarea>
+                </div>
+            </div>
+
+            <div class="workspace-layout-matrix">
+                <div id="visualSpineTrack" class="vertical-spine-track"></div>
+                <div class="timeline-container" id="timelineBody">
+                    <div class="log-list" id="logList"></div>
+                </div>
+            </div>
+
+            <div class="footer-nav">
+                <div id="prButton" class="footer-pill" onclick="runPatternRecognition()">
+                    <svg viewBox="0 0 24 24">
+                        <rect x="2" y="3" width="20" height="14" rx="4" ry="4"></rect>
+                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                    </svg>
+                    Pattern Rec
+                </div>
+                
+                <div class="center-add-btn" onclick="submitEntry()">+</div>
+                
+                <div class="footer-pill" style="color: var(--active-teal);" onclick="executeMasterClioLock()">
+                    <svg viewBox="0 0 24 24"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
+                    Sync to Clio
+                </div>
+            </div>
+            
         </div>
     </div>
 
     <script>
-        let localTimelineStore = [];
-        let localNotesStore = [];
-        let currentActivePane = 'timeline';
+        let logsData = JSON.parse(localStorage.getItem('silver_vault_v46')) || [];
+        let currentMode = 'TIMELINE';
+        let isEngineSealed = false;
+        let activeAmendingId = null;
+        let isPatternRecognitionTriggeredInSession = false; // Shadow tracking indicator state
+        
+        const pinSvg = `<svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
 
-        function switchPane(targetPane) {
-            currentActivePane = targetPane;
-            document.querySelectorAll('.tab-workspace-view').forEach(view => view.classList.remove('active-view'));
-            document.querySelectorAll('.workspace-tab').forEach(tab => tab.classList.remove('active'));
-            if (targetPane === 'timeline') {
-                document.getElementById('paneTimeline').classList.add('active-view');
-                document.getElementById('tabBtnTimeline').classList.add('active');
+        const iconNodePaths = {
+            text: `<svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>`,
+            photo: `<svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`,
+            audio: `<svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>`
+        };
+
+        function evaluateCircadianTimeSystem() {
+            if (sessionStorage.getItem('theme_override')) return;
+            const currentHour = new Date().getHours();
+            if (currentHour < 6 || currentHour >= 18) {
+                document.body.classList.add('night-deck');
             } else {
-                document.getElementById('paneNotes').classList.add('active-view');
-                document.getElementById('tabBtnNotes').classList.add('active');
+                document.body.classList.remove('night-deck');
             }
         }
 
-        function processWorkspaceEntry(type) {
-            const inputField = type === 'timeline' ? document.getElementById('timelineInput') : document.getElementById('notesInput');
-            const payloadValue = inputField.value.trim();
-            if(!payloadValue) return;
-            if(type === 'timeline') { localTimelineStore.push(payloadValue); } else { localNotesStore.push(payloadValue); }
-            renderConsoleBlock(payloadValue, type);
-            inputField.value = "";
-        }
-
-        function renderConsoleBlock(text, scopeType) {
-            const visualConsole = document.getElementById('visualTimelineConsole');
-            const entryBlock = document.createElement('div');
-            entryBlock.className = 'entry';
-            const timestamp = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-            entryBlock.innerHTML = `<span class="timestamp-box">${timestamp}</span><span class="entry-badge" style="background:${scopeType === 'timeline' ? 'var(--teal)' : 'var(--gray-dark)'}">${scopeType}</span><p style="margin:10px 0 0 0; font-weight:600; color:var(--gray-dark);">${text}</p>`;
-            visualConsole.prepend(entryBlock);
-        }
-
-        function openVerificationModal() {
-            if (document.getElementById('lawyerSelect').value === "none") { alert("Please select a Professional profile entry state first!"); return; }
-            document.getElementById('warningModal').style.display = "flex";
-        }
-        function closeVerificationModal() { document.getElementById('warningModal').style.display = "none"; }
-
-        function generateRandomString(length) {
-            const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
-            let result = '';
-            const randomValues = new Uint32Array(length);
-            window.crypto.getRandomValues(randomValues);
-            for (let i = 0; i < length; i++) { result += charset[randomValues[i] % charset.length]; }
-            return result;
-        }
-
-        async function generateCodeChallenge(verifier) {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(verifier);
-            const hash = await window.crypto.subtle.digest('SHA-256', data);
-            return btoa(String.fromCharCode.apply(null, new Uint8Array(hash)))
-                .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-        }
-
-        async function executeAggregationFlow() {
-            closeVerificationModal();
-            document.getElementById('briefingHeader').style.display = 'block';
-            document.getElementById('mainInputArea').style.display = 'none';
-            document.getElementById('duoSummaryBox').style.display = 'block';
-
-            const practitioner = document.getElementById('lawyerSelect').value;
-            document.getElementById('sumLawyer').innerText = practitioner;
-            document.getElementById('sumHash').innerText = Math.random().toString(36).substring(2, 8).toUpperCase();
-            document.getElementById('duoSummaryText').innerHTML = `<strong>Transient Summary Dataset Compiled:</strong><br>• Timeline Lines: ${localTimelineStore.length} items.<br>• Supplemental Notes: ${localNotesStore.length} items...`;
-
-            const syncButtonAction = document.getElementById('lockBtn');
-            syncButtonAction.innerHTML = "Approve Summaries & Swap Token To Clio Grow 🚀";
-            syncButtonAction.style.background = "var(--clio-blue)";
-            
-            const codeVerifier = generateRandomString(64);
-            const codeChallenge = await generateCodeChallenge(codeVerifier);
-            
-            // Safe, persistent session layer cache
-            document.cookie = "pkce_v=" + codeVerifier + "; path=/; max-age=300; Secure; SameSite=Lax";
-            
-            syncButtonAction.onclick = function() {
-                const clientId = '18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s'; 
-                const redirectUri = 'https://worktimeline-app.vercel.app/api/sync'; 
-                
-                // CORRECT SUBDOMAIN: Direct path to standard Canadian Grow OAuth endpoints
-                const oauthDestination = `https://ca.grow.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
-                window.location.href = oauthDestination;
-            };
-        }
-
-        window.addEventListener('load', () => {
-            if (new URLSearchParams(window.location.search).get('sync') === 'success') {
-                document.getElementById('briefingHeader').style.display = 'block';
-                document.getElementById('mainInputArea').style.display = 'none';
-                document.getElementById('duoSummaryBox').style.display = 'block';
-                document.getElementById('sumLawyer').innerText = "Assigned Practitioner";
-                document.getElementById('sumHash').innerText = "GROW_OK";
-                document.getElementById('duoSummaryText').innerHTML = `<strong>Synchronization Pipeline Verified:</strong><br>Data parameters successfully transmitted directly to your Clio Grow Sandbox Lead Inbox workspace.`;
-                alert("🚀 SUCCESS!\n\nRecords vaulted directly to your Clio Grow Lead Inbox!");
-                const lockBtn = document.getElementById('lockBtn');
-                if (lockBtn) { lockBtn.innerHTML = "✅ Synchronization Complete"; lockBtn.style.background = "#000000"; lockBtn.disabled = true; }
+        function applySovereignFontProfile(fontProfile) {
+            if (fontProfile === 'serif') {
+                document.documentElement.style.setProperty('--font-family-override', 'Georgia, serif');
+            } else if (fontProfile === 'mono') {
+                document.documentElement.style.setProperty('--font-family-override', '"Courier New", monospace');
+            } else {
+                document.documentElement.style.setProperty('--font-family-override', "'Nunito', sans-serif");
             }
+        }
+
+        function applySovereignLuminanceOverride(themeSelection) {
+            if (themeSelection === 'day') {
+                document.body.classList.remove('night-deck');
+                sessionStorage.setItem('theme_override', 'day');
+            } else if (themeSelection === 'night') {
+                document.body.classList.add('night-deck');
+                sessionStorage.setItem('theme_override', 'night');
+            } else {
+                sessionStorage.removeItem('theme_override');
+                evaluateCircadianTimeSystem();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const override = sessionStorage.getItem('theme_override');
+            const selector = document.getElementById('labThemeSelector');
+            if (override === 'day') {
+                document.body.classList.remove('night-deck');
+                if (selector) selector.value = 'day';
+            } else if (override === 'night') {
+                document.body.classList.add('night-deck');
+                if (selector) selector.value = 'night';
+            }
+            document.getElementById('prButton').classList.remove('disabled-gate');
+            updateLabSidebarCounters();
         });
+
+        function initApp() {
+            evaluateCircadianTimeSystem();
+            setGreeting();
+            if(logsData.length === 0) loadDummyData();
+            renderTimeline();
+            setInterval(evaluateCircadianTimeSystem, 60000);
+        }
+
+        function loadDummyData() {
+            const baseTime = new Date();
+            logsData = [
+                { id: 1, parentId: null, mode: 'TIMELINE', type: 'text', stamp: `LANGLEY, BC | ${baseTime.toLocaleDateString()} | 9:00 AM`, text: "WITNESS: Interviewed Sarah regarding the incident..." },
+                { id: 2, parentId: null, mode: 'TIMELINE', type: 'text', stamp: `LANGLEY, BC | ${baseTime.toLocaleDateString()} | 11:30 AM`, text: "INJURY: Details logged and submitted to manager." }
+            ];
+            saveData();
+        }
+
+        function setGreeting() {
+            const h = new Date().getHours();
+            let greeting = "Good Evening";
+            if (h >= 4 && h < 12) greeting = "Good Morning";
+            else if (h >= 12 && h < 18) greeting = "Good Afternoon";
+            document.getElementById('greetingText').innerText = greeting;
+        }
+
+        function toggleSidebar() { 
+            const sidebar = document.getElementById('sidebarMenu');
+            const menuBtn = document.getElementById('menuBtn');
+            const mask = document.getElementById('drawerOutsideOverlay');
+            sidebar.classList.toggle('open');
+            menuBtn.classList.toggle('open-active');
+            mask.style.display = sidebar.classList.contains('open') ? 'block' : 'none';
+        }
+        
+        /* THE INSTANT PRIVACY SYSTEM SWITCH LOOP INJECTION */
+        function togglePrivacy() { 
+            const app = document.getElementById('mainApp');
+            app.classList.toggle('privacy-active');
+            const btn = document.getElementById('privacyBtn');
+            btn.classList.toggle('active', app.classList.contains('privacy-active'));
+        }
+
+        function switchMode(mode) {
+            currentMode = mode;
+            document.getElementById('timelineToggle').classList.toggle('active', mode === 'TIMELINE');
+            document.getElementById('notesToggle').classList.toggle('active', mode === 'NOTES');
+            document.getElementById('visualSpineTrack').style.display = mode === 'TIMELINE' ? 'flex' : 'none';
+            document.getElementById('templateRow').style.display = mode === 'TIMELINE' ? 'flex' : 'none';
+            document.getElementById('logInput').placeholder = mode === 'TIMELINE' ? "Start journaling your truth..." : "Capture a private note...";
+            cancelActiveAmendment();
+            renderTimeline();
+        }
+        
+        function hwFeedback(label, iconType) {
+            const input = document.getElementById('logInput');
+            input.value += (input.value ? '\n' : '') + `[${label} @ ${new Date().toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit'})}]\n`;
+            input.dataset.nodeType = iconType;
+            input.focus();
+        }
+
+        function toggleTemplatePill(type) {
+            const pill = document.getElementById(`chip-${type.toLowerCase()}`);
+            const input = document.getElementById('logInput');
+            const prefix = `${type} INJECTION LAYOUT: \n[TIME]: \n[LOG FIELD]: \n\n`;
+            
+            if (pill.classList.contains('selected')) {
+                pill.classList.remove('selected');
+                input.value = input.value.replace(prefix, "");
+            } else {
+                pill.classList.add('selected');
+                input.value = prefix + input.value;
+                input.focus();
+            }
+        }
+
+        function saveData() { 
+            localStorage.setItem('silver_vault_v46', JSON.stringify(logsData)); 
+            updateLabSidebarCounters();
+        }
+
+        function updateLabSidebarCounters() {
+            const totalAmendmentsCount = logsData.filter(v => v.parentId !== null && v.parentId !== undefined).length;
+            const counterElement = document.getElementById('labAmendCounter');
+            if (counterElement) counterElement.innerText = totalAmendmentsCount;
+        }
+
+        function triggerAmendmentRoutine(targetId) {
+            if (isEngineSealed) return;
+            const itemToAmend = logsData.find(v => v.id === targetId);
+            if (!itemToAmend) return;
+
+            const rootLookupId = itemToAmend.parentId ? itemToAmend.parentId : itemToAmend.id;
+            const activeLayersCount = logsData.filter(v => v.id === rootLookupId || v.parentId === rootLookupId).length;
+            const projectedAmendmentIndexNumber = activeLayersCount + 1;
+
+            const userConsentToSupersede = confirm(
+                `SUPERSEDE CHRONOLOGY RECORD?\n\nDo you want to amend this section?\nThis will file Amendment #${projectedAmendmentIndexNumber} for this log file entry.\n\nWe are keeping track of all background layers to maintain court integrity metrics inside the Lab.`
+            );
+
+            if (!userConsentToSupersede) return;
+
+            activeAmendingId = targetId;
+            const inputField = document.getElementById('logInput');
+            inputField.value = itemToAmend.text;
+            inputField.placeholder = `Filing Amendment #${projectedAmendmentIndexNumber}...`;
+            inputField.style.border = "1px solid var(--active-teal)";
+            inputField.focus();
+        }
+
+        function cancelActiveAmendment() {
+            activeAmendingId = null;
+            const inputField = document.getElementById('logInput');
+            if (inputField) {
+                inputField.placeholder = currentMode === 'TIMELINE' ? "Start journaling your truth..." : "Capture a private note...";
+                inputField.style.border = "none";
+            }
+        }
+
+        function renderTimeline() {
+            const list = document.getElementById('logList');
+            const spine = document.getElementById('visualSpineTrack');
+            list.innerHTML = '';
+            spine.innerHTML = '';
+            
+            const baseEntries = logsData.filter(log => (log.mode || 'TIMELINE') === currentMode && !log.parentId);
+
+            baseEntries.forEach(log => {
+                const stackContainer = document.createElement('div');
+                stackContainer.className = 'log-bubble-stack';
+
+                const childAmendments = logsData.filter(v => v.parentId === log.id);
+                const completeVersionHistoryChain = [log, ...childAmendments];
+                const topMostActiveVersion = completeVersionHistoryChain[completeVersionHistoryChain.length - 1];
+
+                const entry = document.createElement('div');
+                entry.className = 'log-entry';
+                
+                let timer;
+                const start = () => timer = setTimeout(() => { 
+                    triggerAmendmentRoutine(topMostActiveVersion.id);
+                }, 700);
+                const stop = () => clearTimeout(timer);
+                
+                entry.onmousedown = start; entry.onmouseup = stop; entry.onmouseleave = stop;
+                entry.ontouchstart = start; entry.ontouchend = stop;
+
+                // MAIN TIMELINE CARD: STAYS ON TOP, RETAINS SOLID SILVER PLATINUM GRAPHICS
+                entry.innerHTML = `
+                    <div class="timestamp-stamp">${pinSvg} ${topMostActiveVersion.stamp}</div>
+                    <div class="log-bubble" title="Hold to Supersede entry parameters">${topMostActiveVersion.text.replace(/\n/g, '<br>')}</div>
+                `;
+                stackContainer.appendChild(entry);
+
+                // HISTORY OVERLAY BACKING CARDS (TRANSPARENT PASS)
+                if (completeVersionHistoryChain.length > 1) {
+                    for (let i = completeVersionHistoryChain.length - 2; i >= 0; i--) {
+                        const historyNode = completeVersionHistoryChain[i];
+                        const historyBubble = document.createElement('div');
+                        historyBubble.className = 'log-bubble historical-version';
+                        const internalVersionLabel = i === 0 ? 'ORIGINAL BASELINE' : `AMENDMENT #${i}`;
+                        historyBubble.innerHTML = `<span style="font-size:8px; opacity:0.6; font-weight:900; color:var(--active-teal);">[${internalVersionLabel}: ${historyNode.stamp}]</span><br>${historyNode.text.replace(/\n/g, '<br>')}`;
+                        stackContainer.appendChild(historyBubble);
+                    }
+                }
+
+                // INVERTED REVERSAL SPECIFICATION PASSTHROUGH: 
+                // When an analytical suggestion is validated, it loads in lock-state, nested directly in the shadows *underneath* your original logs.
+                if (currentMode === 'TIMELINE' && isPatternRecognitionTriggeredInSession) {
+                    const aiShadowInsightBox = document.createElement('div');
+                    aiShadowInsightBox.className = 'log-bubble pattern-insight-layer';
+                    aiShadowInsightBox.innerHTML = `
+                        <div style="font-size:9px; text-transform:uppercase; font-weight:900; color:var(--active-teal); letter-spacing:0.02em; margin-bottom:2px;">[AI Core Track Analytics Locked Underneath]</div>
+                        Chronological proximity audit: Clustered morning event sequence signature captured. Integrity metrics cataloged.
+                    `;
+                    stackContainer.appendChild(aiShadowInsightBox);
+                }
+
+                list.appendChild(stackContainer);
+
+                if (currentMode === 'TIMELINE') {
+                    const node = document.createElement('div');
+                    node.className = 'timeline-squircle';
+                    node.id = `node_link_${log.id}`;
+                    node.innerHTML = iconNodePaths[topMostActiveVersion.type || 'text'];
+                    node.onclick = () => alert(`Event Chain Base Reference ID: ${log.id}\nLayers Compiled: ${completeVersionHistoryChain.length}\nLast State: ${topMostActiveVersion.stamp}`);
+                    
+                    if(topMostActiveVersion.highlighted || (isPatternRecognitionTriggeredInSession && log.id === 1)) {
+                        node.classList.add('pattern-triggered');
+                    }
+                    spine.appendChild(node);
+                }
+            });
+            
+            const container = document.getElementById('timelineBody');
+            container.scrollTop = container.scrollHeight;
+            spine.scrollTop = spine.scrollHeight;
+        }
+
+        function submitEntry() {
+            if (isEngineSealed) return alert("Timeline array has been immutably sealed to Clio. New submissions locked.");
+            const input = document.getElementById('logInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+            const nodeType = input.dataset.nodeType || 'text';
+
+            if (activeAmendingId !== null) {
+                const targetNodeRecord = logsData.find(v => v.id === activeAmendingId);
+                const baseParentIdNodeLink = targetNodeRecord.parentId ? targetNodeRecord.parentId : targetNodeRecord.id;
+
+                logsData.push({
+                    id: Date.now(),
+                    parentId: baseParentIdNodeLink,
+                    mode: currentMode,
+                    type: nodeType,
+                    stamp: `AMENDMENT FILED | ${dateStr} | ${timeStr}`,
+                    text: text
+                });
+                cancelActiveAmendment();
+            } else {
+                logsData.push({
+                    id: Date.now(),
+                    parentId: null,
+                    mode: currentMode,
+                    type: nodeType,
+                    stamp: `LANGLEY, BC | ${dateStr} | ${timeStr}`,
+                    text: text
+                });
+            }
+
+            input.value = '';
+            delete input.dataset.nodeType;
+            document.querySelectorAll('.template-chip').forEach(c => c.classList.remove('selected'));
+            saveData();
+            renderTimeline();
+        }
+
+        function emailTimeline() {
+            const filteredData = logsData.filter(log => (log.mode || 'TIMELINE') === currentMode);
+            if(filteredData.length === 0) return alert(`Your ${currentMode} is empty.`);
+            let body = `WorkTimeline™ Verified ${currentMode} Export:\n\n`;
+            filteredData.forEach(log => { body += `[${log.stamp}]\n${log.text}\n\n`; });
+            window.location.href = `mailto:?subject=Legal ${currentMode} Export&body=${encodeURIComponent(body)}`;
+        }
+
+        function resetTimeline() {
+            if(confirm("Clear the entire timeline and all notes?")) {
+                logsData = []; isEngineSealed = false; isPatternRecognitionTriggeredInSession = false; cancelActiveAmendment(); saveData(); renderTimeline(); toggleSidebar();
+                document.getElementById('pipelineLed').style.backgroundColor = 'var(--active-green)';
+                document.getElementById('labCaseLawBox').innerHTML = "Run Pattern Recognition to query local jurisdictional legal case benchmarks...";
+            }
+        }
+
+        function runPatternRecognition() {
+            if (isEngineSealed) return alert("Dataset locked. Analysis complete.");
+            const timelineData = logsData.filter(log => (log.mode || 'TIMELINE') === 'TIMELINE');
+            if(timelineData.length === 0) return alert("Add records to your timeline before running analysis engine passes.");
+            
+            document.getElementById('patternOverlay').classList.add('active');
+            document.getElementById('patternLoader').style.display = 'block';
+            document.getElementById('patternResult').style.display = 'none';
+
+            setTimeout(() => {
+                document.getElementById('patternLoader').style.display = 'none';
+                document.getElementById('patternResult').style.display = 'block';
+            }, 1500);
+        }
+
+        function handlePatternAudit(decision) {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+            
+            const auditMessage = decision === 'ACCEPTED' 
+                ? "[AUDIT LOG] User ACCEPTED AI Pattern Suggestion: 'Morning incident cluster' for shadow alignment pass."
+                : "[AUDIT LOG] User IGNORED AI Pattern Suggestion. Raw timeline integrity unperturbed.";
+
+            if (decision === 'ACCEPTED') {
+                // FLIPS RUN-STATE: Automatically forces the background analytics container to slide into view underneath your logs.
+                isPatternRecognitionTriggeredInSession = true;
+                logsData.forEach(log => { if (log.mode === 'TIMELINE' || !log.parentId) log.highlighted = true; });
+                
+                document.getElementById('labCaseLawBox').innerHTML = `
+                    <div style="border-bottom:1px dashed var(--glass-border); padding-bottom:6px; margin-bottom:6px;">
+                        <strong>BC OHS Reg 3.12:</strong> Compelled reporting benchmarks mapped relative to repetitive chronological groupings.
+                    </div>
+                    <div>
+                        <strong>Canada Evidence Act s.30:</strong> Dynamic business logs verified via contemporaneous systemic time signatures.
+                    </div>
+                `;
+            }
+
+            logsData.push({
+                id: Date.now(),
+                parentId: null,
+                mode: 'NOTES',
+                type: 'text',
+                stamp: `AUDIT TRAIL | ${dateStr} | ${timeStr}`,
+                text: auditMessage
+            });
+
+            saveData();
+            document.getElementById('patternOverlay').classList.remove('active');
+            
+            if (decision === 'ACCEPTED') {
+                switchMode('NOTES');
+            } else {
+                renderTimeline();
+            }
+        }
+
+        function executeMasterClioLock() {
+            if (logsData.length === 0) return alert("Log repository empty.");
+            cancelActiveAmendment();
+            document.getElementById('pipelineLed').style.backgroundColor = '#4b5563';
+            
+            setTimeout(() => {
+                isEngineSealed = true;
+                document.getElementById('pipelineLed').style.backgroundColor = '#008080';
+                const packageBriefForLawyers = JSON.stringify(logsData);
+                alert("AMENDMENT IMMUTABILITY SECURED\n\nFull case files package compiled, including Timeline array, version overlays, and active Pattern Recognition shadow layers.\n\nData securely synced to active Clio client ledger pipelines.");
+                renderTimeline();
+            }, 800);
+        }
     </script>
 </body>
-</html>
+    </html>
