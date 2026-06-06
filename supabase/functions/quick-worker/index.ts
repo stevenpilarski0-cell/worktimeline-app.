@@ -4,8 +4,10 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
 
-const CLIO_CLIENT_ID = Deno.env.get("CLIO_CLIENT_ID")!;
-const CLIO_CLIENT_SECRET = Deno.env.get("CLIO_CLIENT_SECRET")!;
+// Hardcoded Credentials from your Clio Developer Dashboard
+const CLIO_CLIENT_ID = "18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s";
+const CLIO_CLIENT_SECRET = "MNDG0NJjVqFZAKZngJLhO4CyHifsEozbFwNEXGHk5dU";
+
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
@@ -26,7 +28,6 @@ async function refreshClioToken(refresh_token: string) {
 }
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: {
       'Access-Control-Allow-Origin': '*',
@@ -45,7 +46,6 @@ serve(async (req) => {
       });
     }
 
-    // Pull current tokens from your database cache
     const { data: tokenData, error: fetchError } = await supabase
       .from("clio_tokens")
       .select("*")
@@ -53,7 +53,6 @@ serve(async (req) => {
 
     let accessToken = tokenData?.access_token;
 
-    // If token is missing or expired, trigger the refresh pipeline through the Canadian cluster
     if (fetchError || !accessToken) {
       const refreshResult = await refreshClioToken(tokenData?.refresh_token);
       if (refreshResult.access_token) {
@@ -67,7 +66,6 @@ serve(async (req) => {
       }
     }
 
-    // Transmit the structured chronological timeline logs straight to Canada Clio Grow Server
     const clioSyncResponse = await fetch("https://ca.grow.clio.com/api/v4/inbox_leads.json", {
       method: "POST",
       headers: {
