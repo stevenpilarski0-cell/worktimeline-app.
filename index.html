@@ -3,180 +3,131 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WorkTimeline™</title>
+  <title>WorkTimeline</title>
   <style>
     :root{
-      --bg:#f4f6fb;
-      --bg-elev:rgba(255,255,255,.78);
-      --card:rgba(255,255,255,.9);
-      --text:#17181c;
-      --sub:#667085;
-      --line:rgba(0,0,0,.08);
-      --shadow:0 14px 34px rgba(0,0,0,.08);
-
-      --work:#1a5cff;
-      --injury:#e03131;
-      --family:#6f42c1;
-      --property:#28a745;
-
+      --bg1:#eef2f7;
+      --bg2:#d8ecea;
+      --glass:rgba(255,255,255,.25);
+      --border:rgba(255,255,255,.36);
+      --text:#10202b;
+      --muted:#607582;
+      --teal:#14b8a6;
+      --teal-strong:#0f9d8d;
+      --grey:#90a0ad;
+      --clio:#1f75fe;
+      --shadow:0 20px 45px rgba(18,27,38,.12);
       --radius-xl:28px;
       --radius-lg:22px;
       --radius-md:16px;
-      --radius-sm:12px;
+      --radius-pill:999px;
 
-      --standard-font:"Times New Roman", serif;
-      --bubbly-font:-apple-system, BlinkMacSystemFont, "SF Pro Rounded", "SF Pro Display", "Segoe UI", sans-serif;
-      --night-font:Inter, system-ui, sans-serif;
-      --court-font:Georgia, "Times New Roman", serif;
+      --work:#1a5cff;
+      --injury:#df5360;
+      --family:#705af2;
+      --property:#1fa36d;
     }
 
-    *{ box-sizing:border-box; }
-
+    *{box-sizing:border-box}
     body{
       margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;
+      background:linear-gradient(135deg,var(--bg1),var(--bg2));
       color:var(--text);
-      background:
-        radial-gradient(circle at top left, #fff 0%, #eef3fb 55%, #edf1f7 100%);
-      font-family:var(--bubbly-font);
-      transition:background .2s ease, color .2s ease, font-family .2s ease;
     }
 
-    body.mode-standard{ font-family:var(--standard-font); }
-    body.mode-bubbly{ font-family:var(--bubbly-font); }
-    body.mode-night{
-      background:
-        radial-gradient(circle at top left, #151822 0%, #10131a 60%, #0d1016 100%);
-      color:#eef1f5;
-      font-family:var(--night-font);
-      --bg-elev:rgba(24,27,35,.86);
-      --card:rgba(29,33,42,.94);
-      --sub:#aab2bf;
-      --line:rgba(255,255,255,.08);
-      --shadow:0 14px 34px rgba(0,0,0,.22);
+    body.night{
+      background:linear-gradient(135deg,#0b1015,#122127);
+      color:#ebf2f6;
     }
 
-    body.court-mode{
-      background:#fff;
-      color:#111;
-      font-family:var(--court-font);
-    }
-    body.court-mode .glass,
-    body.court-mode .panel,
-    body.court-mode .entry-card,
-    body.court-mode .sidebar{
-      background:#fff !important;
-      color:#111 !important;
-      box-shadow:none !important;
-      border:1px solid #cfcfcf !important;
-      backdrop-filter:none !important;
+    .glass{
+      background:var(--glass);
+      backdrop-filter:blur(20px) saturate(150%);
+      -webkit-backdrop-filter:blur(20px) saturate(150%);
+      border:1px solid var(--border);
+      box-shadow:var(--shadow);
+      border-radius:var(--radius-xl);
     }
 
     .app-shell{
       min-height:100vh;
       display:grid;
-      grid-template-columns:320px 1fr;
-      gap:18px;
-      padding:18px;
-    }
-
-    .glass, .panel, .sidebar{
-      background:var(--bg-elev);
-      backdrop-filter:blur(14px);
-      border:1px solid var(--line);
-      border-radius:var(--radius-xl);
-      box-shadow:var(--shadow);
+      grid-template-columns:300px 1fr;
+      gap:20px;
+      padding:20px;
     }
 
     .sidebar{
       padding:18px;
-      position:sticky;
-      top:18px;
-      height:calc(100vh - 36px);
       display:flex;
       flex-direction:column;
-      gap:16px;
+      gap:18px;
+      height:calc(100vh - 40px);
+      position:sticky;
+      top:20px;
     }
 
     .brand{
       display:flex;
-      align-items:center;
       justify-content:space-between;
-      gap:10px;
+      align-items:center;
+      gap:12px;
     }
-    .brand h1{
-      margin:0;
-      font-size:1.18rem;
-      letter-spacing:.01em;
+
+    .brand-left{
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+
+    .orb,.assistant-orb{
+      width:48px;height:48px;border-radius:50%;
+      background:
+        radial-gradient(circle at 30% 30%, #fff, rgba(255,255,255,.2) 22%, transparent 26%),
+        radial-gradient(circle at 70% 70%, rgba(20,184,166,.9), rgba(20,184,166,.28) 40%, transparent 62%);
+    }
+    .assistant-orb{
+      border-radius:18px;
+      width:58px;
+      height:58px;
     }
 
     .section-title{
-      font-size:.78rem;
+      font-size:.76rem;
       text-transform:uppercase;
-      letter-spacing:.08em;
+      letter-spacing:.12em;
       font-weight:700;
-      color:var(--sub);
-      margin:4px 0 8px;
+      color:var(--muted);
     }
 
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      border-radius:999px;
-      padding:8px 12px;
-      background:rgba(0,0,0,.04);
-      border:1px solid var(--line);
-      font-size:.82rem;
-      color:var(--sub);
-    }
+    .nav-grid{display:grid;gap:8px}
+    .sidebar-group{display:grid;gap:10px}
 
-    .btn, input, textarea, select{
-      font:inherit;
-    }
-
+    .btn, textarea, input, select{font:inherit}
     .btn{
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.72);
-      color:var(--text);
-      border-radius:var(--radius-sm);
-      padding:10px 12px;
+      border:none;
+      border-radius:var(--radius-pill);
+      padding:11px 14px;
       cursor:pointer;
+      background:rgba(255,255,255,.25);
+      color:var(--text);
+      border:1px solid var(--border);
     }
-    .mode-night .btn{
-      background:rgba(255,255,255,.06);
-      color:#eef1f5;
-    }
-    .btn.primary{ background:var(--work); color:#fff; border-color:transparent; }
-    .btn.success{ background:var(--property); color:#fff; border-color:transparent; }
-    .btn.danger{ background:var(--injury); color:#fff; border-color:transparent; }
-    .btn.active{
-      outline:2px solid rgba(26,92,255,.22);
+    .btn.teal{background:var(--teal);color:white}
+    .btn.clio{background:var(--clio);color:white}
+    .btn.ghost{background:rgba(255,255,255,.16)}
+    .btn.active{outline:2px solid rgba(20,184,166,.18)}
+
+    .icon-btn{
+      width:44px;height:44px;border-radius:16px;border:1px solid var(--border);
+      background:rgba(255,255,255,.24);
+      display:grid;place-items:center;cursor:pointer;color:var(--teal);
     }
 
-    .stack{ display:grid; gap:10px; }
-    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-
-    .stats-grid{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:12px;
-    }
-    .stat-card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius-md);
-      padding:12px;
-    }
-    .stat-label{
-      font-size:.74rem;
-      text-transform:uppercase;
-      letter-spacing:.06em;
-      color:var(--sub);
-      margin-bottom:4px;
-    }
-    .stat-value{
-      font-weight:700;
-      font-size:1.08rem;
+    .ui-icon{
+      width:18px;height:18px;stroke:currentColor;fill:none;
+      stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round
     }
 
     .main{
@@ -186,328 +137,191 @@
       min-width:0;
     }
 
+    .topbar,.panel{padding:16px}
     .topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      padding:14px 16px;
+      display:flex;justify-content:space-between;align-items:center;
     }
-    .topbar-left, .topbar-right{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
+    .topbar-left,.topbar-right{
+      display:flex;gap:10px;flex-wrap:wrap;align-items:center;
     }
 
-    .compose{
-      padding:16px;
-      display:grid;
-      gap:12px;
+    .pill{
+      padding:8px 12px;border-radius:999px;
+      background:rgba(255,255,255,.24);
+      border:1px solid var(--border);
+      color:var(--muted);font-size:.82rem
     }
 
-    textarea, input, select{
+    .pattera-panel .pattera-intro{
+      display:flex;gap:14px;align-items:flex-start;
+    }
+
+    .eyebrow{
+      text-transform:uppercase;letter-spacing:.12em;font-size:.75rem;
+      color:var(--muted);font-weight:700
+    }
+
+    .muted{color:var(--muted)}
+
+    .tabs{
+      display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px
+    }
+    .tab{
+      border:none;border-radius:999px;padding:10px 14px;cursor:pointer;
+      background:rgba(255,255,255,.22);border:1px solid var(--border)
+    }
+    .tab.active{background:var(--teal);color:#fff}
+
+    .tab-content{display:none}
+    .tab-content.active{display:block}
+
+    .row{display:flex;align-items:center}
+    .gap{gap:10px}
+    .wrap{flex-wrap:wrap}
+
+    textarea,input,select{
       width:100%;
-      border-radius:var(--radius-md);
-      border:1px solid var(--line);
-      padding:10px 12px;
-      outline:none;
-      background:var(--card);
-      color:var(--text);
-    }
-    textarea{
-      min-height:96px;
-      resize:vertical;
-    }
-    .mode-night textarea,
-    .mode-night input,
-    .mode-night select{
-      color:#eef1f5;
-    }
-
-    .warning-banner{
-      border:1px solid rgba(201,42,42,.24);
-      background:rgba(255,245,245,.82);
-      color:#86181d;
+      border:none;
+      border-radius:18px;
       padding:12px 14px;
-      border-radius:var(--radius-md);
+      background:rgba(255,255,255,.60);
+      margin-top:8px;
     }
-    .mode-night .warning-banner{
-      background:rgba(201,42,42,.12);
-      color:#ffd7d7;
+    textarea{min-height:92px;resize:vertical}
+
+    .section-head{
+      display:flex;justify-content:space-between;align-items:center;gap:12px;
+      margin-bottom:12px;
     }
 
-    .layout-grid{
-      display:grid;
-      grid-template-columns:1.15fr .85fr;
-      gap:18px;
-    }
+    .template-fields{display:grid;gap:8px;margin-top:10px}
 
-    .panel{
-      padding:16px;
-      min-width:0;
-    }
-
-    .timeline-stream, .inbox-list, .exhibit-list{
-      display:grid;
-      gap:12px;
-    }
+    .list-stack{display:grid;gap:12px;margin-top:14px}
 
     .entry-card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius-lg);
-      padding:14px 16px;
+      border-radius:22px;padding:14px 16px;background:rgba(255,255,255,.25);
+      border:1px solid var(--border)
     }
-    .entry-card.work{ border-left:5px solid var(--work); }
-    .entry-card.injury{ border-left:5px solid var(--injury); }
-    .entry-card.family{ border-left:5px solid var(--family); }
-    .entry-card.property{ border-left:5px solid var(--property); }
+    .entry-card.work{border-left:5px solid var(--work)}
+    .entry-card.injury{border-left:5px solid var(--injury)}
+    .entry-card.family{border-left:5px solid var(--family)}
+    .entry-card.property{border-left:5px solid var(--property)}
 
-    .entry-card__head{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      align-items:flex-start;
-      margin-bottom:8px;
+    .entry-head{
+      display:flex;justify-content:space-between;gap:12px;align-items:flex-start
     }
-    .entry-card__case{
-      font-size:.74rem;
-      text-transform:uppercase;
-      letter-spacing:.06em;
-      font-weight:700;
-      color:var(--sub);
-      margin-bottom:4px;
+
+    .entry-type{
+      font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;
+      color:var(--muted);font-weight:700
     }
-    .entry-card__text{
-      font-size:.96rem;
-      line-height:1.5;
-      white-space:pre-wrap;
+
+    .entry-text{line-height:1.45;white-space:pre-wrap}
+    .entry-meta{
+      display:flex;flex-wrap:wrap;gap:12px;font-size:.82rem;
+      color:var(--muted);margin-top:10px
     }
-    .entry-card__meta{
-      margin-top:10px;
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      color:var(--sub);
-      font-size:.82rem;
-    }
-    .entry-card__actions{
-      margin-top:12px;
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
+    .entry-actions{
+      display:flex;gap:8px;flex-wrap:wrap;margin-top:10px
     }
 
     .tag{
-      display:inline-flex;
-      align-items:center;
-      padding:4px 8px;
-      border-radius:999px;
-      background:rgba(0,0,0,.04);
-      border:1px solid var(--line);
-      font-size:.72rem;
-      color:var(--sub);
+      display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;
+      background:rgba(20,184,166,.14);font-size:.75rem;color:var(--teal-strong)
     }
 
-    .graph-legend{
-      display:grid;
-      gap:10px;
-      margin-bottom:16px;
-    }
-    .graph-row{
-      display:grid;
-      grid-template-columns:90px 1fr 36px;
-      gap:10px;
-      align-items:center;
-    }
-    .graph-track{
-      height:12px;
-      background:rgba(0,0,0,.06);
-      border-radius:999px;
-      overflow:hidden;
-    }
-    .graph-fill{
-      height:100%;
-      border-radius:999px;
-    }
-
-    .columns-4{
-      display:grid;
-      grid-template-columns:repeat(4,minmax(200px,1fr));
-      gap:14px;
-    }
-    .lane{
-      border:1px dashed var(--line);
-      border-radius:var(--radius-lg);
-      padding:12px;
-      min-height:220px;
-      background:rgba(0,0,0,.02);
-    }
-    .lane h4{
-      margin:0 0 10px;
-      font-size:.95rem;
-    }
-
-    .small-note{
-      font-size:.82rem;
-      color:var(--sub);
-      line-height:1.4;
-    }
-
-    .hidden{ display:none !important; }
-
-    #firmPulse{
-      position:fixed;
-      top:14px;
-      right:14px;
-      z-index:9999;
-      padding:10px 14px;
-      border-radius:999px;
-      background:#c92a2a;
-      color:#fff;
-      font-weight:700;
-      display:none;
-      box-shadow:0 0 0 0 rgba(201,42,42,.7);
-      animation:pulse 1.6s infinite;
-    }
-    @keyframes pulse{
-      0%{ box-shadow:0 0 0 0 rgba(201,42,42,.55); }
-      70%{ box-shadow:0 0 0 14px rgba(201,42,42,0); }
-      100%{ box-shadow:0 0 0 0 rgba(201,42,42,0); }
-    }
-
-    .exam-shell{ display:grid; gap:12px; }
-    .exam-toolbar{ display:flex; gap:8px; flex-wrap:wrap; }
-    .exam-viewport{
-      position:relative;
-      min-height:720px;
-      overflow:auto;
-      border-radius:var(--radius-lg);
-      border:1px solid var(--line);
-      background:
-        radial-gradient(circle at top left, rgba(255,255,255,.9), rgba(241,244,248,.92)),
-        linear-gradient(135deg,#edf2f7,#ffffff);
-    }
-    .mode-night .exam-viewport{
-      background:
-        radial-gradient(circle at top left, rgba(30,34,44,.95), rgba(17,20,28,.96)),
-        linear-gradient(135deg,#161a23,#0f1218);
-    }
-    .exam-canvas-wrap{
-      position:relative;
-      width:1600px;
-      height:1200px;
-      transform-origin:top left;
-    }
-    .exam-svg{
-      position:absolute;
-      inset:0;
-      width:1600px;
-      height:1200px;
-      pointer-events:none;
-    }
-    .exam-node{
-      position:absolute;
-      width:250px;
-      min-height:96px;
-      padding:14px;
-      border-radius:22px;
-      color:#fff;
-      box-shadow:0 14px 26px rgba(0,0,0,.14);
-      cursor:grab;
+    .privacy-redacted{
+      filter:blur(5px);
       user-select:none;
     }
-    .exam-node.work{ background:linear-gradient(135deg,#2f6bff,#194bcc); }
-    .exam-node.injury{ background:linear-gradient(135deg,#e5484d,#b42318); }
-    .exam-node.family{ background:linear-gradient(135deg,#7c4dff,#5b34c4); }
-    .exam-node.property{ background:linear-gradient(135deg,#24a148,#198038); }
-    .exam-node.dragging{ cursor:grabbing; }
-    .exam-node__type{
-      font-size:.72rem;
-      text-transform:uppercase;
-      letter-spacing:.06em;
-      opacity:.88;
-      margin-bottom:8px;
-    }
-    .exam-node__label{
-      font-size:.93rem;
-      line-height:1.35;
-      font-weight:700;
-      margin-bottom:10px;
-    }
-    .exam-node__date{ font-size:.8rem; opacity:.88; }
-    .exam-link{
-      fill:none;
-      stroke:rgba(120,126,140,.78);
-      stroke-width:2.5;
+
+    .study-grid,.investigation-grid{
+      display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px
     }
 
-    @media (max-width:1250px){
-      .app-shell{ grid-template-columns:1fr; }
-      .sidebar{ position:static; height:auto; }
-      .layout-grid, .columns-4{ grid-template-columns:1fr; }
+    .study-card{
+      border-radius:20px;padding:14px;background:rgba(255,255,255,.22);
+      border:1px solid var(--border)
+    }
+
+    .graph-shell{
+      border-radius:22px;padding:12px;background:rgba(255,255,255,.18);
+      border:1px solid var(--border)
+    }
+
+    #graphCanvas{
+      width:100%;height:480px;border-radius:18px;
+      background:rgba(255,255,255,.16)
+    }
+
+    .score-pill{
+      display:inline-flex;align-items:center;padding:6px 10px;
+      border-radius:999px;font-size:.75rem;font-weight:700
+    }
+    .score-pill.good{background:rgba(20,184,166,.18);color:var(--teal-strong)}
+    .score-pill.bad{background:rgba(144,160,173,.18);color:#667789}
+
+    @media (max-width: 1260px){
+      .app-shell{grid-template-columns:1fr}
+      .sidebar{position:static;height:auto}
+      .study-grid,.investigation-grid{grid-template-columns:1fr}
     }
   </style>
 </head>
 <body>
-  <div id="firmPulse">Changes after lock: <span id="firmPulseCount">0</span></div>
-
   <div class="app-shell">
-    <aside class="sidebar">
+    <aside class="sidebar glass">
       <div class="brand">
-        <h1>WorkTimeline™</h1>
-        <span class="pill" id="timeThemeLabel">Theme: Bubbly</span>
-      </div>
-
-      <div class="stack">
-        <div class="section-title">Case lane</div>
-        <button class="btn active" id="case-work" onclick="switchCase('work')">Work</button>
-        <button class="btn" id="case-injury" onclick="switchCase('injury')">Injury</button>
-        <button class="btn" id="case-family" onclick="switchCase('family')">Family</button>
-        <button class="btn" id="case-property" onclick="switchCase('property')">Property</button>
-      </div>
-
-      <div class="stack">
-        <div class="section-title">Visual controls</div>
-        <label class="pill"><input type="checkbox" id="forceNightToggle" onchange="toggleForceNight(this.checked)" style="margin-right:8px;"> Force Night View</label>
-        <button class="btn" onclick="toggleUiVersion()">Switch UI Feel</button>
-      </div>
-
-      <div class="stack">
-        <div class="section-title">Firm view</div>
-        <select id="firmViewSelect" onchange="setFirmView(this.value)">
-          <option value="court">Court Format</option>
-          <option value="timeline">Timeline</option>
-          <option value="combined">Combined</option>
-          <option value="linked">Linked</option>
-          <option value="exam">Examination</option>
-        </select>
-      </div>
-
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-label">Record state</div>
-          <div class="stat-value" id="recordStateLabel">Working</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Post-lock changes</div>
-          <div class="stat-value" id="postLockCount">0</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Witness inbox</div>
-          <div class="stat-value" id="witnessCount">0</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Exhibits</div>
-          <div class="stat-value" id="exhibitCount">0</div>
+        <div class="brand-left">
+          <div class="orb" aria-hidden="true"></div>
+          <div>
+            <h1>WorkTimeline</h1>
+            <small>Pattera workspace</small>
+          </div>
         </div>
       </div>
 
-      <div class="small-note">
-        Hidden demo triggers:
-        <br><strong>#nubrite-demo</strong> → work example
-        <br><strong>#injury-demo</strong> → injury example
+      <div class="sidebar-group">
+        <div class="section-title">Case track</div>
+        <div class="nav-grid">
+          <button class="btn active" data-case="work">Work</button>
+          <button class="btn" data-case="injury">Injury</button>
+          <button class="btn" data-case="family">Family</button>
+          <button class="btn" data-case="property">Property</button>
+        </div>
+      </div>
+
+      <div class="sidebar-group">
+        <div class="section-title">View</div>
+        <div class="nav-grid">
+          <button class="btn active" id="userViewBtn">User View</button>
+          <button class="btn" id="firmViewBtn">Firm View</button>
+        </div>
+      </div>
+
+      <div class="sidebar-group">
+        <div class="section-title">Switches</div>
+        <div class="nav-grid">
+          <button class="btn" id="privacyBtn">Privacy Off</button>
+          <button class="btn" id="notesToggleBtn">Timeline Mode</button>
+          <button class="btn" id="themeBtn">Night Mode</button>
+        </div>
+      </div>
+
+      <div class="sidebar-group">
+        <div class="section-title">Examples</div>
+        <div class="nav-grid">
+          <button class="btn" id="loadNuBriteBtn">Load Nu Brite</button>
+          <button class="btn" id="loadInjuryBtn">Load Injury</button>
+        </div>
+      </div>
+
+      <div class="sidebar-group">
+        <div class="section-title">Clio</div>
+        <div class="nav-grid">
+          <button class="btn clio" id="verifyClioBtn">Verify Clio</button>
+          <button class="btn clio" id="createMatterBtn">Create Matter</button>
+        </div>
       </div>
     </aside>
 
@@ -515,980 +329,847 @@
       <section class="topbar glass">
         <div class="topbar-left">
           <span class="pill" id="activeCaseLabel">Active: Work</span>
-          <span class="pill" id="studyModeLabel">Mode: Single</span>
+          <span class="pill" id="viewLabel">View: User</span>
+          <span class="pill" id="modeLabel">Mode: Timeline</span>
         </div>
         <div class="topbar-right">
-          <span class="pill" id="lockInfoLabel">Unlocked</span>
-          <span class="pill" id="syncInfoLabel">Not synced</span>
+          <button class="btn ghost" id="openTimelineWindowBtn">Open Timeline Window</button>
+          <button class="btn ghost" id="openGraphWindowBtn">Open Graph Window</button>
         </div>
       </section>
 
-      <section class="panel compose">
-        <div><strong>Add entry</strong></div>
-        <textarea id="entryInput" placeholder="Add a timeline entry..."></textarea>
-
-        <div class="row">
-          <button class="btn primary" onclick="handleAddEntry()">Add Entry</button>
-          <button class="btn" onclick="setStudyMode('single')">Single Timeline</button>
-          <button class="btn" onclick="setStudyMode('combined')">Combined</button>
-          <button class="btn" onclick="setStudyMode('linked')">Linked</button>
-          <button class="btn" onclick="setStudyMode('exam')">Examination Mode</button>
-          <button class="btn success" onclick="confirmSyncAndLock()">Send to Firm / Clio</button>
-          <button class="btn" onclick="verifyClioHandshake()">Verify Clio</button>
-          <button class="btn" onclick="createClioMatter()">Create Matter</button>
-          <button class="btn" onclick="toggleWitnessPanel()">👤 Witness</button>
-        </div>
-
-        <div id="lockWarning" class="warning-banner hidden">
-          Warning: once synced and locked, this record switches to a court-style presentation. Any later changes will be logged and visible to the firm.
+      <section class="panel glass pattera-panel">
+        <div class="pattera-intro">
+          <div class="assistant-orb" aria-hidden="true"></div>
+          <div>
+            <div class="eyebrow">Pattera</div>
+            <h2>Hello — I keep originals, duplicates, working copies, anonymous firm summaries, and investigation links aligned.</h2>
+            <p class="muted">Use tabs to switch between Timeline, Working Notes, Study Hub, Investigation, Evidence, and Firm Summaries.</p>
+          </div>
         </div>
       </section>
 
-      <section class="layout-grid">
-        <section class="panel">
-          <div class="row" style="justify-content:space-between; margin-bottom:12px;">
-            <strong id="timelineTitle">Single Timeline</strong>
-            <span class="small-note" id="timelineSubtitle">One active lane at a time.</span>
+      <section class="panel glass tabs-panel">
+        <div class="tabs">
+          <button class="tab active" data-tab="timelineTab">Timeline</button>
+          <button class="tab" data-tab="notesTab">Working Notes</button>
+          <button class="tab" data-tab="studyTab">Study Hub</button>
+          <button class="tab" data-tab="investigationTab">Investigation</button>
+          <button class="tab" data-tab="evidenceTab">Evidence</button>
+          <button class="tab" data-tab="firmTab">Firm Summaries</button>
+        </div>
+
+        <div class="tab-content active" id="timelineTab">
+          <div class="section-head">
+            <strong>Timeline entry</strong>
+            <span class="muted">Chronological record with preserved originals.</span>
           </div>
 
-          <div id="graphLegend" class="graph-legend"></div>
-          <div id="timelineBody"></div>
-        </section>
+          <textarea id="timelineInput" placeholder="Add a timeline event... Example: July 31, 2025 — Formal notice sent warning of a workplace bullying claim."></textarea>
 
-        <section class="panel">
-          <div class="row" style="justify-content:space-between; margin-bottom:12px;">
-            <strong>Witness & Exhibit Hub</strong>
-            <button class="btn" onclick="toggleWitnessPanel()">👤 Witness</button>
+          <div class="row gap wrap">
+            <button class="icon-btn" id="cameraBtn" title="Camera">
+              <svg viewBox="0 0 24 24" class="ui-icon"><path d="M5 7h4l2-2h6a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5z"/></svg>
+            </button>
+            <button class="icon-btn" id="micBtn" title="Microphone">
+              <svg viewBox="0 0 24 24" class="ui-icon"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4M9 21h6"/></svg>
+            </button>
+            <button class="icon-btn" id="fileBtn" title="File">
+              <svg viewBox="0 0 24 24" class="ui-icon"><path d="M6 4h9l3 3v13H6zM15 4v4h4"/></svg>
+            </button>
           </div>
 
-          <div id="witnessPanel" class="hidden">
-            <input id="witnessName" placeholder="Witness name" />
-            <input id="witnessContact" placeholder="Email or phone" />
-            <textarea id="witnessNote" placeholder="Optional note to witness"></textarea>
+          <div class="section-head">
+            <strong>Evidence tagging template</strong>
+            <span class="muted">Submit structured evidence with the entry.</span>
+          </div>
 
-            <div class="row" style="margin-top:10px;">
-              <button class="btn primary" onclick="sendWitnessInvite()">Send Invite</button>
+          <select id="evidenceTemplateSelect">
+            <option value="">No evidence template</option>
+            <option value="witness">Witness</option>
+            <option value="document">Document</option>
+            <option value="medical">Medical</option>
+            <option value="incident">Incident</option>
+            <option value="communication">Communication</option>
+            <option value="media">Media</option>
+          </select>
+
+          <div id="templateFields" class="template-fields"></div>
+
+          <div class="row gap">
+            <button class="btn teal" id="addTimelineEntryBtn">Add Timeline Entry</button>
+          </div>
+
+          <div id="timelineList" class="list-stack"></div>
+        </div>
+
+        <div class="tab-content" id="notesTab">
+          <div class="section-head">
+            <strong>Working Notes</strong>
+            <span class="muted">Draft thinking, strategy, and non-chronological notes.</span>
+          </div>
+
+          <textarea id="workingNoteInput" placeholder="Add working note..."></textarea>
+          <div class="row gap">
+            <button class="btn teal" id="addWorkingNoteBtn">Add Note</button>
+          </div>
+
+          <div id="notesList" class="list-stack"></div>
+        </div>
+
+        <div class="tab-content" id="studyTab">
+          <div class="study-grid">
+            <div class="study-card"><h4>Single Timeline</h4><p>Focus on the current case track only.</p></div>
+            <div class="study-card"><h4>Cross-reference</h4><p>Compare work, injury, family, and property separately without mixing them.</p></div>
+            <div class="study-card"><h4>Investigation</h4><p>Timeline and graph together for tracing relationships.</p></div>
+            <div class="study-card"><h4>Firm Review</h4><p>Anonymous summaries and scores in a distinct firm-only tab.</p></div>
+          </div>
+        </div>
+
+        <div class="tab-content" id="investigationTab">
+          <div class="section-head">
+            <strong>Investigation Mode</strong>
+            <span class="muted">Timeline + graph together.</span>
+          </div>
+          <div class="investigation-grid">
+            <div id="investigationTimelineList" class="list-stack"></div>
+            <div class="graph-shell">
+              <canvas id="graphCanvas" width="900" height="480"></canvas>
             </div>
-
-            <div class="small-note" style="margin-top:10px;">
-              Your backend handles real email/SMS delivery. If it is not configured yet, the backend can still return the generated verification code for testing.
-            </div>
-
-            <hr style="border:none; border-top:1px solid rgba(0,0,0,.08); margin:16px 0;">
-
-            <strong>Submit witness reply</strong>
-            <input id="replyWitnessName" placeholder="Witness name" />
-            <input id="replyCode" placeholder="Verification code" />
-            <textarea id="replyStatement" placeholder="Witness statement"></textarea>
-
-            <button class="btn" style="margin-top:10px;" onclick="submitWitnessReply()">Submit witness statement</button>
           </div>
+        </div>
 
-          <div style="margin-top:14px;">
-            <div class="section-title">Witness inbox</div>
-            <div id="witnessInbox" class="inbox-list"></div>
+        <div class="tab-content" id="evidenceTab">
+          <div class="section-head">
+            <strong>Evidence Index</strong>
+            <span class="muted">Tagged evidence, metadata, and exhibit-ready identifiers.</span>
           </div>
+          <div id="evidenceIndexList" class="list-stack"></div>
+        </div>
 
-          <div style="margin-top:18px;">
-            <div class="section-title">Exhibit / Evidence list</div>
-            <div id="exhibitList" class="exhibit-list"></div>
+        <div class="tab-content" id="firmTab">
+          <div class="section-head">
+            <strong>Firm Summaries</strong>
+            <span class="muted">Anonymous timelines and score badges. Good = teal, weak = grey.</span>
           </div>
-        </section>
+          <div id="firmSummaryList" class="list-stack"></div>
+        </div>
       </section>
     </main>
   </div>
 
   <script>
-    let studyMode = "single";
-    let activeCase = "work";
-    let uiVersion = "modern";
-    let forceNight = false;
-    let firmView = "court";
-
-    const timelines = {
-      work: [],
-      injury: [],
-      family: [],
-      property: []
+    // -----------------------------
+    // STATE / STORE
+    // -----------------------------
+    const store = {
+      viewMode: "user",      // user | firm
+      privacyOn: false,
+      notesMode: false,
+      nightMode: false,
+      activeCase: "work",
+      activeTab: "timelineTab",
+      timelines: {
+        work: [],
+        injury: [],
+        family: [],
+        property: []
+      },
+      workingNotes: [],
+      graph: {
+        nodes: [],
+        links: [],
+        draggingId: null,
+        dragOffsetX: 0,
+        dragOffsetY: 0
+      }
     };
 
-    const recordState = {
-      locked: false,
-      lockedAt: null,
-      synced: false,
-      syncedAt: null,
-      syncTarget: null,
-      postLockChanges: 0
+    const EVIDENCE_TEMPLATES = {
+      witness: { label: "Witness Statement", fields: ["Name", "Date", "Statement"] },
+      document: { label: "Document", fields: ["Title", "Date", "Source"] },
+      medical: { label: "Medical Record", fields: ["Provider", "Date", "Condition"] },
+      incident: { label: "Incident Report", fields: ["Location", "Date", "Description"] },
+      communication: { label: "Communication", fields: ["Sender", "Receiver", "Date"] },
+      media: { label: "Photo / Video", fields: ["Type", "Location", "Timestamp"] }
     };
 
-    const firmAlerts = {
-      count: 0,
-      events: []
-    };
-
-    const witnessInvites = [];
-    const witnessStatements = [];
-    const exhibits = [];
-    const auditLog = [];
-
-    const NUBRITE_DEMO = [
-      { text: "July 25, 2025 — Workplace injury event and report conflict documented.", original: "July 25, 2025" },
-      { text: "July 30, 2025 — Accurate first aid report delivered to the office.", original: "July 30, 2025" },
-      { text: "July 31, 2025 — Formal notice warning of a workplace bullying claim sent.", original: "July 31, 2025" },
-      { text: "August 28, 2025 — Missing first aid room keys and safety risk reported.", original: "August 28, 2025" },
-      { text: "September 3, 2025 — Privacy concerns raised about exposed medical files.", original: "September 3, 2025" }
+    const NUBRITE_EXAMPLE = [
+      "July 25, 2025 — Workplace injury event and report conflict documented.",
+      "July 30, 2025 — Accurate first aid report delivered to the office.",
+      "July 31, 2025 — Formal notice sent warning of a workplace bullying claim.",
+      "August 28, 2025 — Missing first aid room keys and safety risk reported.",
+      "September 3, 2025 — Privacy concerns raised about exposed medical files.",
+      "End of October 2025 — Being followed at break and belittled at work."
     ];
 
-    const INJURY_DEMO = [
-      { text: "September 8–9, 2025 — Initial psychological distress, anxiety, nausea, and inability to function.", original: "September 8–9, 2025" },
-      { text: "September 2025 — Continued sleep disruption and inability to eat.", original: "September 2025" },
-      { text: "October 2025 — Symptoms worsened with continued workplace exposure.", original: "October 2025" },
-      { text: "November 7, 2025 — Messages confirm months of harassment and breakdown symptoms.", original: "November 7, 2025" },
-      { text: "November 10, 2025 — Major breakdown leading to psychiatric admission.", original: "November 10, 2025" }
+    const INJURY_EXAMPLE = [
+      "September 8, 2025 — Initial distress, anxiety, nausea, and inability to function.",
+      "September 2025 — Continued sleep disruption and inability to eat.",
+      "October 2025 — Symptoms worsened with continued workplace exposure.",
+      "November 7, 2025 — Messages confirm months of harassment and breakdown symptoms.",
+      "November 10, 2025 — Major breakdown leading to psychiatric admission."
     ];
 
-    const examState = {
-      scale: 1,
-      nodes: [],
-      links: [],
-      dragNodeId: null,
-      dragOffsetX: 0,
-      dragOffsetY: 0
-    };
-
-    let examWheelWired = false;
-
-    init();
-
-    function init() {
-      applyTimeUI();
-      setInterval(applyTimeUI, 60000);
-      updateCaseButtons();
-      refreshStatusBadges();
-      renderAll();
+    // -----------------------------
+    // HELPERS
+    // -----------------------------
+    function capitalize(v){
+      return v ? v.charAt(0).toUpperCase() + v.slice(1) : "";
     }
 
-    function getTimeMode() {
-      const hour = new Date().getHours();
-      if (hour >= 6 && hour < 12) return "standard";
-      if (hour >= 12 && hour < 18) return "bubbly";
-      return "night";
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
     }
 
-    function applyTimeUI() {
-      let mode = getTimeMode();
-      if (forceNight) mode = "night";
-
-      document.body.classList.remove("mode-standard", "mode-bubbly", "mode-night");
-      if (!document.body.classList.contains("court-mode")) {
-        document.body.classList.add("mode-" + mode);
-      }
-
-      const label = document.getElementById("timeThemeLabel");
-      if (label) label.textContent = `Theme: ${capitalize(mode)}`;
+    function flattenTimelines(){
+      return Object.keys(store.timelines).flatMap(caseType =>
+        store.timelines[caseType].map(entry => ({ ...entry, caseType }))
+      );
     }
 
-    function toggleForceNight(value) {
-      forceNight = value;
-      applyTimeUI();
-    }
-
-    function toggleUiVersion() {
-      uiVersion = uiVersion === "modern" ? "legal" : "modern";
-      document.body.classList.toggle("ui-legal", uiVersion === "legal");
-    }
-
-    function switchCase(caseType) {
-      activeCase = caseType;
-      updateCaseButtons();
-      renderAll();
-    }
-
-    function updateCaseButtons() {
-      ["work","injury","family","property"].forEach(k => {
-        const el = document.getElementById(`case-${k}`);
-        if (el) el.classList.toggle("active", k === activeCase);
-      });
-    }
-
-    function setStudyMode(mode) {
-      studyMode = mode;
-      renderAll();
-    }
-
-    function setFirmView(mode) {
-      firmView = mode;
-      if (recordState.locked && recordState.synced) {
-        if (mode === "timeline" || mode === "court") setStudyMode("single");
-        if (mode === "combined") setStudyMode("combined");
-        if (mode === "linked") setStudyMode("linked");
-        if (mode === "exam") setStudyMode("exam");
-      }
-      renderAll();
-    }
-
-    function handleAddEntry() {
-      const input = document.getElementById("entryInput");
-      const text = input.value.trim();
-      if (!text) return;
-
-      if (timelines.work.length === 0 && text === "#nubrite-demo") {
-        activateNubriteDemo();
-        input.value = "";
-        return;
-      }
-
-      if (timelines.injury.length === 0 && text === "#injury-demo") {
-        activateInjuryDemo();
-        input.value = "";
-        return;
-      }
-
-      addEntryToCurrentCase(text);
-      input.value = "";
-    }
-
-    function addEntryToCurrentCase(text) {
-      const entry = {
-        id: crypto.randomUUID(),
-        caseType: activeCase,
-        text,
-        original: new Date().toLocaleString("en-CA"),
-        system: new Date().toISOString(),
-        source: "user"
+    function extractDateInfo(text){
+      const monthNames = {
+        january:1,february:2,march:3,april:4,may:5,june:6,
+        july:7,august:8,september:9,october:10,november:11,december:12
       };
 
-      timelines[activeCase].push(entry);
+      const patterns = [
+        { name:"iso", re:/\b(\d{4})-(\d{1,2})-(\d{1,2})\b/ },
+        { name:"slash", re:/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/ },
+        { name:"dash", re:/\b(\d{1,2})-(\d{1,2})-(\d{4})\b/ },
+        { name:"month_name", re:/\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{1,2}),\s*(\d{4})\b/i },
+        { name:"month_year", re:/\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{4})\b/i }
+      ];
 
-      addExhibit({
-        type: "timeline_entry",
-        title: `${capitalize(activeCase)} Entry`,
-        sourceId: entry.id
-      });
+      for(const p of patterns){
+        const m = text.match(p.re);
+        if(!m) continue;
 
-      if (recordState.locked) {
-        registerPostLockChange("entry_added", entry.id, { caseType: activeCase, text });
+        let y, mo, d;
+
+        if(p.name === "iso"){
+          y = Number(m[1]); mo = Number(m[2]); d = Number(m[3]);
+        } else if(p.name === "slash" || p.name === "dash"){
+          const a = Number(m[1]), b = Number(m[2]), c = Number(m[3]);
+          if(a > 12){ d = a; mo = b; y = c; }
+          else { mo = a; d = b; y = c; }
+        } else if(p.name === "month_name"){
+          mo = monthNames[m[1].toLowerCase()]; d = Number(m[2]); y = Number(m[3]);
+        } else if(p.name === "month_year"){
+          mo = monthNames[m[1].toLowerCase()]; d = 1; y = Number(m[2]);
+        }
+
+        if(y && mo && d){
+          const iso = `${String(y).padStart(4,"0")}-${String(mo).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+          const ts = Date.parse(iso);
+          if(!Number.isNaN(ts)) return { iso, ts, year:y, month:mo, day:d, source:p.name };
+        }
       }
 
-      logAuditEvent("entry_added", { caseType: activeCase, entryId: entry.id });
-      renderAll();
-    }
-
-    function activateNubriteDemo() {
-      activeCase = "work";
-      updateCaseButtons();
-      timelines.work = NUBRITE_DEMO.map((item, index) => ({
-        id: `work-demo-${index + 1}`,
-        caseType: "work",
-        text: item.text,
-        original: item.original,
-        system: new Date().toISOString(),
-        source: "demo"
-      }));
-      logAuditEvent("demo_loaded", { demo: "nubrite" });
-      renderAll();
-    }
-
-    function activateInjuryDemo() {
-      activeCase = "injury";
-      updateCaseButtons();
-      timelines.injury = INJURY_DEMO.map((item, index) => ({
-        id: `injury-demo-${index + 1}`,
-        caseType: "injury",
-        text: item.text,
-        original: item.original,
-        system: new Date().toISOString(),
-        source: "demo"
-      }));
-      logAuditEvent("demo_loaded", { demo: "injury" });
-      renderAll();
-    }
-
-    function findEntry(entryId) {
-      for (const caseType of Object.keys(timelines)) {
-        const entry = timelines[caseType].find(e => e.id === entryId);
-        if (entry) return { caseType, entry };
-      }
       return null;
     }
 
-    function editEntry(entryId) {
-      const ref = findEntry(entryId);
-      if (!ref) return;
-
-      const next = prompt("Edit entry:", ref.entry.text);
-      if (next === null) return;
-
-      ref.entry.text = next;
-
-      if (recordState.locked) {
-        registerPostLockChange("entry_edited", entryId, { caseType: ref.caseType });
-      }
-
-      logAuditEvent("entry_edited", { entryId, caseType: ref.caseType });
-      renderAll();
-    }
-
-    function deleteEntry(entryId) {
-      const ref = findEntry(entryId);
-      if (!ref) return;
-
-      if (!confirm("Delete this entry?")) return;
-
-      timelines[ref.caseType] = timelines[ref.caseType].filter(e => e.id !== entryId);
-
-      if (recordState.locked) {
-        registerPostLockChange("entry_deleted", entryId, { caseType: ref.caseType });
-      }
-
-      logAuditEvent("entry_deleted", { entryId, caseType: ref.caseType });
-      renderAll();
-    }
-
-    async function confirmSyncAndLock() {
-      const warning = document.getElementById("lockWarning");
-      if (warning) warning.classList.remove("hidden");
-
-      const ok = confirm(
-        "You are about to send this timeline to the firm / Clio and lock it.\n\n" +
-        "After it is locked, any future alterations or changes will be logged and visible to the firm."
-      );
-
-      if (!ok) return;
-      await syncAndLock();
-    }
-
-    async function syncAndLock() {
-      const payload = {
-        lawyer: "WorkTimeline User",
-        timeline: flattenAllTimelines().map(e => `[${capitalize(e.caseType)}] ${e.text}`),
-        notes: buildAcceptedExhibitNotes()
-      };
-
-      try {
-        const response = await fetch('/api/sync', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        }).catch(() => null);
-
-        if (response) {
-          const data = await response.json().catch(() => ({}));
-
-          if (response.status === 401 && data.authRequired && data.authUrl) {
-            window.location.href = data.authUrl;
-            return;
-          }
-
-          if (!response.ok) {
-            alert(`Sync error: ${data.error || response.statusText}`);
-            return;
-          }
-        } else {
-          console.warn("Backend /api/sync not reachable; simulating sync for UI preview.");
-        }
-
-        recordState.synced = true;
-        recordState.syncedAt = new Date().toISOString();
-        recordState.syncTarget = "firm-or-clio";
-        recordState.locked = true;
-        recordState.lockedAt = new Date().toISOString();
-
-        document.body.classList.add("court-mode");
-        logAuditEvent("timeline_synced_and_locked", {
-          syncedAt: recordState.syncedAt,
-          lockedAt: recordState.lockedAt
-        });
-
-        refreshStatusBadges();
-        renderAll();
-        alert("Timeline sent and locked. Court-style presentation is now active.");
-      } catch (err) {
-        console.error(err);
-        alert("Sync failed.");
-      }
-    }
-
-    async function verifyClioHandshake() {
-      try {
-        const res = await fetch('/api/clio-verify');
-        const data = await res.json().catch(() => ({}));
-
-        if (!res.ok) {
-          alert(`Verification failed: ${data.error || res.statusText}`);
-          return;
-        }
-
-        alert("Clio token verified live. The handshake is real.");
-        console.log("Clio verify:", data);
-      } catch (err) {
-        console.error(err);
-        alert("Clio verify failed.");
-      }
-    }
-
-    async function createClioMatter() {
-      try {
-        const payload = {
-          clientFirstName: "WorkTimeline",
-          clientLastName: "Client",
-          clientEmail: "",
-          matterDescription: "Matter created from WorkTimeline",
-          timelineEntries: flattenAllTimelines().map(e => `[${capitalize(e.caseType)}] ${e.text}`),
-          notesEntries: [],
-          exhibits: buildAcceptedExhibitNotes()
-        };
-
-        const res = await fetch('/api/clio-create-matter', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        const data = await res.json().catch(() => ({}));
-
-        if (!res.ok) {
-          alert(`Matter creation failed: ${data.error || res.statusText}`);
-          return;
-        }
-
-        alert(`Matter created successfully. Matter ID: ${data.matterId || "created"}`);
-        console.log("Clio matter:", data);
-      } catch (err) {
-        console.error(err);
-        alert("Clio matter creation failed.");
-      }
-    }
-
-    function registerPostLockChange(changeType, entryId, details = {}) {
-      recordState.postLockChanges += 1;
-      firmAlerts.count += 1;
-      firmAlerts.events.push({
-        changeType,
-        entryId,
-        at: new Date().toISOString(),
-        details
-      });
-
-      showFirmPulse();
-      refreshStatusBadges();
-      logAuditEvent("post_lock_change", {
-        changeType,
-        entryId,
-        details,
-        count: recordState.postLockChanges
+    function sortEntries(entries){
+      return [...entries].sort((a,b) => {
+        const da = a.parsedDate?.ts ?? Number.MAX_SAFE_INTEGER;
+        const db = b.parsedDate?.ts ?? Number.MAX_SAFE_INTEGER;
+        if(da !== db) return da - db;
+        return Date.parse(a.createdAt) - Date.parse(b.createdAt);
       });
     }
 
-    function showFirmPulse() {
-      const el = document.getElementById("firmPulse");
-      const countEl = document.getElementById("firmPulseCount");
-      if (!el || !countEl) return;
-      el.style.display = "block";
-      countEl.textContent = String(firmAlerts.count);
+    function anonymizeText(text){
+      if(!text) return "";
+      return text
+        .replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, "[EMAIL]")
+        .replace(/\+?\d[\d\s().-]{7,}\d/g, "[PHONE]")
+        .replace(/\b\d{5,}\b/g, "[ID]")
+        .replace(/\b([A-Z][a-z]+)\s([A-Z][a-z]+)\b/g, "[PERSON]");
     }
 
-    function toggleWitnessPanel() {
-      document.getElementById("witnessPanel").classList.toggle("hidden");
+    function getVisibleText(entry){
+      const raw = store.viewMode === "firm"
+        ? (entry.original?.raw ?? entry.working?.raw ?? "")
+        : (entry.working?.raw ?? entry.original?.raw ?? "");
+
+      return store.privacyOn ? anonymizeText(raw) : raw;
     }
 
-    async function sendWitnessInvite() {
-      const name = document.getElementById("witnessName").value.trim();
-      const contact = document.getElementById("witnessContact").value.trim();
-      const note = document.getElementById("witnessNote").value.trim();
-
-      if (!name || !contact) {
-        alert("Please enter a witness name and contact.");
-        return;
-      }
-
-      const res = await fetch('/api/witness-invite', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, contact, note, timelineId: activeCase })
-      }).catch(() => null);
-
-      if (!res) {
-        alert("Witness invite endpoint is not available.");
-        return;
-      }
-
-      const data = await res.json().catch(() => ({}));
-
-      if (!res.ok) {
-        alert(data.error || "Witness invite failed.");
-        return;
-      }
-
-      witnessInvites.push({
-        id: data.id,
-        name,
-        contact,
-        code: data.verificationCode,
-        sentAt: data.sentAt,
-        status: "pending"
-      });
-
-      logAuditEvent("witness_invite_sent", { id: data.id, name, contact });
-      renderWitnessInbox();
-      refreshStatusBadges();
-
-      alert(`Witness invite recorded.${data.devCode ? `\nDevelopment code: ${data.devCode}` : ""}`);
-
-      document.getElementById("witnessName").value = "";
-      document.getElementById("witnessContact").value = "";
-      document.getElementById("witnessNote").value = "";
+    function getAnonymousSummary(entry){
+      const raw = getVisibleText(entry);
+      if(!raw) return "No summary available.";
+      const s = raw.replace(/\s+/g, " ").trim();
+      return s.length > 120 ? s.slice(0,120) + "…" : s;
     }
 
-    async function submitWitnessReply() {
-      const name = document.getElementById("replyWitnessName").value.trim();
-      const code = document.getElementById("replyCode").value.trim().toUpperCase();
-      const statement = document.getElementById("replyStatement").value.trim();
-
-      if (!name || !code || !statement) {
-        alert("Enter the witness name, verification code, and statement.");
-        return;
-      }
-
-      const res = await fetch('/api/witness-reply', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, verificationCode: code, statement })
-      }).catch(() => null);
-
-      if (!res) {
-        alert("Witness reply endpoint is not available.");
-        return;
-      }
-
-      const data = await res.json().catch(() => ({}));
-
-      if (!res.ok) {
-        alert(data.error || "Witness reply failed.");
-        return;
-      }
-
-      witnessStatements.push({
-        id: data.id,
-        witnessName: data.witnessName,
-        contact: data.contact,
-        statement: data.statement,
-        verificationCode: code,
-        verified: true,
-        status: "pending",
-        receivedAt: data.receivedAt
-      });
-
-      logAuditEvent("witness_statement_received", {
-        witnessName: data.witnessName,
-        statementId: data.id
-      });
-
-      renderWitnessInbox();
-      refreshStatusBadges();
-
-      document.getElementById("replyWitnessName").value = "";
-      document.getElementById("replyCode").value = "";
-      document.getElementById("replyStatement").value = "";
-    }
-        function setWitnessStatementStatus(id, status) {
-      const row = witnessStatements.find(x => x.id === id);
-      if (!row) return;
-
-      row.status = status;
-
-      if (status === "accepted") {
-        addExhibit({
-          type: "witness_statement",
-          title: `Witness Statement — ${row.witnessName}`,
-          sourceId: row.id
-        });
-      }
-
-      logAuditEvent("witness_statement_reviewed", { id, status });
-      renderWitnessInbox();
+    function scoreEntry(entry){
+      let score = 0;
+      if(entry.parsedDate) score += 40;
+      if(entry.original && entry.duplicate && entry.working) score += 20;
+      const raw = entry.working?.raw || entry.original?.raw || "";
+      if(raw.length >= 40) score += 20;
+      if(entry.evidence?.type) score += 20;
+      return Math.min(score, 100);
     }
 
-    function renderWitnessInbox() {
-      const container = document.getElementById("witnessInbox");
-      if (!container) return;
+    function scoreTone(score){ return score >= 70 ? "good" : "bad"; }
+    function scoreLabel(score){ return score >= 70 ? "Good" : "Grey"; }
 
-      container.innerHTML = witnessStatements.length
-        ? witnessStatements.map(w => `
-          <article class="entry-card">
-            <div class="entry-card__head">
-              <div>
-                <div class="entry-card__case">Witness</div>
-                <strong>${escapeHtml(w.witnessName)}</strong>
-              </div>
-              <span class="tag">${escapeHtml(w.status)}</span>
-            </div>
-            <div class="entry-card__text">${escapeHtml(w.statement)}</div>
-            <div class="entry-card__meta">
-              <span>Verified: ${w.verified ? "Yes" : "No"}</span>
-              <span>Received: ${escapeHtml(formatShort(w.receivedAt))}</span>
-            </div>
-            <div class="entry-card__actions">
-              <button class="btn success" onclick="setWitnessStatementStatus('${w.id}', 'accepted')">Accept</button>
-              <button class="btn danger" onclick="setWitnessStatementStatus('${w.id}', 'denied')">Deny</button>
-            </div>
-          </article>
-        `).join("")
-        : `<div class="small-note">No witness statements yet.</div>`;
-    }
+    function buildEntry(rawText, caseType, evidenceType, evidenceData, source = "user"){
+      const original = { raw: rawText, createdAt: new Date().toISOString() };
+      const duplicate = structuredClone(original);
+      const working = structuredClone(original);
+      const parsedFromText = extractDateInfo(rawText);
+      const parsedFromEvidenceDate = evidenceData?.Date ? extractDateInfo(evidenceData.Date) : null;
 
-    function addExhibit(item) {
-      exhibits.push({
+      return {
         id: crypto.randomUUID(),
-        exhibitNo: `EX-${String(exhibits.length + 1).padStart(3, "0")}`,
-        type: item.type,
-        title: item.title,
-        sourceId: item.sourceId || null,
-        status: "pending",
-        addedAt: new Date().toISOString()
+        caseType,
+        source,
+        original,
+        duplicate,
+        working,
+        evidence: evidenceType ? {
+          type: evidenceType,
+          label: EVIDENCE_TEMPLATES[evidenceType]?.label ?? evidenceType,
+          data: evidenceData
+        } : null,
+        tags: evidenceType ? [evidenceType] : [],
+        parsedDate: parsedFromText ?? parsedFromEvidenceDate,
+        createdAt: new Date().toISOString()
+      };
+    }
+    // -----------------------------
+    // TABS / UI STATE
+    // -----------------------------
+    function setActiveTab(tabId){
+      store.activeTab = tabId;
+      document.querySelectorAll(".tab").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.tab === tabId);
       });
-
-      logAuditEvent("exhibit_added", {
-        exhibitNo: exhibits[exhibits.length - 1].exhibitNo,
-        title: item.title,
-        type: item.type
+      document.querySelectorAll(".tab-content").forEach(tab => {
+        tab.classList.toggle("active", tab.id === tabId);
       });
-
-      renderExhibitList();
-      refreshStatusBadges();
+      renderAll();
     }
 
-    function addExhibitFromEntry(entryId) {
-      const ref = findEntry(entryId);
-      if (!ref) return;
+    function setViewMode(mode){
+      store.viewMode = mode;
+      document.getElementById("userViewBtn").classList.toggle("active", mode === "user");
+      document.getElementById("firmViewBtn").classList.toggle("active", mode === "firm");
+      renderAll();
+    }
 
-      addExhibit({
-        type: "timeline_entry",
-        title: `${capitalize(ref.caseType)} Entry Exhibit`,
-        sourceId: entryId
+    function togglePrivacy(){
+      store.privacyOn = !store.privacyOn;
+      document.getElementById("privacyBtn").textContent = store.privacyOn ? "Privacy On" : "Privacy Off";
+      renderAll();
+    }
+
+    function toggleNotesMode(){
+      store.notesMode = !store.notesMode;
+      document.getElementById("notesToggleBtn").textContent = store.notesMode ? "Notes Mode" : "Timeline Mode";
+      document.getElementById("modeLabel").textContent = `Mode: ${store.notesMode ? "Notes" : "Timeline"}`;
+      setActiveTab(store.notesMode ? "notesTab" : "timelineTab");
+    }
+
+    function toggleNightMode(){
+      store.nightMode = !store.nightMode;
+      document.body.classList.toggle("night", store.nightMode);
+      document.getElementById("themeBtn").textContent = store.nightMode ? "Day Mode" : "Night Mode";
+    }
+
+    function setActiveCase(caseType){
+      store.activeCase = caseType;
+      document.querySelectorAll("[data-case]").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.case === caseType);
       });
+      document.getElementById("activeCaseLabel").textContent = `Active: ${capitalize(caseType)}`;
+      renderAll();
     }
 
-    function setExhibitStatus(id, status) {
-      const row = exhibits.find(x => x.id === id);
-      if (!row) return;
-
-      row.status = status;
-      row.updatedAt = new Date().toISOString();
-
-      logAuditEvent("exhibit_status_changed", { id, status });
-      renderExhibitList();
-    }
-
-    function renderExhibitList() {
-      const container = document.getElementById("exhibitList");
-      if (!container) return;
-
-      container.innerHTML = exhibits.length
-        ? exhibits.map(ex => `
-          <article class="entry-card">
-            <div class="entry-card__head">
-              <div>
-                <div class="entry-card__case">${escapeHtml(ex.exhibitNo)}</div>
-                <strong>${escapeHtml(ex.title)}</strong>
-              </div>
-              <span class="tag">${escapeHtml(ex.status)}</span>
-            </div>
-            <div class="entry-card__meta">
-              <span>Type: ${escapeHtml(ex.type)}</span>
-              <span>Added: ${escapeHtml(formatShort(ex.addedAt))}</span>
-            </div>
-            <div class="entry-card__actions">
-              <button class="btn success" onclick="setExhibitStatus('${ex.id}', 'accepted')">Accept</button>
-              <button class="btn danger" onclick="setExhibitStatus('${ex.id}', 'denied')">Deny</button>
-            </div>
-          </article>
-        `).join("")
-        : `<div class="small-note">No exhibits yet.</div>`;
-    }
-
-    function renderAll() {
-      refreshStatusBadges();
-      renderGraphLegend();
-      renderTimelineView();
-      renderWitnessInbox();
-      renderExhibitList();
-    }
-
-    function renderTimelineView() {
-      const title = document.getElementById("timelineTitle");
-      const subtitle = document.getElementById("timelineSubtitle");
-      const body = document.getElementById("timelineBody");
-
-      if (!title || !subtitle || !body) return;
-
-      if (studyMode === "single") {
-        title.textContent = `${capitalize(activeCase)} Timeline`;
-        subtitle.textContent = "One active lane at a time.";
-        body.innerHTML = renderSingleTimeline();
+    // -----------------------------
+    // EVIDENCE TEMPLATE FIELDS
+    // -----------------------------
+    function renderTemplateFields(type){
+      const container = document.getElementById("templateFields");
+      if(!type || !EVIDENCE_TEMPLATES[type]){
+        container.innerHTML = "";
         return;
       }
 
-      if (studyMode === "combined") {
-        title.textContent = "Combined Timeline";
-        subtitle.textContent = "All lanes in one view.";
-        body.innerHTML = renderCombinedTimeline();
-        return;
-      }
-
-      if (studyMode === "linked") {
-        title.textContent = "Linked Timeline";
-        subtitle.textContent = "Separate lanes with relationship hints.";
-        body.innerHTML = renderLinkedTimeline();
-        return;
-      }
-
-      if (studyMode === "exam") {
-        title.textContent = "Examination Mode";
-        subtitle.textContent = "Visual node graph view.";
-        body.innerHTML = renderExamShell();
-        setTimeout(buildExaminationMode, 0);
-      }
+      const template = EVIDENCE_TEMPLATES[type];
+      container.innerHTML = template.fields.map(field => `
+        <input placeholder="${field}" data-field="${field}">
+      `).join("");
     }
 
-    function renderSingleTimeline() {
-      const rows = timelines[activeCase];
-      if (!rows.length) {
-        return `<div class="small-note">No entries in ${escapeHtml(activeCase)} yet.</div>`;
-      }
-      return `<div class="timeline-stream">${rows.map(renderEntryCard).join("")}</div>`;
+    function collectTemplateData(){
+      const inputs = document.querySelectorAll("#templateFields input[data-field]");
+      const data = {};
+      inputs.forEach(input => {
+        data[input.dataset.field] = input.value.trim();
+      });
+      return data;
     }
 
-    function renderCombinedTimeline() {
-      const all = flattenAllTimelines().sort((a, b) => sortDate(a) - sortDate(b));
-      if (!all.length) {
-        return `<div class="small-note">No entries yet.</div>`;
-      }
-      return `<div class="timeline-stream">${all.map(renderEntryCard).join("")}</div>`;
+    // -----------------------------
+    // COMMANDS
+    // -----------------------------
+    function addTimelineEntry(){
+      const raw = document.getElementById("timelineInput").value.trim();
+      const evidenceType = document.getElementById("evidenceTemplateSelect").value;
+      const evidenceData = collectTemplateData();
+
+      if(!raw) return;
+
+      const entry = buildEntry(raw, store.activeCase, evidenceType, evidenceData, "user");
+      store.timelines[store.activeCase].push(entry);
+
+      document.getElementById("timelineInput").value = "";
+      document.getElementById("evidenceTemplateSelect").value = "";
+      document.getElementById("templateFields").innerHTML = "";
+
+      renderAll();
     }
 
-    function renderLinkedTimeline() {
-      return `
-        <div class="small-note" style="margin-bottom:10px;">
-          Separate lanes are preserved. This view only shows relationship thinking — it does not merge or alter the underlying timelines.
-        </div>
-        <div class="columns-4">
-          ${["work","injury","family","property"].map(caseType => `
-            <section class="lane">
-              <h4>${capitalize(caseType)}</h4>
-              ${
-                timelines[caseType].length
-                  ? timelines[caseType].map(renderEntryCard).join("")
-                  : `<div class="small-note">No entries.</div>`
-              }
-            </section>
-          `).join("")}
-        </div>
-      `;
+    function addWorkingNote(){
+      const text = document.getElementById("workingNoteInput").value.trim();
+      if(!text) return;
+
+      store.workingNotes.push({
+        id: crypto.randomUUID(),
+        text,
+        createdAt: new Date().toISOString()
+      });
+
+      document.getElementById("workingNoteInput").value = "";
+      renderAll();
     }
 
-    function renderExamShell() {
-      return `
-        <div class="exam-shell">
-          <div class="exam-toolbar">
-            <button class="btn" onclick="zoomExam(1.1)">Zoom In</button>
-            <button class="btn" onclick="zoomExam(0.9)">Zoom Out</button>
-            <button class="btn" onclick="resetExamView()">Reset</button>
+    function loadNuBriteExample(){
+      store.activeCase = "work";
+      document.getElementById("activeCaseLabel").textContent = "Active: Work";
+      document.querySelectorAll("[data-case]").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.case === "work");
+      });
+
+      store.timelines.work = NUBRITE_EXAMPLE.map(text => buildEntry(text, "work", "", {}, "example"));
+      renderAll();
+    }
+
+    function loadInjuryExample(){
+      store.activeCase = "injury";
+      document.getElementById("activeCaseLabel").textContent = "Active: Injury";
+      document.querySelectorAll("[data-case]").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.case === "injury");
+      });
+
+      store.timelines.injury = INJURY_EXAMPLE.map(text => buildEntry(text, "injury", "", {}, "example"));
+      renderAll();
+    }
+
+    function mockCamera(){
+      document.getElementById("timelineInput").value = "Photo evidence attached — 2025-08-28 workplace safety condition documented.";
+    }
+    function mockMic(){
+      document.getElementById("timelineInput").value = "Audio note — September 3, 2025 privacy concerns described in detail.";
+    }
+    function mockFile(){
+      document.getElementById("timelineInput").value = "Document import — July 31, 2025 formal notice reviewed and added to record.";
+    }
+
+    function verifyClioHandshake(){
+      alert("Clio verify hook ready. Wire your endpoint here.");
+    }
+
+    function createClioMatter(){
+      alert("Clio matter hook ready. Wire your endpoint here.");
+    }
+
+    function openTimelineWindow(){
+      const win = window.open("", "_blank");
+      const html = `
+        <!DOCTYPE html><html><head><title>Timeline Window</title>
+        <style>body{font-family:-apple-system;padding:20px;background:#eef2f7} .card{background:#fff;padding:12px;border-radius:12px;margin-bottom:10px}</style>
+        </head><body>
+        <h1>Timeline Window</h1>
+        ${sortEntries(flattenTimelines()).map(entry => `
+          <div class="card">
+            <strong>${capitalize(entry.caseType)}</strong><br>
+            ${escapeHtml(getVisibleText(entry))}
           </div>
-          <div class="exam-viewport" id="examViewport">
-            <div class="exam-canvas-wrap" id="examCanvasWrap">
-              <svg class="exam-svg" id="examSvg"></svg>
-              <div id="examNodesLayer"></div>
-            </div>
-          </div>
-        </div>
+        `).join("")}
+        </body></html>
       `;
+      win.document.write(html);
+      win.document.close();
     }
 
-    function renderEntryCard(entry) {
+    function openGraphWindow(){
+      const win = window.open("", "_blank");
+      win.document.write(`
+        <!DOCTYPE html><html><head><title>Graph Window</title></head>
+        <body style="margin:0;font-family:-apple-system;background:#eef2f7">
+          <canvas id="g" width="1200" height="700" style="display:block;width:100%;height:100vh"></canvas>
+          <script>
+            const graphData = ${JSON.stringify(buildGraphData())};
+            const canvas = document.getElementById('g');
+            const ctx = canvas.getContext('2d');
+
+            function draw(){
+              ctx.clearRect(0,0,canvas.width,canvas.height);
+              graphData.links.forEach(l=>{
+                const from = graphData.nodes.find(n=>n.id===l.from);
+                const to = graphData.nodes.find(n=>n.id===l.to);
+                if(!from || !to) return;
+                ctx.beginPath();
+                ctx.moveTo(from.x+120, from.y+30);
+                ctx.lineTo(to.x+120, to.y+30);
+                ctx.strokeStyle = '#7a8b96';
+                ctx.stroke();
+              });
+
+              graphData.nodes.forEach(n=>{
+                ctx.fillStyle = n.color;
+                roundRect(ctx,n.x,n.y,240,60,18,true,false);
+                ctx.fillStyle = '#fff';
+                ctx.font = '12px -apple-system';
+                ctx.fillText(n.type.toUpperCase(), n.x+12, n.y+18);
+                ctx.font = '13px -apple-system';
+                ctx.fillText(n.label.slice(0,48), n.x+12, n.y+40);
+              });
+            }
+
+            function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
+              if (typeof radius === 'number') radius = {tl: radius, tr: radius, br: radius, bl: radius};
+              ctx.beginPath();
+              ctx.moveTo(x + radius.tl, y);
+              ctx.lineTo(x + width - radius.tr, y);
+              ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
+              ctx.lineTo(x + width, y + height - radius.br);
+              ctx.quadraticCurveTo(x + width, y + height, x + width - radius.br, y + height);
+              ctx.lineTo(x + radius.bl, y + height);
+              ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
+              ctx.lineTo(x, y + radius.tl);
+              ctx.quadraticCurveTo(x, y, x + radius.tl, y);
+              ctx.closePath();
+              if (fill) ctx.fill();
+              if (stroke) ctx.stroke();
+            }
+
+            draw();
+          <\/script>
+        </body></html>
+      `);
+      win.document.close();
+    }
+
+    // -----------------------------
+    // RENDERERS
+    // -----------------------------
+    function renderEntryCard(entry){
+      const visible = getVisibleText(entry);
+      const privacyClass = store.privacyOn ? "privacy-redacted" : "";
+      const evidenceTag = entry.evidence?.type ? `<span class="tag">${escapeHtml(entry.evidence.label)}</span>` : "";
+
       return `
-        <article class="entry-card ${escapeHtml(entry.caseType || activeCase)}">
-          <div class="entry-card__head">
+        <article class="entry-card ${entry.caseType}">
+          <div class="entry-head">
             <div>
-              <div class="entry-card__case">${capitalize(entry.caseType || activeCase)}</div>
-              <div class="entry-card__text">${escapeHtml(entry.text)}</div>
+              <div class="entry-type">${capitalize(entry.caseType)} ${entry.parsedDate?.iso ? "— " + entry.parsedDate.iso : ""}</div>
+              <div class="entry-text ${privacyClass}">${escapeHtml(visible)}</div>
             </div>
-            <span class="tag">${escapeHtml(entry.source || "user")}</span>
+            ${evidenceTag}
           </div>
-
-          <div class="entry-card__meta">
-            <span>Original: ${escapeHtml(entry.original)}</span>
-            <span>System: ${escapeHtml(formatShort(entry.system))}</span>
-          </div>
-
-          <div class="entry-card__actions">
-            <button class="btn" onclick="editEntry('${entry.id}')">Edit</button>
-            <button class="btn danger" onclick="deleteEntry('${entry.id}')">Delete</button>
-            <button class="btn" onclick="addExhibitFromEntry('${entry.id}')">Add as Exhibit</button>
+          <div class="entry-meta">
+            <span>Original preserved</span>
+            <span>Duplicate ready</span>
+            <span>Working copy active</span>
           </div>
         </article>
       `;
     }
 
-    function renderGraphLegend() {
-      const counts = {
-        work: timelines.work.length,
-        injury: timelines.injury.length,
-        family: timelines.family.length,
-        property: timelines.property.length
-      };
-
-      const max = Math.max(1, ...Object.values(counts));
-      const container = document.getElementById("graphLegend");
-      if (!container) return;
-
-      container.innerHTML = Object.entries(counts).map(([key, value]) => `
-        <div class="graph-row">
-          <div>${capitalize(key)}</div>
-          <div class="graph-track">
-            <div class="graph-fill" style="width:${(value / max) * 100}%; background:${graphColour(key)};"></div>
-          </div>
-          <div>${value}</div>
-        </div>
-      `).join("");
+    function renderTimelineList(){
+      const list = document.getElementById("timelineList");
+      const entries = sortEntries(store.timelines[store.activeCase]);
+      list.innerHTML = entries.length
+        ? entries.map(renderEntryCard).join("")
+        : `<div class="muted">No timeline entries yet.</div>`;
     }
 
-    function buildExaminationMode() {
-      examState.nodes = buildExamNodes();
-      examState.links = buildExamLinks();
-      layoutExamNodes(examState.nodes);
-      drawExam();
-      wireExamWheelZoom();
+    function renderNotesList(){
+      const list = document.getElementById("notesList");
+      list.innerHTML = store.workingNotes.length
+        ? store.workingNotes.map(note => `
+          <article class="entry-card">
+            <div class="entry-type">Working note</div>
+            <div class="entry-text">${escapeHtml(note.text)}</div>
+            <div class="entry-meta"><span>${new Date(note.createdAt).toLocaleString("en-CA")}</span></div>
+          </article>
+        `).join("")
+        : `<div class="muted">No working notes yet.</div>`;
     }
 
-    function buildExamNodes() {
-      const nodes = [];
+    function renderEvidenceIndex(){
+      const list = document.getElementById("evidenceIndexList");
+      const entries = sortEntries(flattenTimelines()).filter(e => e.evidence?.type);
 
-      Object.keys(timelines).forEach(caseType => {
-        timelines[caseType].forEach((entry, index) => {
-          nodes.push({
-            id: `${caseType}-${index}`,
-            caseType,
-            entryId: entry.id,
-            label: entry.text,
-            original: entry.original,
-            x: 0,
-            y: 0,
-            width: 250,
-            height: 100
-          });
-        });
-      });
-
-      return nodes;
+      list.innerHTML = entries.length
+        ? entries.map((entry, i) => `
+          <article class="entry-card ${entry.caseType}">
+            <div class="entry-head">
+              <div>
+                <div class="entry-type">Exhibit ${String(i+1).padStart(3,"0")} — ${escapeHtml(entry.evidence.label)}</div>
+                <div class="entry-text">${escapeHtml(getVisibleText(entry))}</div>
+              </div>
+              <span class="tag">${escapeHtml(entry.evidence.type)}</span>
+            </div>
+            <div class="entry-meta">
+              ${Object.entries(entry.evidence.data || {}).map(([k,v]) => `<span>${escapeHtml(k)}: ${escapeHtml(v)}</span>`).join("")}
+            </div>
+          </article>
+        `).join("")
+        : `<div class="muted">No tagged evidence yet.</div>`;
     }
 
-    function buildExamLinks() {
+    function renderFirmSummaries(){
+      const list = document.getElementById("firmSummaryList");
+      const entries = sortEntries(flattenTimelines());
+
+      if(store.viewMode !== "firm"){
+        list.innerHTML = `<div class="muted">Firm summaries appear only in Firm View.</div>`;
+        return;
+      }
+
+      list.innerHTML = entries.length
+        ? entries.map(entry => {
+          const score = scoreEntry(entry);
+          const tone = scoreTone(score);
+          const label = scoreLabel(score);
+
+          return `
+            <article class="entry-card ${entry.caseType}">
+              <div class="entry-head">
+                <div>
+                  <div class="entry-type">${capitalize(entry.caseType)} — Anonymous Summary</div>
+                  <div class="entry-text">${escapeHtml(getAnonymousSummary(entry))}</div>
+                </div>
+                <span class="score-pill ${tone}">${label} ${score}</span>
+              </div>
+              <div class="entry-meta">
+                <span>Date: ${entry.parsedDate?.iso ?? "Undated"}</span>
+                <span>Source view: Original</span>
+              </div>
+            </article>
+          `;
+        }).join("")
+        : `<div class="muted">No firm summaries yet.</div>`;
+    }
+
+    function renderInvestigationTimeline(){
+      const list = document.getElementById("investigationTimelineList");
+      const entries = sortEntries(flattenTimelines());
+
+      list.innerHTML = entries.length
+        ? entries.map(renderEntryCard).join("")
+        : `<div class="muted">No entries available for investigation.</div>`;
+    }
+
+    // -----------------------------
+    // GRAPH
+    // -----------------------------
+    function colorForCase(caseType){
+      if(caseType === "work") return "#2f6bff";
+      if(caseType === "injury") return "#e45d68";
+      if(caseType === "family") return "#856bff";
+      if(caseType === "property") return "#27ba7a";
+      return "#7a8b96";
+    }
+
+    function buildGraphData(){
+      const entries = sortEntries(flattenTimelines());
+
+      const nodes = entries.map((entry, i) => ({
+        id: entry.id,
+        x: 40 + (i % 3) * 280,
+        y: 40 + Math.floor(i / 3) * 100,
+        w: 240,
+        h: 60,
+        label: getAnonymousSummary(entry),
+        type: entry.caseType,
+        color: colorForCase(entry.caseType)
+      }));
+
       const links = [];
-      const workNodes = examState.nodes.filter(n => n.caseType === "work");
-      const injuryNodes = examState.nodes.filter(n => n.caseType === "injury");
+      for(let i = 0; i < nodes.length - 1; i++){
+        links.push({ from: nodes[i].id, to: nodes[i+1].id });
+      }
 
-      workNodes.forEach(source => {
-        injuryNodes.forEach(target => {
-          links.push({ source: source.id, target: target.id });
-        });
-      });
+      store.graph.nodes = nodes;
+      store.graph.links = links;
 
-      return links;
+      return { nodes, links };
     }
 
-    function layoutExamNodes(nodes) {
-      const laneX = {
-        work: 80,
-        injury: 430,
-        family: 780,
-        property: 1130
-      };
+    function drawGraph(){
+      const canvas = document.getElementById("graphCanvas");
+      const ctx = canvas.getContext("2d");
+      const { nodes, links } = store.graph;
 
-      const laneY = {
-        work: 80,
-        injury: 80,
-        family: 80,
-        property: 80
-      };
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+
+      links.forEach(link => {
+        const from = nodes.find(n => n.id === link.from);
+        const to = nodes.find(n => n.id === link.to);
+        if(!from || !to) return;
+
+        ctx.beginPath();
+        ctx.moveTo(from.x + from.w/2, from.y + from.h/2);
+        ctx.lineTo(to.x + to.w/2, to.y + to.h/2);
+        ctx.strokeStyle = "#7a8b96";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      });
 
       nodes.forEach(node => {
-        node.x = laneX[node.caseType] || 80;
-        node.y = laneY[node.caseType] || 80;
-        laneY[node.caseType] += 150;
+        roundRect(ctx, node.x, node.y, node.w, node.h, 18, node.color);
+        ctx.fillStyle = "#fff";
+        ctx.font = "12px -apple-system";
+        ctx.fillText(node.type.toUpperCase(), node.x + 12, node.y + 18);
+        ctx.font = "13px -apple-system";
+        ctx.fillText(node.label.slice(0, 48), node.x + 12, node.y + 40);
       });
     }
 
-    function drawExam() {
-      const svg = document.getElementById("examSvg");
-      const layer = document.getElementById("examNodesLayer");
-      const wrap = document.getElementById("examCanvasWrap");
-
-      if (!svg || !layer || !wrap) return;
-
-      wrap.style.transform = `scale(${examState.scale})`;
-
-      svg.innerHTML = `
-        <defs>
-          <marker id="arrowHead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-            <polygon points="0 0, 10 3.5, 0 7" fill="#8a8f98"></polygon>
-          </marker>
-        </defs>
-      `;
-
-      layer.innerHTML = "";
-
-      examState.nodes.forEach(node => {
-        const div = document.createElement("div");
-        div.className = `exam-node ${node.caseType}`;
-        div.dataset.nodeId = node.id;
-        div.style.left = `${node.x}px`;
-        div.style.top = `${node.y}px`;
-
-        div.innerHTML = `
-          <div class="exam-node__type">${capitalize(node.caseType)}</div>
-          <div class="exam-node__label">${escapeHtml(node.label)}</div>
-          <div class="exam-node__date">${escapeHtml(node.original)}</div>
-        `;
-
-        makeNodeDraggable(div, node);
-        layer.appendChild(div);
-      });
-
-      examState.links.forEach(link => {
-        const source = examState.nodes.find(n => n.id === link.source);
-        const target = examState.nodes.find(n => n.id === link.target);
-        if (!source || !target) return;
-
-        const x1 = source.x + source.width;
-        const y1 = source.y + source.height / 2;
-        const x2 = target.x;
-        const y2 = target.y + target.height / 2;
-        const midX = (x1 + x2) / 2;
-
-        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        path.setAttribute("d", `M ${x1} ${y1} C ${midX} ${y1}, ${midX} ${y2}, ${x2} ${y2}`);
-        path.setAttribute("class", "exam-link");
-        path.setAttribute("marker-end", "url(#arrowHead)");
-        svg.appendChild(path);
-      });
+    function roundRect(ctx, x, y, width, height, radius, fillColor){
+      ctx.fillStyle = fillColor;
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      ctx.lineTo(x + width, y + height - radius);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      ctx.lineTo(x + radius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
+      ctx.fill();
     }
 
-    function makeNodeDraggable(element, node) {
-      element.onmousedown = (e) => {
-        examState.dragNodeId = node.id;
-        examState.dragOffsetX = e.clientX - node.x * examState.scale;
-        examState.dragOffsetY = e.clientY - node.y * examState.scale;
-        element.classList.add("dragging");
+    function getMousePos(canvas, evt){
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      return {
+        x: (evt.clientX - rect.left) * scaleX,
+        y: (evt.clientY - rect.top) * scaleY
       };
-
-      window.addEventListener("mousemove", onExamMouseMove);
-      window.addEventListener("mouseup", onExamMouseUp);
     }
 
-    function onExamMouseMove(e) {
-      if (!examState.dragNodeId) return;
+    function wireGraphDrag(){
+      const canvas = document.getElementById("graphCanvas");
 
-      const node = examState.nodes.find(n => n.id === examState.dragNodeId);
-      if (!node) return
+      canvas.addEventListener("mousedown", (evt) => {
+        const mouse = getMousePos(canvas, evt);
+        for(const node of store.graph.nodes){
+          const inside =
+            mouse.x >= node.x && mouse.x <= node.x + node.w &&
+            mouse.y >= node.y && mouse.y <= node.y + node.h;
 
+          if(inside){
+            store.graph.draggingId = node.id;
+            store.graph.dragOffsetX = mouse.x - node.x;
+            store.graph.dragOffsetY = mouse.y - node.y;
+            return;
+          }
+        }
+      });
+
+      canvas.addEventListener("mousemove", (evt) => {
+        if(!store.graph.draggingId) return;
+        const mouse = getMousePos(canvas, evt);
+        const node = store.graph.nodes.find(n => n.id === store.graph.draggingId);
+        if(!node) return;
+
+        node.x = mouse.x - store.graph.dragOffsetX;
+        node.y = mouse.y - store.graph.dragOffsetY;
+        drawGraph();
+      });
+
+      canvas.addEventListener("mouseup", () => {
+        store.graph.draggingId = null;
+      });
+
+      canvas.addEventListener("mouseleave", () => {
+        store.graph.draggingId = null;
+      });
+    }
+
+    // -----------------------------
+    // MASTER RENDER
+    // -----------------------------
+    function renderAll(){
+      document.getElementById("viewLabel").textContent = `View: ${capitalize(store.viewMode)}`;
+      renderTimelineList();
+      renderNotesList();
+      renderEvidenceIndex();
+      renderFirmSummaries();
+      renderInvestigationTimeline();
+      buildGraphData();
+      drawGraph();
+    }
+
+    // -----------------------------
+    // EVENTS
+    // -----------------------------
+    document.querySelectorAll(".tab").forEach(btn => {
+      btn.addEventListener("click", () => setActiveTab(btn.dataset.tab));
+    });
+
+    document.querySelectorAll("[data-case]").forEach(btn => {
+      btn.addEventListener("click", () => setActiveCase(btn.dataset.case));
+    });
+
+    document.getElementById("userViewBtn").addEventListener("click", () => setViewMode("user"));
+    document.getElementById("firmViewBtn").addEventListener("click", () => setViewMode("firm"));
+    document.getElementById("privacyBtn").addEventListener("click", togglePrivacy);
+    document.getElementById("notesToggleBtn").addEventListener("click", toggleNotesMode);
+    document.getElementById("themeBtn").addEventListener("click", toggleNightMode);
+
+    document.getElementById("evidenceTemplateSelect").addEventListener("change", (e) => {
+      renderTemplateFields(e.target.value);
+    });
+
+    document.getElementById("addTimelineEntryBtn").addEventListener("click", addTimelineEntry);
+    document.getElementById("addWorkingNoteBtn").addEventListener("click", addWorkingNote);
+
+    document.getElementById("loadNuBriteBtn").addEventListener("click", loadNuBriteExample);
+    document.getElementById("loadInjuryBtn").addEventListener("click", loadInjuryExample);
+
+    document.getElementById("cameraBtn").addEventListener("click", mockCamera);
+    document.getElementById("micBtn").addEventListener("click", mockMic);
+    document.getElementById("fileBtn").addEventListener("click", mockFile);
+
+    document.getElementById("verifyClioBtn").addEventListener("click", verifyClioHandshake);
+    document.getElementById("createMatterBtn").addEventListener("click", createClioMatter);
+
+    document.getElementById("openTimelineWindowBtn").addEventListener("click", openTimelineWindow);
+    document.getElementById("openGraphWindowBtn").addEventListener("click", openGraphWindow);
+
+    // -----------------------------
+    // INIT
+    // -----------------------------
+    wireGraphDrag();
+    renderAll();
+  </script>
+</body>
+</html>
