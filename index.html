@@ -1,878 +1,1794 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-CA">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WorkTimeline Playback Engine</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
-        
-        :root {
-            /* FROSTED SILVER METALLIC PALETTE (DAY MODE DEFAULT) */
-            --app-bg: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            --glass-bg: rgba(255, 255, 255, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.9);
-            --glass-shadow: 0 8px 32px rgba(148, 163, 184, 0.2);
-            
-            --text-dark: #1e293b;
-            --text-light: #64748b;
-            --active-teal: #008080;
-            --active-green: #2ecc71;
-            
-            --metallic-silver: linear-gradient(180deg, #f1f5f9 0%, #cbd5e0 100%);
-            --metallic-teal: linear-gradient(135deg, #008080 0%, #004d4d 100%);
-            --chip-bg: #ffffff;
-            
-            --silver-platinum: #f1f5f9;
-            --font-family-override: 'Nunito', sans-serif;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WorkTimeline™</title>
+  <style>
+    :root {
+      --bg: #f4f6fb;
+      --bg-elev: rgba(255,255,255,0.72);
+      --card: rgba(255,255,255,0.78);
+      --text: #17181c;
+      --sub: #636a75;
+      --line: rgba(0,0,0,0.08);
+      --accent: #1a5cff;
+      --accent-2: #28a745;
+      --accent-3: #e03131;
+      --accent-4: #6f42c1;
+      --shadow: 0 12px 30px rgba(0,0,0,0.08);
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+      --panel-blur: blur(16px);
+      --graph-work: #1a5cff;
+      --graph-injury: #e03131;
+      --graph-family: #6f42c1;
+      --graph-property: #28a745;
+      --court-font: Georgia, "Times New Roman", serif;
+      --standard-font: "Times New Roman", serif;
+      --bubbly-font: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "SF Pro Display", "Segoe UI", sans-serif;
+      --night-font: Inter, system-ui, sans-serif;
+    }
 
-        body.night-deck {
-            /* HIGH-CONTRAST TIMELOCKED NIGHT MATRIX */
-            --app-bg: linear-gradient(135deg, #2d3135 0%, #16181a 100%);
-            --glass-bg: rgba(35, 38, 41, 0.85);
-            --glass-border: rgba(255, 255, 255, 0.15);
-            --text-dark: #ffffff; 
-            --text-light: #cbd5e1;
-            --metallic-silver: linear-gradient(180deg, #3f444a 0%, #1a1c1e 100%);
-            --chip-bg: #2d3135;
-            --silver-platinum: #2d3135;
-        }
-        
-        body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            display: flex; justify-content: center; align-items: center;
-            font-family: var(--font-family-override); background-color: #94a3b8;
-            -webkit-tap-highlight-color: transparent;
-            transition: font-family 0.2s ease;
-        @media (max-width: 768px) {
-            body,html}
-            align-items: flex-start;
-            width: 100 !important;
-            height: 100 !important;
-            border: none !important;
-            border-radius: 0 !important;
-        }   
-        .phone-bezel {   height: 812px; background-color: #000;
-            border-radius: 45px; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-            overflow: hidden; border: 8px solid #cbd5e0; position: relative;
-        }
+    * { box-sizing: border-box; }
 
-        .app-container {
-            width: 100%; height: 100%; background: var(--app-bg);
-            display: flex; flex-direction: column; position: relative;
-        }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top left, #ffffff 0%, #eef3fb 55%, #edf1f7 100%);
+      color: var(--text);
+      font-family: var(--bubbly-font);
+      transition: background .25s ease, color .25s ease, font-family .2s ease;
+    }
 
-        /* PRIVACY SWITCH HARDWARE BLUR COVERS */
-        .privacy-active #timelineBody,
-        .privacy-active .input-panel { 
-            filter: blur(18px) grayscale(1); 
-            pointer-events: none; 
-            opacity: 0.25; 
-            transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1); 
-        }
-        #timelineBody, .input-panel { transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+    body.mode-standard { font-family: var(--standard-font); }
+    body.mode-bubbly { font-family: var(--bubbly-font); }
+    body.mode-night {
+      --bg: #0f1116;
+      --bg-elev: rgba(24,27,35,0.82);
+      --card: rgba(29,33,42,0.88);
+      --text: #eef1f5;
+      --sub: #aab2bf;
+      --line: rgba(255,255,255,0.08);
+      --shadow: 0 12px 30px rgba(0,0,0,0.24);
+      background:
+        radial-gradient(circle at top left, #151822 0%, #10131a 60%, #0d1016 100%);
+      color: var(--text);
+      font-family: var(--night-font);
+    }
 
-        /* HEADER LED BEACON */
-        .clio-status-led {
-            width: 10px; height: 10px; background-color: var(--active-green); border-radius: 50%;
-            animation: breathe 2.5s infinite; box-shadow: 0 0 8px var(--active-green);
-            display: inline-block; margin-left: 6px; vertical-align: middle;
-        }
-        @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.6; } }
+    body.court-mode {
+      background: #ffffff;
+      color: #111111;
+      font-family: var(--court-font);
+    }
+    body.court-mode .glass,
+    body.court-mode .panel,
+    body.court-mode .card,
+    body.court-mode .entry-card,
+    body.court-mode .study-hub,
+    body.court-mode .sidebar {
+      background: #ffffff !important;
+      box-shadow: none !important;
+      border: 1px solid #cfcfcf !important;
+      backdrop-filter: none !important;
+      color: #111111 !important;
+    }
 
-        .top-toggles {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 45px 20px 10px; z-index: 20;
-        }
+    .app-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 18px;
+      padding: 18px;
+    }
 
-        .toggle-btn {
-            background: var(--glass-bg); border: 1px solid var(--glass-border);
-            padding: 8px 16px; border-radius: 20px; font-size: 11px; font-weight: 900;
-            color: var(--text-dark); cursor: pointer; backdrop-filter: blur(10px);
-            transition: 0.3s; display: flex; align-items: center; gap: 6px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05); text-transform: uppercase;
-        }
-        .toggle-btn.active { background: var(--metallic-teal); color: white; border-color: var(--active-teal); }
+    .glass, .panel, .sidebar, .study-hub {
+      background: var(--bg-elev);
+      backdrop-filter: var(--panel-blur);
+      -webkit-backdrop-filter: var(--panel-blur);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+    }
 
-        .header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 20px 15px; z-index: 1000;
-        }
+    .sidebar {
+      padding: 18px;
+      position: sticky;
+      top: 18px;
+      height: calc(100vh - 36px);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow: hidden;
+    }
 
-        .menu-trigger {
-            font-size: 24px; color: var(--text-dark); cursor: pointer;
-            background: var(--glass-bg); padding: 8px; border-radius: 12px;
-            border: 1px solid var(--glass-border); backdrop-filter: blur(10px);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex;
-            transition: all 0.2s ease;
-        }
-        .menu-trigger.open-active { background: var(--metallic-teal); color: #ffffff; border-color: var(--active-teal); }
+    .brand {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
 
-        .brand-block { display: flex; align-items: center; gap: 8px; }
-        .main-title { font-weight: 900; font-size: 24px; color: var(--active-teal); letter-spacing: -0.5px; display: flex; align-items: center; gap: 6px; }
-        
-        /* LOGO SVG WITH HORIZONTAL SPLINE TRACK PATH AND THREE NODES */
-        .briefcase-logo-svg { width: 32px; height: 32px; display: inline-block; vertical-align: middle; }
-        .briefcase-body { fill: var(--active-teal); }
-        .briefcase-timeline-path { stroke: #ffffff; stroke-width: 0.6px; stroke-dasharray: 1,1; fill: none; }
-        .briefcase-node { fill: var(--active-teal); }
+    .brand h1 {
+      margin: 0;
+      font-size: 1.2rem;
+      letter-spacing: .01em;
+    }
 
-        .input-panel {
-            background: var(--glass-bg); backdrop-filter: blur(20px);
-            margin: 0 15px; border-radius: 24px; border: 1px solid var(--glass-border);
-            box-shadow: var(--glass-shadow); display: flex; flex-direction: column;
-            gap: 15px; padding: 20px; z-index: 10;
-        }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: rgba(0,0,0,0.05);
+      border: 1px solid var(--line);
+      font-size: .82rem;
+      color: var(--sub);
+    }
 
-        .template-row { display: flex; gap: 8px; justify-content: space-between; margin-bottom: 5px; }
-        .template-chip {
-            flex: 1; background: var(--chip-bg); border: 1px solid var(--glass-border); border-radius: 12px;
-            padding: 10px 0; font-size: 10px; font-weight: 900; color: var(--text-dark);
-            text-align: center; cursor: pointer; text-transform: uppercase;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: 0.2s;
-        }
-        .template-chip.selected { background: var(--active-teal); color: white; border-color: var(--active-teal); }
+    .case-switcher, .study-actions, .firm-view, .theme-controls {
+      display: grid;
+      gap: 10px;
+    }
 
-        .hardware-icons { display: flex; justify-content: space-evenly; align-items: center; }
-        .hw-item { position: relative; width: 44px; height: 44px; background: var(--metallic-silver); border-radius: 14px; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 2px 4px rgba(255,255,255,0.8), 0 4px 6px rgba(0,0,0,0.05); cursor: pointer; border: 1px solid var(--glass-border); }
-        .hw-item svg { width: 22px; height: 22px; stroke: var(--active-teal); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-        .hw-item input { position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer; z-index:10; }
+    .section-title {
+      font-size: .82rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--sub);
+      font-weight: 700;
+      margin: 6px 2px 2px;
+    }
 
-        .input-wrapper { background: rgba(255, 255, 255, 0.15); border-radius: 14px; padding: 15px; border: 1px solid var(--glass-border); }
-        body:not(.night-deck) .input-wrapper { background: rgba(255, 255, 255, 0.8); }
-        .input-wrapper textarea { width: 100%; background: transparent; border: none; color: var(--text-dark); font-size: 14px; font-weight: 600; font-family: inherit; resize: none; outline: none; height: 40px; }
-        .input-wrapper textarea::placeholder { color: var(--text-light); }
+    button, select, input, textarea {
+      font: inherit;
+    }
 
-        /* THE STANDARD TIMELINE FEED GRID TRACK LAYOUT BASELINE */
-        .workspace-layout-matrix {
-            flex: 1; display: flex; gap: 12px; margin: 0 15px; overflow: hidden; position: relative;
-        }
+    .btn {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.72);
+      color: var(--text);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: transform .12s ease, opacity .12s ease, background .12s ease;
+    }
+    .mode-night .btn {
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+    }
 
-        .vertical-spine-track {
-            width: 44px; min-width: 44px; background: var(--metallic-silver); border: 1px solid var(--glass-border);
-            border-radius: 20px; padding: 16px 0; display: flex; flex-direction: column-reverse;
-            align-items: center; position: relative; gap: 16px; overflow-y: auto; box-sizing: border-box;
-        }
-        .vertical-spine-track::before { content: ''; position: absolute; top: 0; bottom: 0; width: 2px; background: var(--glass-border); z-index: 1; }
-        .vertical-spine-track::-webkit-scrollbar { display: none; }
+    .btn:hover { transform: translateY(-1px); }
+    .btn.primary {
+      background: var(--accent);
+      color: white;
+      border-color: transparent;
+    }
+    .btn.success {
+      background: var(--accent-2);
+      color: white;
+      border-color: transparent;
+    }
+    .btn.danger {
+      background: var(--accent-3);
+      color: white;
+      border-color: transparent;
+    }
+    .btn.secondary {
+      background: rgba(0,0,0,0.04);
+    }
+    .btn.active {
+      outline: 2px solid rgba(26,92,255,.25);
+      border-color: rgba(26,92,255,.35);
+    }
 
-        .timeline-container { flex: 1; overflow-y: auto; padding: 0 0 100px; }
-        .timeline-container::-webkit-scrollbar { display: none; }
-        .log-list { display: flex; flex-direction: column-reverse; gap: 15px; position: relative; width: 100%; }
-        .log-entry { position: relative; display: flex; flex-direction: column; gap: 6px; z-index: 2; width: 100%; }
-        
-        .timeline-squircle {
-            width: 32px; height: 32px; min-height: 32px; background: var(--chip-bg);
-            border: 1px solid var(--glass-border); border-radius: 10px; display: flex; align-items: center;
-            justify-content: center; z-index: 2; box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-            cursor: pointer; transition: transform 0.2s;
-        }
-        .timeline-squircle svg { width: 16px; height: 16px; fill: var(--text-dark); }
-        
-        @keyframes tealSatinPulse {
-            0% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0.7); border-color: var(--active-teal); transform: scale(1); }
-            50% { box-shadow: 0 0 14px 6px rgba(0, 128, 128, 0.3); border-color: #00b3b3; transform: scale(1.05); }
-            100% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0.7); border-color: var(--active-teal); transform: scale(1); }
-        }
-        .timeline-squircle.pattern-triggered {
-            animation: tealSatinPulse 2s infinite ease-in-out !important;
-            border: 2px solid var(--active-teal) !important;
-        }
-        .timeline-squircle.pattern-triggered svg { fill: var(--active-teal) !important; }
+    .main {
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      gap: 18px;
+      min-width: 0;
+    }
 
-        .timestamp-stamp { display: flex; align-items: center; gap: 4px; font-size: 9px; color: var(--text-light); text-transform: uppercase; font-weight: 800; padding-left: 4px; }
-        .timestamp-stamp svg { width: 10px; height: 10px; stroke: currentColor; fill: none; stroke-width: 2.5; display: inline-block; vertical-align: middle; margin-top: -2px; }
-        
-        .log-bubble-stack { position: relative; width: 100%; display: flex; flex-direction: column; gap: 4px; }
-        
-        /* SOLID SILVER PLATINUM TOP LAYER */
-        .log-bubble {
-            background: var(--silver-platinum);
-            padding: 14px 16px; border-radius: 18px; border: 1px solid var(--glass-border);
-            color: var(--text-dark); font-size: 12px; font-weight: 700; line-height: 1.5;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.04); width: 100%; box-sizing: border-box;
-            position: relative; z-index: 10;
-        }
+    .topbar {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+    }
 
-        /* SUPERSEDED REVERSION OVERLAYS: DROPS TRANSPARENT DIRECTLY UNDERNEATH */
-        .log-bubble.historical-version {
-            background: rgba(255, 255, 255, 0.15); 
-            backdrop-filter: blur(4px);
-            margin-top: -24px;
-            z-index: 5;
-            opacity: 0.45;
-            transform: scale(0.96);
-            border: 1px dashed var(--glass-border);
-            color: var(--text-light);
-            box-shadow: none;
-        }
-        body.night-deck .log-bubble.historical-version { background: rgba(0, 0, 0, 0.2); }
+    .topbar-left, .topbar-right {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
 
-        /* THE PATTERN INSIGHT CARDS POPOVER SPECIFICATION: MOUNTS UNDERNEATH THE PRIMARY CARD LAYER */
-        .log-bubble.pattern-insight-layer {
-            background: rgba(0, 128, 128, 0.08) !important;
-            border: 1px solid rgba(0, 128, 128, 0.3) !important;
-            box-shadow: inset 0 1px 3px rgba(0, 128, 128, 0.1) !important;
-            margin-top: -4px;
-            border-top-left-radius: 0;
-            border-top-right-radius: 0;
-            z-index: 8;
-            color: var(--text-dark);
-            font-weight: 600;
-            font-size: 11px;
-            line-height: 1.4;
-        }
+    .study-hub {
+      padding: 16px;
+      display: grid;
+      gap: 16px;
+    }
 
-        .footer-nav {
-            position: absolute; bottom: 0; left: 0; width: 100%; height: 80px; 
-            background: var(--glass-bg); backdrop-filter: blur(20px);
-            display: flex; justify-content: space-evenly; align-items: center;
-            padding: 0 15px 15px; border-top: 1px solid var(--glass-border); z-index: 100;
-            box-sizing: border-box;
-        }
+    .study-grid {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 16px;
+    }
 
-        .footer-pill {
-            background: var(--chip-bg); color: var(--text-dark); padding: 12px 20px;
-            border-radius: 20px; font-size: 10px; font-weight: 900; cursor: pointer;
-            display: flex; flex-direction: column; align-items: center; gap: 4px;
-            border: 1px solid var(--glass-border); box-shadow: 0 4px 10px rgba(0,0,0,0.03); text-transform: uppercase;
-        }
-        .footer-pill svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .compose {
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+    }
 
-        .center-add-btn {
-            background: var(--metallic-teal); color: white; width: 56px; height: 56px;
-            border-radius: 20px; display: flex; justify-content: center; align-items: center;
-            font-size: 32px; font-weight: 600; cursor: pointer;
-            box-shadow: inset 0 2px 4px rgba(255,255,255,0.4), 0 8px 20px rgba(0, 128, 128, 0.4);
-            border: 2px solid rgba(255,255,255,0.2); transition: 0.2s;
-        }
-        .center-add-btn:active { transform: scale(0.95); }
+    .compose textarea {
+      width: 100%;
+      min-height: 90px;
+      resize: vertical;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--line);
+      padding: 12px 14px;
+      background: var(--card);
+      color: var(--text);
+      outline: none;
+    }
 
-        /* THE LAB CORE SIDEBAR DRAWER */
-        .sidebar {
-            position: absolute; top: 0; left: -100%; width: 280px; height: 100%;
-            background: var(--glass-bg); backdrop-filter: blur(25px);
-            transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 8000;
-            padding: 55px 20px; box-sizing: border-box; box-shadow: 20px 0 50px rgba(0,0,0,0.1);
-            border-right: 1px solid var(--glass-border);
-            color: var(--text-dark);
-            display: flex; flex-direction: column; gap: 10px;
-        }
-        .sidebar.open { left: 0; }
-        .sidebar-header { font-weight: 900; font-size: 22px; color: var(--active-teal); margin-bottom: 20px; text-transform: uppercase; letter-spacing: -1px; }
-        
-        .lab-customizer-box {
-            background: var(--chip-bg); border: 1px solid var(--glass-border);
-            border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.01);
-        }
-        .customizer-label { font-size: 10px; font-weight: 900; text-transform: uppercase; color: var(--text-light); letter-spacing: 0.04em; }
-        .customizer-select { width: 100%; height: 38px; border-radius: 8px; border: 1px solid var(--glass-border); background: var(--app-bg); color: var(--text-dark); padding: 0 8px; font-size: 11px; font-weight: 800; outline: none; text-transform: uppercase; }
+    .compose-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
 
-        .sidebar-item {
-            padding: 14px 16px; margin-bottom: 4px; border-radius: 14px;
-            background: var(--chip-bg); font-weight: 800; font-size: 11px; color: var(--text-dark);
-            display: flex; align-items: center; gap: 12px; cursor: pointer;
-            border: 1px solid var(--glass-border); text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.01);
-        }
-        
-        .sidebar-item .circle-icon { 
-            width: 28px; height: 28px; background: var(--metallic-silver); color: var(--active-teal); 
-            border-radius: 8px; display: flex; justify-content: center; align-items: center; 
-            border: 1px solid var(--glass-border); flex-shrink: 0;
-        }
-        .sidebar-item .circle-icon svg { 
-            width: 16px !important; height: 16px !important; display: block; 
-            fill: none; stroke: var(--active-teal); stroke-width: 2.5;
-        }
+    .layout-grid {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 18px;
+      min-width: 0;
+    }
 
-        .lab-metric-panel {
-            background: rgba(0, 128, 128, 0.04); border: 1px solid var(--glass-border);
-            border-radius: 14px; padding: 12px 14px; font-size: 11px; font-weight: 700;
-            color: var(--text-dark); display: flex; flex-direction: column; gap: 6px;
-        }
-        .metric-row { display: flex; justify-content: space-between; align-items: center; font-weight: 800; }
-        .metric-badge { font-size: 11px; color: var(--active-teal); font-weight: 900; }
+    .panel {
+      padding: 16px;
+      min-width: 0;
+    }
 
-        .drawer-outside-overlay {
-            position: absolute; top:0; left:0; width:100%; height:100%;
-            background: rgba(15, 23, 42, 0.08); backdrop-filter: blur(1px);
-            z-index: 7000; display: none;
-        }
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
 
-        .modal-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(226, 232, 240, 0.7); backdrop-filter: blur(25px);
-            z-index: 10000; display: flex; justify-content: center; align-items: center;
-            padding: 30px; box-sizing: border-box; text-align: center;
-            opacity: 0; pointer-events: none; transition: 0.3s;
-        }
-        .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal-box { background: var(--glass-bg); backdrop-filter: blur(20px); padding: 45px 30px; border-radius: 35px; box-shadow: var(--glass-shadow); border: 1px solid var(--glass-border); width: 100%; }
-        .greeting { font-weight: 900; font-size: 28px; color: var(--active-teal); margin-bottom: 5px; text-transform: uppercase; letter-spacing: -1px; }
-        .location { font-size: 11px; font-weight: 800; color: var(--text-light); text-transform: uppercase; margin-bottom: 25px; letter-spacing: 1px; }
-        .modal-body { font-size: 14px; font-weight: 700; color: var(--text-dark); line-height: 1.6; margin-bottom: 35px; }
-        .ok-btn { background: var(--metallic-teal); color: white; padding: 18px; border-radius: 20px; font-weight: 900; font-size: 13px; text-transform: uppercase; cursor: pointer; box-shadow: 0 8px 20px rgba(0, 128, 128, 0.3); border: 1px solid rgba(255,255,255,0.2); flex: 1; }
-        .ok-btn.ghost { background: var(--metallic-silver); color: var(--text-dark); box-shadow: none; border: 1px solid var(--glass-border); }
-        .spinner { width: 30px; height: 30px; border: 4px solid #cbd5e0; border-top: 4px solid var(--active-teal); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    </style>
+    .timeline-stream {
+      display: grid;
+      gap: 12px;
+    }
+
+    .entry-card {
+      border-radius: var(--radius-lg);
+      background: var(--card);
+      border: 1px solid var(--line);
+      padding: 14px 16px;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.04);
+    }
+    .mode-night .entry-card {
+      box-shadow: none;
+    }
+
+    .entry-card__head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: start;
+      margin-bottom: 10px;
+    }
+
+    .entry-card__case {
+      font-size: .76rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-weight: 700;
+      color: var(--sub);
+    }
+
+    .entry-card__text {
+      line-height: 1.5;
+      font-size: .97rem;
+      white-space: pre-wrap;
+    }
+
+    .entry-card__meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 10px;
+      font-size: .82rem;
+      color: var(--sub);
+    }
+
+    .entry-card__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: .72rem;
+      border: 1px solid var(--line);
+      background: rgba(0,0,0,0.04);
+      color: var(--sub);
+    }
+
+    .entry-card.work { border-left: 5px solid var(--graph-work); }
+    .entry-card.injury { border-left: 5px solid var(--graph-injury); }
+    .entry-card.family { border-left: 5px solid var(--graph-family); }
+    .entry-card.property { border-left: 5px solid var(--graph-property); }
+
+    .columns-4 {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(200px, 1fr));
+      gap: 14px;
+    }
+
+    .lane {
+      border: 1px dashed var(--line);
+      border-radius: var(--radius-lg);
+      padding: 12px;
+      min-height: 220px;
+      background: rgba(0,0,0,0.02);
+    }
+
+    .lane h4 {
+      margin: 0 0 10px;
+      font-size: .95rem;
+    }
+
+    .linked-note {
+      font-size: .82rem;
+      color: var(--sub);
+      margin-bottom: 10px;
+    }
+
+    .graph-legend {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .graph-row {
+      display: grid;
+      grid-template-columns: 90px 1fr 36px;
+      gap: 10px;
+      align-items: center;
+    }
+    .graph-track {
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.06);
+      overflow: hidden;
+    }
+    .graph-fill {
+      height: 100%;
+      border-radius: 999px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 12px;
+    }
+
+    .stat-label {
+      font-size: .76rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--sub);
+      margin-bottom: 4px;
+    }
+    .stat-value {
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .hidden { display: none !important; }
+
+    #firmPulse {
+      position: fixed;
+      top: 14px;
+      right: 14px;
+      z-index: 9999;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: #c92a2a;
+      color: #fff;
+      font-weight: 700;
+      box-shadow: 0 0 0 0 rgba(201,42,42,.7);
+      animation: pulse 1.6s infinite;
+      display: none;
+    }
+    @keyframes pulse {
+      0%   { box-shadow: 0 0 0 0 rgba(201,42,42,.55); }
+      70%  { box-shadow: 0 0 0 14px rgba(201,42,42,0); }
+      100% { box-shadow: 0 0 0 0 rgba(201,42,42,0); }
+    }
+
+    .warning-banner {
+      border: 1px solid rgba(201,42,42,.22);
+      color: #86181d;
+      background: rgba(255,245,245,.8);
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+    }
+    .mode-night .warning-banner {
+      background: rgba(201,42,42,.12);
+      color: #ffd7d7;
+      border-color: rgba(201,42,42,.22);
+    }
+
+    .exam-shell {
+      display: grid;
+      gap: 12px;
+    }
+    .exam-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .exam-viewport {
+      position: relative;
+      min-height: 720px;
+      border-radius: var(--radius-lg);
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.9), rgba(241,244,248,0.92)),
+        linear-gradient(135deg, #edf2f7, #ffffff);
+      border: 1px solid var(--line);
+      overflow: auto;
+    }
+    .mode-night .exam-viewport {
+      background:
+        radial-gradient(circle at top left, rgba(30,34,44,0.95), rgba(17,20,28,0.96)),
+        linear-gradient(135deg, #161a23, #0f1218);
+    }
+
+    .exam-canvas-wrap {
+      position: relative;
+      width: 1600px;
+      height: 1200px;
+      transform-origin: top left;
+    }
+
+    .exam-svg {
+      position: absolute;
+      inset: 0;
+      width: 1600px;
+      height: 1200px;
+      pointer-events: none;
+    }
+
+    .exam-node {
+      position: absolute;
+      width: 250px;
+      min-height: 96px;
+      padding: 14px;
+      border-radius: 22px;
+      color: white;
+      box-shadow: 0 14px 26px rgba(0,0,0,0.14);
+      cursor: grab;
+      user-select: none;
+    }
+    .exam-node.dragging { cursor: grabbing; }
+    .exam-node.work { background: linear-gradient(135deg, #2f6bff, #194bcc); }
+    .exam-node.injury { background: linear-gradient(135deg, #e5484d, #b42318); }
+    .exam-node.family { background: linear-gradient(135deg, #7c4dff, #5b34c4); }
+    .exam-node.property { background: linear-gradient(135deg, #24a148, #198038); }
+
+    .exam-node__type {
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      opacity: .88;
+      margin-bottom: 8px;
+    }
+    .exam-node__label {
+      font-size: .93rem;
+      line-height: 1.35;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .exam-node__date {
+      font-size: .8rem;
+      opacity: .88;
+    }
+
+    .exam-link {
+      fill: none;
+      stroke: rgba(120, 126, 140, 0.78);
+      stroke-width: 2.5;
+    }
+
+    .witness-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .witness-grid input, .witness-grid textarea, .compose input, .study-hub input, .study-hub select {
+      width: 100%;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--line);
+      background: var(--card);
+      color: var(--text);
+      padding: 10px 12px;
+      outline: none;
+    }
+
+    .inbox-list, .exhibit-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .small-note {
+      font-size: .82rem;
+      color: var(--sub);
+      line-height: 1.4;
+    }
+
+    .firm-view-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    @media (max-width: 1250px) {
+      .app-shell { grid-template-columns: 1fr; }
+      .sidebar {
+        position: static;
+        height: auto;
+      }
+      .layout-grid, .study-grid, .columns-4 { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
-<body onload="initApp()">
-    <div class="phone-bezel">
-        
-        <div id="drawerOutsideOverlay" class="drawer-outside-overlay" onclick="toggleSidebar()"></div>
+<body>
+  <div id="firmPulse">Changes after lock: <span id="firmPulseCount">0</span></div>
 
-        <div class="sidebar" id="sidebarMenu">
-            <div class="sidebar-header">LAB CORE</div>
-            
-            <div class="lab-customizer-box">
-                <div>
-                    <div class="customizer-label">Typography Profile</div>
-                    <select class="customizer-select" onchange="applySovereignFontProfile(this.value)">
-                        <option value="nunito">Nunito Pro Standard</option>
-                        <option value="serif">Serif Reference Ledger</option>
-                        <option value="mono">Monospace Evidence Track</option>
-                    </select>
-                </div>
-                <div>
-                    <div class="customizer-label">Sovereign Canvas Tint</div>
-                    <select id="labThemeSelector" class="customizer-select" onchange="applySovereignLuminanceOverride(this.value)">
-                        <option value="auto">Automated Circadian Lock</option>
-                        <option value="day">Force Silver Platinum View</option>
-                        <option value="night">Force Matte Slate Night View</option>
-                    </select>
-                </div>
-            </div>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <h1>WorkTimeline™</h1>
+        <span class="pill" id="timeThemeLabel">Theme: Bubbly</span>
+      </div>
 
-            <div class="sidebar-item" onclick="emailTimeline()">
-                <div class="circle-icon">
-                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"/></svg>
-                </div>
-                Draft Email
-            </div>
-            
-            <div class="sidebar-item" onclick="alert('Exporting securely.')">
-                <div class="circle-icon">
-                    <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
-                </div>
-                Save & Export
-            </div>
+      <div class="case-switcher">
+        <div class="section-title">Case lane</div>
+        <button class="btn active" id="case-work" onclick="switchCase('work')">Work</button>
+        <button class="btn" id="case-injury" onclick="switchCase('injury')">Injury</button>
+        <button class="btn" id="case-family" onclick="switchCase('family')">Family</button>
+        <button class="btn" id="case-property" onclick="switchCase('property')">Property</button>
+      </div>
 
-            <div class="lab-metric-panel">
-                <span style="font-size:9px; text-transform:uppercase; color:var(--text-light); letter-spacing:0.04em;">Audit Metrics</span>
-                <div class="metric-row">
-                    <span>Total Amendments:</span>
-                    <span id="labAmendCounter" class="metric-badge">0</span>
-                </div>
-            </div>
+      <div class="theme-controls">
+        <div class="section-title">Visual controls</div>
+        <label class="pill"><input type="checkbox" id="forceNightToggle" onchange="toggleForceNight(this.checked)" style="margin-right:8px;"> Force Night View</label>
+        <button class="btn" onclick="toggleUiVersion()">Switch UI Feel</button>
+      </div>
 
-            <div class="lab-metric-panel" style="background: rgba(0, 0, 0, 0.02);">
-                <span style="font-size:9px; text-transform:uppercase; color:var(--active-teal); letter-spacing:0.04em;">Verified Precedents</span>
-                <div id="labCaseLawBox" style="font-size:10px; font-style:italic; line-height:1.4; color:var(--text-light);">
-                    Run Pattern Recognition to query local jurisdictional legal case benchmarks...
-                </div>
+      <div class="firm-view">
+        <div class="section-title">Firm view</div>
+        <div class="firm-view-row">
+          <select id="firmViewSelect" onchange="setFirmView(this.value)">
+            <option value="court">Court Format</option>
+            <option value="timeline">Timeline</option>
+            <option value="combined">Combined</option>
+            <option value="linked">Linked</option>
+            <option value="exam">Examination</option>
+          </select>
+          <span class="small-note">After sync + lock, the firm can choose how to view the same locked record.</span>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Record state</div>
+          <div class="stat-value" id="recordStateLabel">Working</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Post-lock changes</div>
+          <div class="stat-value" id="postLockCount">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Witness inbox</div>
+          <div class="stat-value" id="witnessCount">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Exhibits</div>
+          <div class="stat-value" id="exhibitCount">0</div>
+        </div>
+      </div>
+
+      <div class="small-note">
+        Hidden demo triggers:
+        <br><strong>#nubrite-demo</strong> → work example
+        <br><strong>#injury-demo</strong> → injury example
+      </div>
+    </aside>
+
+    <main class="main">
+      <section class="topbar glass">
+        <div class="topbar-left">
+          <span class="pill">Default view: Single Timeline</span>
+          <span class="pill" id="activeCaseLabel">Active: Work</span>
+          <span class="pill" id="studyModeLabel">Mode: Single</span>
+        </div>
+        <div class="topbar-right">
+          <span class="pill" id="lockInfoLabel">Unlocked</span>
+          <span class="pill" id="syncInfoLabel">Not synced</span>
+        </div>
+      </section>
+
+      <section class="study-hub">
+        <div class="section-title">Study Hub</div>
+
+        <div class="study-grid">
+          <div>
+            <div class="compose glass">
+              <div class="timeline-header">
+                <strong>Add entry</strong>
+                <span class="small-note">Type your entry normally, or enter a hidden demo trigger as the first entry.</span>
+              </div>
+
+              <textarea id="entryInput" placeholder="Add a timeline entry..."></textarea>
+
+              <div class="compose-row">
+                <button class="btn primary" onclick="handleAddEntry()">Add Entry</button>
+                <button class="btn" onclick="setStudyMode('single')">Single Timeline</button>
+                <button class="btn" onclick="setStudyMode('combined')">Combined</button>
+                <button class="btn" onclick="setStudyMode('linked')">Linked</button>
+                <button class="btn" onclick="setStudyMode('exam')">Examination Mode</button>
+                <button class="btn success" onclick="confirmSyncAndLock()">Send to Firm / Clio</button>
+              </div>
+
+              <div id="lockWarning" class="warning-banner hidden">
+                Warning: once synced and locked, this record switches to a court-style presentation. Any later changes will be logged and visible to the firm.
+              </div>
             </div>
-            
-            <div class="sidebar-item" style="margin-top:auto;" onclick="resetTimeline()">
-                <div class="circle-icon">
-                    <svg viewBox="0 0 24 24" style="stroke: #e11d48;"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
-                </div>
-                <span style="color: #e11d48;">Reset Engine</span>
+          </div>
+
+          <div class="glass panel">
+            <div class="timeline-header">
+              <strong>Pattern / graph summary</strong>
+              <span class="small-note">View-only summary of how much content exists in each lane.</span>
             </div>
+            <div id="graphLegend" class="graph-legend"></div>
+          </div>
         </div>
 
-        <div class="modal-overlay active" id="intakeOverlay">
-            <div class="modal-box">
-                <div class="greeting" id="greetingText">Good Morning</div>
-                <div class="location">Langley Township, BC</div>
-                <div class="modal-body">
-                    We do not practice law and we're not giving advice. <br><br><b>Look at this like it's a journal. Welcome to WorkTimeline™.</b>
-                </div>
-                <div class="ok-btn" onclick="document.getElementById('intakeOverlay').classList.remove('active')">I Understand</div>
+        <div class="layout-grid">
+          <section class="panel">
+            <div class="timeline-header">
+              <strong id="timelineTitle">Single Timeline</strong>
+              <span class="small-note" id="timelineSubtitle">One active lane at a time.</span>
             </div>
+            <div id="timelineBody"></div>
+          </section>
+
+          <section class="panel">
+            <div class="timeline-header">
+              <strong>Witness & Exhibit Hub</strong>
+              <button class="btn" onclick="toggleWitnessPanel()">👤 Witness</button>
+            </div>
+
+            <div id="witnessPanel" class="witness-grid hidden">
+              <input id="witnessName" placeholder="Witness name" />
+              <input id="witnessContact" placeholder="Email or phone" />
+              <textarea id="witnessNote" placeholder="Optional note to witness"></textarea>
+              <div class="compose-row">
+                <button class="btn primary" onclick="sendWitnessInvite()">Send Invite</button>
+              </div>
+              <div class="small-note">
+                This front-end generates and records the verification code. Your backend should actually deliver the code by email or SMS.
+              </div>
+
+              <hr style="border:none;border-top:1px solid var(--line); width:100%;">
+
+              <strong>Simulate witness reply</strong>
+              <input id="replyWitnessName" placeholder="Witness name" />
+              <input id="replyCode" placeholder="Verification code" />
+              <textarea id="replyStatement" placeholder="Witness statement"></textarea>
+              <button class="btn" onclick="simulateWitnessReply()">Submit witness statement</button>
+            </div>
+
+            <div>
+              <div class="section-title">Witness inbox</div>
+              <div id="witnessInbox" class="inbox-list"></div>
+            </div>
+
+            <div style="margin-top:18px;">
+              <div class="section-title">Exhibit / Evidence list</div>
+              <div id="exhibitList" class="exhibit-list"></div>
+            </div>
+          </section>
         </div>
+      </section>
+    </main>
+  </div>
 
-        <div class="modal-overlay" id="patternOverlay">
-            <div class="modal-box">
-                <div class="greeting">Pattern Engine</div>
-                <div class="location">Timeline Analysis</div>
-                
-                <div id="patternLoader">
-                    <div class="spinner"></div>
-                    <div class="modal-body">Scanning timeline for chronological patterns...</div>
-                </div>
+  <script>
+    // =========================
+    // STATE
+    // =========================
+    let studyMode = "single";
+    let activeCase = "work";
+    let uiVersion = "modern";
+    let forceNight = false;
 
-                <div id="patternResult" style="display: none;">
-                    <div class="modal-body">
-                        <b>Analysis Pass Complete.</b><br><br>
-                        Pattern Detected: <i>Multiple incident logs clustered in the morning hours.</i><br><br>
-                        Do you want to append this analytical insight into the unalterable chronology record layout track?
-                    </div>
-                    <div style="display: flex; gap: 10px;">
-                        <div class="ok-btn ghost" onclick="handlePatternAudit('IGNORED')">Ignore Pass</div>
-                        <div class="ok-btn" onclick="handlePatternAudit('ACCEPTED')">Inject Recognition</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    const timelines = {
+      work: [],
+      injury: [],
+      family: [],
+      property: []
+    };
 
-        <div class="app-container" id="mainApp">
-            
-            <div class="top-toggles">
-                <div class="toggle-btn" id="privacyBtn" onclick="togglePrivacy()">Privacy Switch</div>
-                <div style="display: flex; gap: 8px;">
-                    <div class="toggle-btn active" id="timelineToggle" onclick="switchMode('TIMELINE')">Timeline</div>
-                    <div class="toggle-btn" id="notesToggle" onclick="switchMode('NOTES')">Notes</div>
-                </div>
-            </div>
+    const recordState = {
+      locked: false,
+      lockedAt: null,
+      synced: false,
+      syncedAt: null,
+      syncTarget: null,
+      postLockChanges: 0
+    };
 
-            <div class="header">
-                <div id="menuBtn" class="menu-trigger" onclick="toggleSidebar()">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-                </div>
-                
-                <div class="brand-block">
-                    <div class="main-title" id="brandTitle">
-                        <svg class="briefcase-logo-svg" viewBox="0 0 24 24">
-                            <path class="briefcase-body" d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-8-2h4v2h-4V4zm8 7H4V8h16v3zm-16 2h16v1H4v-1zm16 6H4v-3h16v3z"/>
-                            <line class="briefcase-timeline-path" x1="2" y1="14.5" x2="22" y2="14.5"/>
-                            <circle class="briefcase-node" cx="6" cy="14.5" r="0.8"/>
-                            <circle class="briefcase-node" cx="12" cy="14.5" r="0.8"/>
-                            <circle class="briefcase-node" cx="18" cy="14.5" r="0.8"/>
-                        </svg>
-                        WorkTimeline
-                        <div id="pipelineLed" class="clio-status-led" title="Clio Handshake Active"></div>
-                    </div>
-                </div>
-                
-                <div style="width: 40px;"></div>
-            </div>
+    const firmAlerts = {
+      count: 0,
+      events: []
+    };
 
-            <div class="input-panel">
-                <div class="template-row" id="templateRow">
-                    <div id="chip-setting" class="template-chip" onclick="toggleTemplatePill('SETTING')">Setting Template</div>
-                    <div id="chip-witness" class="template-chip" onclick="toggleTemplatePill('WITNESS')">Witness Template</div>
-                    <div id="chip-injury" class="template-chip" onclick="toggleTemplatePill('INJURY')">Injury Template</div>
-                </div>
-                <div class="hardware-icons">
-                    <div class="hw-item">
-                        <input type="file" accept="image/*" capture="environment" onchange="hwFeedback('PHOTO ATTACHED', 'photo')">
-                        <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                    </div>
-                    <div class="hw-item">
-                        <input type="file" accept="audio/*" capture="microphone" onchange="hwFeedback('AUDIO RECORDED', 'audio')">
-                        <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
-                    </div>
-                    <div class="hw-item">
-                        <input type="file" onchange="hwFeedback('DOCUMENT LINKED', 'text')">
-                        <svg viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
-                    </div>
-                </div>
-                <div class="input-wrapper">
-                    <textarea id="logInput" placeholder="Start journaling your truth..."></textarea>
-                </div>
-            </div>
+    const witnessInvites = [];
+    const witnessStatements = [];
+    const exhibits = [];
+    const auditLog = [];
 
-            <div class="workspace-layout-matrix">
-                <div id="visualSpineTrack" class="vertical-spine-track"></div>
-                <div class="timeline-container" id="timelineBody">
-                    <div class="log-list" id="logList"></div>
-                </div>
-            </div>
+    let firmView = "court";
 
-            <div class="footer-nav">
-                <div id="prButton" class="footer-pill" onclick="runPatternRecognition()">
-                    <svg viewBox="0 0 24 24">
-                        <rect x="2" y="3" width="20" height="14" rx="4" ry="4"></rect>
-                        <line x1="8" y1="21" x2="16" y2="21"></line>
-                        <line x1="12" y1="17" x2="12" y2="21"></line>
-                    </svg>
-                    Pattern Rec
-                </div>
-                
-                <div class="center-add-btn" onclick="submitEntry()">+</div>
-                
-                <div class="footer-pill" style="color: var(--active-teal);" onclick="executeMasterClioLock()">
-                    <svg viewBox="0 0 24 24"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
-                    Sync to Clio
-                </div>
-            </div>
-            
-        </div>
-    </div>
+    const examState = {
+      scale: 1,
+      nodes: [],
+      links: [],
+      dragNodeId: null,
+      dragOffsetX: 0,
+      dragOffsetY: 0
+    };
 
-    <script>
-        let logsData = JSON.parse(localStorage.getItem('silver_vault_v46')) || [];
-        let currentMode = 'TIMELINE';
-        let isEngineSealed = false;
-        let activeAmendingId = null;
-        let isPatternRecognitionTriggeredInSession = false; // Shadow tracking indicator state
-        
-        const pinSvg = `<svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
+    // =========================
+    // DEMO DATA
+    // Built from your uploaded files:
+    // final dated time lime TJ.docx and medical_timeline.pdf
+    // =========================
+    const NUBRITE_DEMO = [
+      {
+        text: "July 25, 2025 — Shop-floor injury event and report conflict documented.",
+        original: "July 25, 2025"
+      },
+      {
+        text: "July 30, 2025 — Accurate First Aid report delivered to the office.",
+        original: "July 30, 2025"
+      },
+      {
+        text: "July 31, 2025 — Formal notice sent warning of a WorkSafeBC bullying claim.",
+        original: "July 31, 2025"
+      },
+      {
+        text: "August 28, 2025 — Missing First Aid room keys and safety risk reported.",
+        original: "August 28, 2025"
+      },
+      {
+        text: "September 3, 2025 — Privacy concerns raised about exposed medical files.",
+        original: "September 3, 2025"
+      },
+      {
+        text: "End of October — Partial note about being followed at break and belittled.",
+        original: "End of October"
+      }
+    ];
 
-        const iconNodePaths = {
-            text: `<svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>`,
-            photo: `<svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`,
-            audio: `<svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>`
-        };
+    const INJURY_DEMO = [
+      {
+        text: "September 8–9, 2025 — Initial psychological distress with paranoia, anxiety, nausea, and inability to function.",
+        original: "September 8–9, 2025"
+      },
+      {
+        text: "September 2025 — Continued sleep disruption and inability to eat.",
+        original: "September 2025"
+      },
+      {
+        text: "October 2025 — Symptoms worsen with continued workplace exposure.",
+        original: "October 2025"
+      },
+      {
+        text: "November 7, 2025 — Messages confirm months of harassment and breakdown symptoms.",
+        original: "November 7, 2025"
+      },
+      {
+        text: "November 10, 2025 — Major breakdown leading to psychiatric admission.",
+        original: "November 10, 2025"
+      },
+      {
+        text: "Post-Employment — Continued psychological impact affecting ability to work.",
+        original: "Post-Employment"
+      }
+    ];
 
-        function evaluateCircadianTimeSystem() {
-            if (sessionStorage.getItem('theme_override')) return;
-            const currentHour = new Date().getHours();
-            if (currentHour < 6 || currentHour >= 18) {
-                document.body.classList.add('night-deck');
-            } else {
-                document.body.classList.remove('night-deck');
-            }
+    // =========================
+    // INIT
+    // =========================
+    init();
+
+    function init() {
+      applyTimeUI();
+      setInterval(applyTimeUI, 60000);
+      updateCaseButtons();
+      refreshStatusBadges();
+      renderAll();
+    }
+
+    // =========================
+    // THEME + FONTS
+    // =========================
+    function getTimeMode() {
+      const hour = new Date().getHours();
+      if (hour >= 6 && hour < 12) return "standard";
+      if (hour >= 12 && hour < 18) return "bubbly";
+      return "night";
+    }
+
+    function applyTimeUI() {
+      let mode = getTimeMode();
+      if (forceNight) mode = "night";
+
+      document.body.classList.remove("mode-standard", "mode-bubbly", "mode-night");
+
+      if (!document.body.classList.contains("court-mode")) {
+        document.body.classList.add("mode-" + mode);
+      }
+
+      const label = document.getElementById("timeThemeLabel");
+      if (label) {
+        label.textContent = `Theme: ${capitalize(mode)}`;
+      }
+    }
+
+    function toggleForceNight(value) {
+      forceNight = value;
+      applyTimeUI();
+    }
+
+    function toggleUiVersion() {
+      uiVersion = uiVersion === "modern" ? "legal" : "modern";
+      document.body.classList.toggle("ui-legal", uiVersion === "legal");
+    }
+
+    // =========================
+    // CASES + MODES
+    // =========================
+    function switchCase(caseType) {
+      activeCase = caseType;
+      updateCaseButtons();
+      renderAll();
+    }
+
+    function updateCaseButtons() {
+      ["work","injury","family","property"].forEach(k => {
+        const el = document.getElementById(`case-${k}`);
+        if (!el) return;
+        el.classList.toggle("active", k === activeCase);
+      });
+    }
+
+    function setStudyMode(mode) {
+      studyMode = mode;
+      renderAll();
+    }
+
+    function setFirmView(mode) {
+      firmView = mode;
+      if (recordState.locked && recordState.synced) {
+        if (mode === "timeline" || mode === "court") setStudyMode("single");
+        if (mode === "combined") setStudyMode("combined");
+        if (mode === "linked") setStudyMode("linked");
+        if (mode === "exam") setStudyMode("exam");
+      }
+      renderAll();
+    }
+
+    // =========================
+    // ENTRY FLOW
+    // =========================
+    function handleAddEntry() {
+      const input = document.getElementById("entryInput");
+      const text = input.value.trim();
+      if (!text) return;
+
+      // Hidden first-entry triggers
+      if (timelines.work.length === 0 && text === "#nubrite-demo") {
+        activateNubriteDemo();
+        input.value = "";
+        return;
+      }
+      if (timelines.injury.length === 0 && text === "#injury-demo") {
+        activateInjuryDemo();
+        input.value = "";
+        return;
+      }
+
+      addEntryToCurrentCase(text);
+      input.value = "";
+    }
+
+    function addEntryToCurrentCase(text) {
+      const entry = {
+        id: crypto.randomUUID(),
+        caseType: activeCase,
+        text,
+        original: new Date().toLocaleString("en-CA"),
+        system: new Date().toISOString(),
+        source: "user"
+      };
+
+      timelines[activeCase].push(entry);
+
+      addExhibit({
+        type: "timeline_entry",
+        title: `${capitalize(activeCase)} Entry`,
+        sourceId: entry.id
+      });
+
+      if (recordState.locked) {
+        registerPostLockChange("entry_added", entry.id, { caseType: activeCase, text });
+      }
+
+      logAuditEvent("entry_added", {
+        caseType: activeCase,
+        entryId: entry.id
+      });
+
+      renderAll();
+    }
+
+    function activateNubriteDemo() {
+      activeCase = "work";
+      updateCaseButtons();
+      timelines.work = NUBRITE_DEMO.map((item, index) => ({
+        id: `work-demo-${index + 1}`,
+        caseType: "work",
+        text: item.text,
+        original: item.original,
+        system: new Date().toISOString(),
+        source: "demo"
+      }));
+
+      logAuditEvent("demo_loaded", { demo: "nubrite" });
+      renderAll();
+    }
+
+    function activateInjuryDemo() {
+      activeCase = "injury";
+      updateCaseButtons();
+      timelines.injury = INJURY_DEMO.map((item, index) => ({
+        id: `injury-demo-${index + 1}`,
+        caseType: "injury",
+        text: item.text,
+        original: item.original,
+        system: new Date().toISOString(),
+        source: "demo"
+      }));
+
+      logAuditEvent("demo_loaded", { demo: "injury" });
+      renderAll();
+    }
+
+    function editEntry(entryId) {
+      const ref = findEntry(entryId);
+      if (!ref) return;
+
+      const next = prompt("Edit entry:", ref.entry.text);
+      if (next === null) return;
+      ref.entry.text = next;
+
+      if (recordState.locked) {
+        registerPostLockChange("entry_edited", entryId, { caseType: ref.caseType });
+      }
+
+      logAuditEvent("entry_edited", { entryId, caseType: ref.caseType });
+      renderAll();
+    }
+
+    function deleteEntry(entryId) {
+      const ref = findEntry(entryId);
+      if (!ref) return;
+
+      const ok = confirm("Delete this entry?");
+      if (!ok) return;
+
+      timelines[ref.caseType] = timelines[ref.caseType].filter(e => e.id !== entryId);
+
+      if (recordState.locked) {
+        registerPostLockChange("entry_deleted", entryId, { caseType: ref.caseType });
+      }
+
+      logAuditEvent("entry_deleted", { entryId, caseType: ref.caseType });
+      renderAll();
+    }
+
+    function findEntry(entryId) {
+      for (const caseType of Object.keys(timelines)) {
+        const entry = timelines[caseType].find(e => e.id === entryId);
+        if (entry) return { caseType, entry };
+      }
+      return null;
+    }
+
+    // =========================
+    // SYNC + LOCK + COURT MODE
+    // =========================
+    async function confirmSyncAndLock() {
+      const warning = document.getElementById("lockWarning");
+      if (warning) warning.classList.remove("hidden");
+
+      const ok = confirm(
+        "You are about to send this timeline to the firm / Clio and lock it.\n\n" +
+        "After it is locked, any future alterations or changes will be logged and visible to the firm."
+      );
+
+      if (!ok) return;
+
+      await syncAndLock();
+    }
+
+    async function syncAndLock() {
+      // shape aligned to your existing sync.js:
+      // { lawyer, timeline, notes } => POST /api/sync
+      // if authRequired, redirect to authUrl
+      const payload = {
+        lawyer: "WorkTimeline User",
+        timeline: flattenAllTimelines().map(e => `[${capitalize(e.caseType)}] ${e.text}`),
+        notes: buildAcceptedExhibitNotes()
+      };
+
+      try {
+        const response = await fetch("/api/sync", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        }).catch(() => null);
+
+        if (response) {
+          const data = await response.json().catch(() => ({}));
+
+          if (response.status === 401 && data.authRequired && data.authUrl) {
+            window.location.href = data.authUrl;
+            return;
+          }
+
+          if (!response.ok) {
+            alert(`Sync error: ${data.error || response.statusText}`);
+            return;
+          }
+        } else {
+          // Front-end fallback so the UI still works if backend isn't connected yet
+          console.warn("Backend /api/sync not reachable; simulating successful sync for UI preview.");
         }
 
-        function applySovereignFontProfile(fontProfile) {
-            if (fontProfile === 'serif') {
-                document.documentElement.style.setProperty('--font-family-override', 'Georgia, serif');
-            } else if (fontProfile === 'mono') {
-                document.documentElement.style.setProperty('--font-family-override', '"Courier New", monospace');
-            } else {
-                document.documentElement.style.setProperty('--font-family-override', "'Nunito', sans-serif");
-            }
-        }
+        recordState.synced = true;
+        recordState.syncedAt = new Date().toISOString();
+        recordState.syncTarget = "firm-or-clio";
+        recordState.locked = true;
+        recordState.lockedAt = new Date().toISOString();
 
-        function applySovereignLuminanceOverride(themeSelection) {
-            if (themeSelection === 'day') {
-                document.body.classList.remove('night-deck');
-                sessionStorage.setItem('theme_override', 'day');
-            } else if (themeSelection === 'night') {
-                document.body.classList.add('night-deck');
-                sessionStorage.setItem('theme_override', 'night');
-            } else {
-                sessionStorage.removeItem('theme_override');
-                evaluateCircadianTimeSystem();
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const override = sessionStorage.getItem('theme_override');
-            const selector = document.getElementById('labThemeSelector');
-            if (override === 'day') {
-                document.body.classList.remove('night-deck');
-                if (selector) selector.value = 'day';
-            } else if (override === 'night') {
-                document.body.classList.add('night-deck');
-                if (selector) selector.value = 'night';
-            }
-            document.getElementById('prButton').classList.remove('disabled-gate');
-            updateLabSidebarCounters();
+        document.body.classList.add("court-mode");
+        logAuditEvent("timeline_synced_and_locked", {
+          syncedAt: recordState.syncedAt,
+          lockedAt: recordState.lockedAt
         });
 
-        function initApp() {
-            evaluateCircadianTimeSystem();
-            setGreeting();
-            if(logsData.length === 0) loadDummyData();
-            renderTimeline();
-            setInterval(evaluateCircadianTimeSystem, 60000);
-        }
+        refreshStatusBadges();
+        renderAll();
+        alert("Timeline sent and locked. Court-style presentation is now active.");
+      } catch (err) {
+        console.error(err);
+        alert("Sync failed.");
+      }
+    }
 
-        function loadDummyData() {
-            const baseTime = new Date();
-            logsData = [
-                { id: 1, parentId: null, mode: 'TIMELINE', type: 'text', stamp: `LANGLEY, BC | ${baseTime.toLocaleDateString()} | 9:00 AM`, text: "WITNESS: Interviewed Sarah regarding the incident..." },
-                { id: 2, parentId: null, mode: 'TIMELINE', type: 'text', stamp: `LANGLEY, BC | ${baseTime.toLocaleDateString()} | 11:30 AM`, text: "INJURY: Details logged and submitted to manager." }
-            ];
-            saveData();
-        }
+    function registerPostLockChange(changeType, entryId, details = {}) {
+      recordState.postLockChanges += 1;
+      firmAlerts.count += 1;
+      firmAlerts.events.push({
+        changeType,
+        entryId,
+        at: new Date().toISOString(),
+        details
+      });
 
-        function setGreeting() {
-            const h = new Date().getHours();
-            let greeting = "Good Evening";
-            if (h >= 4 && h < 12) greeting = "Good Morning";
-            else if (h >= 12 && h < 18) greeting = "Good Afternoon";
-            document.getElementById('greetingText').innerText = greeting;
-        }
+      showFirmPulse();
+      refreshStatusBadges();
+      logAuditEvent("post_lock_change", {
+        changeType,
+        entryId,
+        details,
+        count: recordState.postLockChanges
+      });
+    }
 
-        function toggleSidebar() { 
-            const sidebar = document.getElementById('sidebarMenu');
-            const menuBtn = document.getElementById('menuBtn');
-            const mask = document.getElementById('drawerOutsideOverlay');
-            sidebar.classList.toggle('open');
-            menuBtn.classList.toggle('open-active');
-            mask.style.display = sidebar.classList.contains('open') ? 'block' : 'none';
-        }
-        
-        /* THE INSTANT PRIVACY SYSTEM SWITCH LOOP INJECTION */
-        function togglePrivacy() { 
-            const app = document.getElementById('mainApp');
-            app.classList.toggle('privacy-active');
-            const btn = document.getElementById('privacyBtn');
-            btn.classList.toggle('active', app.classList.contains('privacy-active'));
-        }
+    function showFirmPulse() {
+      const el = document.getElementById("firmPulse");
+      const countEl = document.getElementById("firmPulseCount");
+      if (!el || !countEl) return;
+      el.style.display = "block";
+      countEl.textContent = String(firmAlerts.count);
+    }
 
-        function switchMode(mode) {
-            currentMode = mode;
-            document.getElementById('timelineToggle').classList.toggle('active', mode === 'TIMELINE');
-            document.getElementById('notesToggle').classList.toggle('active', mode === 'NOTES');
-            document.getElementById('visualSpineTrack').style.display = mode === 'TIMELINE' ? 'flex' : 'none';
-            document.getElementById('templateRow').style.display = mode === 'TIMELINE' ? 'flex' : 'none';
-            document.getElementById('logInput').placeholder = mode === 'TIMELINE' ? "Start journaling your truth..." : "Capture a private note...";
-            cancelActiveAmendment();
-            renderTimeline();
-        }
-        
-        function hwFeedback(label, iconType) {
-            const input = document.getElementById('logInput');
-            input.value += (input.value ? '\n' : '') + `[${label} @ ${new Date().toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit'})}]\n`;
-            input.dataset.nodeType = iconType;
-            input.focus();
-        }
+    function refreshStatusBadges() {
+      document.getElementById("recordStateLabel").textContent =
+        recordState.locked ? "Locked" : "Working";
+      document.getElementById("postLockCount").textContent =
+        String(recordState.postLockChanges);
+      document.getElementById("witnessCount").textContent =
+        String(witnessStatements.length);
+      document.getElementById("exhibitCount").textContent =
+        String(exhibits.length);
 
-        function toggleTemplatePill(type) {
-            const pill = document.getElementById(`chip-${type.toLowerCase()}`);
-            const input = document.getElementById('logInput');
-            const prefix = `${type} INJECTION LAYOUT: \n[TIME]: \n[LOG FIELD]: \n\n`;
-            
-            if (pill.classList.contains('selected')) {
-                pill.classList.remove('selected');
-                input.value = input.value.replace(prefix, "");
-            } else {
-                pill.classList.add('selected');
-                input.value = prefix + input.value;
-                input.focus();
-            }
-        }
+      document.getElementById("activeCaseLabel").textContent =
+        `Active: ${capitalize(activeCase)}`;
+      document.getElementById("studyModeLabel").textContent =
+        `Mode: ${friendlyMode(studyMode)}`;
+      document.getElementById("lockInfoLabel").textContent =
+        recordState.locked ? `Locked ${formatShort(recordState.lockedAt)}` : "Unlocked";
+      document.getElementById("syncInfoLabel").textContent =
+        recordState.synced ? `Synced ${formatShort(recordState.syncedAt)}` : "Not synced";
+    }
 
-        function saveData() { 
-            localStorage.setItem('silver_vault_v46', JSON.stringify(logsData)); 
-            updateLabSidebarCounters();
-        }
+    // =========================
+    // WITNESS FLOW
+    // =========================
+    function toggleWitnessPanel() {
+      document.getElementById("witnessPanel").classList.toggle("hidden");
+    }
 
-        function updateLabSidebarCounters() {
-            const totalAmendmentsCount = logsData.filter(v => v.parentId !== null && v.parentId !== undefined).length;
-            const counterElement = document.getElementById('labAmendCounter');
-            if (counterElement) counterElement.innerText = totalAmendmentsCount;
-        }
+    function sendWitnessInvite() {
+      const name = document.getElementById("witnessName").value.trim();
+      const contact = document.getElementById("witnessContact").value.trim();
+      const note = document.getElementById("witnessNote").value.trim();
 
-        function triggerAmendmentRoutine(targetId) {
-            if (isEngineSealed) return;
-            const itemToAmend = logsData.find(v => v.id === targetId);
-            if (!itemToAmend) return;
+      if (!name || !contact) {
+        alert("Please enter a witness name and contact.");
+        return;
+      }
 
-            const rootLookupId = itemToAmend.parentId ? itemToAmend.parentId : itemToAmend.id;
-            const activeLayersCount = logsData.filter(v => v.id === rootLookupId || v.parentId === rootLookupId).length;
-            const projectedAmendmentIndexNumber = activeLayersCount + 1;
+      const code = generateVerificationCode();
+      const invite = {
+        id: crypto.randomUUID(),
+        name,
+        contact,
+        note,
+        code,
+        sentAt: new Date().toISOString(),
+        status: "pending"
+      };
 
-            const userConsentToSupersede = confirm(
-                `SUPERSEDE CHRONOLOGY RECORD?\n\nDo you want to amend this section?\nThis will file Amendment #${projectedAmendmentIndexNumber} for this log file entry.\n\nWe are keeping track of all background layers to maintain court integrity metrics inside the Lab.`
-            );
+      witnessInvites.push(invite);
+      logAuditEvent("witness_invite_sent", {
+        id: invite.id,
+        name,
+        contact
+      });
 
-            if (!userConsentToSupersede) return;
+      // Optional backend hook:
+      fetch("/api/witness-invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(invite)
+      }).catch(() => {
+        console.warn("No /api/witness-invite backend connected. Invite recorded locally.");
+      });
 
-            activeAmendingId = targetId;
-            const inputField = document.getElementById('logInput');
-            inputField.value = itemToAmend.text;
-            inputField.placeholder = `Filing Amendment #${projectedAmendmentIndexNumber}...`;
-            inputField.style.border = "1px solid var(--active-teal)";
-            inputField.focus();
-        }
+      alert(`Invite queued.\nVerification code: ${code}`);
+      renderWitnessInbox();
 
-        function cancelActiveAmendment() {
-            activeAmendingId = null;
-            const inputField = document.getElementById('logInput');
-            if (inputField) {
-                inputField.placeholder = currentMode === 'TIMELINE' ? "Start journaling your truth..." : "Capture a private note...";
-                inputField.style.border = "none";
-            }
-        }
+      document.getElementById("witnessName").value = "";
+      document.getElementById("witnessContact").value = "";
+      document.getElementById("witnessNote").value = "";
+    }
 
-        function renderTimeline() {
-            const list = document.getElementById('logList');
-            const spine = document.getElementById('visualSpineTrack');
-            list.innerHTML = '';
-            spine.innerHTML = '';
-            
-            const baseEntries = logsData.filter(log => (log.mode || 'TIMELINE') === currentMode && !log.parentId);
+    function simulateWitnessReply() {
+      const name = document.getElementById("replyWitnessName").value.trim();
+      const code = document.getElementById("replyCode").value.trim().toUpperCase();
+      const statement = document.getElementById("replyStatement").value.trim();
 
-            baseEntries.forEach(log => {
-                const stackContainer = document.createElement('div');
-                stackContainer.className = 'log-bubble-stack';
+      if (!name || !code || !statement) {
+        alert("Enter the witness name, verification code, and statement.");
+        return;
+      }
 
-                const childAmendments = logsData.filter(v => v.parentId === log.id);
-                const completeVersionHistoryChain = [log, ...childAmendments];
-                const topMostActiveVersion = completeVersionHistoryChain[completeVersionHistoryChain.length - 1];
+      const invite = witnessInvites.find(w => w.code === code);
+      if (!invite) {
+        alert("Invalid verification code.");
+        return;
+      }
 
-                const entry = document.createElement('div');
-                entry.className = 'log-entry';
-                
-                let timer;
-                const start = () => timer = setTimeout(() => { 
-                    triggerAmendmentRoutine(topMostActiveVersion.id);
-                }, 700);
-                const stop = () => clearTimeout(timer);
-                
-                entry.onmousedown = start; entry.onmouseup = stop; entry.onmouseleave = stop;
-                entry.ontouchstart = start; entry.ontouchend = stop;
+      const row = {
+        id: crypto.randomUUID(),
+        witnessName: name,
+        contact: invite.contact,
+        statement,
+        verificationCode: code,
+        verified: true,
+        status: "pending",
+        receivedAt: new Date().toISOString()
+      };
 
-                // MAIN TIMELINE CARD: STAYS ON TOP, RETAINS SOLID SILVER PLATINUM GRAPHICS
-                entry.innerHTML = `
-                    <div class="timestamp-stamp">${pinSvg} ${topMostActiveVersion.stamp}</div>
-                    <div class="log-bubble" title="Hold to Supersede entry parameters">${topMostActiveVersion.text.replace(/\n/g, '<br>')}</div>
-                `;
-                stackContainer.appendChild(entry);
+      witnessStatements.push(row);
+      invite.status = "replied";
+      logAuditEvent("witness_statement_received", {
+        witnessName: name,
+        statementId: row.id
+      });
 
-                // HISTORY OVERLAY BACKING CARDS (TRANSPARENT PASS)
-                if (completeVersionHistoryChain.length > 1) {
-                    for (let i = completeVersionHistoryChain.length - 2; i >= 0; i--) {
-                        const historyNode = completeVersionHistoryChain[i];
-                        const historyBubble = document.createElement('div');
-                        historyBubble.className = 'log-bubble historical-version';
-                        const internalVersionLabel = i === 0 ? 'ORIGINAL BASELINE' : `AMENDMENT #${i}`;
-                        historyBubble.innerHTML = `<span style="font-size:8px; opacity:0.6; font-weight:900; color:var(--active-teal);">[${internalVersionLabel}: ${historyNode.stamp}]</span><br>${historyNode.text.replace(/\n/g, '<br>')}`;
-                        stackContainer.appendChild(historyBubble);
-                    }
-                }
+      renderWitnessInbox();
+      refreshStatusBadges();
 
-                // INVERTED REVERSAL SPECIFICATION PASSTHROUGH: 
-                // When an analytical suggestion is validated, it loads in lock-state, nested directly in the shadows *underneath* your original logs.
-                if (currentMode === 'TIMELINE' && isPatternRecognitionTriggeredInSession) {
-                    const aiShadowInsightBox = document.createElement('div');
-                    aiShadowInsightBox.className = 'log-bubble pattern-insight-layer';
-                    aiShadowInsightBox.innerHTML = `
-                        <div style="font-size:9px; text-transform:uppercase; font-weight:900; color:var(--active-teal); letter-spacing:0.02em; margin-bottom:2px;">[AI Core Track Analytics Locked Underneath]</div>
-                        Chronological proximity audit: Clustered morning event sequence signature captured. Integrity metrics cataloged.
-                    `;
-                    stackContainer.appendChild(aiShadowInsightBox);
-                }
+      document.getElementById("replyWitnessName").value = "";
+      document.getElementById("replyCode").value = "";
+      document.getElementById("replyStatement").value = "";
+    }
 
-                list.appendChild(stackContainer);
+    function setWitnessStatementStatus(id, status) {
+      const row = witnessStatements.find(x => x.id === id);
+      if (!row) return;
 
-                if (currentMode === 'TIMELINE') {
-                    const node = document.createElement('div');
-                    node.className = 'timeline-squircle';
-                    node.id = `node_link_${log.id}`;
-                    node.innerHTML = iconNodePaths[topMostActiveVersion.type || 'text'];
-                    node.onclick = () => alert(`Event Chain Base Reference ID: ${log.id}\nLayers Compiled: ${completeVersionHistoryChain.length}\nLast State: ${topMostActiveVersion.stamp}`);
-                    
-                    if(topMostActiveVersion.highlighted || (isPatternRecognitionTriggeredInSession && log.id === 1)) {
-                        node.classList.add('pattern-triggered');
-                    }
-                    spine.appendChild(node);
-                }
-            });
-            
-            const container = document.getElementById('timelineBody');
-            container.scrollTop = container.scrollHeight;
-            spine.scrollTop = spine.scrollHeight;
-        }
+      row.status = status;
 
-        function submitEntry() {
-            if (isEngineSealed) return alert("Timeline array has been immutably sealed to Clio. New submissions locked.");
-            const input = document.getElementById('logInput');
-            const text = input.value.trim();
-            if (!text) return;
-
-            const now = new Date();
-            const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-            const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-            const nodeType = input.dataset.nodeType || 'text';
-
-            if (activeAmendingId !== null) {
-                const targetNodeRecord = logsData.find(v => v.id === activeAmendingId);
-                const baseParentIdNodeLink = targetNodeRecord.parentId ? targetNodeRecord.parentId : targetNodeRecord.id;
-
-                logsData.push({
-                    id: Date.now(),
-                    parentId: baseParentIdNodeLink,
-                    mode: currentMode,
-                    type: nodeType,
-                    stamp: `AMENDMENT FILED | ${dateStr} | ${timeStr}`,
-                    text: text
-                });
-                cancelActiveAmendment();
-            } else {
-                logsData.push({
-                    id: Date.now(),
-                    parentId: null,
-                    mode: currentMode,
-                    type: nodeType,
-                    stamp: `LANGLEY, BC | ${dateStr} | ${timeStr}`,
-                    text: text
-                });
-            }
-
-            input.value = '';
-<script>
-// ==========================================
-// WORKTIMELINE CLIENT-SIDE SYNC ENGINE
-// ==========================================
-
-let isEngineSealed = false;
-// Fallback local array if logsData isn't defined globally yet
-let logsData = window.logsData || []; 
-
-function cancelActiveAmendment() {
-    console.log("Active timeline modifications paused for secure transit.");
-}
-
-function renderTimeline() {
-    console.log("Timeline rendering refreshed to reflect immutable status.");
-}
-
-async function executeMasterClioLock() {
-    if (logsData.length === 0) return alert("Log repository empty.");
-    cancelActiveAmendment();
-    
-    // 1. Set status indicator to processing grey
-    const led = document.getElementById('pipelineLed');
-    if (led) led.style.backgroundColor = '#4b5563';
-    
-    // 2. Automatically detect if app is running on StackBlitz or Vercel
-    const currentRedirectUri = window.location.origin + '/';
-    
-    try {
-        // 3. Transmit the structured chronological logs to your backend container
-        const response = await fetch('https://worktimelineapp-1oed.supabase.co/functions/v1/quick-worker', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                logs: logsData,
-                redirect_uri: currentRedirectUri
-            })
+      if (status === "accepted") {
+        addExhibit({
+          type: "witness_statement",
+          title: `Witness Statement — ${row.witnessName}`,
+          sourceId: row.id
         });
-        
-        const result = await response.json();
-        if (!response.ok || result.error) throw new Error(result.error || 'Handshake failed.');
-        
-        // 4. On successful data sync, lock the interface down and illuminate the active teal LED
-        isEngineSealed = true;
-        if (led) led.style.backgroundColor = '#008080';
-        
-        alert("AMENDMENT IMMUTABILITY SECURED\n\nFull chronological case file package compiled, verified, and transmitted securely to the active Clio client ledger.");
-        renderTimeline();
-        
-    } catch (error) {
-        console.error("Clio Synchronization Error:", error);
-        // Turn the status LED red to indicate a routing break
-        if (led) led.style.backgroundColor = '#ef4444';
-        alert("Sync pipeline failure: Could not verify secure authorization endpoints with the regional cluster.");
-    }
-}
+      }
 
-// 5. Handle incoming OAuth callback tokens if arriving from redirect url parameters
-document.addEventListener("DOMContentLoaded", () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const incomingToken = urlParams.get('code');
-    const syncStatusElement = document.getElementById('syncStatus');
-    
-    if (incomingToken) {
-        sessionStorage.setItem('clio_access_token', incomingToken);
-        if (syncStatusElement) {
-            syncStatusElement.innerHTML = "CONNECTED TO CLIO GROW INTAKE";
-        }
-        console.log("Transmitting securely to Clio Grow Server...");
+      logAuditEvent("witness_statement_reviewed", { id, status });
+      renderWitnessInbox();
     }
-});
-</script>
 
+    function renderWitnessInbox() {
+      const container = document.getElementById("witnessInbox");
+      if (!container) return;
+
+      const rows = witnessStatements.length
+        ? witnessStatements.map(w => `
+          <article class="entry-card">
+            <div class="entry-card__head">
+              <div>
+                <div class="entry-card__case">Witness</div>
+                <strong>${escapeHtml(w.witnessName)}</strong>
+              </div>
+              <span class="tag">${escapeHtml(w.status)}</span>
+            </div>
+            <div class="entry-card__text">${escapeHtml(w.statement)}</div>
+            <div class="entry-card__meta">
+              <span>Verified: ${w.verified ? "Yes" : "No"}</span>
+              <span>Received: ${escapeHtml(formatShort(w.receivedAt))}</span>
+            </div>
+            <div class="entry-card__actions">
+              <button class="btn success" onclick="setWitnessStatementStatus('${w.id}', 'accepted')">Accept</button>
+              <button class="btn danger" onclick="setWitnessStatementStatus('${w.id}', 'denied')">Deny</button>
+            </div>
+          </article>
+        `).join("")
+        : `<div class="small-note">No witness statements yet.</div>`;
+
+      container.innerHTML = rows;
+      refreshStatusBadges();
+    }
+
+    function generateVerificationCode(length = 6) {
+      const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+      let out = "";
+      for (let i = 0; i < length; i++) {
+        out += chars[Math.floor(Math.random() * chars.length)];
+      }
+      return out;
+    }
+
+    // =========================
+    // EXHIBITS
+    // =========================
+    function addExhibit(item) {
+      exhibits.push({
+        id: crypto.randomUUID(),
+        exhibitNo: `EX-${String(exhibits.length + 1).padStart(3, "0")}`,
+        type: item.type,
+        title: item.title,
+        sourceId: item.sourceId || null,
+        status: "pending",
+        addedAt: new Date().toISOString()
+      });
+
+      logAuditEvent("exhibit_added", {
+        exhibitNo: exhibits[exhibits.length - 1].exhibitNo,
+        title: item.title,
+        type: item.type
+      });
+
+      renderExhibitList();
+      refreshStatusBadges();
+    }
+
+    function setExhibitStatus(id, status) {
+      const row = exhibits.find(x => x.id === id);
+      if (!row) return;
+
+      row.status = status;
+      row.updatedAt = new Date().toISOString();
+
+      logAuditEvent("exhibit_status_changed", { id, status });
+      renderExhibitList();
+    }
+
+    function renderExhibitList() {
+      const container = document.getElementById("exhibitList");
+      if (!container) return;
+
+      container.innerHTML = exhibits.length
+        ? exhibits.map(ex => `
+          <article class="entry-card">
+            <div class="entry-card__head">
+              <div>
+                <div class="entry-card__case">${escapeHtml(ex.exhibitNo)}</div>
+                <strong>${escapeHtml(ex.title)}</strong>
+              </div>
+              <span class="tag">${escapeHtml(ex.status)}</span>
+            </div>
+            <div class="entry-card__meta">
+              <span>Type: ${escapeHtml(ex.type)}</span>
+              <span>Added: ${escapeHtml(formatShort(ex.addedAt))}</span>
+            </div>
+            <div class="entry-card__actions">
+              <button class="btn success" onclick="setExhibitStatus('${ex.id}', 'accepted')">Accept</button>
+              <button class="btn danger" onclick="setExhibitStatus('${ex.id}', 'denied')">Deny</button>
+            </div>
+          </article>
+        `).join("")
+        : `<div class="small-note">No exhibits yet.</div>`;
+    }
+
+    function buildAcceptedExhibitNotes() {
+      return exhibits
+        .filter(ex => ex.status === "accepted")
+        .map(ex => `${ex.exhibitNo}: ${ex.title}`);
+    }
+
+    // =========================
+    // RENDERERS
+    // =========================
+    function renderAll() {
+      refreshStatusBadges();
+      renderGraphLegend();
+      renderWitnessInbox();
+      renderExhibitList();
+      renderTimelineView();
+    }
+
+    function renderTimelineView() {
+      const title = document.getElementById("timelineTitle");
+      const subtitle = document.getElementById("timelineSubtitle");
+      const body = document.getElementById("timelineBody");
+
+      if (!title || !subtitle || !body) return;
+
+      if (studyMode === "single") {
+        title.textContent = `${capitalize(activeCase)} Timeline`;
+        subtitle.textContent = "One active lane at a time.";
+        body.innerHTML = renderSingleTimeline();
+        return;
+      }
+
+      if (studyMode === "combined") {
+        title.textContent = "Combined Timeline";
+        subtitle.textContent = "All lanes in one view.";
+        body.innerHTML = renderCombinedTimeline();
+        return;
+      }
+
+      if (studyMode === "linked") {
+        title.textContent = "Linked Timeline";
+        subtitle.textContent = "Separate lanes with relationship hints.";
+        body.innerHTML = renderLinkedTimeline();
+        return;
+      }
+
+      if (studyMode === "exam") {
+        title.textContent = "Examination Mode";
+        subtitle.textContent = "Visual node graph view.";
+        body.innerHTML = renderExamShell();
+        setTimeout(buildExaminationMode, 0);
+      }
+    }
+
+    function renderSingleTimeline() {
+      const rows = timelines[activeCase];
+      if (!rows.length) {
+        return `<div class="small-note">No entries in ${escapeHtml(activeCase)} yet.</div>`;
+      }
+      return `<div class="timeline-stream">${rows.map(renderEntryCard).join("")}</div>`;
+    }
+
+    function renderCombinedTimeline() {
+      const all = flattenAllTimelines().sort((a, b) => sortDate(a) - sortDate(b));
+      if (!all.length) return `<div class="small-note">No entries yet.</div>`;if (!all.length) return `<div class="small-note">No entries yet.</div>`;
+      return `<div class="timeline-stream">${all.map(renderEntryCard).join("")}</div>`;
+    }
+
+    function renderLinkedTimeline() {
+      const linked = `
+        <div class="linked-note">
+          Separate lanes are preserved. This view only shows relationships visually — it does not merge or alter the underlying timelines.
+        </div>
+        <div class="columns-4">
+          ${["work","injury","family","property"].map(caseType => `
+            <section class="lane">
+              <h4>${capitalize(caseType)}</h4>
+              ${
+                timelines[caseType].length
+                  ? timelines[caseType].map(renderEntryCard).join("")
+                  : `<div class="small-note">No entries.</div>`
+              }
+            </section>
+          `).join("")}
+        </div>
+      `;
+      return linked;
+    }
+
+    function renderExamShell() {
+      return `
+        <div class="exam-shell">
+          <div class="exam-toolbar">
+            <button class="btn" onclick="zoomExam(1.1)">Zoom In</button>
+            <button class="btn" onclick="zoomExam(0.9)">Zoom Out</button>
+            <button class="btn" onclick="resetExamView()">Reset</button>
+          </div>
+          <div class="exam-viewport" id="examViewport">
+            <div class="exam-canvas-wrap" id="examCanvasWrap">
+              <svg class="exam-svg" id="examSvg"></svg>
+              <div id="examNodesLayer"></div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderEntryCard(entry) {
+      return `
+        <article class="entry-card ${escapeHtml(entry.caseType || activeCase)}">
+          <div class="entry-card__head">
+            <div>
+              <div class="entry-card__case">${capitalize(entry.caseType || activeCase)}</div>
+              <div class="entry-card__text">${escapeHtml(entry.text)}</div>
+            </div>
+            <span class="tag">${escapeHtml(entry.source || "user")}</span>
+          </div>
+          <div class="entry-card__meta">
+            <span>Original: ${escapeHtml(entry.original)}</span>
+            <span>System: ${escapeHtml(formatShort(entry.system))}</span>
+          </div>
+          <div class="entry-card__actions">
+            <button class="btn secondary" onclick="editEntry('${entry.id}')">Edit</button>
+            <button class="btn danger" onclick="deleteEntry('${entry.id}')">Delete</button>
+            <button class="btn" onclick="addExhibitFromEntry('${entry.id}')">Add as Exhibit</button>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderGraphLegend() {
+      const counts = {
+        work: timelines.work.length,
+        injury: timelines.injury.length,
+        family: timelines.family.length,
+        property: timelines.property.length
+      };
+      const max = Math.max(1, ...Object.values(counts));
+
+      const container = document.getElementById("graphLegend");
+      if (!container) return;
+
+      container.innerHTML = Object.entries(counts).map(([key, value]) => `
+        <div class="graph-row">
+          <div>${capitalize(key)}</div>
+          <div class="graph-track">
+            <div class="graph-fill" style="
+              width:${(value / max) * 100}%;
+              background:${graphColour(key)};
+            "></div>
+          </div>
+          <div>${value}</div>
+        </div>
+      `).join("");
+    }
+
+    // =========================
+    // EXAMINATION MODE
+    // =========================
+    function buildExaminationMode() {
+      examState.nodes = buildExamNodes();
+      examState.links = buildExamLinks();
+      layoutExamNodes(examState.nodes);
+      drawExam();
+      wireExamWheelZoom();
+    }
+
+    function buildExamNodes() {
+      const nodes = [];
+      Object.keys(timelines).forEach(caseType => {
+        timelines[caseType].forEach((entry, index) => {
+          nodes.push({
+            id: `${caseType}-${index}`,
+            caseType,
+            entryId: entry.id,
+            label: entry.text,
+            original: entry.original,
+            x: 0,
+            y: 0,
+            width: 250,
+            height: 100
+          });
+        });
+      });
+      return nodes;
+    }
+
+    function buildExamLinks() {
+      const links = [];
+      const workNodes = examState.nodes.filter(n => n.caseType === "work");
+      const injuryNodes = examState.nodes.filter(n => n.caseType === "injury");
+
+      workNodes.forEach(source => {
+        injuryNodes.forEach(target => {
+          links.push({
+            source: source.id,
+            target: target.id
+          });
+        });
+      });
+
+      return links;
+    }
+
+    function layoutExamNodes(nodes) {
+      const laneX = {
+        work: 80,
+        injury: 430,
+        family: 780,
+        property: 1130
+      };
+
+      const laneY = {
+        work: 80,
+        injury: 80,
+        family: 80,
+        property: 80
+      };
+
+      nodes.forEach(node => {
+        node.x = laneX[node.caseType] || 80;
+        node.y = laneY[node.caseType] || 80;
+        laneY[node.caseType] += 150;
+      });
+    }
+
+    function drawExam() {
+      const svg = document.getElementById("examSvg");
+      const layer = document.getElementById("examNodesLayer");
+      const wrap = document.getElementById("examCanvasWrap");
+
+      if (!svg || !layer || !wrap) return;
+
+      wrap.style.transform = `scale(${examState.scale})`;
+      svg.innerHTML = `
+        <defs>
+          <marker id="arrowHead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#8a8f98"></polygon>
+          </marker>
+        </defs>
+      `;
+      layer.innerHTML = "";
+
+      examState.nodes.forEach(node => {
+        const div = document.createElement("div");
+        div.className = `exam-node ${node.caseType}`;
+        div.dataset.nodeId = node.id;
+        div.style.left = `${node.x}px`;
+        div.style.top = `${node.y}px`;
+
+        div.innerHTML = `
+          <div class="exam-node__type">${capitalize(node.caseType)}</div>
+          <div class="exam-node__label">${escapeHtml(node.label)}</div>
+          <div class="exam-node__date">${escapeHtml(node.original)}</div>
+        `;
+
+        makeNodeDraggable(div, node);
+        layer.appendChild(div);
+      });
+
+      examState.links.forEach(link => {
+        const source = examState.nodes.find(n => n.id === link.source);
+        const target = examState.nodes.find(n => n.id === link.target);
+        if (!source || !target) return;
+
+        const x1 = source.x + source.width;
+        const y1 = source.y + source.height / 2;
+        const x2 = target.x;
+        const y2 = target.y + target.height / 2;
+        const midX = (x1 + x2) / 2;
+
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", `M ${x1} ${y1} C ${midX} ${y1}, ${midX} ${y2}, ${x2} ${y2}`);
+        path.setAttribute("class", "exam-link");
+        path.setAttribute("marker-end", "url(#arrowHead)");
+        svg.appendChild(path);
+      });
+    }
+
+    function makeNodeDraggable(element, node) {
+      element.onmousedown = (e) => {
+        examState.dragNodeId = node.id;
+        examState.dragOffsetX = e.clientX - node.x;
+        examState.dragOffsetY = e.clientY - node.y;
+        element.classList.add("dragging");
+      };
+
+      window.addEventListener("mousemove", onExamMouseMove);
+      window.addEventListener("mouseup", onExamMouseUp);
+    }
+
+    function onExamMouseMove(e) {
+      if (!examState.dragNodeId) return;
+      const node = examState.nodes.find(n => n.id === examState.dragNodeId);
+      if (!node) return;
+
+      node.x = (e.clientX - examState.dragOffsetX) / examState.scale;
+      node.y = (e.clientY - examState.dragOffsetY) / examState.scale;
+      drawExam();
+    }
+
+    function onExamMouseUp() {
+      examState.dragNodeId = null;
+      document.querySelectorAll(".exam-node.dragging").forEach(el => el.classList.remove("dragging"));
+    }
+
+    function zoomExam(factor) {
+      examState.scale = Math.max(0.5, Math.min(2.4, examState.scale * factor));
+      drawExam();
+    }
+
+    function resetExamView() {
+      examState.scale = 1;
+      drawExam();
+    }
+
+    let examWheelWired = false;
+    function wireExamWheelZoom() {
+      if (examWheelWired) return;
+      examWheelWired = true;
+
+      document.addEventListener("wheel", (e) => {
+        if (studyMode !== "exam") return;
+        const viewport = document.getElementById("examViewport");
+        if (!viewport || !viewport.contains(e.target)) return;
+
+        e.preventDefault();
+        zoomExam(e.deltaY < 0 ? 1.08 : 0.92);
+      }, { passive: false });
+    }
+
+    // =========================
+    // EXHIBITS FROM ENTRIES
+    // =========================
+    function addExhibitFromEntry(entryId) {
+      const ref = findEntry(entryId);
+      if (!ref) return;
+
+      addExhibit({
+        type: "timeline_entry",
+        title: `${capitalize(ref.caseType)} Entry Exhibit`,
+        sourceId: entryId
+      });
+    }
+
+    // =========================
+    // HELPERS
+    // =========================
+    function flattenAllTimelines() {
+      return Object.keys(timelines).flatMap(caseType =>
+        timelines[caseType].map(entry => ({ ...entry, caseType }))
+      );
+    }
+
+    function logAuditEvent(action, metadata = {}) {
+      auditLog.push({
+        id: crypto.randomUUID(),
+        action,
+        metadata,
+        timestamp: new Date().toISOString()
+      });
+      // Local front-end log only. Your backend/audit_logs table should receive this in production.
+      console.log("AUDIT:", action, metadata);
+    }
+
+    function graphColour(type) {
+      if (type === "work") return "var(--graph-work)";
+      if (type === "injury") return "var(--graph-injury)";
+      if (type === "family") return "var(--graph-family)";
+      if (type === "property") return "var(--graph-property)";
+      return "#999";
+    }
+
+    function capitalize(str = "") {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    function friendlyMode(mode) {
+      if (mode === "single") return "Single";
+      if (mode === "combined") return "Combined";
+      if (mode === "linked") return "Linked";
+      if (mode === "exam") return "Examination";
+      return mode;
+    }
+
+    function escapeHtml(str = "") {
+      return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function formatShort(value) {
+      if (!value) return "—";
+      const d = new Date(value);
+      if (Number.isNaN(d.getTime())) return value;
+      return new Intl.DateTimeFormat("en-CA", {
+        dateStyle: "medium",
+        timeStyle: "short"
+      }).format(d);
+    }
+
+    function sortDate(entry) {
+      const parsed = Date.parse(entry.system || entry.original || "");
+      return Number.isNaN(parsed) ? Number.MAX_SAFE_INTEGER : parsed;
+    }
+  </script>
 </body>
-    </html>
+</html>
+
+     
