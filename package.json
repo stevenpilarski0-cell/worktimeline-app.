@@ -1,7 +1,15 @@
 {
-  "name": "worktimeline-engine",
+  "name": "worktimeline",
   "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
-    "@supabase/supabase-js": "^2.43.4"
+    "axios": "^1.6.0",
+    "express": "^4.18.2",
+    "nodemailer": "^6.9.13",
+    "@supabase/supabase-js": "^2.39.0",
+    "body-parser": "^1.20.2"
   }
 }
