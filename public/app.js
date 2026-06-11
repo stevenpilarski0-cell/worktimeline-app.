@@ -1,6 +1,17 @@
 // ==============================
 // 🔷 CORE STATE (your database in memory)
 // ==============================
+const SUPABASE_URL = window.__SUPABASE_URL__;
+const SUPABASE_ANON_KEY = window.__SUPABASE_ANON_KEY__;
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true
+  }
+});
+
 const store = {
   entries: JSON.parse(localStorage.getItem("entries") || "[]"),
   witnesses: JSON.parse(localStorage.getItem("witnesses") || "[]"),
