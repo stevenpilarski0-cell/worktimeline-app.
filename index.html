@@ -5,566 +5,448 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WorkTimeline™</title>
   <style>
-    :root {
-      --bg: #f4f6fb;
-      --bg-elev: rgba(255,255,255,0.72);
-      --card: rgba(255,255,255,0.78);
-      --text: #17181c;
-      --sub: #636a75;
-      --line: rgba(0,0,0,0.08);
-      --accent: #1a5cff;
-      --accent-2: #28a745;
-      --accent-3: #e03131;
-      --accent-4: #6f42c1;
-      --shadow: 0 12px 30px rgba(0,0,0,0.08);
-      --radius-xl: 28px;
-      --radius-lg: 22px;
-      --radius-md: 16px;
-      --radius-sm: 12px;
-      --panel-blur: blur(16px);
-      --graph-work: #1a5cff;
-      --graph-injury: #e03131;
-      --graph-family: #6f42c1;
-      --graph-property: #28a745;
-      --court-font: Georgia, "Times New Roman", serif;
-      --standard-font: "Times New Roman", serif;
-      --bubbly-font: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "SF Pro Display", "Segoe UI", sans-serif;
-      --night-font: Inter, system-ui, sans-serif;
+    :root{
+      --bg:#f4f6fb;
+      --bg-elev:rgba(255,255,255,.78);
+      --card:rgba(255,255,255,.9);
+      --text:#17181c;
+      --sub:#667085;
+      --line:rgba(0,0,0,.08);
+      --shadow:0 14px 34px rgba(0,0,0,.08);
+
+      --work:#1a5cff;
+      --injury:#e03131;
+      --family:#6f42c1;
+      --property:#28a745;
+
+      --radius-xl:28px;
+      --radius-lg:22px;
+      --radius-md:16px;
+      --radius-sm:12px;
+
+      --standard-font:"Times New Roman", serif;
+      --bubbly-font:-apple-system, BlinkMacSystemFont, "SF Pro Rounded", "SF Pro Display", "Segoe UI", sans-serif;
+      --night-font:Inter, system-ui, sans-serif;
+      --court-font:Georgia, "Times New Roman", serif;
     }
 
-    * { box-sizing: border-box; }
+    *{ box-sizing:border-box; }
 
-    body {
-      margin: 0;
+    body{
+      margin:0;
+      color:var(--text);
       background:
-        radial-gradient(circle at top left, #ffffff 0%, #eef3fb 55%, #edf1f7 100%);
-      color: var(--text);
-      font-family: var(--bubbly-font);
-      transition: background .25s ease, color .25s ease, font-family .2s ease;
+        radial-gradient(circle at top left, #fff 0%, #eef3fb 55%, #edf1f7 100%);
+      font-family:var(--bubbly-font);
+      transition:background .2s ease, color .2s ease, font-family .2s ease;
     }
 
-    body.mode-standard { font-family: var(--standard-font); }
-    body.mode-bubbly { font-family: var(--bubbly-font); }
-    body.mode-night {
-      --bg: #0f1116;
-      --bg-elev: rgba(24,27,35,0.82);
-      --card: rgba(29,33,42,0.88);
-      --text: #eef1f5;
-      --sub: #aab2bf;
-      --line: rgba(255,255,255,0.08);
-      --shadow: 0 12px 30px rgba(0,0,0,0.24);
+    body.mode-standard{ font-family:var(--standard-font); }
+    body.mode-bubbly{ font-family:var(--bubbly-font); }
+    body.mode-night{
       background:
         radial-gradient(circle at top left, #151822 0%, #10131a 60%, #0d1016 100%);
-      color: var(--text);
-      font-family: var(--night-font);
+      color:#eef1f5;
+      font-family:var(--night-font);
+      --bg-elev:rgba(24,27,35,.86);
+      --card:rgba(29,33,42,.94);
+      --sub:#aab2bf;
+      --line:rgba(255,255,255,.08);
+      --shadow:0 14px 34px rgba(0,0,0,.22);
     }
 
-    body.court-mode {
-      background: #ffffff;
-      color: #111111;
-      font-family: var(--court-font);
+    body.court-mode{
+      background:#fff;
+      color:#111;
+      font-family:var(--court-font);
     }
     body.court-mode .glass,
     body.court-mode .panel,
-    body.court-mode .card,
     body.court-mode .entry-card,
-    body.court-mode .study-hub,
-    body.court-mode .sidebar {
-      background: #ffffff !important;
-      box-shadow: none !important;
-      border: 1px solid #cfcfcf !important;
-      backdrop-filter: none !important;
-      color: #111111 !important;
+    body.court-mode .sidebar{
+      background:#fff !important;
+      color:#111 !important;
+      box-shadow:none !important;
+      border:1px solid #cfcfcf !important;
+      backdrop-filter:none !important;
     }
 
-    .app-shell {
-      min-height: 100vh;
-      display: grid;
-      grid-template-columns: 320px 1fr;
-      gap: 18px;
-      padding: 18px;
+    .app-shell{
+      min-height:100vh;
+      display:grid;
+      grid-template-columns:320px 1fr;
+      gap:18px;
+      padding:18px;
     }
 
-    .glass, .panel, .sidebar, .study-hub {
-      background: var(--bg-elev);
-      backdrop-filter: var(--panel-blur);
-      -webkit-backdrop-filter: var(--panel-blur);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow);
+    .glass, .panel, .sidebar{
+      background:var(--bg-elev);
+      backdrop-filter:blur(14px);
+      border:1px solid var(--line);
+      border-radius:var(--radius-xl);
+      box-shadow:var(--shadow);
     }
 
-    .sidebar {
-      padding: 18px;
-      position: sticky;
-      top: 18px;
-      height: calc(100vh - 36px);
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      overflow: hidden;
+    .sidebar{
+      padding:18px;
+      position:sticky;
+      top:18px;
+      height:calc(100vh - 36px);
+      display:flex;
+      flex-direction:column;
+      gap:16px;
     }
 
-    .brand {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
+    .brand{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .brand h1{
+      margin:0;
+      font-size:1.18rem;
+      letter-spacing:.01em;
     }
 
-    .brand h1 {
-      margin: 0;
-      font-size: 1.2rem;
-      letter-spacing: .01em;
+    .section-title{
+      font-size:.78rem;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      font-weight:700;
+      color:var(--sub);
+      margin:4px 0 8px;
     }
 
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      border-radius: 999px;
-      padding: 8px 12px;
-      background: rgba(0,0,0,0.05);
-      border: 1px solid var(--line);
-      font-size: .82rem;
-      color: var(--sub);
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border-radius:999px;
+      padding:8px 12px;
+      background:rgba(0,0,0,.04);
+      border:1px solid var(--line);
+      font-size:.82rem;
+      color:var(--sub);
     }
 
-    .case-switcher, .study-actions, .firm-view, .theme-controls {
-      display: grid;
-      gap: 10px;
+    .btn, input, textarea, select{
+      font:inherit;
     }
 
-    .section-title {
-      font-size: .82rem;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      color: var(--sub);
-      font-weight: 700;
-      margin: 6px 2px 2px;
+    .btn{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.72);
+      color:var(--text);
+      border-radius:var(--radius-sm);
+      padding:10px 12px;
+      cursor:pointer;
+    }
+    .mode-night .btn{
+      background:rgba(255,255,255,.06);
+      color:#eef1f5;
+    }
+    .btn.primary{ background:var(--work); color:#fff; border-color:transparent; }
+    .btn.success{ background:var(--property); color:#fff; border-color:transparent; }
+    .btn.danger{ background:var(--injury); color:#fff; border-color:transparent; }
+    .btn.active{
+      outline:2px solid rgba(26,92,255,.22);
     }
 
-    button, select, input, textarea {
-      font: inherit;
+    .stack{ display:grid; gap:10px; }
+    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+
+    .stats-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
+    }
+    .stat-card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius-md);
+      padding:12px;
+    }
+    .stat-label{
+      font-size:.74rem;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+      color:var(--sub);
+      margin-bottom:4px;
+    }
+    .stat-value{
+      font-weight:700;
+      font-size:1.08rem;
     }
 
-    .btn {
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,0.72);
-      color: var(--text);
-      border-radius: var(--radius-sm);
-      padding: 10px 12px;
-      cursor: pointer;
-      transition: transform .12s ease, opacity .12s ease, background .12s ease;
-    }
-    .mode-night .btn {
-      background: rgba(255,255,255,0.06);
-      color: var(--text);
+    .main{
+      display:grid;
+      grid-template-rows:auto auto 1fr;
+      gap:18px;
+      min-width:0;
     }
 
-    .btn:hover { transform: translateY(-1px); }
-    .btn.primary {
-      background: var(--accent);
-      color: white;
-      border-color: transparent;
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:14px 16px;
     }
-    .btn.success {
-      background: var(--accent-2);
-      color: white;
-      border-color: transparent;
-    }
-    .btn.danger {
-      background: var(--accent-3);
-      color: white;
-      border-color: transparent;
-    }
-    .btn.secondary {
-      background: rgba(0,0,0,0.04);
-    }
-    .btn.active {
-      outline: 2px solid rgba(26,92,255,.25);
-      border-color: rgba(26,92,255,.35);
+    .topbar-left, .topbar-right{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
     }
 
-    .main {
-      display: grid;
-      grid-template-rows: auto auto 1fr auto;
-      gap: 18px;
-      min-width: 0;
+    .compose{
+      padding:16px;
+      display:grid;
+      gap:12px;
     }
 
-    .topbar {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 16px;
+    textarea, input, select{
+      width:100%;
+      border-radius:var(--radius-md);
+      border:1px solid var(--line);
+      padding:10px 12px;
+      outline:none;
+      background:var(--card);
+      color:var(--text);
+    }
+    textarea{
+      min-height:96px;
+      resize:vertical;
+    }
+    .mode-night textarea,
+    .mode-night input,
+    .mode-night select{
+      color:#eef1f5;
     }
 
-    .topbar-left, .topbar-right {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
+    .warning-banner{
+      border:1px solid rgba(201,42,42,.24);
+      background:rgba(255,245,245,.82);
+      color:#86181d;
+      padding:12px 14px;
+      border-radius:var(--radius-md);
+    }
+    .mode-night .warning-banner{
+      background:rgba(201,42,42,.12);
+      color:#ffd7d7;
     }
 
-    .study-hub {
-      padding: 16px;
-      display: grid;
-      gap: 16px;
+    .layout-grid{
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:18px;
     }
 
-    .study-grid {
-      display: grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap: 16px;
+    .panel{
+      padding:16px;
+      min-width:0;
     }
 
-    .compose {
-      padding: 16px;
-      display: grid;
-      gap: 12px;
+    .timeline-stream, .inbox-list, .exhibit-list{
+      display:grid;
+      gap:12px;
     }
 
-    .compose textarea {
-      width: 100%;
-      min-height: 90px;
-      resize: vertical;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--line);
-      padding: 12px 14px;
-      background: var(--card);
-      color: var(--text);
-      outline: none;
+    .entry-card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius-lg);
+      padding:14px 16px;
+    }
+    .entry-card.work{ border-left:5px solid var(--work); }
+    .entry-card.injury{ border-left:5px solid var(--injury); }
+    .entry-card.family{ border-left:5px solid var(--family); }
+    .entry-card.property{ border-left:5px solid var(--property); }
+
+    .entry-card__head{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+      margin-bottom:8px;
+    }
+    .entry-card__case{
+      font-size:.74rem;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+      font-weight:700;
+      color:var(--sub);
+      margin-bottom:4px;
+    }
+    .entry-card__text{
+      font-size:.96rem;
+      line-height:1.5;
+      white-space:pre-wrap;
+    }
+    .entry-card__meta{
+      margin-top:10px;
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      color:var(--sub);
+      font-size:.82rem;
+    }
+    .entry-card__actions{
+      margin-top:12px;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
     }
 
-    .compose-row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      padding:4px 8px;
+      border-radius:999px;
+      background:rgba(0,0,0,.04);
+      border:1px solid var(--line);
+      font-size:.72rem;
+      color:var(--sub);
     }
 
-    .layout-grid {
-      display: grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap: 18px;
-      min-width: 0;
+    .graph-legend{
+      display:grid;
+      gap:10px;
+      margin-bottom:16px;
+    }
+    .graph-row{
+      display:grid;
+      grid-template-columns:90px 1fr 36px;
+      gap:10px;
+      align-items:center;
+    }
+    .graph-track{
+      height:12px;
+      background:rgba(0,0,0,.06);
+      border-radius:999px;
+      overflow:hidden;
+    }
+    .graph-fill{
+      height:100%;
+      border-radius:999px;
     }
 
-    .panel {
-      padding: 16px;
-      min-width: 0;
+    .columns-4{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(200px,1fr));
+      gap:14px;
+    }
+    .lane{
+      border:1px dashed var(--line);
+      border-radius:var(--radius-lg);
+      padding:12px;
+      min-height:220px;
+      background:rgba(0,0,0,.02);
+    }
+    .lane h4{
+      margin:0 0 10px;
+      font-size:.95rem;
     }
 
-    .timeline-header {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: center;
-      margin-bottom: 12px;
+    .small-note{
+      font-size:.82rem;
+      color:var(--sub);
+      line-height:1.4;
     }
 
-    .timeline-stream {
-      display: grid;
-      gap: 12px;
+    .hidden{ display:none !important; }
+
+    #firmPulse{
+      position:fixed;
+      top:14px;
+      right:14px;
+      z-index:9999;
+      padding:10px 14px;
+      border-radius:999px;
+      background:#c92a2a;
+      color:#fff;
+      font-weight:700;
+      display:none;
+      box-shadow:0 0 0 0 rgba(201,42,42,.7);
+      animation:pulse 1.6s infinite;
+    }
+    @keyframes pulse{
+      0%{ box-shadow:0 0 0 0 rgba(201,42,42,.55); }
+      70%{ box-shadow:0 0 0 14px rgba(201,42,42,0); }
+      100%{ box-shadow:0 0 0 0 rgba(201,42,42,0); }
     }
 
-    .entry-card {
-      border-radius: var(--radius-lg);
-      background: var(--card);
-      border: 1px solid var(--line);
-      padding: 14px 16px;
-      box-shadow: 0 6px 14px rgba(0,0,0,0.04);
-    }
-    .mode-night .entry-card {
-      box-shadow: none;
-    }
-
-    .entry-card__head {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: start;
-      margin-bottom: 10px;
-    }
-
-    .entry-card__case {
-      font-size: .76rem;
-      text-transform: uppercase;
-      letter-spacing: .06em;
-      font-weight: 700;
-      color: var(--sub);
-    }
-
-    .entry-card__text {
-      line-height: 1.5;
-      font-size: .97rem;
-      white-space: pre-wrap;
-    }
-
-    .entry-card__meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 10px;
-      font-size: .82rem;
-      color: var(--sub);
-    }
-
-    .entry-card__actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 12px;
-    }
-
-    .tag {
-      display: inline-flex;
-      align-items: center;
-      padding: 4px 8px;
-      border-radius: 999px;
-      font-size: .72rem;
-      border: 1px solid var(--line);
-      background: rgba(0,0,0,0.04);
-      color: var(--sub);
-    }
-
-    .entry-card.work { border-left: 5px solid var(--graph-work); }
-    .entry-card.injury { border-left: 5px solid var(--graph-injury); }
-    .entry-card.family { border-left: 5px solid var(--graph-family); }
-    .entry-card.property { border-left: 5px solid var(--graph-property); }
-
-    .columns-4 {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(200px, 1fr));
-      gap: 14px;
-    }
-
-    .lane {
-      border: 1px dashed var(--line);
-      border-radius: var(--radius-lg);
-      padding: 12px;
-      min-height: 220px;
-      background: rgba(0,0,0,0.02);
-    }
-
-    .lane h4 {
-      margin: 0 0 10px;
-      font-size: .95rem;
-    }
-
-    .linked-note {
-      font-size: .82rem;
-      color: var(--sub);
-      margin-bottom: 10px;
-    }
-
-    .graph-legend {
-      display: grid;
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    .graph-row {
-      display: grid;
-      grid-template-columns: 90px 1fr 36px;
-      gap: 10px;
-      align-items: center;
-    }
-    .graph-track {
-      height: 12px;
-      border-radius: 999px;
-      background: rgba(0,0,0,0.06);
-      overflow: hidden;
-    }
-    .graph-fill {
-      height: 100%;
-      border-radius: 999px;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .stat-card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-md);
-      padding: 12px;
-    }
-
-    .stat-label {
-      font-size: .76rem;
-      text-transform: uppercase;
-      letter-spacing: .06em;
-      color: var(--sub);
-      margin-bottom: 4px;
-    }
-    .stat-value {
-      font-weight: 700;
-      font-size: 1.1rem;
-    }
-
-    .hidden { display: none !important; }
-
-    #firmPulse {
-      position: fixed;
-      top: 14px;
-      right: 14px;
-      z-index: 9999;
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: #c92a2a;
-      color: #fff;
-      font-weight: 700;
-      box-shadow: 0 0 0 0 rgba(201,42,42,.7);
-      animation: pulse 1.6s infinite;
-      display: none;
-    }
-    @keyframes pulse {
-      0%   { box-shadow: 0 0 0 0 rgba(201,42,42,.55); }
-      70%  { box-shadow: 0 0 0 14px rgba(201,42,42,0); }
-      100% { box-shadow: 0 0 0 0 rgba(201,42,42,0); }
-    }
-
-    .warning-banner {
-      border: 1px solid rgba(201,42,42,.22);
-      color: #86181d;
-      background: rgba(255,245,245,.8);
-      padding: 12px 14px;
-      border-radius: var(--radius-md);
-    }
-    .mode-night .warning-banner {
-      background: rgba(201,42,42,.12);
-      color: #ffd7d7;
-      border-color: rgba(201,42,42,.22);
-    }
-
-    .exam-shell {
-      display: grid;
-      gap: 12px;
-    }
-    .exam-toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .exam-viewport {
-      position: relative;
-      min-height: 720px;
-      border-radius: var(--radius-lg);
+    .exam-shell{ display:grid; gap:12px; }
+    .exam-toolbar{ display:flex; gap:8px; flex-wrap:wrap; }
+    .exam-viewport{
+      position:relative;
+      min-height:720px;
+      overflow:auto;
+      border-radius:var(--radius-lg);
+      border:1px solid var(--line);
       background:
-        radial-gradient(circle at top left, rgba(255,255,255,0.9), rgba(241,244,248,0.92)),
-        linear-gradient(135deg, #edf2f7, #ffffff);
-      border: 1px solid var(--line);
-      overflow: auto;
+        radial-gradient(circle at top left, rgba(255,255,255,.9), rgba(241,244,248,.92)),
+        linear-gradient(135deg,#edf2f7,#ffffff);
     }
-    .mode-night .exam-viewport {
+    .mode-night .exam-viewport{
       background:
-        radial-gradient(circle at top left, rgba(30,34,44,0.95), rgba(17,20,28,0.96)),
-        linear-gradient(135deg, #161a23, #0f1218);
+        radial-gradient(circle at top left, rgba(30,34,44,.95), rgba(17,20,28,.96)),
+        linear-gradient(135deg,#161a23,#0f1218);
+    }
+    .exam-canvas-wrap{
+      position:relative;
+      width:1600px;
+      height:1200px;
+      transform-origin:top left;
+    }
+    .exam-svg{
+      position:absolute;
+      inset:0;
+      width:1600px;
+      height:1200px;
+      pointer-events:none;
+    }
+    .exam-node{
+      position:absolute;
+      width:250px;
+      min-height:96px;
+      padding:14px;
+      border-radius:22px;
+      color:#fff;
+      box-shadow:0 14px 26px rgba(0,0,0,.14);
+      cursor:grab;
+      user-select:none;
+    }
+    .exam-node.work{ background:linear-gradient(135deg,#2f6bff,#194bcc); }
+    .exam-node.injury{ background:linear-gradient(135deg,#e5484d,#b42318); }
+    .exam-node.family{ background:linear-gradient(135deg,#7c4dff,#5b34c4); }
+    .exam-node.property{ background:linear-gradient(135deg,#24a148,#198038); }
+    .exam-node.dragging{ cursor:grabbing; }
+    .exam-node__type{
+      font-size:.72rem;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+      opacity:.88;
+      margin-bottom:8px;
+    }
+    .exam-node__label{
+      font-size:.93rem;
+      line-height:1.35;
+      font-weight:700;
+      margin-bottom:10px;
+    }
+    .exam-node__date{ font-size:.8rem; opacity:.88; }
+    .exam-link{
+      fill:none;
+      stroke:rgba(120,126,140,.78);
+      stroke-width:2.5;
     }
 
-    .exam-canvas-wrap {
-      position: relative;
-      width: 1600px;
-      height: 1200px;
-      transform-origin: top left;
-    }
-
-    .exam-svg {
-      position: absolute;
-      inset: 0;
-      width: 1600px;
-      height: 1200px;
-      pointer-events: none;
-    }
-
-    .exam-node {
-      position: absolute;
-      width: 250px;
-      min-height: 96px;
-      padding: 14px;
-      border-radius: 22px;
-      color: white;
-      box-shadow: 0 14px 26px rgba(0,0,0,0.14);
-      cursor: grab;
-      user-select: none;
-    }
-    .exam-node.dragging { cursor: grabbing; }
-    .exam-node.work { background: linear-gradient(135deg, #2f6bff, #194bcc); }
-    .exam-node.injury { background: linear-gradient(135deg, #e5484d, #b42318); }
-    .exam-node.family { background: linear-gradient(135deg, #7c4dff, #5b34c4); }
-    .exam-node.property { background: linear-gradient(135deg, #24a148, #198038); }
-
-    .exam-node__type {
-      font-size: .72rem;
-      text-transform: uppercase;
-      letter-spacing: .06em;
-      opacity: .88;
-      margin-bottom: 8px;
-    }
-    .exam-node__label {
-      font-size: .93rem;
-      line-height: 1.35;
-      font-weight: 700;
-      margin-bottom: 10px;
-    }
-    .exam-node__date {
-      font-size: .8rem;
-      opacity: .88;
-    }
-
-    .exam-link {
-      fill: none;
-      stroke: rgba(120, 126, 140, 0.78);
-      stroke-width: 2.5;
-    }
-
-    .witness-grid {
-      display: grid;
-      gap: 10px;
-    }
-
-    .witness-grid input, .witness-grid textarea, .compose input, .study-hub input, .study-hub select {
-      width: 100%;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--line);
-      background: var(--card);
-      color: var(--text);
-      padding: 10px 12px;
-      outline: none;
-    }
-
-    .inbox-list, .exhibit-list {
-      display: grid;
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    .small-note {
-      font-size: .82rem;
-      color: var(--sub);
-      line-height: 1.4;
-    }
-
-    .firm-view-row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    @media (max-width: 1250px) {
-      .app-shell { grid-template-columns: 1fr; }
-      .sidebar {
-        position: static;
-        height: auto;
-      }
-      .layout-grid, .study-grid, .columns-4 { grid-template-columns: 1fr; }
+    @media (max-width:1250px){
+      .app-shell{ grid-template-columns:1fr; }
+      .sidebar{ position:static; height:auto; }
+      .layout-grid, .columns-4{ grid-template-columns:1fr; }
     }
   </style>
 </head>
@@ -578,7 +460,7 @@
         <span class="pill" id="timeThemeLabel">Theme: Bubbly</span>
       </div>
 
-      <div class="case-switcher">
+      <div class="stack">
         <div class="section-title">Case lane</div>
         <button class="btn active" id="case-work" onclick="switchCase('work')">Work</button>
         <button class="btn" id="case-injury" onclick="switchCase('injury')">Injury</button>
@@ -586,24 +468,21 @@
         <button class="btn" id="case-property" onclick="switchCase('property')">Property</button>
       </div>
 
-      <div class="theme-controls">
+      <div class="stack">
         <div class="section-title">Visual controls</div>
         <label class="pill"><input type="checkbox" id="forceNightToggle" onchange="toggleForceNight(this.checked)" style="margin-right:8px;"> Force Night View</label>
         <button class="btn" onclick="toggleUiVersion()">Switch UI Feel</button>
       </div>
 
-      <div class="firm-view">
+      <div class="stack">
         <div class="section-title">Firm view</div>
-        <div class="firm-view-row">
-          <select id="firmViewSelect" onchange="setFirmView(this.value)">
-            <option value="court">Court Format</option>
-            <option value="timeline">Timeline</option>
-            <option value="combined">Combined</option>
-            <option value="linked">Linked</option>
-            <option value="exam">Examination</option>
-          </select>
-          <span class="small-note">After sync + lock, the firm can choose how to view the same locked record.</span>
-        </div>
+        <select id="firmViewSelect" onchange="setFirmView(this.value)">
+          <option value="court">Court Format</option>
+          <option value="timeline">Timeline</option>
+          <option value="combined">Combined</option>
+          <option value="linked">Linked</option>
+          <option value="exam">Examination</option>
+        </select>
       </div>
 
       <div class="stats-grid">
@@ -635,7 +514,6 @@
     <main class="main">
       <section class="topbar glass">
         <div class="topbar-left">
-          <span class="pill">Default view: Single Timeline</span>
           <span class="pill" id="activeCaseLabel">Active: Work</span>
           <span class="pill" id="studyModeLabel">Mode: Single</span>
         </div>
@@ -645,101 +523,87 @@
         </div>
       </section>
 
-      <section class="study-hub">
-        <div class="section-title">Study Hub</div>
+      <section class="panel compose">
+        <div><strong>Add entry</strong></div>
+        <textarea id="entryInput" placeholder="Add a timeline entry..."></textarea>
 
-        <div class="study-grid">
-          <div>
-            <div class="compose glass">
-              <div class="timeline-header">
-                <strong>Add entry</strong>
-                <span class="small-note">Type your entry normally, or enter a hidden demo trigger as the first entry.</span>
-              </div>
-
-              <textarea id="entryInput" placeholder="Add a timeline entry..."></textarea>
-
-              <div class="compose-row">
-                <button class="btn primary" onclick="handleAddEntry()">Add Entry</button>
-                <button class="btn" onclick="setStudyMode('single')">Single Timeline</button>
-                <button class="btn" onclick="setStudyMode('combined')">Combined</button>
-                <button class="btn" onclick="setStudyMode('linked')">Linked</button>
-                <button class="btn" onclick="setStudyMode('exam')">Examination Mode</button>
-                <button class="btn success" onclick="confirmSyncAndLock()">Send to Firm / Clio</button>
-              </div>
-
-              <div id="lockWarning" class="warning-banner hidden">
-                Warning: once synced and locked, this record switches to a court-style presentation. Any later changes will be logged and visible to the firm.
-              </div>
-            </div>
-          </div>
-
-          <div class="glass panel">
-            <div class="timeline-header">
-              <strong>Pattern / graph summary</strong>
-              <span class="small-note">View-only summary of how much content exists in each lane.</span>
-            </div>
-            <div id="graphLegend" class="graph-legend"></div>
-          </div>
+        <div class="row">
+          <button class="btn primary" onclick="handleAddEntry()">Add Entry</button>
+          <button class="btn" onclick="setStudyMode('single')">Single Timeline</button>
+          <button class="btn" onclick="setStudyMode('combined')">Combined</button>
+          <button class="btn" onclick="setStudyMode('linked')">Linked</button>
+          <button class="btn" onclick="setStudyMode('exam')">Examination Mode</button>
+          <button class="btn success" onclick="confirmSyncAndLock()">Send to Firm / Clio</button>
+          <button class="btn" onclick="verifyClioHandshake()">Verify Clio</button>
+          <button class="btn" onclick="createClioMatter()">Create Matter</button>
+          <button class="btn" onclick="toggleWitnessPanel()">👤 Witness</button>
         </div>
 
-        <div class="layout-grid">
-          <section class="panel">
-            <div class="timeline-header">
-              <strong id="timelineTitle">Single Timeline</strong>
-              <span class="small-note" id="timelineSubtitle">One active lane at a time.</span>
-            </div>
-            <div id="timelineBody"></div>
-          </section>
-
-          <section class="panel">
-            <div class="timeline-header">
-              <strong>Witness & Exhibit Hub</strong>
-              <button class="btn" onclick="toggleWitnessPanel()">👤 Witness</button>
-            </div>
-
-            <div id="witnessPanel" class="witness-grid hidden">
-              <input id="witnessName" placeholder="Witness name" />
-              <input id="witnessContact" placeholder="Email or phone" />
-              <textarea id="witnessNote" placeholder="Optional note to witness"></textarea>
-              <div class="compose-row">
-                <button class="btn primary" onclick="sendWitnessInvite()">Send Invite</button>
-              </div>
-              <div class="small-note">
-                This front-end generates and records the verification code. Your backend should actually deliver the code by email or SMS.
-              </div>
-
-              <hr style="border:none;border-top:1px solid var(--line); width:100%;">
-
-              <strong>Simulate witness reply</strong>
-              <input id="replyWitnessName" placeholder="Witness name" />
-              <input id="replyCode" placeholder="Verification code" />
-              <textarea id="replyStatement" placeholder="Witness statement"></textarea>
-              <button class="btn" onclick="simulateWitnessReply()">Submit witness statement</button>
-            </div>
-
-            <div>
-              <div class="section-title">Witness inbox</div>
-              <div id="witnessInbox" class="inbox-list"></div>
-            </div>
-
-            <div style="margin-top:18px;">
-              <div class="section-title">Exhibit / Evidence list</div>
-              <div id="exhibitList" class="exhibit-list"></div>
-            </div>
-          </section>
+        <div id="lockWarning" class="warning-banner hidden">
+          Warning: once synced and locked, this record switches to a court-style presentation. Any later changes will be logged and visible to the firm.
         </div>
+      </section>
+
+      <section class="layout-grid">
+        <section class="panel">
+          <div class="row" style="justify-content:space-between; margin-bottom:12px;">
+            <strong id="timelineTitle">Single Timeline</strong>
+            <span class="small-note" id="timelineSubtitle">One active lane at a time.</span>
+          </div>
+
+          <div id="graphLegend" class="graph-legend"></div>
+          <div id="timelineBody"></div>
+        </section>
+
+        <section class="panel">
+          <div class="row" style="justify-content:space-between; margin-bottom:12px;">
+            <strong>Witness & Exhibit Hub</strong>
+            <button class="btn" onclick="toggleWitnessPanel()">👤 Witness</button>
+          </div>
+
+          <div id="witnessPanel" class="hidden">
+            <input id="witnessName" placeholder="Witness name" />
+            <input id="witnessContact" placeholder="Email or phone" />
+            <textarea id="witnessNote" placeholder="Optional note to witness"></textarea>
+
+            <div class="row" style="margin-top:10px;">
+              <button class="btn primary" onclick="sendWitnessInvite()">Send Invite</button>
+            </div>
+
+            <div class="small-note" style="margin-top:10px;">
+              Your backend handles real email/SMS delivery. If it is not configured yet, the backend can still return the generated verification code for testing.
+            </div>
+
+            <hr style="border:none; border-top:1px solid rgba(0,0,0,.08); margin:16px 0;">
+
+            <strong>Submit witness reply</strong>
+            <input id="replyWitnessName" placeholder="Witness name" />
+            <input id="replyCode" placeholder="Verification code" />
+            <textarea id="replyStatement" placeholder="Witness statement"></textarea>
+
+            <button class="btn" style="margin-top:10px;" onclick="submitWitnessReply()">Submit witness statement</button>
+          </div>
+
+          <div style="margin-top:14px;">
+            <div class="section-title">Witness inbox</div>
+            <div id="witnessInbox" class="inbox-list"></div>
+          </div>
+
+          <div style="margin-top:18px;">
+            <div class="section-title">Exhibit / Evidence list</div>
+            <div id="exhibitList" class="exhibit-list"></div>
+          </div>
+        </section>
       </section>
     </main>
   </div>
 
   <script>
-    // =========================
-    // STATE
-    // =========================
     let studyMode = "single";
     let activeCase = "work";
     let uiVersion = "modern";
     let forceNight = false;
+    let firmView = "court";
 
     const timelines = {
       work: [],
@@ -767,7 +631,21 @@
     const exhibits = [];
     const auditLog = [];
 
-    let firmView = "court";
+    const NUBRITE_DEMO = [
+      { text: "July 25, 2025 — Workplace injury event and report conflict documented.", original: "July 25, 2025" },
+      { text: "July 30, 2025 — Accurate first aid report delivered to the office.", original: "July 30, 2025" },
+      { text: "July 31, 2025 — Formal notice warning of a workplace bullying claim sent.", original: "July 31, 2025" },
+      { text: "August 28, 2025 — Missing first aid room keys and safety risk reported.", original: "August 28, 2025" },
+      { text: "September 3, 2025 — Privacy concerns raised about exposed medical files.", original: "September 3, 2025" }
+    ];
+
+    const INJURY_DEMO = [
+      { text: "September 8–9, 2025 — Initial psychological distress, anxiety, nausea, and inability to function.", original: "September 8–9, 2025" },
+      { text: "September 2025 — Continued sleep disruption and inability to eat.", original: "September 2025" },
+      { text: "October 2025 — Symptoms worsened with continued workplace exposure.", original: "October 2025" },
+      { text: "November 7, 2025 — Messages confirm months of harassment and breakdown symptoms.", original: "November 7, 2025" },
+      { text: "November 10, 2025 — Major breakdown leading to psychiatric admission.", original: "November 10, 2025" }
+    ];
 
     const examState = {
       scale: 1,
@@ -778,68 +656,8 @@
       dragOffsetY: 0
     };
 
-    // =========================
-    // DEMO DATA
-    // Built from your uploaded files:
-    // final dated time lime TJ.docx and medical_timeline.pdf
-    // =========================
-    const NUBRITE_DEMO = [
-      {
-        text: "July 25, 2025 — Shop-floor injury event and report conflict documented.",
-        original: "July 25, 2025"
-      },
-      {
-        text: "July 30, 2025 — Accurate First Aid report delivered to the office.",
-        original: "July 30, 2025"
-      },
-      {
-        text: "July 31, 2025 — Formal notice sent warning of a WorkSafeBC bullying claim.",
-        original: "July 31, 2025"
-      },
-      {
-        text: "August 28, 2025 — Missing First Aid room keys and safety risk reported.",
-        original: "August 28, 2025"
-      },
-      {
-        text: "September 3, 2025 — Privacy concerns raised about exposed medical files.",
-        original: "September 3, 2025"
-      },
-      {
-        text: "End of October — Partial note about being followed at break and belittled.",
-        original: "End of October"
-      }
-    ];
+    let examWheelWired = false;
 
-    const INJURY_DEMO = [
-      {
-        text: "September 8–9, 2025 — Initial psychological distress with paranoia, anxiety, nausea, and inability to function.",
-        original: "September 8–9, 2025"
-      },
-      {
-        text: "September 2025 — Continued sleep disruption and inability to eat.",
-        original: "September 2025"
-      },
-      {
-        text: "October 2025 — Symptoms worsen with continued workplace exposure.",
-        original: "October 2025"
-      },
-      {
-        text: "November 7, 2025 — Messages confirm months of harassment and breakdown symptoms.",
-        original: "November 7, 2025"
-      },
-      {
-        text: "November 10, 2025 — Major breakdown leading to psychiatric admission.",
-        original: "November 10, 2025"
-      },
-      {
-        text: "Post-Employment — Continued psychological impact affecting ability to work.",
-        original: "Post-Employment"
-      }
-    ];
-
-    // =========================
-    // INIT
-    // =========================
     init();
 
     function init() {
@@ -850,9 +668,6 @@
       renderAll();
     }
 
-    // =========================
-    // THEME + FONTS
-    // =========================
     function getTimeMode() {
       const hour = new Date().getHours();
       if (hour >= 6 && hour < 12) return "standard";
@@ -865,15 +680,12 @@
       if (forceNight) mode = "night";
 
       document.body.classList.remove("mode-standard", "mode-bubbly", "mode-night");
-
       if (!document.body.classList.contains("court-mode")) {
         document.body.classList.add("mode-" + mode);
       }
 
       const label = document.getElementById("timeThemeLabel");
-      if (label) {
-        label.textContent = `Theme: ${capitalize(mode)}`;
-      }
+      if (label) label.textContent = `Theme: ${capitalize(mode)}`;
     }
 
     function toggleForceNight(value) {
@@ -886,9 +698,6 @@
       document.body.classList.toggle("ui-legal", uiVersion === "legal");
     }
 
-    // =========================
-    // CASES + MODES
-    // =========================
     function switchCase(caseType) {
       activeCase = caseType;
       updateCaseButtons();
@@ -898,8 +707,7 @@
     function updateCaseButtons() {
       ["work","injury","family","property"].forEach(k => {
         const el = document.getElementById(`case-${k}`);
-        if (!el) return;
-        el.classList.toggle("active", k === activeCase);
+        if (el) el.classList.toggle("active", k === activeCase);
       });
     }
 
@@ -919,20 +727,17 @@
       renderAll();
     }
 
-    // =========================
-    // ENTRY FLOW
-    // =========================
     function handleAddEntry() {
       const input = document.getElementById("entryInput");
       const text = input.value.trim();
       if (!text) return;
 
-      // Hidden first-entry triggers
       if (timelines.work.length === 0 && text === "#nubrite-demo") {
         activateNubriteDemo();
         input.value = "";
         return;
       }
+
       if (timelines.injury.length === 0 && text === "#injury-demo") {
         activateInjuryDemo();
         input.value = "";
@@ -965,11 +770,7 @@
         registerPostLockChange("entry_added", entry.id, { caseType: activeCase, text });
       }
 
-      logAuditEvent("entry_added", {
-        caseType: activeCase,
-        entryId: entry.id
-      });
-
+      logAuditEvent("entry_added", { caseType: activeCase, entryId: entry.id });
       renderAll();
     }
 
@@ -984,7 +785,6 @@
         system: new Date().toISOString(),
         source: "demo"
       }));
-
       logAuditEvent("demo_loaded", { demo: "nubrite" });
       renderAll();
     }
@@ -1000,9 +800,16 @@
         system: new Date().toISOString(),
         source: "demo"
       }));
-
       logAuditEvent("demo_loaded", { demo: "injury" });
       renderAll();
+    }
+
+    function findEntry(entryId) {
+      for (const caseType of Object.keys(timelines)) {
+        const entry = timelines[caseType].find(e => e.id === entryId);
+        if (entry) return { caseType, entry };
+      }
+      return null;
     }
 
     function editEntry(entryId) {
@@ -1011,6 +818,7 @@
 
       const next = prompt("Edit entry:", ref.entry.text);
       if (next === null) return;
+
       ref.entry.text = next;
 
       if (recordState.locked) {
@@ -1025,8 +833,7 @@
       const ref = findEntry(entryId);
       if (!ref) return;
 
-      const ok = confirm("Delete this entry?");
-      if (!ok) return;
+      if (!confirm("Delete this entry?")) return;
 
       timelines[ref.caseType] = timelines[ref.caseType].filter(e => e.id !== entryId);
 
@@ -1038,17 +845,6 @@
       renderAll();
     }
 
-    function findEntry(entryId) {
-      for (const caseType of Object.keys(timelines)) {
-        const entry = timelines[caseType].find(e => e.id === entryId);
-        if (entry) return { caseType, entry };
-      }
-      return null;
-    }
-
-    // =========================
-    // SYNC + LOCK + COURT MODE
-    // =========================
     async function confirmSyncAndLock() {
       const warning = document.getElementById("lockWarning");
       if (warning) warning.classList.remove("hidden");
@@ -1059,14 +855,10 @@
       );
 
       if (!ok) return;
-
       await syncAndLock();
     }
 
     async function syncAndLock() {
-      // shape aligned to your existing sync.js:
-      // { lawyer, timeline, notes } => POST /api/sync
-      // if authRequired, redirect to authUrl
       const payload = {
         lawyer: "WorkTimeline User",
         timeline: flattenAllTimelines().map(e => `[${capitalize(e.caseType)}] ${e.text}`),
@@ -1074,9 +866,9 @@
       };
 
       try {
-        const response = await fetch("/api/sync", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+        const response = await fetch('/api/sync', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         }).catch(() => null);
 
@@ -1093,8 +885,7 @@
             return;
           }
         } else {
-          // Front-end fallback so the UI still works if backend isn't connected yet
-          console.warn("Backend /api/sync not reachable; simulating successful sync for UI preview.");
+          console.warn("Backend /api/sync not reachable; simulating sync for UI preview.");
         }
 
         recordState.synced = true;
@@ -1115,6 +906,57 @@
       } catch (err) {
         console.error(err);
         alert("Sync failed.");
+      }
+    }
+
+    async function verifyClioHandshake() {
+      try {
+        const res = await fetch('/api/clio-verify');
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+          alert(`Verification failed: ${data.error || res.statusText}`);
+          return;
+        }
+
+        alert("Clio token verified live. The handshake is real.");
+        console.log("Clio verify:", data);
+      } catch (err) {
+        console.error(err);
+        alert("Clio verify failed.");
+      }
+    }
+
+    async function createClioMatter() {
+      try {
+        const payload = {
+          clientFirstName: "WorkTimeline",
+          clientLastName: "Client",
+          clientEmail: "",
+          matterDescription: "Matter created from WorkTimeline",
+          timelineEntries: flattenAllTimelines().map(e => `[${capitalize(e.caseType)}] ${e.text}`),
+          notesEntries: [],
+          exhibits: buildAcceptedExhibitNotes()
+        };
+
+        const res = await fetch('/api/clio-create-matter', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+          alert(`Matter creation failed: ${data.error || res.statusText}`);
+          return;
+        }
+
+        alert(`Matter created successfully. Matter ID: ${data.matterId || "created"}`);
+        console.log("Clio matter:", data);
+      } catch (err) {
+        console.error(err);
+        alert("Clio matter creation failed.");
       }
     }
 
@@ -1146,34 +988,11 @@
       countEl.textContent = String(firmAlerts.count);
     }
 
-    function refreshStatusBadges() {
-      document.getElementById("recordStateLabel").textContent =
-        recordState.locked ? "Locked" : "Working";
-      document.getElementById("postLockCount").textContent =
-        String(recordState.postLockChanges);
-      document.getElementById("witnessCount").textContent =
-        String(witnessStatements.length);
-      document.getElementById("exhibitCount").textContent =
-        String(exhibits.length);
-
-      document.getElementById("activeCaseLabel").textContent =
-        `Active: ${capitalize(activeCase)}`;
-      document.getElementById("studyModeLabel").textContent =
-        `Mode: ${friendlyMode(studyMode)}`;
-      document.getElementById("lockInfoLabel").textContent =
-        recordState.locked ? `Locked ${formatShort(recordState.lockedAt)}` : "Unlocked";
-      document.getElementById("syncInfoLabel").textContent =
-        recordState.synced ? `Synced ${formatShort(recordState.syncedAt)}` : "Not synced";
-    }
-
-    // =========================
-    // WITNESS FLOW
-    // =========================
     function toggleWitnessPanel() {
       document.getElementById("witnessPanel").classList.toggle("hidden");
     }
 
-    function sendWitnessInvite() {
+    async function sendWitnessInvite() {
       const name = document.getElementById("witnessName").value.trim();
       const contact = document.getElementById("witnessContact").value.trim();
       const note = document.getElementById("witnessNote").value.trim();
@@ -1183,42 +1002,45 @@
         return;
       }
 
-      const code = generateVerificationCode();
-      const invite = {
-        id: crypto.randomUUID(),
+      const res = await fetch('/api/witness-invite', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, contact, note, timelineId: activeCase })
+      }).catch(() => null);
+
+      if (!res) {
+        alert("Witness invite endpoint is not available.");
+        return;
+      }
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        alert(data.error || "Witness invite failed.");
+        return;
+      }
+
+      witnessInvites.push({
+        id: data.id,
         name,
         contact,
-        note,
-        code,
-        sentAt: new Date().toISOString(),
+        code: data.verificationCode,
+        sentAt: data.sentAt,
         status: "pending"
-      };
-
-      witnessInvites.push(invite);
-      logAuditEvent("witness_invite_sent", {
-        id: invite.id,
-        name,
-        contact
       });
 
-      // Optional backend hook:
-      fetch("/api/witness-invite", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(invite)
-      }).catch(() => {
-        console.warn("No /api/witness-invite backend connected. Invite recorded locally.");
-      });
-
-      alert(`Invite queued.\nVerification code: ${code}`);
+      logAuditEvent("witness_invite_sent", { id: data.id, name, contact });
       renderWitnessInbox();
+      refreshStatusBadges();
+
+      alert(`Witness invite recorded.${data.devCode ? `\nDevelopment code: ${data.devCode}` : ""}`);
 
       document.getElementById("witnessName").value = "";
       document.getElementById("witnessContact").value = "";
       document.getElementById("witnessNote").value = "";
     }
 
-    function simulateWitnessReply() {
+    async function submitWitnessReply() {
       const name = document.getElementById("replyWitnessName").value.trim();
       const code = document.getElementById("replyCode").value.trim().toUpperCase();
       const statement = document.getElementById("replyStatement").value.trim();
@@ -1228,28 +1050,38 @@
         return;
       }
 
-      const invite = witnessInvites.find(w => w.code === code);
-      if (!invite) {
-        alert("Invalid verification code.");
+      const res = await fetch('/api/witness-reply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, verificationCode: code, statement })
+      }).catch(() => null);
+
+      if (!res) {
+        alert("Witness reply endpoint is not available.");
         return;
       }
 
-      const row = {
-        id: crypto.randomUUID(),
-        witnessName: name,
-        contact: invite.contact,
-        statement,
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        alert(data.error || "Witness reply failed.");
+        return;
+      }
+
+      witnessStatements.push({
+        id: data.id,
+        witnessName: data.witnessName,
+        contact: data.contact,
+        statement: data.statement,
         verificationCode: code,
         verified: true,
         status: "pending",
-        receivedAt: new Date().toISOString()
-      };
+        receivedAt: data.receivedAt
+      });
 
-      witnessStatements.push(row);
-      invite.status = "replied";
       logAuditEvent("witness_statement_received", {
-        witnessName: name,
-        statementId: row.id
+        witnessName: data.witnessName,
+        statementId: data.id
       });
 
       renderWitnessInbox();
@@ -1259,8 +1091,7 @@
       document.getElementById("replyCode").value = "";
       document.getElementById("replyStatement").value = "";
     }
-
-    function setWitnessStatementStatus(id, status) {
+        function setWitnessStatementStatus(id, status) {
       const row = witnessStatements.find(x => x.id === id);
       if (!row) return;
 
@@ -1282,7 +1113,7 @@
       const container = document.getElementById("witnessInbox");
       if (!container) return;
 
-      const rows = witnessStatements.length
+      container.innerHTML = witnessStatements.length
         ? witnessStatements.map(w => `
           <article class="entry-card">
             <div class="entry-card__head">
@@ -1304,23 +1135,8 @@
           </article>
         `).join("")
         : `<div class="small-note">No witness statements yet.</div>`;
-
-      container.innerHTML = rows;
-      refreshStatusBadges();
     }
 
-    function generateVerificationCode(length = 6) {
-      const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-      let out = "";
-      for (let i = 0; i < length; i++) {
-        out += chars[Math.floor(Math.random() * chars.length)];
-      }
-      return out;
-    }
-
-    // =========================
-    // EXHIBITS
-    // =========================
     function addExhibit(item) {
       exhibits.push({
         id: crypto.randomUUID(),
@@ -1340,6 +1156,17 @@
 
       renderExhibitList();
       refreshStatusBadges();
+    }
+
+    function addExhibitFromEntry(entryId) {
+      const ref = findEntry(entryId);
+      if (!ref) return;
+
+      addExhibit({
+        type: "timeline_entry",
+        title: `${capitalize(ref.caseType)} Entry Exhibit`,
+        sourceId: entryId
+      });
     }
 
     function setExhibitStatus(id, status) {
@@ -1380,21 +1207,12 @@
         : `<div class="small-note">No exhibits yet.</div>`;
     }
 
-    function buildAcceptedExhibitNotes() {
-      return exhibits
-        .filter(ex => ex.status === "accepted")
-        .map(ex => `${ex.exhibitNo}: ${ex.title}`);
-    }
-
-    // =========================
-    // RENDERERS
-    // =========================
     function renderAll() {
       refreshStatusBadges();
       renderGraphLegend();
+      renderTimelineView();
       renderWitnessInbox();
       renderExhibitList();
-      renderTimelineView();
     }
 
     function renderTimelineView() {
@@ -1443,14 +1261,16 @@
 
     function renderCombinedTimeline() {
       const all = flattenAllTimelines().sort((a, b) => sortDate(a) - sortDate(b));
-      if (!all.length) return `<div class="small-note">No entries yet.</div>`;if (!all.length) return `<div class="small-note">No entries yet.</div>`;
+      if (!all.length) {
+        return `<div class="small-note">No entries yet.</div>`;
+      }
       return `<div class="timeline-stream">${all.map(renderEntryCard).join("")}</div>`;
     }
 
     function renderLinkedTimeline() {
-      const linked = `
-        <div class="linked-note">
-          Separate lanes are preserved. This view only shows relationships visually — it does not merge or alter the underlying timelines.
+      return `
+        <div class="small-note" style="margin-bottom:10px;">
+          Separate lanes are preserved. This view only shows relationship thinking — it does not merge or alter the underlying timelines.
         </div>
         <div class="columns-4">
           ${["work","injury","family","property"].map(caseType => `
@@ -1465,7 +1285,6 @@
           `).join("")}
         </div>
       `;
-      return linked;
     }
 
     function renderExamShell() {
@@ -1496,12 +1315,14 @@
             </div>
             <span class="tag">${escapeHtml(entry.source || "user")}</span>
           </div>
+
           <div class="entry-card__meta">
             <span>Original: ${escapeHtml(entry.original)}</span>
             <span>System: ${escapeHtml(formatShort(entry.system))}</span>
           </div>
+
           <div class="entry-card__actions">
-            <button class="btn secondary" onclick="editEntry('${entry.id}')">Edit</button>
+            <button class="btn" onclick="editEntry('${entry.id}')">Edit</button>
             <button class="btn danger" onclick="deleteEntry('${entry.id}')">Delete</button>
             <button class="btn" onclick="addExhibitFromEntry('${entry.id}')">Add as Exhibit</button>
           </div>
@@ -1516,8 +1337,8 @@
         family: timelines.family.length,
         property: timelines.property.length
       };
-      const max = Math.max(1, ...Object.values(counts));
 
+      const max = Math.max(1, ...Object.values(counts));
       const container = document.getElementById("graphLegend");
       if (!container) return;
 
@@ -1525,19 +1346,13 @@
         <div class="graph-row">
           <div>${capitalize(key)}</div>
           <div class="graph-track">
-            <div class="graph-fill" style="
-              width:${(value / max) * 100}%;
-              background:${graphColour(key)};
-            "></div>
+            <div class="graph-fill" style="width:${(value / max) * 100}%; background:${graphColour(key)};"></div>
           </div>
           <div>${value}</div>
         </div>
       `).join("");
     }
 
-    // =========================
-    // EXAMINATION MODE
-    // =========================
     function buildExaminationMode() {
       examState.nodes = buildExamNodes();
       examState.links = buildExamLinks();
@@ -1548,6 +1363,7 @@
 
     function buildExamNodes() {
       const nodes = [];
+
       Object.keys(timelines).forEach(caseType => {
         timelines[caseType].forEach((entry, index) => {
           nodes.push({
@@ -1563,6 +1379,7 @@
           });
         });
       });
+
       return nodes;
     }
 
@@ -1573,10 +1390,7 @@
 
       workNodes.forEach(source => {
         injuryNodes.forEach(target => {
-          links.push({
-            source: source.id,
-            target: target.id
-          });
+          links.push({ source: source.id, target: target.id });
         });
       });
 
@@ -1613,6 +1427,7 @@
       if (!svg || !layer || !wrap) return;
 
       wrap.style.transform = `scale(${examState.scale})`;
+
       svg.innerHTML = `
         <defs>
           <marker id="arrowHead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
@@ -1620,6 +1435,7 @@
           </marker>
         </defs>
       `;
+
       layer.innerHTML = "";
 
       examState.nodes.forEach(node => {
@@ -1661,8 +1477,8 @@
     function makeNodeDraggable(element, node) {
       element.onmousedown = (e) => {
         examState.dragNodeId = node.id;
-        examState.dragOffsetX = e.clientX - node.x;
-        examState.dragOffsetY = e.clientY - node.y;
+        examState.dragOffsetX = e.clientX - node.x * examState.scale;
+        examState.dragOffsetY = e.clientY - node.y * examState.scale;
         element.classList.add("dragging");
       };
 
@@ -1672,123 +1488,7 @@
 
     function onExamMouseMove(e) {
       if (!examState.dragNodeId) return;
+
       const node = examState.nodes.find(n => n.id === examState.dragNodeId);
-      if (!node) return;
+      if (!node) return
 
-      node.x = (e.clientX - examState.dragOffsetX) / examState.scale;
-      node.y = (e.clientY - examState.dragOffsetY) / examState.scale;
-      drawExam();
-    }
-
-    function onExamMouseUp() {
-      examState.dragNodeId = null;
-      document.querySelectorAll(".exam-node.dragging").forEach(el => el.classList.remove("dragging"));
-    }
-
-    function zoomExam(factor) {
-      examState.scale = Math.max(0.5, Math.min(2.4, examState.scale * factor));
-      drawExam();
-    }
-
-    function resetExamView() {
-      examState.scale = 1;
-      drawExam();
-    }
-
-    let examWheelWired = false;
-    function wireExamWheelZoom() {
-      if (examWheelWired) return;
-      examWheelWired = true;
-
-      document.addEventListener("wheel", (e) => {
-        if (studyMode !== "exam") return;
-        const viewport = document.getElementById("examViewport");
-        if (!viewport || !viewport.contains(e.target)) return;
-
-        e.preventDefault();
-        zoomExam(e.deltaY < 0 ? 1.08 : 0.92);
-      }, { passive: false });
-    }
-
-    // =========================
-    // EXHIBITS FROM ENTRIES
-    // =========================
-    function addExhibitFromEntry(entryId) {
-      const ref = findEntry(entryId);
-      if (!ref) return;
-
-      addExhibit({
-        type: "timeline_entry",
-        title: `${capitalize(ref.caseType)} Entry Exhibit`,
-        sourceId: entryId
-      });
-    }
-
-    // =========================
-    // HELPERS
-    // =========================
-    function flattenAllTimelines() {
-      return Object.keys(timelines).flatMap(caseType =>
-        timelines[caseType].map(entry => ({ ...entry, caseType }))
-      );
-    }
-
-    function logAuditEvent(action, metadata = {}) {
-      auditLog.push({
-        id: crypto.randomUUID(),
-        action,
-        metadata,
-        timestamp: new Date().toISOString()
-      });
-      // Local front-end log only. Your backend/audit_logs table should receive this in production.
-      console.log("AUDIT:", action, metadata);
-    }
-
-    function graphColour(type) {
-      if (type === "work") return "var(--graph-work)";
-      if (type === "injury") return "var(--graph-injury)";
-      if (type === "family") return "var(--graph-family)";
-      if (type === "property") return "var(--graph-property)";
-      return "#999";
-    }
-
-    function capitalize(str = "") {
-      return str.charAt(0).toUpperCase() + str.slice(1);
-    }
-
-    function friendlyMode(mode) {
-      if (mode === "single") return "Single";
-      if (mode === "combined") return "Combined";
-      if (mode === "linked") return "Linked";
-      if (mode === "exam") return "Examination";
-      return mode;
-    }
-
-    function escapeHtml(str = "") {
-      return String(str)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#39;");
-    }
-
-    function formatShort(value) {
-      if (!value) return "—";
-      const d = new Date(value);
-      if (Number.isNaN(d.getTime())) return value;
-      return new Intl.DateTimeFormat("en-CA", {
-        dateStyle: "medium",
-        timeStyle: "short"
-      }).format(d);
-    }
-
-    function sortDate(entry) {
-      const parsed = Date.parse(entry.system || entry.original || "");
-      return Number.isNaN(parsed) ? Number.MAX_SAFE_INTEGER : parsed;
-    }
-  </script>
-</body>
-</html>
-
-     
