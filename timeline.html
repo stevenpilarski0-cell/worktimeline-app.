@@ -101,6 +101,52 @@
         }
         .success { background: #e6f2f2; color: #008080; border: 1px solid #008080; }
         .error { background: #ffebe9; color: #ff3b30; border: 1px solid #ff3b30; }
+        
+        /* Pattera Modal for timeline.html */
+        .pattera-modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.4); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+            z-index: 20000; display: flex; justify-content: center; align-items: center;
+            display: none;
+        }
+        .pattera-modal-box {
+            background: #ffffff; padding: 30px; border-radius: 24px;
+            max-width: 400px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            text-align: left;
+        }
+        .pattera-modal-title { font-size: 20px; font-weight: 800; color: #1e293b; margin-top: 0; margin-bottom: 15px; }
+        .pattera-modal-list { font-size: 13px; color: #475569; line-height: 1.6; padding-left: 20px; margin-bottom: 25px; }
+        .pattera-modal-actions { display: flex; gap: 10px; }
+        .btn-pattera-accept {
+            flex: 1; background: #008080; color: white; border: none; padding: 12px;
+            border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.2s;
+        }
+        .btn-pattera-accept:hover { background: #006666; }
+        .btn-pattera-deny {
+            flex: 1; background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1;
+            padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer;
+        }
+        
+        /* Floating Pattera Trigger */
+        .pattera-avatar {
+            position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px;
+            background: linear-gradient(135deg, #008080 0%, #004d4d 100%);
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            color: white; font-weight: 900; font-size: 20px; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 128, 128, 0.4); border: 2px solid rgba(255,255,255,0.8);
+        }
+        .pattera-speech-bubble {
+            position: fixed; bottom: 90px; right: 30px;
+            background: #ffffff; color: #1e293b; padding: 16px 20px;
+            border-radius: 24px 24px 4px 24px; box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            max-width: 250px; font-size: 13px; font-weight: 500; line-height: 1.5;
+            border: 1px solid rgba(0, 128, 128, 0.1); display: none; text-align: left;
+        }
+        .pattera-speech-bubble::after {
+            content: ''; position: absolute; bottom: -8px; right: 8px;
+            border-width: 8px 8px 0; border-style: solid;
+            border-color: #ffffff transparent transparent transparent;
+        }
     </style>
 </head>
 <body>
@@ -111,7 +157,7 @@
     
     <div class="form-group">
         <label>Active Client Lead</label>
-        <div style="font-weight: 600; font-size: 15px; color: #1d1d1f; padding-left: 2px;">Spencer Densmore Intake</div>
+        <div class="timeline-client-lead">Spencer Densmore Intake</div>
     </div>
 
     <div class="form-group">
@@ -123,7 +169,240 @@
     <div id="statusBanner" class="banner"></div>
 </div>
 
+<!-- Pattera User Agreement Modal -->
+<div class="pattera-modal-overlay" id="patteraModal">
+    <div class="pattera-modal-box">
+        <h3 class="pattera-modal-title">Pattera User Agreement</h3>
+        <ul class="pattera-modal-list">
+            <li><strong>Hi, I’m Pattern‑A, but I go by Pattera.</strong></li>
+            <li>I am an AI tool, not a lawyer, and do not give legal advice.</li>
+            <li>Using this App does not create a lawyer-client relationship.</li>
+            <li>I do not interpret laws, legal tests, or predict outcomes.</li>
+            <li>All information may be incomplete or inaccurate.</li>
+            <li>All decisions must be made by you, not the AI.</li>
+            <li>All AI outputs must be reviewed by a qualified lawyer before use.</li>
+            <li>This App is for journaling, documentation, and organization only.</li>
+            <li>This is not legal advice.</li>
+        </ul>
+        <div class="pattera-modal-actions">
+            <button class="btn-pattera-accept" id="btnAcceptPattera">Accept</button>
+            <button class="btn-pattera-deny" id="btnDenyPattera">Decline</button>
+        </div>
+    </div>
+</div>
+
+<div class="pattera-speech-bubble" id="patteraBubble"></div>
+<div class="pattera-avatar" id="patteraTrigger" title="Activate Pattera">P</div>
+
 <script>
+    // PATTERA TTS AND LOGIC
+    const patteraModal = document.getElementById('patteraModal');
+    const patteraBubble = document.getElementById('patteraBubble');
+    
+    window.__speechUtterances = window.__speechUtterances || [];
+    let speechTimer = null;
+    
+    function speakPattera(text) {
+        patteraBubble.style.display = 'block';
+        patteraBubble.innerHTML = text; // Enable innerHTML to show interactive tutorial buttons
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            if (speechTimer) clearInterval(speechTimer);
+            
+            // Strip HTML tags for clean screen reader / text-to-speech output
+            const cleanText = text.replace(/<br\s*\/?>/gi, '. ').replace(/<[^>]*>?/gm, '');
+            const utterance = new SpeechSynthesisUtterance(cleanText);
+            
+            window.__speechUtterances.push(utterance);
+            
+            utterance.onend = () => {
+                window.__speechUtterances = window.__speechUtterances.filter(u => u !== utterance);
+                if (speechTimer) clearInterval(speechTimer);
+                // Only hide automatically if there are no buttons to click in it
+                if (!text.includes('button')) {
+                    setTimeout(() => { patteraBubble.style.display = 'none'; }, 3000);
+                }
+            };
+            
+            utterance.onerror = () => {
+                window.__speechUtterances = window.__speechUtterances.filter(u => u !== utterance);
+                if (speechTimer) clearInterval(speechTimer);
+            };
+
+            const voices = window.speechSynthesis.getVoices();
+            const caVoice = voices.find(v => v.lang === 'en-CA' && (v.name.includes('Female') || v.name.includes('Samantha') || v.name.includes('Google'))) 
+                || voices.find(v => v.lang === 'en-US' && v.name.includes('Female')) || voices[0];
+            if (caVoice) utterance.voice = caVoice;
+            
+            // Calm, confident, and caring tone optimization:
+            utterance.pitch = 0.96; // Slightly deeper, warmer, and more caring
+            utterance.rate = 0.88;  // Slightly slower, calm and reassuring
+            
+            window.speechSynthesis.speak(utterance);
+            
+            speechTimer = setInterval(() => {
+                if (window.speechSynthesis.speaking) {
+                    window.speechSynthesis.pause();
+                    window.speechSynthesis.resume();
+                } else {
+                    clearInterval(speechTimer);
+                }
+            }, 14000);
+        }
+    }
+
+    // Tutorial state tracking
+    let tutorialStep = 0;
+    const tutorialSteps = [
+        {
+            elementId: "syncStatus",
+            text: "This status badge lets you know we are connected directly to your Clio Grow Intake portal.",
+            highlightStyles: "outline: 3px solid #008080; outline-offset: 4px; transition: all 0.3s; box-shadow: 0 0 15px rgba(0, 128, 128, 0.4);"
+        },
+        {
+            elementId: "transmissionLogs",
+            text: "This is your log preview editor. You can review, edit, or adjust your timeline logs before we sync them.",
+            highlightStyles: "outline: 3px solid #008080; outline-offset: 4px; transition: all 0.3s; box-shadow: 0 0 15px rgba(0, 128, 128, 0.4);"
+        },
+        {
+            elementId: "transmitBtn",
+            text: "When you are ready, click this button to execute the secure sync. It will push these timeline logs directly to your Clio lead profile.",
+            highlightStyles: "outline: 3px solid #008080; outline-offset: 4px; transition: all 0.3s; box-shadow: 0 0 15px rgba(0, 128, 128, 0.4);"
+        },
+        {
+            elementId: "patteraTrigger",
+            text: "Lastly, this is me! You can click my avatar anytime to ask for help, review options, or run this tutorial again.",
+            highlightStyles: "outline: 3px solid #008080; outline-offset: 4px; transition: all 0.3s; box-shadow: 0 0 15px rgba(0, 128, 128, 0.4);"
+        }
+    ];
+
+    let activeHighlight = null;
+    let originalStyles = "";
+
+    function clearHighlight() {
+        if (activeHighlight) {
+            activeHighlight.style.cssText = originalStyles;
+            activeHighlight = null;
+        }
+    }
+
+    function highlightElement(id, styles) {
+        clearHighlight();
+        const el = document.getElementById(id);
+        if (el) {
+            originalStyles = el.style.cssText;
+            el.style.cssText += ";" + styles;
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            activeHighlight = el;
+        }
+    }
+
+    function runTutorial(step) {
+        tutorialStep = step;
+        if (step < tutorialSteps.length) {
+            const data = tutorialSteps[step];
+            highlightElement(data.elementId, data.highlightStyles);
+            
+            const bubbleHtml = `
+                <div>${data.text}</div>
+                <div style="margin-top: 12px; display: flex; gap: 8px; justify-content: flex-end;">
+                    <button class="btn-pattera-accept" id="btnNextTutorial" style="padding: 6px 12px; font-size: 11px; font-weight: bold; border-radius: 8px; cursor: pointer;">Next</button>
+                </div>
+            `;
+            speakPattera(bubbleHtml);
+            
+            setTimeout(() => {
+                const nextBtn = document.getElementById('btnNextTutorial');
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        runTutorial(step + 1);
+                    });
+                }
+            }, 50);
+        } else {
+            clearHighlight();
+            speakPattera("You're all set! I am here if you need me. Let's make this simple and stress-free.");
+            setTimeout(() => { patteraBubble.style.display = 'none'; }, 4000);
+        }
+    }
+
+    document.getElementById('patteraTrigger').addEventListener('click', () => {
+        if (sessionStorage.getItem('pattera_terms_accepted') === 'true') {
+            const repeatHtml = `
+                <div>I am right here. Would you like to run the tutorial tour again, or do you have everything under control?</div>
+                <div style="margin-top: 12px; display: flex; gap: 8px;">
+                    <button class="btn-pattera-accept" id="btnRepeatTour" style="padding: 6px 12px; font-size: 11px; font-weight: bold; border-radius: 8px; cursor: pointer;">Run Tour</button>
+                    <button class="btn-pattera-deny" id="btnDeclineRepeat" style="padding: 6px 12px; font-size: 11px; font-weight: bold; border-radius: 8px; cursor: pointer; flex: 1;">Close</button>
+                </div>
+            `;
+            speakPattera(repeatHtml);
+            
+            setTimeout(() => {
+                const repeatBtn = document.getElementById('btnRepeatTour');
+                const declineBtn = document.getElementById('btnDeclineRepeat');
+                if (repeatBtn) {
+                    repeatBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        runTutorial(0);
+                    });
+                }
+                if (declineBtn) {
+                    declineBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        speakPattera("Okay. I am standing by.");
+                        setTimeout(() => { patteraBubble.style.display = 'none'; }, 2000);
+                    });
+                }
+            }, 50);
+        } else {
+            patteraModal.style.display = 'flex';
+        }
+    });
+
+    document.getElementById('btnAcceptPattera').addEventListener('click', () => {
+        sessionStorage.setItem('pattera_terms_accepted', 'true');
+        patteraModal.style.display = 'none';
+        
+        // Calm, caring introduction
+        const introText = "Hi, I’m Pattern‑A, but I go by Pattera. I am a tool, not a lawyer, and I cannot give legal advice. This is not legal advice.";
+        speakPattera(introText);
+        
+        // After speaking the intro, offer the tutorial
+        setTimeout(() => {
+            const offerHtml = `
+                <div>Would you like a quick tutorial of the control center?</div>
+                <div style="margin-top: 12px; display: flex; gap: 8px;">
+                    <button class="btn-pattera-accept" id="btnAcceptTour" style="padding: 6px 12px; font-size: 11px; font-weight: bold; border-radius: 8px; cursor: pointer; flex: 1;">Yes, please</button>
+                    <button class="btn-pattera-deny" id="btnDeclineTour" style="padding: 6px 12px; font-size: 11px; font-weight: bold; border-radius: 8px; cursor: pointer; flex: 1;">No, thanks</button>
+                </div>
+            `;
+            speakPattera(offerHtml);
+            
+            setTimeout(() => {
+                const acceptBtn = document.getElementById('btnAcceptTour');
+                const declineBtn = document.getElementById('btnDeclineTour');
+                if (acceptBtn) {
+                    acceptBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        runTutorial(0);
+                    });
+                }
+                if (declineBtn) {
+                    declineBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        speakPattera("I completely support that. You know your workflow best. I will stand by quietly in case you need me later.");
+                    });
+                }
+            }, 50);
+        }, 5500);
+    });
+
+    document.getElementById('btnDenyPattera').addEventListener('click', () => {
+        patteraModal.style.display = 'none';
+        speakPattera("I completely respect that. You always have the final say. I will be right here if you change your mind later.");
+    });
+
     // AUTOMATIC TOKEN EXTRACTION ON LANDING
     window.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -160,21 +439,25 @@
                     logText: logContent,
                     timestamp: new Date().toISOString(),
                     routingTarget: "GROW_INTAKE",
-                    accessToken: cachedToken
+                    accessToken: cachedToken,
+                    matterName: "WorkTimeline Handshake",
+                    status: "Pending Review"
                 })
             });
 
             const result = await response.json();
 
-            if (response.ok && result.success) {
+            if (response.ok && (result.success !== false)) {
                 banner.className = 'banner success';
                 banner.textContent = 'Success! Log safely added to your Grow Lead pipeline.';
+                speakPattera("Transfer to Clio Grow was completed successfully. The firm has your information.");
             } else {
                 throw new Error(result.error || 'Server rejected transmission pipeline parameters.');
             }
         } catch (err) {
             banner.className = 'banner error';
             banner.textContent = `Sync Failed: ${err.message}`;
+            speakPattera("There was an issue transferring to Clio. Please try again.");
         }
     });
 </script>

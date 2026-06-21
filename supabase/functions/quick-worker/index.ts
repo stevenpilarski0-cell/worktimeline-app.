@@ -1,3 +1,4 @@
+// @ts-nocheck
 // index.ts — Full Production Supabase Edge Function for Clio OAuth
 // Includes: OAuth exchange, refresh logic, token storage, redirect, logging.
 
@@ -13,15 +14,16 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
 // 3. Helper: Refresh Clio tokens
 async function refreshClioToken(refresh_token: string) {
-  const res = await fetch("https://ca.grow.clio.com/oauth/token", {
+  const params = new URLSearchParams();
+  params.append("grant_type", "refresh_token");
+  params.append("client_id", CLIO_CLIENT_ID);
+  params.append("client_secret", CLIO_CLIENT_SECRET);
+  params.append("refresh_token", refresh_token);
+
+  const res = await fetch("https://ca.app.clio.com/oauth/token", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      grant_type: "refresh_token",
-      client_id: CLIO_CLIENT_ID,
-      client_secret: CLIO_CLIENT_SECRET,
-      refresh_token,
-    }),
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: params.toString(),
   });
 
   const data = await res.json();
@@ -39,13 +41,15 @@ Deno.serve(async (req) => {
     const url = new URL(req.url);
     const code = url.searchParams.get("code");
     const mode = url.searchParams.get("mode");
+    const state = url.searchParams.get("state");
+    const userId = state || "unknown_user";
 
     // MODE: refresh tokens
     if (mode === "refresh") {
       const { data, error } = await supabase
         .from("clio_tokens")
         .select("refresh_token")
-        .eq("id", 1)
+        .eq("user_id", userId)
         .single();
 
       if (error || !data) {
@@ -62,7 +66,7 @@ Deno.serve(async (req) => {
         refresh_token: refreshed.refresh_token ?? data.refresh_token,
         expires_in: refreshed.expires_in,
         updated_at: new Date().toISOString(),
-      }).eq("id", 1);
+      }).eq("user_id", userId);
 
       return new Response("Token refreshed", { status: 200 });
     }
@@ -73,17 +77,17 @@ Deno.serve(async (req) => {
     }
 
     // Exchange code for tokens
-    const tokenRes = await fetch("https://ca.grow.clio.com/oauth/token", {
+    const params = new URLSearchParams();
+    params.append("grant_type", "authorization_code");
+    params.append("client_id", CLIO_CLIENT_ID);
+    params.append("client_secret", CLIO_CLIENT_SECRET);
+    params.append("code", code);
+    params.append("redirect_uri", Deno.env.get("CLIO_REDIRECT_URI") || "https://sghmgiaaqcuymqnfbleh.supabase.co/functions/v1/quick-worker");
+
+    const tokenRes = await fetch("https://ca.app.clio.com/oauth/token", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        grant_type: "authorization_code",
-        client_id: CLIO_CLIENT_ID,
-        client_secret: CLIO_CLIENT_SECRET,
-        code,
-        redirect_uri:
-          "https://sghmgiaaqcuymqnfbleh.supabase.co/functions/v1/quick-worker",
-      }),
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: params.toString(),
     });
 
     const tokenData = await tokenRes.json();
@@ -105,7 +109,7 @@ Deno.serve(async (req) => {
     const { error } = await supabase
       .from("clio_tokens")
       .upsert({
-        id: 1,
+        user_id: userId,
         access_token,
         refresh_token,
         expires_in,
@@ -119,9 +123,14 @@ Deno.serve(async (req) => {
       return new Response("Failed to store tokens", { status: 500 });
     }
 
+    const isAddToClio = state && state.includes("addtoclio");
+    if (isAddToClio) {
+      return Response.redirect("https://ca.app.clio.com/app_integrations_callback", 302);
+    }
+
     // Redirect back to your Vercel app
     return Response.redirect(
-      "https://your-vercel-app-url.com/sync-success",
+      Deno.env.get("FRONTEND_SYNC_SUCCESS_URL") || "https://worktimeline-app.vercel.app/?sync=success",
       302,
     );
 

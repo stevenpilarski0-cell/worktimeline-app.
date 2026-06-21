@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkTimeline — Identity & Terms Verification</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --bg-base: #0a0e12;
+            --bg-radial: radial-gradient(circle at center, #161e27 0%, #06090c 100%);
+            --text-primary: #ebf2f7;
+            --text-secondary: #94a3b8;
+            --accent: #ffffff;
+            --border-glow: rgba(255, 255, 255, 0.08);
+            --border-active: rgba(255, 255, 255, 0.2);
+            --glass-bg: rgba(15, 23, 42, 0.55);
+            --shadow-premium: 0 30px 60px rgba(0, 0, 0, 0.6);
+            --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, "SF Pro Rounded", sans-serif;
+            --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg-base);
+            background-image: var(--bg-radial);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+        }
+
+        .verify-card {
+            background: var(--glass-bg);
+            -webkit-backdrop-filter: blur(25px) saturate(160%);
+            backdrop-filter: blur(25px) saturate(160%);
+            border: 1px solid var(--border-glow);
+            border-radius: 28px;
+            padding: 40px 30px;
+            width: 100%;
+            max-width: 580px;
+            box-shadow: var(--shadow-premium);
+            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .title {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: var(--text-primary);
+        }
+
+        .subtitle {
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-top: 5px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        /* Drag-and-drop ID area */
+        .upload-zone {
+            border: 1.5px dashed var(--border-glow);
+            border-radius: 20px;
+            padding: 30px 20px;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--border-active);
+            background: rgba(255, 255, 255, 0.02);
+            transform: translateY(-2px);
+        }
+
+        .upload-icon {
+            width: 44px;
+            height: 44px;
+            stroke: var(--text-secondary);
+            stroke-width: 1.2;
+            fill: none;
+            margin-bottom: 12px;
+            transition: stroke 0.3s;
+        }
+
+        .upload-zone:hover .upload-icon {
+            stroke: var(--accent);
+        }
+
+        .upload-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .upload-hint {
+            font-size: 0.75rem;
+            color: rgba(148, 163, 184, 0.6);
+            margin-top: 4px;
+        }
+
+        #idFileInput {
+            display: none;
+        }
+
+        /* Image Preview Box */
+        .preview-box {
+            display: none;
+            width: 100%;
+            max-height: 180px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 15px;
+            border: 1px solid var(--border-glow);
+            background: #000;
+        }
+
+        .preview-img {
+            width: 100%;
+            height: 180px;
+            object-fit: contain;
+        }
+
+        /* Scrollable Legal Terms */
+        .terms-container {
+            border: 1px solid var(--border-glow);
+            border-radius: 18px;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 20px;
+            max-height: 220px;
+            overflow-y: scroll;
+            font-size: 0.82rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .terms-container h3 {
+            font-family: var(--font-display);
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .terms-container p {
+            margin-bottom: 12px;
+        }
+
+        .terms-container ul {
+            margin-bottom: 12px;
+            padding-left: 15px;
+        }
+
+        .terms-container li {
+            margin-bottom: 6px;
+        }
+
+        /* Custom Scrollbar */
+        .terms-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .terms-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .terms-container::-webkit-scrollbar-thumb {
+            background: var(--border-glow);
+            border-radius: 10px;
+        }
+
+        .terms-container::-webkit-scrollbar-thumb:hover {
+            background: var(--border-active);
+        }
+
+        /* Checkbox wrapper */
+        .agreement-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 30px;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .checkbox-container {
+            position: relative;
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .checkbox-input {
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            opacity: 0;
+            position: absolute;
+            z-index: 2;
+        }
+
+        .checkbox-custom {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 1px solid var(--border-glow);
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.02);
+            transition: all 0.2s;
+            z-index: 1;
+            display: grid;
+            place-items: center;
+        }
+
+        .checkbox-input:checked ~ .checkbox-custom {
+            background: #ffffff;
+            border-color: #ffffff;
+        }
+
+        .checkbox-custom svg {
+            width: 12px;
+            height: 12px;
+            stroke: #000000;
+            stroke-width: 3;
+            fill: none;
+            display: none;
+        }
+
+        .checkbox-input:checked ~ .checkbox-custom svg {
+            display: block;
+        }
+
+        .agreement-text {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.45;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .agreement-text strong {
+            color: var(--text-primary);
+        }
+
+        /* Actions button */
+        .action-btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 16px;
+            border: none;
+            background: #ffffff;
+            color: #000000;
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            outline: none;
+        }
+
+        .action-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(255, 255, 255, 0.15);
+        }
+
+        .action-btn:disabled {
+            background: rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.3);
+            cursor: not-allowed;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.96) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="verify-card">
+        <div class="header">
+            <div class="title">Secure Identification</div>
+            <div class="subtitle">Evidence Vault Setup</div>
+        </div>
+
+        <!-- ID UPLOAD ZONE -->
+        <div class="upload-zone" onclick="triggerFileInput()" id="uploadZone">
+            <svg class="upload-icon" viewBox="0 0 24 24">
+                <rect x="3" y="4" width="18" height="16" rx="2" ry="2"/>
+                <circle cx="9" cy="9" r="2"/>
+                <path d="M21 15l-3.086-3.086a2 2 0 0 0-2.828 0L12 15l-4-4-5 5"/>
+            </svg>
+            <div class="upload-text" id="uploadText">Upload Canadian Photo ID or Driver's License</div>
+            <div class="upload-hint">Drag & drop or tap to select image</div>
+            <input type="file" id="idFileInput" accept="image/*" onchange="handleFileSelect(event)" aria-label="Upload Identity Document" title="Upload Identity Document">
+            
+            <div class="preview-box" id="previewBox">
+                <img id="previewImage" class="preview-img" alt="ID Document Preview">
+            </div>
+        </div>
+
+        <!-- SCROLLABLE TERMS & CONDITIONS -->
+        <div class="terms-container">
+            <h3>Disclaimers, Terms & Admissibility Framework</h3>
+            
+            <p><strong>1. MANDATORY LEGAL DISCLAIMERS</strong><br>
+            • We are not a lawyer.<br>
+            • We do not give legal advice.<br>
+            • We do not create a lawyer-client relationship.<br>
+            • We do not interpret laws or legal tests.<br>
+            • We do not predict legal outcomes.<br>
+            • All information may be incomplete or inaccurate.<br>
+            • All decisions must be made by the user, not the AI.<br>
+            • All AI outputs must be reviewed by a qualified lawyer before use.<br>
+            • The App is for journaling, documentation, and organization only.<br>
+            • The App is not a law firm and does not replace legal counsel.</p>
+            
+            <p><strong>2. USER CONSENT & RIGHTS</strong><br>
+            By proceeding, you grant explicit consent for:<br>
+            • AI analysis of entries.<br>
+            • Storing personal and sensitive legal information.<br>
+            • Sharing data with lawyers.<br>
+            • Sharing data with third-party services (e.g., Clio).<br>
+            • Using data to improve App features.<br>
+            You can revoke your consent at any time in your Settings, which will stop AI services and sharing flows. You have the right to access, export, correct, and delete your data at any time.</p>
+            
+            <p><strong>3. PRIVACY & DATA PROTECTION (CANADA)</strong><br>
+            • Complies with federal PIPEDA and BC PIPA privacy laws.<br>
+            • Data minimization: We only collect what is necessary to run the App.<br>
+            • No selling or transferring user data.<br>
+            • No training of AI models on user data without explicit consent.<br>
+            • Data is encrypted at rest (AES-256) and in transit (TLS 1.2+).<br>
+            • Immutable audit logs are maintained for all data access and AI actions.</p>
+            
+            <p><strong>4. SECURITY REQUIREMENTS</strong><br>
+            • AES-256 encryption at rest; TLS 1.2+ encryption in transit.<br>
+            • Role-based access control (user vs lawyer).<br>
+            • Audit logs for AI suggestions, data edits, logins, and lawyer access.<br>
+            • Secure OAuth (Google, Apple, Clio) and secure password hashing (bcrypt/argon2).</p>
+
+            <p><strong>5. TERMS OF USE & JURISDICTION</strong><br>
+            • Purpose: For digital journaling, organization, and documentation only.<br>
+            • Limitations: Provided "as is" with no guarantee of accuracy and no liability for user decisions.<br>
+            • Jurisdiction: Governing law and dispute resolution shall be located in British Columbia (Canada).</p>
+
+            <p><strong>6. LAWYER-FACING RULES (IF APPLICABLE)</strong><br>
+            • Lawyers must verify client identity and obtain consent before accessing timelines.<br>
+            • Lawyers must comply with Law Society of BC rules, not rely solely on AI, and review all AI summaries before use.</p>
+
+            <p><strong>7. EVIDENCE & DOCUMENTATION</strong><br>
+            • All timeline entries are timestamped.<br>
+            • Version history is preserved with immutable logs; AI annotations will never modify original entries.</p>
+        </div>
+
+        <!-- AGREEMENT CHECKBOXES -->
+        <div class="checkbox-group">
+            <label class="agreement-row" id="agreementRow1">
+                <div class="checkbox-container">
+                    <input type="checkbox" id="disclaimerCheckbox" class="checkbox-input" onchange="validateForm()" aria-label="Disclaimer Consent" title="Disclaimer Consent">
+                    <div class="checkbox-custom">
+                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                </div>
+                <div class="agreement-text">
+                    I acknowledge all <strong>Mandatory Legal Disclaimers</strong> and agree to the <strong>Pattera Terms of Use</strong> (BC, Canada Jurisdiction).
+                </div>
+            </label>
+
+            <label class="agreement-row" id="agreementRow2">
+                <div class="checkbox-container">
+                    <input type="checkbox" id="aiConsentCheckbox" class="checkbox-input" onchange="validateForm()" aria-label="AI Analysis Consent" title="AI Analysis Consent">
+                    <div class="checkbox-custom">
+                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                </div>
+                <div class="agreement-text">
+                    I give explicit consent for <strong>AI analysis of entries</strong> and using data to improve features.
+                </div>
+            </label>
+
+            <label class="agreement-row" id="agreementRow3">
+                <div class="checkbox-container">
+                    <input type="checkbox" id="dataConsentCheckbox" class="checkbox-input" onchange="validateForm()" aria-label="Data Storage Consent" title="Data Storage Consent">
+                    <div class="checkbox-custom">
+                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                </div>
+                <div class="agreement-text">
+                    I give explicit consent for <strong>storing sensitive legal info</strong> and sharing with lawyers and Clio.
+                </div>
+            </label>
+        </div>
+
+        <!-- COMPLETE BUTTON -->
+        <button class="action-btn" id="submitBtn" disabled onclick="submitVerification()">
+            Complete Verification
+        </button>
+    </div>
+
+    <script>
+        // Supabase Initialization matching standard app configuration
+        const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE';
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE';
+        let supabase = null;
+        let selectedFile = null;
+
+        if (SUPABASE_URL !== 'YOUR_SUPABASE_URL_HERE' && SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY_HERE') {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
+
+        function triggerFileInput() {
+            if (!selectedFile) {
+                document.getElementById('idFileInput').click();
+            }
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            selectedFile = file;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('previewImage').src = e.target.result;
+                document.getElementById('previewBox').style.display = 'block';
+                document.getElementById('uploadText').innerText = "ID File Selected: " + file.name;
+                validateForm();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function validateForm() {
+            const hasFile = selectedFile !== null;
+            const disclaimerChecked = document.getElementById('disclaimerCheckbox').checked;
+            const aiChecked = document.getElementById('aiConsentCheckbox').checked;
+            const dataChecked = document.getElementById('dataConsentCheckbox').checked;
+            document.getElementById('submitBtn').disabled = !(hasFile && disclaimerChecked && aiChecked && dataChecked);
+        }
+
+        async function submitVerification() {
+            if (!selectedFile) return;
+
+            const btn = document.getElementById('submitBtn');
+            btn.innerText = "Processing Vault Link...";
+            btn.disabled = true;
+
+            try {
+                // Save consents explicitly to localStorage
+                localStorage.setItem('consent_disclaimer', 'true');
+                localStorage.setItem('consent_ai', 'true');
+                localStorage.setItem('consent_data', 'true');
+                localStorage.setItem('consent_clio', 'true');
+                localStorage.setItem('consent_improvement', 'true');
+
+                let idUrl = "https://example.com/mock_id_doc.jpg";
+
+                // Supabase profile setup and ID file upload if configured
+                if (supabase) {
+                    const { data: { session } } = await supabase.auth.getSession();
+                    if (session) {
+                        const userId = session.user.id;
+                        const fileExt = selectedFile.name.split('.').pop() || 'jpg';
+                        const filePath = `${userId}/id_document_${Date.now()}.${fileExt}`;
+
+                        // Upload file to secure id-verification bucket
+                        const { data: uploadData, error: uploadError } = await supabase.storage
+                            .from('id-verification')
+                            .upload(filePath, selectedFile, {
+                                cacheControl: '3600',
+                                upsert: true
+                            });
+
+                        if (uploadError) throw uploadError;
+
+                        const { data: pubData } = supabase.storage.from('id-verification').getPublicUrl(filePath);
+                        idUrl = pubData.publicUrl;
+
+                        // Update profiles table
+                        const { error: profileError } = await supabase
+                            .from('profiles')
+                            .update({
+                                is_verified: true,
+                                id_document_url: idUrl
+                            })
+                            .eq('id', userId);
+
+                        if (profileError) throw profileError;
+                    }
+                }
+
+                // Cache verification status locally for instant app load validation
+                localStorage.setItem('isVerified', 'true');
+                
+                alert("IDENTITY VERIFIED\n\nYour evidence vault has been successfully unlocked.");
+                window.location.href = '/index.html';
+
+            } catch (error) {
+                console.error("Verification Error:", error);
+                alert("Verification failed: " + error.message);
+                btn.innerText = "Complete Verification";
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

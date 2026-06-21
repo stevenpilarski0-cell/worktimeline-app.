@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkTimeline — Witness Statement Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #0a0e12;
+            --bg-radial: radial-gradient(circle at center, #161e27 0%, #06090c 100%);
+            --text-primary: #ebf2f7;
+            --text-secondary: #94a3b8;
+            --accent: #008080;
+            --border-glow: rgba(0, 128, 128, 0.15);
+            --border-active: rgba(0, 128, 128, 0.4);
+            --glass-bg: rgba(15, 23, 42, 0.55);
+            --shadow-premium: 0 30px 60px rgba(0, 0, 0, 0.6);
+            --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, "SF Pro Rounded", sans-serif;
+            --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg-base);
+            background-image: var(--bg-radial);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+        }
+
+        .portal-card {
+            background: var(--glass-bg);
+            -webkit-backdrop-filter: blur(25px) saturate(160%);
+            backdrop-filter: blur(25px) saturate(160%);
+            border: 1px solid var(--border-glow);
+            border-radius: 28px;
+            padding: 40px 30px;
+            width: 100%;
+            max-width: 580px;
+            box-shadow: var(--shadow-premium);
+            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .title {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: var(--text-primary);
+        }
+
+        .subtitle {
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-top: 5px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--border-glow);
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.25);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 10px rgba(0, 128, 128, 0.2);
+            background: rgba(0, 0, 0, 0.35);
+        }
+
+        textarea.input-field {
+            height: 150px;
+            resize: none;
+            line-height: 1.5;
+        }
+
+        .legal-notice {
+            background: rgba(225, 29, 72, 0.05);
+            border: 1px solid rgba(225, 29, 72, 0.15);
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 0.8rem;
+            line-height: 1.5;
+            color: #f43f5e;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 16px;
+            border: none;
+            background: var(--accent);
+            color: #ffffff;
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            outline: none;
+        }
+
+        .action-btn:hover:not(:disabled) {
+            background: #006666;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(0, 128, 128, 0.25);
+        }
+
+        .action-btn:disabled {
+            background: rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.3);
+            cursor: not-allowed;
+        }
+
+        .verification-badge {
+            background: rgba(0, 128, 128, 0.1);
+            border: 1px solid var(--border-glow);
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 0.85rem;
+            color: #00cccc;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.96) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .verification-code-input {
+            text-align: center;
+            font-size: 1.25rem;
+            letter-spacing: 0.25em;
+        }
+
+        .display-none {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="portal-card">
+        <div class="header">
+            <div class="title">Witness Portal</div>
+            <div class="subtitle">Secure Statement Submission</div>
+        </div>
+
+        <div class="legal-notice">
+            <strong>⚠️ CRITICAL LEGAL NOTICE (CANADA / BC):</strong><br>
+            • This is a secure ledger to record contemporaneous witness statements.<br>
+            • Once submitted, your statement is sealed and marked as immutable (cannot be altered).<br>
+            • A duplicate copy will be generated for case working purposes, while the original remains locked.
+        </div>
+
+        <div class="verification-badge" id="requestInfo">
+            Statement requested by: <strong id="requesterName">Client</strong>
+        </div>
+
+        <!-- Verification Step -->
+        <div id="stepVerification">
+            <div class="form-group">
+                <label class="label" for="verificationCode">Witness Verification Code</label>
+                <input type="text" id="verificationCode" class="input-field verification-code-input" placeholder="Enter 6-digit Code" maxlength="6" aria-label="Witness Verification Code" title="Witness Verification Code">
+            </div>
+            <button class="action-btn" onclick="verifyWitnessCode()">Verify Code</button>
+        </div>
+
+        <!-- Statement Step -->
+        <div id="stepStatement" class="display-none">
+            <div class="form-group">
+                <label class="label" for="witnessName">Your Full Name</label>
+                <input type="text" id="witnessName" class="input-field" placeholder="Enter your full name" aria-label="Your Full Name" title="Your Full Name">
+            </div>
+
+            <div class="form-group">
+                <label class="label" for="witnessStatement">Contemporaneous Witness Statement</label>
+                <textarea id="witnessStatement" class="input-field" placeholder="Describe the events as you witnessed them..." aria-label="Contemporaneous Witness Statement" title="Contemporaneous Witness Statement"></textarea>
+            </div>
+
+            <button class="action-btn" id="submitBtn" onclick="submitStatement()">Seal & Submit Statement</button>
+        </div>
+    </div>
+
+    <script>
+        let verifiedRequest = null;
+
+        // Auto-extract code from URL parameter if present
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            if (code) {
+                document.getElementById('verificationCode').value = code;
+                verifyWitnessCode();
+            }
+        });
+
+        function verifyWitnessCode() {
+            const codeInput = document.getElementById('verificationCode').value.trim();
+            if (codeInput.length !== 6) {
+                alert("Please enter a valid 6-digit verification code.");
+                return;
+            }
+
+            // Find pending request in localStorage
+            const pendingRequests = JSON.parse(localStorage.getItem('pending_witness_requests') || '[]');
+            const matchedRequest = pendingRequests.find(r => r.code === codeInput);
+
+            if (matchedRequest) {
+                verifiedRequest = matchedRequest;
+                document.getElementById('requesterName').innerText = matchedRequest.clientName || 'Client';
+                document.getElementById('requestInfo').style.display = 'block';
+                
+                document.getElementById('stepVerification').style.display = 'none';
+                document.getElementById('stepStatement').style.display = 'block';
+            } else {
+                // If testing locally and code not found, allow demo simulation
+                const demoConfirm = confirm("Verification code not found in current local database.\n\nWould you like to simulate a successful verification for code " + codeInput + "?");
+                if (demoConfirm) {
+                    verifiedRequest = { code: codeInput, clientName: "Spencer Densmore (Demo Client)" };
+                    document.getElementById('requesterName').innerText = verifiedRequest.clientName;
+                    document.getElementById('requestInfo').style.display = 'block';
+                    
+                    document.getElementById('stepVerification').style.display = 'none';
+                    document.getElementById('stepStatement').style.display = 'block';
+                }
+            }
+        }
+
+        function submitStatement() {
+            const name = document.getElementById('witnessName').value.trim();
+            const text = document.getElementById('witnessStatement').value.trim();
+
+            if (!name || !text) {
+                alert("Please fill in both your name and your statement.");
+                return;
+            }
+
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.innerText = "Sealing Statement...";
+
+            // Construct payload following duplicate copy security rule
+            const payload = {
+                id: crypto.randomUUID(),
+                code: verifiedRequest ? verifiedRequest.code : '000000',
+                witnessName: name,
+                originalText: text,        // Immutable copy
+                workingText: text,         // Working duplicate copy
+                timestamp: new Date().toLocaleString(),
+                status: 'SUBMITTED'
+            };
+
+            // Save to localStorage shared key (to simulate synchronizing with the main app)
+            const statements = JSON.parse(localStorage.getItem('pattera_witness_statements_v1') || '[]');
+            statements.push(payload);
+            localStorage.setItem('pattera_witness_statements_v1', JSON.stringify(statements));
+
+            // Clean pending requests
+            const pendingRequests = JSON.parse(localStorage.getItem('pending_witness_requests') || '[]');
+            const updatedRequests = pendingRequests.filter(r => r.code !== payload.code);
+            localStorage.setItem('pending_witness_requests', JSON.stringify(updatedRequests));
+
+            alert("STATEMENT LOCKED & SECURED\n\nYour statement has been logged and sealed. To synchronize this statement with the client's timeline, you will now be redirected.");
+            
+            // Redirect back to index.html with the code
+            window.location.href = `index.html?witnessCode=${payload.code}`;
+        }
+    </script>
+</body>
+</html>

@@ -3,33 +3,25 @@ const axios = require('axios');
 const { createClient } = require('@supabase/supabase-js');
 
 module.exports = async (req, res) => {
-    const { code } = req.query;
+    const { code, state } = req.query;
 
     if (!code) {
         return res.status(400).send('Error: Missing authorization execution code.');
     }
-
-    let verifier = '';
-    const cookieHeader = req.headers.cookie;
-    if (cookieHeader) {
-        const match = cookieHeader.split(';').find(c => c.trim().startsWith('pkce_v='));
-        if (match) verifier = match.split('=')[1].trim();
-    }
-
-    if (!verifier) verifier = "SamplePKCEChallengeVerificationStringValueLengthAlpha64CharsValid";
 
     const supabase = createClient(
         process.env.SUPABASE_URL, 
         process.env.SUPABASE_SERVICE_ROLE_KEY
     );
 
-    const CLIENT_ID = '18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s'; 
-    const REDIRECT_URI = 'https://worktimeline-app.vercel.app/api/sync';
-    const FIRM_ID = '01KPZB4ZCXHE3Z92S1KM3AT96V';
+    const CLIENT_ID = process.env.CLIO_CLIENT_ID; 
+    const CLIENT_SECRET = process.env.CLIO_CLIENT_SECRET;
+    const REDIRECT_URI = process.env.CLIO_REDIRECT_URI;
+    const FIRM_ID = process.env.CLIO_FIRM_ID;
 
     try {
         const { data: records, error: dbError } = await supabase
-            .from('timeline_records') 
+            .from('timeline_entries') 
             .select('*')
             .order('created_at', { ascending: false })
             .limit(15);
@@ -45,23 +37,34 @@ module.exports = async (req, res) => {
         } else {
             compiledNotes += "\nNo active timeline logs found in database.";
         }
+        
+        const MAX_COMPILED_NOTES_LENGTH = 8000;
+        if (compiledNotes.length > MAX_COMPILED_NOTES_LENGTH) {
+            compiledNotes = compiledNotes.substring(0, MAX_COMPILED_NOTES_LENGTH) + '\n...[TRUNCATED LOGS]';
+        }
 
-        // ALIGNED EXCHANGE PASS: Directly swapping tokens via the Canadian regional endpoints
-        const tokenExchangeResponse = await axios.post('https://ca.grow.clio.com/oauth/token', {
-            grant_type: 'authorization_code',
-            code: code,
-            client_id: CLIENT_ID,
-            redirect_uri: REDIRECT_URI,
-            code_verifier: verifier
+        // ALIGNED EXCHANGE PASS: Directly swapping tokens via the Canadian endpoints using application/x-www-form-urlencoded
+        const params = new URLSearchParams();
+        params.append('grant_type', 'authorization_code');
+        params.append('code', code);
+        params.append('client_id', CLIENT_ID);
+        params.append('client_secret', CLIENT_SECRET);
+        params.append('redirect_uri', REDIRECT_URI);
+
+        const tokenExchangeResponse = await axios.post('https://ca.app.clio.com/oauth/token', params, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
         });
 
         const accessToken = tokenExchangeResponse.data.access_token;
 
         const leadPayload = {
             inbox_lead: {
-                from_first: "WorkTimeline",
-                from_last: "Intake Suite",
-                from_source: "Supabase Canadian PKCE Bridge",
+                from_first: "Spencer",
+                from_last: "Densmore",
+                from_email: "spencer@example.com",
+                from_source: "Supabase PKCE Bridge",
                 referring_url: REDIRECT_URI,
                 from_message: `${compiledNotes}\n\nFirm ID Assignment: ${FIRM_ID}`
             }
@@ -75,10 +78,14 @@ module.exports = async (req, res) => {
             }
         });
 
+        if (state && state.includes('addtoclio')) {
+            return res.redirect('https://ca.app.clio.com/app_integrations_callback');
+        }
         return res.redirect('/?sync=success');
 
     } catch (error) {
         console.error('Handshake Failure:', error.response ? error.response.data : error.message);
-        return res.status(500).send(`Grow PKCE Handshake Failure: ${error.message}`);
+        return res.status(500).send(`Grow Handshake Failure: ${error.message}`);
     }
 };
+
