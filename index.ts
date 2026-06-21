@@ -1,20 +1,4 @@
-// index.ts — Deno AI Server for Pattern Recognition (Pattera) using Gemini API
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-// 1. Manually load .env file variables if present
-try {
-  const envText = await Deno.readTextFile(".env");
-  for (const line of envText.split("\n")) {
-    const parts = line.trim().split("=");
-    if (parts.length >= 2 && !parts[0].startsWith("#")) {
-      const key = parts[0].trim();
-      const val = parts.slice(1).join("=").trim().replace(/^['"]|['"]$/g, "");
-      Deno.env.set(key, val);
-    }
-  }
-} catch (_) {
-  // Rely on system environment variables if .env read fails
-}
+// index.ts — Deno AI Server for Pattern Recognition (Pattera) using Local Ollama (llama3.2:1b)
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -42,9 +26,7 @@ Deno.serve({
     }
     
     console.log(`📝 Timeline text length: ${timelineText.length} characters`);
-
-    const apiKey = Deno.env.get("GEMINI_API_KEY") || "AIzaSyAeiyQgpzAiFP1Wco-RDAG9lJ4HjQoLNgU";
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    console.log(`🤖 Sending request to local Ollama (llama3.2:1b)...`);
 
     const systemInstructionText = `Identify yourself as: "Hi, I’m Pattern‑A, but I go by Pattera."
 You are an AI assistant specializing exclusively in Canadian law, analyzing a user's work timeline. Your task is to identify legal patterns relevant to Canadian law (such as Workers' Compensation Boards (WCB), Employment Standards Acts, Canada Revenue Agency (CRA) guidelines, Labour Boards, Human Rights, and PIPA).
@@ -65,44 +47,42 @@ For each pattern in the array, provide:
 - 'log_id': The specific timeline entry ID that triggered this pattern.
 - 'desc': A brief description explaining the connection. Include the reminder: "This is not legal advice."`;
 
-    const geminiPayload = {
-      contents: [
+    const ollamaPayload = {
+      model: "llama3.2:1b",
+      messages: [
         {
-          role: 'user',
-          parts: [
-            {
-              text: `${systemInstructionText}\n\nAnalyze the following timeline:\n\n${timelineText}`
-            }
-          ]
+          role: "system",
+          content: systemInstructionText
+        },
+        {
+          role: "user",
+          content: `Analyze the following timeline:\n\n${timelineText}`
         }
       ],
-      generationConfig: {
-        responseMimeType: "application/json"
-      }
+      stream: false,
+      format: "json"
     };
 
-    console.log(`🤖 Sending request to Google Gemini API...`);
-
-    const geminiRes = await fetch(url, {
-      method: 'POST',
+    const ollamaRes = await fetch("http://127.0.0.1:11434/api/chat", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify(geminiPayload)
+      body: JSON.stringify(ollamaPayload)
     });
 
-    if (!geminiRes.ok) {
-      const errorText = await geminiRes.text();
-      throw new Error(`Gemini API Error (${geminiRes.status}): ${errorText}`);
+    if (!ollamaRes.ok) {
+      const errorText = await ollamaRes.text();
+      throw new Error(`Ollama API Error (${ollamaRes.status}): ${errorText}`);
     }
 
-    const geminiData = await geminiRes.json();
-    const candidateText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
-    console.log(`✅ Received response from Gemini! Raw output:`, candidateText);
+    const ollamaData = await ollamaRes.json();
+    const candidateText = ollamaData.message?.content;
+    console.log(`✅ Received response from local Ollama! Raw output:`, candidateText);
 
     const analysis = candidateText ? JSON.parse(candidateText) : { patterns: [] };
 
-    // Make sure we have the nested structure { analysis: { patterns: [...] } }
+    // Ensure we have the nested structure { analysis: { patterns: [...] } }
     let responseData = analysis;
     if (!responseData.analysis) {
       responseData = { analysis: responseData };
