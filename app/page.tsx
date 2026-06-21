@@ -46,6 +46,32 @@ export default function AppPortal() {
   const [isAmendModalOpen, setIsAmendModalOpen] = useState(false);
   const [amendingLogId, setAmendingLogId] = useState<string | null>(null);
 
+  // Cross-Case & Study Hub States
+  const [highlightedLogId, setHighlightedLogId] = useState<string | null>(null);
+  const [isRedacted, setIsRedacted] = useState(false);
+  const [neutralMode, setNeutralMode] = useState(true);
+  const [impairmentIndex, setImpairmentIndex] = useState(8);
+  const [selectedRelation, setSelectedRelation] = useState<string | null>(null);
+
+  // Navigation and Highlight Trigger
+  const handleNavigateToEntry = (logId: string, caseType: string) => {
+    setActiveCase(caseType);
+    setActiveTab('timelineTab');
+    setHighlightedLogId(logId);
+    
+    setTimeout(() => {
+      const element = document.getElementById(`log_${logId}`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      
+      // Clear highlight after 3 seconds
+      setTimeout(() => {
+        setHighlightedLogId(null);
+      }, 3000);
+    }, 150);
+  };
+
   // 1. URL Parameter Routing (OAuth callbacks & invites)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -107,7 +133,181 @@ export default function AppPortal() {
         .eq('case_type', activeCase)
         .order('created_at', { ascending: true });
         
-      if (data && !error) setTimelines(data);
+      if (data && data.length > 0 && !error) {
+        setTimelines(data);
+      } else if (activeCase === 'work') {
+        // Start with a clean empty timeline for work, per user request
+        setTimelines([]);
+        setInsights([]);
+      } else {
+        // Seed default mock entries for visual demonstration
+        const mockEntries: TimelineEntry[] = [
+          // WORK ENTRIES
+          {
+            id: 'work-parent-1',
+            parent_id: null,
+            case_type: 'work',
+            mode: 'TIMELINE',
+            type: 'text',
+            stamp: '6/10/2026, 9:00:00 AM',
+            text: 'Slipped on wet floor in the warehouse during my shift. Supervisor Stephan was notified but did not file an incident report.',
+          },
+          {
+            id: 'work-receipt-1',
+            parent_id: 'work-parent-1',
+            case_type: 'work',
+            mode: 'TIMELINE',
+            type: 'receipt',
+            stamp: '6/10/2026, 11:30:00 AM',
+            text: 'Purchased emergency knee brace and pain relievers from Langley Pharmacy.',
+            evidence_url: 'https://placeholder.co/receipt1.jpg',
+            custom_attributes: { amount: '45.50', merchant: 'Langley Pharmacy' }
+          },
+          {
+            id: 'work-visit-1',
+            parent_id: 'work-parent-1',
+            case_type: 'work',
+            mode: 'TIMELINE',
+            type: 'visit',
+            stamp: '6/11/2026, 2:00:00 PM',
+            text: 'Doctor visit checkup at Fraser Health Medical Clinic with Dr. Miller.',
+            custom_attributes: { provider: 'Dr. Miller', symptoms_noted: 'Severe knee swelling and limited rotation' }
+          },
+          {
+            id: 'work-parent-2',
+            parent_id: null,
+            case_type: 'work',
+            mode: 'TIMELINE',
+            type: 'text',
+            stamp: '6/12/2026, 6:00:00 PM',
+            text: 'Completed 12 hours of mandatory overtime doing warehouse inventory without dinner break.',
+          },
+          {
+            id: 'work-receipt-2',
+            parent_id: 'work-parent-2',
+            case_type: 'work',
+            mode: 'TIMELINE',
+            type: 'receipt',
+            stamp: '6/12/2026, 8:30:00 AM',
+            text: 'Purchased required steel-toed work safety boots.',
+            evidence_url: 'https://placeholder.co/receipt2.jpg',
+            custom_attributes: { amount: '185.00', merchant: 'WorkWear Depot' }
+          },
+          
+          // INJURY ENTRIES
+          {
+            id: 'injury-parent-1',
+            parent_id: null,
+            case_type: 'injury',
+            mode: 'TIMELINE',
+            type: 'text',
+            stamp: '6/10/2026, 9:00:00 AM',
+            text: 'Slipped and injured knee in the warehouse. Pain immediately level 8/10.',
+          },
+          {
+            id: 'injury-visit-1',
+            parent_id: 'injury-parent-1',
+            case_type: 'injury',
+            mode: 'TIMELINE',
+            type: 'visit',
+            stamp: '6/11/2026, 2:00:00 PM',
+            text: 'Fraser Health clinic assessment for knee injury.',
+            custom_attributes: { provider: 'Dr. Miller (Orthopedics)', symptoms_noted: 'Ligament sprain, pain level 8, brace required' }
+          },
+          {
+            id: 'injury-receipt-1',
+            parent_id: 'injury-parent-1',
+            case_type: 'injury',
+            mode: 'TIMELINE',
+            type: 'receipt',
+            stamp: '6/11/2026, 3:00:00 PM',
+            text: 'Prescribed anti-inflammatory medication.',
+            custom_attributes: { amount: '62.00', merchant: 'Langley Pharmacy' }
+          },
+
+          // PROPERTY ENTRIES
+          {
+            id: 'property-parent-1',
+            parent_id: null,
+            case_type: 'property',
+            mode: 'TIMELINE',
+            type: 'text',
+            stamp: '6/15/2026, 1:00:00 PM',
+            text: 'Burst pipe in basement storage room causing water damage to client files and inventory boxes.',
+          },
+          {
+            id: 'property-receipt-1',
+            parent_id: 'property-parent-1',
+            case_type: 'property',
+            mode: 'TIMELINE',
+            type: 'receipt',
+            stamp: '6/15/2026, 3:30:00 PM',
+            text: 'Emergency plumbing drainage and pipe repair.',
+            evidence_url: 'https://placeholder.co/plumbing.jpg',
+            custom_attributes: { amount: '450.00', merchant: 'Rapid Plumbing Services' }
+          },
+
+          // FAMILY ENTRIES
+          {
+            id: 'family-parent-1',
+            parent_id: null,
+            case_type: 'family',
+            mode: 'TIMELINE',
+            type: 'text',
+            stamp: '6/18/2026, 5:45:00 PM',
+            text: 'Parent arrived 45 minutes late for custody handoff and shouted in presence of the children.',
+          },
+          {
+            id: 'family-visit-1',
+            parent_id: 'family-parent-1',
+            case_type: 'family',
+            mode: 'TIMELINE',
+            type: 'visit',
+            stamp: '6/19/2026, 10:00:00 AM',
+            text: 'Social worker consultation regarding co-parenting boundary violations.',
+            custom_attributes: { counselor: 'Sarah Jenkins, LCSW', session_type: 'Mediation Session' }
+          }
+        ];
+        
+        setTimelines(mockEntries.filter(e => e.case_type === activeCase));
+        
+        // Also seed default mock insights
+        const mockInsights: PatternInsight[] = [
+          {
+            log_id: 'work-parent-1',
+            term: 'Workplace Negligence',
+            latin: 'Res ipsa loquitur',
+            caseLaw: 'Hogarth v. Rocky Mountain Sky Ltd.',
+            desc: 'The employer failed to maintain safe warehouse flooring, leading directly to a fall.',
+            status: 'ACCEPTED'
+          },
+          {
+            log_id: 'work-parent-2',
+            term: 'Unpaid Overtime Value',
+            latin: 'Quantum meruit',
+            caseLaw: 'BC Employment Standards Act Sec 63',
+            desc: 'The client performed mandatory overtime without compensation or meal break.',
+            status: 'ACCEPTED'
+          },
+          {
+            log_id: 'property-parent-1',
+            term: 'Landlord Failure to Maintain',
+            latin: 'Prima facie',
+            caseLaw: 'BC Residential Tenancy Act Sec 32',
+            desc: 'Water damage occurred due to aging, neglected plumbing in the utility space.',
+            status: 'ACCEPTED'
+          },
+          {
+            log_id: 'family-parent-1',
+            term: 'Intrusion Upon Seclusion',
+            latin: 'Habeas corpus',
+            caseLaw: 'Family Law Act Sec 224',
+            desc: 'Late arrival and verbal hostility in the presence of children violates the co-parenting agreement.',
+            status: 'ACCEPTED'
+          }
+        ];
+        setInsights(mockInsights.filter(i => mockEntries.some(e => e.id === i.log_id && e.case_type === activeCase)));
+      }
     }
     loadTimelines();
   }, [activeCase, supabase]);
@@ -597,6 +797,16 @@ export default function AppPortal() {
           cursor: pointer;
           font-weight: 600;
         }
+        @keyframes log-glow {
+          0% { box-shadow: 0 0 0 0 rgba(28, 216, 210, 0.6); border-color: #1cd8d2; }
+          70% { box-shadow: 0 0 0 12px rgba(28, 216, 210, 0); border-color: #1cd8d2; }
+          100% { box-shadow: 0 0 0 0 rgba(28, 216, 210, 0); }
+        }
+        .highlighted-log-pulse {
+          animation: log-glow 1.5s infinite;
+          border: 2px solid #1cd8d2 !important;
+          background: rgba(28, 216, 210, 0.05) !important;
+        }
       `}} />
 
       {/* SIDEBAR NAVIGATION */}
@@ -700,6 +910,8 @@ export default function AppPortal() {
           <div className="tabs">
             {[
               { id: 'timelineTab', label: 'Timeline Builder' },
+              { id: 'studyTab', label: 'Study Hub (Precedents)' },
+              role === 'firm' && { id: 'chartTab', label: 'Cross-Case Chart' },
               role === 'firm' && { id: 'hubTab', label: 'Justice Hub (Embedded)' },
               role === 'firm' && { id: 'inviteTab', label: 'Matters & Client Invites' }
             ].filter(Boolean).map((t: any) => (
@@ -755,7 +967,338 @@ export default function AppPortal() {
                   currentMode={notesMode ? 'NOTES' : 'TIMELINE'} 
                   onAmend={handleAmendLog}
                   onPreviewEvidence={handlePreviewEvidence}
+                  highlightedLogId={highlightedLogId}
                 />
+              </div>
+            </div>
+          )}
+
+          {/* STUDY HUB TAB */}
+          {activeTab === 'studyTab' && (
+            <div className="tab-content active" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+              <h2>Study Hub: Precedent Benchmarks & Case Law</h2>
+              <p style={{ color: 'var(--muted-dark)' }}>
+                Review legal precedents matching your chronological timeline events. Accepting a precedent binds it to the event as a Timelink.
+              </p>
+              
+              {/* CATEGORIES GRID */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
+                
+                {/* 1. WORKTIMELINE WIDGET (REDACTION TOGGLE) */}
+                <div style={{ padding: '20px', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--mac-border-dark)', borderRadius: '16px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                    <strong style={{ color: '#1cd8d2' }}>💼 Labor & Wages (Quantum Meruit)</strong>
+                    <span style={{ fontSize: '0.75rem', padding: '2px 8px', background: 'rgba(28,216,210,0.1)', color: '#1cd8d2', borderRadius: '12px', fontWeight: 600 }}>WorkTimeline</span>
+                  </div>
+                  <p style={{ fontSize: '0.85rem', color: '#86868b', marginBottom: '12px' }}>
+                    <strong>Killer Feature:</strong> Privacy/Redaction Toggle (replaces sensitive HR/colleague names).
+                  </p>
+                  
+                  <div style={{ padding: '12px', background: 'rgba(0,0,0,0.2)', borderRadius: '10px', fontSize: '0.85rem', color: '#e5e5ea', minHeight: '60px', marginBottom: '12px' }}>
+                    {isRedacted ? (
+                      <span>Supervisor <code>[REDACTED]</code> requested a meeting with coworker <code>[REDACTED]</code> about termination procedures.</span>
+                    ) : (
+                      <span>Supervisor <strong>Stephan Pilarski</strong> requested a meeting with coworker <strong>John Doe</strong> about termination procedures.</span>
+                    )}
+                  </div>
+                  
+                  <button className={`firm-btn ${isRedacted ? 'active' : ''}`} onClick={() => setIsRedacted(!isRedacted)} style={{ fontSize: '0.8rem' }}>
+                    {isRedacted ? '🛡️ Privacy Redacted' : '🔓 Enable Privacy Redaction'}
+                  </button>
+                  
+                  <div style={{ borderTop: '1px solid var(--mac-border-dark)', marginTop: '12px', paddingTop: '10px' }}>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--muted-dark)' }}>Linked Timeline Events:</span>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '6px' }}>
+                      {timelines.filter(t => t.case_type === 'work' && insights.some(i => i.log_id === t.id)).map(t => (
+                        <div key={t.id} style={{ fontSize: '0.75rem', color: '#1cd8d2', cursor: 'pointer', textDecoration: 'underline' }} onClick={() => handleNavigateToEntry(t.id, 'work')}>
+                          📅 {t.stamp} - {t.text.substring(0, 30)}...
+                        </div>
+                      ))}
+                      {timelines.filter(t => t.case_type === 'work' && insights.some(i => i.log_id === t.id)).length === 0 && (
+                        <>
+                          <div style={{ fontSize: '0.75rem', color: '#86868b', fontStyle: 'italic' }}>No custom entries analyzed yet.</div>
+                          <div style={{ fontSize: '0.75rem', color: '#1cd8d2', cursor: 'pointer', textDecoration: 'underline', opacity: 0.7 }} onClick={() => handleNavigateToEntry('work-parent-2', 'work')}>
+                            📅 6/12/2026 - Overtime Wage Dispute Incident (Demo Reference)
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. PROPERTYTIMELINE WIDGET (BEFORE/AFTER COMPARISON) */}
+                <div style={{ padding: '20px', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--mac-border-dark)', borderRadius: '16px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                    <strong style={{ color: '#1cd8d2' }}>🏠 Asset & Damage (Prima Facie)</strong>
+                    <span style={{ fontSize: '0.75rem', padding: '2px 8px', background: 'rgba(28,216,210,0.1)', color: '#1cd8d2', borderRadius: '12px', fontWeight: 600 }}>PropertyTimeline</span>
+                  </div>
+                  <p style={{ fontSize: '0.85rem', color: '#86868b', marginBottom: '12px' }}>
+                    <strong>Killer Feature:</strong> Before & After Damage Comparison.
+                  </p>
+                  
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '12px' }}>
+                    <div style={{ padding: '10px', background: 'rgba(28,216,210,0.05)', border: '1px solid rgba(28,216,210,0.1)', borderRadius: '8px', textAlign: 'center' }}>
+                      <span style={{ fontSize: '0.7rem', display: 'block', color: '#86868b' }}>BEFORE</span>
+                      <strong style={{ fontSize: '0.8rem', color: '#1cd8d2' }}>Dry & Clean</strong>
+                    </div>
+                    <div style={{ padding: '10px', background: 'rgba(239,68,68,0.05)', border: '1px solid rgba(239,68,68,0.1)', borderRadius: '8px', textAlign: 'center' }}>
+                      <span style={{ fontSize: '0.7rem', display: 'block', color: '#86868b' }}>AFTER</span>
+                      <strong style={{ fontSize: '0.8rem', color: '#ef4444' }}>Severe Flooding</strong>
+                    </div>
+                  </div>
+                  
+                  <div style={{ borderTop: '1px solid var(--mac-border-dark)', marginTop: '12px', paddingTop: '10px' }}>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--muted-dark)' }}>Linked Timeline Events:</span>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '6px' }}>
+                      {timelines.filter(t => t.case_type === 'property' && insights.some(i => i.log_id === t.id)).map(t => (
+                        <div key={t.id} style={{ fontSize: '0.75rem', color: '#1cd8d2', cursor: 'pointer', textDecoration: 'underline' }} onClick={() => handleNavigateToEntry(t.id, 'property')}>
+                          📅 {t.stamp} - {t.text.substring(0, 30)}...
+                        </div>
+                      ))}
+                      {timelines.filter(t => t.case_type === 'property' && insights.some(i => i.log_id === t.id)).length === 0 && (
+                        <>
+                          <div style={{ fontSize: '0.75rem', color: '#86868b', fontStyle: 'italic' }}>No custom entries analyzed yet.</div>
+                          <div style={{ fontSize: '0.75rem', color: '#1cd8d2', cursor: 'pointer', textDecoration: 'underline', opacity: 0.7 }} onClick={() => handleNavigateToEntry('property-parent-1', 'property')}>
+                            📅 6/15/2026 - Burst pipe basement flood (Demo Reference)
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. FAMILYTIMELINE WIDGET (SENTINEL-NEUTRAL TRANSLATION) */}
+                <div style={{ padding: '20px', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--mac-border-dark)', borderRadius: '16px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                    <strong style={{ color: '#1cd8d2' }}>⚖️ Neutral Translation (Habeas Corpus)</strong>
+                    <span style={{ fontSize: '0.75rem', padding: '2px 8px', background: 'rgba(28,216,210,0.1)', color: '#1cd8d2', borderRadius: '12px', fontWeight: 600 }}>FamilyTimeline</span>
+                  </div>
+                  <p style={{ fontSize: '0.85rem', color: '#86868b', marginBottom: '12px' }}>
+                    <strong>Killer Feature:</strong> Sentiment-Neutral AI log translation.
+                  </p>
+                  
+                  <div style={{ padding: '12px', background: 'rgba(0,0,0,0.2)', borderRadius: '10px', fontSize: '0.82rem', color: '#e5e5ea', minHeight: '60px', marginBottom: '12px', lineHeight: '1.4' }}>
+                    {neutralMode ? (
+                      <div>
+                        <span style={{ fontSize: '0.7rem', color: '#1cd8d2', display: 'block', fontWeight: 'bold' }}>COURT LOG (NEUTRAL)</span>
+                        Parent arrived 45 minutes late for children exchange and spoke in a loud, aggressive tone in the presence of children.
+                      </div>
+                    ) : (
+                      <div>
+                        <span style={{ fontSize: '0.7rem', color: '#ef4444', display: 'block', fontWeight: 'bold' }}>ORIGINAL INPUT (HIGH-CONFLICT)</span>
+                        "HE ARRIVED SO LATE AND SHOUTED AT ME IN FRONT OF THE KIDS! I HATE THIS!"
+                      </div>
+                    )}
+                  </div>
+                  
+                  <button className={`firm-btn ${neutralMode ? 'active' : ''}`} onClick={() => setNeutralMode(!neutralMode)} style={{ fontSize: '0.8rem' }}>
+                    {neutralMode ? '⚖️ Showing Factual Log' : '💥 Show Original Communication'}
+                  </button>
+                  
+                  <div style={{ borderTop: '1px solid var(--mac-border-dark)', marginTop: '12px', paddingTop: '10px' }}>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--muted-dark)' }}>Linked Timeline Events:</span>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '6px' }}>
+                      {timelines.filter(t => t.case_type === 'family' && insights.some(i => i.log_id === t.id)).map(t => (
+                        <div key={t.id} style={{ fontSize: '0.75rem', color: '#1cd8d2', cursor: 'pointer', textDecoration: 'underline' }} onClick={() => handleNavigateToEntry(t.id, 'family')}>
+                          📅 {t.stamp} - {t.text.substring(0, 30)}...
+                        </div>
+                      ))}
+                      {timelines.filter(t => t.case_type === 'family' && insights.some(i => i.log_id === t.id)).length === 0 && (
+                        <>
+                          <div style={{ fontSize: '0.75rem', color: '#86868b', fontStyle: 'italic' }}>No custom entries analyzed yet.</div>
+                          <div style={{ fontSize: '0.75rem', color: '#1cd8d2', cursor: 'pointer', textDecoration: 'underline', opacity: 0.7 }} onClick={() => handleNavigateToEntry('family-parent-1', 'family')}>
+                            📅 6/18/2026 - Hostile late custody exchange (Demo Reference)
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 4. INJURYTIMELINE WIDGET (FUNCTIONAL IMPAIRMENT INDEX) */}
+                <div style={{ padding: '20px', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--mac-border-dark)', borderRadius: '16px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                    <strong style={{ color: '#1cd8d2' }}>🏥 Impairment Index (Res Ipsa Loquitur)</strong>
+                    <span style={{ fontSize: '0.75rem', padding: '2px 8px', background: 'rgba(28,216,210,0.1)', color: '#1cd8d2', borderRadius: '12px', fontWeight: 600 }}>InjuryTimeline</span>
+                  </div>
+                  <p style={{ fontSize: '0.85rem', color: '#86868b', marginBottom: '12px' }}>
+                    <strong>Killer Feature:</strong> 1-10 Pain & Mobility Impairment score.
+                  </p>
+                  
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '12px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem' }}>
+                      <span>Functional Impairment Index:</span>
+                      <strong style={{ color: '#1cd8d2' }}>{impairmentIndex}/10</strong>
+                    </div>
+                    <input 
+                      type="range" 
+                      min="1" 
+                      max="10" 
+                      value={impairmentIndex} 
+                      onChange={(e) => setImpairmentIndex(parseInt(e.target.value))}
+                      style={{ accentColor: '#1cd8d2', width: '100%', cursor: 'pointer' }}
+                      title="Functional Impairment Index"
+                      aria-label="Functional Impairment Index"
+                    />
+                    <span style={{ fontSize: '0.75rem', color: '#86868b', fontStyle: 'italic' }}>
+                      {impairmentIndex <= 3 && "Mild: Slight discomfort, full range of motion."}
+                      {impairmentIndex > 3 && impairmentIndex <= 7 && "Moderate: Limited rotation, prevents heavy lifting."}
+                      {impairmentIndex > 7 && "Severe: Complete immobility, requires prescription pain management."}
+                    </span>
+                  </div>
+                  
+                  <div style={{ borderTop: '1px solid var(--mac-border-dark)', marginTop: '12px', paddingTop: '10px' }}>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--muted-dark)' }}>Linked Timeline Events:</span>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '6px' }}>
+                      {timelines.filter(t => t.case_type === 'injury' && insights.some(i => i.log_id === t.id)).map(t => (
+                        <div key={t.id} style={{ fontSize: '0.75rem', color: '#1cd8d2', cursor: 'pointer', textDecoration: 'underline' }} onClick={() => handleNavigateToEntry(t.id, 'injury')}>
+                          📅 {t.stamp} - {t.text.substring(0, 30)}...
+                        </div>
+                      ))}
+                      {timelines.filter(t => t.case_type === 'injury' && insights.some(i => i.log_id === t.id)).length === 0 && (
+                        <>
+                          <div style={{ fontSize: '0.75rem', color: '#86868b', fontStyle: 'italic' }}>No custom entries analyzed yet.</div>
+                          <div style={{ fontSize: '0.75rem', color: '#1cd8d2', cursor: 'pointer', textDecoration: 'underline', opacity: 0.7 }} onClick={() => handleNavigateToEntry('injury-parent-1', 'injury')}>
+                            📅 6/10/2026 - Slip & Fall knee injury (Demo Reference)
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          )}
+
+          {/* TAB: CROSS-CASE RELATIONSHIP CHART */}
+          {activeTab === 'chartTab' && role === 'firm' && (
+            <div className="tab-content active" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+              <h2>Cross-Case Relationship Flowchart</h2>
+              <p style={{ color: 'var(--muted-dark)' }}>
+                Visualizes the intersection and causal links between different active civil tracks for this client.
+              </p>
+              
+              <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+                
+                {/* SVG CANVAS FLOW CHART */}
+                <div className="glass" style={{ flex: '1 1 500px', height: '360px', padding: '20px', position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  
+                  {/* BACKGROUND SVG LINES */}
+                  <svg style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
+                    <defs>
+                      <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 0 2 L 10 5 L 0 8 z" fill="#1cd8d2" />
+                      </marker>
+                    </defs>
+                    
+                    {/* Connection 1: Work -> Injury */}
+                    <path d="M 170 120 L 330 120" stroke="#1cd8d2" strokeWidth="2.5" strokeDasharray="5,3" markerEnd="url(#arrow)" />
+                    
+                    {/* Connection 2: Injury -> Family */}
+                    <path d="M 380 170 L 380 230" stroke="#1cd8d2" strokeWidth="2.5" strokeDasharray="5,3" markerEnd="url(#arrow)" strokeOpacity="0.4" />
+                    
+                    {/* Connection 3: Work -> Property */}
+                    <path d="M 120 170 L 120 230" stroke="#1cd8d2" strokeWidth="2" strokeDasharray="5,3" markerEnd="url(#arrow)" strokeOpacity="0.4" />
+                  </svg>
+                  
+                  {/* WORK MATTER NODE */}
+                  <div style={{ position: 'absolute', top: '80px', left: '40px', width: '140px', padding: '12px', background: 'rgba(28,216,210,0.1)', border: '2px solid #1cd8d2', borderRadius: '12px', textAlign: 'center' }}>
+                    <span style={{ fontSize: '1.5rem', display: 'block' }}>💼</span>
+                    <strong style={{ fontSize: '0.85rem' }}>WorkTimeline</strong>
+                    <span style={{ display: 'block', fontSize: '0.7rem', color: '#86868b', marginTop: '2px' }}>2 Base Entries</span>
+                  </div>
+
+                  {/* INJURY MATTER NODE */}
+                  <div style={{ position: 'absolute', top: '80px', right: '40px', width: '140px', padding: '12px', background: 'rgba(28,216,210,0.1)', border: '2px solid #1cd8d2', borderRadius: '12px', textAlign: 'center' }}>
+                    <span style={{ fontSize: '1.5rem', display: 'block' }}>🏥</span>
+                    <strong style={{ fontSize: '0.85rem' }}>InjuryTimeline</strong>
+                    <span style={{ display: 'block', fontSize: '0.7rem', color: '#86868b', marginTop: '2px' }}>1 Incident Entry</span>
+                  </div>
+
+                  {/* PROPERTY MATTER NODE */}
+                  <div style={{ position: 'absolute', bottom: '50px', left: '40px', width: '140px', padding: '12px', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--mac-border-dark)', borderRadius: '12px', textAlign: 'center', opacity: 0.6 }}>
+                    <span style={{ fontSize: '1.5rem', display: 'block' }}>🏠</span>
+                    <strong style={{ fontSize: '0.85rem' }}>PropertyTimeline</strong>
+                  </div>
+
+                  {/* FAMILY MATTER NODE */}
+                  <div style={{ position: 'absolute', bottom: '50px', right: '40px', width: '140px', padding: '12px', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--mac-border-dark)', borderRadius: '12px', textAlign: 'center', opacity: 0.6 }}>
+                    <span style={{ fontSize: '1.5rem', display: 'block' }}>⚖️</span>
+                    <strong style={{ fontSize: '0.85rem' }}>FamilyTimeline</strong>
+                  </div>
+
+                  {/* CAUSAL LINK INTERACTIVE BADGE */}
+                  <button 
+                    onClick={() => setSelectedRelation('work_injury')}
+                    style={{ 
+                      position: 'absolute', 
+                      top: '105px', 
+                      left: '210px', 
+                      zIndex: 10, 
+                      background: '#1cd8d2', 
+                      color: 'black', 
+                      border: 'none', 
+                      borderRadius: '20px', 
+                      padding: '6px 12px', 
+                      fontSize: '0.72rem', 
+                      fontWeight: 700, 
+                      cursor: 'pointer',
+                      boxShadow: '0 4px 10px rgba(28,216,210,0.3)',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    ⚡ Leads To: Fall Injury
+                  </button>
+                  
+                </div>
+
+                {/* RELATIONSHIP DETAILS SIDEBAR */}
+                <div className="glass" style={{ flex: '1 1 300px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '14px', minHeight: '360px' }}>
+                  <h3>Relationship Details</h3>
+                  
+                  {selectedRelation === 'work_injury' ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                      <div style={{ padding: '8px', background: 'rgba(28, 216, 210, 0.08)', borderRadius: '8px', fontSize: '0.75rem', color: '#1cd8d2', border: '1px solid rgba(28, 216, 210, 0.2)' }}>
+                        <strong>Causal Connection:</strong> Work incident resulted in physical injury.
+                      </div>
+                      
+                      <div>
+                        <strong style={{ fontSize: '0.8rem', color: '#86868b' }}>1. Source (WorkTimeline Entry):</strong>
+                        <div style={{ fontSize: '0.82rem', padding: '8px', background: 'rgba(0,0,0,0.2)', borderRadius: '6px', marginTop: '4px' }}>
+                          {timelines.find(t => t.case_type === 'work' && t.id === 'work-parent-1')?.text || timelines.find(t => t.case_type === 'work')?.text || "Slipped on wet floor in the warehouse during my shift. (Demo)"}
+                        </div>
+                      </div>
+
+                      <div>
+                        <strong style={{ fontSize: '0.8rem', color: '#86868b' }}>2. Destination (InjuryTimeline Entry):</strong>
+                        <div style={{ fontSize: '0.82rem', padding: '8px', background: 'rgba(0,0,0,0.2)', borderRadius: '6px', marginTop: '4px' }}>
+                          {timelines.find(t => t.case_type === 'injury' && t.id === 'injury-parent-1')?.text || timelines.find(t => t.case_type === 'injury')?.text || "Slipped and injured knee in the warehouse. Pain level 8/10. (Demo)"}
+                        </div>
+                      </div>
+
+                      <button 
+                        className="firm-btn active" 
+                        style={{ alignSelf: 'flex-start', fontSize: '0.8rem', marginTop: '10px' }}
+                        onClick={() => {
+                          const workEntry = timelines.find(t => t.case_type === 'work' && t.id === 'work-parent-1') || timelines.find(t => t.case_type === 'work');
+                          if (workEntry) {
+                            handleNavigateToEntry(workEntry.id, 'work');
+                          } else {
+                            handleNavigateToEntry('work-parent-1', 'work');
+                          }
+                        }}
+                      >
+                        🔎 View Timeline Source
+                      </button>
+                    </div>
+                  ) : (
+                    <div style={{ color: 'var(--muted-dark)', fontSize: '0.85rem', textAlign: 'center', marginTop: '40px' }}>
+                      Click on the "Leads To" relationship link in the chart to view cross-case connection audits and notes.
+                    </div>
+                  )}
+                </div>
+
               </div>
             </div>
           )}

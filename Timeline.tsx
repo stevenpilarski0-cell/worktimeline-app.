@@ -13,6 +13,7 @@ export interface TimelineEntry {
   text: string;
   evidence_url?: string | null;
   extracted_date?: string | null;
+  custom_attributes?: any;
 }
 
 export interface PatternInsight {
@@ -30,6 +31,7 @@ interface TimelineProps {
   currentMode?: 'TIMELINE' | 'NOTES';
   onAmend?: (id: string) => void;
   onPreviewEvidence?: (urlOrPath: string, type: string, extractedDate?: string | null) => void;
+  highlightedLogId?: string | null;
 }
 
 const PIN_SVG = (
@@ -41,7 +43,9 @@ const ICONS: Record<string, JSX.Element> = {
   photo: <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>,
   video: <svg viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>,
   audio: <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>,
-  document: <svg viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+  document: <svg viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>,
+  receipt: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="13" y2="14"/></svg>,
+  visit: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 19V5"/></svg>
 };
 
 export default function Timeline({ 
@@ -49,7 +53,8 @@ export default function Timeline({
   insights = [], 
   currentMode = 'TIMELINE',
   onAmend,
-  onPreviewEvidence
+  onPreviewEvidence,
+  highlightedLogId
 }: TimelineProps) {
   const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -74,7 +79,7 @@ export default function Timeline({
       {/* LEFT: VISUAL SPINE TRACK */}
       <div id="visualSpineTrack" className="vertical-spine-track" style={{ display: currentMode === 'TIMELINE' ? 'flex' : 'none' }}>
         {currentMode === 'TIMELINE' && baseEntries.map(log => {
-          const childAmendments = logs.filter(v => v.parent_id === log.id);
+          const childAmendments = logs.filter(v => v.parent_id === log.id && v.type !== 'receipt' && v.type !== 'visit');
           const completeChain = [log, ...childAmendments];
           const topMostActiveVersion = completeChain[completeChain.length - 1];
           const associatedInsights = insights.filter(i => i.log_id === log.id && i.status === 'ACCEPTED');
@@ -99,11 +104,14 @@ export default function Timeline({
       <div className="timeline-container" id="timelineBody">
         <div className="log-list" id="logList">
           {baseEntries.map(log => {
-            // Build Chain of Custody
-            const childAmendments = logs.filter(v => v.parent_id === log.id);
+            // Build Chain of Custody (excluding sub-timeline types)
+            const childAmendments = logs.filter(v => v.parent_id === log.id && v.type !== 'receipt' && v.type !== 'visit');
             const completeChain = [log, ...childAmendments];
             const topMostActiveVersion = completeChain[completeChain.length - 1];
             const previousVersions = completeChain.slice(0, -1);
+            
+            // Sub-timeline entries (receipts, doctor visits, social workers)
+            const subEntries = logs.filter(v => v.parent_id === log.id && (v.type === 'receipt' || v.type === 'visit'));
             
             const associatedInsights = insights.filter(i => i.log_id === log.id && i.status === 'ACCEPTED');
             const isOverriddenByAI = currentMode === 'TIMELINE' && associatedInsights.length > 0;
@@ -145,7 +153,8 @@ export default function Timeline({
 
                 {/* MAIN ACTIVE LOG ENTRY */}
                 <div 
-                  className="log-entry"
+                  id={`log_${log.id}`}
+                  className={`log-entry ${highlightedLogId === log.id ? 'highlighted-log-pulse' : ''}`}
                   style={isOverriddenByAI ? { marginTop: '8px', opacity: 0.85, transform: 'scale(0.97)' } : {}}
                   onMouseDown={() => handlePressStart(topMostActiveVersion.id)}
                   onMouseUp={handlePressEnd}
@@ -171,6 +180,68 @@ export default function Timeline({
                     )}
                   </div>
                 </div>
+
+                {/* HIERARCHICAL SUB-TIMELINE (RECEIPTS / VISITS) */}
+                {subEntries.length > 0 && (
+                  <div className="sub-timeline-list" style={{ marginTop: '8px', paddingLeft: '24px', borderLeft: '2px dashed rgba(28, 216, 210, 0.25)', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    {subEntries.map(sub => {
+                      const isSubHighlighted = highlightedLogId === sub.id;
+                      const customAttrs = typeof sub.custom_attributes === 'string' 
+                        ? JSON.parse(sub.custom_attributes) 
+                        : (sub.custom_attributes || {});
+                      return (
+                        <div 
+                          key={sub.id} 
+                          id={`log_${sub.id}`}
+                          className={`sub-timeline-item ${isSubHighlighted ? 'highlighted-log-pulse' : ''}`}
+                          style={{ 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            gap: '10px', 
+                            padding: '10px 14px', 
+                            background: 'rgba(255, 255, 255, 0.02)', 
+                            border: '1px solid var(--mac-border-dark)', 
+                            borderRadius: '12px',
+                            transition: 'all 0.3s ease'
+                          }}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '28px', height: '28px', borderRadius: '8px', background: 'rgba(28, 216, 210, 0.08)', color: '#1cd8d2' }}>
+                            {ICONS[sub.type] || '🧾'}
+                          </div>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
+                              <span style={{ fontSize: '0.75rem', color: '#86868b', fontWeight: 600 }}>{sub.stamp}</span>
+                              {customAttrs.amount && (
+                                <span style={{ fontSize: '0.8rem', color: '#1cd8d2', fontWeight: 700 }}>
+                                  ${parseFloat(customAttrs.amount).toFixed(2)}
+                                </span>
+                              )}
+                            </div>
+                            <div style={{ fontSize: '0.85rem', color: '#e5e5ea' }}>{sub.text}</div>
+                            {/* Custom Metadata Details */}
+                            {(customAttrs.merchant || customAttrs.provider || customAttrs.counselor) && (
+                              <div style={{ fontSize: '0.72rem', color: '#86868b', marginTop: '3px' }}>
+                                {customAttrs.merchant && `Merchant: ${customAttrs.merchant}`}
+                                {customAttrs.provider && `Provider: ${customAttrs.provider}`}
+                                {customAttrs.counselor && `Counselor: ${customAttrs.counselor}`}
+                                {customAttrs.session_type && ` (${customAttrs.session_type})`}
+                              </div>
+                            )}
+                          </div>
+                          {sub.evidence_url && (
+                            <button 
+                              className="firm-btn" 
+                              style={{ padding: '6px 12px', fontSize: '0.75rem', borderRadius: '8px' }}
+                              onClick={() => onPreviewEvidence && onPreviewEvidence(sub.evidence_url!, sub.type)}
+                            >
+                              View
+                            </button>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
 
               </div>
             );
