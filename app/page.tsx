@@ -8,10 +8,9 @@ import AmendLogModal from '../AmendLogModal';
 import { analyzeTimeline } from '../aiService';
 
 export default function AppPortal() {
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBsYWNlaG9sZGVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE1OTg4ODMwMDAsImV4cCI6MTkwNDQ0NjAwMH0.placeholder';
+  const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
 
   // Core Role and Flow States
   const [role, setRole] = useState<'selection' | 'client' | 'firm'>('selection');

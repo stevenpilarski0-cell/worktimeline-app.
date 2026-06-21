@@ -12,10 +12,9 @@ interface AmendLogModalProps {
 }
 
 export default function AmendLogModal({ isOpen, onClose, logId, onSave }: AmendLogModalProps) {
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBsYWNlaG9sZGVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE1OTg4ODMwMDAsImV4cCI6MTkwNDQ0NjAwMH0.placeholder';
+  const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
   const [originalLog, setOriginalLog] = useState<TimelineEntry | null>(null);
   const [newText, setNewText] = useState('');
   const [isSaving, setIsSaving] = useState(false);
