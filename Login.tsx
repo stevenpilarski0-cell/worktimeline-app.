@@ -36,7 +36,7 @@ export default function Login() {
 
     // 2. Clio OAuth Sign In as Firm
     const handleClioFirm = () => {
-        const client_id = '18C4aBAD8YThRDG04xn_-rs8XQTdc0ZJyhPefMZR-0s';
+        const client_id = process.env.NEXT_PUBLIC_CLIO_CLIENT_ID || 'btscu9WmPHYelIZtZA9sIQfynBAQudwjaR7pEDdq';
         
         // Choose dynamic redirect uri based on environment
         const redirect_uri = window.location.origin.includes('localhost') 

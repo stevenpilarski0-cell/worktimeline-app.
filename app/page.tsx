@@ -190,7 +190,7 @@ export default function AppPortal() {
 
   // Connect Clio OAuth Handshake
   const handleConnectClio = () => {
-    const clientId = process.env.NEXT_PUBLIC_CLIO_CLIENT_ID || 'dZ8rYyB46Q7Q76c5N69A5N6w9N'; // Replace with Client ID
+    const clientId = process.env.NEXT_PUBLIC_CLIO_CLIENT_ID || 'btscu9WmPHYelIZtZA9sIQfynBAQudwjaR7pEDdq';
     const redirectUri = window.location.origin + '/api/sync';
     const state = 'firm_vault_' + Date.now();
     window.location.href = `https://ca.app.clio.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}`;
