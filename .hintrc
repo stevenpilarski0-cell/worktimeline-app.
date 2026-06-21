@@ -2,6 +2,10 @@
   "extends": [
     "development"
   ],
+  "ignoredUrls": [
+    ".*\\.ts$",
+    ".*\\.tsx$"
+  ],
   "hints": {
     "meta-viewport": "off",
     "axe/forms": "off",
