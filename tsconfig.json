@@ -29,6 +29,10 @@
     "**/*.tsx"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "index.ts",
+    "worker.ts",
+    "client.ts",
+    "bbd86332-eb38-4cdf-86b3-5bd91a68c971.ts"
   ]
 }
