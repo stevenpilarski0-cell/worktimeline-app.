@@ -58,6 +58,24 @@ export default function Timeline({
 }: TimelineProps) {
   const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const speakText = (text: string) => {
+    if (typeof window === 'undefined' || !window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    const voices = window.speechSynthesis.getVoices();
+    const femaleVoice = voices.find(v => 
+      v.name.includes('Google US English') ||
+      v.name.includes('Zira') ||
+      v.name.includes('Samantha') ||
+      v.name.includes('Hazel') ||
+      (v.name.toLowerCase().includes('female') && v.lang.startsWith('en'))
+    );
+    if (femaleVoice) utterance.voice = femaleVoice;
+    utterance.rate = 0.92;
+    utterance.pitch = 1.05;
+    window.speechSynthesis.speak(utterance);
+  };
+
   // 1. Filter for base baseline entries (no parent)
   const baseEntries = logs.filter(log => (log.mode || 'TIMELINE') === currentMode && !log.parent_id);
 
@@ -122,8 +140,33 @@ export default function Timeline({
                 {/* PATTERN RECOGNITION AI OVERLAY (TOP MOST IF APPLICABLE) */}
                 {isOverriddenByAI && (
                   <div className="log-bubble ai-pulse-over">
-                    <div className="pattern-insight-title" style={{ color: '#008080', fontWeight: 900, marginBottom: '8px' }}>
-                      [PATTERA INSIGHT OVERRIDE]
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                      <span className="pattern-insight-title" style={{ color: '#008080', fontWeight: 900 }}>
+                        [PATTERA INSIGHT OVERRIDE]
+                      </span>
+                      <button 
+                        onClick={() => {
+                          const speechString = associatedInsights.map(i => `Pattern detected: ${i.term}. Precedent: ${i.caseLaw}. ${i.desc || ''}`).join(' ');
+                          speakText(`Hi, I'm Pattera. Here is what I found. ${speechString} This is not legal advice.`);
+                        }}
+                        style={{ 
+                          background: 'rgba(28, 216, 210, 0.08)', 
+                          border: '1px solid rgba(28, 216, 210, 0.2)', 
+                          color: '#1cd8d2', 
+                          cursor: 'pointer', 
+                          fontSize: '0.72rem', 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          gap: '4px', 
+                          padding: '3px 8px', 
+                          borderRadius: '8px', 
+                          fontWeight: 600,
+                          transition: 'all 0.2s ease'
+                        }}
+                        title="Listen to Pattera Analysis"
+                      >
+                        🔊 Listen
+                      </button>
                     </div>
                     {associatedInsights.map((insight, idx) => (
                       <div key={idx} style={{ marginBottom: '5px' }}>
