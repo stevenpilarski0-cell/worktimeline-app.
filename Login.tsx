@@ -4,12 +4,96 @@ import React, { useState, useEffect } from 'react';
 import { createBrowserClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
 
+// Mac-like Audio Synthesizer for high-end micro-interactions
+const playSound = (type: 'click' | 'open' | 'close' | 'success' | 'alert') => {
+  if (typeof window === 'undefined') return;
+  try {
+    const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    const filter = audioCtx.createBiquadFilter();
+
+    osc.connect(filter);
+    filter.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+
+    if (type === 'click') {
+      // Crisp macOS/iOS keyboard/button tactile tap sound
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(1400, audioCtx.currentTime + 0.04);
+      filter.type = 'highpass';
+      filter.frequency.setValueAtTime(600, audioCtx.currentTime);
+      gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.04);
+    } else if (type === 'open') {
+      // Ascending premium swoosh sound
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(660, audioCtx.currentTime + 0.16);
+      filter.type = 'lowpass';
+      filter.Q.value = 6;
+      filter.frequency.setValueAtTime(400, audioCtx.currentTime);
+      filter.frequency.exponentialRampToValueAtTime(1600, audioCtx.currentTime + 0.16);
+      gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.16);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.16);
+    } else if (type === 'close') {
+      // Descending premium swoosh sound
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(580, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(180, audioCtx.currentTime + 0.16);
+      filter.type = 'lowpass';
+      filter.Q.value = 6;
+      filter.frequency.setValueAtTime(1400, audioCtx.currentTime);
+      filter.frequency.exponentialRampToValueAtTime(350, audioCtx.currentTime + 0.16);
+      gainNode.gain.setValueAtTime(0.04, audioCtx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.16);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.16);
+    } else if (type === 'success') {
+      // Two-tone high-pitch bells
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+      osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.08); // E5
+      gainNode.gain.setValueAtTime(0.06, audioCtx.currentTime);
+      gainNode.gain.setValueAtTime(0.06, audioCtx.currentTime + 0.08);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.25);
+    } else if (type === 'alert') {
+      // Organic, warm low warning chime
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+      osc.frequency.linearRampToValueAtTime(120, audioCtx.currentTime + 0.25);
+      filter.type = 'lowpass';
+      filter.frequency.value = 300;
+      gainNode.gain.setValueAtTime(0.12, audioCtx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.25);
+    }
+  } catch (e) {
+    console.warn("AudioContext failed to initialize or blocked by user guest policy:", e);
+  }
+};
+
 export default function Login() {
     const [showIntro, setShowIntro] = useState(true);
     const [showClioChoices, setShowClioChoices] = useState(false);
     const [showPasscodeForm, setShowPasscodeForm] = useState(false);
     const [firmPasscode, setFirmPasscode] = useState('');
     const [isProcessing, setIsProcessing] = useState(false);
+
+    // Email/Password Auth States
+    const [loginTab, setLoginTab] = useState<'clio' | 'email'>('clio');
+    const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [authError, setAuthError] = useState('');
 
     const router = useRouter();
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
@@ -112,6 +196,58 @@ export default function Login() {
         }
     };
 
+    // 3b. Email & Password Sign In / Sign Up handler
+    const handleEmailAuth = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setAuthError('');
+        if (!email.trim() || !password.trim()) {
+            setAuthError("Email and password fields are required.");
+            return;
+        }
+
+        setIsProcessing(true);
+        try {
+            if (authMode === 'signin') {
+                const { error } = await supabase.auth.signInWithPassword({
+                    email: email.trim(),
+                    password: password.trim(),
+                });
+                if (error) throw error;
+                router.push('/');
+            } else {
+                const { data, error } = await supabase.auth.signUp({
+                    email: email.trim(),
+                    password: password.trim(),
+                });
+                if (error) throw error;
+
+                if (data.user) {
+                    const { error: profileError } = await supabase
+                        .from('profiles')
+                        .upsert({
+                            id: data.user.id,
+                            email: data.user.email,
+                            is_verified: true
+                        });
+                    if (profileError) console.error("Profile creation failed:", profileError);
+                }
+
+                alert("Registration successful! Logging you in...");
+                
+                const { error: loginError } = await supabase.auth.signInWithPassword({
+                    email: email.trim(),
+                    password: password.trim(),
+                });
+                if (loginError) throw loginError;
+                router.push('/');
+            }
+        } catch (err: any) {
+            setAuthError(err.message || "Authentication process failed.");
+        } finally {
+            setIsProcessing(false);
+        }
+    };
+
     if (showIntro) {
         return (
             <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#0a0e12] p-6 text-center animate-fade-out">
@@ -164,58 +300,125 @@ export default function Login() {
                         </p>
                     </div>
 
-                    <div className="grid gap-[14px]">
-                        {/* Clio Auth Trigger */}
-                        <button 
-                            onClick={() => {
-                                setShowClioChoices(!showClioChoices);
-                                if (showClioChoices) setShowPasscodeForm(false);
-                            }}
-                            className="w-full py-3.5 px-4.5 rounded-2xl bg-white text-black font-semibold text-[0.95rem] flex items-center justify-center gap-3 hover:bg-[rgba(255,255,255,0.9)] hover:-translate-y-0.5 hover:shadow-[0_10px_25px_rgba(255,255,255,0.15)] active:translate-y-0 transition-all duration-200"
+                    {/* Tab Navigation */}
+                    <div className="login-tabs-container">
+                        <button
+                            type="button"
+                            onClick={() => { playSound('click'); setLoginTab('clio'); }}
+                            className={`login-tab-btn ${loginTab === 'clio' ? 'login-tab-btn-active' : 'login-tab-btn-inactive'}`}
                         >
-                            <svg className="w-4.5 h-4.5 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
-                                <circle cx="9" cy="12" r="6"/>
-                                <circle cx="15" cy="12" r="6"/>
-                            </svg>
-                            Sign in via Clio
+                            Clio & Passcode
                         </button>
+                        <button
+                            type="button"
+                            onClick={() => { playSound('click'); setLoginTab('email'); }}
+                            className={`login-tab-btn ${loginTab === 'email' ? 'login-tab-btn-active' : 'login-tab-btn-inactive'}`}
+                        >
+                            Email Portal
+                        </button>
+                    </div>
 
-                        {/* Clio sub-choices */}
-                        {showClioChoices && (
-                            <div className="grid grid-columns-2 gap-2.5 mt-1 animate-slide-down">
-                                <button onClick={handleClioFirm} className="w-full py-3 px-4 rounded-xl border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.02)] text-[#ebf2f7] text-[0.85rem] font-medium hover:bg-[rgba(255,255,255,0.06)] hover:border-[rgba(255,255,255,0.2)] transition-all">
-                                    As Firm
-                                </button>
-                                <button onClick={() => setShowPasscodeForm(!showPasscodeForm)} className="w-full py-3 px-4 rounded-xl border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.02)] text-[#ebf2f7] text-[0.85rem] font-medium hover:bg-[rgba(255,255,255,0.06)] hover:border-[rgba(255,255,255,0.2)] transition-all">
-                                    As Client
+                    {loginTab === 'clio' ? (
+                        <div className="grid gap-[14px]">
+                            {/* Clio Auth Trigger */}
+                            <button 
+                                onClick={() => {
+                                    setShowClioChoices(!showClioChoices);
+                                    if (showClioChoices) setShowPasscodeForm(false);
+                                }}
+                                className="w-full py-3.5 px-4.5 rounded-2xl bg-white text-black font-semibold text-[0.95rem] flex items-center justify-center gap-3 hover:bg-[rgba(255,255,255,0.9)] hover:-translate-y-0.5 hover:shadow-[0_10px_25px_rgba(255,255,255,0.15)] active:translate-y-0 transition-all duration-200"
+                            >
+                                <svg className="w-4.5 h-4.5 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
+                                    <circle cx="9" cy="12" r="6"/>
+                                    <circle cx="15" cy="12" r="6"/>
+                                </svg>
+                                Sign in via Clio
+                            </button>
+
+                            {/* Clio sub-choices */}
+                            {showClioChoices && (
+                                <div className="grid grid-columns-2 gap-2.5 mt-1 animate-slide-down">
+                                    <button onClick={handleClioFirm} className="w-full py-3 px-4 rounded-xl border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.02)] text-[#ebf2f7] text-[0.85rem] font-medium hover:bg-[rgba(255,255,255,0.06)] hover:border-[rgba(255,255,255,0.2)] transition-all">
+                                        As Firm
+                                    </button>
+                                    <button onClick={() => setShowPasscodeForm(!showPasscodeForm)} className="w-full py-3 px-4 rounded-xl border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.02)] text-[#ebf2f7] text-[0.85rem] font-medium hover:bg-[rgba(255,255,255,0.06)] hover:border-[rgba(255,255,255,0.2)] transition-all">
+                                        As Client
+                                    </button>
+                                </div>
+                            )}
+
+                            {/* Client passcode form */}
+                            {showPasscodeForm && showClioChoices && (
+                                <form onSubmit={handleClioClient} className="mt-4.5 animate-slide-down">
+                                    <input 
+                                        type="text"
+                                        value={firmPasscode}
+                                        onChange={(e) => setFirmPasscode(e.target.value)}
+                                        placeholder="Enter Firm Code / Number"
+                                        className="w-full p-3.5 rounded-xl border border-[rgba(255,255,255,0.08)] bg-[rgba(0,0,0,0.2)] text-[#ebf2f7] text-[0.95rem] text-center outline-none focus:border-[rgba(255,255,255,0.2)] focus:bg-[rgba(0,0,0,0.4)] transition-all"
+                                    />
+                                    <button 
+                                        type="submit"
+                                        disabled={isProcessing}
+                                        className="w-full py-3.5 mt-2.5 rounded-xl border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.06)] text-[#ebf2f7] hover:bg-[rgba(255,255,255,0.12)] transition-all"
+                                    >
+                                        {isProcessing ? 'Verifying...' : 'Access Chronology'}
+                                    </button>
+                                </form>
+                            )}
+                        </div>
+                    ) : (
+                        <form onSubmit={handleEmailAuth} className="grid gap-[14px]">
+                            {authError && (
+                                <div className="login-error-banner">
+                                    {authError}
+                                </div>
+                            )}
+                            <div>
+                                <input 
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    placeholder="Enter your email address"
+                                    required
+                                    className="w-full p-3.5 rounded-xl border border-[rgba(255,255,255,0.08)] bg-[rgba(0,0,0,0.2)] text-[#ebf2f7] text-[0.9rem] outline-none focus:border-[rgba(28,216,210,0.5)] focus:bg-[rgba(0,0,0,0.4)] transition-all"
+                                />
+                            </div>
+                            <div>
+                                <input 
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    placeholder="Enter password"
+                                    required
+                                    className="w-full p-3.5 rounded-xl border border-[rgba(255,255,255,0.08)] bg-[rgba(0,0,0,0.2)] text-[#ebf2f7] text-[0.9rem] outline-none focus:border-[rgba(28,216,210,0.5)] focus:bg-[rgba(0,0,0,0.4)] transition-all"
+                                />
+                            </div>
+                            <button 
+                                type="submit"
+                                disabled={isProcessing}
+                                className="login-submit-gradient-btn"
+                            >
+                                {isProcessing ? 'Processing...' : authMode === 'signin' ? 'Sign In' : 'Create Account'}
+                            </button>
+
+                            <div className="login-switch-mode-container">
+                                <button
+                                    type="button"
+                                    onClick={() => setAuthMode(authMode === 'signin' ? 'signup' : 'signin')}
+                                    className="login-switch-mode-btn"
+                                >
+                                    {authMode === 'signin' ? "Don't have an account? Sign Up" : 'Already have an account? Sign In'}
                                 </button>
                             </div>
-                        )}
+                        </form>
+                    )}
 
-                        {/* Client passcode form */}
-                        {showPasscodeForm && showClioChoices && (
-                            <form onSubmit={handleClioClient} className="mt-4.5 animate-slide-down">
-                                <input 
-                                    type="text"
-                                    value={firmPasscode}
-                                    onChange={(e) => setFirmPasscode(e.target.value)}
-                                    placeholder="Enter Firm Code / Number"
-                                    className="w-full p-3.5 rounded-xl border border-[rgba(255,255,255,0.08)] bg-[rgba(0,0,0,0.2)] text-[#ebf2f7] text-[0.95rem] text-center outline-none focus:border-[rgba(255,255,255,0.2)] focus:bg-[rgba(0,0,0,0.4)] transition-all"
-                                />
-                                <button 
-                                    type="submit"
-                                    disabled={isProcessing}
-                                    className="w-full py-3.5 mt-2.5 rounded-xl border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.06)] text-[#ebf2f7] hover:bg-[rgba(255,255,255,0.12)] transition-all"
-                                >
-                                    {isProcessing ? 'Verifying...' : 'Access Chronology'}
-                                </button>
-                            </form>
-                        )}
+                    <div className="flex items-center text-center text-[#94a3b8] text-[0.75rem] font-semibold tracking-wider uppercase my-5 before:content-[''] before:flex-1 before:border-b before:border-[rgba(255,255,255,0.08)] before:mr-3.5 after:content-[''] after:flex-1 after:border-b after:border-[rgba(255,255,255,0.08)] after:ml-3.5">
+                        or
+                    </div>
 
-                        <div className="flex items-center text-center text-[#94a3b8] text-[0.75rem] font-semibold tracking-wider uppercase my-5 before:content-[''] before:flex-1 before:border-b before:border-[rgba(255,255,255,0.08)] before:mr-3.5 after:content-[''] after:flex-1 after:border-b after:border-[rgba(255,255,255,0.08)] after:ml-3.5">
-                            or
-                        </div>
-
+                    <div className="grid gap-[14px]">
                         {/* Google Sign In */}
                         <button 
                             onClick={handleGoogleSignIn}

@@ -9,9 +9,10 @@ interface AmendLogModalProps {
   onClose: () => void;
   logId: string | null;
   onSave: (newLog: TimelineEntry) => void;
+  userId?: string;
 }
 
-export default function AmendLogModal({ isOpen, onClose, logId, onSave }: AmendLogModalProps) {
+export default function AmendLogModal({ isOpen, onClose, logId, onSave, userId }: AmendLogModalProps) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBsYWNlaG9sZGVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE1OTg4ODMwMDAsImV4cCI6MTkwNDQ0NjAwMH0.placeholder';
   const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
@@ -49,9 +50,22 @@ export default function AmendLogModal({ isOpen, onClose, logId, onSave }: AmendL
     if (!originalLog || !newText.trim()) return;
     setIsSaving(true);
 
+    let activeUserId = userId;
+    if (!activeUserId) {
+      const { data: { user } } = await supabase.auth.getUser();
+      activeUserId = user?.id;
+    }
+
+    if (!activeUserId) {
+      alert("You must be logged in to supersede log entries.");
+      setIsSaving(false);
+      return;
+    }
+
     const { data, error } = await supabase
       .from('timeline_entries')
       .insert([{
+        user_id: activeUserId,
         parent_id: originalLog.id, // This creates the link to the original
         case_type: originalLog.case_type || 'work', // Carry over original properties
         mode: originalLog.mode,

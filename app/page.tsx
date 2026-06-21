@@ -7,6 +7,83 @@ import Timeline, { PatternInsight, TimelineEntry } from '../Timeline';
 import AmendLogModal from '../AmendLogModal';
 import { analyzeTimeline } from '../aiService';
 
+// Mac-like Audio Synthesizer for high-end micro-interactions
+const playSound = (type: 'click' | 'open' | 'close' | 'success' | 'alert') => {
+  if (typeof window === 'undefined') return;
+  try {
+    const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    const filter = audioCtx.createBiquadFilter();
+
+    osc.connect(filter);
+    filter.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+
+    if (type === 'click') {
+      // Crisp macOS/iOS keyboard/button tactile tap sound
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(1400, audioCtx.currentTime + 0.04);
+      filter.type = 'highpass';
+      filter.frequency.setValueAtTime(600, audioCtx.currentTime);
+      gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.04);
+    } else if (type === 'open') {
+      // Ascending premium swoosh sound
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(660, audioCtx.currentTime + 0.16);
+      filter.type = 'lowpass';
+      filter.Q.value = 6;
+      filter.frequency.setValueAtTime(400, audioCtx.currentTime);
+      filter.frequency.exponentialRampToValueAtTime(1600, audioCtx.currentTime + 0.16);
+      gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.16);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.16);
+    } else if (type === 'close') {
+      // Descending premium swoosh sound
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(580, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(180, audioCtx.currentTime + 0.16);
+      filter.type = 'lowpass';
+      filter.Q.value = 6;
+      filter.frequency.setValueAtTime(1400, audioCtx.currentTime);
+      filter.frequency.exponentialRampToValueAtTime(350, audioCtx.currentTime + 0.16);
+      gainNode.gain.setValueAtTime(0.04, audioCtx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.16);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.16);
+    } else if (type === 'success') {
+      // Two-tone high-pitch bells
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+      osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.08); // E5
+      gainNode.gain.setValueAtTime(0.06, audioCtx.currentTime);
+      gainNode.gain.setValueAtTime(0.06, audioCtx.currentTime + 0.08);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.25);
+    } else if (type === 'alert') {
+      // Organic, warm low warning chime
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+      osc.frequency.linearRampToValueAtTime(120, audioCtx.currentTime + 0.25);
+      filter.type = 'lowpass';
+      filter.frequency.value = 300;
+      gainNode.gain.setValueAtTime(0.12, audioCtx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.25);
+    }
+  } catch (e) {
+    console.warn("AudioContext failed to initialize or blocked by user guest policy:", e);
+  }
+};
+
 export default function AppPortal() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBsYWNlaG9sZGVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE1OTg4ODMwMDAsImV4cCI6MTkwNDQ0NjAwMH0.placeholder';
@@ -53,6 +130,12 @@ export default function AppPortal() {
   const [impairmentIndex, setImpairmentIndex] = useState(8);
   const [selectedRelation, setSelectedRelation] = useState<string | null>(null);
 
+  // Auth and Compliance States
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [showConsentModal, setShowConsentModal] = useState(false);
+  const [pendingInsights, setPendingInsights] = useState<PatternInsight[]>([]);
+
   // Navigation and Highlight Trigger
   const handleNavigateToEntry = (logId: string, caseType: string) => {
     setActiveCase(caseType);
@@ -71,6 +154,35 @@ export default function AppPortal() {
       }, 3000);
     }, 150);
   };
+
+  // Load current session and check terms acceptance
+  useEffect(() => {
+    async function getSession() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setCurrentUser(user);
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('pattera_terms_accepted')
+          .eq('id', user.id)
+          .single();
+        if (profile) {
+          setTermsAccepted(!!profile.pattera_terms_accepted);
+        }
+      }
+    }
+    getSession();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        setCurrentUser(session.user);
+      } else {
+        setCurrentUser(null);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [supabase]);
 
   // 1. URL Parameter Routing (OAuth callbacks & invites)
   useEffect(() => {
@@ -124,7 +236,7 @@ export default function AppPortal() {
     }
   }, [nightMode]);
 
-  // Load timelines from Supabase
+  // Load timelines from Supabase (Cleaned of mock entries fallbacks)
   useEffect(() => {
     async function loadTimelines() {
       const { data, error } = await supabase
@@ -133,184 +245,54 @@ export default function AppPortal() {
         .eq('case_type', activeCase)
         .order('created_at', { ascending: true });
         
-      if (data && data.length > 0 && !error) {
+      if (data && !error) {
         setTimelines(data);
-      } else if (activeCase === 'work') {
-        // Start with a clean empty timeline for work, per user request
-        setTimelines([]);
-        setInsights([]);
       } else {
-        // Seed default mock entries for visual demonstration
-        const mockEntries: TimelineEntry[] = [
-          // WORK ENTRIES
-          {
-            id: 'work-parent-1',
-            parent_id: null,
-            case_type: 'work',
-            mode: 'TIMELINE',
-            type: 'text',
-            stamp: '6/10/2026, 9:00:00 AM',
-            text: 'Slipped on wet floor in the warehouse during my shift. Supervisor Stephan was notified but did not file an incident report.',
-          },
-          {
-            id: 'work-receipt-1',
-            parent_id: 'work-parent-1',
-            case_type: 'work',
-            mode: 'TIMELINE',
-            type: 'receipt',
-            stamp: '6/10/2026, 11:30:00 AM',
-            text: 'Purchased emergency knee brace and pain relievers from Langley Pharmacy.',
-            evidence_url: 'https://placeholder.co/receipt1.jpg',
-            custom_attributes: { amount: '45.50', merchant: 'Langley Pharmacy' }
-          },
-          {
-            id: 'work-visit-1',
-            parent_id: 'work-parent-1',
-            case_type: 'work',
-            mode: 'TIMELINE',
-            type: 'visit',
-            stamp: '6/11/2026, 2:00:00 PM',
-            text: 'Doctor visit checkup at Fraser Health Medical Clinic with Dr. Miller.',
-            custom_attributes: { provider: 'Dr. Miller', symptoms_noted: 'Severe knee swelling and limited rotation' }
-          },
-          {
-            id: 'work-parent-2',
-            parent_id: null,
-            case_type: 'work',
-            mode: 'TIMELINE',
-            type: 'text',
-            stamp: '6/12/2026, 6:00:00 PM',
-            text: 'Completed 12 hours of mandatory overtime doing warehouse inventory without dinner break.',
-          },
-          {
-            id: 'work-receipt-2',
-            parent_id: 'work-parent-2',
-            case_type: 'work',
-            mode: 'TIMELINE',
-            type: 'receipt',
-            stamp: '6/12/2026, 8:30:00 AM',
-            text: 'Purchased required steel-toed work safety boots.',
-            evidence_url: 'https://placeholder.co/receipt2.jpg',
-            custom_attributes: { amount: '185.00', merchant: 'WorkWear Depot' }
-          },
-          
-          // INJURY ENTRIES
-          {
-            id: 'injury-parent-1',
-            parent_id: null,
-            case_type: 'injury',
-            mode: 'TIMELINE',
-            type: 'text',
-            stamp: '6/10/2026, 9:00:00 AM',
-            text: 'Slipped and injured knee in the warehouse. Pain immediately level 8/10.',
-          },
-          {
-            id: 'injury-visit-1',
-            parent_id: 'injury-parent-1',
-            case_type: 'injury',
-            mode: 'TIMELINE',
-            type: 'visit',
-            stamp: '6/11/2026, 2:00:00 PM',
-            text: 'Fraser Health clinic assessment for knee injury.',
-            custom_attributes: { provider: 'Dr. Miller (Orthopedics)', symptoms_noted: 'Ligament sprain, pain level 8, brace required' }
-          },
-          {
-            id: 'injury-receipt-1',
-            parent_id: 'injury-parent-1',
-            case_type: 'injury',
-            mode: 'TIMELINE',
-            type: 'receipt',
-            stamp: '6/11/2026, 3:00:00 PM',
-            text: 'Prescribed anti-inflammatory medication.',
-            custom_attributes: { amount: '62.00', merchant: 'Langley Pharmacy' }
-          },
-
-          // PROPERTY ENTRIES
-          {
-            id: 'property-parent-1',
-            parent_id: null,
-            case_type: 'property',
-            mode: 'TIMELINE',
-            type: 'text',
-            stamp: '6/15/2026, 1:00:00 PM',
-            text: 'Burst pipe in basement storage room causing water damage to client files and inventory boxes.',
-          },
-          {
-            id: 'property-receipt-1',
-            parent_id: 'property-parent-1',
-            case_type: 'property',
-            mode: 'TIMELINE',
-            type: 'receipt',
-            stamp: '6/15/2026, 3:30:00 PM',
-            text: 'Emergency plumbing drainage and pipe repair.',
-            evidence_url: 'https://placeholder.co/plumbing.jpg',
-            custom_attributes: { amount: '450.00', merchant: 'Rapid Plumbing Services' }
-          },
-
-          // FAMILY ENTRIES
-          {
-            id: 'family-parent-1',
-            parent_id: null,
-            case_type: 'family',
-            mode: 'TIMELINE',
-            type: 'text',
-            stamp: '6/18/2026, 5:45:00 PM',
-            text: 'Parent arrived 45 minutes late for custody handoff and shouted in presence of the children.',
-          },
-          {
-            id: 'family-visit-1',
-            parent_id: 'family-parent-1',
-            case_type: 'family',
-            mode: 'TIMELINE',
-            type: 'visit',
-            stamp: '6/19/2026, 10:00:00 AM',
-            text: 'Social worker consultation regarding co-parenting boundary violations.',
-            custom_attributes: { counselor: 'Sarah Jenkins, LCSW', session_type: 'Mediation Session' }
-          }
-        ];
-        
-        setTimelines(mockEntries.filter(e => e.case_type === activeCase));
-        
-        // Also seed default mock insights
-        const mockInsights: PatternInsight[] = [
-          {
-            log_id: 'work-parent-1',
-            term: 'Workplace Negligence',
-            latin: 'Res ipsa loquitur',
-            caseLaw: 'Hogarth v. Rocky Mountain Sky Ltd.',
-            desc: 'The employer failed to maintain safe warehouse flooring, leading directly to a fall.',
-            status: 'ACCEPTED'
-          },
-          {
-            log_id: 'work-parent-2',
-            term: 'Unpaid Overtime Value',
-            latin: 'Quantum meruit',
-            caseLaw: 'BC Employment Standards Act Sec 63',
-            desc: 'The client performed mandatory overtime without compensation or meal break.',
-            status: 'ACCEPTED'
-          },
-          {
-            log_id: 'property-parent-1',
-            term: 'Landlord Failure to Maintain',
-            latin: 'Prima facie',
-            caseLaw: 'BC Residential Tenancy Act Sec 32',
-            desc: 'Water damage occurred due to aging, neglected plumbing in the utility space.',
-            status: 'ACCEPTED'
-          },
-          {
-            log_id: 'family-parent-1',
-            term: 'Intrusion Upon Seclusion',
-            latin: 'Habeas corpus',
-            caseLaw: 'Family Law Act Sec 224',
-            desc: 'Late arrival and verbal hostility in the presence of children violates the co-parenting agreement.',
-            status: 'ACCEPTED'
-          }
-        ];
-        setInsights(mockInsights.filter(i => mockEntries.some(e => e.id === i.log_id && e.case_type === activeCase)));
+        setTimelines([]);
       }
     }
     loadTimelines();
   }, [activeCase, supabase]);
+
+  // Load accepted insights from Supabase
+  useEffect(() => {
+    async function loadInsights() {
+      if (!currentUser) return;
+      const { data, error } = await supabase
+        .from('pattera_logs')
+        .select('*')
+        .eq('accepted', true);
+        
+      if (data && !error) {
+        const loadedInsights = data.map((row: any) => {
+          try {
+            const parsed = JSON.parse(row.suggestion);
+            return {
+              log_id: parsed.log_id,
+              term: parsed.term,
+              latin: parsed.latin,
+              caseLaw: parsed.caseLaw,
+              desc: parsed.desc,
+              status: 'ACCEPTED' as const
+            };
+          } catch {
+            return {
+              log_id: '',
+              term: row.suggestion,
+              latin: '',
+              caseLaw: '',
+              desc: '',
+              status: 'ACCEPTED' as const
+            };
+          }
+        });
+        setInsights(loadedInsights);
+      } else {
+        setInsights([]);
+      }
+    }
+    loadInsights();
+  }, [currentUser, supabase]);
 
   // Handle Referral ID verification
   const handleVerifyReferral = async () => {
@@ -423,8 +405,9 @@ export default function AppPortal() {
 
   // Timeline insertion
   const addTimelineEntry = async () => {
-    if (!timelineInput.trim()) return;
+    if (!timelineInput.trim() || !currentUser) return;
     const { data, error } = await supabase.from('timeline_entries').insert([{
+      user_id: currentUser.id,
       case_type: activeCase,
       text: timelineInput,
       mode: notesMode ? 'NOTES' : 'TIMELINE',
@@ -442,9 +425,7 @@ export default function AppPortal() {
     }
   };
 
-  // AI analysis
-  const handleAnalyzeTimeline = async () => {
-    if (timelines.length === 0) return;
+  const runAIAnalysisFlow = async () => {
     setIsAnalyzing(true);
     const timelineText = timelines.map(log => `[ID: ${log.id}] [${log.stamp}] ${log.text}`).join('\n');
     try {
@@ -462,16 +443,100 @@ export default function AppPortal() {
           latin: p.latin || '',
           caseLaw: p.caseLaw || 'Pending Review',
           desc: p.desc || '',
-          status: 'ACCEPTED'
+          status: 'PENDING'
         };
       });
-      setInsights(prev => [...prev, ...formattedInsights]);
-    } catch (error) {
+      
+      if (formattedInsights.length > 0) {
+        setPendingInsights(formattedInsights);
+      } else {
+        alert("Pattera analyzed your timeline and found no immediate Canadian legal patterns. This is not legal advice.");
+      }
+    } catch (error: any) {
       console.error(error);
-      alert("AI analysis complete.");
+      alert(`AI analysis error: ${error.message}`);
     } finally {
       setIsAnalyzing(false);
     } 
+  };
+
+  // AI analysis
+  const handleAnalyzeTimeline = async () => {
+    if (timelines.length === 0) return;
+    
+    if (!termsAccepted) {
+      setShowConsentModal(true);
+      return;
+    }
+    
+    await runAIAnalysisFlow();
+  };
+
+  const handleAcceptTerms = async () => {
+    if (!currentUser) return;
+    const { error } = await supabase
+      .from('profiles')
+      .upsert({
+        id: currentUser.id,
+        pattera_terms_accepted: true,
+        updated_at: new Date().toISOString()
+      });
+      
+    if (error) {
+      alert(`Failed to save consent: ${error.message}`);
+    } else {
+      setTermsAccepted(true);
+      setShowConsentModal(false);
+      await runAIAnalysisFlow();
+    }
+  };
+
+  const handleAcceptInsight = async (insight: PatternInsight) => {
+    if (!currentUser) return;
+    
+    const acceptedInsight: PatternInsight = { ...insight, status: 'ACCEPTED' };
+    const { error } = await supabase.from('pattera_logs').insert([{
+      user_id: currentUser.id,
+      suggestion: JSON.stringify({
+        log_id: acceptedInsight.log_id,
+        term: acceptedInsight.term,
+        latin: acceptedInsight.latin,
+        caseLaw: acceptedInsight.caseLaw,
+        desc: acceptedInsight.desc
+      }),
+      accepted: true
+    }]);
+    
+    if (error) {
+      alert(`Failed to accept insight: ${error.message}`);
+      return;
+    }
+    
+    setInsights(prev => [...prev, acceptedInsight]);
+    setPendingInsights(prev => prev.filter(i => i !== insight));
+  };
+
+  const handleDeclineInsight = async (insight: PatternInsight) => {
+    if (!currentUser) return;
+    
+    const { error } = await supabase.from('pattera_logs').insert([{
+      user_id: currentUser.id,
+      suggestion: JSON.stringify({
+        log_id: insight.log_id,
+        term: insight.term,
+        latin: insight.latin,
+        caseLaw: insight.caseLaw,
+        desc: insight.desc
+      }),
+      accepted: false
+    }]);
+    
+    if (error) {
+      alert(`Failed to decline insight: ${error.message}`);
+      return;
+    }
+    
+    setPendingInsights(prev => prev.filter(i => i !== insight));
   };
 
   const handleAmendLog = (id: string) => {
@@ -579,12 +644,12 @@ export default function AppPortal() {
           <p>Select your workspace role to begin the bidirectional handshake sync</p>
         </div>
         <div className="selection-cards">
-          <div className="selection-card" onClick={() => { setRole('client'); setViewMode('user'); }}>
+          <div className="selection-card" onClick={() => { playSound('open'); setRole('client'); setViewMode('user'); }}>
             <h2>Client Workspace</h2>
             <p>Construct your litigation timeline, upload files, check AI insights, and sync directly to your lawyer's Clio Grow account.</p>
             <button className="btn">Open Client Space</button>
           </div>
-          <div className="selection-card" onClick={() => { setRole('firm'); setViewMode('firm'); }}>
+          <div className="selection-card" onClick={() => { playSound('open'); setRole('firm'); setViewMode('firm'); }}>
             <h2>Law Firm Portal</h2>
             <p>Integrate with Clio Grow & Manage, manage client case matters, view the Justice Hub directory, and generate client invites.</p>
             <button className="btn">Open Clio Dashboard</button>
@@ -807,6 +872,16 @@ export default function AppPortal() {
           border: 2px solid #1cd8d2 !important;
           background: rgba(28, 216, 210, 0.05) !important;
         }
+        @keyframes ai-pulse {
+          0% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0.4); border-color: #008080; }
+          70% { box-shadow: 0 0 0 10px rgba(0, 128, 128, 0); border-color: #008080; }
+          100% { box-shadow: 0 0 0 0 rgba(0, 128, 128, 0); }
+        }
+        .ai-pulse-over {
+          animation: ai-pulse 2s infinite;
+          border: 2px solid #008080 !important;
+          background: rgba(0, 128, 128, 0.05) !important;
+        }
       `}} />
 
       {/* SIDEBAR NAVIGATION */}
@@ -828,7 +903,7 @@ export default function AppPortal() {
         </div>
 
         {/* ROLE SELECTION RETOUR */}
-        <button className="firm-btn" onClick={() => setRole('selection')} style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', borderColor: 'rgba(239, 68, 68, 0.2)' }}>
+        <button className="firm-btn btn-danger-transparent" onClick={() => { playSound('close'); setRole('selection'); }}>
           ← Switch Role Portal
         </button>
 
@@ -840,7 +915,7 @@ export default function AppPortal() {
               <button 
                 key={c} 
                 className={`firm-btn ${activeCase === c ? 'active' : ''}`} 
-                onClick={() => setActiveCase(c)}
+                onClick={() => { playSound('click'); setActiveCase(c); }}
               >
                 {c.charAt(0).toUpperCase() + c.slice(1)}
               </button>
@@ -856,20 +931,20 @@ export default function AppPortal() {
               {connectedFirm ? (
                 <>
                   {connectedFirm.logo_url && <img src={connectedFirm.logo_url} className="brand-logo" alt={connectedFirm.name} />}
-                  <div style={{ fontSize: '0.85rem', fontWeight: 600 }}>{connectedFirm.name}</div>
-                  <div style={{ fontSize: '0.75rem', color: '#1cd8d2' }}>Handshake Active</div>
+                  <div className="text-base font-semibold">{connectedFirm.name}</div>
+                  <div className="text-sm text-teal-bright">Handshake Active</div>
                 </>
               ) : (
-                <div style={{ fontSize: '0.8rem', color: 'var(--muted-dark)' }}>No lawyer linked yet.</div>
+                <div className="text-base text-muted">No lawyer linked yet.</div>
               )}
             </div>
             <div className="nav-grid">
-              <label style={{ fontSize: '0.75rem', marginBottom: '4px' }}>Enter Firm Invite Code:</label>
+              <label className="text-sm mb-4">Enter Firm Invite Code:</label>
               <div className="input-row">
                 <input type="text" value={referralCode} onChange={e => setReferralCode(e.target.value)} placeholder="FIRM-XXX-XXXX" />
                 <button onClick={handleVerifyReferral}>Link</button>
               </div>
-              <button className="firm-btn active" onClick={handleConnectClio} style={{ textAlign: 'center', marginTop: '10px' }}>
+              <button className="firm-btn active text-center mt-10" onClick={handleConnectClio}>
                 🔗 Sync via Clio Grow Handshake
               </button>
             </div>
@@ -882,12 +957,12 @@ export default function AppPortal() {
             <div className="section-title">Clio Authentication</div>
             <div className="nav-grid">
               {firmDetails ? (
-                <div style={{ padding: '10px', background: 'rgba(28, 216, 210, 0.05)', border: '1px solid rgba(28, 216, 210, 0.2)', borderRadius: '8px', fontSize: '0.8rem' }}>
+                <div className="firm-details-box">
                   <strong>{firmDetails.name}</strong><br/>
-                  <span style={{ color: '#86868b' }}>Clio ID: {firmDetails.clio_account_id}</span>
+                  <span className="text-muted">Clio ID: {firmDetails.clio_account_id}</span>
                 </div>
               ) : (
-                <button className="firm-btn active" onClick={handleConnectClio} style={{ textAlign: 'center' }}>
+                <button className="firm-btn active text-center" onClick={handleConnectClio}>
                   🔑 Connect Clio Account
                 </button>
               )}
@@ -906,7 +981,7 @@ export default function AppPortal() {
         </section>
 
         {/* TABS CONTAINER */}
-        <section className="firm-panel glass tabs-panel" style={{ padding: '24px' }}>
+        <section className="firm-panel glass tabs-panel p-24">
           <div className="tabs">
             {[
               { id: 'timelineTab', label: 'Timeline Builder' },
@@ -915,7 +990,7 @@ export default function AppPortal() {
               role === 'firm' && { id: 'hubTab', label: 'Justice Hub (Embedded)' },
               role === 'firm' && { id: 'inviteTab', label: 'Matters & Client Invites' }
             ].filter(Boolean).map((t: any) => (
-              <button key={t.id} className={`tab ${activeTab === t.id ? 'active' : ''}`} onClick={() => setActiveTab(t.id)}>
+              <button key={t.id} className={`tab ${activeTab === t.id ? 'active' : ''}`} onClick={() => { playSound('click'); setActiveTab(t.id); }}>
                 {t.label}
               </button>
             ))}
@@ -936,31 +1011,30 @@ export default function AppPortal() {
               )}
 
               {role === 'client' && (
-                <div style={{ marginBottom: '20px', padding: '15px', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid var(--mac-border-dark)' }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
+                <div className="client-hub-notice-box">
+                  <label className="flex items-center gap-10 cursor-pointer">
                     <input type="checkbox" checked={isListedInHub} onChange={e => handleToggleJusticeHub(e.target.checked)} />
                     <strong>Post anonymously to Justice Hub for firms to review</strong>
                   </label>
                 </div>
               )}
 
-              <div className="section-head" style={{ marginBottom: '10px' }}>
+              <div className="section-head mb-10">
                 <strong>Add Timeline Event</strong>
               </div>
               <textarea className="firm-control" placeholder="Describe the event or copy logs..." value={timelineInput} onChange={e => setTimelineInput(e.target.value)} />
-              <div className="input-row" style={{ justifyContent: 'flex-start' }}>
+              <div className="input-row justify-start">
                 <button className="firm-btn active" onClick={addTimelineEntry}>Add Event</button>
                 <button 
-                  className="firm-btn" 
+                  className="firm-btn ml-10" 
                   onClick={handleAnalyzeTimeline} 
                   disabled={isAnalyzing || timelines.length === 0}
-                  style={{ marginLeft: '10px' }}
                 >
                   {isAnalyzing ? '🤖 Analyzing...' : 'Run AI Analysis'}
                 </button>
               </div>
 
-              <div id="timelineList" style={{ marginTop: '20px' }}>
+              <div id="timelineList" className="mt-20">
                 <Timeline 
                   logs={timelines} 
                   insights={insights} 
@@ -975,26 +1049,26 @@ export default function AppPortal() {
 
           {/* STUDY HUB TAB */}
           {activeTab === 'studyTab' && (
-            <div className="tab-content active" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <div className="tab-content active flex-col gap-24">
               <h2>Study Hub: Precedent Benchmarks & Case Law</h2>
-              <p style={{ color: 'var(--muted-dark)' }}>
+              <p className="text-muted-dark">
                 Review legal precedents matching your chronological timeline events. Accepting a precedent binds it to the event as a Timelink.
               </p>
               
               {/* CATEGORIES GRID */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
+              <div className="categories-grid">
                 
                 {/* 1. WORKTIMELINE WIDGET (REDACTION TOGGLE) */}
-                <div style={{ padding: '20px', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--mac-border-dark)', borderRadius: '16px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-                    <strong style={{ color: '#1cd8d2' }}>💼 Labor & Wages (Quantum Meruit)</strong>
-                    <span style={{ fontSize: '0.75rem', padding: '2px 8px', background: 'rgba(28,216,210,0.1)', color: '#1cd8d2', borderRadius: '12px', fontWeight: 600 }}>WorkTimeline</span>
+                <div className="widget-card">
+                  <div className="flex-between-mb12">
+                    <strong className="text-teal-bright">💼 Labor & Wages (Quantum Meruit)</strong>
+                    <span className="widget-tag">WorkTimeline</span>
                   </div>
-                  <p style={{ fontSize: '0.85rem', color: '#86868b', marginBottom: '12px' }}>
+                  <p className="widget-desc">
                     <strong>Killer Feature:</strong> Privacy/Redaction Toggle (replaces sensitive HR/colleague names).
                   </p>
                   
-                  <div style={{ padding: '12px', background: 'rgba(0,0,0,0.2)', borderRadius: '10px', fontSize: '0.85rem', color: '#e5e5ea', minHeight: '60px', marginBottom: '12px' }}>
+                  <div className="widget-preview-box">
                     {isRedacted ? (
                       <span>Supervisor <code>[REDACTED]</code> requested a meeting with coworker <code>[REDACTED]</code> about termination procedures.</span>
                     ) : (
@@ -1002,22 +1076,22 @@ export default function AppPortal() {
                     )}
                   </div>
                   
-                  <button className={`firm-btn ${isRedacted ? 'active' : ''}`} onClick={() => setIsRedacted(!isRedacted)} style={{ fontSize: '0.8rem' }}>
+                  <button className={`firm-btn ${isRedacted ? 'active' : ''} text-xs-btn`} onClick={() => setIsRedacted(!isRedacted)}>
                     {isRedacted ? '🛡️ Privacy Redacted' : '🔓 Enable Privacy Redaction'}
                   </button>
                   
-                  <div style={{ borderTop: '1px solid var(--mac-border-dark)', marginTop: '12px', paddingTop: '10px' }}>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--muted-dark)' }}>Linked Timeline Events:</span>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '6px' }}>
+                  <div className="widget-links-footer">
+                    <span className="text-sm text-muted-dark">Linked Timeline Events:</span>
+                    <div className="flex-col gap-6 mt-6">
                       {timelines.filter(t => t.case_type === 'work' && insights.some(i => i.log_id === t.id)).map(t => (
-                        <div key={t.id} style={{ fontSize: '0.75rem', color: '#1cd8d2', cursor: 'pointer', textDecoration: 'underline' }} onClick={() => handleNavigateToEntry(t.id, 'work')}>
+                        <div key={t.id} className="teal-bright-link-underline" onClick={() => handleNavigateToEntry(t.id, 'work')}>
                           📅 {t.stamp} - {t.text.substring(0, 30)}...
                         </div>
                       ))}
                       {timelines.filter(t => t.case_type === 'work' && insights.some(i => i.log_id === t.id)).length === 0 && (
                         <>
-                          <div style={{ fontSize: '0.75rem', color: '#86868b', fontStyle: 'italic' }}>No custom entries analyzed yet.</div>
-                          <div style={{ fontSize: '0.75rem', color: '#1cd8d2', cursor: 'pointer', textDecoration: 'underline', opacity: 0.7 }} onClick={() => handleNavigateToEntry('work-parent-2', 'work')}>
+                          <div className="text-sm text-muted italic">No custom entries analyzed yet.</div>
+                          <div className="teal-bright-link-underline opacity-70" onClick={() => handleNavigateToEntry('work-parent-2', 'work')}>
                             📅 6/12/2026 - Overtime Wage Dispute Incident (Demo Reference)
                           </div>
                         </>
@@ -1027,38 +1101,38 @@ export default function AppPortal() {
                 </div>
 
                 {/* 2. PROPERTYTIMELINE WIDGET (BEFORE/AFTER COMPARISON) */}
-                <div style={{ padding: '20px', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--mac-border-dark)', borderRadius: '16px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-                    <strong style={{ color: '#1cd8d2' }}>🏠 Asset & Damage (Prima Facie)</strong>
-                    <span style={{ fontSize: '0.75rem', padding: '2px 8px', background: 'rgba(28,216,210,0.1)', color: '#1cd8d2', borderRadius: '12px', fontWeight: 600 }}>PropertyTimeline</span>
+                <div className="widget-card">
+                  <div className="flex-between-mb12">
+                    <strong className="text-teal-bright">🏠 Asset & Damage (Prima Facie)</strong>
+                    <span className="widget-tag">PropertyTimeline</span>
                   </div>
-                  <p style={{ fontSize: '0.85rem', color: '#86868b', marginBottom: '12px' }}>
+                  <p className="widget-desc">
                     <strong>Killer Feature:</strong> Before & After Damage Comparison.
                   </p>
                   
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '12px' }}>
-                    <div style={{ padding: '10px', background: 'rgba(28,216,210,0.05)', border: '1px solid rgba(28,216,210,0.1)', borderRadius: '8px', textAlign: 'center' }}>
-                      <span style={{ fontSize: '0.7rem', display: 'block', color: '#86868b' }}>BEFORE</span>
-                      <strong style={{ fontSize: '0.8rem', color: '#1cd8d2' }}>Dry & Clean</strong>
+                  <div className="grid-2-gap8-mb12">
+                    <div className="comparison-badge-green">
+                      <span className="label-uppercase-xxs">BEFORE</span>
+                      <strong className="text-base text-teal-bright">Dry & Clean</strong>
                     </div>
-                    <div style={{ padding: '10px', background: 'rgba(239,68,68,0.05)', border: '1px solid rgba(239,68,68,0.1)', borderRadius: '8px', textAlign: 'center' }}>
-                      <span style={{ fontSize: '0.7rem', display: 'block', color: '#86868b' }}>AFTER</span>
-                      <strong style={{ fontSize: '0.8rem', color: '#ef4444' }}>Severe Flooding</strong>
+                    <div className="comparison-badge-red">
+                      <span className="label-uppercase-xxs">AFTER</span>
+                      <strong className="text-base text-danger">Severe Flooding</strong>
                     </div>
                   </div>
                   
-                  <div style={{ borderTop: '1px solid var(--mac-border-dark)', marginTop: '12px', paddingTop: '10px' }}>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--muted-dark)' }}>Linked Timeline Events:</span>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '6px' }}>
+                  <div className="widget-links-footer">
+                    <span className="text-sm text-muted-dark">Linked Timeline Events:</span>
+                    <div className="flex-col gap-6 mt-6">
                       {timelines.filter(t => t.case_type === 'property' && insights.some(i => i.log_id === t.id)).map(t => (
-                        <div key={t.id} style={{ fontSize: '0.75rem', color: '#1cd8d2', cursor: 'pointer', textDecoration: 'underline' }} onClick={() => handleNavigateToEntry(t.id, 'property')}>
+                        <div key={t.id} className="teal-bright-link-underline" onClick={() => handleNavigateToEntry(t.id, 'property')}>
                           📅 {t.stamp} - {t.text.substring(0, 30)}...
                         </div>
                       ))}
                       {timelines.filter(t => t.case_type === 'property' && insights.some(i => i.log_id === t.id)).length === 0 && (
                         <>
-                          <div style={{ fontSize: '0.75rem', color: '#86868b', fontStyle: 'italic' }}>No custom entries analyzed yet.</div>
-                          <div style={{ fontSize: '0.75rem', color: '#1cd8d2', cursor: 'pointer', textDecoration: 'underline', opacity: 0.7 }} onClick={() => handleNavigateToEntry('property-parent-1', 'property')}>
+                          <div className="text-sm text-muted italic">No custom entries analyzed yet.</div>
+                          <div className="teal-bright-link-underline opacity-70" onClick={() => handleNavigateToEntry('property-parent-1', 'property')}>
                             📅 6/15/2026 - Burst pipe basement flood (Demo Reference)
                           </div>
                         </>
@@ -1068,45 +1142,45 @@ export default function AppPortal() {
                 </div>
 
                 {/* 3. FAMILYTIMELINE WIDGET (SENTINEL-NEUTRAL TRANSLATION) */}
-                <div style={{ padding: '20px', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--mac-border-dark)', borderRadius: '16px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-                    <strong style={{ color: '#1cd8d2' }}>⚖️ Neutral Translation (Habeas Corpus)</strong>
-                    <span style={{ fontSize: '0.75rem', padding: '2px 8px', background: 'rgba(28,216,210,0.1)', color: '#1cd8d2', borderRadius: '12px', fontWeight: 600 }}>FamilyTimeline</span>
+                <div className="widget-card">
+                  <div className="flex-between-mb12">
+                    <strong className="text-teal-bright">⚖️ Neutral Translation (Habeas Corpus)</strong>
+                    <span className="widget-tag">FamilyTimeline</span>
                   </div>
-                  <p style={{ fontSize: '0.85rem', color: '#86868b', marginBottom: '12px' }}>
+                  <p className="widget-desc">
                     <strong>Killer Feature:</strong> Sentiment-Neutral AI log translation.
                   </p>
                   
-                  <div style={{ padding: '12px', background: 'rgba(0,0,0,0.2)', borderRadius: '10px', fontSize: '0.82rem', color: '#e5e5ea', minHeight: '60px', marginBottom: '12px', lineHeight: '1.4' }}>
+                  <div className="widget-preview-box-alt">
                     {neutralMode ? (
                       <div>
-                        <span style={{ fontSize: '0.7rem', color: '#1cd8d2', display: 'block', fontWeight: 'bold' }}>COURT LOG (NEUTRAL)</span>
+                        <span className="label-uppercase-xxs text-teal-bright font-bold">COURT LOG (NEUTRAL)</span>
                         Parent arrived 45 minutes late for children exchange and spoke in a loud, aggressive tone in the presence of children.
                       </div>
                     ) : (
                       <div>
-                        <span style={{ fontSize: '0.7rem', color: '#ef4444', display: 'block', fontWeight: 'bold' }}>ORIGINAL INPUT (HIGH-CONFLICT)</span>
+                        <span className="label-uppercase-xxs text-danger font-bold">ORIGINAL INPUT (HIGH-CONFLICT)</span>
                         "HE ARRIVED SO LATE AND SHOUTED AT ME IN FRONT OF THE KIDS! I HATE THIS!"
                       </div>
                     )}
                   </div>
                   
-                  <button className={`firm-btn ${neutralMode ? 'active' : ''}`} onClick={() => setNeutralMode(!neutralMode)} style={{ fontSize: '0.8rem' }}>
+                  <button className={`firm-btn ${neutralMode ? 'active' : ''} text-xs-btn`} onClick={() => setNeutralMode(!neutralMode)}>
                     {neutralMode ? '⚖️ Showing Factual Log' : '💥 Show Original Communication'}
                   </button>
                   
-                  <div style={{ borderTop: '1px solid var(--mac-border-dark)', marginTop: '12px', paddingTop: '10px' }}>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--muted-dark)' }}>Linked Timeline Events:</span>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '6px' }}>
+                  <div className="widget-links-footer">
+                    <span className="text-sm text-muted-dark">Linked Timeline Events:</span>
+                    <div className="flex-col gap-6 mt-6">
                       {timelines.filter(t => t.case_type === 'family' && insights.some(i => i.log_id === t.id)).map(t => (
-                        <div key={t.id} style={{ fontSize: '0.75rem', color: '#1cd8d2', cursor: 'pointer', textDecoration: 'underline' }} onClick={() => handleNavigateToEntry(t.id, 'family')}>
+                        <div key={t.id} className="teal-bright-link-underline" onClick={() => handleNavigateToEntry(t.id, 'family')}>
                           📅 {t.stamp} - {t.text.substring(0, 30)}...
                         </div>
                       ))}
                       {timelines.filter(t => t.case_type === 'family' && insights.some(i => i.log_id === t.id)).length === 0 && (
                         <>
-                          <div style={{ fontSize: '0.75rem', color: '#86868b', fontStyle: 'italic' }}>No custom entries analyzed yet.</div>
-                          <div style={{ fontSize: '0.75rem', color: '#1cd8d2', cursor: 'pointer', textDecoration: 'underline', opacity: 0.7 }} onClick={() => handleNavigateToEntry('family-parent-1', 'family')}>
+                          <div className="text-sm text-muted italic">No custom entries analyzed yet.</div>
+                          <div className="teal-bright-link-underline opacity-70" onClick={() => handleNavigateToEntry('family-parent-1', 'family')}>
                             📅 6/18/2026 - Hostile late custody exchange (Demo Reference)
                           </div>
                         </>
@@ -1116,19 +1190,19 @@ export default function AppPortal() {
                 </div>
 
                 {/* 4. INJURYTIMELINE WIDGET (FUNCTIONAL IMPAIRMENT INDEX) */}
-                <div style={{ padding: '20px', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--mac-border-dark)', borderRadius: '16px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-                    <strong style={{ color: '#1cd8d2' }}>🏥 Impairment Index (Res Ipsa Loquitur)</strong>
-                    <span style={{ fontSize: '0.75rem', padding: '2px 8px', background: 'rgba(28,216,210,0.1)', color: '#1cd8d2', borderRadius: '12px', fontWeight: 600 }}>InjuryTimeline</span>
+                <div className="widget-card">
+                  <div className="flex-between-mb12">
+                    <strong className="text-teal-bright">🏥 Impairment Index (Res Ipsa Loquitur)</strong>
+                    <span className="widget-tag">InjuryTimeline</span>
                   </div>
-                  <p style={{ fontSize: '0.85rem', color: '#86868b', marginBottom: '12px' }}>
+                  <p className="widget-desc">
                     <strong>Killer Feature:</strong> 1-10 Pain & Mobility Impairment score.
                   </p>
                   
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '12px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem' }}>
+                  <div className="flex-col gap-8 mb-12">
+                    <div className="flex-between text-base">
                       <span>Functional Impairment Index:</span>
-                      <strong style={{ color: '#1cd8d2' }}>{impairmentIndex}/10</strong>
+                      <strong className="text-teal-bright">{impairmentIndex}/10</strong>
                     </div>
                     <input 
                       type="range" 
@@ -1136,29 +1210,29 @@ export default function AppPortal() {
                       max="10" 
                       value={impairmentIndex} 
                       onChange={(e) => setImpairmentIndex(parseInt(e.target.value))}
-                      style={{ accentColor: '#1cd8d2', width: '100%', cursor: 'pointer' }}
+                      className="slider-teal-accent"
                       title="Functional Impairment Index"
                       aria-label="Functional Impairment Index"
                     />
-                    <span style={{ fontSize: '0.75rem', color: '#86868b', fontStyle: 'italic' }}>
+                    <span className="text-sm text-muted italic">
                       {impairmentIndex <= 3 && "Mild: Slight discomfort, full range of motion."}
                       {impairmentIndex > 3 && impairmentIndex <= 7 && "Moderate: Limited rotation, prevents heavy lifting."}
                       {impairmentIndex > 7 && "Severe: Complete immobility, requires prescription pain management."}
                     </span>
                   </div>
                   
-                  <div style={{ borderTop: '1px solid var(--mac-border-dark)', marginTop: '12px', paddingTop: '10px' }}>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--muted-dark)' }}>Linked Timeline Events:</span>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '6px' }}>
+                  <div className="widget-links-footer">
+                    <span className="text-sm text-muted-dark">Linked Timeline Events:</span>
+                    <div className="flex-col gap-6 mt-6">
                       {timelines.filter(t => t.case_type === 'injury' && insights.some(i => i.log_id === t.id)).map(t => (
-                        <div key={t.id} style={{ fontSize: '0.75rem', color: '#1cd8d2', cursor: 'pointer', textDecoration: 'underline' }} onClick={() => handleNavigateToEntry(t.id, 'injury')}>
+                        <div key={t.id} className="teal-bright-link-underline" onClick={() => handleNavigateToEntry(t.id, 'injury')}>
                           📅 {t.stamp} - {t.text.substring(0, 30)}...
                         </div>
                       ))}
                       {timelines.filter(t => t.case_type === 'injury' && insights.some(i => i.log_id === t.id)).length === 0 && (
                         <>
-                          <div style={{ fontSize: '0.75rem', color: '#86868b', fontStyle: 'italic' }}>No custom entries analyzed yet.</div>
-                          <div style={{ fontSize: '0.75rem', color: '#1cd8d2', cursor: 'pointer', textDecoration: 'underline', opacity: 0.7 }} onClick={() => handleNavigateToEntry('injury-parent-1', 'injury')}>
+                          <div className="text-sm text-muted italic">No custom entries analyzed yet.</div>
+                          <div className="teal-bright-link-underline opacity-70" onClick={() => handleNavigateToEntry('injury-parent-1', 'injury')}>
                             📅 6/10/2026 - Slip & Fall knee injury (Demo Reference)
                           </div>
                         </>
@@ -1173,19 +1247,19 @@ export default function AppPortal() {
 
           {/* TAB: CROSS-CASE RELATIONSHIP CHART */}
           {activeTab === 'chartTab' && role === 'firm' && (
-            <div className="tab-content active" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <div className="tab-content active flex-col gap-24">
               <h2>Cross-Case Relationship Flowchart</h2>
-              <p style={{ color: 'var(--muted-dark)' }}>
+              <p className="text-muted-dark">
                 Visualizes the intersection and causal links between different active civil tracks for this client.
               </p>
               
-              <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+              <div className="flex-wrap-gap-24">
                 
                 {/* SVG CANVAS FLOW CHART */}
-                <div className="glass" style={{ flex: '1 1 500px', height: '360px', padding: '20px', position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <div className="glass flowchart-canvas-box">
                   
                   {/* BACKGROUND SVG LINES */}
-                  <svg style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
+                  <svg className="flowchart-svg">
                     <defs>
                       <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                         <path d="M 0 2 L 10 5 L 0 8 z" fill="#1cd8d2" />
@@ -1203,50 +1277,35 @@ export default function AppPortal() {
                   </svg>
                   
                   {/* WORK MATTER NODE */}
-                  <div style={{ position: 'absolute', top: '80px', left: '40px', width: '140px', padding: '12px', background: 'rgba(28,216,210,0.1)', border: '2px solid #1cd8d2', borderRadius: '12px', textAlign: 'center' }}>
-                    <span style={{ fontSize: '1.5rem', display: 'block' }}>💼</span>
-                    <strong style={{ fontSize: '0.85rem' }}>WorkTimeline</strong>
-                    <span style={{ display: 'block', fontSize: '0.7rem', color: '#86868b', marginTop: '2px' }}>2 Base Entries</span>
+                  <div className="node-active-work">
+                    <span className="emoji-node-icon">💼</span>
+                    <strong className="text-base font-bold">WorkTimeline</strong>
+                    <span className="label-block-muted">2 Base Entries</span>
                   </div>
 
                   {/* INJURY MATTER NODE */}
-                  <div style={{ position: 'absolute', top: '80px', right: '40px', width: '140px', padding: '12px', background: 'rgba(28,216,210,0.1)', border: '2px solid #1cd8d2', borderRadius: '12px', textAlign: 'center' }}>
-                    <span style={{ fontSize: '1.5rem', display: 'block' }}>🏥</span>
-                    <strong style={{ fontSize: '0.85rem' }}>InjuryTimeline</strong>
-                    <span style={{ display: 'block', fontSize: '0.7rem', color: '#86868b', marginTop: '2px' }}>1 Incident Entry</span>
+                  <div className="node-active-injury">
+                    <span className="emoji-node-icon">🏥</span>
+                    <strong className="text-base font-bold">InjuryTimeline</strong>
+                    <span className="label-block-muted">1 Incident Entry</span>
                   </div>
 
                   {/* PROPERTY MATTER NODE */}
-                  <div style={{ position: 'absolute', bottom: '50px', left: '40px', width: '140px', padding: '12px', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--mac-border-dark)', borderRadius: '12px', textAlign: 'center', opacity: 0.6 }}>
-                    <span style={{ fontSize: '1.5rem', display: 'block' }}>🏠</span>
-                    <strong style={{ fontSize: '0.85rem' }}>PropertyTimeline</strong>
+                  <div className="node-inactive-property">
+                    <span className="emoji-node-icon">🏠</span>
+                    <strong className="text-base font-bold">PropertyTimeline</strong>
                   </div>
 
                   {/* FAMILY MATTER NODE */}
-                  <div style={{ position: 'absolute', bottom: '50px', right: '40px', width: '140px', padding: '12px', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--mac-border-dark)', borderRadius: '12px', textAlign: 'center', opacity: 0.6 }}>
-                    <span style={{ fontSize: '1.5rem', display: 'block' }}>⚖️</span>
-                    <strong style={{ fontSize: '0.85rem' }}>FamilyTimeline</strong>
+                  <div className="node-inactive-family">
+                    <span className="emoji-node-icon">⚖️</span>
+                    <strong className="text-base font-bold">FamilyTimeline</strong>
                   </div>
 
                   {/* CAUSAL LINK INTERACTIVE BADGE */}
                   <button 
                     onClick={() => setSelectedRelation('work_injury')}
-                    style={{ 
-                      position: 'absolute', 
-                      top: '105px', 
-                      left: '210px', 
-                      zIndex: 10, 
-                      background: '#1cd8d2', 
-                      color: 'black', 
-                      border: 'none', 
-                      borderRadius: '20px', 
-                      padding: '6px 12px', 
-                      fontSize: '0.72rem', 
-                      fontWeight: 700, 
-                      cursor: 'pointer',
-                      boxShadow: '0 4px 10px rgba(28,216,210,0.3)',
-                      transition: 'all 0.2s ease'
-                    }}
+                    className="flowchart-relation-badge-btn"
                   >
                     ⚡ Leads To: Fall Injury
                   </button>
@@ -1254,32 +1313,31 @@ export default function AppPortal() {
                 </div>
 
                 {/* RELATIONSHIP DETAILS SIDEBAR */}
-                <div className="glass" style={{ flex: '1 1 300px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '14px', minHeight: '360px' }}>
+                <div className="glass flowchart-details-sidebar">
                   <h3>Relationship Details</h3>
                   
                   {selectedRelation === 'work_injury' ? (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                      <div style={{ padding: '8px', background: 'rgba(28, 216, 210, 0.08)', borderRadius: '8px', fontSize: '0.75rem', color: '#1cd8d2', border: '1px solid rgba(28, 216, 210, 0.2)' }}>
+                    <div className="flex-col gap-12">
+                      <div className="flowchart-causal-banner">
                         <strong>Causal Connection:</strong> Work incident resulted in physical injury.
                       </div>
                       
                       <div>
-                        <strong style={{ fontSize: '0.8rem', color: '#86868b' }}>1. Source (WorkTimeline Entry):</strong>
-                        <div style={{ fontSize: '0.82rem', padding: '8px', background: 'rgba(0,0,0,0.2)', borderRadius: '6px', marginTop: '4px' }}>
+                        <strong className="text-base text-muted font-bold">1. Source (WorkTimeline Entry):</strong>
+                        <div className="flowchart-entry-text-box">
                           {timelines.find(t => t.case_type === 'work' && t.id === 'work-parent-1')?.text || timelines.find(t => t.case_type === 'work')?.text || "Slipped on wet floor in the warehouse during my shift. (Demo)"}
                         </div>
                       </div>
 
                       <div>
-                        <strong style={{ fontSize: '0.8rem', color: '#86868b' }}>2. Destination (InjuryTimeline Entry):</strong>
-                        <div style={{ fontSize: '0.82rem', padding: '8px', background: 'rgba(0,0,0,0.2)', borderRadius: '6px', marginTop: '4px' }}>
+                        <strong className="text-base text-muted font-bold">2. Destination (InjuryTimeline Entry):</strong>
+                        <div className="flowchart-entry-text-box">
                           {timelines.find(t => t.case_type === 'injury' && t.id === 'injury-parent-1')?.text || timelines.find(t => t.case_type === 'injury')?.text || "Slipped and injured knee in the warehouse. Pain level 8/10. (Demo)"}
                         </div>
                       </div>
 
                       <button 
-                        className="firm-btn active" 
-                        style={{ alignSelf: 'flex-start', fontSize: '0.8rem', marginTop: '10px' }}
+                        className="firm-btn active btn-view-source" 
                         onClick={() => {
                           const workEntry = timelines.find(t => t.case_type === 'work' && t.id === 'work-parent-1') || timelines.find(t => t.case_type === 'work');
                           if (workEntry) {
@@ -1293,7 +1351,7 @@ export default function AppPortal() {
                       </button>
                     </div>
                   ) : (
-                    <div style={{ color: 'var(--muted-dark)', fontSize: '0.85rem', textAlign: 'center', marginTop: '40px' }}>
+                    <div className="chart-fallback-text">
                       Click on the "Leads To" relationship link in the chart to view cross-case connection audits and notes.
                     </div>
                   )}
@@ -1307,22 +1365,22 @@ export default function AppPortal() {
           {activeTab === 'hubTab' && role === 'firm' && (
             <div className="tab-content active">
               <h2>Justice Hub (Embedded Clio Add-On)</h2>
-              <p style={{ color: '#86868b', marginBottom: '20px' }}>
+              <p className="text-muted mb-20">
                 Review matching timelines submitted anonymously. Accept cases to instantly create Leads in Clio Grow.
               </p>
               {hubCases.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '40px', background: 'rgba(255,255,255,0.02)', borderRadius: '12px' }}>
+                <div className="hub-empty-box">
                   No new anonymous timelines matching your practice areas currently listed.
                 </div>
               ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div className="flex-col gap-16">
                   {hubCases.map((c, i) => (
-                    <div key={c.id || i} style={{ padding: '20px', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--mac-border-dark)', borderRadius: '12px' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+                    <div key={c.id || i} className="hub-case-card">
+                      <div className="flex-between-mb10">
                         <strong>Case Proposal #{i + 1} ({c.practice_areas?.join(', ').toUpperCase()})</strong>
-                        <span style={{ fontSize: '0.75rem', color: '#86868b' }}>{new Date(c.created_at).toLocaleDateString()}</span>
+                        <span className="text-sm text-muted">{new Date(c.created_at).toLocaleDateString()}</span>
                       </div>
-                      <p style={{ fontSize: '0.9rem', color: '#a1a1a6', marginBottom: '15px' }}>{c.anonymous_summary}</p>
+                      <p className="hub-case-summary">{c.anonymous_summary}</p>
                       <button className="firm-btn active" onClick={() => handleClaimLead(c)}>
                         Claim Lead & Sync to Clio Grow
                       </button>
@@ -1335,12 +1393,12 @@ export default function AppPortal() {
 
           {/* TAB 3: Matters & Client Invites (Reverse Sync) */}
           {activeTab === 'inviteTab' && role === 'firm' && (
-            <div className="tab-content active" style={{ maxWidth: '600px' }}>
+            <div className="tab-content active invite-tab-box">
               <h2>Clio Manage Client Provisioning</h2>
-              <p style={{ color: '#86868b', marginBottom: '20px' }}>
+              <p className="text-muted mb-20">
                 Create a pre-populated timeline account for an existing client in Clio Manage.
               </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div className="flex-col gap-12">
                 <div>
                   <label>Client Name:</label>
                   <input className="firm-control" type="text" value={inviteName} onChange={e => setInviteName(e.target.value)} placeholder="Client Name" />
@@ -1353,14 +1411,14 @@ export default function AppPortal() {
                   <label>Case Summary (pre-filled):</label>
                   <textarea className="firm-control" value={inviteSummary} onChange={e => setInviteSummary(e.target.value)} placeholder="Brief description of the matter..." />
                 </div>
-                <button className="firm-btn active" onClick={handleGenerateInvite} style={{ alignSelf: 'flex-start', padding: '12px 24px' }}>
+                <button className="firm-btn active btn-generate-invite" onClick={handleGenerateInvite}>
                   Generate WorkTimeline Invitation Link
                 </button>
 
                 {generatedInviteUrl && (
-                  <div style={{ marginTop: '20px', padding: '15px', background: 'rgba(28, 216, 210, 0.08)', border: '1px solid rgba(28, 216, 210, 0.2)', borderRadius: '12px' }}>
+                  <div className="invite-success-box">
                     <strong>Client Setup Link (Copied to Clipboard):</strong>
-                    <div style={{ wordBreak: 'break-all', fontSize: '0.85rem', color: '#1cd8d2', marginTop: '8px', cursor: 'pointer' }} onClick={() => {
+                    <div className="invite-url-text" onClick={() => {
                       navigator.clipboard.writeText(generatedInviteUrl);
                       alert("Link copied!");
                     }}>
@@ -1379,7 +1437,95 @@ export default function AppPortal() {
         onClose={() => setIsAmendModalOpen(false)}
         logId={amendingLogId}
         onSave={handleSaveAmendment}
+        userId={currentUser?.id}
       />
+
+      {/* AI TERMS & CONSENT GATE MODAL */}
+      {showConsentModal && (
+        <div className="consent-modal-overlay">
+          <div className="glass consent-modal-box">
+            <div className="flex items-center gap-12">
+              <span className="text-xl">🛡️</span>
+              <h2 className="consent-modal-title">
+                Canadian Tech Law Consent Gate
+              </h2>
+            </div>
+            <p className="consent-modal-description">
+              Before proceeding with AI-driven pattern recognition, Canadian privacy standards (PIPEDA / BC PIPA) require your explicit informed consent.
+            </p>
+            <div className="consent-scroller">
+              <strong>INFORMED CONSENT AGREEMENT:</strong>
+              <p className="m-0">1. <strong>App Purpose:</strong> WorkTimeline and Pattera are record-keeping and chronology journaling helpers. They are not law firms, do not practice law, and do not act as your legal counsel.</p>
+              <p className="m-0">2. <strong>No Legal Advice:</strong> Pattera does not interpret laws, predict outcomes, or generate legal strategies. All outputs must be reviewed by a qualified lawyer.</p>
+              <p className="m-0">3. <strong>Data Processing:</strong> Your timeline text will be processed to extract potential regulatory or statutory references (e.g. WCB, Employment Standards, PIPA, Human Rights). Your data is private, secure, and will not be shared without your explicit action.</p>
+              <p className="m-0">4. <strong>Right to Revoke:</strong> You can revoke this consent at any time, which will stop all AI processing.</p>
+            </div>
+            <div className="consent-modal-actions">
+              <button className="firm-btn" onClick={() => setShowConsentModal(false)}>
+                Decline & Close
+              </button>
+              <button 
+                className="firm-btn active btn-accept-consent" 
+                onClick={handleAcceptTerms}
+              >
+                Accept & Run Analysis
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* INTERACTIVE PENDING INSIGHTS REVIEW PANEL */}
+      {pendingInsights.length > 0 && (
+        <div className="pending-insights-container">
+          <div className="pending-insights-header">
+            <div className="flex items-center gap-8">
+              <span className="text-xl">🤖</span>
+              <strong className="text-lg">Pattera AI Suggestions ({pendingInsights.length})</strong>
+            </div>
+            <button 
+              className="btn-link-muted"
+              onClick={() => setPendingInsights([])}
+            >
+              Dismiss All
+            </button>
+          </div>
+          
+          <div className="pending-insights-scroller">
+            {pendingInsights.map((insight, idx) => (
+              <div key={idx} className="pending-insight-card">
+                <div className="pending-insight-title-row">
+                  <span className="text-teal-bright font-bold text-base">{insight.term}</span>
+                  {insight.latin && (
+                    <span className="latin-doctrine-tag">
+                      {insight.latin}
+                    </span>
+                  )}
+                </div>
+                {insight.caseLaw && <span className="text-sm text-muted font-semibold">Ref: {insight.caseLaw}</span>}
+                <p className="pending-insight-desc">{insight.desc}</p>
+                <div className="flex justify-end gap-8 mt-8">
+                  <button 
+                    className="firm-btn btn-danger-transparent btn-timeline-action"
+                    onClick={() => handleDeclineInsight(insight)}
+                  >
+                    Decline
+                  </button>
+                  <button 
+                    className="firm-btn active btn-timeline-action"
+                    onClick={() => handleAcceptInsight(insight)}
+                  >
+                    Accept & Append
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="text-xs text-muted italic text-center mt-4">
+            Reminder: Pattera is an AI tool, not a lawyer. This is not legal advice.
+          </div>
+        </div>
+      )}
     </div>
   );
 }

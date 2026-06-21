@@ -94,8 +94,7 @@ export default function Timeline({
   return (
     <div className="workspace-layout-matrix">
       
-      {/* LEFT: VISUAL SPINE TRACK */}
-      <div id="visualSpineTrack" className="vertical-spine-track" style={{ display: currentMode === 'TIMELINE' ? 'flex' : 'none' }}>
+      <div id="visualSpineTrack" className={`vertical-spine-track ${currentMode === 'TIMELINE' ? '' : 'hidden'}`}>
         {currentMode === 'TIMELINE' && baseEntries.map(log => {
           const childAmendments = logs.filter(v => v.parent_id === log.id && v.type !== 'receipt' && v.type !== 'visit');
           const completeChain = [log, ...childAmendments];
@@ -108,7 +107,6 @@ export default function Timeline({
             <div 
               key={`spine_${log.id}`}
               className={`timeline-squircle ${hasAlerts ? 'pattern-triggered' : ''}`}
-              style={hasAlerts ? { border: '2px solid #008080' } : {}}
               onClick={() => alert(`Event Chain Base Reference ID: ${log.id}\nLayers Compiled: ${completeChain.length}\nLast State: ${topMostActiveVersion.stamp}`)}
               aria-label="View Log Details"
             >
@@ -140,8 +138,8 @@ export default function Timeline({
                 {/* PATTERN RECOGNITION AI OVERLAY (TOP MOST IF APPLICABLE) */}
                 {isOverriddenByAI && (
                   <div className="log-bubble ai-pulse-over">
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                      <span className="pattern-insight-title" style={{ color: '#008080', fontWeight: 900 }}>
+                    <div className="flex-between-center mb-8">
+                      <span className="pattern-insight-title text-teal font-black">
                         [PATTERA INSIGHT OVERRIDE]
                       </span>
                       <button 
@@ -149,34 +147,21 @@ export default function Timeline({
                           const speechString = associatedInsights.map(i => `Pattern detected: ${i.term}. Precedent: ${i.caseLaw}. ${i.desc || ''}`).join(' ');
                           speakText(`Hi, I'm Pattera. Here is what I found. ${speechString} This is not legal advice.`);
                         }}
-                        style={{ 
-                          background: 'rgba(28, 216, 210, 0.08)', 
-                          border: '1px solid rgba(28, 216, 210, 0.2)', 
-                          color: '#1cd8d2', 
-                          cursor: 'pointer', 
-                          fontSize: '0.72rem', 
-                          display: 'flex', 
-                          alignItems: 'center', 
-                          gap: '4px', 
-                          padding: '3px 8px', 
-                          borderRadius: '8px', 
-                          fontWeight: 600,
-                          transition: 'all 0.2s ease'
-                        }}
+                        className="btn-listen-teal"
                         title="Listen to Pattera Analysis"
                       >
                         🔊 Listen
                       </button>
                     </div>
                     {associatedInsights.map((insight, idx) => (
-                      <div key={idx} style={{ marginBottom: '5px' }}>
+                      <div key={idx} className="mb-5">
                         <strong>⚠️ Pattern Detected: {insight.term}</strong><br/>
-                        <span style={{ fontSize: '12px', color: '#4b5563' }}>
+                        <span className="text-sm text-gray-dark">
                           <i>{insight.latin}</i> | Ref: {insight.caseLaw}
                         </span>
                       </div>
                     ))}
-                    <div style={{ fontSize: '11px', marginTop: '8px', color: '#008080', borderTop: '1px solid rgba(0,128,128,0.2)', paddingTop: '4px' }}>
+                    <div className="timeline-ai-banner-footer">
                       Original evidence entry retained below.
                     </div>
                   </div>
@@ -197,8 +182,7 @@ export default function Timeline({
                 {/* MAIN ACTIVE LOG ENTRY */}
                 <div 
                   id={`log_${log.id}`}
-                  className={`log-entry ${highlightedLogId === log.id ? 'highlighted-log-pulse' : ''}`}
-                  style={isOverriddenByAI ? { marginTop: '8px', opacity: 0.85, transform: 'scale(0.97)' } : {}}
+                  className={`log-entry ${highlightedLogId === log.id ? 'highlighted-log-pulse' : ''} ${isOverriddenByAI ? 'timeline-override-ai-active' : ''}`}
                   onMouseDown={() => handlePressStart(topMostActiveVersion.id)}
                   onMouseUp={handlePressEnd}
                   onMouseLeave={handlePressEnd}
@@ -226,7 +210,7 @@ export default function Timeline({
 
                 {/* HIERARCHICAL SUB-TIMELINE (RECEIPTS / VISITS) */}
                 {subEntries.length > 0 && (
-                  <div className="sub-timeline-list" style={{ marginTop: '8px', paddingLeft: '24px', borderLeft: '2px dashed rgba(28, 216, 210, 0.25)', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <div className="sub-timeline-list sub-timeline-list-container">
                     {subEntries.map(sub => {
                       const isSubHighlighted = highlightedLogId === sub.id;
                       const customAttrs = typeof sub.custom_attributes === 'string' 
@@ -236,34 +220,24 @@ export default function Timeline({
                         <div 
                           key={sub.id} 
                           id={`log_${sub.id}`}
-                          className={`sub-timeline-item ${isSubHighlighted ? 'highlighted-log-pulse' : ''}`}
-                          style={{ 
-                            display: 'flex', 
-                            alignItems: 'center', 
-                            gap: '10px', 
-                            padding: '10px 14px', 
-                            background: 'rgba(255, 255, 255, 0.02)', 
-                            border: '1px solid var(--mac-border-dark)', 
-                            borderRadius: '12px',
-                            transition: 'all 0.3s ease'
-                          }}
+                          className={`sub-timeline-item ${isSubHighlighted ? 'highlighted-log-pulse' : ''} sub-timeline-item-box`}
                         >
-                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '28px', height: '28px', borderRadius: '8px', background: 'rgba(28, 216, 210, 0.08)', color: '#1cd8d2' }}>
+                          <div className="sub-timeline-icon-box">
                             {ICONS[sub.type] || '🧾'}
                           </div>
-                          <div style={{ flex: 1 }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
-                              <span style={{ fontSize: '0.75rem', color: '#86868b', fontWeight: 600 }}>{sub.stamp}</span>
+                          <div className="flex-1">
+                            <div className="flex-between-center mb-2">
+                              <span className="text-sm text-muted font-semibold">{sub.stamp}</span>
                               {customAttrs.amount && (
-                                <span style={{ fontSize: '0.8rem', color: '#1cd8d2', fontWeight: 700 }}>
+                                <span className="text-base text-teal-bright font-bold">
                                   ${parseFloat(customAttrs.amount).toFixed(2)}
                                 </span>
                               )}
                             </div>
-                            <div style={{ fontSize: '0.85rem', color: '#e5e5ea' }}>{sub.text}</div>
+                            <div className="text-base text-light-gray">{sub.text}</div>
                             {/* Custom Metadata Details */}
                             {(customAttrs.merchant || customAttrs.provider || customAttrs.counselor) && (
-                              <div style={{ fontSize: '0.72rem', color: '#86868b', marginTop: '3px' }}>
+                              <div className="text-xxs text-muted mt-3">
                                 {customAttrs.merchant && `Merchant: ${customAttrs.merchant}`}
                                 {customAttrs.provider && `Provider: ${customAttrs.provider}`}
                                 {customAttrs.counselor && `Counselor: ${customAttrs.counselor}`}
@@ -273,8 +247,7 @@ export default function Timeline({
                           </div>
                           {sub.evidence_url && (
                             <button 
-                              className="firm-btn" 
-                              style={{ padding: '6px 12px', fontSize: '0.75rem', borderRadius: '8px' }}
+                              className="firm-btn btn-timeline-action" 
                               onClick={() => onPreviewEvidence && onPreviewEvidence(sub.evidence_url!, sub.type)}
                             >
                               View
